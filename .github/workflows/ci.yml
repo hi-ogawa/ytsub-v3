@@ -1,0 +1,75 @@
+name: CI
+"on":
+  - push
+jobs:
+  lint:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - uses: pnpm/action-setup@v2.0.1
+        with:
+          version: "6.29.1"
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "16.14.0"
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run lint
+
+  tsc:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - uses: pnpm/action-setup@v2.0.1
+        with:
+          version: "6.29.1"
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "16.14.0"
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run tsc
+
+  build:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - uses: pnpm/action-setup@v2.0.1
+        with:
+          version: "6.29.1"
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "16.14.0"
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run netlify:build
+
+  test:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - uses: pnpm/action-setup@v2.0.1
+        with:
+          version: "6.29.1"
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "16.14.0"
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run test
+
+  integration:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - uses: pnpm/action-setup@v2.0.1
+        with:
+          version: "6.29.1"
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "16.14.0"
+      - run: pnpm install --frozen-lockfile
+      - run: pnpx playwright install --with-deps
+      - run: pnpm run test:playwright
+
+  shellcheck:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - run: docker run --rm -v "${PWD}:/mnt:ro" koalaman/shellcheck:v0.8.0 scripts/*.sh
