@@ -6,7 +6,7 @@ rm -rf build/remix/production
 rm -rf build/tailwind/production
 
 # tailwind
-pnpm run tailwind
+NODE_ENV=production pnpm run tailwind
 
 # default "node-cjs" build with custom server main
 NODE_ENV=production BUILD_NETLIFY=1 pnpx remix build

@@ -8,9 +8,7 @@ based on
 ```sh
 # development
 pnpm install
-pnpm run dev  # start remix app
-pnpm run dev:tsc  # type check
-pnpm run dev:tailwind  # generate tailwind css
+pnpm run dev:all
 
 # lint
 pnpm run lint

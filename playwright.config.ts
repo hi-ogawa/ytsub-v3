@@ -14,7 +14,7 @@ const config: PlaywrightTestConfig = {
     },
   ],
   webServer: {
-    command: "pnpm run dev:tailwind:no-watch && npm run dev",
+    command: "pnpm run tailwind && npm run dev",
     port: 3000,
     reuseExistingServer: false,
   },
