@@ -8,7 +8,7 @@ import {
 } from "@remix-run/react";
 import { LinksFunction, MetaFunction } from "@remix-run/server-runtime";
 import * as React from "react";
-import { Search } from "react-feather";
+import { Home, Menu, Search } from "react-feather";
 
 export const links: LinksFunction = () => {
   return [
@@ -37,12 +37,14 @@ export default function Component() {
         <Links />
       </head>
       <body className="h-full">
-        <div className="h-full flex flex-col h-full">
-          <Navbar />
-          <div className="grow flex justify-center items-center">
-            <Outlet />
+        <SideMenuDrawerWrapper>
+          <div className="h-full flex flex-col h-full">
+            <Navbar />
+            <div className="grow flex justify-center items-center">
+              <Outlet />
+            </div>
           </div>
-        </div>
+        </SideMenuDrawerWrapper>
         <Scripts />
         <LiveReload />
       </body>
@@ -50,15 +52,21 @@ export default function Component() {
   );
 }
 
+const DRAWER_TOGGLE_INPUT_ID = "--drawer-toggle-input--";
+
 function Navbar() {
   return (
     <header className="w-full h-12 flex-none bg-primary text-primary-content flex items-center px-4 py-2 shadow-lg z-10">
-      <div className="flex-1">
-        <Link to="/" className="btn btn-sm btn-ghost">
-          Home
-        </Link>
+      <div className="flex-none pr-4">
+        <label
+          className="btn btn-sm btn-ghost"
+          htmlFor={DRAWER_TOGGLE_INPUT_ID}
+        >
+          <Menu size={24} />
+        </label>
       </div>
-      <div className="flex-none">
+      <div className="flex-1">Page Title</div>
+      <div className="flex-none hidden sm:block">
         <form action="/setup" method="get">
           <label className="relative text-base-content flex items-center">
             <Search size={26} className="absolute text-gray-400 pl-2" />
@@ -72,5 +80,45 @@ function Navbar() {
         </form>
       </div>
     </header>
+  );
+}
+
+interface SideMenuEntry {
+  to: string;
+  icon: any;
+  title: string;
+}
+
+const SIDE_MENU_ENTRIES: SideMenuEntry[] = [
+  {
+    to: "/",
+    icon: Home,
+    title: "Home",
+  },
+];
+
+function SideMenuDrawerWrapper({ children }: React.PropsWithChildren<{}>) {
+  return (
+    <div className="drawer h-screen w-full">
+      <input
+        className="drawer-toggle"
+        type="checkbox"
+        id={DRAWER_TOGGLE_INPUT_ID}
+      />
+      <div className="drawer-content">{children}</div>
+      <div className="drawer-side">
+        <label className="drawer-overlay" htmlFor={DRAWER_TOGGLE_INPUT_ID} />
+        <ul className="menu p-4 w-60 bg-base-100 text-base-content">
+          {SIDE_MENU_ENTRIES.map((entry) => (
+            <li key={entry.to}>
+              <Link to={entry.to}>
+                <entry.icon size={28} className="text-gray-500 pr-2" />
+                {entry.title}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
   );
 }
