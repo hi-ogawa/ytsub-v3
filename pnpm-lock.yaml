@@ -30,6 +30,7 @@ specifiers:
   netlify-cli: ^9.12.3
   postcss: ^8.4.7
   prettier: ^2.5.1
+  qrcode-terminal: ^0.12.0
   react: ^17.0.2
   react-dom: ^17.0.2
   react-feather: ^2.0.9
@@ -71,6 +72,7 @@ devDependencies:
   netlify-cli: 9.12.3
   postcss: 8.4.7
   prettier: 2.5.1
+  qrcode-terminal: 0.12.0
   tailwindcss: 3.0.23_autoprefixer@10.4.2
   typescript: 4.5.5
 
@@ -12089,6 +12091,11 @@ packages:
     engines: {node: '>=8'}
     dependencies:
       escape-goat: 2.1.1
+    dev: true
+
+  /qrcode-terminal/0.12.0:
+    resolution: {integrity: sha512-EXtzRZmC+YGmGlDFbXKxQiMZNwCLEO6BANKXG4iCtSIM0yqc/pappSx3RIKr4r0uh5JsBckOXeKrB3Iz7mdQpQ==}
+    hasBin: true
     dev: true
 
   /qs/6.10.3:
