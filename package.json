@@ -2,10 +2,9 @@
   "scripts": {
     "clean": "rm -rf build",
     "dev": "remix dev",
-    "dev:build": "remix build",
-    "dev:serve": "remix serve",
     "dev:tsc": "tsc --noEmit --watch",
     "dev:tailwind": "tailwindcss -o ./build/tailwind/development/index.css --watch",
+    "dev:tailwind:no-watch": "tailwindcss -o ./build/tailwind/development/index.css",
     "tsc": "tsc",
     "tailwind": "tailwindcss -o ./build/tailwind/production/index.css",
     "prettier": "prettier -w .",
