@@ -67,17 +67,7 @@ function Navbar() {
       </div>
       <div className="flex-1">Page Title</div>
       <div className="flex-none hidden sm:block">
-        <form action="/setup" method="get">
-          <label className="relative text-base-content flex items-center">
-            <Search size={26} className="absolute text-gray-400 pl-2" />
-            <input
-              type="text"
-              name="id"
-              className="input input-sm input-bordered pl-8"
-              placeholder="Enter Video ID"
-            />
-          </label>
-        </form>
+        <SearchComponent />
       </div>
     </header>
   );
@@ -108,7 +98,10 @@ function SideMenuDrawerWrapper({ children }: React.PropsWithChildren<{}>) {
       <div className="drawer-content">{children}</div>
       <div className="drawer-side">
         <label className="drawer-overlay" htmlFor={DRAWER_TOGGLE_INPUT_ID} />
-        <ul className="menu p-4 w-60 bg-base-100 text-base-content">
+        <ul className="menu p-4 w-64 bg-base-100 text-base-content">
+          <li className="disabled block sm:hidden">
+            <SearchComponent />
+          </li>
           {SIDE_MENU_ENTRIES.map((entry) => (
             <li key={entry.to}>
               <Link to={entry.to}>
@@ -120,5 +113,21 @@ function SideMenuDrawerWrapper({ children }: React.PropsWithChildren<{}>) {
         </ul>
       </div>
     </div>
+  );
+}
+
+function SearchComponent() {
+  return (
+    <form className="w-full" action="/setup" method="get">
+      <label className="w-full relative text-base-content flex items-center">
+        <Search size={26} className="absolute text-gray-400 pl-2" />
+        <input
+          type="text"
+          name="id"
+          className="w-full input input-sm input-bordered pl-8"
+          placeholder="Enter Video ID"
+        />
+      </label>
+    </form>
   );
 }
