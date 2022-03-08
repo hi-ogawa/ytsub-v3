@@ -54,6 +54,18 @@ export default function Component() {
 
 const DRAWER_TOGGLE_INPUT_ID = "--drawer-toggle-input--";
 
+function toggleDrawer(open?: boolean): void {
+  const element = document.querySelector<HTMLInputElement>(
+    "#" + DRAWER_TOGGLE_INPUT_ID
+  );
+  if (!element) return;
+  if (open === undefined) {
+    element.checked = !element.checked;
+  } else {
+    element.checked = open;
+  }
+}
+
 function Navbar() {
   return (
     <header className="w-full h-12 flex-none bg-primary text-primary-content flex items-center px-4 py-2 shadow-lg z-10">
@@ -104,7 +116,7 @@ function SideMenuDrawerWrapper({ children }: React.PropsWithChildren<{}>) {
           </li>
           {SIDE_MENU_ENTRIES.map((entry) => (
             <li key={entry.to}>
-              <Link to={entry.to}>
+              <Link to={entry.to} onClick={() => toggleDrawer(false)}>
                 <entry.icon size={28} className="text-gray-500 pr-2" />
                 {entry.title}
               </Link>
