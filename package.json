@@ -2,7 +2,7 @@
   "scripts": {
     "clean": "rm -rf build",
     "dev": "remix dev",
-    "dev:all": "concurrently -k 'npm:dev' 'npm:tsc:dev' 'npm:tailwind:dev'",
+    "dev:all": "concurrently -k 'npm:dev' 'npm:tsc:dev' 'npm:tailwind:dev' -c 'bgBlue.bold,bgYellow.bold,bgMagenta.bold'",
     "tsc": "tsc",
     "tsc:dev": "tsc --noEmit --watch --preserveWatchOutput",
     "tailwind": "tailwindcss -o \"./build/tailwind/${NODE_ENV:-development}/index.css\"",
@@ -17,7 +17,8 @@
     "test:playwright": "playwright test",
     "test:playwright:debug": "PWDEBUG=1 playwright test",
     "netlify:build": "bash scripts/netlify.sh",
-    "netlify:build:deploy": "pnpm run netlify:build && netlify deploy --prod"
+    "netlify:build:deploy": "pnpm run netlify:build && netlify deploy --prod",
+    "qrcode": "qrcode-terminal http://$(ip -o -4 address list wlan0 | awk '{print $4}' | cut -d / -f 1):3000"
   },
   "dependencies": {
     "@netlify/functions": "^0.10.0",
@@ -54,6 +55,7 @@
     "netlify-cli": "^9.12.3",
     "postcss": "^8.4.7",
     "prettier": "^2.5.1",
+    "qrcode-terminal": "^0.12.0",
     "tailwindcss": "^3.0.23",
     "typescript": "4.5.5"
   },

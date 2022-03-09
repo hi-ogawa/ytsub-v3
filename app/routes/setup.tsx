@@ -16,7 +16,7 @@ export default function Component() {
   const data = useLoaderData();
   return (
     <div className="h-full w-full p-4 flex justify-center">
-      <div className="h-full max-w-xl card border border-base-300">
+      <div className="h-full w-full max-w-xl card border border-base-300">
         <div className="h-full card-body">
           <div className="flex-[1_0_0] overflow-auto">
             <pre className="text-xs">{JSON.stringify(data, null, 2)}</pre>
