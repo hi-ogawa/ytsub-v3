@@ -5,10 +5,11 @@ import {
   Meta,
   Outlet,
   Scripts,
+  useTransition,
 } from "@remix-run/react";
 import { LinksFunction, MetaFunction } from "@remix-run/server-runtime";
 import * as React from "react";
-import { Home, Menu, Search } from "react-feather";
+import { Home, Loader, Menu, Search } from "react-feather";
 
 export const links: LinksFunction = () => {
   return [
@@ -45,10 +46,22 @@ export default function Component() {
             </div>
           </div>
         </SideMenuDrawerWrapper>
+        <GlobalSpinner />
         <Scripts />
         <LiveReload />
       </body>
     </html>
+  );
+}
+
+function GlobalSpinner() {
+  const transition = useTransition();
+  return (
+    transition.state !== "idle" && (
+      <div className="absolute right-3 bottom-3 h-10 w-10 p-1 bg-gray-300/50 rounded">
+        <Loader className="animate-[spin_4s_linear_infinite]" />
+      </div>
+    )
   );
 }
 
@@ -138,6 +151,7 @@ function SearchComponent() {
           name="id"
           className="w-full input input-sm input-bordered pl-8"
           placeholder="Enter Video ID"
+          required
         />
       </label>
     </form>
