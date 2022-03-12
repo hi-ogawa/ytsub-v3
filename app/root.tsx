@@ -1,3 +1,4 @@
+import { Transition } from "@headlessui/react";
 import {
   Link,
   Links,
@@ -57,11 +58,19 @@ export default function Component() {
 function GlobalSpinner() {
   const transition = useTransition();
   return (
-    transition.state !== "idle" && (
-      <div className="absolute right-3 bottom-3 h-10 w-10 p-1 bg-gray-300/50 rounded">
-        <Loader className="animate-[spin_4s_linear_infinite]" />
-      </div>
-    )
+    <div className="absolute right-2 bottom-2 p-1">
+      <Transition
+        show={transition.state !== "idle"}
+        enter="transition-opacity duration-200"
+        enterFrom="opacity-0"
+        enterTo="opacity-100"
+        leave="transition-opacity duration-400"
+        leaveFrom="opacity-100"
+        leaveTo="opacity-0"
+      >
+        <Loader className="text-gray-700 animate-[spin_4s_linear_infinite]" />
+      </Transition>
+    </div>
   );
 }
 
