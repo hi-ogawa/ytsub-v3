@@ -15,11 +15,13 @@ specifiers:
   '@remix-run/react': ^1.2.2
   '@remix-run/serve': ^1.2.2
   '@remix-run/server-runtime': ^1.2.2
+  '@types/lodash': ^4.14.179
   '@types/node': ^17.0.21
   '@types/react': ^17.0.39
   '@types/react-dom': ^17.0.11
   '@typescript-eslint/eslint-plugin': ^5.13.0
   '@typescript-eslint/parser': ^5.13.0
+  '@vitejs/plugin-react': ^1.2.0
   autoprefixer: ^10.4.2
   concurrently: ^7.0.0
   daisyui: ^2.2.2
@@ -28,6 +30,7 @@ specifiers:
   eslint-config-prettier: ^8.5.0
   eslint-plugin-import: ^2.25.4
   jest: ^27.5.1
+  lodash: ^4.17.21
   netlify-cli: ^9.12.3
   postcss: ^8.4.7
   prettier: ^2.5.1
@@ -35,9 +38,11 @@ specifiers:
   react: ^17.0.2
   react-dom: ^17.0.2
   react-feather: ^2.0.9
+  react-router-dom: ^6.2.2
   react-use: ^17.3.2
   tailwindcss: ^3.0.23
   typescript: 4.5.5
+  vite: ^2.8.6
 
 dependencies:
   '@headlessui/react': 1.5.0_react-dom@17.0.2+react@17.0.2
@@ -45,6 +50,7 @@ dependencies:
   '@remix-run/netlify': 1.2.3_1d1ce03cfafdba27bba741ad8440c333
   '@remix-run/react': 1.2.3_react-dom@17.0.2+react@17.0.2
   '@remix-run/server-runtime': 1.2.3_react-dom@17.0.2+react@17.0.2
+  lodash: 4.17.21
   react: 17.0.2
   react-dom: 17.0.2_react@17.0.2
   react-feather: 2.0.9_react@17.0.2
@@ -60,11 +66,13 @@ devDependencies:
   '@remix-run/dev': 1.2.3_react-dom@17.0.2+react@17.0.2
   '@remix-run/node': 1.2.3_react-dom@17.0.2+react@17.0.2
   '@remix-run/serve': 1.2.3_react-dom@17.0.2+react@17.0.2
+  '@types/lodash': 4.14.179
   '@types/node': 17.0.21
   '@types/react': 17.0.39
   '@types/react-dom': 17.0.13
   '@typescript-eslint/eslint-plugin': 5.13.0_1e08a597a4fb107867dcbe827a94038a
   '@typescript-eslint/parser': 5.13.0_eslint@8.10.0+typescript@4.5.5
+  '@vitejs/plugin-react': 1.2.0
   autoprefixer: 10.4.2_postcss@8.4.7
   concurrently: 7.0.0
   daisyui: 2.6.0_4585f94de3eac54c17be782e8b51352c
@@ -77,8 +85,10 @@ devDependencies:
   postcss: 8.4.7
   prettier: 2.5.1
   qrcode-terminal: 0.12.0
+  react-router-dom: 6.2.2_react-dom@17.0.2+react@17.0.2
   tailwindcss: 3.0.23_autoprefixer@10.4.2
   typescript: 4.5.5
+  vite: 2.8.6
 
 packages:
 
@@ -1636,6 +1646,26 @@ packages:
     dependencies:
       '@babel/core': 7.17.5
       '@babel/plugin-transform-react-jsx': 7.17.3_@babel+core@7.17.5
+    dev: true
+
+  /@babel/plugin-transform-react-jsx-self/7.16.7_@babel+core@7.17.5:
+    resolution: {integrity: sha512-oe5VuWs7J9ilH3BCCApGoYjHoSO48vkjX2CbA5bFVhIuO2HKxA3vyF7rleA4o6/4rTDbk6r8hBW7Ul8E+UZrpA==}
+    engines: {node: '>=6.9.0'}
+    peerDependencies:
+      '@babel/core': ^7.0.0-0
+    dependencies:
+      '@babel/core': 7.17.5
+      '@babel/helper-plugin-utils': 7.16.7
+    dev: true
+
+  /@babel/plugin-transform-react-jsx-source/7.16.7_@babel+core@7.17.5:
+    resolution: {integrity: sha512-rONFiQz9vgbsnaMtQlZCjIRwhJvlrPET8TabIUK2hzlXw9B9s2Ieaxte1SCOOXMbWRHodbKixNf3BLcWVOQ8Bw==}
+    engines: {node: '>=6.9.0'}
+    peerDependencies:
+      '@babel/core': ^7.0.0-0
+    dependencies:
+      '@babel/core': 7.17.5
+      '@babel/helper-plugin-utils': 7.16.7
     dev: true
 
   /@babel/plugin-transform-react-jsx/7.16.7_@babel+core@7.16.12:
@@ -3650,6 +3680,10 @@ packages:
       '@types/node': 17.0.21
     dev: true
 
+  /@types/lodash/4.14.179:
+    resolution: {integrity: sha512-uwc1x90yCKqGcIOAT6DwOSuxnrAbpkdPsUOZtwrXb4D/6wZs+6qG7QnIawDuZWg0sWpxl+ltIKCaLoMlna678w==}
+    dev: true
+
   /@types/mdast/3.0.10:
     resolution: {integrity: sha512-W864tg/Osz1+9f4lrGTZpCSO5/z4608eUp19tbozkq2HJK6i3z1kT0H9tlADXuYIb1YYOBByU4Jsqkk75q48qA==}
     dependencies:
@@ -3985,6 +4019,22 @@ packages:
       rollup-pluginutils: 2.8.2
     transitivePeerDependencies:
       - encoding
+      - supports-color
+    dev: true
+
+  /@vitejs/plugin-react/1.2.0:
+    resolution: {integrity: sha512-Rywwt0IXXg6yQ0hv3cMT3mtdDcGIw31mGaa+MMMAT651LhoXLF2yFy4LrakiTs7UKs7RPBo9eNgaS8pgl2A6Qw==}
+    engines: {node: '>=12.0.0'}
+    dependencies:
+      '@babel/core': 7.17.5
+      '@babel/plugin-transform-react-jsx': 7.17.3_@babel+core@7.17.5
+      '@babel/plugin-transform-react-jsx-development': 7.16.7_@babel+core@7.17.5
+      '@babel/plugin-transform-react-jsx-self': 7.16.7_@babel+core@7.17.5
+      '@babel/plugin-transform-react-jsx-source': 7.16.7_@babel+core@7.17.5
+      '@rollup/pluginutils': 4.1.2
+      react-refresh: 0.11.0
+      resolve: 1.22.0
+    transitivePeerDependencies:
       - supports-color
     dev: true
 
@@ -9896,7 +9946,6 @@ packages:
 
   /lodash/4.17.21:
     resolution: {integrity: sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==}
-    dev: true
 
   /log-process-errors/8.0.0:
     resolution: {integrity: sha512-+SNGqNC1gCMJfhwYzAHr/YgNT/ZJc+V2nCkvtPnjrENMeCe+B/jgShBW0lmWoh6uVV2edFAPc/IUOkDdsjTbTg==}
@@ -12280,6 +12329,11 @@ packages:
     resolution: {integrity: sha512-w2GsyukL62IJnlaff/nRegPQR94C/XXamvMWmSHRJ4y7Ts/4ocGRmTHvOs8PSE6pB3dWOrD/nueuU5sduBsQ4w==}
     dev: true
 
+  /react-refresh/0.11.0:
+    resolution: {integrity: sha512-F27qZr8uUqwhWZboondsPx8tnC3Ct3SxZA3V5WyEvujRyyNv0VYPhoBg1gZ8/MV5tubQp76Trw8lTv9hzRBa+A==}
+    engines: {node: '>=0.10.0'}
+    dev: true
+
   /react-router-dom/6.2.2_react-dom@17.0.2+react@17.0.2:
     resolution: {integrity: sha512-AtYEsAST7bDD4dLSQHDnk/qxWLJdad5t1HFa1qJyUrCeGgEuCSw0VB/27ARbF9Fi/W5598ujvJOm3ujUCVzuYQ==}
     peerDependencies:
@@ -14300,6 +14354,30 @@ packages:
       is-buffer: 2.0.5
       unist-util-stringify-position: 3.0.2
       vfile-message: 3.1.2
+    dev: true
+
+  /vite/2.8.6:
+    resolution: {integrity: sha512-e4H0QpludOVKkmOsRyqQ7LTcMUDF3mcgyNU4lmi0B5JUbe0ZxeBBl8VoZ8Y6Rfn9eFKYtdXNPcYK97ZwH+K2ug==}
+    engines: {node: '>=12.2.0'}
+    hasBin: true
+    peerDependencies:
+      less: '*'
+      sass: '*'
+      stylus: '*'
+    peerDependenciesMeta:
+      less:
+        optional: true
+      sass:
+        optional: true
+      stylus:
+        optional: true
+    dependencies:
+      esbuild: 0.14.25
+      postcss: 8.4.7
+      resolve: 1.22.0
+      rollup: 2.69.1
+    optionalDependencies:
+      fsevents: 2.3.2
     dev: true
 
   /w3c-hr-time/1.0.2:
