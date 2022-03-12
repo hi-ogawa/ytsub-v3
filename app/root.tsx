@@ -1,5 +1,5 @@
-import { Transition } from "@headlessui/react";
 import {
+  Form,
   Link,
   Links,
   LiveReload,
@@ -10,7 +10,8 @@ import {
 } from "@remix-run/react";
 import { LinksFunction, MetaFunction } from "@remix-run/server-runtime";
 import * as React from "react";
-import { Home, Loader, Menu, Search } from "react-feather";
+import { Home, Menu, Search } from "react-feather";
+import { TopProgressBar } from "./components/top-progress-bar";
 
 export const links: LinksFunction = () => {
   return [
@@ -39,6 +40,7 @@ export default function Component() {
         <Links />
       </head>
       <body className="h-full">
+        <GlobalProgress />
         <SideMenuDrawerWrapper>
           <div className="h-full flex flex-col h-full">
             <Navbar />
@@ -47,7 +49,6 @@ export default function Component() {
             </div>
           </div>
         </SideMenuDrawerWrapper>
-        <GlobalSpinner />
         <Scripts />
         <LiveReload />
       </body>
@@ -55,23 +56,9 @@ export default function Component() {
   );
 }
 
-function GlobalSpinner() {
+function GlobalProgress() {
   const transition = useTransition();
-  return (
-    <div className="absolute right-2 bottom-2 p-1">
-      <Transition
-        show={transition.state !== "idle"}
-        enter="transition-opacity duration-200"
-        enterFrom="opacity-0"
-        enterTo="opacity-100"
-        leave="transition-opacity duration-400"
-        leaveFrom="opacity-100"
-        leaveTo="opacity-0"
-      >
-        <Loader className="text-gray-700 animate-[spin_4s_linear_infinite]" />
-      </Transition>
-    </div>
-  );
+  return <TopProgressBar loading={transition.state !== "idle"} />;
 }
 
 const DRAWER_TOGGLE_INPUT_ID = "--drawer-toggle-input--";
@@ -152,7 +139,7 @@ function SideMenuDrawerWrapper({ children }: React.PropsWithChildren<{}>) {
 
 function SearchComponent() {
   return (
-    <form className="w-full" action="/setup" method="get">
+    <Form className="w-full" action="/setup" method="get">
       <label className="w-full relative text-base-content flex items-center">
         <Search size={26} className="absolute text-gray-400 pl-2" />
         <input
@@ -163,6 +150,6 @@ function SearchComponent() {
           required
         />
       </label>
-    </form>
+    </Form>
   );
 }
