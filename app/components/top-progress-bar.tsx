@@ -56,7 +56,7 @@ export function TopProgressBar({ loading }: { loading: boolean }) {
 }
 
 function computeProgress(s: number): number {
-  // simple C1 function [0, oo) -> [0, 1)
+  // C1 function [0, oo) -> [0, 1)
 
   // linear: [0, 1] -> [0, 0.5]
   if (s < 1) {
