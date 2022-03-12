@@ -1,14 +1,17 @@
 import {
+  Form,
   Link,
   Links,
   LiveReload,
   Meta,
   Outlet,
   Scripts,
+  useTransition,
 } from "@remix-run/react";
 import { LinksFunction, MetaFunction } from "@remix-run/server-runtime";
 import * as React from "react";
 import { Home, Menu, Search } from "react-feather";
+import { TopProgressBar } from "./components/top-progress-bar";
 
 export const links: LinksFunction = () => {
   return [
@@ -37,6 +40,7 @@ export default function Component() {
         <Links />
       </head>
       <body className="h-full">
+        <GlobalProgress />
         <SideMenuDrawerWrapper>
           <div className="h-full flex flex-col h-full">
             <Navbar />
@@ -50,6 +54,11 @@ export default function Component() {
       </body>
     </html>
   );
+}
+
+function GlobalProgress() {
+  const transition = useTransition();
+  return <TopProgressBar loading={transition.state !== "idle"} />;
 }
 
 const DRAWER_TOGGLE_INPUT_ID = "--drawer-toggle-input--";
@@ -130,7 +139,7 @@ function SideMenuDrawerWrapper({ children }: React.PropsWithChildren<{}>) {
 
 function SearchComponent() {
   return (
-    <form className="w-full" action="/setup" method="get">
+    <Form className="w-full" action="/setup" method="get">
       <label className="w-full relative text-base-content flex items-center">
         <Search size={26} className="absolute text-gray-400 pl-2" />
         <input
@@ -138,8 +147,9 @@ function SearchComponent() {
           name="id"
           className="w-full input input-sm input-bordered pl-8"
           placeholder="Enter Video ID"
+          required
         />
       </label>
-    </form>
+    </Form>
   );
 }
