@@ -38,7 +38,7 @@ export function TopProgressBar({ loading }: { loading: boolean }) {
       leaveTo="opacity-0"
     >
       <div className={`absolute top-0 z-50 w-full`}>
-        <div className="absolute border-b-[3px] w-full border-secondary/[.4]" />
+        <div className="absolute border-b-[3px] w-full border-secondary/[.3]" />
         <div
           className="absolute border-b-[3px] w-full shadow-sm border-secondary"
           style={{
