@@ -19,11 +19,11 @@ interface Item {
   key: any;
   variant: Variant;
   content: React.ReactNode;
+  show: boolean;
 }
 
 export function Extra() {
-  const [items, { insertAt, removeAt }] = useList<Item>([]);
-  // const [items, setItems] = React.useState<Item[]>([]);
+  const [items, { insertAt, removeAt, updateAt }] = useList<Item>([]);
   const [id, setId] = React.useState<number>(1);
 
   function onSubmit(e: SubmitEvent) {
@@ -31,7 +31,7 @@ export function Extra() {
     // @ts-expect-error
     const params = Object.fromEntries(new FormData(e.target).entries());
     const { variant, content } = params;
-    insertAt(0, { key: id, variant, content });
+    insertAt(0, { key: id, variant, content, show: true });
     setId(id + 1);
   }
 
@@ -83,11 +83,15 @@ export function Extra() {
             <Transition
               key={item.key}
               as={React.Fragment}
-              show={true}
+              show={item.show}
               appear={true}
-              enter="transition duration-300"
+              enter="transition-transform duration-300"
               enterFrom="translate-x-[-150%]"
               enterTo="translate-x-0"
+              leave="transition-transform duration-300"
+              leaveFrom="translate-x-[-150%]"
+              leaveTo="translate-x-[-150%]"
+              afterLeave={() => removeAt(i)}
             >
               <div className="w-full bg-error rounded p-2 shadow-lg text-sm flex items-center gap-2">
                 <div className="grow">
@@ -95,7 +99,7 @@ export function Extra() {
                 </div>
                 <button
                   className="flex-none btn btn-xs btn-ghost btn-circle"
-                  onClick={() => removeAt(i)}
+                  onClick={() => updateAt(i, { ...item, show: false })}
                 >
                   <X size={16} />
                 </button>
