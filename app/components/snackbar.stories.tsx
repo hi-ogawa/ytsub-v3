@@ -2,6 +2,7 @@ import { Transition } from "@headlessui/react";
 import * as React from "react";
 import { X } from "react-feather";
 import { useList } from "react-use";
+import { Transition as RTransition } from "react-transition-group";
 import { Snackbar, SnackbarItem, Variant } from "./snackbar";
 
 export function Basic() {
@@ -110,4 +111,127 @@ export function Extra() {
       </div>
     </div>
   );
+}
+
+export function TestCollapseSingle() {
+  const [show, setShow] = React.useState(true);
+  return (
+    <div className="p-4 flex flex-col items-center">
+      <div className="card rounded w-full max-w-sm p-4 px-4 gap-4">
+        <button className="btn" onClick={() => setShow(!show)}>
+          Toggle
+        </button>
+        <Collapse show={show} appear={true}>
+          <div className="flex border p-2 justify-center items-center bg-gray-100">
+            Hello
+          </div>
+        </Collapse>
+      </div>
+    </div>
+  );
+}
+
+const COLLAPSE_MANY_LIST = ["hello", "world"].map((content) => ({
+  content,
+  show: true,
+  appear: false,
+}));
+
+export function TestCollapseMany() {
+  const [items, { insertAt, removeAt, updateAt }] = useList(COLLAPSE_MANY_LIST);
+
+  return (
+    <div className="p-4 flex flex-col items-center">
+      <div className="card rounded w-full max-w-sm p-4 px-4 gap-3">
+        <input
+          className="w-full input input-bordered px-4"
+          type="text"
+          placeholder="Input Text"
+          onKeyUp={(e) => {
+            if (e.key === "Enter" && e.currentTarget.value) {
+              insertAt(0, {
+                content: e.currentTarget.value,
+                show: true,
+                appear: true,
+              });
+            }
+          }}
+        />
+        <div className="flex flex-col">
+          {items.map((item, i) => (
+            <Collapse
+              key={item.content}
+              show={item.show}
+              appear={item.appear}
+              afterLeave={() => removeAt(i)}
+            >
+              <div className="flex border bg-gray-100 p-2 mb-2">
+                <div className="grow">{item.content}</div>
+                <button
+                  className="flex-none btn btn-xs btn-ghost btn-circle"
+                  onClick={() => updateAt(i, { ...item, show: false })}
+                >
+                  <X size={16} />
+                </button>
+              </div>
+            </Collapse>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// cf. https://github.com/mui/material-ui/blob/bbdf5080fc9bd9d979d657a3cb237d88b27035d9/packages/mui-material/src/Collapse/Collapse.js
+function Collapse({
+  children,
+  show = true,
+  appear = true,
+  duration = 1000,
+  afterLeave,
+}: React.PropsWithChildren<{
+  show?: boolean;
+  appear?: boolean;
+  duration?: number;
+  afterLeave?: () => void;
+}>) {
+  const outer = React.useRef<HTMLElement>();
+  const inner = React.useRef<HTMLElement>();
+
+  React.useEffect(() => {
+    if (appear) {
+      collapseSize(outer.current!);
+    } else {
+      copySize(outer.current!, inner.current!);
+    }
+  }, []);
+
+  return (
+    <RTransition
+      in={show}
+      appear={appear}
+      timeout={duration}
+      onEntering={() => copySize(outer.current!, inner.current!)}
+      onExiting={() => collapseSize(outer.current!)}
+      onExited={afterLeave}
+    >
+      <div
+        ref={outer as any}
+        className="w-full overflow-hidden transition-[height]"
+        style={{ transitionDuration: `${duration}ms` }}
+      >
+        <div ref={inner as any} className="w-full flex">
+          <div className="w-full">{children}</div>
+        </div>
+      </div>
+    </RTransition>
+  );
+}
+
+function copySize(outer: HTMLElement, inner: HTMLElement) {
+  outer.style.height = inner.clientHeight + "px";
+}
+
+function collapseSize(outer: HTMLElement) {
+  outer.style.height = "0px";
 }

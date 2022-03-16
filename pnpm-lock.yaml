@@ -19,6 +19,7 @@ specifiers:
   '@types/node': ^17.0.21
   '@types/react': ^17.0.39
   '@types/react-dom': ^17.0.11
+  '@types/react-transition-group': ^4.4.4
   '@typescript-eslint/eslint-plugin': ^5.13.0
   '@typescript-eslint/parser': ^5.13.0
   '@vitejs/plugin-react': ^1.2.0
@@ -39,6 +40,7 @@ specifiers:
   react-dom: ^17.0.2
   react-feather: ^2.0.9
   react-router-dom: ^6.2.2
+  react-transition-group: ^4.4.2
   react-use: ^17.3.2
   tailwindcss: ^3.0.23
   typescript: 4.5.5
@@ -54,6 +56,7 @@ dependencies:
   react: 17.0.2
   react-dom: 17.0.2_react@17.0.2
   react-feather: 2.0.9_react@17.0.2
+  react-transition-group: 4.4.2_react-dom@17.0.2+react@17.0.2
   react-use: 17.3.2_react-dom@17.0.2+react@17.0.2
 
 devDependencies:
@@ -70,6 +73,7 @@ devDependencies:
   '@types/node': 17.0.21
   '@types/react': 17.0.39
   '@types/react-dom': 17.0.13
+  '@types/react-transition-group': 4.4.4
   '@typescript-eslint/eslint-plugin': 5.13.0_1e08a597a4fb107867dcbe827a94038a
   '@typescript-eslint/parser': 5.13.0_eslint@8.10.0+typescript@4.5.5
   '@vitejs/plugin-react': 1.2.0
@@ -3741,6 +3745,12 @@ packages:
       '@types/react': 17.0.39
     dev: true
 
+  /@types/react-transition-group/4.4.4:
+    resolution: {integrity: sha512-7gAPz7anVK5xzbeQW9wFBDg7G++aPLAFY0QaSMOou9rJZpbuI58WAuJrgu+qR92l61grlnCUe7AFX8KGahAgug==}
+    dependencies:
+      '@types/react': 17.0.39
+    dev: true
+
   /@types/react/17.0.39:
     resolution: {integrity: sha512-UVavlfAxDd/AgAacMa60Azl7ygyQNRwC/DsHZmKgNvPmRR5p70AJ5Q9EAmL2NWOJmeV+vVUI4IAP7GZrN8h8Ug==}
     dependencies:
@@ -6194,6 +6204,13 @@ packages:
     dependencies:
       esutils: 2.0.3
     dev: true
+
+  /dom-helpers/5.2.1:
+    resolution: {integrity: sha512-nRCa7CK3VTrM2NmGkIy4cbK7IZlgBE/PYMn55rrXefr5xXDP0LdtfPnblFDoVdcAfslJ7or6iqAUnx0CCGIWQA==}
+    dependencies:
+      '@babel/runtime': 7.17.2
+      csstype: 3.0.11
+    dev: false
 
   /domexception/2.0.1:
     resolution: {integrity: sha512-yxJ2mFy/sibVQlu5qHjOkf9J3K6zgmCxgJ94u2EdvDOV09H+32LtRswEcUsmUWN72pVLOEnTSRaIVVzVQgS0dg==}
@@ -12352,6 +12369,20 @@ packages:
     dependencies:
       history: 5.3.0
       react: 17.0.2
+
+  /react-transition-group/4.4.2_react-dom@17.0.2+react@17.0.2:
+    resolution: {integrity: sha512-/RNYfRAMlZwDSr6z4zNKV6xu53/e2BuaBbGhbyYIXTrmgu/bGHzmqOs7mJSJBHy9Ud+ApHx3QjrkKSp1pxvlFg==}
+    peerDependencies:
+      react: '>=16.6.0'
+      react-dom: '>=16.6.0'
+    dependencies:
+      '@babel/runtime': 7.17.2
+      dom-helpers: 5.2.1
+      loose-envify: 1.4.0
+      prop-types: 15.8.1
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
+    dev: false
 
   /react-universal-interface/0.6.2_react@17.0.2+tslib@2.3.1:
     resolution: {integrity: sha512-dg8yXdcQmvgR13RIlZbTRQOoUrDciFVoSBZILwjE2LFISxZZ8loVJKAkuzswl5js8BHda79bIb2b84ehU8IjXw==}
