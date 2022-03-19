@@ -60,7 +60,6 @@
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-import": "^2.25.4",
     "jest": "^27.5.1",
-    "netlify-cli": "^9.12.3",
     "postcss": "^8.4.7",
     "prettier": "^2.5.1",
     "qrcode-terminal": "^0.12.0",
