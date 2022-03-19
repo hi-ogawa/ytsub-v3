@@ -3,42 +3,23 @@ import { X } from "react-feather";
 import { useList } from "react-use";
 import { Collapse } from "./collapse";
 import { Slide } from "./slide";
-import { Snackbar, SnackbarItem, Variant } from "./snackbar";
+import {
+  SnackbarItemComponent,
+  SnackbarProvider,
+  SnackbardContainerComponent,
+  VARIANTS,
+  useSnackbar,
+} from "./snackbar";
 
-export function SnackbarBasic() {
-  return (
-    <div className="p-2 flex flex-col items-center">
-      <Snackbar />
-      <SnackbarItem content={"hey dude"} />
-    </div>
-  );
-}
-
-const VARIANTS = ["default", "info", "success", "warning", "error"];
-
-interface Item {
-  key: number;
-  variant: Variant;
-  content: React.ReactNode;
-  show: boolean;
-  showCollapse: boolean;
-}
-
-export function SnackbarExtra() {
-  const [items, { insertAt, removeAt, updateAt }] = useList<Item>([]);
+function TestSnackbarContextInner() {
+  const { enqueueSnackbar } = useSnackbar();
 
   function onSubmit(e: SubmitEvent) {
     e.preventDefault();
     // @ts-expect-error
     const params = Object.fromEntries(new FormData(e.target).entries());
     const { variant, content } = params;
-    insertAt(0, {
-      key: Math.random(),
-      variant,
-      content,
-      show: true,
-      showCollapse: true,
-    });
+    enqueueSnackbar(content, { variant });
   }
 
   return (
@@ -73,7 +54,7 @@ export function SnackbarExtra() {
                   name="variant"
                   value={variant}
                   className="radio checked:bg-primary"
-                  defaultChecked={variant === "default"}
+                  defaultChecked={variant === "success"}
                 />
               </label>
             </div>
@@ -83,39 +64,19 @@ export function SnackbarExtra() {
           show snackbar
         </button>
       </form>
-      <div className="absolute bottom-2 left-2 transition">
-        <div className="flex flex-col w-60 relative">
-          {items.map((item, i) => (
-            <Slide
-              key={item.key}
-              show={item.show}
-              appear={true}
-              duration={500}
-              afterLeave={() => updateAt(i, { ...item, showCollapse: false })}
-            >
-              <Collapse
-                show={item.showCollapse}
-                appear={false}
-                duration={300}
-                afterLeave={() => removeAt(i)}
-              >
-                <div className="w-full bg-error rounded p-2 shadow-lg text-sm flex items-center gap-2 mt-2">
-                  <div className="grow">
-                    {item.content} ({String(item.key * 10)[0]})
-                  </div>
-                  <button
-                    className="flex-none btn btn-xs btn-ghost btn-circle"
-                    onClick={() => updateAt(i, { ...item, show: false })}
-                  >
-                    <X size={16} />
-                  </button>
-                </div>
-              </Collapse>
-            </Slide>
-          ))}
-        </div>
-      </div>
     </div>
+  );
+}
+
+export function TestSnackbarContext() {
+  const components = {
+    Container: SnackbardContainerComponent,
+    Item: SnackbarItemComponent,
+  };
+  return (
+    <SnackbarProvider components={components} timeout={5000}>
+      <TestSnackbarContextInner />
+    </SnackbarProvider>
   );
 }
 

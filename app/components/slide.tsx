@@ -18,18 +18,21 @@ export function Slide({
   afterLeave?: () => void;
 }>) {
   const outer = React.useRef<HTMLElement>();
+
+  function toggle(visible: boolean) {
+    outer.current!.style.transform = visible ? transformIn : transformOut;
+    outer.current!.clientWidth; // Force layout on `appear = true`;
+  }
+
   return (
     <Transition
       in={show}
       appear={appear}
       timeout={duration}
-      onEnter={() => (outer.current!.style.transform = transformOut)}
-      onEntering={() => {
-        outer.current!.clientWidth; // Force layout on `appear = true`
-        outer.current!.style.transform = transformIn;
-      }}
-      onExit={() => (outer.current!.style.transform = transformIn)}
-      onExiting={() => (outer.current!.style.transform = transformOut)}
+      onEnter={() => toggle(false)}
+      onEntering={() => toggle(true)}
+      onExit={() => toggle(true)}
+      onExiting={() => toggle(false)}
       onExited={afterLeave}
     >
       <div

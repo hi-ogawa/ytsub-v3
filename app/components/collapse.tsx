@@ -16,38 +16,42 @@ export function Collapse({
 }>) {
   const outer = React.useRef<HTMLElement>();
   const inner = React.useRef<HTMLElement>();
+
+  function toggle(visible: boolean) {
+    if (visible) {
+      outer.current!.style.height = inner.current!.clientHeight + "px";
+    } else {
+      outer.current!.style.height = "0px";
+    }
+    inner.current!.clientHeight; // force layout for collapsing first time when `appear: true`
+  }
+
   return (
     <Transition
       in={show}
       appear={appear}
       timeout={duration}
-      onEnter={() => collapseSize(outer.current!)}
-      onEntering={() => copySize(outer.current!, inner.current!)}
-      onEntered={() => copySize(outer.current!, inner.current!)}
-      onExit={() => {
-        copySize(outer.current!, inner.current!);
-        inner.current!.clientHeight; // force layout for collapsing first time when `appear: true`
-      }}
-      onExiting={() => collapseSize(outer.current!)}
+      onEnter={() => toggle(false)}
+      onEntering={() => toggle(true)}
+      onExit={() => toggle(true)}
+      onExiting={() => toggle(false)}
       onExited={afterLeave}
     >
-      <div
-        ref={outer as any}
-        className="w-full overflow-hidden transition-[height]"
-        style={{ transitionDuration: `${duration}ms` }}
-      >
-        <div ref={inner as any} className="w-full flex">
-          <div className="w-full">{children}</div>
+      {(state) => (
+        <div
+          ref={outer as any}
+          // "overflow-hidden" needs to be disabled when `entered` for slide/collapse animation to support shadow
+          className={`
+            w-full transition-[height]
+            ${state !== "entered" && "overflow-hidden"}
+          `}
+          style={{ transitionDuration: `${duration}ms` }}
+        >
+          <div ref={inner as any} className="w-full flex">
+            <div className="w-full">{children}</div>
+          </div>
         </div>
-      </div>
+      )}
     </Transition>
   );
-}
-
-function copySize(outer: HTMLElement, inner: HTMLElement) {
-  outer.style.height = inner.clientHeight + "px";
-}
-
-function collapseSize(outer: HTMLElement) {
-  outer.style.height = "0px";
 }
