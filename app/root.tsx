@@ -10,7 +10,7 @@ import {
 } from "@remix-run/react";
 import { LinksFunction, MetaFunction } from "@remix-run/server-runtime";
 import * as React from "react";
-import { Home, Menu, Search } from "react-feather";
+import { Code, Home, Menu, Search } from "react-feather";
 import { TopProgressBar } from "./components/top-progress-bar";
 
 export const links: LinksFunction = () => {
@@ -131,6 +131,14 @@ function SideMenuDrawerWrapper({ children }: React.PropsWithChildren<{}>) {
               </Link>
             </li>
           ))}
+          {process.env.NODE_ENV === "production" && (
+            <li>
+              <a href={"/ui-dev"}>
+                <Code size={28} className="text-gray-500 pr-2" />
+                UI DEV
+              </a>
+            </li>
+          )}
         </ul>
       </div>
     </div>
