@@ -49,7 +49,14 @@ function App() {
                 ))}
               </Route>
             ))}
-            <Route path="*" element={<div>STORY NOT SELECTED</div>} />
+            <Route
+              path="*"
+              element={
+                <div className="w-full h-full flex justify-center items-center text-3xl text-gray-500">
+                  STORY NOT SELECTED
+                </div>
+              }
+            />
           </Routes>
         </div>
       </div>
