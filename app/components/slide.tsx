@@ -6,15 +6,15 @@ export function Slide({
   show,
   appear = false,
   duration = 1000,
-  outside = "translateX(-150%)",
-  inside = "translateX(0)",
+  transformIn = "translateX(0)",
+  transformOut = "translateX(-150%)",
   afterLeave,
 }: React.PropsWithChildren<{
   show: boolean;
   appear?: boolean;
   duration?: number;
-  outside?: string;
-  inside?: string;
+  transformIn?: string;
+  transformOut?: string;
   afterLeave?: () => void;
 }>) {
   const outer = React.useRef<HTMLElement>();
@@ -23,13 +23,13 @@ export function Slide({
       in={show}
       appear={appear}
       timeout={duration}
-      onEnter={() => (outer.current!.style.transform = outside)}
+      onEnter={() => (outer.current!.style.transform = transformOut)}
       onEntering={() => {
         outer.current!.clientWidth; // Force layout on `appear = true`
-        outer.current!.style.transform = inside;
+        outer.current!.style.transform = transformIn;
       }}
-      onExit={() => (outer.current!.style.transform = inside)}
-      onExiting={() => (outer.current!.style.transform = outside)}
+      onExit={() => (outer.current!.style.transform = transformIn)}
+      onExiting={() => (outer.current!.style.transform = transformOut)}
       onExited={afterLeave}
     >
       <div
