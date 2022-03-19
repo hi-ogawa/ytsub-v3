@@ -1,11 +1,11 @@
-import { Transition } from "@headlessui/react";
 import * as React from "react";
 import { X } from "react-feather";
 import { useList } from "react-use";
 import { Collapse } from "./collapse";
+import { Slide } from "./slide";
 import { Snackbar, SnackbarItem, Variant } from "./snackbar";
 
-export function Basic() {
+export function SnackbarBasic() {
   return (
     <div className="p-2 flex flex-col items-center">
       <Snackbar />
@@ -17,23 +17,28 @@ export function Basic() {
 const VARIANTS = ["default", "info", "success", "warning", "error"];
 
 interface Item {
-  key: any;
+  key: number;
   variant: Variant;
   content: React.ReactNode;
   show: boolean;
+  showCollapse: boolean;
 }
 
-export function Extra() {
+export function SnackbarExtra() {
   const [items, { insertAt, removeAt, updateAt }] = useList<Item>([]);
-  const [id, setId] = React.useState<number>(1);
 
   function onSubmit(e: SubmitEvent) {
     e.preventDefault();
     // @ts-expect-error
     const params = Object.fromEntries(new FormData(e.target).entries());
     const { variant, content } = params;
-    insertAt(0, { key: id, variant, content, show: true });
-    setId(id + 1);
+    insertAt(0, {
+      key: Math.random(),
+      variant,
+      content,
+      show: true,
+      showCollapse: true,
+    });
   }
 
   return (
@@ -79,33 +84,34 @@ export function Extra() {
         </button>
       </form>
       <div className="absolute bottom-2 left-2 transition">
-        <div className="flex flex-col gap-2 w-60">
+        <div className="flex flex-col w-60 relative">
           {items.map((item, i) => (
-            <Transition
+            <Collapse
               key={item.key}
-              as={React.Fragment}
-              show={item.show}
-              appear={true}
-              enter="transition-transform duration-300"
-              enterFrom="translate-x-[-150%]"
-              enterTo="translate-x-0"
-              leave="transition-transform duration-300"
-              leaveFrom="translate-x-[-150%]"
-              leaveTo="translate-x-[-150%]"
+              show={item.showCollapse}
+              appear={false}
+              duration={300}
               afterLeave={() => removeAt(i)}
             >
-              <div className="w-full bg-error rounded p-2 shadow-lg text-sm flex items-center gap-2">
-                <div className="grow">
-                  {item.content} ({item.key})
+              <Slide
+                show={item.show}
+                appear={true}
+                duration={500}
+                afterLeave={() => updateAt(i, { ...item, showCollapse: false })}
+              >
+                <div className="w-full bg-error rounded p-2 shadow-lg text-sm flex items-center gap-2 mt-2">
+                  <div className="grow">
+                    {item.content} ({String(item.key * 10)[0]})
+                  </div>
+                  <button
+                    className="flex-none btn btn-xs btn-ghost btn-circle"
+                    onClick={() => updateAt(i, { ...item, show: false })}
+                  >
+                    <X size={16} />
+                  </button>
                 </div>
-                <button
-                  className="flex-none btn btn-xs btn-ghost btn-circle"
-                  onClick={() => updateAt(i, { ...item, show: false })}
-                >
-                  <X size={16} />
-                </button>
-              </div>
-            </Transition>
+              </Slide>
+            </Collapse>
           ))}
         </div>
       </div>
@@ -179,6 +185,24 @@ export function TestCollapseMany() {
             </Collapse>
           ))}
         </div>
+      </div>
+    </div>
+  );
+}
+
+export function TestSlide() {
+  const [show, setShow] = React.useState(true);
+  return (
+    <div className="p-4 flex flex-col items-center">
+      <div className="card rounded w-full max-w-sm p-4 px-4 gap-4">
+        <button className="btn" onClick={() => setShow(!show)}>
+          Toggle
+        </button>
+        <Slide show={show} appear={true}>
+          <div className="w-full flex border p-2 justify-center items-center bg-gray-100">
+            Hello
+          </div>
+        </Slide>
       </div>
     </div>
   );

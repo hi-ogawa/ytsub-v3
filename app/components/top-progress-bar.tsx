@@ -3,7 +3,7 @@ import * as React from "react";
 import { usePrevious } from "react-use";
 import { useRafTime } from "../utils/hooks";
 
-const FINISH_DURATION = 150;
+const FINISH_DURATION = 500;
 
 export function TopProgressBar({ loading }: { loading: boolean }) {
   const prev = usePrevious(loading);

@@ -4,33 +4,30 @@ import { Transition } from "react-transition-group";
 // based on https://github.com/mui/material-ui/blob/bbdf5080fc9bd9d979d657a3cb237d88b27035d9/packages/mui-material/src/Collapse/Collapse.js
 export function Collapse({
   children,
-  show = true,
-  appear = true,
+  show,
+  appear = false,
   duration = 1000,
   afterLeave,
 }: React.PropsWithChildren<{
-  show?: boolean;
+  show: boolean;
   appear?: boolean;
   duration?: number;
   afterLeave?: () => void;
 }>) {
   const outer = React.useRef<HTMLElement>();
   const inner = React.useRef<HTMLElement>();
-
-  React.useEffect(() => {
-    if (appear) {
-      collapseSize(outer.current!);
-    } else {
-      copySize(outer.current!, inner.current!);
-    }
-  }, []);
-
   return (
     <Transition
       in={show}
       appear={appear}
       timeout={duration}
+      onEnter={() => collapseSize(outer.current!)}
       onEntering={() => copySize(outer.current!, inner.current!)}
+      onEntered={() => copySize(outer.current!, inner.current!)}
+      onExit={() => {
+        copySize(outer.current!, inner.current!);
+        inner.current!.clientHeight; // force layout for collapsing first time when `appear: true`
+      }}
       onExiting={() => collapseSize(outer.current!)}
       onExited={afterLeave}
     >
