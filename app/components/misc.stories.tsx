@@ -2,7 +2,7 @@ import { Transition } from "@headlessui/react";
 import * as React from "react";
 import { X } from "react-feather";
 import { useList } from "react-use";
-import { Transition as RTransition } from "react-transition-group";
+import { Collapse } from "./collapse";
 import { Snackbar, SnackbarItem, Variant } from "./snackbar";
 
 export function Basic() {
@@ -132,6 +132,7 @@ export function TestCollapseSingle() {
 }
 
 const COLLAPSE_MANY_LIST = ["hello", "world"].map((content) => ({
+  key: content,
   content,
   show: true,
   appear: false,
@@ -150,6 +151,7 @@ export function TestCollapseMany() {
           onKeyUp={(e) => {
             if (e.key === "Enter" && e.currentTarget.value) {
               insertAt(0, {
+                key: String(Math.random()),
                 content: e.currentTarget.value,
                 show: true,
                 appear: true,
@@ -160,7 +162,7 @@ export function TestCollapseMany() {
         <div className="flex flex-col">
           {items.map((item, i) => (
             <Collapse
-              key={item.content}
+              key={item.key}
               show={item.show}
               appear={item.appear}
               afterLeave={() => removeAt(i)}
@@ -180,58 +182,4 @@ export function TestCollapseMany() {
       </div>
     </div>
   );
-}
-
-// cf. https://github.com/mui/material-ui/blob/bbdf5080fc9bd9d979d657a3cb237d88b27035d9/packages/mui-material/src/Collapse/Collapse.js
-function Collapse({
-  children,
-  show = true,
-  appear = true,
-  duration = 1000,
-  afterLeave,
-}: React.PropsWithChildren<{
-  show?: boolean;
-  appear?: boolean;
-  duration?: number;
-  afterLeave?: () => void;
-}>) {
-  const outer = React.useRef<HTMLElement>();
-  const inner = React.useRef<HTMLElement>();
-
-  React.useEffect(() => {
-    if (appear) {
-      collapseSize(outer.current!);
-    } else {
-      copySize(outer.current!, inner.current!);
-    }
-  }, []);
-
-  return (
-    <RTransition
-      in={show}
-      appear={appear}
-      timeout={duration}
-      onEntering={() => copySize(outer.current!, inner.current!)}
-      onExiting={() => collapseSize(outer.current!)}
-      onExited={afterLeave}
-    >
-      <div
-        ref={outer as any}
-        className="w-full overflow-hidden transition-[height]"
-        style={{ transitionDuration: `${duration}ms` }}
-      >
-        <div ref={inner as any} className="w-full flex">
-          <div className="w-full">{children}</div>
-        </div>
-      </div>
-    </RTransition>
-  );
-}
-
-function copySize(outer: HTMLElement, inner: HTMLElement) {
-  outer.style.height = inner.clientHeight + "px";
-}
-
-function collapseSize(outer: HTMLElement) {
-  outer.style.height = "0px";
 }
