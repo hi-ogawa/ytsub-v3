@@ -14,7 +14,7 @@ pnpm run dev:all
 pnpm run lint
 
 # deploy
-netlify --version # netlify-cli/9.13.3 linux-x64 node-v16.13.2 (global install)
+netlify --version # netlify-cli/9.13.3 linux-x64 node-v16.13.2 (installed via `pnpm i -g netlify-cli`)
 netlify sites:create --name ytsub-v3-hiro18181
 netlify link --name ytsub-v3-hiro18181
 pnpm run netlify:build:deploy

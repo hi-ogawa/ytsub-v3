@@ -15,6 +15,11 @@ type StoryFiles = Record<string, Record<string, React.ComponentClass>>;
 const GLOB_IMPORT: any = import.meta.globEager("./**/*.stories.tsx");
 const STORY_FILES: StoryFiles = mapKeys(GLOB_IMPORT, (_, key) => key.slice(2));
 
+function withBase(filePath: string): string {
+  // @ts-expect-error https://vitejs.dev/guide/build.html#public-base-path
+  return import.meta.env.BASE_URL + filePath;
+}
+
 function App() {
   return (
     <div className="h-full flex p-2 gap-2">
@@ -25,7 +30,7 @@ function App() {
               <li className="menu-title text-sm text-gray-400">{file}</li>
               {Object.keys(stories).map((story) => (
                 <li key={story}>
-                  <NavLink to={file + "/" + story}>
+                  <NavLink to={withBase(file) + "/" + story}>
                     <span>{story}</span>
                   </NavLink>
                 </li>
@@ -38,7 +43,7 @@ function App() {
         <div className="w-full h-full relative overflow-hidden">
           <Routes>
             {Object.entries(STORY_FILES).map(([file, stories]) => (
-              <Route key={file} path={file} element={<Outlet />}>
+              <Route key={file} path={withBase(file)} element={<Outlet />}>
                 {Object.entries(stories).map(([story, Component]) => (
                   <Route key={story} path={story} element={<Component />} />
                 ))}

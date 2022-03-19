@@ -11,6 +11,10 @@ NODE_ENV=production pnpm run tailwind
 # default "node-cjs" build with custom server main
 NODE_ENV=production BUILD_NETLIFY=1 pnpx remix build
 
+# build "storybook" static app
+pnpx vite build --outDir build/remix/production/public/storybook --base storybook
+rm -rf build/remix/production/public/storybook/build # somehow remix's dev build directory ends up here
+
 # run esbuild again manually to bundle server app
 pnpx esbuild build/remix/production/server/index.js --bundle --platform=node --outfile=build/remix/production/server-bundle/index.js
 
