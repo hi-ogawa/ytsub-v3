@@ -86,18 +86,18 @@ export function SnackbarExtra() {
       <div className="absolute bottom-2 left-2 transition">
         <div className="flex flex-col w-60 relative">
           {items.map((item, i) => (
-            <Collapse
+            <Slide
               key={item.key}
-              show={item.showCollapse}
-              appear={false}
-              duration={300}
-              afterLeave={() => removeAt(i)}
+              show={item.show}
+              appear={true}
+              duration={500}
+              afterLeave={() => updateAt(i, { ...item, showCollapse: false })}
             >
-              <Slide
-                show={item.show}
-                appear={true}
-                duration={500}
-                afterLeave={() => updateAt(i, { ...item, showCollapse: false })}
+              <Collapse
+                show={item.showCollapse}
+                appear={false}
+                duration={300}
+                afterLeave={() => removeAt(i)}
               >
                 <div className="w-full bg-error rounded p-2 shadow-lg text-sm flex items-center gap-2 mt-2">
                   <div className="grow">
@@ -110,8 +110,8 @@ export function SnackbarExtra() {
                     <X size={16} />
                   </button>
                 </div>
-              </Slide>
-            </Collapse>
+              </Collapse>
+            </Slide>
           ))}
         </div>
       </div>
