@@ -8,21 +8,21 @@ based on
 ```sh
 # development
 pnpm install
-pnpm run dev:all
+npm run dev:all
 
 # lint
-pnpm run lint
+npm run lint
 
 # deploy
 netlify --version # netlify-cli/9.13.3 linux-x64 node-v16.13.2 (installed via `pnpm i -g netlify-cli`)
 netlify sites:create --name ytsub-v3-hiro18181
 netlify link --name ytsub-v3-hiro18181
-pnpm run netlify:build:deploy
+npm run netlify:build:deploy
 
 # testing (jest)
-pnpm run test
+npm run test
 
 # testing (playwright)
-pnpx playwright install
-pnpm run test:playwright
+npx playwright install
+npm run test:playwright
 ```
