@@ -19,6 +19,15 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 export default function Component() {
   const videoMetadata: VideoMetadata = useLoaderData();
+
+  const ref = React.useRef<HTMLFormElement>();
+  const [isValid, setIsValid] = React.useState(false);
+  React.useEffect(updateIsValid, []);
+
+  function updateIsValid() {
+    setIsValid(!!ref.current?.checkValidity());
+  }
+
   return (
     <div className="w-full p-4 flex justify-center">
       <div className="h-full w-full max-w-lg rounded-lg border border-base-300">
@@ -29,6 +38,8 @@ export default function Component() {
             action="/watch"
             className="w-full flex flex-col gap-1"
             data-test="setup-form"
+            ref={ref as any}
+            onChange={updateIsValid}
           >
             <div className="form-control">
               <label className="label">
@@ -88,7 +99,7 @@ export default function Component() {
                 propertyName="language2"
               />
             </div>
-            <button type="submit" className="btn mt-3">
+            <button type="submit" className="btn mt-3" disabled={!isValid}>
               Play
             </button>
           </Form>
