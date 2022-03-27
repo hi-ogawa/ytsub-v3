@@ -28,6 +28,7 @@ export default function Component() {
             method="get"
             action="/watch"
             className="w-full flex flex-col gap-1"
+            data-test="setup-form"
           >
             <div className="form-control">
               <label className="label">

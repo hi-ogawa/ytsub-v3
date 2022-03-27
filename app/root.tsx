@@ -180,6 +180,7 @@ function SearchComponent() {
       action="/setup"
       method="get"
       onSubmit={() => toggleDrawer(false)}
+      data-test="search-form"
     >
       <label className="w-full relative text-base-content flex items-center">
         <Search size={26} className="absolute text-gray-400 pl-2" />
