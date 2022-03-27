@@ -11,6 +11,7 @@ import {
 import { LinksFunction, MetaFunction } from "@remix-run/server-runtime";
 import * as React from "react";
 import { Code, Home, Menu, Search } from "react-feather";
+import { QueryClient, QueryClientProvider } from "react-query";
 import { TopProgressBar } from "./components/top-progress-bar";
 
 export const links: LinksFunction = () => {
@@ -40,21 +41,41 @@ export default function Component() {
         <Links />
       </head>
       <body className="h-full">
-        <GlobalProgress />
-        <SideMenuDrawerWrapper>
-          <div className="h-full flex flex-col h-full">
-            <Navbar />
-            <div className="grow flex justify-center items-center">
-              <Outlet />
+        <RootProviders>
+          <GlobalProgress />
+          <SideMenuDrawerWrapper>
+            <div className="h-full flex flex-col h-full">
+              <Navbar />
+              <div className="grow flex justify-center items-center">
+                <Outlet />
+              </div>
             </div>
-          </div>
-        </SideMenuDrawerWrapper>
+          </SideMenuDrawerWrapper>
+        </RootProviders>
         <Scripts />
         <LiveReload />
       </body>
     </html>
   );
 }
+
+function RootProviders({ children }: React.PropsWithChildren<{}>) {
+  return (
+    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+  );
+}
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: false,
+      staleTime: 5 * 60 * 1000,
+      cacheTime: 5 * 60 * 1000,
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+    },
+  },
+});
 
 function GlobalProgress() {
   const transition = useTransition();
@@ -131,14 +152,19 @@ function SideMenuDrawerWrapper({ children }: React.PropsWithChildren<{}>) {
               </Link>
             </li>
           ))}
-          {process.env.NODE_ENV === "production" && (
-            <li>
-              <a href={"/ui-dev"}>
-                <Code size={28} className="text-gray-500 pr-2" />
-                UI DEV
-              </a>
-            </li>
-          )}
+          <li>
+            <a
+              href={
+                process.env.NODE_ENV === "production"
+                  ? "/ui-dev"
+                  : "http://localhost:3030"
+              }
+              target="_blank"
+            >
+              <Code size={28} className="text-gray-500 pr-2" />
+              UI DEV
+            </a>
+          </li>
         </ul>
       </div>
     </div>
@@ -157,7 +183,7 @@ function SearchComponent() {
         <Search size={26} className="absolute text-gray-400 pl-2" />
         <input
           type="text"
-          name="id"
+          name="videoId"
           className="w-full input input-sm input-bordered pl-8"
           placeholder="Enter Video ID"
           required

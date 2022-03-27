@@ -9,8 +9,18 @@ export default function Component() {
           <div className="flex-[1_0_0] overflow-auto">
             <ul className="menu">
               <li>
-                <Link className="rounded" to="/setup?id=MoH8Fk2K9bc">
+                <Link className="rounded" to="/setup?videoId=_2FF6O6Z8Hc">
+                  _2FF6O6Z8Hc
+                </Link>
+              </li>
+              <li>
+                <Link className="rounded" to="/setup?videoId=MoH8Fk2K9bc">
                   MoH8Fk2K9bc
+                </Link>
+              </li>
+              <li>
+                <Link className="rounded" to="/setup?videoId=EnPYXckiUVg">
+                  EnPYXckiUVg
                 </Link>
               </li>
             </ul>
