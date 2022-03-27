@@ -3,6 +3,7 @@ import { LoaderFunction, json } from "@remix-run/server-runtime";
 import { Form, useCatch, useLoaderData } from "@remix-run/react";
 import { fetchVideoMetadata, toCaptionConfigOptions } from "../utils/youtube";
 import { CaptionConfig, VideoMetadata } from "../utils/types";
+import { useIsFormValid } from "../utils/hooks";
 
 // TODO: redirect + snackbar on error
 export const loader: LoaderFunction = async ({ request }) => {
@@ -20,13 +21,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 export default function Component() {
   const videoMetadata: VideoMetadata = useLoaderData();
 
-  const ref = React.useRef<HTMLFormElement>();
-  const [isValid, setIsValid] = React.useState(false);
-  React.useEffect(updateIsValid, []);
-
-  function updateIsValid() {
-    setIsValid(!!ref.current?.checkValidity());
-  }
+  const [isValid, formProps] = useIsFormValid();
 
   return (
     <div className="w-full p-4 flex justify-center">
@@ -38,8 +33,7 @@ export default function Component() {
             action="/watch"
             className="w-full flex flex-col gap-1"
             data-test="setup-form"
-            ref={ref as any}
-            onChange={updateIsValid}
+            {...formProps}
           >
             <div className="form-control">
               <label className="label">

@@ -10,7 +10,7 @@ import {
 } from "@remix-run/react";
 import { LinksFunction, MetaFunction } from "@remix-run/server-runtime";
 import * as React from "react";
-import { Code, Home, Menu, Search } from "react-feather";
+import { Code, Home, LogIn, Menu, Search, User } from "react-feather";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { TopProgressBar } from "./components/top-progress-bar";
 
@@ -118,6 +118,24 @@ function Navbar() {
       <div className="flex-1">Page Title</div>
       <div className="flex-none hidden sm:block">
         <SearchComponent />
+      </div>
+      <div className="flex-none pl-2">
+        <div className="dropdown dropdown-end z-20">
+          <label tabIndex={0} className="btn btn-sm btn-ghost">
+            <User />
+          </label>
+          <ul
+            tabIndex={0}
+            className="dropdown-content menu rounded p-3 shadow w-48 bg-base-100 text-base-content"
+          >
+            <li>
+              <Link to={"/users/signin"}>
+                <LogIn />
+                Sign in
+              </Link>
+            </li>
+          </ul>
+        </div>
       </div>
     </header>
   );
