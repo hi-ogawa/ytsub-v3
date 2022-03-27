@@ -44,10 +44,12 @@ export default function Component() {
         <RootProviders>
           <GlobalProgress />
           <SideMenuDrawerWrapper>
-            <div className="h-full flex flex-col h-full">
+            <div className="h-full flex flex-col">
               <Navbar />
-              <div className="grow flex justify-center items-center">
-                <Outlet />
+              <div className="flex-[1_0_0] flex flex-col">
+                <div className="w-full flex-[1_0_0] h-full overflow-y-auto">
+                  <Outlet />
+                </div>
               </div>
             </div>
           </SideMenuDrawerWrapper>

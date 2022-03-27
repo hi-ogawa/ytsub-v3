@@ -20,7 +20,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 export default function Component() {
   const videoMetadata: VideoMetadata = useLoaderData();
   return (
-    <div className="h-full w-full p-4 flex justify-center">
+    <div className="w-full p-4 flex justify-center">
       <div className="h-full w-full max-w-lg rounded-lg border border-base-300">
         <div className="h-full p-6 flex flex-col">
           <div className="text-xl font-bold mb-1">Select Languages</div>
