@@ -1,5 +1,5 @@
 import { memoize, sortBy } from "lodash";
-import { window as serverWindow } from "./window.server";
+import { XMLParser } from "fast-xml-parser";
 import { FILTERED_LANGUAGE_CODES, languageCodeToName } from "./language";
 import {
   CaptionConfig,
@@ -97,13 +97,34 @@ export function captionConfigToUrl(
 export function ttmlToEntries(
   ttml: string
 ): { begin: number; end: number; text: string }[] {
-  const doc = new serverWindow.DOMParser().parseFromString(ttml, "text/xml");
-  // Remove "<br/>" elements
-  doc.querySelectorAll("br").forEach((br) => br.replaceWith(" "));
-  return Array.from(doc.querySelectorAll("p")).map((p) => ({
-    begin: parseTimestamp(p.getAttribute("begin")!),
-    end: parseTimestamp(p.getAttribute("end")!),
-    text: p.textContent!,
+  const parser = new XMLParser({
+    ignoreAttributes: false,
+    alwaysCreateTextNode: true,
+  });
+
+  // Replace "<br/>" elements with " "
+  const sanitized = ttml.replace("<br />", " ");
+
+  // TODO: Validate
+  interface Parsed {
+    tt: {
+      body: {
+        div: {
+          p: {
+            "@_begin": string;
+            "@_end": string;
+            "#text": string;
+          }[];
+        };
+      };
+    };
+  }
+  const parsed: Parsed = parser.parse(sanitized);
+
+  return parsed.tt.body.div.p.map((p) => ({
+    begin: parseTimestamp(p["@_begin"]),
+    end: parseTimestamp(p["@_end"]),
+    text: p["#text"],
   }));
 }
 

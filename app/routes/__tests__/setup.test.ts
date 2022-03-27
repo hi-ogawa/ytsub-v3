@@ -9,7 +9,7 @@ const DUMMY_URL = "http://localhost:3000";
 describe("setup.loader", () => {
   it("basic", async () => {
     const res = await loader({
-      request: new Request(DUMMY_URL + "/?id=MoH8Fk2K9bc"),
+      request: new Request(DUMMY_URL + "/?videoId=MoH8Fk2K9bc"),
       context: {},
       params: {},
     });
