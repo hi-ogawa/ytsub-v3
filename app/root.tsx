@@ -14,13 +14,18 @@ import { Code, Home, Menu, Search } from "react-feather";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { TopProgressBar } from "./components/top-progress-bar";
 
+const ASSETS = {
+  "index.css": require("../build/tailwind/" +
+    process.env.NODE_ENV +
+    "/index.css"),
+  "icon-32.png": require("./assets/icon-32.png"),
+};
+
 export const links: LinksFunction = () => {
   return [
-    {
-      rel: "stylesheet",
-      href: require("../build/tailwind/" + process.env.NODE_ENV + "/index.css"),
-    },
-    { rel: "icon", href: require("./assets/icon-32.png"), sizes: "32x32" },
+    { rel: "stylesheet", href: ASSETS["index.css"] },
+    { rel: "icon", href: ASSETS["icon-32.png"], sizes: "32x32" },
+    { rel: "manifest", href: "/_copy/manifest.json" },
   ];
 };
 
@@ -67,6 +72,7 @@ function RootProviders({ children }: React.PropsWithChildren<{}>) {
   );
 }
 
+// Should be no-op on SSR
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {

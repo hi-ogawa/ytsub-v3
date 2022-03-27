@@ -8,6 +8,9 @@ rm -rf build/tailwind/production
 # tailwind
 NODE_ENV=production pnpm run tailwind
 
+# copy assets not managed by remix
+NODE_ENV=production bash scripts/copy-assets.sh
+
 # default "node-cjs" build with custom server main
 NODE_ENV=production BUILD_NETLIFY=1 pnpx remix build
 
