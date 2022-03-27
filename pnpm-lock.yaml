@@ -48,6 +48,7 @@ specifiers:
   tailwindcss: ^3.0.23
   typescript: 4.5.5
   vite: ^2.8.6
+  zod: ^3.14.3
 
 dependencies:
   '@headlessui/react': 1.5.0_react-dom@17.0.2+react@17.0.2
@@ -64,6 +65,7 @@ dependencies:
   react-query: 3.34.18_react-dom@17.0.2+react@17.0.2
   react-transition-group: 4.4.2_react-dom@17.0.2+react@17.0.2
   react-use: 17.3.2_react-dom@17.0.2+react@17.0.2
+  zod: 3.14.3
 
 devDependencies:
   '@babel/core': 7.17.5
@@ -8827,6 +8829,10 @@ packages:
     dependencies:
       buffer-crc32: 0.2.13
     dev: true
+
+  /zod/3.14.3:
+    resolution: {integrity: sha512-OzwRCSXB1+/8F6w6HkYHdbuWysYWnAF4fkRgKDcSFc54CE+Sv0rHXKfeNUReGCrHukm1LNpi6AYeXotznhYJbQ==}
+    dev: false
 
   /zwitch/2.0.2:
     resolution: {integrity: sha512-JZxotl7SxAJH0j7dN4pxsTV6ZLXoLdGME+PsjkL/DaBrVryK9kTGq06GfKrwcSOqypP+fdXGoCHE36b99fWVoA==}

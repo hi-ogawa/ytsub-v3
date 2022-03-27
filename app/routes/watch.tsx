@@ -1,8 +1,8 @@
 import * as React from "react";
-import { LoaderFunction } from "@remix-run/server-runtime";
-import { useLoaderData } from "@remix-run/react";
-import * as qs from "qs";
+import { LoaderFunction, json } from "@remix-run/server-runtime";
+import { useCatch, useLoaderData } from "@remix-run/react";
 import { Play, Repeat } from "react-feather";
+import { z } from "zod";
 import {
   YoutubeIframeApi,
   YoutubePlayer,
@@ -14,6 +14,19 @@ import {
 } from "../utils/youtube";
 import { CaptionEntry, VideoMetadata } from "../utils/types";
 import { useYoutubeIframeApi } from "../utils/hooks";
+import { fromRequestQuery } from "../utils/url-data";
+
+const schema = z.object({
+  videoId: z.string().length(11),
+  language1: z.object({
+    id: z.string(),
+    translation: z.string().optional(),
+  }),
+  language2: z.object({
+    id: z.string(),
+    translation: z.string().optional(),
+  }),
+});
 
 interface LoaderData {
   videoMetadata: VideoMetadata;
@@ -21,20 +34,27 @@ interface LoaderData {
 }
 
 export const loader: LoaderFunction = async ({ request }) => {
-  const params = qs.parse(new URL(request.url).search, {
-    ignoreQueryPrefix: true,
-    allowDots: true,
-  }) as any;
-  const videoMetadata = await fetchVideoMetadata(params.videoId);
-  const url1 = captionConfigToUrl(params.language1, videoMetadata)!;
-  const url2 = captionConfigToUrl(params.language2, videoMetadata)!;
-  const [ttml1, ttml2] = await Promise.all([
-    fetch(url1).then((res) => res.text()),
-    fetch(url2).then((res) => res.text()),
-  ]);
-  const captionEntries = ttmlsToCaptionEntries(ttml1, ttml2);
-  return { videoMetadata, captionEntries };
+  const parsed = schema.safeParse(fromRequestQuery(request));
+  if (parsed.success) {
+    const videoMetadata = await fetchVideoMetadata(parsed.data.videoId);
+    const url1 = captionConfigToUrl(parsed.data.language1, videoMetadata);
+    const url2 = captionConfigToUrl(parsed.data.language2, videoMetadata);
+    if (url1 && url2) {
+      const [ttml1, ttml2] = await Promise.all([
+        fetch(url1).then((res) => res.text()),
+        fetch(url2).then((res) => res.text()),
+      ]);
+      const captionEntries = ttmlsToCaptionEntries(ttml1, ttml2);
+      return { videoMetadata, captionEntries };
+    }
+  }
+  throw json({ message: "Invalid parameters" });
 };
+
+export function CatchBoundary() {
+  const { data } = useCatch();
+  return <div>ERROR: {data.message}</div>;
+}
 
 export default function DeafultComponent() {
   const data: LoaderData = useLoaderData();

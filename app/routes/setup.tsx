@@ -1,21 +1,25 @@
 import * as React from "react";
 import { LoaderFunction, json } from "@remix-run/server-runtime";
 import { Form, useCatch, useLoaderData } from "@remix-run/react";
+import { z } from "zod";
 import { fetchVideoMetadata, toCaptionConfigOptions } from "../utils/youtube";
 import { CaptionConfig, VideoMetadata } from "../utils/types";
 import { useIsFormValid } from "../utils/hooks";
+import { fromRequestQuery } from "../utils/url-data";
 
-// TODO: redirect + snackbar on error
+const schema = z.object({
+  videoId: z.string().length(11),
+});
+
 export const loader: LoaderFunction = async ({ request }) => {
-  const videoId = new URL(request.url).searchParams.get("videoId");
-  if (!videoId) {
-    throw json({ message: "Video ID is required" });
+  const parsed = schema.safeParse(fromRequestQuery(request));
+  if (parsed.success) {
+    const videoMetadata = await fetchVideoMetadata(parsed.data.videoId);
+    if (videoMetadata.playabilityStatus.status === "OK") {
+      return videoMetadata;
+    }
   }
-  const videoMetadata = await fetchVideoMetadata(videoId);
-  if (videoMetadata.playabilityStatus.status !== "OK") {
-    throw json({ message: "Invalid Video ID" });
-  }
-  return videoMetadata;
+  throw json({ message: "Invalid Video ID" });
 };
 
 export default function Component() {
