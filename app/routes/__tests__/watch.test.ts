@@ -45,8 +45,10 @@ describe("watch.loader", () => {
         translation: "",
       },
     };
-    await testLoader(loader, { query }).catch((error: any) => {
-      expect(error).toBeInstanceOf(Error);
+    await testLoader(loader, { query }).catch(async (res: Response) => {
+      await expect(res.json()).resolves.toEqual({
+        message: "Invalid parameters",
+      });
     });
   });
 });
