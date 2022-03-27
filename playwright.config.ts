@@ -14,9 +14,9 @@ const config: PlaywrightTestConfig = {
     },
   ],
   webServer: {
-    command: "npm run tailwind && npm run copy-assets && npm run dev",
+    command: "npm run dev:prepare && npm run dev",
     port: 3000,
-    reuseExistingServer: false,
+    reuseExistingServer: true,
   },
 };
 
