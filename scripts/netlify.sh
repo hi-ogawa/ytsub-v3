@@ -6,19 +6,19 @@ rm -rf build/remix/production
 rm -rf build/tailwind/production
 
 # tailwind
-NODE_ENV=production pnpm run tailwind
+NODE_ENV=production npm run tailwind
 
 # copy assets not managed by remix
 NODE_ENV=production bash scripts/copy-assets.sh
 
 # default "node-cjs" build with custom server main
-NODE_ENV=production BUILD_NETLIFY=1 pnpx remix build
+NODE_ENV=production BUILD_NETLIFY=1 npx remix build
 
 # build "storybook" static app
-pnpx vite build --outDir build/remix/production/public/ui-dev --base ui-dev
+npx vite build --outDir build/remix/production/public/ui-dev --base ui-dev
 
 # run esbuild again manually to bundle server app
-pnpx esbuild build/remix/production/server/index.js --bundle --platform=node --outfile=build/remix/production/server-bundle/index.js
+npx esbuild build/remix/production/server/index.js --bundle --platform=node --outfile=build/remix/production/server-bundle/index.js
 
 # zip it as a prebuilt netlify function
 mkdir -p build/remix/production/server-bundle-zip

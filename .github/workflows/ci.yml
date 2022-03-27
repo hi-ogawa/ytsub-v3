@@ -13,7 +13,7 @@ jobs:
         with:
           node-version: "16.14.0"
       - run: pnpm install --frozen-lockfile
-      - run: pnpm run lint
+      - run: npm run lint
 
   tsc:
     runs-on: ubuntu-20.04
@@ -26,7 +26,7 @@ jobs:
         with:
           node-version: "16.14.0"
       - run: pnpm install --frozen-lockfile
-      - run: pnpm run tsc
+      - run: npm run tsc
 
   build:
     runs-on: ubuntu-20.04
@@ -39,7 +39,7 @@ jobs:
         with:
           node-version: "16.14.0"
       - run: pnpm install --frozen-lockfile
-      - run: pnpm run netlify:build
+      - run: npm run netlify:build
 
   test:
     runs-on: ubuntu-20.04
@@ -52,7 +52,7 @@ jobs:
         with:
           node-version: "16.14.0"
       - run: pnpm install --frozen-lockfile
-      - run: pnpm run test
+      - run: npm run test
 
   integration:
     runs-on: ubuntu-20.04
@@ -65,11 +65,11 @@ jobs:
         with:
           node-version: "16.14.0"
       - run: pnpm install --frozen-lockfile
-      - run: pnpx playwright install --with-deps
-      - run: pnpm run test:playwright
+      - run: npx playwright install --with-deps
+      - run: npm run test:playwright
 
   shellcheck:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
-      - run: docker run --rm -v "${PWD}:/mnt:ro" koalaman/shellcheck:v0.8.0 scripts/*.sh
+      - run: npm run shellcheck
