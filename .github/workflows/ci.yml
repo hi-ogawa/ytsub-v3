@@ -52,6 +52,7 @@ jobs:
         with:
           node-version: "16.14.0"
       - run: pnpm install --frozen-lockfile
+      - run: make docker/up db/reset/test
       - run: npm run test
 
   integration:
@@ -66,10 +67,11 @@ jobs:
           node-version: "16.14.0"
       - run: pnpm install --frozen-lockfile
       - run: npx playwright install --with-deps
+      - run: make docker/up db/reset/test
       - run: npm run test:playwright
 
-  shellcheck:
+  lint-misc:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
-      - run: npm run shellcheck
+      - run: make lint/all

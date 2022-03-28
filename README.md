@@ -8,6 +8,7 @@ based on
 ```sh
 # development
 pnpm install
+make docker/up db/reset
 npm run dev:all
 
 # lint
