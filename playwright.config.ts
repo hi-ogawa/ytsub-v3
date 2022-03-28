@@ -3,7 +3,7 @@ import { PlaywrightTestConfig } from "@playwright/test";
 const config: PlaywrightTestConfig = {
   testDir: "./app/__playwright__",
   use: {
-    baseURL: "http://localhost:3000",
+    baseURL: "http://localhost:3001",
   },
   projects: [
     {
@@ -14,8 +14,8 @@ const config: PlaywrightTestConfig = {
     },
   ],
   webServer: {
-    command: "npm run dev:prepare && npm run dev",
-    port: 3000,
+    command: "npm run dev:prepare && PORT=3001 npm run dev",
+    port: 3001,
     reuseExistingServer: true,
   },
 };
