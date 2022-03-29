@@ -10,6 +10,7 @@ specifiers:
   '@remix-run/react': ^1.2.2
   '@remix-run/serve': ^1.2.2
   '@remix-run/server-runtime': ^1.2.2
+  '@types/bcryptjs': ^2.4.2
   '@types/lodash': ^4.14.179
   '@types/node': ^17.0.21
   '@types/qs': ^6.9.7
@@ -20,6 +21,7 @@ specifiers:
   '@typescript-eslint/parser': ^5.13.0
   '@vitejs/plugin-react': ^1.2.0
   autoprefixer: ^10.4.2
+  bcryptjs: ^2.4.3
   concurrently: ^7.0.0
   daisyui: ^2.2.2
   esbuild: ^0.14.23
@@ -54,6 +56,8 @@ dependencies:
   '@remix-run/netlify': 1.2.3_1d1ce03cfafdba27bba741ad8440c333
   '@remix-run/react': 1.2.3_react-dom@17.0.2+react@17.0.2
   '@remix-run/server-runtime': 1.2.3_react-dom@17.0.2+react@17.0.2
+  '@types/bcryptjs': 2.4.2
+  bcryptjs: 2.4.3
   fast-xml-parser: 4.0.7
   knex: 1.0.4_mysql2@2.3.3
   lodash: 4.17.21
@@ -1067,6 +1071,10 @@ packages:
       '@types/estree': 0.0.51
     dev: true
 
+  /@types/bcryptjs/2.4.2:
+    resolution: {integrity: sha512-LiMQ6EOPob/4yUL66SZzu6Yh77cbzJFYll+ZfaPiPPFswtIlA/Fs1MzdKYA7JApHU49zQTbJGX3PDmCpIdDBRQ==}
+    dev: false
+
   /@types/busboy/0.3.2:
     resolution: {integrity: sha512-iEvdm9Z9KdSs/ozuh1Z7ZsXrOl8F4M/CLMXPZHr3QuJ4d6Bjn+HBMC5EMKpwpAo8oi8iK9GZfFoHaIMrrZgwVw==}
     dependencies:
@@ -1665,6 +1673,10 @@ packages:
     dependencies:
       safe-buffer: 5.1.2
     dev: true
+
+  /bcryptjs/2.4.3:
+    resolution: {integrity: sha1-mrVie5PmBiH/fNrF2pczAn3x0Ms=}
+    dev: false
 
   /big-integer/1.6.51:
     resolution: {integrity: sha512-GPEid2Y9QU1Exl1rpO9B2IPJGHPSupF5GnVIP0blYvNOMer2bTvSWs1jGOUg04hTmu67nmLsQ9TBo1puaotBHg==}
