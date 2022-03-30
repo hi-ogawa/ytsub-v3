@@ -1,70 +1,32 @@
 import * as React from "react";
 import { Form, Link } from "@remix-run/react";
 import { ActionFunction } from "@remix-run/server-runtime";
-import { z } from "zod";
-import * as bcrypt from "bcryptjs";
 import { useIsFormValid } from "../../utils/hooks";
 import { fromRequestForm } from "../../utils/url-data";
-import { users } from "../../db/models";
-import { crypto } from "../../node.server";
-
-const USERNAME_MAX_LENGTH = 32;
-const PASSWORD_MAX_LENGTH = 128;
-const BCRYPT_ROUNDS = 10;
-
-const schema = z
-  .object({
-    username: z
-      .string()
-      .nonempty()
-      .max(USERNAME_MAX_LENGTH)
-      .regex(/^[a-zA-Z0-9_.-]+$/),
-    password: z.string().nonempty().max(PASSWORD_MAX_LENGTH),
-    passwordConfirmation: z.string().nonempty().max(PASSWORD_MAX_LENGTH),
-  })
-  .refine((obj) => obj.password === obj.passwordConfirmation);
-
-function prehash(password: string): string {
-  return crypto
-    .createHash("sha256")
-    .update(password, "utf8")
-    .digest()
-    .toString("base64");
-}
-
-async function toPasswordHash(password: string): Promise<string> {
-  return await bcrypt.hash(prehash(password), BCRYPT_ROUNDS);
-}
-
-// @ts-expect-error unused
-async function verifyPassword(
-  password: string,
-  passwordHash: string
-): Promise<boolean> {
-  return bcrypt.compare(prehash(password), passwordHash);
-}
+import { AppError } from "../../utils/errors";
+import {
+  PASSWORD_MAX_LENGTH,
+  REGISTER_SCHEMA,
+  USERNAME_MAX_LENGTH,
+  register,
+} from "../../utils/auth";
 
 export const action: ActionFunction = async ({ request }) => {
-  const parsed = schema.safeParse(await fromRequestForm(request));
+  const parsed = REGISTER_SCHEMA.safeParse(await fromRequestForm(request));
   if (!parsed.success) {
-    return { message: "Invalid registration" };
+    return { success: false, message: "Invalid registration" };
   }
 
-  // Verify uniqueness
-  const { data } = parsed;
-  if (await users().select().where("username", data.username).first()) {
-    return { message: `Username '${data.username}' is already taken` };
+  try {
+    // TODO: login session
+    const user = await register(parsed.data);
+    return user;
+  } catch (e) {
+    if (e instanceof AppError) {
+      return { success: false, message: e.message };
+    }
+    throw e;
   }
-
-  // Save
-  const passwordHash = await toPasswordHash(data.password);
-  const [userId] = await users().insert({
-    username: data.username,
-    passwordHash,
-  });
-
-  // TODO: login
-  return { userId };
 };
 
 export default function DefaultComponent() {
