@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { client } from "../client";
+import { client } from "../client.server";
 
 describe("client", () => {
   it("basic", async () => {

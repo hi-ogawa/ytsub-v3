@@ -11,7 +11,7 @@ import {
   register,
   signinSession,
 } from "../../utils/auth";
-import { withRequestSession } from "../../utils/session.server";
+import { withRequestSession } from "../../utils/session-utils";
 
 export const action: ActionFunction = withRequestSession(
   async ({ request, session }) => {
