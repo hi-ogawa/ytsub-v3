@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Form, Link } from "@remix-run/react";
-import { ActionFunction } from "@remix-run/server-runtime";
+import { ActionFunction, redirect } from "@remix-run/server-runtime";
 import { useIsFormValid } from "../../utils/hooks";
 import { fromRequestForm } from "../../utils/url-data";
 import { AppError } from "../../utils/errors";
@@ -9,25 +9,29 @@ import {
   REGISTER_SCHEMA,
   USERNAME_MAX_LENGTH,
   register,
+  signinSession,
 } from "../../utils/auth";
+import { withRequestSession } from "../../utils/session.server";
 
-export const action: ActionFunction = async ({ request }) => {
-  const parsed = REGISTER_SCHEMA.safeParse(await fromRequestForm(request));
-  if (!parsed.success) {
-    return { success: false, message: "Invalid registration" };
-  }
-
-  try {
-    // TODO: login session
-    const user = await register(parsed.data);
-    return user;
-  } catch (e) {
-    if (e instanceof AppError) {
-      return { success: false, message: e.message };
+export const action: ActionFunction = withRequestSession(
+  async ({ request, session }) => {
+    const parsed = REGISTER_SCHEMA.safeParse(await fromRequestForm(request));
+    if (!parsed.success) {
+      return { success: false, message: "Invalid registration" };
     }
-    throw e;
+
+    try {
+      const user = await register(parsed.data);
+      signinSession(session, user);
+      return redirect("/");
+    } catch (e) {
+      if (e instanceof AppError) {
+        return { success: false, message: e.message };
+      }
+      throw e;
+    }
   }
-};
+);
 
 export default function DefaultComponent() {
   const [isValid, formProps] = useIsFormValid();

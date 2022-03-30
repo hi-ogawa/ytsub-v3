@@ -7,7 +7,7 @@ installGlobals();
 
 describe("watch.loader", () => {
   it("basic", async () => {
-    const query = {
+    const data = {
       videoId: "EnPYXckiUVg",
       language1: {
         id: ".fr",
@@ -18,7 +18,7 @@ describe("watch.loader", () => {
         translation: "",
       },
     };
-    const res = await testLoader(loader, { query });
+    const res = await testLoader(loader, { data });
     const { videoMetadata, captionEntries } = res;
     expect(videoMetadata.videoDetails.videoId).toBe("EnPYXckiUVg");
     expect(videoMetadata.videoDetails.title).toMatchInlineSnapshot(
@@ -36,7 +36,7 @@ describe("watch.loader", () => {
   });
 
   it("error", async () => {
-    const query = {
+    const data = {
       videoId: "EnPYXckiUVg",
       language1: {
         id: ".frxxx", // non-existant language id
@@ -47,7 +47,7 @@ describe("watch.loader", () => {
         translation: "",
       },
     };
-    await testLoader(loader, { query }).catch(async (res: Response) => {
+    await testLoader(loader, { data }).catch(async (res: Response) => {
       await expect(res.json()).resolves.toEqual({
         message: "Invalid parameters",
       });

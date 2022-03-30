@@ -1,5 +1,6 @@
 import { z } from "zod";
 import * as bcrypt from "bcryptjs";
+import { Session } from "@remix-run/server-runtime";
 import { crypto } from "../node.server";
 import { UserTable, users } from "../db/models";
 import { AppError } from "./errors";
@@ -51,11 +52,23 @@ export async function register(data: {
 
   // Save
   const passwordHash = await toPasswordHash(data.password);
-  const [user] = await users()
-    .insert({
-      username: data.username,
-      passwordHash,
-    })
-    .returning("*");
+  const [id] = await users().insert({
+    username: data.username,
+    passwordHash,
+  });
+  const user = await users().select("*").where("id", id).first();
+  if (!user) {
+    throw new AppError("Unknown registration error");
+  }
   return user;
+}
+
+const SESSION_USER_KEY = "session-user-v1";
+
+export function signinSession(session: Session, user: UserTable): void {
+  session.set(SESSION_USER_KEY, user.id);
+}
+
+export function signoutSession(session: Session): void {
+  session.unset(SESSION_USER_KEY);
 }
