@@ -7,7 +7,7 @@ based on
 
 ```sh
 # development
-pnpm install
+pnpm run install-with-patch
 make docker/up db/reset
 npm run dev:all
 

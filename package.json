@@ -1,9 +1,10 @@
 {
   "scripts": {
+    "install-with-patch": "npm -C .patch run build && pnpm install",
     "clean": "rm -rf build",
     "dev": "remix dev",
     "dev:prepare": "npm run tailwind && npm run copy-assets",
-    "dev:all": "npm run dev:prepare && concurrently 'npm:dev' 'npm:tsc:dev' 'npm:tailwind:dev' 'npm:vite' -c 'bgBlue.bold,bgYellow.bold,bgMagenta.bold,bgGreen.bold'",
+    "dev:all": "npm run dev:prepare && concurrently -k 'npm:dev' 'npm:tsc:dev' 'npm:tailwind:dev' 'npm:vite' -c 'bgBlue.bold,bgYellow.bold,bgMagenta.bold,bgGreen.bold'",
     "copy-assets": "bash scripts/copy-assets.sh",
     "tsc": "tsc",
     "tsc:dev": "tsc --noEmit --watch --preserveWatchOutput",
@@ -49,7 +50,7 @@
     "@playwright/test": "^1.19.2",
     "@remix-run/dev": "^1.2.2",
     "@remix-run/node": "^1.2.3",
-    "@remix-run/serve": "^1.2.2",
+    "@remix-run/serve": "file:./.patch/node_modules/@remix-run/serve",
     "@types/lodash": "^4.14.179",
     "@types/node": "^17.0.21",
     "@types/qs": "^6.9.7",
@@ -66,6 +67,7 @@
     "eslint": "^8.10.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-import": "^2.25.4",
+    "express": "^4.17.3",
     "happy-dom": "^2.50.0",
     "postcss": "^8.4.7",
     "prettier": "^2.5.1",
