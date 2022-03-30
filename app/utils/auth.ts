@@ -1,8 +1,8 @@
 import { z } from "zod";
 import * as bcrypt from "bcryptjs";
 import { Session } from "@remix-run/server-runtime";
-import { crypto } from "../node.server";
 import { UserTable, users } from "../db/models";
+import { crypto } from "./node.server";
 import { AppError } from "./errors";
 
 export const USERNAME_MAX_LENGTH = 32;
