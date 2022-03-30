@@ -72,3 +72,11 @@ export function signinSession(session: Session, user: UserTable): void {
 export function signoutSession(session: Session): void {
   session.unset(SESSION_USER_KEY);
 }
+
+export async function getSessionUser(
+  session: Session
+): Promise<UserTable | undefined> {
+  const id = session.get(SESSION_USER_KEY);
+  if (typeof id !== "number") return;
+  return await users().select("*").where("id", id).first();
+}

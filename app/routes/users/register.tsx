@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Form, Link } from "@remix-run/react";
+import { Form, Link, useActionData } from "@remix-run/react";
 import { ActionFunction, redirect } from "@remix-run/server-runtime";
 import { useIsFormValid } from "../../utils/hooks";
 import { fromRequestForm } from "../../utils/url-data";
@@ -8,6 +8,7 @@ import {
   PASSWORD_MAX_LENGTH,
   REGISTER_SCHEMA,
   USERNAME_MAX_LENGTH,
+  getSessionUser,
   register,
   signinSession,
 } from "../../utils/auth";
@@ -15,6 +16,10 @@ import { withRequestSession } from "../../utils/session-utils";
 
 export const action: ActionFunction = withRequestSession(
   async ({ request, session }) => {
+    if (await getSessionUser(session)) {
+      return redirect("/");
+    }
+
     const parsed = REGISTER_SCHEMA.safeParse(await fromRequestForm(request));
     if (!parsed.success) {
       return { success: false, message: "Invalid registration" };
@@ -35,10 +40,16 @@ export const action: ActionFunction = withRequestSession(
 
 export default function DefaultComponent() {
   const [isValid, formProps] = useIsFormValid();
+  const actionData: { message: string } | undefined = useActionData();
 
   return (
     <div className="w-full p-4 flex justify-center">
       <Form method="post" className="card border w-80 p-4 px-6" {...formProps}>
+        {actionData?.message ? (
+          <div className="alert alert-error text-white text-sm">
+            <div>Error: {actionData.message}</div>
+          </div>
+        ) : null}
         <div className="form-control mb-2">
           <label className="label">
             <span className="label-text">Username</span>
