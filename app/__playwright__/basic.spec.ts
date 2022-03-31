@@ -23,7 +23,6 @@ test("setup => watch", async ({ page }) => {
   ).toHaveText("");
 
   // Select language options
-  // TODO: onChange is not triggered?
   await page
     .locator("data-test=setup-form >> select >> nth=0")
     .selectOption('{"id":".fr"}');
