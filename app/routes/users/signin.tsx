@@ -13,12 +13,18 @@ import {
   verifySignin,
 } from "../../utils/auth";
 import { withRequestSession } from "../../utils/session-utils";
+import { PageHandle } from "../../utils/page-handle";
+
+export const handle: PageHandle = {
+  navBarTitle: "Sign in",
+};
 
 export const loader: ActionFunction = withRequestSession(
   async ({ session }) => {
-    if (await getSessionUser(session)) {
-      // TODO: "Already logged in" snackbar
-      return redirect("/");
+    const user = await getSessionUser(session);
+    if (user) {
+      session.flash("message", `Already logged in as ${user.username}`);
+      return redirect("/users/me");
     }
     return null;
   }

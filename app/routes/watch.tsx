@@ -15,6 +15,11 @@ import {
 import { CaptionEntry, VideoMetadata } from "../utils/types";
 import { useYoutubeIframeApi } from "../utils/hooks";
 import { fromRequestQuery } from "../utils/url-data";
+import { PageHandle } from "../utils/page-handle";
+
+export const handle: PageHandle = {
+  navBarTitle: "Watch",
+};
 
 const schema = z.object({
   videoId: z.string().length(11),

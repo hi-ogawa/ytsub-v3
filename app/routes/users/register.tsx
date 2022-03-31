@@ -13,6 +13,11 @@ import {
   signinSession,
 } from "../../utils/auth";
 import { withRequestSession } from "../../utils/session-utils";
+import { PageHandle } from "../../utils/page-handle";
+
+export const handle: PageHandle = {
+  navBarTitle: "Register",
+};
 
 export const loader: ActionFunction = withRequestSession(
   async ({ session }) => {

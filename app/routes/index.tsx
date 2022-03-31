@@ -1,5 +1,10 @@
 import { Link } from "@remix-run/react";
 import * as React from "react";
+import { PageHandle } from "../utils/page-handle";
+
+export const handle: PageHandle = {
+  navBarTitle: "Home",
+};
 
 export default function Component() {
   return (

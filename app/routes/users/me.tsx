@@ -4,7 +4,12 @@ import * as React from "react";
 import superjson from "superjson";
 import { UserTable } from "../../db/models";
 import { getSessionUser } from "../../utils/auth";
+import { PageHandle } from "../../utils/page-handle";
 import { withRequestSession } from "../../utils/session-utils";
+
+export const handle: PageHandle = {
+  navBarTitle: "Account",
+};
 
 export const loader: LoaderFunction = withRequestSession(
   async ({ session }) => {

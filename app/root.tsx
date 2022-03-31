@@ -6,13 +6,23 @@ import {
   Meta,
   Outlet,
   Scripts,
+  useLoaderData,
+  useMatches,
   useTransition,
 } from "@remix-run/react";
-import { LinksFunction, MetaFunction } from "@remix-run/server-runtime";
+import {
+  LinksFunction,
+  LoaderFunction,
+  MetaFunction,
+  json,
+} from "@remix-run/server-runtime";
+import { last } from "lodash";
 import * as React from "react";
 import { Code, Home, LogIn, Menu, Search, User } from "react-feather";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { TopProgressBar } from "./components/top-progress-bar";
+import { PageHandle } from "./utils/page-handle";
+import { withRequestSession } from "./utils/session-utils";
 
 const ASSETS = {
   "index.css": require("../build/tailwind/" +
@@ -37,7 +47,17 @@ export const meta: MetaFunction = () => {
   };
 };
 
+export const loader: LoaderFunction = withRequestSession(({ session }) => {
+  const message = session.get("message");
+  if (message) {
+    return json({ message });
+  }
+  return null;
+});
+
 export default function Component() {
+  const data: { message: string } | undefined = useLoaderData();
+
   return (
     <html lang="en" className="h-full">
       <head>
@@ -46,6 +66,8 @@ export default function Component() {
         <Links />
       </head>
       <body className="h-full">
+        {/* TODO: useSnackbar */}
+        {data?.message && <div>message: {data?.message}</div>}
         <RootProviders>
           <GlobalProgress />
           <SideMenuDrawerWrapper>
@@ -105,6 +127,9 @@ function toggleDrawer(open?: boolean): void {
 }
 
 function Navbar() {
+  const matches = useMatches();
+  const title = (last(matches)?.handle as PageHandle | undefined)?.navBarTitle;
+
   return (
     <header className="w-full h-12 flex-none bg-primary text-primary-content flex items-center px-4 py-2 shadow-lg z-10">
       <div className="flex-none pr-4">
@@ -115,7 +140,7 @@ function Navbar() {
           <Menu size={24} />
         </label>
       </div>
-      <div className="flex-1">Page Title</div>
+      <div className="flex-1">{title}</div>
       <div className="flex-none hidden sm:block">
         <SearchComponent />
       </div>

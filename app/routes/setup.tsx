@@ -6,6 +6,11 @@ import { fetchVideoMetadata, toCaptionConfigOptions } from "../utils/youtube";
 import { CaptionConfig, VideoMetadata } from "../utils/types";
 import { useIsFormValid } from "../utils/hooks";
 import { fromRequestQuery } from "../utils/url-data";
+import { PageHandle } from "../utils/page-handle";
+
+export const handle: PageHandle = {
+  navBarTitle: "Select languages",
+};
 
 const schema = z.object({
   videoId: z.string().length(11),
