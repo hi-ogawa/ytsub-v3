@@ -14,17 +14,22 @@ import {
 } from "../../utils/auth";
 import { withRequestSession } from "../../utils/session-utils";
 
-export const action: ActionFunction = withRequestSession(
-  async ({ request, session }) => {
+export const loader: ActionFunction = withRequestSession(
+  async ({ session }) => {
     if (await getSessionUser(session)) {
+      // TODO: "Already logged in" snackbar
       return redirect("/");
     }
+    return null;
+  }
+);
 
+export const action: ActionFunction = withRequestSession(
+  async ({ request, session }) => {
     const parsed = REGISTER_SCHEMA.safeParse(await fromRequestForm(request));
     if (!parsed.success) {
       return { success: false, message: "Invalid registration" };
     }
-
     try {
       const user = await register(parsed.data);
       signinSession(session, user);
@@ -39,8 +44,8 @@ export const action: ActionFunction = withRequestSession(
 );
 
 export default function DefaultComponent() {
-  const [isValid, formProps] = useIsFormValid();
   const actionData: { message: string } | undefined = useActionData();
+  const [isValid, formProps] = useIsFormValid();
 
   return (
     <div className="w-full p-4 flex justify-center">

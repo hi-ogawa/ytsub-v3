@@ -25,7 +25,7 @@ export function withRequestSession(
 ): LoaderFunction {
   return async function wrapper(args) {
     const session = await getRequestSession(args.request);
-    const result = loader({ ...args, session });
+    const result = await loader({ ...args, session });
     if (result instanceof Response) {
       return withResponseSession(result, session);
     }

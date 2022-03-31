@@ -20,6 +20,15 @@ export const REGISTER_SCHEMA = z
   })
   .refine((obj) => obj.password === obj.passwordConfirmation);
 
+export const SIGNIN_SCHEMA = z.object({
+  username: z
+    .string()
+    .nonempty()
+    .max(USERNAME_MAX_LENGTH)
+    .regex(/^[a-zA-Z0-9_.-]+$/),
+  password: z.string().nonempty().max(PASSWORD_MAX_LENGTH),
+});
+
 const BCRYPT_ROUNDS = 10;
 
 function prehash(password: string): string {
@@ -59,6 +68,23 @@ export async function register(data: {
   const user = await users().select("*").where("id", id).first();
   if (!user) {
     throw new AppError("Unknown registration error");
+  }
+  return user;
+}
+
+export async function verifySignin(data: {
+  username: string;
+  password: string;
+}): Promise<UserTable> {
+  // Find user
+  const user = await users().select().where("username", data.username).first();
+  if (!user) {
+    throw new AppError("Invalid username or password");
+  }
+
+  // Verify password
+  if (!(await verifyPassword(data.password, user.passwordHash))) {
+    throw new AppError("Invalid username or password");
   }
   return user;
 }
