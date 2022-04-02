@@ -68,7 +68,7 @@ jobs:
       - run: pnpm run install-with-patch -- --frozen-lockfile
       - run: npx playwright install --with-deps
       - run: make docker/up db/reset/test
-      - run: npm run test:playwright
+      - run: npm run test:e2e
 
   lint-misc:
     runs-on: ubuntu-20.04

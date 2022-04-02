@@ -20,10 +20,10 @@ netlify sites:create --name ytsub-v3-hiro18181
 netlify link --name ytsub-v3-hiro18181
 npm run netlify:build:deploy
 
-# testing (jest)
+# testing (vitest)
 npm run test
 
 # testing (playwright)
 npx playwright install
-npm run test:playwright
+npm run test:e2e
 ```

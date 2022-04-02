@@ -1,7 +1,7 @@
 import { PlaywrightTestConfig } from "@playwright/test";
 
 const config: PlaywrightTestConfig = {
-  testDir: "./app/__playwright__",
+  testDir: "./app/__e2e__",
   use: {
     baseURL: "http://localhost:3001",
   },
