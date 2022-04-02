@@ -22,6 +22,9 @@ lint/shellcheck:
 # db
 #
 
+db/seed:
+	node --require esbuild-register app/db/seed.ts
+
 db/reset: db/recreate db/migrate
 db/reset/dev: db/recreate/dev db/migrate/dev
 db/reset/test: db/recreate/test db/migrate/test
