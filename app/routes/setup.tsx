@@ -1,24 +1,37 @@
 import * as React from "react";
 import { LoaderFunction, json } from "@remix-run/server-runtime";
 import { Form, useCatch, useLoaderData } from "@remix-run/react";
+import { z } from "zod";
 import { fetchVideoMetadata, toCaptionConfigOptions } from "../utils/youtube";
 import { CaptionConfig, VideoMetadata } from "../utils/types";
+import { useIsFormValid } from "../utils/hooks";
+import { fromRequestQuery } from "../utils/url-data";
+import { PageHandle } from "../utils/page-handle";
 
-// TODO: redirect + snackbar on error
+export const handle: PageHandle = {
+  navBarTitle: "Select languages",
+};
+
+const schema = z.object({
+  videoId: z.string().length(11),
+});
+
 export const loader: LoaderFunction = async ({ request }) => {
-  const videoId = new URL(request.url).searchParams.get("videoId");
-  if (!videoId) {
-    throw json({ message: "Video ID is required" });
+  const parsed = schema.safeParse(fromRequestQuery(request));
+  if (parsed.success) {
+    const videoMetadata = await fetchVideoMetadata(parsed.data.videoId);
+    if (videoMetadata.playabilityStatus.status === "OK") {
+      return videoMetadata;
+    }
   }
-  const videoMetadata = await fetchVideoMetadata(videoId);
-  if (videoMetadata.playabilityStatus.status !== "OK") {
-    throw json({ message: "Invalid Video ID" });
-  }
-  return videoMetadata;
+  throw json({ message: "Invalid Video ID" });
 };
 
 export default function Component() {
   const videoMetadata: VideoMetadata = useLoaderData();
+
+  const [isValid, formProps] = useIsFormValid();
+
   return (
     <div className="w-full p-4 flex justify-center">
       <div className="h-full w-full max-w-lg rounded-lg border border-base-300">
@@ -29,6 +42,7 @@ export default function Component() {
             action="/watch"
             className="w-full flex flex-col gap-1"
             data-test="setup-form"
+            {...formProps}
           >
             <div className="form-control">
               <label className="label">
@@ -88,7 +102,7 @@ export default function Component() {
                 propertyName="language2"
               />
             </div>
-            <button type="submit" className="btn mt-3">
+            <button type="submit" className="btn mt-3" disabled={!isValid}>
               Play
             </button>
           </Form>

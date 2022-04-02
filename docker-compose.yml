@@ -1,0 +1,17 @@
+version: "3.5"
+
+services:
+  mysql:
+    image: mysql:8.0.28-debian
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+    volumes:
+      - mysql-volume:/var/lib/mysql
+
+  dockerize:
+    image: jwilder/dockerize:0.6.1
+
+volumes:
+  mysql-volume:

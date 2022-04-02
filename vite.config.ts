@@ -1,6 +1,8 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
+// Using vite for UI dev playground with HMR (see app/components/main-dev.tsx)
+
 export default defineConfig(({ command }) => ({
   plugins: [react()],
   server: {

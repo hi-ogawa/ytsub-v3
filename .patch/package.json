@@ -1,0 +1,11 @@
+{
+  "scripts": {
+    "build": "npm install && patch-package"
+  },
+  "dependencies": {
+    "@remix-run/serve": "1.2.3"
+  },
+  "devDependencies": {
+    "patch-package": "^6.4.7"
+  }
+}

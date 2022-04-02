@@ -1,12 +1,31 @@
-import { LoaderFunction } from "@remix-run/server-runtime";
+import { ActionFunction, LoaderFunction } from "@remix-run/server-runtime";
 import * as qs from "qs";
 
 const DUMMY_URL = "http://localhost:3000";
 
-export function testLoader(loader: LoaderFunction, { query }: { query: any }) {
-  const search = qs.stringify(query, { allowDots: true });
+export function testLoader(loader: LoaderFunction, { data }: { data: any }) {
+  const serialized = qs.stringify(data, { allowDots: true });
   return loader({
-    request: new Request(DUMMY_URL + "/?" + search),
+    request: new Request(DUMMY_URL + "/?" + serialized),
+    context: {},
+    params: {},
+  });
+}
+
+export function testAction(
+  loader: ActionFunction,
+  { data = {}, headers = {} }: { data?: any; headers?: Record<string, string> }
+) {
+  const serialized = qs.stringify(data, { allowDots: true });
+  return loader({
+    request: new Request(DUMMY_URL, {
+      method: "POST",
+      body: serialized,
+      headers: {
+        "content-type": "application/x-www-form-urlencoded",
+        ...headers,
+      },
+    }),
     context: {},
     params: {},
   });

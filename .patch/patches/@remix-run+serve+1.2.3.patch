@@ -1,0 +1,21 @@
+diff --git a/node_modules/@remix-run/serve/index.js b/node_modules/@remix-run/serve/index.js
+index 7db39cf..2557caf 100644
+--- a/node_modules/@remix-run/serve/index.js
++++ b/node_modules/@remix-run/serve/index.js
+@@ -16,6 +16,7 @@ var express = require('express');
+ var compression = require('compression');
+ var morgan = require('morgan');
+ var express$1 = require('@remix-run/express');
++var path = require('path');
+ 
+ function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
+ 
+@@ -27,7 +28,7 @@ function createApp(buildPath, mode = "production") {
+   let app = express__default["default"]();
+   app.disable("x-powered-by");
+   app.use(compression__default["default"]());
+-  app.use(express__default["default"].static("public", {
++  app.use(express__default["default"].static(path.resolve(buildPath, "..", "..", "public"), {
+     immutable: true,
+     maxAge: "1y"
+   }));

@@ -40,6 +40,18 @@ export function useRafTime(): [number, () => void, () => void] {
   return [time, start, end];
 }
 
+export function useIsFormValid() {
+  const ref = React.useRef<HTMLFormElement>(null);
+  const [isValid, setIsValid] = React.useState(false);
+  React.useEffect(onChange, []);
+
+  function onChange() {
+    setIsValid(!!ref.current?.checkValidity());
+  }
+
+  return [isValid, { ref, onChange }] as const;
+}
+
 // Based on https://github.com/remix-run/remix/issues/180
 let _hydrated = false;
 export function useHydrated() {

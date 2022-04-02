@@ -1,4 +1,4 @@
-import { describe, expect, it } from "@jest/globals";
+import { describe, expect, it } from "vitest";
 import { ttmlToEntries } from "../youtube";
 
 describe("ttmlToEntries", () => {
@@ -25,13 +25,13 @@ describe("ttmlToEntries", () => {
     `;
     const result = ttmlToEntries(ttml);
     expect(result).toMatchInlineSnapshot(`
-      Array [
-        Object {
+      [
+        {
           "begin": 5.28,
           "end": 7.65,
           "text": "Bienvenue dans ce format de vidéo où nous",
         },
-        Object {
+        {
           "begin": 7.68,
           "end": 11.78,
           "text": "voyons en quelques minutes une expression française.",

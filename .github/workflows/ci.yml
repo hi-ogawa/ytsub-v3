@@ -12,7 +12,7 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: "16.14.0"
-      - run: pnpm install --frozen-lockfile
+      - run: pnpm run install-with-patch -- --frozen-lockfile
       - run: npm run lint
 
   tsc:
@@ -25,7 +25,7 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: "16.14.0"
-      - run: pnpm install --frozen-lockfile
+      - run: pnpm run install-with-patch -- --frozen-lockfile
       - run: npm run tsc
 
   build:
@@ -38,7 +38,7 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: "16.14.0"
-      - run: pnpm install --frozen-lockfile
+      - run: pnpm run install-with-patch -- --frozen-lockfile
       - run: npm run netlify:build
 
   test:
@@ -51,10 +51,11 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: "16.14.0"
-      - run: pnpm install --frozen-lockfile
+      - run: pnpm run install-with-patch -- --frozen-lockfile
+      - run: make docker/up db/reset/test
       - run: npm run test
 
-  integration:
+  test-e2e:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
@@ -64,12 +65,13 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: "16.14.0"
-      - run: pnpm install --frozen-lockfile
+      - run: pnpm run install-with-patch -- --frozen-lockfile
       - run: npx playwright install --with-deps
-      - run: npm run test:playwright
+      - run: make docker/up db/reset/test
+      - run: npm run test:e2e
 
-  shellcheck:
+  lint-misc:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
-      - run: npm run shellcheck
+      - run: make lint/all

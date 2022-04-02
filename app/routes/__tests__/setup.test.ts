@@ -1,4 +1,4 @@
-import { describe, expect, it } from "@jest/globals";
+import { describe, expect, it } from "vitest";
 import { installGlobals } from "@remix-run/node";
 import { loader } from "../setup";
 import { testLoader } from "./helper";
@@ -8,7 +8,7 @@ installGlobals();
 describe("setup.loader", () => {
   it("basic", async () => {
     const res = await testLoader(loader, {
-      query: {
+      data: {
         videoId: "MoH8Fk2K9bc",
       },
     });
@@ -18,7 +18,7 @@ describe("setup.loader", () => {
   });
 
   it("error", async () => {
-    await testLoader(loader, { query: { videoId: "xxx" } }).catch(
+    await testLoader(loader, { data: { videoId: "xxx" } }).catch(
       async (res: Response) => {
         await expect(res.json()).resolves.toEqual({
           message: "Invalid Video ID",

@@ -7,7 +7,8 @@ based on
 
 ```sh
 # development
-pnpm install
+pnpm run install-with-patch
+make docker/up db/reset db/seed
 npm run dev:all
 
 # lint
@@ -19,10 +20,13 @@ netlify sites:create --name ytsub-v3-hiro18181
 netlify link --name ytsub-v3-hiro18181
 npm run netlify:build:deploy
 
-# testing (jest)
+# testing (vitest)
 npm run test
 
 # testing (playwright)
 npx playwright install
-npm run test:playwright
+npm run test:e2e
+
+# migration on production
+npm run knex:production -- migrate:status
 ```
