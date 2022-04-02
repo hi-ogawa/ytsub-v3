@@ -23,6 +23,7 @@
     "test:e2e:debug": "NODE_ENV=test PWDEBUG=1 playwright test",
     "netlify:build": "bash scripts/netlify.sh",
     "netlify:build:deploy": "npm run netlify:build && netlify deploy --prod",
+    "cli": "node --require esbuild-register app/misc/cli.ts",
     "qrcode": "qrcode-terminal http://$(ip -o -4 address list wlan0 | awk '{print $4}' | cut -d / -f 1):3000"
   },
   "dependencies": {
@@ -62,6 +63,7 @@
     "@typescript-eslint/parser": "^5.13.0",
     "@vitejs/plugin-react": "^1.2.0",
     "autoprefixer": "^10.4.2",
+    "cac": "^6.7.12",
     "concurrently": "^7.0.0",
     "daisyui": "^2.2.2",
     "esbuild": "^0.14.23",

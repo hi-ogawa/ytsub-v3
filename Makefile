@@ -23,7 +23,7 @@ lint/shellcheck:
 #
 
 db/seed:
-	node --require esbuild-register app/db/seed.ts
+	npm run cli -- create-user root pass
 
 db/reset: db/recreate db/migrate
 db/reset/dev: db/recreate/dev db/migrate/dev

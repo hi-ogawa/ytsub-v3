@@ -68,7 +68,12 @@ export default function DefaultComponent() {
 
   return (
     <div className="w-full p-4 flex justify-center">
-      <Form method="post" className="card border w-80 p-4 px-6" {...formProps}>
+      <Form
+        method="post"
+        className="card border w-80 p-4 px-6"
+        data-test="register-form"
+        {...formProps}
+      >
         {actionData?.message ? (
           <div className="alert alert-error text-white text-sm">
             <div>Error: {actionData.message}</div>

@@ -38,6 +38,7 @@ export default function Profile() {
                 className="input input-bordered"
                 readOnly
                 value={data.username}
+                data-test="me-username"
               />
             </div>
             <div className="form-control">

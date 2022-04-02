@@ -22,6 +22,7 @@ specifiers:
   '@vitejs/plugin-react': ^1.2.0
   autoprefixer: ^10.4.2
   bcryptjs: ^2.4.3
+  cac: ^6.7.12
   concurrently: ^7.0.0
   daisyui: ^2.2.2
   esbuild: ^0.14.23
@@ -90,6 +91,7 @@ devDependencies:
   '@typescript-eslint/parser': 5.13.0_eslint@8.10.0+typescript@4.5.5
   '@vitejs/plugin-react': 1.2.0
   autoprefixer: 10.4.2_postcss@8.4.7
+  cac: 6.7.12
   concurrently: 7.0.0
   daisyui: 2.6.0_4585f94de3eac54c17be782e8b51352c
   esbuild: 0.14.25
@@ -1748,6 +1750,11 @@ packages:
   /bytes/3.1.2:
     resolution: {integrity: sha512-/Nf7TyzTx6S3yRJObOAV7956r8cr2+Oj8AC5dt8wSP3BQAoeX58NoHyCU8P8zGkNXStjTSi6fzO6F0pBdcYbEg==}
     engines: {node: '>= 0.8'}
+    dev: true
+
+  /cac/6.7.12:
+    resolution: {integrity: sha512-rM7E2ygtMkJqD9c7WnFU6fruFcN3xe4FM5yUmgxhZzIKJk4uHl9U/fhwdajGFQbQuv43FAUo1Fe8gX/oIKDeSA==}
+    engines: {node: '>=8'}
     dev: true
 
   /cacache/15.3.0:
