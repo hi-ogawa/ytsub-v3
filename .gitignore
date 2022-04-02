@@ -2,3 +2,4 @@
 /build
 /.cache
 /.netlify
+/.env.production.sh

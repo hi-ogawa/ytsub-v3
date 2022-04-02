@@ -26,4 +26,7 @@ npm run test
 # testing (playwright)
 npx playwright install
 npm run test:e2e
+
+# migration on production
+npm run knex:production -- migrate:status
 ```
