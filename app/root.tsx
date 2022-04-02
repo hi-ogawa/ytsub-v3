@@ -20,6 +20,12 @@ import { last } from "lodash";
 import * as React from "react";
 import { Code, Home, LogIn, Menu, Search, User } from "react-feather";
 import { QueryClient, QueryClientProvider } from "react-query";
+import {
+  SnackbarItemComponent,
+  SnackbarProvider,
+  SnackbardContainerComponent,
+  useSnackbar,
+} from "./components/snackbar";
 import { TopProgressBar } from "./components/top-progress-bar";
 import { PageHandle } from "./utils/page-handle";
 import { withRequestSession } from "./utils/session-utils";
@@ -55,9 +61,7 @@ export const loader: LoaderFunction = withRequestSession(({ session }) => {
   return null;
 });
 
-export default function Component() {
-  const data: { message: string } | undefined = useLoaderData();
-
+export default function DefaultComponent() {
   return (
     <html lang="en" className="h-full">
       <head>
@@ -66,31 +70,56 @@ export default function Component() {
         <Links />
       </head>
       <body className="h-full">
-        {/* TODO: useSnackbar */}
-        {data?.message && <div>message: {data?.message}</div>}
         <RootProviders>
-          <GlobalProgress />
-          <SideMenuDrawerWrapper>
-            <div className="h-full flex flex-col">
-              <Navbar />
-              <div className="flex-[1_0_0] flex flex-col">
-                <div className="w-full flex-[1_0_0] h-full overflow-y-auto">
-                  <Outlet />
-                </div>
-              </div>
-            </div>
-          </SideMenuDrawerWrapper>
+          <Root />
         </RootProviders>
-        <Scripts />
-        <LiveReload />
       </body>
     </html>
   );
 }
 
+function Root() {
+  const data = useLoaderData() as { message: string } | undefined;
+  const { enqueueSnackbar } = useSnackbar();
+
+  React.useEffect(() => {
+    if (data?.message) {
+      enqueueSnackbar(data?.message, { variant: "warning" });
+    }
+  }, [data]);
+
+  return (
+    <>
+      <GlobalProgress />
+      <SideMenuDrawerWrapper>
+        <div className="h-full flex flex-col">
+          <Navbar />
+          <div className="flex-[1_0_0] flex flex-col">
+            <div className="w-full flex-[1_0_0] h-full overflow-y-auto">
+              <Outlet />
+            </div>
+          </div>
+        </div>
+      </SideMenuDrawerWrapper>
+      <Scripts />
+      <LiveReload />
+    </>
+  );
+}
+
 function RootProviders({ children }: React.PropsWithChildren<{}>) {
   return (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    <QueryClientProvider client={queryClient}>
+      <SnackbarProvider
+        components={{
+          Container: SnackbardContainerComponent,
+          Item: SnackbarItemComponent,
+        }}
+        timeout={5000}
+      >
+        {children}
+      </SnackbarProvider>
+    </QueryClientProvider>
   );
 }
 
