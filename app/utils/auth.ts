@@ -18,7 +18,10 @@ export const REGISTER_SCHEMA = z
     password: z.string().nonempty().max(PASSWORD_MAX_LENGTH),
     passwordConfirmation: z.string().nonempty().max(PASSWORD_MAX_LENGTH),
   })
-  .refine((obj) => obj.password === obj.passwordConfirmation);
+  .refine((obj) => obj.password === obj.passwordConfirmation, {
+    message: "Invalid",
+    path: ["passwordConfirmation"],
+  });
 
 export const SIGNIN_SCHEMA = z.object({
   username: z

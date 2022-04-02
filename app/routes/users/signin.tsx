@@ -21,6 +21,7 @@ export const handle: PageHandle = {
 
 export const loader: ActionFunction = withRequestSession(
   async ({ session }) => {
+    // TOOD: generalize this routine (for "/users/register" too)
     const user = await getSessionUser(session);
     if (user) {
       session.flash("message", `Already logged in as ${user.username}`);

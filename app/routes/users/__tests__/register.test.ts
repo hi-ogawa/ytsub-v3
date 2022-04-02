@@ -1,4 +1,4 @@
-import assert = require("assert");
+import * as assert from "assert/strict";
 import { beforeEach, describe, expect, it } from "vitest";
 import { installGlobals } from "@remix-run/node";
 import { action } from "../register";
@@ -38,6 +38,73 @@ describe("register.action", () => {
       const session = await getSession(res.headers.get("set-cookie"));
       const sessionUser = await getSessionUser(session);
       expect(sessionUser).toEqual(found);
+    });
+  });
+
+  describe("error", () => {
+    it("username format", async () => {
+      const data = {
+        username: "r@@t",
+        password: "pass",
+        passwordConfirmation: "pass",
+      };
+      const res = await testAction(action, { data });
+      expect(res).toMatchInlineSnapshot(`
+        {
+          "errors": {
+            "fieldErrors": {
+              "username": [
+                "Invalid",
+              ],
+            },
+            "formErrors": [],
+          },
+          "message": "Invalid registration",
+        }
+      `);
+    });
+
+    it("password confirmation", async () => {
+      const data = {
+        username: "root",
+        password: "pass",
+        passwordConfirmation: "ssap",
+      };
+      const res = await testAction(action, { data });
+      expect(res).toMatchInlineSnapshot(`
+        {
+          "errors": {
+            "fieldErrors": {
+              "passwordConfirmation": [
+                "Invalid",
+              ],
+            },
+            "formErrors": [],
+          },
+          "message": "Invalid registration",
+        }
+      `);
+    });
+
+    it("unique username", async () => {
+      const data = {
+        username: "root",
+        password: "pass",
+        passwordConfirmation: "pass",
+      };
+      {
+        const res = await testAction(action, { data });
+        assert.ok(res instanceof Response);
+        expect(res.status).toBe(302);
+      }
+      {
+        const res = await testAction(action, { data });
+        expect(res).toMatchInlineSnapshot(`
+          {
+            "message": "Username 'root' is already taken",
+          }
+        `);
+      }
     });
   });
 });

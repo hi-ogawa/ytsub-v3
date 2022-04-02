@@ -14,6 +14,7 @@ import {
 } from "../../utils/auth";
 import { withRequestSession } from "../../utils/session-utils";
 import { PageHandle } from "../../utils/page-handle";
+import { mapOption } from "../../utils/misc";
 
 export const handle: PageHandle = {
   navBarTitle: "Register",
@@ -29,11 +30,22 @@ export const loader: ActionFunction = withRequestSession(
   }
 );
 
+interface ActionData {
+  message: string;
+  errors?: {
+    formErrors: string[];
+    fieldErrors: Record<string, string[]>;
+  };
+}
+
 export const action: ActionFunction = withRequestSession(
   async ({ request, session }) => {
     const parsed = REGISTER_SCHEMA.safeParse(await fromRequestForm(request));
     if (!parsed.success) {
-      return { success: false, message: "Invalid registration" };
+      return {
+        message: "Invalid registration",
+        errors: parsed.error.flatten(),
+      };
     }
     try {
       const user = await register(parsed.data);
@@ -41,7 +53,7 @@ export const action: ActionFunction = withRequestSession(
       return redirect("/");
     } catch (e) {
       if (e instanceof AppError) {
-        return { success: false, message: e.message };
+        return { message: e.message };
       }
       throw e;
     }
@@ -49,8 +61,10 @@ export const action: ActionFunction = withRequestSession(
 );
 
 export default function DefaultComponent() {
-  const actionData: { message: string } | undefined = useActionData();
+  const actionData: ActionData | undefined = useActionData();
   const [isValid, formProps] = useIsFormValid();
+
+  const errors = mapOption(actionData?.errors?.fieldErrors, Object.keys) ?? [];
 
   return (
     <div className="w-full p-4 flex justify-center">
@@ -67,7 +81,9 @@ export default function DefaultComponent() {
           <input
             type="text"
             name="username"
-            className="input input-bordered"
+            className={`input input-bordered ${
+              errors.includes("username") && "input-error"
+            }`}
             required
             maxLength={USERNAME_MAX_LENGTH}
           />
@@ -79,7 +95,9 @@ export default function DefaultComponent() {
           <input
             type="password"
             name="password"
-            className="input input-bordered"
+            className={`input input-bordered ${
+              errors.includes("password") && "input-error"
+            }`}
             required
             maxLength={PASSWORD_MAX_LENGTH}
           />
@@ -91,7 +109,9 @@ export default function DefaultComponent() {
           <input
             type="password"
             name="passwordConfirmation"
-            className="input input-bordered"
+            className={`input input-bordered ${
+              errors.includes("passwordConfirmation") && "input-error"
+            }`}
             required
             maxLength={PASSWORD_MAX_LENGTH}
           />
