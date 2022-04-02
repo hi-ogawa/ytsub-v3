@@ -1,13 +1,13 @@
 import * as childProcess from "child_process";
 import { promisify } from "util";
-import type { Page } from "@playwright/test";
+import type { Page, test as testDefault } from "@playwright/test";
 import { users } from "../db/models";
 
 export const exec = promisify(childProcess.exec);
 
 export function useUser(
-  test: typeof import("@playwright/test").test,
-  { username, password = "root" }: { username: string; password?: string }
+  test: typeof testDefault,
+  { username, password = "pass" }: { username: string; password?: string }
 ) {
   let cookie: any;
 
