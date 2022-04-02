@@ -1,9 +1,8 @@
-import { Form, useLoaderData } from "@remix-run/react";
+import { Form, useNavigate } from "@remix-run/react";
 import { LoaderFunction, redirect } from "@remix-run/server-runtime";
 import * as React from "react";
-import superjson from "superjson";
-import { UserTable } from "../../db/models";
-import { getSessionUser } from "../../utils/auth";
+import { useRootLoaderData } from "../../root";
+import { getSessionUserId } from "../../utils/auth";
 import { PageHandle } from "../../utils/page-handle";
 import { withRequestSession } from "../../utils/session-utils";
 
@@ -13,17 +12,24 @@ export const handle: PageHandle = {
 
 export const loader: LoaderFunction = withRequestSession(
   async ({ session }) => {
-    const user = await getSessionUser(session);
-    if (!user) {
+    // Check only user id in session on server
+    if (getSessionUserId(session) === undefined) {
       return redirect("/users/signin");
     }
-    // TODO: generalize this pattern
-    return superjson.serialize(user);
+    return null;
   }
 );
 
-export default function Profile() {
-  const data = superjson.deserialize<UserTable>(useLoaderData());
+export default function DefaultComponent() {
+  const data = useRootLoaderData();
+  const navigate = useNavigate();
+
+  // Check user data on client
+  React.useEffect(() => {
+    if (data.currentUser === undefined) {
+      navigate("/users/signin");
+    }
+  }, [data]);
 
   return (
     <div className="w-full p-4 flex justify-center">
@@ -38,7 +44,7 @@ export default function Profile() {
               <input
                 className="input input-bordered"
                 readOnly
-                value={data.username}
+                value={data.currentUser?.username}
                 data-test="me-username"
               />
             </div>
@@ -49,7 +55,7 @@ export default function Profile() {
               <input
                 className="input input-bordered"
                 readOnly
-                value={data.createdAt.toISOString()}
+                value={data.currentUser?.createdAt.toISOString()}
               />
             </div>
             <div className="form-control">

@@ -102,10 +102,16 @@ export function signoutSession(session: Session): void {
   session.unset(SESSION_USER_KEY);
 }
 
+export function getSessionUserId(session: Session): number | undefined {
+  const id = session.get(SESSION_USER_KEY);
+  if (id === undefined) return;
+  return id;
+}
+
 export async function getSessionUser(
   session: Session
 ): Promise<UserTable | undefined> {
-  const id = session.get(SESSION_USER_KEY);
-  if (typeof id !== "number") return;
+  const id = getSessionUserId(session);
+  if (id === undefined) return;
   return await users().select("*").where("id", id).first();
 }

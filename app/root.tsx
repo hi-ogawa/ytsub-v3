@@ -6,7 +6,6 @@ import {
   Meta,
   Outlet,
   Scripts,
-  useLoaderData,
   useMatches,
   useTransition,
 } from "@remix-run/react";
@@ -20,6 +19,7 @@ import { last } from "lodash";
 import * as React from "react";
 import { Code, Home, LogIn, Menu, Search, Settings, User } from "react-feather";
 import { QueryClient, QueryClientProvider } from "react-query";
+import superjson from "superjson";
 import {
   SnackbarItemComponent,
   SnackbarProvider,
@@ -55,17 +55,24 @@ export const meta: MetaFunction = () => {
   };
 };
 
-interface LoaderData {
+interface RootLoaderData {
   flash?: string;
   currentUser?: UserTable;
 }
 
+export function useRootLoaderData() {
+  const matches: Match[] = useMatches();
+  return superjson.deserialize(matches[0].data as any) as RootLoaderData;
+}
+
 export const loader: LoaderFunction = withRequestSession(
   async ({ session }) => {
-    return json({
-      currentUser: await getSessionUser(session),
-      flash: session.get("message"),
-    });
+    return json(
+      superjson.serialize({
+        currentUser: await getSessionUser(session),
+        flash: session.get("message"),
+      })
+    );
   }
 );
 
@@ -87,7 +94,7 @@ export default function DefaultComponent() {
 }
 
 function Root() {
-  const data = useLoaderData<LoaderData>();
+  const data = useRootLoaderData();
 
   // TODO: manage flash message better (variant, multiple messages, etc...)
   const { enqueueSnackbar } = useSnackbar();
