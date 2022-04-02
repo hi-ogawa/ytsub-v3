@@ -18,7 +18,7 @@ import {
 } from "@remix-run/server-runtime";
 import { last } from "lodash";
 import * as React from "react";
-import { Code, Home, LogIn, Menu, Search, User } from "react-feather";
+import { Code, Home, LogIn, Menu, Search, Settings, User } from "react-feather";
 import { QueryClient, QueryClientProvider } from "react-query";
 import {
   SnackbarItemComponent,
@@ -27,7 +27,9 @@ import {
   useSnackbar,
 } from "./components/snackbar";
 import { TopProgressBar } from "./components/top-progress-bar";
-import { PageHandle } from "./utils/page-handle";
+import { UserTable } from "./db/models";
+import { getSessionUser } from "./utils/auth";
+import { Match } from "./utils/page-handle";
 import { withRequestSession } from "./utils/session-utils";
 
 const ASSETS = {
@@ -53,13 +55,19 @@ export const meta: MetaFunction = () => {
   };
 };
 
-export const loader: LoaderFunction = withRequestSession(({ session }) => {
-  const message = session.get("message");
-  if (message) {
-    return json({ message });
+interface LoaderData {
+  flash?: string;
+  currentUser?: UserTable;
+}
+
+export const loader: LoaderFunction = withRequestSession(
+  async ({ session }) => {
+    return json({
+      currentUser: await getSessionUser(session),
+      flash: session.get("message"),
+    });
   }
-  return null;
-});
+);
 
 export default function DefaultComponent() {
   return (
@@ -79,21 +87,25 @@ export default function DefaultComponent() {
 }
 
 function Root() {
-  const data = useLoaderData() as { message: string } | undefined;
-  const { enqueueSnackbar } = useSnackbar();
+  const data = useLoaderData<LoaderData>();
 
+  // TODO: manage flash message better (variant, multiple messages, etc...)
+  const { enqueueSnackbar } = useSnackbar();
   React.useEffect(() => {
-    if (data?.message) {
-      enqueueSnackbar(data?.message, { variant: "warning" });
+    if (data?.flash) {
+      enqueueSnackbar(data?.flash, { variant: "warning" });
     }
   }, [data]);
+
+  const matches: Match[] = useMatches();
+  const { navBarTitle } = last(matches)?.handle ?? {};
 
   return (
     <>
       <GlobalProgress />
       <SideMenuDrawerWrapper>
         <div className="h-full flex flex-col">
-          <Navbar />
+          <Navbar title={navBarTitle} user={data.currentUser} />
           <div className="flex-[1_0_0] flex flex-col">
             <div className="w-full flex-[1_0_0] h-full overflow-y-auto">
               <Outlet />
@@ -155,10 +167,7 @@ function toggleDrawer(open?: boolean): void {
   }
 }
 
-function Navbar() {
-  const matches = useMatches();
-  const title = (last(matches)?.handle as PageHandle | undefined)?.navBarTitle;
-
+function Navbar({ title, user }: { title?: string; user?: UserTable }) {
   return (
     <header className="w-full h-12 flex-none bg-primary text-primary-content flex items-center px-4 py-2 shadow-lg z-10">
       <div className="flex-none pr-4">
@@ -174,6 +183,7 @@ function Navbar() {
         <SearchComponent />
       </div>
       <div className="flex-none pl-2">
+        {/* TODO: reimplement dropdown UI */}
         <div className="dropdown dropdown-end z-20">
           <label tabIndex={0} className="btn btn-sm btn-ghost">
             <User />
@@ -183,10 +193,17 @@ function Navbar() {
             className="dropdown-content menu rounded p-3 shadow w-48 bg-base-100 text-base-content"
           >
             <li>
-              <Link to={"/users/signin"}>
-                <LogIn />
-                Sign in
-              </Link>
+              {user ? (
+                <Link to={"/users/me"}>
+                  <Settings />
+                  Account
+                </Link>
+              ) : (
+                <Link to={"/users/signin"}>
+                  <LogIn />
+                  Sign in
+                </Link>
+              )}
             </li>
           </ul>
         </div>
@@ -201,6 +218,7 @@ interface SideMenuEntry {
   title: string;
 }
 
+// TODO: define all routes statically to catch typo and easier refactoring
 const SIDE_MENU_ENTRIES: SideMenuEntry[] = [
   {
     to: "/",
