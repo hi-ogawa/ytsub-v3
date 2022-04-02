@@ -33,11 +33,6 @@ export const loader: ActionFunction = withRequestSession(
 
 export const action: ActionFunction = withRequestSession(
   async ({ request, session }) => {
-    if (await getSessionUser(session)) {
-      // TODO: "Already logged in" snackbar
-      return redirect("/");
-    }
-
     const parsed = SIGNIN_SCHEMA.safeParse(await fromRequestForm(request));
     if (!parsed.success) {
       return { success: false, message: "Invalid sign in" };
