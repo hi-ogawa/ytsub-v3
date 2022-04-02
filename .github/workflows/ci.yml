@@ -55,7 +55,7 @@ jobs:
       - run: make docker/up db/reset/test
       - run: npm run test
 
-  integration:
+  test-e2e:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
