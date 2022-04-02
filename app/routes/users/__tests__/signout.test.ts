@@ -1,0 +1,51 @@
+import * as assert from "assert/strict";
+import { beforeAll, describe, expect, it } from "vitest";
+import { installGlobals } from "@remix-run/node";
+import { Session } from "@remix-run/server-runtime";
+import { action } from "../signout";
+import { testAction } from "../../__tests__/helper";
+import { UserTable, users } from "../../../db/models";
+import { commitSession, getSession } from "../../../utils/session.server";
+import { register, signinSession } from "../../../utils/auth";
+
+installGlobals();
+
+describe("signout.action", () => {
+  let user: UserTable;
+  let userSession: Session;
+  const credentials = { username: "root", password: "pass" };
+
+  beforeAll(async () => {
+    await users().truncate();
+    user = await register(credentials);
+    userSession = await getSession();
+    signinSession(userSession, user);
+  });
+
+  describe("success", () => {
+    it("basic", async () => {
+      const headers = { cookie: await commitSession(userSession) };
+      const res = await testAction(action, { headers });
+
+      // redirect to root
+      assert.ok(res instanceof Response);
+      expect(res.status).toBe(302);
+      expect(res.headers.get("location")).toBe("/");
+
+      // verify empty session user
+      const newSession = await getSession(res.headers.get("set-cookie"));
+      expect(newSession.data).toEqual({});
+    });
+  });
+
+  describe("error", () => {
+    it("no-session-user", async () => {
+      const res = await testAction(action, {});
+      expect(res).toMatchInlineSnapshot(`
+        {
+          "message": "Invalid sign out",
+        }
+      `);
+    });
+  });
+});

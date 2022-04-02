@@ -51,8 +51,8 @@ describe("signin.action", () => {
 
     it("not-found", async () => {
       const data = {
-        username: "toor",
-        password: "pass",
+        ...credentials,
+        username: "no-such-root",
       };
       const res = await testAction(action, { data });
       expect(res).toMatchInlineSnapshot(`
@@ -65,8 +65,8 @@ describe("signin.action", () => {
 
     it("wonrg-password", async () => {
       const data = {
-        username: "root",
-        password: "ssap",
+        ...credentials,
+        password: "no-such-pass",
       };
       const res = await testAction(action, { data });
       expect(res).toMatchInlineSnapshot(`

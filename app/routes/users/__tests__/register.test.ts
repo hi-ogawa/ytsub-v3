@@ -16,8 +16,9 @@ describe("register.action", () => {
 
   describe("success", () => {
     it("basic", async () => {
+      const username = "root";
       const data = {
-        username: "root",
+        username,
         password: "pass",
         passwordConfirmation: "pass",
       };
@@ -27,10 +28,10 @@ describe("register.action", () => {
         .where("username", data.username)
         .first();
       assert.ok(found);
-      assert.ok(res instanceof Response);
-      expect(found.username).toBe("root");
+      expect(found.username).toBe(username);
 
       // redirect to root
+      assert.ok(res instanceof Response);
       expect(res.status).toBe(302);
       expect(res.headers.get("location")).toBe("/");
 

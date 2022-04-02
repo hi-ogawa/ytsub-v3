@@ -12,13 +12,19 @@ export function testLoader(loader: LoaderFunction, { data }: { data: any }) {
   });
 }
 
-export function testAction(loader: ActionFunction, { data }: { data: any }) {
+export function testAction(
+  loader: ActionFunction,
+  { data = {}, headers = {} }: { data?: any; headers?: Record<string, string> }
+) {
   const serialized = qs.stringify(data, { allowDots: true });
   return loader({
     request: new Request(DUMMY_URL, {
       method: "POST",
       body: serialized,
-      headers: { "content-type": "application/x-www-form-urlencoded" },
+      headers: {
+        "content-type": "application/x-www-form-urlencoded",
+        ...headers,
+      },
     }),
     context: {},
     params: {},

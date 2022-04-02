@@ -5,7 +5,7 @@ import { withRequestSession } from "../../utils/session-utils";
 export const action: ActionFunction = withRequestSession(
   async ({ session }) => {
     if (!(await getSessionUser(session))) {
-      return { success: false, message: "Invalid sign out" };
+      return { message: "Invalid sign out" };
     }
     signoutSession(session);
     return redirect("/");
