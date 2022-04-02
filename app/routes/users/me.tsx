@@ -17,6 +17,7 @@ export const loader: LoaderFunction = withRequestSession(
     if (!user) {
       return redirect("/users/signin");
     }
+    // TODO: generalize this pattern
     return superjson.serialize(user);
   }
 );
