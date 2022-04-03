@@ -12,7 +12,10 @@ import {
   signinSession,
   verifySignin,
 } from "../../utils/auth";
-import { withRequestSession } from "../../utils/session-utils";
+import {
+  pushFlashMessage,
+  withRequestSession,
+} from "../../utils/session-utils";
 import { PageHandle } from "../../utils/page-handle";
 
 export const handle: PageHandle = {
@@ -24,7 +27,10 @@ export const loader: ActionFunction = withRequestSession(
     // TOOD: generalize this routine (for "/users/register" too)
     const user = await getSessionUser(session);
     if (user) {
-      session.flash("message", `Already logged in as ${user.username}`);
+      pushFlashMessage(session, {
+        content: `Already logged in as ${user.username}`,
+        variant: "error",
+      });
       return redirect("/users/me");
     }
     return null;

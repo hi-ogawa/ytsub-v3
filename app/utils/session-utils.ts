@@ -1,4 +1,5 @@
 import { LoaderFunction, Session } from "@remix-run/server-runtime";
+import type { Variant } from "../components/snackbar";
 import { commitSession, getSession } from "./session.server";
 
 // TODO: experiment with controller-style request handler
@@ -31,4 +32,25 @@ export function withRequestSession(
     }
     return result;
   };
+}
+
+export function pushSession<T>(
+  session: Session,
+  key: string,
+  item: T,
+  options: { flash: boolean }
+) {
+  const pushed = [...(session.data[key] ?? []), item];
+  (options.flash ? session.flash : session.set)(key, pushed);
+}
+
+export interface FlashMessage {
+  content: string;
+  variant?: Variant;
+}
+
+export function pushFlashMessage(session: Session, flashMessage: FlashMessage) {
+  pushSession<FlashMessage>(session, "flashMessages", flashMessage, {
+    flash: true,
+  });
 }

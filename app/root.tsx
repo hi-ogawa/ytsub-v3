@@ -41,7 +41,7 @@ import { TopProgressBar } from "./components/top-progress-bar";
 import { UserTable } from "./db/models";
 import { getSessionUser } from "./utils/auth";
 import { Match } from "./utils/page-handle";
-import { withRequestSession } from "./utils/session-utils";
+import { FlashMessage, withRequestSession } from "./utils/session-utils";
 
 const ASSETS = {
   "index.css": require("../build/tailwind/" +
@@ -67,13 +67,13 @@ export const meta: MetaFunction = () => {
 };
 
 interface RootLoaderData {
-  flash?: string;
   currentUser?: UserTable;
+  flashMessages: FlashMessage[];
 }
 
-export function useRootLoaderData() {
-  const matches: Match[] = useMatches();
-  return superjson.deserialize(matches[0].data as any) as RootLoaderData;
+export function useRootLoaderData(): RootLoaderData {
+  const [{ data }] = useMatches();
+  return React.useMemo(() => superjson.deserialize(data as any), [data]);
 }
 
 export const loader: LoaderFunction = withRequestSession(
@@ -81,7 +81,7 @@ export const loader: LoaderFunction = withRequestSession(
     return json(
       superjson.serialize({
         currentUser: await getSessionUser(session),
-        flash: session.get("message"),
+        flashMessages: session.get("flashMessages") ?? [],
       })
     );
   }
@@ -107,11 +107,10 @@ export default function DefaultComponent() {
 function Root() {
   const data = useRootLoaderData();
 
-  // TODO: manage flash message better (variant, multiple messages, etc...)
   const { enqueueSnackbar } = useSnackbar();
   React.useEffect(() => {
-    if (data?.flash) {
-      enqueueSnackbar(data?.flash, { variant: "warning" });
+    for (const message of data.flashMessages) {
+      enqueueSnackbar(message.content, { variant: message.variant });
     }
   }, [data]);
 

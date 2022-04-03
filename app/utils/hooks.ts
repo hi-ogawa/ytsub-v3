@@ -49,7 +49,9 @@ export function useIsFormValid() {
     setIsValid(!!ref.current?.checkValidity());
   }
 
-  return [isValid, { ref, onChange }] as const;
+  const formProps = { ref, onChange };
+
+  return [isValid, formProps] as const;
 }
 
 // Based on https://github.com/remix-run/remix/issues/180
