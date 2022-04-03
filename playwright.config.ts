@@ -4,6 +4,8 @@ const config: PlaywrightTestConfig = {
   testDir: "./app/__e2e__",
   use: {
     baseURL: "http://localhost:3001",
+    actionTimeout: 10_000,
+    navigationTimeout: 10_000,
   },
   projects: [
     {
