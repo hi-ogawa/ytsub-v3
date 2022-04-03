@@ -1,9 +1,6 @@
-import * as childProcess from "child_process";
-import { promisify } from "util";
 import type { Page, test as testDefault } from "@playwright/test";
 import { users } from "../db/models";
-
-export const exec = promisify(childProcess.exec);
+import { exec } from "../utils/node.server";
 
 export function useUser(
   test: typeof testDefault,
