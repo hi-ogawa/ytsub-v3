@@ -43,8 +43,8 @@ test.describe("signout", () => {
 
     // Signout from top menu
     await page.pause();
-    await page.locator('header >> data-test=user-menu').click();
-    await page.locator('header >> data-test=signout-form >> button').click();
+    await page.locator("header >> data-test=user-menu").click();
+    await page.locator("header >> data-test=signout-form >> button").click();
 
     // Not available "/users/me"
     await page.goto("/users/me");

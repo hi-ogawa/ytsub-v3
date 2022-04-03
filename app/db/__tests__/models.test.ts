@@ -12,18 +12,31 @@ describe("models", () => {
     expect(res).toMatchInlineSnapshot("[]");
   });
 
-  it("settings", async () => {
-    const data = {
-      username: "root",
-      passwordHash: "xyz",
-      settings: {
-        hello: "world",
-        x: [0, 1, 2, "y"],
-      } as any,
-    };
-    const [id] = await users().insert(data);
-    const res = await users().select("*").where("id", id).first();
-    assert.ok(res);
-    assert.deepEqual(res.settings, data.settings);
+  describe("settings", () => {
+    it("non-empty", async () => {
+      const data = {
+        username: "root",
+        passwordHash: "xyz",
+        settings: {
+          hello: "world",
+          x: [0, 1, 2, "y"],
+        } as any,
+      };
+      const [id] = await users().insert(data);
+      const res = await users().select("*").where("id", id).first();
+      assert.ok(res);
+      assert.deepEqual(res.settings, data.settings);
+    });
+
+    it("empty", async () => {
+      const data = {
+        username: "root",
+        passwordHash: "xyz",
+      };
+      const [id] = await users().insert(data);
+      const res = await users().select("*").where("id", id).first();
+      assert.ok(res);
+      assert.deepEqual(res.settings, {});
+    });
   });
 });

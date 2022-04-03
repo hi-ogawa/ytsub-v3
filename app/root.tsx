@@ -201,7 +201,11 @@ function Navbar({ title, user }: { title?: string; user?: UserTable }) {
       <div className="flex-none pl-2">
         {/* TODO: reimplement dropdown UI */}
         <div className="dropdown dropdown-end z-20">
-          <label tabIndex={0} className="btn btn-sm btn-ghost" data-test="user-menu">
+          <label
+            tabIndex={0}
+            className="btn btn-sm btn-ghost"
+            data-test="user-menu"
+          >
             <User />
           </label>
           <ul
@@ -217,7 +221,11 @@ function Navbar({ title, user }: { title?: string; user?: UserTable }) {
                   </Link>
                 </li>
                 <li>
-                  <Form method="post" action="/users/signout" data-test="signout-form">
+                  <Form
+                    method="post"
+                    action="/users/signout"
+                    data-test="signout-form"
+                  >
                     <button type="submit" className="flex gap-3">
                       <LogOut />
                       Sign out

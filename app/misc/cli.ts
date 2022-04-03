@@ -66,7 +66,7 @@ cli
   .option("--show-schema", "[boolean]", { default: false })
   .action(clieDbTestMigrations);
 
-async function clieDbTestMigrations(showSchema: boolean) {
+async function clieDbTestMigrations(options: { showSchema: boolean }) {
   const [completed, pending] = (await client.migrate.list()) as [
     { name: string }[],
     { file: string }[]
@@ -104,7 +104,7 @@ async function clieDbTestMigrations(showSchema: boolean) {
     downs.unshift(await getSchema_());
   }
 
-  if (showSchema) {
+  if (options.showSchema) {
     console.log(JSON.stringify(zip(ups, downs), null, 2));
   }
 
