@@ -1,3 +1,5 @@
 /node_modules
 /build
 /pnpm-lock.yaml
+/.patch/node_modules
+/.patch/package-lock.json

@@ -1,6 +1,10 @@
 import { memoize, sortBy } from "lodash";
 import { XMLParser } from "fast-xml-parser";
-import { FILTERED_LANGUAGE_CODES, languageCodeToName } from "./language";
+import {
+  FILTERED_LANGUAGE_CODES,
+  LanguageCode,
+  languageCodeToName,
+} from "./language";
 import {
   CaptionConfig,
   CaptionConfigOptions,
@@ -92,6 +96,41 @@ export function captionConfigToUrl(
     return url;
   }
   return;
+}
+
+function findCaptionConfig(
+  videoMetadata: VideoMetadata,
+  code: LanguageCode
+): CaptionConfig | undefined {
+  const { captionTracks } =
+    videoMetadata.captions.playerCaptionsTracklistRenderer;
+
+  // Manual caption
+  let manual = captionTracks.find(({ vssId }) => vssId.startsWith("." + code));
+  if (manual) {
+    return { id: manual.vssId };
+  }
+
+  // Machine speech recognition capion
+  let machine = captionTracks.find(({ vssId }) =>
+    vssId.startsWith("a." + code)
+  );
+  if (machine) {
+    return { id: machine.vssId };
+  }
+  return;
+}
+
+export function findCaptionConfigPair(
+  videoMetadata: VideoMetadata,
+  [code1, code2]: [LanguageCode, LanguageCode]
+): [CaptionConfig | undefined, CaptionConfig | undefined] {
+  const found1 = findCaptionConfig(videoMetadata, code1);
+  let found2 = findCaptionConfig(videoMetadata, code2);
+  if (found1 && !found2) {
+    found2 = { ...found1, translation: code2 };
+  }
+  return [found1, found2];
 }
 
 export function ttmlToEntries(

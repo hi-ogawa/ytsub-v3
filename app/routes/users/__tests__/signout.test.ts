@@ -34,7 +34,16 @@ describe("signout.action", () => {
 
       // verify empty session user
       const newSession = await getSession(res.headers.get("set-cookie"));
-      expect(newSession.data).toEqual({});
+      expect(newSession.data).toMatchInlineSnapshot(`
+        {
+          "__flash_flashMessages__": [
+            {
+              "content": "Signed out successfuly",
+              "variant": "success",
+            },
+          ],
+        }
+      `);
     });
   });
 

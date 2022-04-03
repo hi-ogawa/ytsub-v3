@@ -15,7 +15,7 @@ NODE_ENV=production bash scripts/copy-assets.sh
 NODE_ENV=production BUILD_NETLIFY=1 npx remix build
 
 # build "storybook" static app
-npx vite build --outDir build/remix/production/public/ui-dev --base ui-dev
+npx vite build --outDir build/remix/production/public/ui-dev --base /ui-dev/
 
 # run esbuild again manually to bundle server app
 # - skip `mysql` which appears in https://github.com/knex/knex/blob/3616791ac2a6d17d55b29feed6a503a793d7c488/lib/dialects/mysql/index.js#L23

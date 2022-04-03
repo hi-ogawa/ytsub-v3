@@ -1,3 +1,4 @@
+import { Transition } from "@headlessui/react";
 import {
   Form,
   Link,
@@ -6,7 +7,6 @@ import {
   Meta,
   Outlet,
   Scripts,
-  useLoaderData,
   useMatches,
   useTransition,
 } from "@remix-run/react";
@@ -18,8 +18,19 @@ import {
 } from "@remix-run/server-runtime";
 import { last } from "lodash";
 import * as React from "react";
-import { Code, Home, LogIn, Menu, Search, Settings, User } from "react-feather";
+import {
+  Code,
+  Home,
+  LogIn,
+  LogOut,
+  Menu,
+  Search,
+  Settings,
+  User,
+} from "react-feather";
 import { QueryClient, QueryClientProvider } from "react-query";
+import superjson from "superjson";
+import { Popover } from "./components/popover";
 import {
   SnackbarItemComponent,
   SnackbarProvider,
@@ -30,6 +41,7 @@ import { TopProgressBar } from "./components/top-progress-bar";
 import { UserTable } from "./db/models";
 import { getSessionUser } from "./utils/auth";
 import { Match } from "./utils/page-handle";
+import { useRootLoaderData } from "./utils/root-utils";
 import { withRequestSession } from "./utils/session-utils";
 
 const ASSETS = {
@@ -55,17 +67,14 @@ export const meta: MetaFunction = () => {
   };
 };
 
-interface LoaderData {
-  flash?: string;
-  currentUser?: UserTable;
-}
-
 export const loader: LoaderFunction = withRequestSession(
   async ({ session }) => {
-    return json({
-      currentUser: await getSessionUser(session),
-      flash: session.get("message"),
-    });
+    return json(
+      superjson.serialize({
+        currentUser: await getSessionUser(session),
+        flashMessages: session.get("flashMessages") ?? [],
+      })
+    );
   }
 );
 
@@ -87,13 +96,12 @@ export default function DefaultComponent() {
 }
 
 function Root() {
-  const data = useLoaderData<LoaderData>();
+  const data = useRootLoaderData();
 
-  // TODO: manage flash message better (variant, multiple messages, etc...)
   const { enqueueSnackbar } = useSnackbar();
   React.useEffect(() => {
-    if (data?.flash) {
-      enqueueSnackbar(data?.flash, { variant: "warning" });
+    for (const message of data.flashMessages) {
+      enqueueSnackbar(message.content, { variant: message.variant });
     }
   }, [data]);
 
@@ -183,30 +191,65 @@ function Navbar({ title, user }: { title?: string; user?: UserTable }) {
         <SearchComponent />
       </div>
       <div className="flex-none pl-2">
-        {/* TODO: reimplement dropdown UI */}
-        <div className="dropdown dropdown-end z-20">
-          <label tabIndex={0} className="btn btn-sm btn-ghost">
-            <User />
-          </label>
-          <ul
-            tabIndex={0}
-            className="dropdown-content menu rounded p-3 shadow w-48 bg-base-100 text-base-content"
-          >
-            <li>
-              {user ? (
-                <Link to={"/users/me"}>
-                  <Settings />
-                  Account
-                </Link>
-              ) : (
-                <Link to={"/users/signin"}>
-                  <LogIn />
-                  Sign in
-                </Link>
-              )}
-            </li>
-          </ul>
-        </div>
+        <Popover
+          placement="bottom-end"
+          reference={({ props }) => (
+            <button
+              className="btn btn-sm btn-ghost"
+              data-test="user-menu"
+              {...props}
+            >
+              <User />
+            </button>
+          )}
+          floating={({ open, setOpen, props }) => (
+            <Transition
+              show={open}
+              unmount={false}
+              className="transition duration-200"
+              enterFrom="scale-90 opacity-0"
+              enterTo="scale-100 opacity-100"
+              leaveFrom="scale-100 opacity-100"
+              leaveTo="scale-90 opacity-0"
+              {...props}
+            >
+              <ul className="menu rounded p-3 shadow w-48 bg-base-100 text-base-content">
+                {user ? (
+                  <>
+                    <li>
+                      <Link to={"/users/me"} onClick={() => setOpen(false)}>
+                        <Settings />
+                        Account
+                      </Link>
+                    </li>
+                    <li>
+                      <Form
+                        method="post"
+                        action="/users/signout"
+                        data-test="signout-form"
+                        onClick={() => setOpen(false)}
+                      >
+                        <button type="submit" className="flex gap-3">
+                          <LogOut />
+                          Sign out
+                        </button>
+                      </Form>
+                    </li>
+                  </>
+                ) : (
+                  <>
+                    <li>
+                      <Link to={"/users/signin"} onClick={() => setOpen(false)}>
+                        <LogIn />
+                        Sign in
+                      </Link>
+                    </li>
+                  </>
+                )}
+              </ul>
+            </Transition>
+          )}
+        />
       </div>
     </header>
   );

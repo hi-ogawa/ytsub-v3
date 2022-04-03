@@ -13,7 +13,7 @@ jobs:
         with:
           node-version: "16.14.0"
       - run: pnpm run install-with-patch -- --frozen-lockfile
-      - run: npm run lint
+      - run: npm run lint:check
 
   tsc:
     runs-on: ubuntu-20.04
@@ -68,7 +68,21 @@ jobs:
       - run: pnpm run install-with-patch -- --frozen-lockfile
       - run: npx playwright install --with-deps
       - run: make docker/up db/reset/test
-      - run: npm run test:e2e
+      - run: npm run test-e2e
+
+  test-migrations:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - uses: pnpm/action-setup@v2.0.1
+        with:
+          version: "6.29.1"
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "16.14.0"
+      - run: pnpm run install-with-patch -- --frozen-lockfile
+      - run: make docker/up db/recreate
+      - run: npm run cli -- db:test-migrations
 
   lint-misc:
     runs-on: ubuntu-20.04

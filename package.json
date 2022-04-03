@@ -19,8 +19,8 @@
     "lint:check": "npm run prettier:check && npm run eslint:check",
     "test": "NODE_ENV=test vitest --run",
     "test:watch": "NODE_ENV=test vitest",
-    "test:e2e": "NODE_ENV=test playwright test",
-    "test:e2e:debug": "NODE_ENV=test PWDEBUG=1 playwright test",
+    "test-e2e": "NODE_ENV=test playwright test",
+    "test-e2e:debug": "NODE_ENV=test PWDEBUG=1 playwright test",
     "netlify:build": "bash scripts/netlify.sh",
     "netlify:build:deploy": "npm run netlify:build && netlify deploy --prod",
     "cli": "node --require esbuild-register app/misc/cli.ts",
@@ -28,7 +28,8 @@
     "qrcode": "qrcode-terminal http://$(ip -o -4 address list wlan0 | awk '{print $4}' | cut -d / -f 1):3000"
   },
   "dependencies": {
-    "@headlessui/react": "^1.5.0",
+    "@floating-ui/react-dom-interactions": "^0.0.15",
+    "@headlessui/react": "^0.0.0-insiders.ab6310c",
     "@netlify/functions": "^0.10.0",
     "@remix-run/netlify": "^1.2.2",
     "@remix-run/react": "^1.2.2",
