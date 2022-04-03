@@ -17,7 +17,16 @@ import {
 } from "@remix-run/server-runtime";
 import { last } from "lodash";
 import * as React from "react";
-import { Code, Home, LogIn, Menu, Search, Settings, User } from "react-feather";
+import {
+  Code,
+  Home,
+  LogIn,
+  LogOut,
+  Menu,
+  Search,
+  Settings,
+  User,
+} from "react-feather";
 import { QueryClient, QueryClientProvider } from "react-query";
 import superjson from "superjson";
 import {
@@ -192,26 +201,40 @@ function Navbar({ title, user }: { title?: string; user?: UserTable }) {
       <div className="flex-none pl-2">
         {/* TODO: reimplement dropdown UI */}
         <div className="dropdown dropdown-end z-20">
-          <label tabIndex={0} className="btn btn-sm btn-ghost">
+          <label tabIndex={0} className="btn btn-sm btn-ghost" data-test="user-menu">
             <User />
           </label>
           <ul
             tabIndex={0}
             className="dropdown-content menu rounded p-3 shadow w-48 bg-base-100 text-base-content"
           >
-            <li>
-              {user ? (
-                <Link to={"/users/me"}>
-                  <Settings />
-                  Account
-                </Link>
-              ) : (
-                <Link to={"/users/signin"}>
-                  <LogIn />
-                  Sign in
-                </Link>
-              )}
-            </li>
+            {user ? (
+              <>
+                <li>
+                  <Link to={"/users/me"}>
+                    <Settings />
+                    Account
+                  </Link>
+                </li>
+                <li>
+                  <Form method="post" action="/users/signout" data-test="signout-form">
+                    <button type="submit" className="flex gap-3">
+                      <LogOut />
+                      Sign out
+                    </button>
+                  </Form>
+                </li>
+              </>
+            ) : (
+              <>
+                <li>
+                  <Link to={"/users/signin"}>
+                    <LogIn />
+                    Sign in
+                  </Link>
+                </li>
+              </>
+            )}
           </ul>
         </div>
       </div>

@@ -1,4 +1,4 @@
-import { Form, useNavigate } from "@remix-run/react";
+import { useNavigate } from "@remix-run/react";
 import { LoaderFunction, redirect } from "@remix-run/server-runtime";
 import * as React from "react";
 import { useRootLoaderData } from "../../root";
@@ -57,17 +57,6 @@ export default function DefaultComponent() {
                 readOnly
                 value={data.currentUser?.createdAt.toISOString()}
               />
-            </div>
-            <div className="form-control">
-              <label className="label">
-                <div className="label-text">
-                  <Form method="post" action="/users/signout">
-                    <button type="submit" className="link">
-                      Sign out
-                    </button>
-                  </Form>
-                </div>
-              </label>
             </div>
           </div>
         </div>

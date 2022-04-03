@@ -32,3 +32,22 @@ test.describe("/users/me", () => {
     await expect(page).toHaveURL("/users/signin");
   });
 });
+
+test.describe("signout", () => {
+  const username = "root-me";
+  const signin = useUser(test, { username });
+
+  test("basic", async ({ page }) => {
+    await signin(page);
+    await page.goto("/");
+
+    // Signout from top menu
+    await page.pause();
+    await page.locator('header >> data-test=user-menu').click();
+    await page.locator('header >> data-test=signout-form >> button').click();
+
+    // Not available "/users/me"
+    await page.goto("/users/me");
+    await expect(page).toHaveURL("/users/signin");
+  });
+});
