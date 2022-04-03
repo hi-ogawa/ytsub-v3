@@ -34,7 +34,7 @@ export const SIGNIN_SCHEMA = z.object({
 
 const BCRYPT_ROUNDS = 10;
 
-function prehash(password: string): string {
+export function sha256(password: string): string {
   return crypto
     .createHash("sha256")
     .update(password, "utf8")
@@ -43,14 +43,14 @@ function prehash(password: string): string {
 }
 
 export async function toPasswordHash(password: string): Promise<string> {
-  return await bcrypt.hash(prehash(password), BCRYPT_ROUNDS);
+  return await bcrypt.hash(sha256(password), BCRYPT_ROUNDS);
 }
 
 export async function verifyPassword(
   password: string,
   passwordHash: string
 ): Promise<boolean> {
-  return bcrypt.compare(prehash(password), passwordHash);
+  return bcrypt.compare(sha256(password), passwordHash);
 }
 
 export async function register(data: {
