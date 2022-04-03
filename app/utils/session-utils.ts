@@ -2,8 +2,6 @@ import { LoaderFunction, Session } from "@remix-run/server-runtime";
 import type { Variant } from "../components/snackbar";
 import { commitSession, getSession } from "./session.server";
 
-// TODO: experiment with controller-style request handler
-
 export async function getRequestSession(request: Request): Promise<Session> {
   return getSession(request.headers.get("cookie"));
 }
@@ -47,6 +45,8 @@ export function pushSession<T>(
 export interface FlashMessage {
   content: string;
   variant?: Variant;
+  // TODO: add id for testing?
+  // dataTest?: string;
 }
 
 export function pushFlashMessage(session: Session, flashMessage: FlashMessage) {

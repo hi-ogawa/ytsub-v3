@@ -36,8 +36,8 @@ test.describe("/users/me", () => {
     await expect(page.locator("text=Save")).toBeEnabled();
     await page.locator("text=Save").click();
 
-    // page reload and button is disabled again
-    await page.waitForNavigation({ url: "/users/me" });
+    // button is disabled again after successful update
+    await page.waitForSelector(`"Settings updated successfuly"`);
     await expect(page.locator("text=Save")).toBeDisabled();
     await expect(page.locator('select[name="language1"]')).toHaveValue("fr");
     await expect(page.locator('select[name="language2"]')).toHaveValue("en");

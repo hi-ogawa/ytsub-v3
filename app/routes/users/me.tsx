@@ -1,19 +1,13 @@
 import {
   Form,
   useActionData,
-  useNavigate,
+  useLoaderData,
   useTransition,
 } from "@remix-run/react";
-import {
-  ActionFunction,
-  LoaderFunction,
-  json,
-  redirect,
-} from "@remix-run/server-runtime";
+import { ActionFunction, json, redirect } from "@remix-run/server-runtime";
 import * as React from "react";
 import { z } from "zod";
 import { users } from "../../db/models";
-import { useRootLoaderData } from "../../utils/root-utils";
 import { getSessionUserId } from "../../utils/auth";
 import { useIsFormValid } from "../../utils/hooks";
 import {
@@ -28,20 +22,24 @@ import {
 } from "../../utils/session-utils";
 import { fromRequestForm } from "../../utils/url-data";
 import type { UserTable } from "../../db/models";
+import {
+  Controller,
+  deserialize,
+  makeLoader,
+} from "../../utils/controller-utils";
 
 export const handle: PageHandle = {
   navBarTitle: "Account",
 };
 
-export const loader: LoaderFunction = withRequestSession(
-  async ({ session }) => {
-    // Check only user id in session on server
-    if (getSessionUserId(session) === undefined) {
-      return redirect("/users/signin");
-    }
-    return null;
+export const loader = makeLoader(Controller, async function () {
+  // TODO: here we're loading the same data as root loader for simplicity
+  const user = await this.currentUser();
+  if (user) {
+    return this.serialize(user);
   }
-);
+  return redirect("/users/signin");
+});
 
 const ACTION_SCHEMA = z.object({
   language1: z.string().nonempty(),
@@ -74,20 +72,7 @@ export const action: ActionFunction = withRequestSession(
 );
 
 export default function DefaultComponent() {
-  const { currentUser } = useRootLoaderData();
-  const navigate = useNavigate();
-
-  // Check root loader's user data on client
-  React.useEffect(() => {
-    if (currentUser === undefined) {
-      navigate("/users/signin");
-    }
-  }, [currentUser]);
-
-  return currentUser ? <ImplComponent currentUser={currentUser} /> : null;
-}
-
-export function ImplComponent({ currentUser }: { currentUser: UserTable }) {
+  const currentUser: UserTable = deserialize(useLoaderData());
   const transition = useTransition();
   const actionData = useActionData<{ success: boolean }>();
   const [changed, setChanged] = React.useState(false);
@@ -100,10 +85,9 @@ export function ImplComponent({ currentUser }: { currentUser: UserTable }) {
     }
   }, [actionData]);
 
-  // TODO:
-  // this would cause loading state when loading unrelated data (e.g. signout)
-  // but, matching by `transition.location.pathname === "/users/me"` also misses loading of the root loader.
-  const isLoading = transition.state !== "idle";
+  const isLoading =
+    transition.state !== "idle" &&
+    transition.location?.pathname === "/users/me";
 
   return (
     <div className="w-full p-4 flex justify-center">

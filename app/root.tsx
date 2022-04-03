@@ -10,12 +10,7 @@ import {
   useMatches,
   useTransition,
 } from "@remix-run/react";
-import {
-  LinksFunction,
-  LoaderFunction,
-  MetaFunction,
-  json,
-} from "@remix-run/server-runtime";
+import { LinksFunction, MetaFunction } from "@remix-run/server-runtime";
 import { last } from "lodash";
 import * as React from "react";
 import {
@@ -29,7 +24,6 @@ import {
   User,
 } from "react-feather";
 import { QueryClient, QueryClientProvider } from "react-query";
-import superjson from "superjson";
 import { Popover } from "./components/popover";
 import {
   SnackbarItemComponent,
@@ -39,10 +33,9 @@ import {
 } from "./components/snackbar";
 import { TopProgressBar } from "./components/top-progress-bar";
 import { UserTable } from "./db/models";
-import { getSessionUser } from "./utils/auth";
+import { Controller, makeLoader } from "./utils/controller-utils";
 import { Match } from "./utils/page-handle";
-import { useRootLoaderData } from "./utils/root-utils";
-import { withRequestSession } from "./utils/session-utils";
+import { RootLoaderData, useRootLoaderData } from "./utils/root-utils";
 
 const ASSETS = {
   "index.css": require("../build/tailwind/" +
@@ -67,16 +60,13 @@ export const meta: MetaFunction = () => {
   };
 };
 
-export const loader: LoaderFunction = withRequestSession(
-  async ({ session }) => {
-    return json(
-      superjson.serialize({
-        currentUser: await getSessionUser(session),
-        flashMessages: session.get("flashMessages") ?? [],
-      })
-    );
-  }
-);
+export const loader = makeLoader(Controller, async function () {
+  const data: RootLoaderData = {
+    currentUser: await this.currentUser(),
+    flashMessages: this.session.get("flashMessages") ?? [],
+  };
+  return this.serialize(data);
+});
 
 export default function DefaultComponent() {
   return (
