@@ -46,8 +46,12 @@ test.describe("signout", () => {
     await page.locator("header >> data-test=user-menu").click();
     await page.locator("header >> data-test=signout-form >> button").click();
 
+    // Find signin menu
+    await page.waitForNavigation({ url: "/", waitUntil: "networkidle" });
+    await page.waitForSelector(`header >> a[href="/users/signin"]`);
+
     // Not available "/users/me"
-    await page.goto("/users/me");
+    await page.goto("/users/me", { waitUntil: "networkidle" });
     await expect(page).toHaveURL("/users/signin");
   });
 });
