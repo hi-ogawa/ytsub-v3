@@ -33,8 +33,9 @@ test.describe("/users/me", () => {
   });
 });
 
+// TODO: flaky?
 test.describe("signout", () => {
-  const username = "root-me";
+  const username = "root-signout";
   const signin = useUser(test, { username });
 
   test("basic", async ({ page }) => {
@@ -42,13 +43,13 @@ test.describe("signout", () => {
     await page.goto("/");
 
     // Signout from top menu
-    await page.pause();
     await page.locator("header >> data-test=user-menu").click();
     await page.locator("header >> data-test=signout-form >> button").click();
 
     // Find signin menu
-    await page.waitForNavigation({ url: "/", waitUntil: "networkidle" });
-    await page.waitForSelector(`header >> a[href="/users/signin"]`);
+    await page.waitForSelector(`header >> a[href="/users/signin"]`, {
+      timeout: 10_000,
+    });
 
     // Not available "/users/me"
     await page.goto("/users/me", { waitUntil: "networkidle" });
