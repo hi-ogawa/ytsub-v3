@@ -8,7 +8,7 @@ import {
 import * as React from "react";
 import { z } from "zod";
 import { users } from "../../db/models";
-import { useRootLoaderData } from "../../root";
+import { useRootLoaderData } from "../../utils/root-utils";
 import { getSessionUserId } from "../../utils/auth";
 import { useIsFormValid } from "../../utils/hooks";
 import {

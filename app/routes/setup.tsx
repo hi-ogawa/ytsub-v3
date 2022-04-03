@@ -2,11 +2,16 @@ import * as React from "react";
 import { LoaderFunction, json } from "@remix-run/server-runtime";
 import { Form, useCatch, useLoaderData } from "@remix-run/react";
 import { z } from "zod";
-import { fetchVideoMetadata, toCaptionConfigOptions } from "../utils/youtube";
+import {
+  fetchVideoMetadata,
+  findCaptionConfigPair,
+  toCaptionConfigOptions,
+} from "../utils/youtube";
 import { CaptionConfig, VideoMetadata } from "../utils/types";
 import { useIsFormValid } from "../utils/hooks";
 import { fromRequestQuery } from "../utils/url-data";
 import { PageHandle } from "../utils/page-handle";
+import { useRootLoaderData } from "../utils/root-utils";
 
 export const handle: PageHandle = {
   navBarTitle: "Select languages",
@@ -28,9 +33,23 @@ export const loader: LoaderFunction = async ({ request }) => {
 };
 
 export default function Component() {
+  const rootData = useRootLoaderData();
   const videoMetadata: VideoMetadata = useLoaderData();
-
   const [isValid, formProps] = useIsFormValid();
+
+  let defaultValues = ["", ""];
+  const { language1, language2 } = rootData.currentUser?.settings ?? {};
+  if (language1 && language2) {
+    const pair = findCaptionConfigPair(videoMetadata, [
+      language1,
+      language2,
+    ] as any);
+    pair.forEach((config, i) => {
+      if (config) {
+        defaultValues[i] = JSON.stringify(config);
+      }
+    });
+  }
 
   return (
     <div className="w-full p-4 flex justify-center">
@@ -85,7 +104,7 @@ export default function Component() {
               <LanguageSelectComponent
                 className="select select-bordered font-normal"
                 required
-                defaultValue=""
+                defaultValue={defaultValues[0]}
                 videoMetadata={videoMetadata}
                 propertyName="language1"
               />
@@ -97,7 +116,7 @@ export default function Component() {
               <LanguageSelectComponent
                 className="select select-bordered font-normal"
                 required
-                defaultValue=""
+                defaultValue={defaultValues[1]}
                 videoMetadata={videoMetadata}
                 propertyName="language2"
               />
@@ -128,6 +147,7 @@ function LanguageSelectComponent({
   const ref0 = React.useRef<HTMLSelectElement>();
   const ref1 = React.useRef<HTMLInputElement>();
   const ref2 = React.useRef<HTMLInputElement>();
+  React.useEffect(copy, []);
 
   function copy() {
     const value = ref0.current?.value;

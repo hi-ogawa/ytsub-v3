@@ -41,7 +41,8 @@ import { TopProgressBar } from "./components/top-progress-bar";
 import { UserTable } from "./db/models";
 import { getSessionUser } from "./utils/auth";
 import { Match } from "./utils/page-handle";
-import { FlashMessage, withRequestSession } from "./utils/session-utils";
+import { useRootLoaderData } from "./utils/root-utils";
+import { withRequestSession } from "./utils/session-utils";
 
 const ASSETS = {
   "index.css": require("../build/tailwind/" +
@@ -65,16 +66,6 @@ export const meta: MetaFunction = () => {
       "width=device-width, height=device-height, initial-scale=1, maximum-scale=1, user-scalable=no",
   };
 };
-
-interface RootLoaderData {
-  currentUser?: UserTable;
-  flashMessages: FlashMessage[];
-}
-
-export function useRootLoaderData(): RootLoaderData {
-  const [{ data }] = useMatches();
-  return React.useMemo(() => superjson.deserialize(data as any), [data]);
-}
 
 export const loader: LoaderFunction = withRequestSession(
   async ({ session }) => {
