@@ -1,4 +1,9 @@
-import { Form, useNavigate, useTransition } from "@remix-run/react";
+import {
+  Form,
+  useActionData,
+  useNavigate,
+  useTransition,
+} from "@remix-run/react";
 import {
   ActionFunction,
   LoaderFunction,
@@ -55,7 +60,7 @@ export const action: ActionFunction = withRequestSession(
         content: "Fail to update settings",
         variant: "error",
       });
-      return json(null);
+      return json({ success: false });
     }
     await users()
       .update({ settings: JSON.stringify(parsed.data) as any })
@@ -64,7 +69,7 @@ export const action: ActionFunction = withRequestSession(
       content: "Settings updated successfuly",
       variant: "success",
     });
-    return redirect("/users/me");
+    return json({ success: true });
   }
 );
 
@@ -84,24 +89,33 @@ export default function DefaultComponent() {
 
 export function ImplComponent({ currentUser }: { currentUser: UserTable }) {
   const transition = useTransition();
+  const actionData = useActionData<{ success: boolean }>();
   const [changed, setChanged] = React.useState(false);
   const [isValid, formProps] = useIsFormValid();
+
+  // Reset form on success
+  React.useEffect(() => {
+    if (actionData?.success) {
+      setChanged(false);
+    }
+  }, [actionData]);
+
+  // TODO:
+  // this would cause loading state when loading unrelated data (e.g. signout)
+  // but, matching by `transition.location.pathname === "/users/me"` also misses loading of the root loader.
+  const isLoading = transition.state !== "idle";
 
   return (
     <div className="w-full p-4 flex justify-center">
       <Form
+        replace
         method="post"
-        action="/users/me"
         className="h-full w-full max-w-md rounded-lg border border-base-300"
         {...formProps}
         onChange={() => {
           formProps.onChange();
           setChanged(true);
         }}
-        // TODO:
-        // for now, relies on root flash messages to give feedback to users,
-        // which is much simpler than dealing with `useActionData`
-        reloadDocument
       >
         <div className="h-full p-6 flex flex-col">
           <div className="text-xl font-bold mb-2">Account</div>
@@ -154,10 +168,10 @@ export function ImplComponent({ currentUser }: { currentUser: UserTable }) {
             <div className="form-control pt-2">
               <button
                 type="submit"
-                className="btn"
-                disabled={!isValid || !changed || transition.state !== "idle"}
+                className={`btn ${isLoading && "loading"}`}
+                disabled={!isValid || !changed || isLoading}
               >
-                Save
+                {!isLoading && "Save"}
               </button>
             </div>
           </div>
