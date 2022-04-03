@@ -3,7 +3,6 @@
  * @returns { Promise<void> }
  */
 exports.up = async function (knex) {
-  // TODO: add NOT NULL for createdAt/updatedAt
   await knex.raw(`
     CREATE TABLE users (
       id           BIGINT AUTO_INCREMENT,

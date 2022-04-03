@@ -1,7 +1,7 @@
 import * as assert from "assert/strict";
 import { installGlobals } from "@remix-run/node";
 import { cac } from "cac";
-import { range } from "lodash";
+import { range, zip } from "lodash";
 import { register, signinSession, verifySignin } from "../utils/auth";
 import { commitSession, getSession } from "../utils/session.server";
 import { client } from "../db/client.server";
@@ -61,20 +61,25 @@ async function getSchema(options: {
   return result;
 }
 
-cli.command("db:test-migrations", "test reversibility").action(async () => {
+cli
+  .command("db:test-migrations", "test reversibility")
+  .option("--show-schema", "[boolean]", { default: false })
+  .action(clieDbTestMigrations);
+
+async function clieDbTestMigrations(showSchema: boolean) {
   const [completed, pending] = (await client.migrate.list()) as [
     { name: string }[],
     { file: string }[]
   ];
 
-  console.log(":: list completed");
+  console.error(":: list completed");
   for (const { name } of completed) {
-    console.log(name);
+    console.error(name);
   }
 
-  console.log(":: list pending");
+  console.error(":: list pending");
   for (const { file } of pending) {
-    console.log(file);
+    console.error(file);
   }
 
   const ups = [];
@@ -83,27 +88,31 @@ cli.command("db:test-migrations", "test reversibility").action(async () => {
   const getSchema_ = () =>
     getSchema({ showCreateTable: false, includeKnex: false });
 
-  console.log(":: running migrations");
+  console.error(":: running migrations");
 
   ups.push(await getSchema_());
   for (const i of range(pending.length)) {
-    console.log(`(⇑:${i + 1}/${pending.length}) ${pending[i].file}`);
+    console.error(`(⇑:${i + 1}/${pending.length}) ${pending[i].file}`);
     await exec("npx knex migrate:up");
     ups.push(await getSchema_());
   }
 
   downs.unshift(await getSchema_());
   for (const i of range(pending.length)) {
-    console.log(`(⇓:${i + 1}/${pending.length}) ${pending.at(-i - 1)?.file}`);
+    console.error(`(⇓:${i + 1}/${pending.length}) ${pending.at(-i - 1)?.file}`);
     await exec("npx knex migrate:down");
     downs.unshift(await getSchema_());
   }
 
+  if (showSchema) {
+    console.log(JSON.stringify(zip(ups, downs), null, 2));
+  }
+
   assert.deepEqual(ups, downs);
-  console.log(":: success");
+  console.error(":: success");
 
   await client.destroy();
-});
+}
 
 cli
   .command("create-user <username> <password>")
