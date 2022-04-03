@@ -1,6 +1,7 @@
 import * as React from "react";
-import { X } from "react-feather";
+import { LogOut, Settings, User, X } from "react-feather";
 import { useList } from "react-use";
+import { Transition } from "@headlessui/react";
 import { Collapse } from "./collapse";
 import { Slide } from "./slide";
 import {
@@ -10,6 +11,7 @@ import {
   VARIANTS,
   useSnackbar,
 } from "./snackbar";
+import { Popover } from "./popover";
 
 function TestSnackbarContextInner() {
   const { enqueueSnackbar } = useSnackbar();
@@ -164,6 +166,95 @@ export function TestSlide() {
             Hello
           </div>
         </Slide>
+      </div>
+    </div>
+  );
+}
+
+export function TestPopover() {
+  return (
+    <div className="p-4 flex flex-col items-center">
+      <div className="border rounded w-full max-w-sm p-4 flex flex-col gap-2">
+        <div>
+          <Popover
+            placement="bottom-end"
+            reference={({ props }) => (
+              <button
+                className="btn btn-sm btn-ghost"
+                data-test="user-menu"
+                {...props}
+              >
+                <User />
+              </button>
+            )}
+            floating={({ open, props }) => (
+              // Use @headlessui/react@insiders to pass ref
+              // https://github.com/tailwindlabs/headlessui/issues/273#issuecomment-1049961182
+              <Transition
+                show={open}
+                unmount={false}
+                className="transition duration-200"
+                enterFrom="scale-90 opacity-0"
+                enterTo="scale-100 opacity-100"
+                leaveFrom="scale-100 opacity-100"
+                leaveTo="scale-90 opacity-0"
+                {...props}
+              >
+                <ul className="menu rounded p-3 shadow w-48 bg-base-100 text-base-content">
+                  <li>
+                    <span>
+                      <Settings />
+                      Account
+                    </span>
+                  </li>
+                  <li>
+                    <span>
+                      <LogOut />
+                      Sign out
+                    </span>
+                  </li>
+                </ul>
+              </Transition>
+            )}
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function TestPopoverDaisyUI() {
+  return (
+    <div className="p-4 flex flex-col items-center">
+      <div className="border rounded w-full max-w-sm p-4 flex gap-2">
+        <div>
+          <div className="dropdown dropdown-end">
+            <label
+              tabIndex={0}
+              className="btn btn-sm btn-ghost"
+              data-test="user-menu"
+            >
+              <User />
+            </label>
+            <ul
+              tabIndex={0}
+              className="dropdown-content menu rounded p-3 shadow w-48 bg-base-100 text-base-content"
+            >
+              <li>
+                <a href="">
+                  <Settings />
+                  Account
+                </a>
+              </li>
+              <li>
+                <a href="">
+                  <LogOut />
+                  Sign out
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
       </div>
     </div>
   );
