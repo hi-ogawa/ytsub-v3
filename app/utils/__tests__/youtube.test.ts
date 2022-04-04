@@ -19,6 +19,9 @@ describe("ttmlToEntries", () => {
         <div>
           <p begin="00:00:05.280" end="00:00:07.650" style="s2">Bienvenue dans ce format de vidéo où nous</p>
           <p begin="00:00:07.680" end="00:00:11.780" style="s2">voyons en quelques minutes<br />une expression française.</p>
+          <p begin="00:00:11.810" end="00:00:16.980" style="s2">Alors aujourd&#39;hui, on va voir<br />l&#39;expression noyer le poisson.</p>
+          <p begin="00:00:17.010" end="00:00:19.320" style="s2">Cette expression est un peu étrange parce</p>
+          <p begin="00:00:19.350" end="00:00:22.660" style="s2">que noyer un poisson,<br />en fait, c&#39;est impossible.</p>
         </div>
       </body>
     </tt>
@@ -35,6 +38,21 @@ describe("ttmlToEntries", () => {
           "begin": 7.68,
           "end": 11.78,
           "text": "voyons en quelques minutes une expression française.",
+        },
+        {
+          "begin": 11.81,
+          "end": 16.98,
+          "text": "Alors aujourd'hui, on va voir l'expression noyer le poisson.",
+        },
+        {
+          "begin": 17.01,
+          "end": 19.32,
+          "text": "Cette expression est un peu étrange parce",
+        },
+        {
+          "begin": 19.35,
+          "end": 22.66,
+          "text": "que noyer un poisson, en fait, c'est impossible.",
         },
       ]
     `);
