@@ -4,11 +4,10 @@ import {
   useLoaderData,
   useTransition,
 } from "@remix-run/react";
-import { ActionFunction, json, redirect } from "@remix-run/server-runtime";
+import { json, redirect } from "@remix-run/server-runtime";
 import * as React from "react";
 import { z } from "zod";
 import { users } from "../../db/models";
-import { getSessionUserId } from "../../utils/auth";
 import { useIsFormValid } from "../../utils/hooks";
 import {
   FILTERED_LANGUAGE_CODES,
@@ -16,17 +15,13 @@ import {
   languageCodeToName,
 } from "../../utils/language";
 import { PageHandle } from "../../utils/page-handle";
-import {
-  pushFlashMessage,
-  withRequestSession,
-} from "../../utils/session-utils";
-import { fromRequestForm } from "../../utils/url-data";
 import type { UserTable } from "../../db/models";
 import {
   Controller,
   deserialize,
   makeLoader,
 } from "../../utils/controller-utils";
+import { useSnackbar } from "../../components/snackbar";
 
 export const handle: PageHandle = {
   navBarTitle: "Account",
@@ -46,41 +41,35 @@ const ACTION_SCHEMA = z.object({
   language2: z.string().nonempty(),
 });
 
-export const action: ActionFunction = withRequestSession(
-  async ({ request, session }) => {
-    const id = getSessionUserId(session);
-    if (id === undefined) {
-      return redirect("/users/signin");
-    }
-    const parsed = ACTION_SCHEMA.safeParse(await fromRequestForm(request));
-    if (!parsed.success) {
-      pushFlashMessage(session, {
-        content: "Fail to update settings",
-        variant: "error",
-      });
-      return json({ success: false });
-    }
-    await users()
-      .update({ settings: JSON.stringify(parsed.data) as any })
-      .where("id", id);
-    pushFlashMessage(session, {
-      content: "Settings updated successfuly",
-      variant: "success",
-    });
-    return json({ success: true });
+export const action = makeLoader(Controller, async function () {
+  const user = await this.currentUser();
+  if (user === undefined) {
+    return redirect("/users/signin");
   }
-);
+  const parsed = ACTION_SCHEMA.safeParse(await this.form());
+  if (!parsed.success) {
+    return json({ success: false, message: "Fail to update settings" });
+  }
+  await users()
+    .update({ settings: JSON.stringify(parsed.data) as any })
+    .where("id", user.id);
+  return json({ success: true, message: "Settings updated successfuly" });
+});
 
 export default function DefaultComponent() {
   const currentUser: UserTable = deserialize(useLoaderData());
   const transition = useTransition();
-  const actionData = useActionData<{ success: boolean }>();
+  const actionData = useActionData<{ success: boolean; message: string }>();
   const [changed, setChanged] = React.useState(false);
   const [isValid, formProps] = useIsFormValid();
+  const { enqueueSnackbar } = useSnackbar();
 
   // Reset form on success
   React.useEffect(() => {
-    if (actionData?.success) {
+    if (!actionData) return;
+    const { message, success } = actionData;
+    enqueueSnackbar(message, { variant: success ? "success" : "error" });
+    if (success) {
       setChanged(false);
     }
   }, [actionData]);

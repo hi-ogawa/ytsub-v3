@@ -3,6 +3,7 @@ import superjson from "superjson";
 import { UserTable } from "../db/models";
 import { getSessionUser } from "./auth";
 import { getRequestSession, withResponseSession } from "./session-utils";
+import { fromRequestForm, fromRequestQuery } from "./url-data";
 
 type LoaderArgs = Parameters<LoaderFunction>[0];
 type LoaderResult = ReturnType<LoaderFunction>;
@@ -41,6 +42,14 @@ export class Controller {
     const response = result instanceof Response ? result : json(result);
     await withResponseSession(response, controller.session);
     return response;
+  }
+
+  query(): any {
+    return fromRequestQuery(this.request);
+  }
+
+  async form(): Promise<any> {
+    return fromRequestForm(this.request);
   }
 
   async currentUser(): Promise<UserTable | undefined> {
