@@ -1,4 +1,4 @@
-import * as assert from "assert/strict";
+import * as assert from "assert";
 import { installGlobals } from "@remix-run/node";
 import { cac } from "cac";
 import { range, zip } from "lodash";
@@ -90,16 +90,17 @@ async function clieDbTestMigrations(options: { showSchema: boolean }) {
 
   console.error(":: running migrations");
 
+  const n = pending.length;
   ups.push(await getSchema_());
-  for (const i of range(pending.length)) {
-    console.error(`(⇑:${i + 1}/${pending.length}) ${pending[i].file}`);
+  for (const i of range(n)) {
+    console.error(`(⇑:${i + 1}/${n}) ${pending[i].file}`);
     await exec("npx knex migrate:up");
     ups.push(await getSchema_());
   }
 
   downs.unshift(await getSchema_());
-  for (const i of range(pending.length)) {
-    console.error(`(⇓:${i + 1}/${pending.length}) ${pending.at(-i - 1)?.file}`);
+  for (const i of range(n)) {
+    console.error(`(⇓:${i + 1}/${n}) ${pending[n - i - 1].file}`);
     await exec("npx knex migrate:down");
     downs.unshift(await getSchema_());
   }

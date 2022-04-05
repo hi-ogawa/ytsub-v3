@@ -1,4 +1,4 @@
-import * as assert from "assert/strict";
+import * as assert from "assert";
 import { beforeEach, describe, expect, it } from "vitest";
 import { installGlobals } from "@remix-run/node";
 import { action } from "../register";
