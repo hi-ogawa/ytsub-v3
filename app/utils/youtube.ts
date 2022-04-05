@@ -142,7 +142,7 @@ export function ttmlToEntries(
   });
 
   // Replace "<br/>" elements with " "
-  const sanitized = ttml.replaceAll("<br />", " ");
+  const sanitized = ttml.replace(/<br \/>/g, " ");
 
   // TODO: Validate
   interface Parsed {

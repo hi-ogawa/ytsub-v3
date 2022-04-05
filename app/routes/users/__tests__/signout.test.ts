@@ -1,4 +1,4 @@
-import * as assert from "assert/strict";
+import * as assert from "assert";
 import { beforeAll, describe, expect, it } from "vitest";
 import { installGlobals } from "@remix-run/node";
 import { Session } from "@remix-run/server-runtime";
