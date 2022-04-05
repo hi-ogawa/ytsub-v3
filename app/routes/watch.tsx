@@ -134,6 +134,9 @@ function PageComponent({ videoMetadata, captionEntries }: LoaderData) {
   function onClickEntryPlay(entry: CaptionEntry, toggle: boolean) {
     if (!player) return;
 
+    // No-op if some text is selected (e.g. for google translate extension)
+    if (document.getSelection()?.toString()) return;
+
     if (toggle && entry === currentEntry) {
       if (isPlaying) {
         player.pauseVideo();
