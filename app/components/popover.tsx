@@ -52,7 +52,7 @@ export function Popover(props: PopoverProps) {
         open,
         setOpen,
         update,
-        props: getReferenceProps({ ref: refs.reference as any }),
+        props: getReferenceProps({ ref: refs.reference }),
       })}
       {props.floating({
         open,
