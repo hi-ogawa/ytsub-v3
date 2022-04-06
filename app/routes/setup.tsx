@@ -1,17 +1,17 @@
-import * as React from "react";
-import { LoaderFunction, json } from "@remix-run/server-runtime";
 import { Form, useCatch, useLoaderData } from "@remix-run/react";
+import { LoaderFunction, json } from "@remix-run/server-runtime";
+import * as React from "react";
 import { z } from "zod";
+import { useIsFormValid } from "../utils/hooks";
+import { PageHandle } from "../utils/page-handle";
+import { useRootLoaderData } from "../utils/root-utils";
+import { CaptionConfig, VideoMetadata } from "../utils/types";
+import { fromRequestQuery } from "../utils/url-data";
 import {
   fetchVideoMetadata,
   findCaptionConfigPair,
   toCaptionConfigOptions,
 } from "../utils/youtube";
-import { CaptionConfig, VideoMetadata } from "../utils/types";
-import { useIsFormValid } from "../utils/hooks";
-import { fromRequestQuery } from "../utils/url-data";
-import { PageHandle } from "../utils/page-handle";
-import { useRootLoaderData } from "../utils/root-utils";
 
 export const handle: PageHandle = {
   navBarTitle: "Select languages",

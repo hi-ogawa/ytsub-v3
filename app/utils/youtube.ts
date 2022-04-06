@@ -1,5 +1,5 @@
-import { memoize, sortBy } from "lodash";
 import { XMLParser } from "fast-xml-parser";
+import { memoize, sortBy } from "lodash";
 import {
   FILTERED_LANGUAGE_CODES,
   LanguageCode,

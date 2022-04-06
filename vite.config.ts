@@ -1,5 +1,5 @@
-import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
+import { defineConfig } from "vite";
 
 // Using vite for UI dev playground with HMR (see app/components/main-dev.tsx)
 

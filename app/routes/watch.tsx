@@ -1,8 +1,12 @@
-import * as React from "react";
-import { LoaderFunction, json } from "@remix-run/server-runtime";
 import { useCatch, useLoaderData } from "@remix-run/react";
+import { LoaderFunction, json } from "@remix-run/server-runtime";
+import * as React from "react";
 import { Play, Repeat } from "react-feather";
 import { z } from "zod";
+import { useYoutubeIframeApi } from "../utils/hooks";
+import { PageHandle } from "../utils/page-handle";
+import { CaptionEntry, VideoMetadata } from "../utils/types";
+import { fromRequestQuery } from "../utils/url-data";
 import {
   YoutubeIframeApi,
   YoutubePlayer,
@@ -12,10 +16,6 @@ import {
   stringifyTimestamp,
   ttmlsToCaptionEntries,
 } from "../utils/youtube";
-import { CaptionEntry, VideoMetadata } from "../utils/types";
-import { useYoutubeIframeApi } from "../utils/hooks";
-import { fromRequestQuery } from "../utils/url-data";
-import { PageHandle } from "../utils/page-handle";
 
 export const handle: PageHandle = {
   navBarTitle: "Watch",

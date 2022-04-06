@@ -4,7 +4,7 @@ module.exports = {
   plugins: ["@typescript-eslint", "eslint-plugin-import"],
   extends: ["prettier"],
   rules: {
-    "import/order": ["error"],
+    "import/order": ["error", { alphabetize: { order: "asc" } }],
     "sort-imports": ["error", { ignoreDeclarationSort: true }],
   },
   ignorePatterns: [".cache", "build", "node_modules"],

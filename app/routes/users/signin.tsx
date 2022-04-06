@@ -1,9 +1,6 @@
-import * as React from "react";
 import { Form, Link, useActionData } from "@remix-run/react";
 import { ActionFunction, redirect } from "@remix-run/server-runtime";
-import { useIsFormValid } from "../../utils/hooks";
-import { fromRequestForm } from "../../utils/url-data";
-import { AppError } from "../../utils/errors";
+import * as React from "react";
 import {
   PASSWORD_MAX_LENGTH,
   SIGNIN_SCHEMA,
@@ -12,11 +9,14 @@ import {
   signinSession,
   verifySignin,
 } from "../../utils/auth";
+import { AppError } from "../../utils/errors";
+import { useIsFormValid } from "../../utils/hooks";
+import { PageHandle } from "../../utils/page-handle";
 import {
   pushFlashMessage,
   withRequestSession,
 } from "../../utils/session-utils";
-import { PageHandle } from "../../utils/page-handle";
+import { fromRequestForm } from "../../utils/url-data";
 
 export const handle: PageHandle = {
   navBarTitle: "Sign in",

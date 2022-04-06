@@ -1,5 +1,5 @@
-import { describe, expect, it } from "vitest";
 import { installGlobals } from "@remix-run/node";
+import { describe, expect, it } from "vitest";
 import { loader } from "../setup";
 import { testLoader } from "./helper";
 
