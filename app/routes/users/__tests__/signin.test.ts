@@ -1,11 +1,11 @@
 import * as assert from "assert";
-import { beforeAll, describe, expect, it } from "vitest";
 import { installGlobals } from "@remix-run/node";
-import { action } from "../signin";
-import { testAction } from "../../__tests__/helper";
+import { beforeAll, describe, expect, it } from "vitest";
 import { UserTable, users } from "../../../db/models";
-import { getSession } from "../../../utils/session.server";
 import { getSessionUser, register } from "../../../utils/auth";
+import { getSession } from "../../../utils/session.server";
+import { testAction } from "../../__tests__/helper";
+import { action } from "../signin";
 
 installGlobals();
 

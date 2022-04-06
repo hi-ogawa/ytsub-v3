@@ -1,9 +1,6 @@
-import * as React from "react";
 import { Form, Link, useActionData } from "@remix-run/react";
 import { ActionFunction, redirect } from "@remix-run/server-runtime";
-import { useIsFormValid } from "../../utils/hooks";
-import { fromRequestForm } from "../../utils/url-data";
-import { AppError } from "../../utils/errors";
+import * as React from "react";
 import {
   PASSWORD_MAX_LENGTH,
   REGISTER_SCHEMA,
@@ -12,9 +9,12 @@ import {
   register,
   signinSession,
 } from "../../utils/auth";
-import { withRequestSession } from "../../utils/session-utils";
-import { PageHandle } from "../../utils/page-handle";
+import { AppError } from "../../utils/errors";
+import { useIsFormValid } from "../../utils/hooks";
 import { mapOption } from "../../utils/misc";
+import { PageHandle } from "../../utils/page-handle";
+import { withRequestSession } from "../../utils/session-utils";
+import { fromRequestForm } from "../../utils/url-data";
 
 export const handle: PageHandle = {
   navBarTitle: "Register",

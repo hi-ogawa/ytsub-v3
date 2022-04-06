@@ -1,8 +1,9 @@
+import { Transition } from "@headlessui/react";
 import * as React from "react";
 import { LogOut, Settings, User, X } from "react-feather";
 import { useList } from "react-use";
-import { Transition } from "@headlessui/react";
 import { Collapse } from "./collapse";
+import { Popover } from "./popover";
 import { Slide } from "./slide";
 import {
   SnackbarItemComponent,
@@ -11,7 +12,6 @@ import {
   VARIANTS,
   useSnackbar,
 } from "./snackbar";
-import { Popover } from "./popover";
 
 function TestSnackbarContextInner() {
   const { enqueueSnackbar } = useSnackbar();

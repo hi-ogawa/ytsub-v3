@@ -2,11 +2,11 @@ import * as assert from "assert";
 import { installGlobals } from "@remix-run/node";
 import { cac } from "cac";
 import { range, zip } from "lodash";
-import { register, signinSession, verifySignin } from "../utils/auth";
-import { commitSession, getSession } from "../utils/session.server";
 import { client } from "../db/client.server";
 import { users } from "../db/models";
+import { register, signinSession, verifySignin } from "../utils/auth";
 import { exec } from "../utils/node.server";
+import { commitSession, getSession } from "../utils/session.server";
 
 const cli = cac("cli").help();
 
