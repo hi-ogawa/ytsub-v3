@@ -20,6 +20,6 @@ module.exports = {
   },
   migrations: {
     directory: "app/db/migrations",
-    extension: "js",
+    stub: "misc/db/migration-stub.js",
   },
 };
