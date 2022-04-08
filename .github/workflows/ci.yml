@@ -82,7 +82,7 @@ jobs:
           node-version: "16.14.0"
       - run: pnpm run install-with-patch -- --frozen-lockfile
       - run: make docker/up db/recreate
-      - run: npm run cli -- db:test-migrations
+      - run: npm run cli -- db:test-migrations --unit-test
 
   lint-misc:
     runs-on: ubuntu-20.04
