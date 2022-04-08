@@ -38,7 +38,7 @@ export default function Component() {
   const [isValid, formProps] = useIsFormValid();
 
   let defaultValues = ["", ""];
-  const { language1, language2 } = rootData.currentUser?.settings ?? {};
+  const { language1, language2 } = rootData.currentUser ?? {};
   if (language1 && language2) {
     const pair = findCaptionConfigPair(videoMetadata, [
       language1,

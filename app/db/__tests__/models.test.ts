@@ -1,4 +1,5 @@
 import * as assert from "assert";
+import { omit } from "lodash";
 import { beforeEach, describe, expect, it } from "vitest";
 import { users } from "../models";
 
@@ -12,31 +13,16 @@ describe("models", () => {
     expect(res).toMatchInlineSnapshot("[]");
   });
 
-  describe("settings", () => {
-    it("non-empty", async () => {
-      const data = {
-        username: "root",
-        passwordHash: "xyz",
-        settings: {
-          hello: "world",
-          x: [0, 1, 2, "y"],
-        } as any,
-      };
-      const [id] = await users().insert(data);
-      const res = await users().select("*").where("id", id).first();
-      assert.ok(res);
-      assert.deepEqual(res.settings, data.settings);
-    });
-
-    it("empty", async () => {
-      const data = {
-        username: "root",
-        passwordHash: "xyz",
-      };
-      const [id] = await users().insert(data);
-      const res = await users().select("*").where("id", id).first();
-      assert.ok(res);
-      assert.deepEqual(res.settings, {});
-    });
+  it("insert", async () => {
+    const data = {
+      username: "root",
+      passwordHash: "xyz",
+      language1: "fr",
+      language2: "en",
+    };
+    const [id] = await users().insert(data);
+    const res = await users().select("*").where("id", id).first();
+    assert.ok(res);
+    assert.strict.deepEqual(omit(res, ["id", "createdAt", "updatedAt"]), data);
   });
 });
