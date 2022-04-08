@@ -23,6 +23,6 @@ describe("models", () => {
     const [id] = await users().insert(data);
     const res = await users().select("*").where("id", id).first();
     assert.ok(res);
-    assert.deepEqual(omit(res, ["id", "createdAt", "updatedAt"]), data);
+    assert.strict.deepEqual(omit(res, ["id", "createdAt", "updatedAt"]), data);
   });
 });

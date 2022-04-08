@@ -116,7 +116,7 @@ async function clieDbTestMigrations(options: {
     console.log(JSON.stringify(zip(ups, downs), null, 2));
   }
 
-  assert.deepEqual(ups, downs);
+  assert.strict.deepEqual(ups, downs);
   console.error(":: success");
 
   await client.destroy();
