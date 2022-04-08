@@ -17,6 +17,7 @@ module.exports = {
     password: env("password") ?? "password",
     database: env("database") ?? `ytsub_${NODE_ENV}`,
     ssl:      env("ssl") === "true" ? {} : undefined,
+    multipleStatements: true
   },
   migrations: {
     directory: "app/db/migrations",

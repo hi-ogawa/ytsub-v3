@@ -50,9 +50,7 @@ export const action = makeLoader(Controller, async function () {
   if (!parsed.success) {
     return json({ success: false, message: "Fail to update settings" });
   }
-  await users()
-    .update({ settings: JSON.stringify(parsed.data) as any })
-    .where("id", user.id);
+  await users().update(parsed.data).where("id", user.id);
   return json({ success: true, message: "Settings updated successfuly" });
 });
 
@@ -121,7 +119,7 @@ export default function DefaultComponent() {
               <LanguageSelect
                 name="language1"
                 className="select select-bordered font-normal"
-                defaultValue={currentUser.settings.language1 ?? ""}
+                defaultValue={currentUser.language1 ?? ""}
                 languageCodes={FILTERED_LANGUAGE_CODES}
                 required
               />
@@ -133,7 +131,7 @@ export default function DefaultComponent() {
               <LanguageSelect
                 name="language2"
                 className="select select-bordered font-normal"
-                defaultValue={currentUser.settings.language2 ?? ""}
+                defaultValue={currentUser.language2 ?? ""}
                 languageCodes={FILTERED_LANGUAGE_CODES}
                 required
               />
