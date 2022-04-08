@@ -62,11 +62,15 @@ async function getSchema(options: {
 }
 
 cli
-  .command("db:test-migrations", "test reversibility")
+  .command("db:test-migrations")
   .option("--show-schema", "[boolean]", { default: false })
+  .option("--unit-test", "[boolean]", { default: false })
   .action(clieDbTestMigrations);
 
-async function clieDbTestMigrations(options: { showSchema: boolean }) {
+async function clieDbTestMigrations(options: {
+  showSchema: boolean;
+  unitTest: boolean;
+}) {
   const [completed, pending] = (await client.migrate.list()) as [
     { name: string }[],
     { file: string }[]
@@ -89,6 +93,9 @@ async function clieDbTestMigrations(options: { showSchema: boolean }) {
     getSchema({ showCreateTable: false, includeKnex: false });
 
   console.error(":: running migrations");
+  if (options.unitTest) {
+    process.env.MIGRATION_UNIT_TEST = "1";
+  }
 
   const n = pending.length;
   ups.push(await getSchema_());
@@ -109,7 +116,7 @@ async function clieDbTestMigrations(options: { showSchema: boolean }) {
     console.log(JSON.stringify(zip(ups, downs), null, 2));
   }
 
-  assert.deepEqual(ups, downs);
+  assert.strict.deepEqual(ups, downs);
   console.error(":: success");
 
   await client.destroy();
