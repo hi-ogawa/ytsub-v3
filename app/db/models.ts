@@ -12,8 +12,7 @@ export interface UserTable {
   language2?: string;
 }
 
-// TODO:
-// - view count
+// TODO: manage "view count" and "last watched timestamp" etc...
 export interface VideoTable {
   id: number;
   videoId: string; // video's id on youtube
@@ -29,6 +28,7 @@ export interface VideoTable {
   userId?: number; // associated to anonymous users when `null`
 }
 
+// TODO: add "index" column
 export interface CaptionEntryTable {
   id: number;
   begin: number;

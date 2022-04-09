@@ -8,6 +8,7 @@ import {
   VideoTable,
   getVideoAndCaptionEntries,
 } from "../../db/models";
+import { R } from "../../misc/routes";
 import {
   Controller,
   deserialize,
@@ -48,7 +49,7 @@ export const loader = makeLoader(Controller, async function () {
     content: "Invalid Video ID",
     variant: "error",
   });
-  return redirect("/");
+  return redirect(R["/"]);
 });
 
 export default function DeafultComponent() {

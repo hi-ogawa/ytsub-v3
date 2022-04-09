@@ -10,6 +10,7 @@ import { z } from "zod";
 import { useSnackbar } from "../../components/snackbar";
 import { tables } from "../../db/models";
 import type { UserTable } from "../../db/models";
+import { R } from "../../misc/routes";
 import {
   Controller,
   deserialize,
@@ -33,7 +34,7 @@ export const loader = makeLoader(Controller, async function () {
   if (user) {
     return this.serialize(user);
   }
-  return redirect("/users/signin");
+  return redirect(R["/users/signin"]);
 });
 
 const ACTION_SCHEMA = z.object({
@@ -44,7 +45,7 @@ const ACTION_SCHEMA = z.object({
 export const action = makeLoader(Controller, async function () {
   const user = await this.currentUser();
   if (user === undefined) {
-    return redirect("/users/signin");
+    return redirect(R["/users/signin"]);
   }
   const parsed = ACTION_SCHEMA.safeParse(await this.form());
   if (!parsed.success) {
@@ -74,7 +75,7 @@ export default function DefaultComponent() {
 
   const isLoading =
     transition.state !== "idle" &&
-    transition.location?.pathname === "/users/me";
+    transition.location?.pathname === R["/users/me"];
 
   return (
     <div className="w-full p-4 flex justify-center">

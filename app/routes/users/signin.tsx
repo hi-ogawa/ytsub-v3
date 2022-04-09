@@ -1,6 +1,7 @@
 import { Form, Link, useActionData } from "@remix-run/react";
 import { ActionFunction, redirect } from "@remix-run/server-runtime";
 import * as React from "react";
+import { R } from "../../misc/routes";
 import {
   PASSWORD_MAX_LENGTH,
   SIGNIN_SCHEMA,
@@ -31,7 +32,7 @@ export const loader: ActionFunction = withRequestSession(
         content: `Already logged in as ${user.username}`,
         variant: "error",
       });
-      return redirect("/users/me");
+      return redirect(R["/users/me"]);
     }
     return null;
   }
@@ -47,7 +48,7 @@ export const action: ActionFunction = withRequestSession(
     try {
       const user = await verifySignin(parsed.data);
       signinSession(session, user);
-      return redirect("/");
+      return redirect(R["/"]);
     } catch (e) {
       if (e instanceof AppError) {
         return { success: false, message: e.message };
@@ -105,7 +106,7 @@ export default function DefaultComponent() {
           <label className="label">
             <div className="label-text text-xs text-gray-400">
               Don't have an account yet?{" "}
-              <Link to="/users/register" className="link link-primary">
+              <Link to={R["/users/register"]} className="link link-primary">
                 Register
               </Link>
             </div>

@@ -1,5 +1,6 @@
 import { redirect } from "@remix-run/server-runtime";
 import { filterNewVideo, insertVideoAndCaptionEntries } from "../../db/models";
+import { R } from "../../misc/routes";
 import { Controller, makeLoader } from "../../utils/controller-utils";
 import { AppError } from "../../utils/errors";
 import { PageHandle } from "../../utils/page-handle";
@@ -20,7 +21,7 @@ export const action = makeLoader(Controller, async function () {
     const data = await fetchCaptionEntries(parsed.data);
     id = await insertVideoAndCaptionEntries(parsed.data, data, user?.id);
   }
-  return redirect(`/videos/${id}`);
+  return redirect(R["/videos/$id"](id));
 });
 
 // TODO: migrate components from `setup.tsx`

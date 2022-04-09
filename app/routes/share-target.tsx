@@ -1,6 +1,7 @@
 import { useCatch } from "@remix-run/react";
 import { LoaderFunction, json, redirect } from "@remix-run/server-runtime";
 import * as React from "react";
+import { R } from "../misc/routes";
 import { parseVideoId } from "../utils/youtube";
 
 // see manifest.json
@@ -13,7 +14,7 @@ export const loader: LoaderFunction = async ({ request }) => {
   if (shareTargetText) {
     const videoId = parseVideoId(shareTargetText);
     if (videoId) {
-      return redirect(`/setup?videoId=${videoId}`);
+      return redirect(R["/setup"] + `?videoId=${videoId}`);
     }
   }
   throw json({ message: "Invalid share data" });

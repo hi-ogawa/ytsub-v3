@@ -2,6 +2,7 @@ import { Form, useCatch, useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import * as React from "react";
 import { z } from "zod";
+import { R } from "../misc/routes";
 import { Controller, makeLoader } from "../utils/controller-utils";
 import { useIsFormValid } from "../utils/hooks";
 import { PageHandle } from "../utils/page-handle";
@@ -38,7 +39,7 @@ export const loader = makeLoader(Controller, async function () {
     content: "Invalid input",
     variant: "error",
   });
-  return redirect("/");
+  return redirect(R["/"]);
 });
 
 export default function Component() {
@@ -67,7 +68,7 @@ export default function Component() {
           <div className="text-xl font-bold mb-1">Select Languages</div>
           <Form
             method="post"
-            action="/videos/new"
+            action={R["/videos/new"]}
             className="w-full flex flex-col gap-1"
             data-test="setup-form"
             {...formProps}

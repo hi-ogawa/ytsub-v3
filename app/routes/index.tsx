@@ -1,10 +1,13 @@
 import { Link } from "@remix-run/react";
 import * as React from "react";
+import { R } from "../misc/routes";
 import { PageHandle } from "../utils/page-handle";
 
 export const handle: PageHandle = {
   navBarTitle: "Home",
 };
+
+const VIDEO_IDS = ["_2FF6O6Z8Hc", "MoH8Fk2K9bc", "EnPYXckiUVg"];
 
 export default function Component() {
   return (
@@ -13,21 +16,16 @@ export default function Component() {
         <div className="h-full p-6 flex flex-col">
           <div className="text-xl font-bold mb-2">Examples</div>
           <ul className="menu">
-            <li>
-              <Link className="rounded" to="/setup?videoId=_2FF6O6Z8Hc">
-                _2FF6O6Z8Hc
-              </Link>
-            </li>
-            <li>
-              <Link className="rounded" to="/setup?videoId=MoH8Fk2K9bc">
-                MoH8Fk2K9bc
-              </Link>
-            </li>
-            <li>
-              <Link className="rounded" to="/setup?videoId=EnPYXckiUVg">
-                EnPYXckiUVg
-              </Link>
-            </li>
+            {VIDEO_IDS.map((videoId) => (
+              <li key={videoId}>
+                <Link
+                  className="rounded"
+                  to={R["/setup"] + `?videoId=${videoId}`}
+                >
+                  {videoId}
+                </Link>
+              </li>
+            ))}
           </ul>
         </div>
       </div>
