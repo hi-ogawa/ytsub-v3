@@ -3,6 +3,7 @@ import { installGlobals } from "@remix-run/node";
 import { cac } from "cac";
 import { range, zip } from "lodash";
 import { client } from "../db/client.server";
+import { users } from "../db/models";
 import { register, signinSession, verifySignin } from "../utils/auth";
 import { exec } from "../utils/node.server";
 import { commitSession, getSession } from "../utils/session.server";
@@ -118,11 +119,20 @@ async function clieDbTestMigrations(options: {
 
 cli
   .command("create-user <username> <password>")
-  .action(async (username: string, password: string) => {
-    await register({ username, password });
-    await printSession(username, password);
-    await client.destroy();
-  });
+  .option("--language1 <language1>", "[string]", { default: "fr" })
+  .option("--language2 <language2>", "[string]", { default: "en" })
+  .action(
+    async (
+      username: string,
+      password: string,
+      { language1, language2 }: { language1: string; language2: string }
+    ) => {
+      const user = await register({ username, password });
+      await users().update({ language1, language2 }).where("id", user.id);
+      await printSession(username, password);
+      await client.destroy();
+    }
+  );
 
 cli
   .command("print-session <username> <password>")
