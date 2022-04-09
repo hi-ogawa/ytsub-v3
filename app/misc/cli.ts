@@ -59,11 +59,13 @@ cli
   .command("db:test-migrations")
   .option("--show-schema", "[boolean]", { default: false })
   .option("--unit-test", "[boolean]", { default: false })
+  .option("--reversibility-test", "[boolean]", { default: false })
   .action(clieDbTestMigrations);
 
 async function clieDbTestMigrations(options: {
   showSchema: boolean;
   unitTest: boolean;
+  reversibilityTest: boolean;
 }) {
   const [completed, pending] = (await client.migrate.list()) as [
     { name: string }[],
@@ -109,11 +111,12 @@ async function clieDbTestMigrations(options: {
   if (options.showSchema) {
     console.log(JSON.stringify(zip(ups, downs), null, 2));
   }
-
-  assert.strict.deepEqual(ups, downs);
-  console.error(":: success");
-
   await client.destroy();
+
+  if (options.reversibilityTest) {
+    assert.strict.deepEqual(ups, downs);
+    console.error(":: reversibility test success");
+  }
 }
 
 cli
