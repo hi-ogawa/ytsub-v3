@@ -6,7 +6,7 @@ import { PageHandle } from "../../utils/page-handle";
 import { NEW_VIDEO_SCHEMA, fetchCaptionEntries } from "../../utils/youtube";
 
 export const handle: PageHandle = {
-  navBarTitle: "New Video",
+  navBarTitle: "Select languages",
 };
 
 export const action = makeLoader(Controller, async function () {
