@@ -22,9 +22,9 @@ export function parseVideoId(value: string): string | undefined {
       if (url.hostname === "youtu.be") {
         return url.pathname.substring(1);
       } else {
-        const match = url.search.match(/v=(.{11})/);
-        if (match && match[1]) {
-          return match[1];
+        const videoId = url.searchParams.get("v");
+        if (videoId) {
+          return videoId;
         }
       }
     } catch {}

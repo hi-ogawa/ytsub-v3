@@ -4,6 +4,7 @@ import { Session } from "@remix-run/server-runtime";
 import { beforeAll, describe, expect, it } from "vitest";
 import { UserTable, users } from "../../../db/models";
 import { register, signinSession } from "../../../utils/auth";
+import { getResponseSession } from "../../../utils/session-utils";
 import { commitSession, getSession } from "../../../utils/session.server";
 import { testAction } from "../../__tests__/helper";
 import { action } from "../signout";
@@ -33,8 +34,8 @@ describe("signout.action", () => {
       expect(res.headers.get("location")).toBe("/");
 
       // verify empty session user
-      const newSession = await getSession(res.headers.get("set-cookie"));
-      expect(newSession.data).toMatchInlineSnapshot(`
+      const resSession = await getResponseSession(res);
+      expect(resSession.data).toMatchInlineSnapshot(`
         {
           "__flash_flashMessages__": [
             {

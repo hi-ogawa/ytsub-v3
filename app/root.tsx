@@ -261,6 +261,7 @@ const SIDE_MENU_ENTRIES: SideMenuEntry[] = [
 ];
 
 function SideMenuDrawerWrapper({ children }: React.PropsWithChildren<{}>) {
+  // TODO: initial render shows open drawer?
   return (
     <div className="drawer h-screen w-full">
       <input
@@ -317,7 +318,7 @@ function SearchComponent() {
           type="text"
           name="videoId"
           className="w-full input input-sm input-bordered pl-8"
-          placeholder="Enter Video ID"
+          placeholder="Enter Video ID or URL"
           required
         />
       </label>

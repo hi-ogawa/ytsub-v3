@@ -1,15 +1,17 @@
 import { Form, useCatch, useLoaderData } from "@remix-run/react";
-import { LoaderFunction, json } from "@remix-run/server-runtime";
+import { redirect } from "@remix-run/server-runtime";
 import * as React from "react";
 import { z } from "zod";
+import { Controller, makeLoader } from "../utils/controller-utils";
 import { useIsFormValid } from "../utils/hooks";
 import { PageHandle } from "../utils/page-handle";
 import { useRootLoaderData } from "../utils/root-utils";
+import { pushFlashMessage } from "../utils/session-utils";
 import { CaptionConfig, VideoMetadata } from "../utils/types";
-import { fromRequestQuery } from "../utils/url-data";
 import {
   fetchVideoMetadata,
   findCaptionConfigPair,
+  parseVideoId,
   toCaptionConfigOptions,
 } from "../utils/youtube";
 
@@ -18,19 +20,26 @@ export const handle: PageHandle = {
 };
 
 const schema = z.object({
-  videoId: z.string().length(11),
+  videoId: z.string().nonempty(),
 });
 
-export const loader: LoaderFunction = async ({ request }) => {
-  const parsed = schema.safeParse(fromRequestQuery(request));
+export const loader = makeLoader(Controller, async function () {
+  const parsed = schema.safeParse(this.query());
   if (parsed.success) {
-    const videoMetadata = await fetchVideoMetadata(parsed.data.videoId);
-    if (videoMetadata.playabilityStatus.status === "OK") {
-      return videoMetadata;
+    const videoId = parseVideoId(parsed.data.videoId);
+    if (videoId) {
+      const videoMetadata = await fetchVideoMetadata(videoId);
+      if (videoMetadata.playabilityStatus.status === "OK") {
+        return videoMetadata;
+      }
     }
   }
-  throw json({ message: "Invalid Video ID" });
-};
+  pushFlashMessage(this.session, {
+    content: "Invalid input",
+    variant: "error",
+  });
+  return redirect("/");
+});
 
 export default function Component() {
   const rootData = useRootLoaderData();
