@@ -2,36 +2,22 @@ import { useCatch, useLoaderData } from "@remix-run/react";
 import { LoaderFunction, json } from "@remix-run/server-runtime";
 import * as React from "react";
 import { Play, Repeat } from "react-feather";
-import { z } from "zod";
 import { useYoutubeIframeApi } from "../utils/hooks";
 import { PageHandle } from "../utils/page-handle";
 import { CaptionEntry, VideoMetadata } from "../utils/types";
 import { fromRequestQuery } from "../utils/url-data";
 import {
+  NEW_VIDEO_SCHEMA,
   YoutubeIframeApi,
   YoutubePlayer,
   YoutubePlayerOptions,
-  captionConfigToUrl,
-  fetchVideoMetadata,
+  fetchCaptionEntries,
   stringifyTimestamp,
-  ttmlsToCaptionEntries,
 } from "../utils/youtube";
 
 export const handle: PageHandle = {
   navBarTitle: "Watch",
 };
-
-const schema = z.object({
-  videoId: z.string().length(11),
-  language1: z.object({
-    id: z.string(),
-    translation: z.string().optional(),
-  }),
-  language2: z.object({
-    id: z.string(),
-    translation: z.string().optional(),
-  }),
-});
 
 interface LoaderData {
   videoMetadata: VideoMetadata;
@@ -39,21 +25,11 @@ interface LoaderData {
 }
 
 export const loader: LoaderFunction = async ({ request }) => {
-  const parsed = schema.safeParse(fromRequestQuery(request));
-  if (parsed.success) {
-    const videoMetadata = await fetchVideoMetadata(parsed.data.videoId);
-    const url1 = captionConfigToUrl(parsed.data.language1, videoMetadata);
-    const url2 = captionConfigToUrl(parsed.data.language2, videoMetadata);
-    if (url1 && url2) {
-      const [ttml1, ttml2] = await Promise.all([
-        fetch(url1).then((res) => res.text()),
-        fetch(url2).then((res) => res.text()),
-      ]);
-      const captionEntries = ttmlsToCaptionEntries(ttml1, ttml2);
-      return { videoMetadata, captionEntries };
-    }
+  const parsed = NEW_VIDEO_SCHEMA.safeParse(fromRequestQuery(request));
+  if (!parsed.success) {
+    throw json({ message: "Invalid parameters" });
   }
-  throw json({ message: "Invalid parameters" });
+  return fetchCaptionEntries(parsed.data);
 };
 
 export function CatchBoundary() {

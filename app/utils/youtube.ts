@@ -1,5 +1,7 @@
 import { XMLParser } from "fast-xml-parser";
 import { memoize, sortBy } from "lodash";
+import { z } from "zod";
+import { AppError } from "./errors";
 import {
   FILTERED_LANGUAGE_CODES,
   LanguageCode,
@@ -36,6 +38,7 @@ export function toThumbnail(videoId: string): string {
   return `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
 }
 
+// TODO: caching
 export async function fetchVideoMetadata(
   videoId: string
 ): Promise<VideoMetadata> {
@@ -203,6 +206,43 @@ export function stringifyTimestamp(s: number): string {
 
   return `${D(h, 2)}:${D(m, 2)}:${D(s, 2)}.${D(ms, 3)}`;
 }
+
+export const NEW_VIDEO_SCHEMA = z.object({
+  videoId: z.string().length(11),
+  language1: z.object({
+    id: z.string(),
+    translation: z.string().optional(),
+  }),
+  language2: z.object({
+    id: z.string(),
+    translation: z.string().optional(),
+  }),
+});
+
+export async function fetchCaptionEntries({
+  videoId,
+  language1,
+  language2,
+}: z.infer<typeof NEW_VIDEO_SCHEMA>): Promise<{
+  videoMetadata: VideoMetadata;
+  captionEntries: CaptionEntry[];
+}> {
+  const videoMetadata = await fetchVideoMetadata(videoId);
+  const url1 = captionConfigToUrl(language1, videoMetadata);
+  const url2 = captionConfigToUrl(language2, videoMetadata);
+  if (!url1) throw new AppError("Caption not found", language1);
+  if (!url2) throw new AppError("Caption not found", language2);
+  const [ttml1, ttml2] = await Promise.all([
+    fetch(url1).then((res) => res.text()),
+    fetch(url2).then((res) => res.text()),
+  ]);
+  const captionEntries = ttmlsToCaptionEntries(ttml1, ttml2);
+  return { videoMetadata, captionEntries };
+}
+
+//
+// Youtube Iframe API wrapper
+//
 
 export type YoutubePlayerOptions = {
   videoId: string;

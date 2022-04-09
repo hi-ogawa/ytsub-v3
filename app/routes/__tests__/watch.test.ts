@@ -47,10 +47,9 @@ describe("watch.loader", () => {
         translation: "",
       },
     };
-    await testLoader(loader, { data }).catch(async (res: Response) => {
-      await expect(res.json()).resolves.toEqual({
-        message: "Invalid parameters",
-      });
-    });
+    await expect(testLoader(loader, { data })).rejects.toHaveProperty(
+      "message",
+      "Caption not found"
+    );
   });
 });
