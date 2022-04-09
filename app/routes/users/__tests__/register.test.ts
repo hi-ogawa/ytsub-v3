@@ -1,7 +1,7 @@
 import * as assert from "assert";
 import { installGlobals } from "@remix-run/node";
 import { beforeEach, describe, expect, it } from "vitest";
-import { users } from "../../../db/models";
+import { tables } from "../../../db/models";
 import { getSessionUser } from "../../../utils/auth";
 import { getSession } from "../../../utils/session.server";
 import { testAction } from "../../__tests__/helper";
@@ -11,7 +11,7 @@ installGlobals();
 
 describe("register.action", () => {
   beforeEach(async () => {
-    await users().delete();
+    await tables.users().delete();
   });
 
   describe("success", () => {
@@ -23,7 +23,8 @@ describe("register.action", () => {
         passwordConfirmation: "pass",
       };
       const res = await testAction(action, { data });
-      const found = await users()
+      const found = await tables
+        .users()
         .select("*")
         .where("username", data.username)
         .first();

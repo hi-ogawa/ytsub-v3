@@ -3,7 +3,7 @@ import { installGlobals } from "@remix-run/node";
 import { cac } from "cac";
 import { range, zip } from "lodash";
 import { client } from "../db/client.server";
-import { users } from "../db/models";
+import { tables } from "../db/models";
 import { register, signinSession, verifySignin } from "../utils/auth";
 import { exec } from "../utils/node.server";
 import { commitSession, getSession } from "../utils/session.server";
@@ -128,7 +128,10 @@ cli
       { language1, language2 }: { language1: string; language2: string }
     ) => {
       const user = await register({ username, password });
-      await users().update({ language1, language2 }).where("id", user.id);
+      await tables
+        .users()
+        .update({ language1, language2 })
+        .where("id", user.id);
       await printSession(username, password);
       await client.destroy();
     }

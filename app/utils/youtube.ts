@@ -219,11 +219,13 @@ export const NEW_VIDEO_SCHEMA = z.object({
   }),
 });
 
+export type NewVideo = z.infer<typeof NEW_VIDEO_SCHEMA>;
+
 export async function fetchCaptionEntries({
   videoId,
   language1,
   language2,
-}: z.infer<typeof NEW_VIDEO_SCHEMA>): Promise<{
+}: NewVideo): Promise<{
   videoMetadata: VideoMetadata;
   captionEntries: CaptionEntry[];
 }> {

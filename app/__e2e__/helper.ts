@@ -1,9 +1,10 @@
 import type { Page, test as testDefault } from "@playwright/test";
-import { users } from "../db/models";
+import { tables } from "../db/models";
 import { sha256 } from "../utils/auth";
 import { exec } from "../utils/node.server";
 
-export function useUser(
+// cf. `useUser` in routes/__tests__/helper.ts
+export function useUserE2E(
   test: typeof testDefault,
   {
     username = "root",
@@ -11,15 +12,16 @@ export function useUser(
     seed,
   }: { username?: string; password?: string; seed?: string }
 ) {
-  let cookie: any;
-
   // Generating random-ish username to avoid db uniqueness constraint
   if (seed !== undefined) {
     username += "-" + sha256(seed).slice(0, 8);
   }
 
+  let cookie: any;
+
   test.beforeAll(async () => {
-    await users().delete().where("username", username);
+    await tables.users().delete().where("username", username);
+    // TODO: use `register({ username, password });`
     const { stdout } = await exec(
       `npm run -s cli -- create-user ${username} ${password}`
     );
@@ -27,9 +29,13 @@ export function useUser(
     cookie = { name, value, domain: "localhost", path: "/" };
   });
 
+  test.afterAll(async () => {
+    await tables.users().delete().where("username", username);
+  });
+
   async function signin(page: Page) {
     await page.context().addCookies([cookie]);
   }
 
-  return { username, signin };
+  return { user: () => ({ username }), signin };
 }

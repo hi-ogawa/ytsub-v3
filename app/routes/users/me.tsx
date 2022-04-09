@@ -8,7 +8,7 @@ import { json, redirect } from "@remix-run/server-runtime";
 import * as React from "react";
 import { z } from "zod";
 import { useSnackbar } from "../../components/snackbar";
-import { users } from "../../db/models";
+import { tables } from "../../db/models";
 import type { UserTable } from "../../db/models";
 import {
   Controller,
@@ -50,7 +50,7 @@ export const action = makeLoader(Controller, async function () {
   if (!parsed.success) {
     return json({ success: false, message: "Fail to update settings" });
   }
-  await users().update(parsed.data).where("id", user.id);
+  await tables.users().update(parsed.data).where("id", user.id);
   return json({ success: true, message: "Settings updated successfuly" });
 });
 
