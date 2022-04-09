@@ -1,7 +1,7 @@
 import * as assert from "assert";
 import { installGlobals } from "@remix-run/node";
-import { omit } from "lodash";
-import { describe, expect, it } from "vitest";
+import { last, omit } from "lodash";
+import { beforeAll, describe, expect, it } from "vitest";
 import { tables } from "../../db/models";
 import { action } from "../videos.new";
 import { testAction, useUser } from "./helper";
@@ -10,6 +10,11 @@ installGlobals();
 
 describe("videos.new.action", () => {
   const { user, signin } = useUser({ seed: __filename });
+
+  beforeAll(async () => {
+    // cleanup anonymous data
+    await tables.videos().delete().where("userId", null);
+  });
 
   it("basic", async () => {
     const data = {
@@ -25,13 +30,19 @@ describe("videos.new.action", () => {
     };
     const res = await testAction(action, { data }, signin);
 
-    // persist video
+    // persist video and caption entries
     const video = await tables
       .videos()
       .select("*")
       .where("userId", user().id)
       .first();
     assert.ok(video);
+
+    const captionEntries = await tables
+      .captionEntries()
+      .select("*")
+      .where("videoId", video.id);
+
     expect(omit(video, ["id", "userId", "createdAt", "updatedAt"]))
       .toMatchInlineSnapshot(`
       {
@@ -45,12 +56,6 @@ describe("videos.new.action", () => {
         "videoId": "EnPYXckiUVg",
       }
     `);
-
-    // persist caption entries
-    const captionEntries = await tables
-      .captionEntries()
-      .select("*")
-      .where("videoId", video.id);
     expect(captionEntries.length).toMatchInlineSnapshot("182");
     expect(omit(captionEntries[0], ["id", "videoId", "createdAt", "updatedAt"]))
       .toMatchInlineSnapshot(`
@@ -64,7 +69,40 @@ describe("videos.new.action", () => {
 
     // redirect
     assert.ok(res instanceof Response);
-    expect(res.status).toBe(302);
     expect(res.headers.get("location")).toBe(`/videos/${video.id}`);
+
+    // calling with the same parameters doesn't create new video
+    const res2 = await testAction(action, { data }, signin);
+    assert.ok(res2 instanceof Response);
+    expect(res2.headers.get("location")).toBe(`/videos/${video.id}`);
+  });
+
+  it("anonymous", async () => {
+    const data = {
+      videoId: "EnPYXckiUVg",
+      language1: {
+        id: ".fr",
+        translation: "",
+      },
+      language2: {
+        id: ".en",
+        translation: "",
+      },
+    };
+    const res = await testAction(action, { data });
+    assert.ok(res instanceof Response);
+
+    const location = res.headers.get("location");
+    assert.ok(location);
+
+    const id = last(location.split("/"));
+    const video = await tables.videos().select("*").where("id", id).first();
+    assert.ok(video);
+    expect(video.userId).toBe(null);
+
+    // calling with the same parameters doesn't create new video
+    const res2 = await testAction(action, { data });
+    assert.ok(res2 instanceof Response);
+    expect(res2.headers.get("location")).toBe(`/videos/${video.id}`);
   });
 });

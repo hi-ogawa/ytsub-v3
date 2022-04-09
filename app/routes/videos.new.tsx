@@ -10,12 +10,12 @@ import {
 } from "../utils/youtube";
 
 async function insertVideoAndCaptionEntries(
-  userId: number,
   newVideo: NewVideo,
   data: {
     videoMetadata: VideoMetadata;
     captionEntries: CaptionEntry[];
-  }
+  },
+  userId?: number
 ): Promise<number> {
   const { language1, language2 } = newVideo;
   const {
@@ -45,15 +45,32 @@ async function insertVideoAndCaptionEntries(
   return videoId;
 }
 
-export const action = makeLoader(Controller, async function () {
-  // TODO: anonymous user?
-  const user = await this.currentUser();
-  if (!user) throw new AppError("user not found");
+async function findNewVideo(
+  { videoId, language1, language2 }: NewVideo,
+  userId?: number
+): Promise<number | undefined> {
+  const row = await tables
+    .videos()
+    .select("id")
+    .where("videoId", videoId)
+    .where("language1_id", language1.id)
+    .where("language1_translation", language1.translation ?? null)
+    .where("language2_id", language2.id)
+    .where("language2_translation", language2.translation ?? null)
+    .where("userId", userId ?? null)
+    .first();
+  return row?.id;
+}
 
+export const action = makeLoader(Controller, async function () {
   const parsed = NEW_VIDEO_SCHEMA.safeParse(await this.form());
   if (!parsed.success) throw new AppError("Invalid parameters");
 
-  const data = await fetchCaptionEntries(parsed.data);
-  const id = await insertVideoAndCaptionEntries(user.id, parsed.data, data);
+  const user = await this.currentUser();
+  let id = await findNewVideo(parsed.data, user?.id);
+  if (!id) {
+    const data = await fetchCaptionEntries(parsed.data);
+    id = await insertVideoAndCaptionEntries(parsed.data, data, user?.id);
+  }
   return redirect(`/videos/${id}`);
 });

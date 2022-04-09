@@ -16,9 +16,9 @@ exports.up = async function (knex) {
       channelId             VARCHAR(32) NOT NULL,
       createdAt             DATETIME DEFAULT CURRENT_TIMESTAMP,
       updatedAt             DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-      userId                BIGINT NOT NULL,
+      userId                BIGINT DEFAULT NULL,
       PRIMARY KEY (id),
-      UNIQUE INDEX (videoId, language1_id, language1_translation, language2_id, language2_translation),
+      UNIQUE INDEX (videoId, language1_id, language1_translation, language2_id, language2_translation, userId),
       FOREIGN KEY (userId) REFERENCES users(id) ON DELETE CASCADE
     );
   `);
