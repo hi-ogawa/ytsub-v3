@@ -16,7 +16,7 @@ describe("signout.action", () => {
   const credentials = { username: "root", password: "pass" };
 
   beforeAll(async () => {
-    await users().truncate();
+    await users().delete();
     user = await register(credentials);
     userSession = await getSession();
     signinSession(userSession, user);

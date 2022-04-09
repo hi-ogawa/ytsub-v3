@@ -11,7 +11,7 @@ installGlobals();
 
 describe("register.action", () => {
   beforeEach(async () => {
-    await users().truncate();
+    await users().delete();
   });
 
   describe("success", () => {

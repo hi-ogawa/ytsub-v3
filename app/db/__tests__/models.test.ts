@@ -5,7 +5,7 @@ import { users } from "../models";
 
 describe("models", () => {
   beforeEach(async () => {
-    await users().truncate();
+    await users().delete();
   });
 
   it("basic", async () => {
