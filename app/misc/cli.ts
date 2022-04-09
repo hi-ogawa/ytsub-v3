@@ -84,7 +84,7 @@ async function clieDbTestMigrations(options: {
   const downs = [];
 
   const getSchema_ = () =>
-    getSchema({ showCreateTable: false, includeKnex: false });
+    getSchema({ showCreateTable: true, includeKnex: false });
 
   console.error(":: running migrations");
   if (options.unitTest) {
