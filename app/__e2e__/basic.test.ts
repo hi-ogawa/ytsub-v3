@@ -33,8 +33,6 @@ test("setup => watch", async ({ page }) => {
   // Submit
   await page.locator('data-test=setup-form >> button[type="submit"]').click();
 
-  // Navigate to /watch
-  await expect(page).toHaveURL(
-    "/watch?videoId=EnPYXckiUVg&language1.id=.fr&language1.translation=&language2.id=.en&language2.translation="
-  );
+  // Navigate to /videos/$id
+  await expect(page).toHaveURL(/\/videos\/\d+$/);
 });

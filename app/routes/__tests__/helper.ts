@@ -1,18 +1,30 @@
 import { ActionFunction, LoaderFunction } from "@remix-run/server-runtime";
 import * as qs from "qs";
 import { afterAll, beforeAll } from "vitest";
-import { UserTable } from "../../db/models";
+import {
+  CaptionEntryTable,
+  UserTable,
+  VideoTable,
+  filterNewVideo,
+  getVideoAndCaptionEntries,
+  insertVideoAndCaptionEntries,
+} from "../../db/models";
+import { assert } from "../../misc/assert";
 import { useUserImpl } from "../../misc/helper";
 import { createUserCookie } from "../../utils/auth";
+import { NewVideo, fetchCaptionEntries } from "../../utils/youtube";
 
 const DUMMY_URL = "http://localhost:3000";
 
-export function testLoader(loader: LoaderFunction, { data }: { data: any }) {
+export function testLoader(
+  loader: LoaderFunction,
+  { data = {}, params = {} }: { data?: any; params?: Record<string, string> }
+) {
   const serialized = qs.stringify(data, { allowDots: true });
   return loader({
     request: new Request(DUMMY_URL + "/?" + serialized),
     context: {},
-    params: {},
+    params,
   });
 }
 
@@ -58,4 +70,48 @@ export function useUser(...args: Parameters<typeof useUserImpl>) {
   }
 
   return { user: () => user, signin };
+}
+
+// TODO: use pre-downloaded fixture
+const NEW_VIDEOS: NewVideo[] = [
+  {
+    videoId: "_2FF6O6Z8Hc",
+    language1: { id: ".fr-FR" },
+    language2: { id: ".en" },
+  },
+  {
+    videoId: "MoH8Fk2K9bc",
+    language1: { id: ".fr-FR" },
+    language2: { id: ".en" },
+  },
+  {
+    videoId: "EnPYXckiUVg",
+    language1: { id: ".fr" },
+    language2: { id: ".en" },
+  },
+];
+
+export function useVideo(type: 0 | 1 | 2 = 2, userId?: () => number) {
+  const newVideo = NEW_VIDEOS[type];
+  let result: { video: VideoTable; captionEntries: CaptionEntryTable[] };
+
+  beforeAll(async () => {
+    const id = userId?.();
+    await filterNewVideo(newVideo, id).delete();
+
+    const data = await fetchCaptionEntries(newVideo);
+    const videoId = await insertVideoAndCaptionEntries(newVideo, data, id);
+    const resultOption = await getVideoAndCaptionEntries(videoId);
+    assert(resultOption);
+    result = resultOption;
+  });
+
+  afterAll(async () => {
+    await filterNewVideo(newVideo, userId?.()).delete();
+  });
+
+  return {
+    video: () => result.video,
+    captionEntries: () => result.captionEntries,
+  };
 }
