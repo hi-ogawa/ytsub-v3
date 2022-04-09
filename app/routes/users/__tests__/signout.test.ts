@@ -1,33 +1,18 @@
 import * as assert from "assert";
 import { installGlobals } from "@remix-run/node";
-import { Session } from "@remix-run/server-runtime";
-import { beforeAll, describe, expect, it } from "vitest";
-import { UserTable, tables } from "../../../db/models";
-import { register, signinSession } from "../../../utils/auth";
+import { describe, expect, it } from "vitest";
 import { getResponseSession } from "../../../utils/session-utils";
-import { commitSession, getSession } from "../../../utils/session.server";
-import { testAction } from "../../__tests__/helper";
+import { testAction, useUser } from "../../__tests__/helper";
 import { action } from "../signout";
 
 installGlobals();
 
 describe("signout.action", () => {
-  // TODO: use `useUser`
-  let user: UserTable;
-  let userSession: Session;
-  const credentials = { username: "root", password: "pass" };
-
-  beforeAll(async () => {
-    await tables.users().delete();
-    user = await register(credentials);
-    userSession = await getSession();
-    signinSession(userSession, user);
-  });
+  const { signin } = useUser({ seed: __filename });
 
   describe("success", () => {
     it("basic", async () => {
-      const headers = { cookie: await commitSession(userSession) };
-      const res = await testAction(action, { headers });
+      const res = await testAction(action, {}, signin);
 
       // redirect to root
       assert.ok(res instanceof Response);

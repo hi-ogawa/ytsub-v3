@@ -1,41 +1,36 @@
 import type { Page, test as testDefault } from "@playwright/test";
-import { tables } from "../db/models";
-import { sha256 } from "../utils/auth";
-import { exec } from "../utils/node.server";
+import { installGlobals } from "@remix-run/node";
+import { UserTable } from "../db/models";
+import { useUserImpl } from "../misc/helper";
+import { createUserCookie } from "../utils/auth";
+
+// Remix's cookie manipulation requires atob, sign, etc...
+installGlobals();
 
 // cf. `useUser` in routes/__tests__/helper.ts
 export function useUserE2E(
   test: typeof testDefault,
-  {
-    username = "root",
-    password = "pass",
-    seed,
-  }: { username?: string; password?: string; seed?: string }
+  ...args: Parameters<typeof useUserImpl>
 ) {
-  // Generating random-ish username to avoid db uniqueness constraint
-  if (seed !== undefined) {
-    username += "-" + sha256(seed).slice(0, 8);
-  }
+  const { before, after } = useUserImpl(...args);
 
+  let user: UserTable;
   let cookie: any;
 
   test.beforeAll(async () => {
-    await tables.users().delete().where("username", username);
-    // TODO: use `register({ username, password });`
-    const { stdout } = await exec(
-      `npm run -s cli -- create-user ${username} ${password}`
-    );
-    const [name, value] = stdout.split(";")[0].split("=");
+    user = await before();
+    const rawCookie = await createUserCookie(user);
+    const [name, value] = rawCookie.split(";")[0].split("=");
     cookie = { name, value, domain: "localhost", path: "/" };
   });
 
   test.afterAll(async () => {
-    await tables.users().delete().where("username", username);
+    await after();
   });
 
   async function signin(page: Page) {
     await page.context().addCookies([cookie]);
   }
 
-  return { user: () => ({ username }), signin };
+  return { user: () => user, signin };
 }

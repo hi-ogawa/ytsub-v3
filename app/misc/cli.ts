@@ -4,9 +4,8 @@ import { cac } from "cac";
 import { range, zip } from "lodash";
 import { client } from "../db/client.server";
 import { tables } from "../db/models";
-import { register, signinSession, verifySignin } from "../utils/auth";
+import { createUserCookie, register, verifySignin } from "../utils/auth";
 import { exec } from "../utils/node.server";
-import { commitSession, getSession } from "../utils/session.server";
 
 const cli = cac("cli").help();
 
@@ -146,9 +145,7 @@ cli
 
 async function printSession(username: string, password: string) {
   const user = await verifySignin({ username, password });
-  const session = await getSession();
-  signinSession(session, user);
-  const cookie = await commitSession(session);
+  const cookie = await createUserCookie(user);
   console.log(cookie);
 }
 

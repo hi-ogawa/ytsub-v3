@@ -1,9 +1,9 @@
 import { ActionFunction, LoaderFunction } from "@remix-run/server-runtime";
 import * as qs from "qs";
 import { afterAll, beforeAll } from "vitest";
-import { UserTable, tables } from "../../db/models";
-import { register, sha256, signinSession } from "../../utils/auth";
-import { commitSession, getSession } from "../../utils/session.server";
+import { UserTable } from "../../db/models";
+import { useUserImpl } from "../../misc/helper";
+import { createUserCookie } from "../../utils/auth";
 
 const DUMMY_URL = "http://localhost:3000";
 
@@ -37,33 +37,19 @@ export function testAction(
   });
 }
 
-export function useUser({
-  username = "root",
-  password = "pass",
-  seed,
-}: {
-  username?: string;
-  password?: string;
-  seed?: string;
-}) {
-  // Generating random-ish username to avoid db uniqueness constraint
-  if (seed !== undefined) {
-    username += "-" + sha256(seed).slice(0, 8);
-  }
+export function useUser(...args: Parameters<typeof useUserImpl>) {
+  const { before, after } = useUserImpl(...args);
 
   let user: UserTable;
   let cookie: string;
 
   beforeAll(async () => {
-    await tables.users().delete().where("username", username);
-    user = await register({ username, password });
-    const session = await getSession();
-    signinSession(session, user);
-    cookie = await commitSession(session);
+    user = await before();
+    cookie = await createUserCookie(user);
   });
 
   afterAll(async () => {
-    await tables.users().delete().where("username", username);
+    await after();
   });
 
   function signin(request: Request): Request {

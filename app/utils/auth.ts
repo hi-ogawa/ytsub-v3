@@ -4,6 +4,7 @@ import { z } from "zod";
 import { UserTable, tables } from "../db/models";
 import { AppError } from "./errors";
 import { crypto } from "./node.server";
+import { commitSession, getSession } from "./session.server";
 
 export const USERNAME_MAX_LENGTH = 32;
 export const PASSWORD_MAX_LENGTH = 128;
@@ -85,15 +86,10 @@ export async function verifySignin(data: {
     .select()
     .where("username", data.username)
     .first();
-  if (!user) {
-    throw new AppError("Invalid username or password");
+  if (user && (await verifyPassword(data.password, user.passwordHash))) {
+    return user;
   }
-
-  // Verify password
-  if (!(await verifyPassword(data.password, user.passwordHash))) {
-    throw new AppError("Invalid username or password");
-  }
-  return user;
+  throw new AppError("Invalid username or password");
 }
 
 const SESSION_USER_KEY = "session-user-v1";
@@ -118,4 +114,11 @@ export async function getSessionUser(
   const id = getSessionUserId(session);
   if (id === undefined) return;
   return await tables.users().select("*").where("id", id).first();
+}
+
+export async function createUserCookie(user: UserTable) {
+  const session = await getSession();
+  signinSession(session, user);
+  const cookie = await commitSession(session);
+  return cookie;
 }
