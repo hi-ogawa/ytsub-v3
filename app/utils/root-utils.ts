@@ -11,5 +11,5 @@ export interface RootLoaderData {
 
 export function useRootLoaderData(): RootLoaderData {
   const [{ data }] = useMatches();
-  return React.useMemo(() => deserialize(data as any), [data]);
+  return React.useMemo(() => deserialize(data), [data]);
 }

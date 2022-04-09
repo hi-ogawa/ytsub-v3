@@ -1,13 +1,18 @@
 import { redirect } from "@remix-run/server-runtime";
-import { tables } from "../db/models";
-import { Controller, makeLoader } from "../utils/controller-utils";
-import { AppError } from "../utils/errors";
-import { CaptionEntry, VideoMetadata } from "../utils/types";
+import { tables } from "../../db/models";
+import { Controller, makeLoader } from "../../utils/controller-utils";
+import { AppError } from "../../utils/errors";
+import { PageHandle } from "../../utils/page-handle";
+import { CaptionEntry, VideoMetadata } from "../../utils/types";
 import {
   NEW_VIDEO_SCHEMA,
   NewVideo,
   fetchCaptionEntries,
-} from "../utils/youtube";
+} from "../../utils/youtube";
+
+export const handle: PageHandle = {
+  navBarTitle: "New Video",
+};
 
 async function insertVideoAndCaptionEntries(
   newVideo: NewVideo,
@@ -74,3 +79,5 @@ export const action = makeLoader(Controller, async function () {
   }
   return redirect(`/videos/${id}`);
 });
+
+// TODO: migrate components from `setup.tsx`

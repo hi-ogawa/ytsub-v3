@@ -24,7 +24,7 @@ export interface VideoTable {
   channelId: string;
   createdAt: Date;
   updatedAt: Date;
-  userId?: number; // anonymous user when null
+  userId?: number; // associated to anonymous users when `null`
 }
 
 export interface CaptionEntryTable {
@@ -43,19 +43,3 @@ export const tables = {
   videos: () => client<VideoTable>("videos"),
   captionEntries: () => client<CaptionEntryTable>("captionEntries"),
 };
-
-export async function findVideoAndCaptionEntries(
-  id: number
-): Promise<
-  { video: VideoTable; captionEntries: CaptionEntryTable[] } | undefined
-> {
-  const video = await tables.videos().select("*").where("id", id).first();
-  if (!video) {
-    return;
-  }
-  const captionEntries = await tables
-    .captionEntries()
-    .select("*")
-    .where("videoId", id);
-  return { video, captionEntries };
-}

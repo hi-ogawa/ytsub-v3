@@ -66,8 +66,8 @@ export default function Component() {
         <div className="h-full p-6 flex flex-col">
           <div className="text-xl font-bold mb-1">Select Languages</div>
           <Form
-            method="get"
-            action="/watch"
+            method="post"
+            action="/videos/new"
             className="w-full flex flex-col gap-1"
             data-test="setup-form"
             {...formProps}

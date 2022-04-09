@@ -3,12 +3,12 @@ import { installGlobals } from "@remix-run/node";
 import { last, omit } from "lodash";
 import { beforeAll, describe, expect, it } from "vitest";
 import { tables } from "../../db/models";
-import { action } from "../videos.new";
+import { action } from "../videos/new";
 import { testAction, useUser } from "./helper";
 
 installGlobals();
 
-describe("videos.new.action", () => {
+describe("videos/new.action", () => {
   const { user, signin } = useUser({ seed: __filename });
 
   beforeAll(async () => {

@@ -90,3 +90,10 @@ export const useYoutubeIframeApi = createUseQuery(
   loadYoutubeIframeApi,
   { staleTime: Infinity, cacheTime: Infinity }
 );
+
+export function useMemoWrap<F extends (_: D) => any, D>(
+  f: F,
+  data: D
+): ReturnType<F> {
+  return React.useMemo(() => f(data), [data]);
+}
