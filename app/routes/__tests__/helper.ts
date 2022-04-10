@@ -1,5 +1,4 @@
 import { ActionFunction, LoaderFunction } from "@remix-run/server-runtime";
-import * as qs from "qs";
 import { afterAll, beforeAll } from "vitest";
 import {
   CaptionEntryTable,
@@ -12,17 +11,17 @@ import {
 import { assert } from "../../misc/assert";
 import { useUserImpl } from "../../misc/helper";
 import { createUserCookie } from "../../utils/auth";
+import { toQuery } from "../../utils/url-data";
 import { NewVideo, fetchCaptionEntries } from "../../utils/youtube";
 
 const DUMMY_URL = "http://localhost:3000";
 
 export function testLoader(
   loader: LoaderFunction,
-  { data = {}, params = {} }: { data?: any; params?: Record<string, string> }
+  { query = {}, params = {} }: { query?: any; params?: Record<string, string> }
 ) {
-  const serialized = qs.stringify(data, { allowDots: true });
   return loader({
-    request: new Request(DUMMY_URL + "/?" + serialized),
+    request: new Request(DUMMY_URL + "/?" + toQuery(query)),
     context: {},
     params,
   });
@@ -30,16 +29,14 @@ export function testLoader(
 
 export function testAction(
   loader: ActionFunction,
-  { data = {}, headers = {} }: { data?: any; headers?: Record<string, string> },
+  { data = {} }: { data?: any },
   preprocess: (request: Request) => Request = (request) => request
 ) {
-  const serialized = qs.stringify(data, { allowDots: true });
   const request = new Request(DUMMY_URL, {
     method: "POST",
-    body: serialized,
+    body: toQuery(data),
     headers: {
       "content-type": "application/x-www-form-urlencoded",
-      ...headers,
     },
   });
   return loader({

@@ -13,7 +13,7 @@ describe("videos/new.loader", () => {
   it("basic", async () => {
     const data = { videoId: "MoH8Fk2K9bc" };
     const res = await testLoader(loader, {
-      data,
+      query: data,
     });
     const resJson = await res.json();
     expect(resJson.videoDetails?.title).toBe(
@@ -23,9 +23,7 @@ describe("videos/new.loader", () => {
 
   it("url", async () => {
     const data = { videoId: "https://www.youtube.com/watch?v=MoH8Fk2K9bc" };
-    const res = await testLoader(loader, {
-      data,
-    });
+    const res = await testLoader(loader, { query: data });
     const resJson = await res.json();
     expect(resJson.videoDetails?.title).toBe(
       "LEARN FRENCH IN 2 MINUTES – French idiom : Noyer le poisson"
@@ -34,9 +32,7 @@ describe("videos/new.loader", () => {
 
   it("invalid-input", async () => {
     const data = { videoId: "xxx" };
-    const res = await testLoader(loader, {
-      data,
-    });
+    const res = await testLoader(loader, { query: data });
 
     assert.ok(res instanceof Response);
     expect(res.status).toBe(302);
