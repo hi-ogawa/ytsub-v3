@@ -15,6 +15,7 @@ export const handle: PageHandle = {
 
 // TODO
 // - filter by language
+// - filter by author
 // - pagination
 // - order by "lastWatchedAt"
 // - better layout for desktop
