@@ -216,7 +216,7 @@ function Navbar({
               leaveTo="scale-90 opacity-0"
               {...props}
             >
-              <ul className="menu rounded p-3 shadow w-48 bg-base-100 text-base-content">
+              <ul className="menu rounded p-3 shadow w-48 bg-base-100 text-base-content text-sm">
                 {user ? (
                   <>
                     <li>
