@@ -25,10 +25,11 @@ lint/shellcheck:
 db/seed:
 	npm run cli -- create-user root pass
 
-# TODO: use dump/restore as seed
-# TODO: load anonymous data on production
 db/dump:
+	docker-compose exec -T mysql mysqldump -uroot -ppassword ytsub_development | gzip -c > "misc/db/dump/$$(date '+%Y_%m_%d_%H_%M_%S').sql.gz"
+
 db/restore:
+	gunzip -c $$(ls misc/db/dump/*.sql.gz | tail -n 1) | docker-compose exec -T mysql mysql -uroot -ppassword ytsub_development
 
 db/reset: db/recreate db/migrate
 db/reset/dev: db/recreate/dev db/migrate/dev
