@@ -1,8 +1,8 @@
-import * as assert from "assert";
 import { installGlobals } from "@remix-run/node";
 import { last, omit } from "lodash";
 import { beforeAll, describe, expect, it } from "vitest";
 import { tables } from "../../db/models";
+import { assert } from "../../misc/assert";
 import { getResponseSession } from "../../utils/session-utils";
 import { action, loader } from "../videos/new";
 import { testLoader, useUser } from "./helper";
@@ -34,7 +34,7 @@ describe("videos/new.loader", () => {
     const data = { videoId: "xxx" };
     const res = await testLoader(loader, { query: data });
 
-    assert.ok(res instanceof Response);
+    assert(res instanceof Response);
     expect(res.status).toBe(302);
     expect(res.headers.get("location")).toBe("/");
 
@@ -80,7 +80,7 @@ describe("videos/new.action", () => {
       .select("*")
       .where("userId", user().id)
       .first();
-    assert.ok(video);
+    assert(video);
 
     const captionEntries = await tables
       .captionEntries()
@@ -112,12 +112,12 @@ describe("videos/new.action", () => {
     `);
 
     // redirect
-    assert.ok(res instanceof Response);
+    assert(res instanceof Response);
     expect(res.headers.get("location")).toBe(`/videos/${video.id}`);
 
     // calling with the same parameters doesn't create new video
     const res2 = await testLoader(action, { form: data }, signin);
-    assert.ok(res2 instanceof Response);
+    assert(res2 instanceof Response);
     expect(res2.headers.get("location")).toBe(`/videos/${video.id}`);
   });
 
@@ -134,19 +134,19 @@ describe("videos/new.action", () => {
       },
     };
     const res = await testLoader(action, { form: data });
-    assert.ok(res instanceof Response);
+    assert(res instanceof Response);
 
     const location = res.headers.get("location");
-    assert.ok(location);
+    assert(location);
 
     const id = last(location.split("/"));
     const video = await tables.videos().select("*").where("id", id).first();
-    assert.ok(video);
+    assert(video);
     expect(video.userId).toBe(null);
 
     // calling with the same parameters doesn't create new video
     const res2 = await testLoader(action, { form: data });
-    assert.ok(res2 instanceof Response);
+    assert(res2 instanceof Response);
     expect(res2.headers.get("location")).toBe(`/videos/${video.id}`);
   });
 });

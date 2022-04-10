@@ -1,7 +1,7 @@
-import * as assert from "assert";
 import { installGlobals } from "@remix-run/node";
 import { beforeAll, describe, expect, it } from "vitest";
 import { UserTable, tables } from "../../../db/models";
+import { assert } from "../../../misc/assert";
 import { getSessionUser, register } from "../../../utils/auth";
 import { getSession } from "../../../utils/session.server";
 import { testLoader } from "../../__tests__/helper";
@@ -23,7 +23,7 @@ describe("signin.action", () => {
       const res = await testLoader(action, { form: credentials });
 
       // redirect to root
-      assert.ok(res instanceof Response);
+      assert(res instanceof Response);
       expect(res.status).toBe(302);
       expect(res.headers.get("location")).toBe("/");
 

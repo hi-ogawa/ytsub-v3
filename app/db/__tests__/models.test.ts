@@ -1,6 +1,6 @@
-import * as assert from "assert";
 import { omit } from "lodash";
 import { beforeEach, describe, expect, it } from "vitest";
+import { assert } from "../../misc/assert";
 import { tables } from "../models";
 
 describe("models", () => {
@@ -22,8 +22,8 @@ describe("models", () => {
     };
     const [id] = await tables.users().insert(data);
     const res = await tables.users().select("*").where("id", id).first();
-    assert.ok(res);
-    assert.strict.deepEqual(omit(res, ["id", "createdAt", "updatedAt"]), data);
+    assert(res);
+    expect(omit(res, ["id", "createdAt", "updatedAt"])).toEqual(data);
   });
 
   // cf.
