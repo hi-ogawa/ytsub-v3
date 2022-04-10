@@ -4,7 +4,7 @@ import { beforeEach, describe, expect, it } from "vitest";
 import { tables } from "../../../db/models";
 import { getSessionUser } from "../../../utils/auth";
 import { getSession } from "../../../utils/session.server";
-import { testAction } from "../../__tests__/helper";
+import { testLoader } from "../../__tests__/helper";
 import { action } from "../register";
 
 installGlobals();
@@ -22,7 +22,7 @@ describe("register.action", () => {
         password: "pass",
         passwordConfirmation: "pass",
       };
-      const res = await testAction(action, { data });
+      const res = await testLoader(action, { form: data });
       const found = await tables
         .users()
         .select("*")
@@ -50,7 +50,7 @@ describe("register.action", () => {
         password: "pass",
         passwordConfirmation: "pass",
       };
-      const res = await testAction(action, { data });
+      const res = await testLoader(action, { form: data });
       expect(res).toMatchInlineSnapshot(`
         {
           "errors": {
@@ -72,7 +72,7 @@ describe("register.action", () => {
         password: "pass",
         passwordConfirmation: "ssap",
       };
-      const res = await testAction(action, { data });
+      const res = await testLoader(action, { form: data });
       expect(res).toMatchInlineSnapshot(`
         {
           "errors": {
@@ -95,12 +95,12 @@ describe("register.action", () => {
         passwordConfirmation: "pass",
       };
       {
-        const res = await testAction(action, { data });
+        const res = await testLoader(action, { form: data });
         assert.ok(res instanceof Response);
         expect(res.status).toBe(302);
       }
       {
-        const res = await testAction(action, { data });
+        const res = await testLoader(action, { form: data });
         expect(res).toMatchInlineSnapshot(`
           {
             "message": "Username 'root' is already taken",

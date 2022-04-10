@@ -2,7 +2,7 @@ import * as assert from "assert";
 import { installGlobals } from "@remix-run/node";
 import { describe, expect, it } from "vitest";
 import { getResponseSession } from "../../../utils/session-utils";
-import { testAction, useUser } from "../../__tests__/helper";
+import { testLoader, useUser } from "../../__tests__/helper";
 import { action } from "../signout";
 
 installGlobals();
@@ -12,7 +12,7 @@ describe("signout.action", () => {
 
   describe("success", () => {
     it("basic", async () => {
-      const res = await testAction(action, {}, signin);
+      const res = await testLoader(action, {}, signin);
 
       // redirect to root
       assert.ok(res instanceof Response);
@@ -36,7 +36,7 @@ describe("signout.action", () => {
 
   describe("error", () => {
     it("no-session-user", async () => {
-      const res = await testAction(action, {});
+      const res = await testLoader(action, {});
       expect(res).toMatchInlineSnapshot(`
         {
           "message": "Invalid sign out",

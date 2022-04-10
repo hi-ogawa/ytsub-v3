@@ -1,4 +1,4 @@
-import { ActionFunction, LoaderFunction } from "@remix-run/server-runtime";
+import { LoaderFunction } from "@remix-run/server-runtime";
 import { afterAll, beforeAll } from "vitest";
 import {
   CaptionEntryTable,
@@ -18,31 +18,34 @@ const DUMMY_URL = "http://localhost:3000";
 
 export function testLoader(
   loader: LoaderFunction,
-  { query = {}, params = {} }: { query?: any; params?: Record<string, string> }
+  {
+    query,
+    form,
+    params = {},
+  }: { query?: any; form?: any; params?: Record<string, string> },
+  transform?: (request: Request) => Request
 ) {
+  let url = DUMMY_URL;
+  if (query) {
+    url += "/?" + toQuery(query);
+  }
+  let request = new Request(url);
+  if (form) {
+    request = new Request(url, {
+      method: "POST",
+      body: toQuery(form),
+      headers: {
+        "content-type": "application/x-www-form-urlencoded",
+      },
+    });
+  }
+  if (transform) {
+    request = transform(request);
+  }
   return loader({
-    request: new Request(DUMMY_URL + "/?" + toQuery(query)),
+    request,
     context: {},
     params,
-  });
-}
-
-export function testAction(
-  loader: ActionFunction,
-  { data = {} }: { data?: any },
-  preprocess: (request: Request) => Request = (request) => request
-) {
-  const request = new Request(DUMMY_URL, {
-    method: "POST",
-    body: toQuery(data),
-    headers: {
-      "content-type": "application/x-www-form-urlencoded",
-    },
-  });
-  return loader({
-    request: preprocess(request),
-    context: {},
-    params: {},
   });
 }
 

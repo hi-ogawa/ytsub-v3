@@ -5,7 +5,7 @@ import { beforeAll, describe, expect, it } from "vitest";
 import { tables } from "../../db/models";
 import { getResponseSession } from "../../utils/session-utils";
 import { action, loader } from "../videos/new";
-import { testAction, testLoader, useUser } from "./helper";
+import { testLoader, useUser } from "./helper";
 
 installGlobals();
 
@@ -72,7 +72,7 @@ describe("videos/new.action", () => {
         translation: "",
       },
     };
-    const res = await testAction(action, { data }, signin);
+    const res = await testLoader(action, { form: data }, signin);
 
     // persist video and caption entries
     const video = await tables
@@ -116,7 +116,7 @@ describe("videos/new.action", () => {
     expect(res.headers.get("location")).toBe(`/videos/${video.id}`);
 
     // calling with the same parameters doesn't create new video
-    const res2 = await testAction(action, { data }, signin);
+    const res2 = await testLoader(action, { form: data }, signin);
     assert.ok(res2 instanceof Response);
     expect(res2.headers.get("location")).toBe(`/videos/${video.id}`);
   });
@@ -133,7 +133,7 @@ describe("videos/new.action", () => {
         translation: "",
       },
     };
-    const res = await testAction(action, { data });
+    const res = await testLoader(action, { form: data });
     assert.ok(res instanceof Response);
 
     const location = res.headers.get("location");
@@ -145,7 +145,7 @@ describe("videos/new.action", () => {
     expect(video.userId).toBe(null);
 
     // calling with the same parameters doesn't create new video
-    const res2 = await testAction(action, { data });
+    const res2 = await testLoader(action, { form: data });
     assert.ok(res2 instanceof Response);
     expect(res2.headers.get("location")).toBe(`/videos/${video.id}`);
   });
