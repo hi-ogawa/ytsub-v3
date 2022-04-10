@@ -51,7 +51,7 @@ db/migrate/test:
 
 docker/up:
 	docker-compose up -d mysql
-	docker-compose run --rm dockerize -timeout 30s -wait tcp://mysql:3306
+	docker-compose run --rm dockerize -timeout 60s -wait tcp://mysql:3306
 
 docker/down:
 	docker-compose down
