@@ -14,6 +14,7 @@ import { LinksFunction, MetaFunction } from "@remix-run/server-runtime";
 import { last } from "lodash";
 import * as React from "react";
 import {
+  Clock,
   Code,
   Home,
   LogIn,
@@ -102,7 +103,7 @@ function Root() {
   return (
     <>
       <GlobalProgress />
-      <SideMenuDrawerWrapper>
+      <SideMenuDrawerWrapper isSignedIn={!!data.currentUser}>
         <div className="h-full flex flex-col">
           <Navbar title={navBarTitle} user={data.currentUser} />
           <div className="flex-[1_0_0] flex flex-col">
@@ -253,6 +254,7 @@ interface SideMenuEntry {
   to: string;
   icon: any;
   title: string;
+  requireSignin: boolean;
 }
 
 const SIDE_MENU_ENTRIES: SideMenuEntry[] = [
@@ -260,10 +262,20 @@ const SIDE_MENU_ENTRIES: SideMenuEntry[] = [
     to: R["/"],
     icon: Home,
     title: "Home",
+    requireSignin: false,
+  },
+  {
+    to: R["/videos/history"],
+    icon: Clock,
+    title: "History",
+    requireSignin: true,
   },
 ];
 
-function SideMenuDrawerWrapper({ children }: React.PropsWithChildren<{}>) {
+function SideMenuDrawerWrapper({
+  isSignedIn,
+  children,
+}: React.PropsWithChildren<{ isSignedIn: boolean }>) {
   // TODO: initial render shows open drawer?
   return (
     <div className="drawer h-screen w-full">
@@ -279,14 +291,17 @@ function SideMenuDrawerWrapper({ children }: React.PropsWithChildren<{}>) {
           <li className="disabled block sm:hidden">
             <SearchComponent />
           </li>
-          {SIDE_MENU_ENTRIES.map((entry) => (
-            <li key={entry.to}>
-              <Link to={entry.to} onClick={() => toggleDrawer(false)}>
-                <entry.icon size={28} className="text-gray-500 pr-2" />
-                {entry.title}
-              </Link>
-            </li>
-          ))}
+          {SIDE_MENU_ENTRIES.map(
+            (entry) =>
+              (isSignedIn || !entry.requireSignin) && (
+                <li key={entry.to}>
+                  <Link to={entry.to} onClick={() => toggleDrawer(false)}>
+                    <entry.icon size={28} className="text-gray-500 pr-2" />
+                    {entry.title}
+                  </Link>
+                </li>
+              )
+          )}
           <li>
             <a
               href={

@@ -76,6 +76,9 @@ export default function DefaultComponent() {
   const videoMetadata: VideoMetadata = useLoaderData();
   const [isValid, formProps] = useIsFormValid();
 
+  // TODO: more heuristics to set default languages e.g.
+  //   language1 = { id: <any caption track> } (maybe we can infer from `videoDetails.keywords`)
+  //   language2 = { id: language1.id, translation: "en" }
   let defaultValues = ["", ""];
   const { language1, language2 } = rootData.currentUser ?? {};
   if (language1 && language2) {

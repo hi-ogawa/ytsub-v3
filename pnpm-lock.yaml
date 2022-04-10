@@ -11,6 +11,7 @@ specifiers:
   '@remix-run/react': ^1.2.2
   '@remix-run/serve': file:./.patch/node_modules/@remix-run/serve
   '@remix-run/server-runtime': ^1.2.2
+  '@tailwindcss/line-clamp': ^0.3.1
   '@types/bcryptjs': ^2.4.2
   '@types/lodash': ^4.14.179
   '@types/node': ^14
@@ -83,6 +84,7 @@ devDependencies:
   '@remix-run/dev': 1.2.3_react-dom@17.0.2+react@17.0.2
   '@remix-run/node': 1.2.3_react-dom@17.0.2+react@17.0.2
   '@remix-run/serve': link:.patch/node_modules/@remix-run/serve
+  '@tailwindcss/line-clamp': 0.3.1_tailwindcss@3.0.23
   '@types/lodash': 4.14.179
   '@types/node': 14.18.12
   '@types/qs': 6.9.7
@@ -1081,6 +1083,14 @@ packages:
     engines: {node: '>=10'}
     dependencies:
       defer-to-connect: 2.0.1
+    dev: true
+
+  /@tailwindcss/line-clamp/0.3.1_tailwindcss@3.0.23:
+    resolution: {integrity: sha512-pNr0T8LAc3TUx/gxCfQZRe9NB2dPEo/cedPHzUGIPxqDMhgjwNm6jYxww4W5l0zAsAddxr+XfZcqttGiFDgrGg==}
+    peerDependencies:
+      tailwindcss: '>=2.0.0 || >=3.0.0 || >=3.0.0-alpha.1'
+    dependencies:
+      tailwindcss: 3.0.23_autoprefixer@10.4.2
     dev: true
 
   /@types/acorn/4.0.6:

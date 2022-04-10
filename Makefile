@@ -25,6 +25,11 @@ lint/shellcheck:
 db/seed:
 	npm run cli -- create-user root pass
 
+# TODO: use dump/restore as seed
+# TODO: load anonymous data on production
+db/dump:
+db/restore:
+
 db/reset: db/recreate db/migrate
 db/reset/dev: db/recreate/dev db/migrate/dev
 db/reset/test: db/recreate/test db/migrate/test

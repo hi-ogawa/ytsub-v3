@@ -9,12 +9,8 @@ import {
   getVideoAndCaptionEntries,
 } from "../../db/models";
 import { R } from "../../misc/routes";
-import {
-  Controller,
-  deserialize,
-  makeLoader,
-} from "../../utils/controller-utils";
-import { useMemoWrap } from "../../utils/hooks";
+import { Controller, makeLoader } from "../../utils/controller-utils";
+import { useDeserialize } from "../../utils/hooks";
 import { useYoutubeIframeApi } from "../../utils/hooks";
 import { PageHandle } from "../../utils/page-handle";
 import { pushFlashMessage } from "../../utils/session-utils";
@@ -53,7 +49,7 @@ export const loader = makeLoader(Controller, async function () {
 });
 
 export default function DeafultComponent() {
-  const data: LoaderData = useMemoWrap(deserialize, useLoaderData());
+  const data: LoaderData = useDeserialize(useLoaderData());
   return <PageComponent {...data} />;
 }
 

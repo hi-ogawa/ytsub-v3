@@ -7,6 +7,7 @@ export const handle: PageHandle = {
   navBarTitle: "Home",
 };
 
+// TODO: use video data for anonymous users
 const VIDEO_IDS = ["_2FF6O6Z8Hc", "MoH8Fk2K9bc", "EnPYXckiUVg"];
 
 export default function Component() {

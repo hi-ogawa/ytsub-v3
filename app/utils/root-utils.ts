@@ -1,7 +1,6 @@
 import { useMatches } from "@remix-run/react";
-import * as React from "react";
 import { UserTable } from "../db/models";
-import { deserialize } from "./controller-utils";
+import { useDeserialize } from "./hooks";
 import { FlashMessage } from "./session-utils";
 
 export interface RootLoaderData {
@@ -11,5 +10,5 @@ export interface RootLoaderData {
 
 export function useRootLoaderData(): RootLoaderData {
   const [{ data }] = useMatches();
-  return React.useMemo(() => deserialize(data), [data]);
+  return useDeserialize(data);
 }

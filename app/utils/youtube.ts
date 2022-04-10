@@ -212,11 +212,17 @@ export const NEW_VIDEO_SCHEMA = z.object({
   videoId: z.string().length(11),
   language1: z.object({
     id: z.string(),
-    translation: z.string().optional(),
+    translation: z
+      .string()
+      .optional()
+      .transform((s) => s || undefined), // ignore empty string from html form
   }),
   language2: z.object({
     id: z.string(),
-    translation: z.string().optional(),
+    translation: z
+      .string()
+      .optional()
+      .transform((s) => s || undefined),
   }),
 });
 

@@ -1,5 +1,6 @@
 import * as React from "react";
 import { UseQueryOptions, useQuery } from "react-query";
+import { deserialize } from "./controller-utils";
 import { loadYoutubeIframeApi } from "./youtube";
 
 export function useRafTime(): [number, () => void, () => void] {
@@ -96,4 +97,8 @@ export function useMemoWrap<F extends (_: D) => any, D>(
   data: D
 ): ReturnType<F> {
   return React.useMemo(() => f(data), [data]);
+}
+
+export function useDeserialize(data: any): any {
+  return useMemoWrap(deserialize, data);
 }
