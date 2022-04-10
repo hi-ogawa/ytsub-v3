@@ -3,10 +3,58 @@ import { installGlobals } from "@remix-run/node";
 import { last, omit } from "lodash";
 import { beforeAll, describe, expect, it } from "vitest";
 import { tables } from "../../db/models";
-import { action } from "../videos/new";
-import { testAction, useUser } from "./helper";
+import { getResponseSession } from "../../utils/session-utils";
+import { action, loader } from "../videos/new";
+import { testAction, testLoader, useUser } from "./helper";
 
 installGlobals();
+
+describe("videos/new.loader", () => {
+  it("basic", async () => {
+    const data = { videoId: "MoH8Fk2K9bc" };
+    const res = await testLoader(loader, {
+      data,
+    });
+    const resJson = await res.json();
+    expect(resJson.videoDetails?.title).toBe(
+      "LEARN FRENCH IN 2 MINUTES – French idiom : Noyer le poisson"
+    );
+  });
+
+  it("url", async () => {
+    const data = { videoId: "https://www.youtube.com/watch?v=MoH8Fk2K9bc" };
+    const res = await testLoader(loader, {
+      data,
+    });
+    const resJson = await res.json();
+    expect(resJson.videoDetails?.title).toBe(
+      "LEARN FRENCH IN 2 MINUTES – French idiom : Noyer le poisson"
+    );
+  });
+
+  it("invalid-input", async () => {
+    const data = { videoId: "xxx" };
+    const res = await testLoader(loader, {
+      data,
+    });
+
+    assert.ok(res instanceof Response);
+    expect(res.status).toBe(302);
+    expect(res.headers.get("location")).toBe("/");
+
+    const resSession = await getResponseSession(res);
+    expect(resSession.data).toMatchInlineSnapshot(`
+      {
+        "__flash_flashMessages__": [
+          {
+            "content": "Invalid input",
+            "variant": "error",
+          },
+        ],
+      }
+    `);
+  });
+});
 
 describe("videos/new.action", () => {
   const { user, signin } = useUser({ seed: __filename });

@@ -20,7 +20,7 @@ export default function Component() {
               <li key={videoId}>
                 <Link
                   className="rounded"
-                  to={R["/setup"] + `?videoId=${videoId}`}
+                  to={R["/videos/new"] + `?videoId=${videoId}`}
                 >
                   {videoId}
                 </Link>

@@ -14,7 +14,7 @@ export const loader: LoaderFunction = async ({ request }) => {
   if (shareTargetText) {
     const videoId = parseVideoId(shareTargetText);
     if (videoId) {
-      return redirect(R["/setup"] + `?videoId=${videoId}`);
+      return redirect(R["/videos/new"] + `?videoId=${videoId}`);
     }
   }
   throw json({ message: "Invalid share data" });

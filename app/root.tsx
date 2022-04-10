@@ -311,7 +311,7 @@ function SearchComponent() {
   return (
     <Form
       className="w-full"
-      action={R["/setup"]}
+      action={R["/videos/new"]}
       method="get"
       onSubmit={() => toggleDrawer(false)}
       data-test="search-form"
