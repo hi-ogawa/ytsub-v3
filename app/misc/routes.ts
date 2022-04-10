@@ -7,6 +7,7 @@
 export const R = {
   "/": "/",
   "/videos/new": "/videos/new",
+  "/videos/history": "/videos/history",
   "/videos/$id": (id: number) => `/videos/${id}`,
   "/users/me": "/users/me",
   "/users/register": "/users/register",

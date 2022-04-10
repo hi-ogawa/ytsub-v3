@@ -7,8 +7,8 @@ import { R } from "../../misc/routes";
 import { Controller, makeLoader } from "../../utils/controller-utils";
 import { AppError } from "../../utils/errors";
 import { useIsFormValid } from "../../utils/hooks";
+import { useRootLoaderData } from "../../utils/loader-utils";
 import { PageHandle } from "../../utils/page-handle";
-import { useRootLoaderData } from "../../utils/root-utils";
 import { pushFlashMessage } from "../../utils/session-utils";
 import { CaptionConfig, VideoMetadata } from "../../utils/types";
 import { NEW_VIDEO_SCHEMA, fetchCaptionEntries } from "../../utils/youtube";
@@ -76,6 +76,9 @@ export default function DefaultComponent() {
   const videoMetadata: VideoMetadata = useLoaderData();
   const [isValid, formProps] = useIsFormValid();
 
+  // TODO: more heuristics to set default languages e.g.
+  //   language1 = { id: <any caption track> } (maybe we can infer from `videoDetails.keywords`)
+  //   language2 = { id: language1.id, translation: "en" }
   let defaultValues = ["", ""];
   const { language1, language2 } = rootData.currentUser ?? {};
   if (language1 && language2) {

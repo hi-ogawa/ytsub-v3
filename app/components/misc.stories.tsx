@@ -3,6 +3,7 @@ import * as React from "react";
 import { LogOut, Settings, User, X } from "react-feather";
 import { useList } from "react-use";
 import { Collapse } from "./collapse";
+import { VideoComponent } from "./misc";
 import { Popover } from "./popover";
 import { Slide } from "./slide";
 import {
@@ -255,6 +256,39 @@ export function TestPopoverDaisyUI() {
             </ul>
           </div>
         </div>
+      </div>
+    </div>
+  );
+}
+
+export function TestVideoComponent() {
+  return (
+    <div className="w-full flex justify-center">
+      <div className="w-full max-w-lg flex flex-col p-2 gap-2">
+        <VideoComponent
+          video={{
+            title:
+              "LEARN FRENCH IN 2 MINUTES – French idiom : Noyer le poisson",
+            author: "Learn French with Elisabeth - HelloFrench",
+            channelId: "UCo6iNXVDuG-SQlAdxAGPGHg",
+            id: 0,
+            videoId: "MoH8Fk2K9bc",
+            language1_id: ".fr-FR",
+            language2_id: ".en",
+          }}
+        />
+        <VideoComponent
+          video={{
+            title:
+              "Russian Alphabet (How to Pronounce Russian Letters) | Super Easy Russian 60",
+            author: "Easy Russian",
+            channelId: "UCxvt-g7JsPNnEn8tUtZZBBg",
+            id: 0,
+            videoId: "FSYe9GQc9Ow",
+            language1_id: ".ru",
+            language2_id: ".en",
+          }}
+        />
       </div>
     </div>
   );

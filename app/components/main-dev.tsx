@@ -9,7 +9,7 @@ import {
   Routes,
 } from "react-router-dom";
 
-type StoryFiles = Record<string, Record<string, React.ComponentClass>>;
+type StoryFiles = Record<string, Record<string, React.FC>>;
 
 // @ts-expect-error https://vitejs.dev/guide/features.html#glob-import
 const GLOB_IMPORT: any = import.meta.globEager("./**/*.stories.tsx");
@@ -23,7 +23,7 @@ function withBase(filePath: string): string {
 function App() {
   return (
     <div className="h-full flex p-2 gap-2">
-      <div className="flex-none w-48 p-2">
+      <div className="flex-none w-48 p-2 overflow-y-auto">
         <ul className="menu menu-compact gap-1">
           {Object.entries(STORY_FILES).map(([file, stories]) => (
             <React.Fragment key={file}>

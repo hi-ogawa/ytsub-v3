@@ -3,9 +3,14 @@ import { installGlobals } from "@remix-run/node";
 import { cac } from "cac";
 import { range, zip } from "lodash";
 import { client } from "../db/client.server";
-import { tables } from "../db/models";
+import {
+  filterNewVideo,
+  insertVideoAndCaptionEntries,
+  tables,
+} from "../db/models";
 import { createUserCookie, register, verifySignin } from "../utils/auth";
-import { exec } from "../utils/node.server";
+import { exec, streamToString } from "../utils/node.server";
+import { NewVideo, fetchCaptionEntries } from "../utils/youtube";
 
 const cli = cac("cli").help();
 
@@ -143,6 +148,38 @@ cli
   .command("print-session <username> <password>")
   .action(async (username: string, password: string) => {
     await printSession(username, password);
+    await client.destroy();
+  });
+
+cli
+  .command("create-videos")
+  .option("--username <username>", "[string]")
+  .action(async (options: { username?: string }) => {
+    const input = await streamToString(process.stdin);
+    const newVideos: NewVideo[] = JSON.parse(input);
+    let userId = undefined;
+    if (options.username) {
+      const user = await tables
+        .users()
+        .where("username", options.username)
+        .select("id")
+        .first();
+      assert.ok(user);
+      userId = user.id;
+    }
+    const total = newVideos.length;
+    for (const [i, newVideo] of Object.entries(newVideos)) {
+      console.error(
+        `(${Number(i) + 1}/${total}) processing - ${JSON.stringify(newVideo)}`
+      );
+      const row = await filterNewVideo(newVideo, userId).select("id").first();
+      if (row) {
+        console.error("skipped");
+        continue;
+      }
+      const data = await fetchCaptionEntries(newVideo);
+      await insertVideoAndCaptionEntries(newVideo, data, userId);
+    }
     await client.destroy();
   });
 

@@ -1,0 +1,62 @@
+#
+# https://www.youtube.com/c/Apprendrelefran%C3%A7aisavecHelloFrench
+#
+- videoId: "29CpyvYpQJE" # https://www.youtube.com/watch?v=29CpyvYpQJE
+  language1:
+    id: ".fr-FR"
+  language2:
+    id: ".en"
+- videoId: "_2FF6O6Z8Hc" # https://www.youtube.com/watch?v=_2FF6O6Z8Hc
+  language1:
+    id: ".fr-FR"
+  language2:
+    id: ".en"
+- videoId: "Aa0d1pwdtpU" # https://www.youtube.com/watch?v=Aa0d1pwdtpU
+  language1:
+    id: ".fr-FR"
+  language2:
+    id: ".en"
+- videoId: "NRb0HDc_UiI" # https://www.youtube.com/watch?v=NRb0HDc_UiI
+  language1:
+    id: ".fr-FR"
+  language2:
+    id: ".en"
+#
+# https://www.youtube.com/c/PieceofFrench
+#
+- videoId: "EnPYXckiUVg" # https://www.youtube.com/watch?v=EnPYXckiUVg
+  language1:
+    id: ".fr"
+  language2:
+    id: ".en"
+- videoId: "1IJUvBdk9NM" # https://www.youtube.com/watch?v=1IJUvBdk9NM
+  language1:
+    id: ".fr"
+  language2:
+    id: ".en"
+- videoId: "L0UmfJDwq1M" # https://www.youtube.com/watch?v=L0UmfJDwq1M
+  language1:
+    id: ".fr"
+  language2:
+    id: ".en"
+#
+# https://www.youtube.com/c/FrenchmorningswithElisa
+#
+- videoId: "00oWhv6E5ZQ" # https://www.youtube.com/watch?v=00oWhv6E5ZQ
+  language1:
+    id: ".fr"
+  language2:
+    id: ".en"
+- videoId: "ISpkReRivcg" # https://www.youtube.com/watch?v=ISpkReRivcg
+  language1:
+    id: ".fr"
+  language2:
+    id: ".en"
+#
+# https://www.youtube.com/c/voguefrance
+#
+- videoId: "KXZejqlgWIo" # https://www.youtube.com/watch?v=KXZejqlgWIo
+  language1:
+    id: ".fr"
+  language2:
+    id: ".en"

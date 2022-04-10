@@ -90,9 +90,9 @@ describe("videos/new.action", () => {
         "author": "Piece of French",
         "channelId": "UCVzyfpNuFF4ENY8zNTIW7ug",
         "language1_id": ".fr",
-        "language1_translation": "",
+        "language1_translation": null,
         "language2_id": ".en",
-        "language2_translation": "",
+        "language2_translation": null,
         "title": "Are French People Really That Mean?! // French Girls React to Emily In Paris (in FR w/ FR & EN subs)",
         "videoId": "EnPYXckiUVg",
       }
