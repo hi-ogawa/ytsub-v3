@@ -255,7 +255,6 @@ interface SideMenuEntry {
   title: string;
 }
 
-// TODO: define all routes statically to catch typo and easier refactoring
 const SIDE_MENU_ENTRIES: SideMenuEntry[] = [
   {
     to: R["/"],
