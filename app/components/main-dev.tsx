@@ -23,7 +23,7 @@ function withBase(filePath: string): string {
 function App() {
   return (
     <div className="h-full flex p-2 gap-2">
-      <div className="flex-none w-48 p-2">
+      <div className="flex-none w-48 p-2 overflow-y-auto">
         <ul className="menu menu-compact gap-1">
           {Object.entries(STORY_FILES).map(([file, stories]) => (
             <React.Fragment key={file}>
