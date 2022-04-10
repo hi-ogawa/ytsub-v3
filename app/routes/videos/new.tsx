@@ -1,38 +1,77 @@
-import { Form, useCatch, useLoaderData } from "@remix-run/react";
-import { LoaderFunction, json } from "@remix-run/server-runtime";
+import { Form, useLoaderData } from "@remix-run/react";
+import { redirect } from "@remix-run/server-runtime";
 import * as React from "react";
 import { z } from "zod";
-import { useIsFormValid } from "../utils/hooks";
-import { PageHandle } from "../utils/page-handle";
-import { useRootLoaderData } from "../utils/root-utils";
-import { CaptionConfig, VideoMetadata } from "../utils/types";
-import { fromRequestQuery } from "../utils/url-data";
+import { filterNewVideo, insertVideoAndCaptionEntries } from "../../db/models";
+import { R } from "../../misc/routes";
+import { Controller, makeLoader } from "../../utils/controller-utils";
+import { AppError } from "../../utils/errors";
+import { useIsFormValid } from "../../utils/hooks";
+import { PageHandle } from "../../utils/page-handle";
+import { useRootLoaderData } from "../../utils/root-utils";
+import { pushFlashMessage } from "../../utils/session-utils";
+import { CaptionConfig, VideoMetadata } from "../../utils/types";
+import { NEW_VIDEO_SCHEMA, fetchCaptionEntries } from "../../utils/youtube";
 import {
   fetchVideoMetadata,
   findCaptionConfigPair,
+  parseVideoId,
   toCaptionConfigOptions,
-} from "../utils/youtube";
+} from "../../utils/youtube";
+
+//
+// loader
+//
+
+const LOADER_SCHEMA = z.object({
+  videoId: z.string().nonempty(),
+});
+
+export const loader = makeLoader(Controller, async function () {
+  const parsed = LOADER_SCHEMA.safeParse(this.query());
+  if (parsed.success) {
+    const videoId = parseVideoId(parsed.data.videoId);
+    if (videoId) {
+      const videoMetadata = await fetchVideoMetadata(videoId);
+      if (videoMetadata.playabilityStatus.status === "OK") {
+        return videoMetadata;
+      }
+    }
+  }
+  pushFlashMessage(this.session, {
+    content: "Invalid input",
+    variant: "error",
+  });
+  return redirect(R["/"]);
+});
+
+//
+// action
+//
+
+export const action = makeLoader(Controller, async function () {
+  const parsed = NEW_VIDEO_SCHEMA.safeParse(await this.form());
+  if (!parsed.success) throw new AppError("Invalid parameters");
+
+  const user = await this.currentUser();
+  const row = await filterNewVideo(parsed.data, user?.id).select("id").first();
+  let id = row?.id;
+  if (!id) {
+    const data = await fetchCaptionEntries(parsed.data);
+    id = await insertVideoAndCaptionEntries(parsed.data, data, user?.id);
+  }
+  return redirect(R["/videos/$id"](id));
+});
+
+//
+// component
+//
 
 export const handle: PageHandle = {
   navBarTitle: "Select languages",
 };
 
-const schema = z.object({
-  videoId: z.string().length(11),
-});
-
-export const loader: LoaderFunction = async ({ request }) => {
-  const parsed = schema.safeParse(fromRequestQuery(request));
-  if (parsed.success) {
-    const videoMetadata = await fetchVideoMetadata(parsed.data.videoId);
-    if (videoMetadata.playabilityStatus.status === "OK") {
-      return videoMetadata;
-    }
-  }
-  throw json({ message: "Invalid Video ID" });
-};
-
-export default function Component() {
+export default function DefaultComponent() {
   const rootData = useRootLoaderData();
   const videoMetadata: VideoMetadata = useLoaderData();
   const [isValid, formProps] = useIsFormValid();
@@ -57,8 +96,8 @@ export default function Component() {
         <div className="h-full p-6 flex flex-col">
           <div className="text-xl font-bold mb-1">Select Languages</div>
           <Form
-            method="get"
-            action="/watch"
+            method="post"
+            action={R["/videos/new"]}
             className="w-full flex flex-col gap-1"
             data-test="setup-form"
             {...formProps}
@@ -129,11 +168,6 @@ export default function Component() {
       </div>
     </div>
   );
-}
-
-export function CatchBoundary() {
-  const { data } = useCatch();
-  return <div>ERROR: {data.message}</div>;
 }
 
 function LanguageSelectComponent({

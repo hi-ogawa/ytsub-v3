@@ -33,6 +33,7 @@ import {
 } from "./components/snackbar";
 import { TopProgressBar } from "./components/top-progress-bar";
 import { UserTable } from "./db/models";
+import { R } from "./misc/routes";
 import { Controller, makeLoader } from "./utils/controller-utils";
 import { Match } from "./utils/page-handle";
 import { RootLoaderData, useRootLoaderData } from "./utils/root-utils";
@@ -207,7 +208,7 @@ function Navbar({ title, user }: { title?: string; user?: UserTable }) {
                 {user ? (
                   <>
                     <li>
-                      <Link to={"/users/me"} onClick={() => setOpen(false)}>
+                      <Link to={R["/users/me"]} onClick={() => setOpen(false)}>
                         <Settings />
                         Account
                       </Link>
@@ -215,7 +216,7 @@ function Navbar({ title, user }: { title?: string; user?: UserTable }) {
                     <li>
                       <Form
                         method="post"
-                        action="/users/signout"
+                        action={R["/users/signout"]}
                         data-test="signout-form"
                         onClick={() => setOpen(false)}
                       >
@@ -229,7 +230,10 @@ function Navbar({ title, user }: { title?: string; user?: UserTable }) {
                 ) : (
                   <>
                     <li>
-                      <Link to={"/users/signin"} onClick={() => setOpen(false)}>
+                      <Link
+                        to={R["/users/signin"]}
+                        onClick={() => setOpen(false)}
+                      >
                         <LogIn />
                         Sign in
                       </Link>
@@ -251,16 +255,16 @@ interface SideMenuEntry {
   title: string;
 }
 
-// TODO: define all routes statically to catch typo and easier refactoring
 const SIDE_MENU_ENTRIES: SideMenuEntry[] = [
   {
-    to: "/",
+    to: R["/"],
     icon: Home,
     title: "Home",
   },
 ];
 
 function SideMenuDrawerWrapper({ children }: React.PropsWithChildren<{}>) {
+  // TODO: initial render shows open drawer?
   return (
     <div className="drawer h-screen w-full">
       <input
@@ -306,7 +310,7 @@ function SearchComponent() {
   return (
     <Form
       className="w-full"
-      action="/setup"
+      action={R["/videos/new"]}
       method="get"
       onSubmit={() => toggleDrawer(false)}
       data-test="search-form"
@@ -317,7 +321,7 @@ function SearchComponent() {
           type="text"
           name="videoId"
           className="w-full input input-sm input-bordered pl-8"
-          placeholder="Enter Video ID"
+          placeholder="Enter Video ID or URL"
           required
         />
       </label>

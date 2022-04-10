@@ -1,9 +1,10 @@
 import { Session } from "@remix-run/server-runtime";
 import * as bcrypt from "bcryptjs";
 import { z } from "zod";
-import { UserTable, users } from "../db/models";
+import { UserTable, tables } from "../db/models";
 import { AppError } from "./errors";
 import { crypto } from "./node.server";
+import { commitSession, getSession } from "./session.server";
 
 export const USERNAME_MAX_LENGTH = 32;
 export const PASSWORD_MAX_LENGTH = 128;
@@ -58,17 +59,17 @@ export async function register(data: {
   password: string;
 }): Promise<UserTable> {
   // Check uniqueness
-  if (await users().select().where("username", data.username).first()) {
+  if (await tables.users().select().where("username", data.username).first()) {
     throw new AppError(`Username '${data.username}' is already taken`);
   }
 
   // Save
   const passwordHash = await toPasswordHash(data.password);
-  const [id] = await users().insert({
+  const [id] = await tables.users().insert({
     username: data.username,
     passwordHash,
   });
-  const user = await users().select("*").where("id", id).first();
+  const user = await tables.users().select("*").where("id", id).first();
   if (!user) {
     throw new AppError("Unknown registration error");
   }
@@ -80,16 +81,15 @@ export async function verifySignin(data: {
   password: string;
 }): Promise<UserTable> {
   // Find user
-  const user = await users().select().where("username", data.username).first();
-  if (!user) {
-    throw new AppError("Invalid username or password");
+  const user = await tables
+    .users()
+    .select()
+    .where("username", data.username)
+    .first();
+  if (user && (await verifyPassword(data.password, user.passwordHash))) {
+    return user;
   }
-
-  // Verify password
-  if (!(await verifyPassword(data.password, user.passwordHash))) {
-    throw new AppError("Invalid username or password");
-  }
-  return user;
+  throw new AppError("Invalid username or password");
 }
 
 const SESSION_USER_KEY = "session-user-v1";
@@ -113,5 +113,12 @@ export async function getSessionUser(
 ): Promise<UserTable | undefined> {
   const id = getSessionUserId(session);
   if (id === undefined) return;
-  return await users().select("*").where("id", id).first();
+  return await tables.users().select("*").where("id", id).first();
+}
+
+export async function createUserCookie(user: UserTable) {
+  const session = await getSession();
+  signinSession(session, user);
+  const cookie = await commitSession(session);
+  return cookie;
 }

@@ -83,6 +83,7 @@ jobs:
       - run: pnpm run install-with-patch -- --frozen-lockfile
       - run: make docker/up db/recreate
       - run: npm run cli -- db:test-migrations --unit-test
+      - run: npm run cli -- db:test-migrations --reversibility-test
 
   lint-misc:
     runs-on: ubuntu-20.04

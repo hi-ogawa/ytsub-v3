@@ -3,17 +3,11 @@ import { installGlobals } from "@remix-run/node";
 import { cac } from "cac";
 import { range, zip } from "lodash";
 import { client } from "../db/client.server";
-import { users } from "../db/models";
-import { register, signinSession, verifySignin } from "../utils/auth";
+import { tables } from "../db/models";
+import { createUserCookie, register, verifySignin } from "../utils/auth";
 import { exec } from "../utils/node.server";
-import { commitSession, getSession } from "../utils/session.server";
 
 const cli = cac("cli").help();
-
-cli.command("db:truncate").action(async () => {
-  await users().truncate();
-  await client.destroy();
-});
 
 cli
   .command("db:schema")
@@ -65,11 +59,13 @@ cli
   .command("db:test-migrations")
   .option("--show-schema", "[boolean]", { default: false })
   .option("--unit-test", "[boolean]", { default: false })
+  .option("--reversibility-test", "[boolean]", { default: false })
   .action(clieDbTestMigrations);
 
 async function clieDbTestMigrations(options: {
   showSchema: boolean;
   unitTest: boolean;
+  reversibilityTest: boolean;
 }) {
   const [completed, pending] = (await client.migrate.list()) as [
     { name: string }[],
@@ -90,7 +86,7 @@ async function clieDbTestMigrations(options: {
   const downs = [];
 
   const getSchema_ = () =>
-    getSchema({ showCreateTable: false, includeKnex: false });
+    getSchema({ showCreateTable: true, includeKnex: false });
 
   console.error(":: running migrations");
   if (options.unitTest) {
@@ -115,20 +111,33 @@ async function clieDbTestMigrations(options: {
   if (options.showSchema) {
     console.log(JSON.stringify(zip(ups, downs), null, 2));
   }
-
-  assert.strict.deepEqual(ups, downs);
-  console.error(":: success");
-
   await client.destroy();
+
+  if (options.reversibilityTest) {
+    assert.strict.deepEqual(ups, downs);
+    console.error(":: reversibility test success");
+  }
 }
 
 cli
   .command("create-user <username> <password>")
-  .action(async (username: string, password: string) => {
-    await register({ username, password });
-    await printSession(username, password);
-    await client.destroy();
-  });
+  .option("--language1 <language1>", "[string]", { default: "fr" })
+  .option("--language2 <language2>", "[string]", { default: "en" })
+  .action(
+    async (
+      username: string,
+      password: string,
+      { language1, language2 }: { language1: string; language2: string }
+    ) => {
+      const user = await register({ username, password });
+      await tables
+        .users()
+        .update({ language1, language2 })
+        .where("id", user.id);
+      await printSession(username, password);
+      await client.destroy();
+    }
+  );
 
 cli
   .command("print-session <username> <password>")
@@ -139,9 +148,7 @@ cli
 
 async function printSession(username: string, password: string) {
   const user = await verifySignin({ username, password });
-  const session = await getSession();
-  signinSession(session, user);
-  const cookie = await commitSession(session);
+  const cookie = await createUserCookie(user);
   console.log(cookie);
 }
 

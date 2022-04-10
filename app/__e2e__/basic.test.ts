@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-test("index => setup", async ({ page }) => {
+test("/ => /videos/new", async ({ page }) => {
   await page.goto("/");
   await expect(page).toHaveTitle("ytsub-v3");
 
@@ -10,12 +10,12 @@ test("index => setup", async ({ page }) => {
     .fill("EnPYXckiUVg");
   await page.locator("data-test=search-form >> input >> nth=0").press("Enter");
 
-  // Navigate to /setup
-  await expect(page).toHaveURL("/setup?videoId=EnPYXckiUVg");
+  // Navigate to /vides/new
+  await expect(page).toHaveURL("/videos/new?videoId=EnPYXckiUVg");
 });
 
-test("setup => watch", async ({ page }) => {
-  await page.goto("/setup?videoId=EnPYXckiUVg");
+test("/videos/new => videos/id", async ({ page }) => {
+  await page.goto("/videos/new?videoId=EnPYXckiUVg");
 
   // Check readonly input
   await expect(
@@ -33,8 +33,6 @@ test("setup => watch", async ({ page }) => {
   // Submit
   await page.locator('data-test=setup-form >> button[type="submit"]').click();
 
-  // Navigate to /watch
-  await expect(page).toHaveURL(
-    "/watch?videoId=EnPYXckiUVg&language1.id=.fr&language1.translation=&language2.id=.en&language2.translation="
-  );
+  // Navigate to /videos/$id
+  await expect(page).toHaveURL(/\/videos\/\d+$/);
 });

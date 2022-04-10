@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { useUser } from "./helper";
+import { useUserE2E } from "./helper";
 
 test("/users/register", async ({ page }) => {
   await page.goto("/users/register");
@@ -18,7 +18,7 @@ test("/users/signin", async ({ page }) => {
 });
 
 test.describe("/users/me", () => {
-  const { username, signin } = useUser(test, {
+  const { user, signin } = useUserE2E(test, {
     seed: __filename + "/users/me",
   });
 
@@ -27,7 +27,9 @@ test.describe("/users/me", () => {
     await page.goto("/users/me");
 
     // check user data is loaded
-    await expect(page.locator("data-test=me-username")).toHaveValue(username);
+    await expect(page.locator("data-test=me-username")).toHaveValue(
+      user().username
+    );
 
     // update settings
     await expect(page.locator("text=Save")).toBeDisabled();
@@ -50,7 +52,7 @@ test.describe("/users/me", () => {
 });
 
 test.describe("/users/signout", () => {
-  const { signin } = useUser(test, { seed: __filename + "signout" });
+  const { signin } = useUserE2E(test, { seed: __filename + "signout" });
 
   test("basic", async ({ page }) => {
     await signin(page);

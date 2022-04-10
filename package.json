@@ -24,6 +24,7 @@
     "netlify:build": "bash scripts/netlify.sh",
     "netlify:build:deploy": "npm run netlify:build && netlify deploy --prod",
     "cli": "node --require esbuild-register app/misc/cli.ts",
+    "knex:staging": "eval $(bash .env.staging.sh) && knex",
     "knex:production": "eval $(bash .env.production.sh) && knex",
     "qrcode": "qrcode-terminal http://$(ip -o -4 address list wlan0 | awk '{print $4}' | cut -d / -f 1):3000"
   },

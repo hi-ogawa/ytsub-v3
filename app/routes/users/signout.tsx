@@ -1,4 +1,5 @@
 import { ActionFunction, redirect } from "@remix-run/server-runtime";
+import { R } from "../../misc/routes";
 import { getSessionUser, signoutSession } from "../../utils/auth";
 import {
   pushFlashMessage,
@@ -15,6 +16,6 @@ export const action: ActionFunction = withRequestSession(
       content: "Signed out successfuly",
       variant: "success",
     });
-    return redirect("/");
+    return redirect(R["/"]);
   }
 );

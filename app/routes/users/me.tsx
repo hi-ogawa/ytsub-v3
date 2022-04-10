@@ -8,8 +8,9 @@ import { json, redirect } from "@remix-run/server-runtime";
 import * as React from "react";
 import { z } from "zod";
 import { useSnackbar } from "../../components/snackbar";
-import { users } from "../../db/models";
+import { tables } from "../../db/models";
 import type { UserTable } from "../../db/models";
+import { R } from "../../misc/routes";
 import {
   Controller,
   deserialize,
@@ -33,7 +34,7 @@ export const loader = makeLoader(Controller, async function () {
   if (user) {
     return this.serialize(user);
   }
-  return redirect("/users/signin");
+  return redirect(R["/users/signin"]);
 });
 
 const ACTION_SCHEMA = z.object({
@@ -44,13 +45,13 @@ const ACTION_SCHEMA = z.object({
 export const action = makeLoader(Controller, async function () {
   const user = await this.currentUser();
   if (user === undefined) {
-    return redirect("/users/signin");
+    return redirect(R["/users/signin"]);
   }
   const parsed = ACTION_SCHEMA.safeParse(await this.form());
   if (!parsed.success) {
     return json({ success: false, message: "Fail to update settings" });
   }
-  await users().update(parsed.data).where("id", user.id);
+  await tables.users().update(parsed.data).where("id", user.id);
   return json({ success: true, message: "Settings updated successfuly" });
 });
 
@@ -74,7 +75,7 @@ export default function DefaultComponent() {
 
   const isLoading =
     transition.state !== "idle" &&
-    transition.location?.pathname === "/users/me";
+    transition.location?.pathname === R["/users/me"];
 
   return (
     <div className="w-full p-4 flex justify-center">

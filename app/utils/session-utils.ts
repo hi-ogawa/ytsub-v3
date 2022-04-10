@@ -6,6 +6,10 @@ export async function getRequestSession(request: Request): Promise<Session> {
   return getSession(request.headers.get("cookie"));
 }
 
+export async function getResponseSession(response: Response): Promise<Session> {
+  return getSession(response.headers.get("set-cookie"));
+}
+
 export async function withResponseSession(
   response: Response,
   session: Session

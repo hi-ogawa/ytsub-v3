@@ -61,4 +61,4 @@ export class Controller {
   }
 }
 
-export const deserialize = superjson.deserialize;
+export const deserialize = superjson.deserialize as (_: any) => any;

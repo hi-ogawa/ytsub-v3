@@ -43,6 +43,7 @@ export interface CaptionConfigOptions {
 }
 
 export interface CaptionEntry {
+  index: number;
   begin: number;
   end: number;
   text1: string;

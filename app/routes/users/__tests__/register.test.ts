@@ -1,17 +1,14 @@
-import * as assert from "assert";
-import { installGlobals } from "@remix-run/node";
 import { beforeEach, describe, expect, it } from "vitest";
-import { users } from "../../../db/models";
+import { tables } from "../../../db/models";
+import { assert } from "../../../misc/assert";
 import { getSessionUser } from "../../../utils/auth";
 import { getSession } from "../../../utils/session.server";
-import { testAction } from "../../__tests__/helper";
+import { testLoader } from "../../__tests__/helper";
 import { action } from "../register";
-
-installGlobals();
 
 describe("register.action", () => {
   beforeEach(async () => {
-    await users().truncate();
+    await tables.users().delete();
   });
 
   describe("success", () => {
@@ -22,16 +19,17 @@ describe("register.action", () => {
         password: "pass",
         passwordConfirmation: "pass",
       };
-      const res = await testAction(action, { data });
-      const found = await users()
+      const res = await testLoader(action, { form: data });
+      const found = await tables
+        .users()
         .select("*")
         .where("username", data.username)
         .first();
-      assert.ok(found);
+      assert(found);
       expect(found.username).toBe(username);
 
       // redirect to root
-      assert.ok(res instanceof Response);
+      assert(res instanceof Response);
       expect(res.status).toBe(302);
       expect(res.headers.get("location")).toBe("/");
 
@@ -49,7 +47,7 @@ describe("register.action", () => {
         password: "pass",
         passwordConfirmation: "pass",
       };
-      const res = await testAction(action, { data });
+      const res = await testLoader(action, { form: data });
       expect(res).toMatchInlineSnapshot(`
         {
           "errors": {
@@ -71,7 +69,7 @@ describe("register.action", () => {
         password: "pass",
         passwordConfirmation: "ssap",
       };
-      const res = await testAction(action, { data });
+      const res = await testLoader(action, { form: data });
       expect(res).toMatchInlineSnapshot(`
         {
           "errors": {
@@ -94,12 +92,12 @@ describe("register.action", () => {
         passwordConfirmation: "pass",
       };
       {
-        const res = await testAction(action, { data });
-        assert.ok(res instanceof Response);
+        const res = await testLoader(action, { form: data });
+        assert(res instanceof Response);
         expect(res.status).toBe(302);
       }
       {
-        const res = await testAction(action, { data });
+        const res = await testLoader(action, { form: data });
         expect(res).toMatchInlineSnapshot(`
           {
             "message": "Username 'root' is already taken",

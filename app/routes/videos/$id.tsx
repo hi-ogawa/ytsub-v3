@@ -1,68 +1,59 @@
-import { useCatch, useLoaderData } from "@remix-run/react";
-import { LoaderFunction, json } from "@remix-run/server-runtime";
+import { useLoaderData } from "@remix-run/react";
+import { redirect } from "@remix-run/server-runtime";
 import * as React from "react";
 import { Play, Repeat } from "react-feather";
 import { z } from "zod";
-import { useYoutubeIframeApi } from "../utils/hooks";
-import { PageHandle } from "../utils/page-handle";
-import { CaptionEntry, VideoMetadata } from "../utils/types";
-import { fromRequestQuery } from "../utils/url-data";
+import {
+  CaptionEntryTable,
+  VideoTable,
+  getVideoAndCaptionEntries,
+} from "../../db/models";
+import { R } from "../../misc/routes";
+import {
+  Controller,
+  deserialize,
+  makeLoader,
+} from "../../utils/controller-utils";
+import { useMemoWrap } from "../../utils/hooks";
+import { useYoutubeIframeApi } from "../../utils/hooks";
+import { PageHandle } from "../../utils/page-handle";
+import { pushFlashMessage } from "../../utils/session-utils";
+import { CaptionEntry } from "../../utils/types";
 import {
   YoutubeIframeApi,
   YoutubePlayer,
   YoutubePlayerOptions,
-  captionConfigToUrl,
-  fetchVideoMetadata,
   stringifyTimestamp,
-  ttmlsToCaptionEntries,
-} from "../utils/youtube";
+} from "../../utils/youtube";
 
 export const handle: PageHandle = {
   navBarTitle: "Watch",
 };
 
-const schema = z.object({
-  videoId: z.string().length(11),
-  language1: z.object({
-    id: z.string(),
-    translation: z.string().optional(),
-  }),
-  language2: z.object({
-    id: z.string(),
-    translation: z.string().optional(),
-  }),
+const SCHEMA = z.object({
+  id: z.string().regex(/^\d+$/).transform(Number),
 });
 
-interface LoaderData {
-  videoMetadata: VideoMetadata;
-  captionEntries: CaptionEntry[];
-}
+type LoaderData = { video: VideoTable; captionEntries: CaptionEntryTable[] };
 
-export const loader: LoaderFunction = async ({ request }) => {
-  const parsed = schema.safeParse(fromRequestQuery(request));
+export const loader = makeLoader(Controller, async function () {
+  const parsed = SCHEMA.safeParse(this.args.params);
   if (parsed.success) {
-    const videoMetadata = await fetchVideoMetadata(parsed.data.videoId);
-    const url1 = captionConfigToUrl(parsed.data.language1, videoMetadata);
-    const url2 = captionConfigToUrl(parsed.data.language2, videoMetadata);
-    if (url1 && url2) {
-      const [ttml1, ttml2] = await Promise.all([
-        fetch(url1).then((res) => res.text()),
-        fetch(url2).then((res) => res.text()),
-      ]);
-      const captionEntries = ttmlsToCaptionEntries(ttml1, ttml2);
-      return { videoMetadata, captionEntries };
+    const { id } = parsed.data;
+    const data: LoaderData | undefined = await getVideoAndCaptionEntries(id);
+    if (data) {
+      return this.serialize(data);
     }
   }
-  throw json({ message: "Invalid parameters" });
-};
-
-export function CatchBoundary() {
-  const { data } = useCatch();
-  return <div>ERROR: {data.message}</div>;
-}
+  pushFlashMessage(this.session, {
+    content: "Invalid Video ID",
+    variant: "error",
+  });
+  return redirect(R["/"]);
+});
 
 export default function DeafultComponent() {
-  const data: LoaderData = useLoaderData();
+  const data: LoaderData = useMemoWrap(deserialize, useLoaderData());
   return <PageComponent {...data} />;
 }
 
@@ -85,7 +76,7 @@ function toggleArrayInclusion<T>(container: T[], element: T): T[] {
   return [...container, element];
 }
 
-function PageComponent({ videoMetadata, captionEntries }: LoaderData) {
+function PageComponent({ video, captionEntries }: LoaderData) {
   //
   // state
   //
@@ -171,7 +162,7 @@ function PageComponent({ videoMetadata, captionEntries }: LoaderData) {
     <LayoutComponent
       player={
         <PlayerComponent
-          defaultOptions={{ videoId: videoMetadata.videoDetails.videoId }}
+          defaultOptions={{ videoId: video.videoId }}
           onLoad={setPlayer}
         />
       }
