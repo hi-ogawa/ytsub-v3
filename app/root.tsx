@@ -36,8 +36,8 @@ import { TopProgressBar } from "./components/top-progress-bar";
 import { UserTable } from "./db/models";
 import { R } from "./misc/routes";
 import { Controller, makeLoader } from "./utils/controller-utils";
+import { RootLoaderData, useRootLoaderData } from "./utils/loader-utils";
 import { Match } from "./utils/page-handle";
-import { RootLoaderData, useRootLoaderData } from "./utils/root-utils";
 
 const ASSETS = {
   "index.css": require("../build/tailwind/" +
@@ -65,6 +65,7 @@ export const meta: MetaFunction = () => {
 export const loader = makeLoader(Controller, async function () {
   const data: RootLoaderData = {
     currentUser: await this.currentUser(),
+    // TODO: feels buggy (same messages appear repeatedly)
     flashMessages: this.session.get("flashMessages") ?? [],
   };
   return this.serialize(data);
@@ -98,14 +99,18 @@ function Root() {
   }, [data]);
 
   const matches: Match[] = useMatches();
-  const { navBarTitle } = last(matches)?.handle ?? {};
+  const { navBarTitle, NavBarMenuComponent } = last(matches)?.handle ?? {};
 
   return (
     <>
       <GlobalProgress />
       <SideMenuDrawerWrapper isSignedIn={!!data.currentUser}>
         <div className="h-full flex flex-col">
-          <Navbar title={navBarTitle} user={data.currentUser} />
+          <Navbar
+            title={navBarTitle}
+            user={data.currentUser}
+            MenuComponent={NavBarMenuComponent}
+          />
           <div className="flex-[1_0_0] flex flex-col">
             <div className="w-full flex-[1_0_0] h-full overflow-y-auto">
               <Outlet />
@@ -167,7 +172,15 @@ function toggleDrawer(open?: boolean): void {
   }
 }
 
-function Navbar({ title, user }: { title?: string; user?: UserTable }) {
+function Navbar({
+  title,
+  user,
+  MenuComponent,
+}: {
+  title?: string;
+  user?: UserTable;
+  MenuComponent?: React.FC;
+}) {
   return (
     <header className="w-full h-12 flex-none bg-primary text-primary-content flex items-center px-4 py-2 shadow-lg z-10">
       <div className="flex-none pr-4">
@@ -179,9 +192,7 @@ function Navbar({ title, user }: { title?: string; user?: UserTable }) {
         </label>
       </div>
       <div className="flex-1">{title}</div>
-      <div className="flex-none hidden sm:block">
-        <SearchComponent />
-      </div>
+      {MenuComponent && <MenuComponent />}
       <div className="flex-none pl-2">
         <Popover
           placement="bottom-end"
@@ -288,7 +299,7 @@ function SideMenuDrawerWrapper({
       <div className="drawer-side">
         <label className="drawer-overlay" htmlFor={DRAWER_TOGGLE_INPUT_ID} />
         <ul className="menu p-4 w-64 bg-base-100 text-base-content">
-          <li className="disabled block sm:hidden">
+          <li className="disabled block">
             <SearchComponent />
           </li>
           {SIDE_MENU_ENTRIES.map(

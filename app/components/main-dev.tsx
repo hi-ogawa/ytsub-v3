@@ -9,7 +9,7 @@ import {
   Routes,
 } from "react-router-dom";
 
-type StoryFiles = Record<string, Record<string, React.ComponentClass>>;
+type StoryFiles = Record<string, Record<string, React.FC>>;
 
 // @ts-expect-error https://vitejs.dev/guide/features.html#glob-import
 const GLOB_IMPORT: any = import.meta.globEager("./**/*.stories.tsx");

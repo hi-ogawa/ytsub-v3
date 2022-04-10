@@ -12,3 +12,8 @@ export function useRootLoaderData(): RootLoaderData {
   const [{ data }] = useMatches();
   return useDeserialize(data);
 }
+
+export function useLeafLoaderData(): any {
+  const [{ data }] = useMatches().slice(-1);
+  return data;
+}

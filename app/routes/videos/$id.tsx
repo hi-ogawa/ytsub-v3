@@ -1,10 +1,13 @@
-import { useLoaderData } from "@remix-run/react";
+import { Transition } from "@headlessui/react";
+import { Form, Link, useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import * as React from "react";
-import { Play, Repeat } from "react-feather";
+import { MoreVertical, Play, Repeat } from "react-feather";
 import { z } from "zod";
+import { Popover } from "../../components/popover";
 import {
   CaptionEntryTable,
+  UserTable,
   VideoTable,
   getVideoAndCaptionEntries,
 } from "../../db/models";
@@ -12,6 +15,7 @@ import { R } from "../../misc/routes";
 import { Controller, makeLoader } from "../../utils/controller-utils";
 import { useDeserialize } from "../../utils/hooks";
 import { useYoutubeIframeApi } from "../../utils/hooks";
+import { useLeafLoaderData, useRootLoaderData } from "../../utils/loader-utils";
 import { PageHandle } from "../../utils/page-handle";
 import { pushFlashMessage } from "../../utils/session-utils";
 import { CaptionEntry } from "../../utils/types";
@@ -24,6 +28,7 @@ import {
 
 export const handle: PageHandle = {
   navBarTitle: "Watch",
+  NavBarMenuComponent,
 };
 
 const SCHEMA = z.object({
@@ -365,4 +370,87 @@ function CaptionEntryComponent({
 
 function toCaptionEntryId({ begin, end }: CaptionEntry): string {
   return `${begin}--${end}`;
+}
+
+function NavBarMenuComponent() {
+  const { currentUser } = useRootLoaderData();
+  const { video }: LoaderData = useDeserialize(useLeafLoaderData());
+  return <NavBarMenuComponentImpl user={currentUser} video={video} />;
+}
+
+function NavBarMenuComponentImpl({
+  user,
+  video,
+}: {
+  user?: UserTable;
+  video: VideoTable;
+}) {
+  // TODO: refactor too much copy-paste of `Popover` from `NavBar` in `root.tsx`
+  return (
+    <div className="flex-none pl-2">
+      <Popover
+        placement="bottom-end"
+        reference={({ props }) => (
+          <button
+            className="btn btn-sm btn-ghost"
+            data-test="user-menu"
+            {...props}
+          >
+            <MoreVertical />
+          </button>
+        )}
+        floating={({ open, setOpen, props }) => (
+          <Transition
+            show={open}
+            unmount={false}
+            className="transition duration-200"
+            enterFrom="scale-90 opacity-0"
+            enterTo="scale-100 opacity-100"
+            leaveFrom="scale-100 opacity-100"
+            leaveTo="scale-90 opacity-0"
+            {...props}
+          >
+            <ul className="menu rounded p-3 shadow w-48 bg-base-100 text-base-content">
+              <li>
+                <Link
+                  to={R["/videos/new"] + "?videoId=" + video.videoId}
+                  onClick={() => setOpen(false)}
+                >
+                  Choose language
+                </Link>
+                {user && user.id !== video.userId && (
+                  <Form method="post" action={R["/videos/new"]}>
+                    <input hidden name="videoId" value={video.videoId} />
+                    <input
+                      hidden
+                      name="language1.id"
+                      value={video.language1_id}
+                    />
+                    <input
+                      hidden
+                      name="language1.translation"
+                      value={video.language1_translation ?? ""}
+                    />
+                    <input
+                      hidden
+                      name="language2.id"
+                      value={video.language2_id}
+                    />
+                    <input
+                      hidden
+                      name="language2.translation"
+                      value={video.language2_translation ?? ""}
+                    />
+                    <button type="submit" onClick={() => setOpen(false)}>
+                      Copy to account
+                    </button>
+                  </Form>
+                )}
+              </li>
+            </ul>
+          </Transition>
+        )}
+      />
+    </div>
+  );
 }
