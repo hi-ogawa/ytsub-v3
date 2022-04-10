@@ -2,6 +2,7 @@ import { PlaywrightTestConfig } from "@playwright/test";
 
 const config: PlaywrightTestConfig = {
   testDir: "./app/__e2e__",
+  globalSetup: "./app/misc/test-setup-global.ts",
   use: {
     baseURL: "http://localhost:3001",
     actionTimeout: 10_000,

@@ -1,4 +1,3 @@
-import { installGlobals } from "@remix-run/node";
 import { beforeAll, describe, expect, it } from "vitest";
 import { UserTable, tables } from "../../../db/models";
 import { assert } from "../../../misc/assert";
@@ -6,8 +5,6 @@ import { getSessionUser, register } from "../../../utils/auth";
 import { getSession } from "../../../utils/session.server";
 import { testLoader } from "../../__tests__/helper";
 import { action } from "../signin";
-
-installGlobals();
 
 describe("signin.action", () => {
   let user: UserTable;

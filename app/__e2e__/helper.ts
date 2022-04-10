@@ -5,6 +5,7 @@ import { useUserImpl } from "../misc/helper";
 import { createUserCookie } from "../utils/auth";
 
 // Remix's cookie manipulation requires atob, sign, etc...
+// This is here because playwright cannot inject global in `globalSetup`
 installGlobals();
 
 // cf. `useUser` in routes/__tests__/helper.ts

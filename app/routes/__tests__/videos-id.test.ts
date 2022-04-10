@@ -1,4 +1,3 @@
-import { installGlobals } from "@remix-run/node";
 import { omit } from "lodash";
 import { describe, expect, it } from "vitest";
 import { CaptionEntryTable, VideoTable } from "../../db/models";
@@ -7,8 +6,6 @@ import { deserialize } from "../../utils/controller-utils";
 import { loader } from "../videos/$id";
 import { useVideo } from "./helper";
 import { testLoader } from "./helper";
-
-installGlobals();
 
 describe("videos/id.loader", () => {
   const { video } = useVideo();

@@ -1,4 +1,3 @@
-import { installGlobals } from "@remix-run/node";
 import { beforeEach, describe, expect, it } from "vitest";
 import { tables } from "../../../db/models";
 import { assert } from "../../../misc/assert";
@@ -6,8 +5,6 @@ import { getSessionUser } from "../../../utils/auth";
 import { getSession } from "../../../utils/session.server";
 import { testLoader } from "../../__tests__/helper";
 import { action } from "../register";
-
-installGlobals();
 
 describe("register.action", () => {
   beforeEach(async () => {

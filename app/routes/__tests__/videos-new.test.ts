@@ -1,4 +1,3 @@
-import { installGlobals } from "@remix-run/node";
 import { last, omit } from "lodash";
 import { beforeAll, describe, expect, it } from "vitest";
 import { tables } from "../../db/models";
@@ -6,8 +5,6 @@ import { assert } from "../../misc/assert";
 import { getResponseSession } from "../../utils/session-utils";
 import { action, loader } from "../videos/new";
 import { testLoader, useUser } from "./helper";
-
-installGlobals();
 
 describe("videos/new.loader", () => {
   it("basic", async () => {

@@ -1,11 +1,8 @@
-import { installGlobals } from "@remix-run/node";
 import { describe, expect, it } from "vitest";
 import { assert } from "../../../misc/assert";
 import { getResponseSession } from "../../../utils/session-utils";
 import { testLoader, useUser } from "../../__tests__/helper";
 import { action } from "../signout";
-
-installGlobals();
 
 describe("signout.action", () => {
   const { signin } = useUser({ seed: __filename });
