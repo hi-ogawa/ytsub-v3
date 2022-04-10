@@ -261,7 +261,7 @@ const SIDE_MENU_ENTRIES: SideMenuEntry[] = [
   {
     to: R["/"],
     icon: Home,
-    title: "Home",
+    title: "Examples",
     requireSignin: false,
   },
   {

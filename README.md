@@ -8,7 +8,7 @@ based on
 ```sh
 # development
 pnpm run install-with-patch
-make docker/up db/reset db/seed
+make docker/up db/reset db/restore
 npm run dev:all
 
 # lint

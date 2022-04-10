@@ -20,7 +20,7 @@ export const handle: PageHandle = {
 // - better layout for desktop
 // - show language pair
 
-interface LoaderData {
+export interface HistoryLoaderData {
   videos: VideoTable[];
 }
 
@@ -35,16 +35,16 @@ export const loader = makeLoader(Controller, async function () {
     .select("*")
     .where("userId", user.id)
     .orderBy("createdAt", "desc");
-  const data: LoaderData = { videos };
+  const data: HistoryLoaderData = { videos };
   return this.serialize(data);
 });
 
 export default function DefaultComponent() {
-  const data: LoaderData = useDeserialize(useLoaderData());
-  return <ComponentImpl videos={data.videos} />;
+  const data: HistoryLoaderData = useDeserialize(useLoaderData());
+  return <HistoryComponent videos={data.videos} />;
 }
 
-function ComponentImpl({ videos }: { videos: VideoTable[] }) {
+export function HistoryComponent({ videos }: { videos: VideoTable[] }) {
   return (
     <div className="w-full flex justify-center">
       <div className="h-full w-full max-w-lg">
