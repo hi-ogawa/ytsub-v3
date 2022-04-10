@@ -28,9 +28,9 @@ export interface VideoTable {
   userId?: number; // associated to anonymous users when `null`
 }
 
-// TODO: add "index" column
 export interface CaptionEntryTable {
   id: number;
+  index: number; // zero-based index within video's caption entries
   begin: number;
   end: number;
   text1: string;

@@ -176,9 +176,10 @@ export function ttmlsToCaptionEntries(
 ): CaptionEntry[] {
   const entries1 = ttmlToEntries(ttml1);
   const entries2 = ttmlToEntries(ttml2);
-  return entries1.map(({ begin, end, text }) => {
+  return entries1.map(({ begin, end, text }, index) => {
     const e2 = sortBy(entries2, (e2) => Math.abs(e2.begin - begin))[0];
     return {
+      index,
       begin,
       end,
       text1: text,

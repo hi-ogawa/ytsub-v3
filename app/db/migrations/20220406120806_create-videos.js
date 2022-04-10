@@ -25,6 +25,7 @@ exports.up = async function (knex) {
   await knex.raw(`
     CREATE TABLE captionEntries (
       id        BIGINT AUTO_INCREMENT,
+      \`index\` INT NOT NULL,
       begin     FLOAT NOT NULL,
       end       FLOAT NOT NULL,
       text1     TEXT NOT NULL,
