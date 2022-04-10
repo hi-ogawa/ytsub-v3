@@ -19,7 +19,7 @@ exports.up = async function (knex) {
       userId                BIGINT DEFAULT NULL,
       PRIMARY KEY (id),
       UNIQUE INDEX (videoId, language1_id, language1_translation, language2_id, language2_translation, userId),
-      FOREIGN KEY (userId) REFERENCES users(id) ON DELETE CASCADE
+      KEY videos_userId_key (userId)
     );
   `);
   await knex.raw(`
@@ -34,7 +34,7 @@ exports.up = async function (knex) {
       updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
       videoId   BIGINT NOT NULL,
       PRIMARY KEY (id),
-      FOREIGN KEY (videoId) REFERENCES videos(id) ON DELETE CASCADE
+      KEY captionEntries_videoId_key (videoId)
     );
   `);
 };

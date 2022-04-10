@@ -40,6 +40,13 @@ export interface CaptionEntryTable {
   videoId: number; // not `VideoTable.videoId` but `VideoTable.id`
 }
 
+// TODO: use constants to facilitate static analysis
+// export const T = {
+//   users: "users",
+//   videos: "videos",
+//   captionEntries: "captionEntries",
+// }
+
 export const tables = {
   users: () => client<UserTable>("users"),
   videos: () => client<VideoTable>("videos"),
@@ -49,6 +56,21 @@ export const tables = {
 //
 // Helper queries
 //
+
+// no "FOREIGN KEY" constraint principle https://docs.planetscale.com/learn/operating-without-foreign-key-constraints#cleaning-up-orphaned-rows
+export async function deleteOrphans(): Promise<void> {
+  await tables
+    .videos()
+    .delete()
+    .leftJoin("users", "users.id", "videos.userId")
+    .where("users.id", null)
+    .whereNot("videos.id", null);
+  await tables
+    .captionEntries()
+    .delete()
+    .leftJoin("videos", "videos.id", "captionEntries.videoId")
+    .where("videos.id", null);
+}
 
 export function filterNewVideo(
   { videoId, language1, language2 }: NewVideo,
