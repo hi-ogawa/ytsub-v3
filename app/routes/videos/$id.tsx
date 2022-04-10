@@ -416,30 +416,39 @@ function NavBarMenuComponentImpl({
                   to={R["/videos/new"] + "?videoId=" + video.videoId}
                   onClick={() => setOpen(false)}
                 >
-                  Choose language
+                  Change languages
                 </Link>
                 {user && user.id !== video.userId && (
                   <Form method="post" action={R["/videos/new"]}>
-                    <input hidden name="videoId" value={video.videoId} />
+                    <input
+                      hidden
+                      name="videoId"
+                      value={video.videoId}
+                      readOnly
+                    />
                     <input
                       hidden
                       name="language1.id"
                       value={video.language1_id}
+                      readOnly
                     />
                     <input
                       hidden
                       name="language1.translation"
                       value={video.language1_translation ?? ""}
+                      readOnly
                     />
                     <input
                       hidden
                       name="language2.id"
                       value={video.language2_id}
+                      readOnly
                     />
                     <input
                       hidden
                       name="language2.translation"
                       value={video.language2_translation ?? ""}
+                      readOnly
                     />
                     <button type="submit" onClick={() => setOpen(false)}>
                       Copy to account
