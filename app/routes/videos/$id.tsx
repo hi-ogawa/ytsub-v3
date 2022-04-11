@@ -2,7 +2,7 @@ import { Transition } from "@headlessui/react";
 import { Form, Link, useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import * as React from "react";
-import { MoreVertical, Play, Repeat } from "react-feather";
+import { Bookmark, MoreVertical, Play, Repeat, X } from "react-feather";
 import { z } from "zod";
 import { Popover } from "../../components/popover";
 import {
@@ -13,7 +13,7 @@ import {
 } from "../../db/models";
 import { R } from "../../misc/routes";
 import { Controller, makeLoader } from "../../utils/controller-utils";
-import { useDeserialize } from "../../utils/hooks";
+import { useDeserialize, useSelection } from "../../utils/hooks";
 import { useYoutubeIframeApi } from "../../utils/hooks";
 import { useLeafLoaderData, useRootLoaderData } from "../../utils/loader-utils";
 import { PageHandle } from "../../utils/page-handle";
@@ -77,6 +77,33 @@ function toggleArrayInclusion<T>(container: T[], element: T): T[] {
   return [...container, element];
 }
 
+// adhoc routines to derive `BookmarkState` by probing dom tree
+function findSelectionEntryIndex(selection: Selection): number {
+  const isValid =
+    selection.toString().trim() &&
+    selection.anchorNode &&
+    selection.anchorNode === selection.focusNode &&
+    selection.anchorNode.nodeType === document.TEXT_NODE &&
+    selection.anchorNode.parentElement?.classList?.contains(
+      BOOKMARKABLE_CLASSNAME
+    );
+  if (!isValid) return -1;
+  const textElement = selection.getRangeAt(0).startContainer;
+  const entryNode = textElement.parentElement?.parentElement?.parentElement!;
+  const entriesContainer = entryNode.parentElement!;
+  const index = Array.from(entriesContainer.childNodes).findIndex(
+    (other) => other === entryNode
+  );
+  return index;
+}
+
+const BOOKMARKABLE_CLASSNAME = "--bookmarkable--";
+
+interface BookmarkState {
+  captionEntry: CaptionEntry;
+  text: string;
+}
+
 function PageComponent({ video, captionEntries }: LoaderData) {
   //
   // state
@@ -88,6 +115,7 @@ function PageComponent({ video, captionEntries }: LoaderData) {
   const [repeatingEntries, setRepeatingEntries] = React.useState<
     CaptionEntry[]
   >([]);
+  const [bookmarkState, setBookmarkState] = React.useState<BookmarkState>();
 
   //
   // handlers
@@ -145,6 +173,24 @@ function PageComponent({ video, captionEntries }: LoaderData) {
     setRepeatingEntries(toggleArrayInclusion(repeatingEntries, entry));
   }
 
+  const onSelection = React.useCallback((selection?: Selection): void => {
+    let newBookmarkState = undefined;
+    if (selection) {
+      const index = findSelectionEntryIndex(selection);
+      if (index >= 0) {
+        newBookmarkState = {
+          captionEntry: captionEntries[index],
+          text: selection.toString(),
+        };
+      }
+    }
+    setBookmarkState(newBookmarkState);
+  }, []);
+
+  function onClickBookmark() {
+    console.log(bookmarkState);
+  }
+
   //
   // effects
   //
@@ -158,6 +204,8 @@ function PageComponent({ video, captionEntries }: LoaderData) {
     if (!player) return;
     repeatEntry(player);
   }, [player, isPlaying, currentEntry, repeatingEntries]);
+
+  useSelection(onSelection);
 
   return (
     <LayoutComponent
@@ -177,12 +225,35 @@ function PageComponent({ video, captionEntries }: LoaderData) {
           isPlaying={isPlaying}
         />
       }
+      bookmarkActions={
+        <Transition
+          show={!!bookmarkState}
+          className="absolute bottom-0 right-0 flex gap-2 p-1.5 transition-transform"
+          enterFrom="scale-0"
+          enterTo="scale-100"
+          leaveFrom="scale-100"
+          leaveTo="scale-0"
+        >
+          <button
+            onClick={() => setBookmarkState(undefined)}
+            className="w-12 h-12 rounded-full bg-secondary text-white flex justify-center items-center shadow-xl hover:contrast-75 transition-[filter] duration-300"
+          >
+            <X />
+          </button>
+          <button
+            onClick={() => onClickBookmark()}
+            className="w-12 h-12 rounded-full bg-primary text-white flex justify-center items-center shadow-xl hover:contrast-75 transition-[filter] duration-300"
+          >
+            <Bookmark />
+          </button>
+        </Transition>
+      }
     />
   );
 }
 
 function LayoutComponent(
-  props: Record<"player" | "subtitles", React.ReactNode>
+  props: Record<"player" | "subtitles" | "bookmarkActions", React.ReactNode>
 ) {
   //
   // - Mobile layout
@@ -205,10 +276,11 @@ function LayoutComponent(
   return (
     <div className="h-full w-full flex flex-col md:flex-row md:gap-2 md:p-2">
       <div className="flex-none md:grow">{props.player}</div>
-      <div className="flex flex-col flex-[1_0_0] md:flex-none md:w-1/3 border-t md:border">
+      <div className="flex flex-col flex-[1_0_0] md:flex-none md:w-1/3 border-t md:border relative">
         <div className="flex-[1_0_0] h-full overflow-y-auto">
           {props.subtitles}
         </div>
+        {props.bookmarkActions}
       </div>
     </div>
   );
@@ -359,10 +431,14 @@ function CaptionEntryComponent({
         className="flex text-gray-700 cursor-pointer"
         onClick={() => onClickEntryPlay(entry, true)}
       >
-        <div className="flex-auto w-1/2 pr-2 border-r border-solid border-gray-200">
+        <div
+          className={`flex-auto w-1/2 pr-2 border-r border-solid border-gray-200 ${BOOKMARKABLE_CLASSNAME}`}
+        >
           {text1}
         </div>
-        <div className="flex-auto w-1/2 pl-2">{text2}</div>
+        <div className={`flex-auto w-1/2 pl-2 ${BOOKMARKABLE_CLASSNAME}`}>
+          {text2}
+        </div>
       </div>
     </div>
   );
