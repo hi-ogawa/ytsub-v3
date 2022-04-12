@@ -1,10 +1,12 @@
 import { Transition } from "@headlessui/react";
-import { Form, Link, useLoaderData } from "@remix-run/react";
+import { Form, Link, useFetcher, useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import * as React from "react";
 import { Bookmark, MoreVertical, Play, Repeat, X } from "react-feather";
 import { z } from "zod";
+import { Spinner } from "../../components/misc";
 import { Popover } from "../../components/popover";
+import { useSnackbar } from "../../components/snackbar";
 import {
   CaptionEntryTable,
   UserTable,
@@ -31,6 +33,10 @@ export const handle: PageHandle = {
   NavBarMenuComponent,
 };
 
+//
+// loader
+//
+
 const SCHEMA = z.object({
   id: z.string().regex(/^\d+$/).transform(Number),
 });
@@ -53,9 +59,14 @@ export const loader = makeLoader(Controller, async function () {
   return redirect(R["/"]);
 });
 
+//
+// component
+//
+
 export default function DeafultComponent() {
+  const { currentUser } = useRootLoaderData();
   const data: LoaderData = useDeserialize(useLoaderData());
-  return <PageComponent {...data} />;
+  return <PageComponent currentUser={currentUser} {...data} />;
 }
 
 function findCurrentEntry(
@@ -100,11 +111,18 @@ function findSelectionEntryIndex(selection: Selection): number {
 const BOOKMARKABLE_CLASSNAME = "--bookmarkable--";
 
 interface BookmarkState {
-  captionEntry: CaptionEntry;
+  captionEntry: CaptionEntryTable;
   text: string;
 }
 
-function PageComponent({ video, captionEntries }: LoaderData) {
+function PageComponent({
+  video,
+  captionEntries,
+  currentUser,
+}: LoaderData & { currentUser?: UserTable }) {
+  const fetcher = useFetcher();
+  const { enqueueSnackbar } = useSnackbar();
+
   //
   // state
   //
@@ -188,7 +206,13 @@ function PageComponent({ video, captionEntries }: LoaderData) {
   }, []);
 
   function onClickBookmark() {
-    console.log(bookmarkState);
+    if (!bookmarkState) return;
+    const data = {
+      videoId: String(video.id),
+      captionEntryId: String(bookmarkState.captionEntry.id),
+      text: bookmarkState.text,
+    };
+    fetcher.submit(data, { method: "post", action: R["/bookmarks/new"] });
   }
 
   //
@@ -204,6 +228,17 @@ function PageComponent({ video, captionEntries }: LoaderData) {
     if (!player) return;
     repeatEntry(player);
   }, [player, isPlaying, currentEntry, repeatingEntries]);
+
+  React.useEffect(() => {
+    if (fetcher.type === "done") {
+      if (fetcher.data.success) {
+        enqueueSnackbar("Bookmark saved", { variant: "success" });
+      } else {
+        enqueueSnackbar("Bookmark failed", { variant: "success" });
+      }
+      setBookmarkState(undefined);
+    }
+  }, [fetcher.type]);
 
   useSelection(onSelection);
 
@@ -226,27 +261,33 @@ function PageComponent({ video, captionEntries }: LoaderData) {
         />
       }
       bookmarkActions={
-        <Transition
-          show={!!bookmarkState}
-          className="absolute bottom-0 right-0 flex gap-2 p-1.5 transition-transform"
-          enterFrom="scale-0"
-          enterTo="scale-100"
-          leaveFrom="scale-100"
-          leaveTo="scale-0"
-        >
-          <button
-            onClick={() => setBookmarkState(undefined)}
-            className="w-12 h-12 rounded-full bg-secondary text-white flex justify-center items-center shadow-xl hover:contrast-75 transition-[filter] duration-300"
+        currentUser && (
+          <Transition
+            show={!!bookmarkState}
+            className="absolute bottom-0 right-0 flex gap-2 p-1.5 transition-all duration-300"
+            enterFrom="scale-[0.3] opacity-0"
+            enterTo="scale-100 opacity-100"
+            leaveFrom="scale-100 opacity-100"
+            leaveTo="scale-[0.3] opacity-0"
           >
-            <X />
-          </button>
-          <button
-            onClick={() => onClickBookmark()}
-            className="w-12 h-12 rounded-full bg-primary text-white flex justify-center items-center shadow-xl hover:contrast-75 transition-[filter] duration-300"
-          >
-            <Bookmark />
-          </button>
-        </Transition>
+            <button
+              onClick={() => setBookmarkState(undefined)}
+              className="w-12 h-12 rounded-full bg-secondary text-white flex justify-center items-center shadow-xl hover:contrast-75 transition-[filter] duration-300"
+            >
+              <X />
+            </button>
+            <button
+              onClick={() => onClickBookmark()}
+              className="w-12 h-12 rounded-full bg-primary text-white flex justify-center items-center shadow-xl hover:contrast-75 transition-[filter] duration-300"
+            >
+              {fetcher.state === "idle" ? (
+                <Bookmark />
+              ) : (
+                <Spinner className="w-6 h-6" />
+              )}
+            </button>
+          </Transition>
+        )
       }
     />
   );

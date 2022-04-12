@@ -64,3 +64,16 @@ export function VideoComponent({
     </div>
   );
 }
+
+export const Spinner: React.FC<{ className: string }> = (props) => {
+  return (
+    <div
+      className={`${props.className} rounded-full animate-spin`}
+      style={{
+        border: "3px solid #999",
+        borderLeft: "3px solid #ddd",
+        borderTop: "3px solid #ddd",
+      }}
+    />
+  );
+};
