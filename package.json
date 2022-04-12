@@ -16,7 +16,7 @@
     "prettier:diff": "prettier -w $(git diff --name-only HEAD) $(git ls-files --others --exclude-standard)",
     "eslint": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
     "eslint:check": "eslint . --ext .js,.jsx,.ts,.tsx",
-    "eslint:diff": "eslint --ext .js,.jsx,.ts,.tsx $(git diff --name-only HEAD) $(git ls-files --others --exclude-standard)",
+    "eslint:diff": "eslint --ext .js,.jsx,.ts,.tsx --fix $(git diff --name-only HEAD) $(git ls-files --others --exclude-standard)",
     "lint": "npm run prettier && npm run eslint",
     "lint:check": "npm run prettier:check && npm run eslint:check",
     "lint:diff": "npm run prettier:diff && npm run eslint:diff",
