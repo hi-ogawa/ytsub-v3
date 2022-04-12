@@ -261,7 +261,8 @@ function PageComponent({
         />
       }
       bookmarkActions={
-        currentUser && (
+        currentUser &&
+        currentUser.id === video.userId && (
           <Transition
             show={!!bookmarkState}
             className="absolute bottom-0 right-0 flex gap-2 p-1.5 transition-all duration-300"
