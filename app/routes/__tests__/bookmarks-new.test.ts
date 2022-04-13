@@ -41,6 +41,8 @@ describe("bookmarks/new.action", () => {
       videoId: -1, // video not found
       captionEntryId: captionEntries()[0].id,
       text: "Bonjour à tous",
+      side: 0,
+      offset: 8,
     };
     await expect(
       testLoader(action, { form: data }, signin)

@@ -37,21 +37,31 @@ export function normalizeData<T extends { id: number }>(
 export interface HistoryLoaderData {
   videos: VideoTable[];
   captionEntries: CaptionEntryTable[];
-  bookmarks: BookmarkEntryTable[];
+  bookmarkEntries: BookmarkEntryTable[];
 }
 
 export const loader = makeLoader(Controller, async function () {
   const user = await this.currentUser();
   if (!user) {
-    pushFlashMessage(this.session, { content: "Signin required." });
+    pushFlashMessage(this.session, {
+      content: "Signin required.",
+      variant: "error",
+    });
     return redirect(R["/"]);
   }
-  const videos = await tables
-    .videos()
+  // TODO: optimize query
+  const bookmarkEntries = await tables
+    .bookmarkEntries()
     .select("*")
-    .where("userId", user.id)
-    .orderBy("createdAt", "desc");
-  const data: HistoryLoaderData = { videos, captionEntries: [], bookmarks: [] };
+    .where("userId", user.id);
+  const videoIds = bookmarkEntries.map((x) => x.videoId);
+  const captionEntryIds = bookmarkEntries.map((x) => x.captionEntryId);
+  const videos = await tables.videos().select("*").whereIn("id", videoIds);
+  const captionEntries = await tables
+    .captionEntries()
+    .select("*")
+    .whereIn("id", captionEntryIds);
+  const data: HistoryLoaderData = { videos, captionEntries, bookmarkEntries };
   return this.serialize(data);
 });
 

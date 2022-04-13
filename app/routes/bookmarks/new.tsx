@@ -12,6 +12,8 @@ const ACTION_REQUEST_SCHEMA = z.object({
   videoId: zStringToNumber,
   captionEntryId: zStringToNumber,
   text: z.string().nonempty(),
+  side: zStringToNumber.refine((x) => x === 0 || x === 1),
+  offset: zStringToNumber,
 });
 
 // TODO: error handling
@@ -22,7 +24,7 @@ export const action = makeLoader(Controller, async function () {
   const user = await this.currentUser();
   if (!user) throw new AppError("Authenticaton failure");
 
-  const { videoId, captionEntryId, text } = parsed.data;
+  const { videoId, captionEntryId } = parsed.data;
 
   const video = await tables
     .videos()
@@ -38,6 +40,6 @@ export const action = makeLoader(Controller, async function () {
 
   const [id] = await tables
     .bookmarkEntries()
-    .insert({ text, userId: user.id, videoId: video.id, captionEntryId });
+    .insert({ ...parsed.data, userId: user.id });
   return { success: true, data: { id } };
 });

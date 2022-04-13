@@ -43,9 +43,8 @@ export interface CaptionEntryTable {
 export interface BookmarkEntryTable {
   id: number;
   text: string;
-  // TODO: include more information to highlight within caption entry text
-  // offset: number;
-  // side: 1 | 2;
+  offset: number;
+  side: number; // 0 | 1
   createdAt: Date;
   updatedAt: Date;
   userId: number;

@@ -114,7 +114,7 @@ const BOOKMARKABLE_CLASSNAME = "--bookmarkable--";
 interface BookmarkState {
   captionEntry: CaptionEntryTable;
   text: string;
-  side: 0 | 1;
+  side: number; // 0 | 1
   offset: number;
 }
 
@@ -207,7 +207,7 @@ function PageComponent({
         newBookmarkState = {
           captionEntry: captionEntries[index],
           text: selection.toString(),
-          side: side as 0 | 1,
+          side: side,
           offset: selection.anchorOffset,
         };
       }
@@ -221,6 +221,8 @@ function PageComponent({
       videoId: String(video.id),
       captionEntryId: String(bookmarkState.captionEntry.id),
       text: bookmarkState.text,
+      side: String(bookmarkState.side),
+      offset: String(bookmarkState.offset),
     };
     fetcher.submit(data, { method: "post", action: R["/bookmarks/new"] });
   }
