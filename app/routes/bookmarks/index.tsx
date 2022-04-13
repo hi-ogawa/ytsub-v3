@@ -169,6 +169,7 @@ function MiniPlayer({
           </div>
         )}
       </div>
+      {/* TODO: highlight bookmark text */}
       <CaptionEntryComponent
         entry={captionEntry}
         // TODO
