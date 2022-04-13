@@ -15,6 +15,8 @@ describe("bookmarks/new.action", () => {
       videoId: video().id,
       captionEntryId: captionEntries()[0].id,
       text: "Bonjour à tous",
+      side: 0,
+      offset: 8,
     };
     const res = await testLoader(action, { form: data }, signin);
     assert(res instanceof Response);

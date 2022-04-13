@@ -7,6 +7,8 @@ exports.up = async function (knex) {
     CREATE TABLE bookmarkEntries (
       id                    BIGINT AUTO_INCREMENT,
       text                  TEXT NOT NULL,
+      side                  INT NOT NULL,
+      offset                INT NOT NULL,
       createdAt             DATETIME DEFAULT CURRENT_TIMESTAMP,
       updatedAt             DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
       userId                BIGINT NOT NULL,

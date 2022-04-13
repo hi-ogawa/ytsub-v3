@@ -13,6 +13,7 @@ import {
   VideoTable,
   getVideoAndCaptionEntries,
 } from "../../db/models";
+import { assert } from "../../misc/assert";
 import { R } from "../../misc/routes";
 import { Controller, makeLoader } from "../../utils/controller-utils";
 import { useDeserialize, useSelection } from "../../utils/hooks";
@@ -113,6 +114,8 @@ const BOOKMARKABLE_CLASSNAME = "--bookmarkable--";
 interface BookmarkState {
   captionEntry: CaptionEntryTable;
   text: string;
+  side: 0 | 1;
+  offset: number;
 }
 
 function PageComponent({
@@ -196,9 +199,16 @@ function PageComponent({
     if (selection) {
       const index = findSelectionEntryIndex(selection);
       if (index >= 0) {
+        const el = selection.anchorNode!.parentNode!;
+        const side = Array.from(el.parentNode!.children).findIndex(
+          (c) => c === el
+        );
+        assert(side === 0 || side === 1);
         newBookmarkState = {
           captionEntry: captionEntries[index],
           text: selection.toString(),
+          side: side as 0 | 1,
+          offset: selection.anchorOffset,
         };
       }
     }
