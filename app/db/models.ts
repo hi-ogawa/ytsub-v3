@@ -48,6 +48,8 @@ export interface BookmarkEntryTable {
   // side: 1 | 2;
   createdAt: Date;
   updatedAt: Date;
+  userId: number;
+  videoId: number;
   captionEntryId: number;
 }
 

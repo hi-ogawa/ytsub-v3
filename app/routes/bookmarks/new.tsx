@@ -24,18 +24,20 @@ export const action = makeLoader(Controller, async function () {
 
   const { videoId, captionEntryId, text } = parsed.data;
 
-  const video = tables
+  const video = await tables
     .videos()
     .where("userId", user.id)
     .where("id", videoId)
     .first();
-  const captionEntry = tables
+  const captionEntry = await tables
     .captionEntries()
     .where("videoId", videoId)
     .where("id", captionEntryId)
     .first();
   if (!video || !captionEntry) throw new AppError("Resource not found");
 
-  const [id] = await tables.bookmarkEntries().insert({ text, captionEntryId });
+  const [id] = await tables
+    .bookmarkEntries()
+    .insert({ text, userId: user.id, videoId: video.id, captionEntryId });
   return { success: true, data: { id } };
 });
