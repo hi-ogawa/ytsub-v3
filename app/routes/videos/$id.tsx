@@ -215,6 +215,7 @@ function PageComponent({
     setBookmarkState(newBookmarkState);
   }, []);
 
+  // TODO: e2e test
   function onClickBookmark() {
     if (!bookmarkState) return;
     const data = {
@@ -340,7 +341,7 @@ function LayoutComponent(
   );
 }
 
-function PlayerComponent({
+export function usePlayer({
   defaultOptions,
   onLoad = () => {},
   onError = () => {},
@@ -350,7 +351,7 @@ function PlayerComponent({
   onError?: (e: Error) => void;
 }) {
   const [loading, setLoading] = React.useState(true);
-  const ref = React.useRef<HTMLElement>();
+  const ref = React.useRef<HTMLDivElement>(null);
   const api = useYoutubeIframeApi<YoutubeIframeApi>(null, {
     onError,
   });
@@ -380,11 +381,24 @@ function PlayerComponent({
     };
   }, [api.isSuccess]);
 
+  return [ref, loading] as const;
+}
+
+function PlayerComponent({
+  defaultOptions,
+  onLoad = () => {},
+  onError = () => {},
+}: {
+  defaultOptions: YoutubePlayerOptions;
+  onLoad?: (player: YoutubePlayer) => void;
+  onError?: (e: Error) => void;
+}) {
+  const [ref, loading] = usePlayer({ defaultOptions, onLoad, onError });
   return (
     <div className="flex justify-center">
       <div className="relative w-full max-w-md md:max-w-none">
         <div className="relative pt-[56.2%]">
-          <div className="absolute top-0 w-full h-full" ref={ref as any} />
+          <div className="absolute top-0 w-full h-full" ref={ref} />
         </div>
         {loading && (
           <div className="absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%]">
@@ -427,7 +441,7 @@ function CaptionEntriesComponent({
   );
 }
 
-function CaptionEntryComponent({
+export function CaptionEntryComponent({
   entry,
   currentEntry,
   repeatingEntries = [],
