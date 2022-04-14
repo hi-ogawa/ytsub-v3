@@ -216,6 +216,7 @@ function PageComponent({
   }, []);
 
   // TODO: e2e test
+  // TODO: fetcher invalidates this route's loader?
   function onClickBookmark() {
     if (!bookmarkState) return;
     const data = {
@@ -235,12 +236,12 @@ function PageComponent({
   React.useEffect(() => {
     if (!player) return;
     return startSynchronizePlayerState(player);
-  }, [player]);
+  }, [player, captionEntries]);
 
   React.useEffect(() => {
     if (!player) return;
     repeatEntry(player);
-  }, [player, isPlaying, currentEntry, repeatingEntries]);
+  }, [player, isPlaying, currentEntry, repeatingEntries, captionEntries]);
 
   React.useEffect(() => {
     if (fetcher.type === "done") {
