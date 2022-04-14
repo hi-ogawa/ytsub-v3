@@ -4,3 +4,4 @@
 /.netlify
 /.env.staging.sh
 /.env.production.sh
+*.log

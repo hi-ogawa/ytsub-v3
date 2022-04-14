@@ -9,4 +9,5 @@ npm run cli -- create-videos --username root < misc/ytsub-v2/videos.json
 
 # import bookmarkEntries
 jq '.bookmarkEntries | map(select( .watchParameters.videoId == "29CpyvYpQJE" ))' misc/ytsub-v2/data-v2.json | npm run cli -- import-bookmark-entries root
+jq '.bookmarkEntries' misc/ytsub-v2/data-v2.json | npm run -s cli -- import-bookmark-entries root 2>&1 | tee import-bookmark-entries.log
 ```

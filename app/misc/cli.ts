@@ -214,7 +214,7 @@ async function importBookmarkEntry(
       videoId,
       captions: [language1, language2],
     },
-    captionEntry: { text1, text2 },
+    captionEntry: { begin },
     bookmarkText,
   } = old;
 
@@ -227,16 +227,43 @@ async function importBookmarkEntry(
   const captionEntry = await tables
     .captionEntries()
     .select("*")
-    .where("videoId", video.id)
-    .where("text1", text1)
-    .where("text2", text2)
+    .where({ videoId: video.id })
+    .where(client.raw("abs(begin - ?) < 0.1", begin))
     .first();
   if (!captionEntry) return [false, "CaptionEntry not found"];
 
-  // TODO: side, offset
-  // TODO: skip already existing data
-  const side = 0;
-  const offset = 0;
+  if (
+    !captionEntry.text1.includes(bookmarkText) &&
+    !captionEntry.text2.includes(bookmarkText)
+  ) {
+    return [false, "Bookmark text not match"];
+  }
+
+  let side: number;
+  let offset: number;
+  if (captionEntry.text1.includes(bookmarkText)) {
+    side = 0;
+    offset = captionEntry.text1.indexOf(bookmarkText);
+  } else {
+    side = 1;
+    offset = captionEntry.text2.indexOf(bookmarkText);
+  }
+
+  const found = await tables
+    .bookmarkEntries()
+    .where({
+      userId,
+      videoId: video.id,
+      captionEntryId: captionEntry.id,
+      side,
+      offset,
+      text: bookmarkText,
+    })
+    .first();
+  if (found) {
+    return [false, "Bookmark already exists"];
+  }
+
   const [id] = await tables.bookmarkEntries().insert({
     userId,
     videoId: video.id,
@@ -262,11 +289,10 @@ cli
     const olds = z.array(OLD_BOOKMARK_ENTRY_SCHEMA).parse(JSON.parse(input));
     for (const old of olds) {
       console.log(
-        `:: importing (${old.watchParameters.videoId}) '${old.bookmarkText}'`
+        `:: importing (${old.watchParameters.videoId}) ${old.bookmarkText}`
       );
       const [ok, message] = await importBookmarkEntry(old, user.id);
-      console.error(message);
-      if (!ok) console.error(old);
+      console.error(ok ? "✔" : "✘", message, ok ? "" : JSON.stringify(old));
     }
     await client.destroy();
   });

@@ -21,6 +21,7 @@ export const handle: PageHandle = {
 };
 
 // TODO filtering etc... simlar to "/videos/history"
+// TODO unit test
 
 export interface ById<T> {
   ids: number[];
@@ -42,18 +43,20 @@ interface HistoryLoaderData {
 export const loader = makeLoader(Controller, async function () {
   const user = await this.currentUser();
   if (!user) {
+    // TODO: it doesn't work probably because root loader is not reloaded during this navigation...
     pushFlashMessage(this.session, {
       content: "Signin required.",
       variant: "error",
     });
-    return redirect(R["/"]);
+    return redirect(R["/users/signin"]);
   }
   // TODO: optimize query
   // TODO: order bookmark entries by captionEntry's index and offset
   const bookmarkEntries = await tables
     .bookmarkEntries()
     .select("*")
-    .where("userId", user.id);
+    .where("userId", user.id)
+    .orderBy("createdAt", "desc");
   const videoIds = bookmarkEntries.map((x) => x.videoId);
   const captionEntryIds = bookmarkEntries.map((x) => x.captionEntryId);
   const videos = await tables.videos().select("*").whereIn("id", videoIds);
@@ -83,6 +86,7 @@ export function ComponentImpl(props: HistoryLoaderData) {
     <div className="w-full flex justify-center">
       <div className="h-full w-full max-w-lg">
         <div className="h-full flex flex-col p-2 gap-2">
+          {/* TODO: CTA when empty */}
           {bookmarkEntries.length === 0 && <div>Empty</div>}
           {bookmarkEntries.map((bookmarkEntry) => (
             <BookmarkEntryComponent
