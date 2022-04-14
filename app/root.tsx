@@ -67,6 +67,7 @@ export const loader = makeLoader(Controller, async function () {
   const data: RootLoaderData = {
     currentUser: await this.currentUser(),
     // TODO: feels buggy (same messages appear repeatedly)
+    // TODO: can we use `useTransition` to get the cookie in the response? (but it would be difficult to clear)
     flashMessages: this.session.get("flashMessages") ?? [],
   };
   return this.serialize(data);
@@ -310,17 +311,25 @@ function SideMenuDrawerWrapper({
           <li className="disabled block">
             <SearchComponent />
           </li>
-          {SIDE_MENU_ENTRIES.map(
-            (entry) =>
-              (isSignedIn || !entry.requireSignin) && (
-                <li key={entry.to}>
-                  <Link to={entry.to} onClick={() => toggleDrawer(false)}>
-                    <entry.icon size={28} className="text-gray-500 pr-2" />
-                    {entry.title}
-                  </Link>
-                </li>
-              )
-          )}
+          {SIDE_MENU_ENTRIES.map((entry) => {
+            const disabled = entry.requireSignin && !isSignedIn;
+            return (
+              <li
+                key={entry.to}
+                className={`${disabled && "disabled"}`}
+                title={disabled ? "Signin required" : undefined}
+              >
+                <Link
+                  to={entry.to}
+                  onClick={() => toggleDrawer(false)}
+                  className={`${disabled && "cursor-not-allowed"}`}
+                >
+                  <entry.icon size={28} className="pr-2" />
+                  {entry.title}
+                </Link>
+              </li>
+            );
+          })}
           <li>
             <a
               href={
@@ -330,7 +339,7 @@ function SideMenuDrawerWrapper({
               }
               target="_blank"
             >
-              <Code size={28} className="text-gray-500 pr-2" />
+              <Code size={28} className="pr-2" />
               UI DEV
             </a>
           </li>

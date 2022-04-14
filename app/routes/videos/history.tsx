@@ -30,8 +30,11 @@ export interface HistoryLoaderData {
 export const loader = makeLoader(Controller, async function () {
   const user = await this.currentUser();
   if (!user) {
-    pushFlashMessage(this.session, { content: "Signin required." });
-    return redirect(R["/"]);
+    pushFlashMessage(this.session, {
+      content: "Signin required.",
+      variant: "error",
+    });
+    return redirect(R["/users/signin"]);
   }
   const videos = await tables
     .videos()

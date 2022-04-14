@@ -21,6 +21,7 @@ export const handle: PageHandle = {
 };
 
 // TODO filtering etc... simlar to "/videos/history"
+// TODO unit test
 
 export interface ById<T> {
   ids: number[];
@@ -42,11 +43,12 @@ interface HistoryLoaderData {
 export const loader = makeLoader(Controller, async function () {
   const user = await this.currentUser();
   if (!user) {
+    // TODO: it doesn't work probably because root loader is not reloaded during this navigation...
     pushFlashMessage(this.session, {
       content: "Signin required.",
       variant: "error",
     });
-    return redirect(R["/"]);
+    return redirect(R["/users/signin"]);
   }
   // TODO: optimize query
   // TODO: order bookmark entries by captionEntry's index and offset
