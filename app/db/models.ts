@@ -40,6 +40,18 @@ export interface CaptionEntryTable {
   videoId: number; // not `VideoTable.videoId` but `VideoTable.id`
 }
 
+export interface BookmarkEntryTable {
+  id: number;
+  text: string;
+  offset: number;
+  side: number; // 0 | 1
+  createdAt: Date;
+  updatedAt: Date;
+  userId: number;
+  videoId: number;
+  captionEntryId: number;
+}
+
 // TODO: use constants to facilitate static analysis
 // export const T = {
 //   users: "users",
@@ -51,6 +63,7 @@ export const tables = {
   users: () => client<UserTable>("users"),
   videos: () => client<VideoTable>("videos"),
   captionEntries: () => client<CaptionEntryTable>("captionEntries"),
+  bookmarkEntries: () => client<BookmarkEntryTable>("bookmarkEntries"),
 };
 
 //
@@ -70,6 +83,15 @@ export async function deleteOrphans(): Promise<void> {
     .delete()
     .leftJoin("videos", "videos.id", "captionEntries.videoId")
     .where("videos.id", null);
+  await tables
+    .bookmarkEntries()
+    .delete()
+    .leftJoin(
+      "captionEntries",
+      "captionEntries.id",
+      "bookmarkEntries.captionEntryId"
+    )
+    .where("captionEntries.id", null);
 }
 
 export function filterNewVideo(

@@ -10,10 +10,12 @@ import { PageHandle } from "../../utils/page-handle";
 import { pushFlashMessage } from "../../utils/session-utils";
 
 export const handle: PageHandle = {
+  // Saved or Created Videos?
   navBarTitle: "History",
 };
 
 // TODO
+// - use `/videos/index.tsx`
 // - filter by language
 // - filter by author
 // - pagination

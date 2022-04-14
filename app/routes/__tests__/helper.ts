@@ -115,3 +115,45 @@ export function useVideo(type: 0 | 1 | 2 = 2, userId?: () => number) {
     captionEntries: () => result.captionEntries,
   };
 }
+
+export function useUserVideo(
+  type: 0 | 1 | 2 = 2,
+  ...args: Parameters<typeof useUserImpl>
+) {
+  const { before, after } = useUserImpl(...args);
+
+  let user: UserTable;
+  let cookie: string;
+  let video: VideoTable;
+  let captionEntries: CaptionEntryTable[];
+  const newVideo = NEW_VIDEOS[type];
+
+  beforeAll(async () => {
+    user = await before();
+    cookie = await createUserCookie(user);
+
+    const data = await fetchCaptionEntries(newVideo);
+    const videoId = await insertVideoAndCaptionEntries(newVideo, data, user.id);
+    const result = await getVideoAndCaptionEntries(videoId);
+    assert(result);
+    video = result.video;
+    captionEntries = result.captionEntries;
+  });
+
+  afterAll(async () => {
+    await after();
+    await filterNewVideo(newVideo, user.id).delete();
+  });
+
+  function signin(request: Request): Request {
+    request.headers.set("cookie", cookie);
+    return request;
+  }
+
+  return {
+    user: () => user,
+    video: () => video,
+    captionEntries: () => captionEntries,
+    signin,
+  };
+}

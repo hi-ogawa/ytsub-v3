@@ -1,19 +1,22 @@
 import { Transition } from "@headlessui/react";
-import { Form, Link, useLoaderData } from "@remix-run/react";
+import { Form, Link, useFetcher, useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import * as React from "react";
-import { MoreVertical, Play, Repeat } from "react-feather";
+import { Bookmark, MoreVertical, Play, Repeat, X } from "react-feather";
 import { z } from "zod";
+import { Spinner } from "../../components/misc";
 import { Popover } from "../../components/popover";
+import { useSnackbar } from "../../components/snackbar";
 import {
   CaptionEntryTable,
   UserTable,
   VideoTable,
   getVideoAndCaptionEntries,
 } from "../../db/models";
+import { assert } from "../../misc/assert";
 import { R } from "../../misc/routes";
 import { Controller, makeLoader } from "../../utils/controller-utils";
-import { useDeserialize } from "../../utils/hooks";
+import { useDeserialize, useSelection } from "../../utils/hooks";
 import { useYoutubeIframeApi } from "../../utils/hooks";
 import { useLeafLoaderData, useRootLoaderData } from "../../utils/loader-utils";
 import { PageHandle } from "../../utils/page-handle";
@@ -30,6 +33,10 @@ export const handle: PageHandle = {
   navBarTitle: "Watch",
   NavBarMenuComponent,
 };
+
+//
+// loader
+//
 
 const SCHEMA = z.object({
   id: z.string().regex(/^\d+$/).transform(Number),
@@ -53,9 +60,14 @@ export const loader = makeLoader(Controller, async function () {
   return redirect(R["/"]);
 });
 
+//
+// component
+//
+
 export default function DeafultComponent() {
+  const { currentUser } = useRootLoaderData();
   const data: LoaderData = useDeserialize(useLoaderData());
-  return <PageComponent {...data} />;
+  return <PageComponent currentUser={currentUser} {...data} />;
 }
 
 function findCurrentEntry(
@@ -77,7 +89,43 @@ function toggleArrayInclusion<T>(container: T[], element: T): T[] {
   return [...container, element];
 }
 
-function PageComponent({ video, captionEntries }: LoaderData) {
+// adhoc routines to derive `BookmarkState` by probing dom tree
+function findSelectionEntryIndex(selection: Selection): number {
+  const isValid =
+    selection.toString().trim() &&
+    selection.anchorNode &&
+    selection.anchorNode === selection.focusNode &&
+    selection.anchorNode.nodeType === document.TEXT_NODE &&
+    selection.anchorNode.parentElement?.classList?.contains(
+      BOOKMARKABLE_CLASSNAME
+    );
+  if (!isValid) return -1;
+  const textElement = selection.getRangeAt(0).startContainer;
+  const entryNode = textElement.parentElement?.parentElement?.parentElement!;
+  const entriesContainer = entryNode.parentElement!;
+  const index = Array.from(entriesContainer.childNodes).findIndex(
+    (other) => other === entryNode
+  );
+  return index;
+}
+
+const BOOKMARKABLE_CLASSNAME = "--bookmarkable--";
+
+interface BookmarkState {
+  captionEntry: CaptionEntryTable;
+  text: string;
+  side: number; // 0 | 1
+  offset: number;
+}
+
+function PageComponent({
+  video,
+  captionEntries,
+  currentUser,
+}: LoaderData & { currentUser?: UserTable }) {
+  const fetcher = useFetcher();
+  const { enqueueSnackbar } = useSnackbar();
+
   //
   // state
   //
@@ -88,6 +136,7 @@ function PageComponent({ video, captionEntries }: LoaderData) {
   const [repeatingEntries, setRepeatingEntries] = React.useState<
     CaptionEntry[]
   >([]);
+  const [bookmarkState, setBookmarkState] = React.useState<BookmarkState>();
 
   //
   // handlers
@@ -145,6 +194,40 @@ function PageComponent({ video, captionEntries }: LoaderData) {
     setRepeatingEntries(toggleArrayInclusion(repeatingEntries, entry));
   }
 
+  const onSelection = React.useCallback((selection?: Selection): void => {
+    let newBookmarkState = undefined;
+    if (selection) {
+      const index = findSelectionEntryIndex(selection);
+      if (index >= 0) {
+        const el = selection.anchorNode!.parentNode!;
+        const side = Array.from(el.parentNode!.children).findIndex(
+          (c) => c === el
+        );
+        assert(side === 0 || side === 1);
+        newBookmarkState = {
+          captionEntry: captionEntries[index],
+          text: selection.toString(),
+          side: side,
+          offset: selection.anchorOffset,
+        };
+      }
+    }
+    setBookmarkState(newBookmarkState);
+  }, []);
+
+  // TODO: e2e test
+  function onClickBookmark() {
+    if (!bookmarkState) return;
+    const data = {
+      videoId: String(video.id),
+      captionEntryId: String(bookmarkState.captionEntry.id),
+      text: bookmarkState.text,
+      side: String(bookmarkState.side),
+      offset: String(bookmarkState.offset),
+    };
+    fetcher.submit(data, { method: "post", action: R["/bookmarks/new"] });
+  }
+
   //
   // effects
   //
@@ -158,6 +241,19 @@ function PageComponent({ video, captionEntries }: LoaderData) {
     if (!player) return;
     repeatEntry(player);
   }, [player, isPlaying, currentEntry, repeatingEntries]);
+
+  React.useEffect(() => {
+    if (fetcher.type === "done") {
+      if (fetcher.data.success) {
+        enqueueSnackbar("Bookmark saved", { variant: "success" });
+      } else {
+        enqueueSnackbar("Bookmark failed", { variant: "success" });
+      }
+      setBookmarkState(undefined);
+    }
+  }, [fetcher.type]);
+
+  useSelection(onSelection);
 
   return (
     <LayoutComponent
@@ -177,12 +273,42 @@ function PageComponent({ video, captionEntries }: LoaderData) {
           isPlaying={isPlaying}
         />
       }
+      bookmarkActions={
+        currentUser &&
+        currentUser.id === video.userId && (
+          <Transition
+            show={!!bookmarkState}
+            className="absolute bottom-0 right-0 flex gap-2 p-1.5 transition-all duration-300"
+            enterFrom="scale-[0.3] opacity-0"
+            enterTo="scale-100 opacity-100"
+            leaveFrom="scale-100 opacity-100"
+            leaveTo="scale-[0.3] opacity-0"
+          >
+            <button
+              onClick={() => setBookmarkState(undefined)}
+              className="w-12 h-12 rounded-full bg-secondary text-white flex justify-center items-center shadow-xl hover:contrast-75 transition-[filter] duration-300"
+            >
+              <X />
+            </button>
+            <button
+              onClick={() => onClickBookmark()}
+              className="w-12 h-12 rounded-full bg-primary text-white flex justify-center items-center shadow-xl hover:contrast-75 transition-[filter] duration-300"
+            >
+              {fetcher.state === "idle" ? (
+                <Bookmark />
+              ) : (
+                <Spinner className="w-6 h-6" />
+              )}
+            </button>
+          </Transition>
+        )
+      }
     />
   );
 }
 
 function LayoutComponent(
-  props: Record<"player" | "subtitles", React.ReactNode>
+  props: Record<"player" | "subtitles" | "bookmarkActions", React.ReactNode>
 ) {
   //
   // - Mobile layout
@@ -205,16 +331,17 @@ function LayoutComponent(
   return (
     <div className="h-full w-full flex flex-col md:flex-row md:gap-2 md:p-2">
       <div className="flex-none md:grow">{props.player}</div>
-      <div className="flex flex-col flex-[1_0_0] md:flex-none md:w-1/3 border-t md:border">
+      <div className="flex flex-col flex-[1_0_0] md:flex-none md:w-1/3 border-t md:border relative">
         <div className="flex-[1_0_0] h-full overflow-y-auto">
           {props.subtitles}
         </div>
+        {props.bookmarkActions}
       </div>
     </div>
   );
 }
 
-function PlayerComponent({
+export function usePlayer({
   defaultOptions,
   onLoad = () => {},
   onError = () => {},
@@ -224,7 +351,7 @@ function PlayerComponent({
   onError?: (e: Error) => void;
 }) {
   const [loading, setLoading] = React.useState(true);
-  const ref = React.useRef<HTMLElement>();
+  const ref = React.useRef<HTMLDivElement>(null);
   const api = useYoutubeIframeApi<YoutubeIframeApi>(null, {
     onError,
   });
@@ -254,11 +381,24 @@ function PlayerComponent({
     };
   }, [api.isSuccess]);
 
+  return [ref, loading] as const;
+}
+
+function PlayerComponent({
+  defaultOptions,
+  onLoad = () => {},
+  onError = () => {},
+}: {
+  defaultOptions: YoutubePlayerOptions;
+  onLoad?: (player: YoutubePlayer) => void;
+  onError?: (e: Error) => void;
+}) {
+  const [ref, loading] = usePlayer({ defaultOptions, onLoad, onError });
   return (
     <div className="flex justify-center">
       <div className="relative w-full max-w-md md:max-w-none">
         <div className="relative pt-[56.2%]">
-          <div className="absolute top-0 w-full h-full" ref={ref as any} />
+          <div className="absolute top-0 w-full h-full" ref={ref} />
         </div>
         {loading && (
           <div className="absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%]">
@@ -301,7 +441,7 @@ function CaptionEntriesComponent({
   );
 }
 
-function CaptionEntryComponent({
+export function CaptionEntryComponent({
   entry,
   currentEntry,
   repeatingEntries = [],
@@ -359,10 +499,14 @@ function CaptionEntryComponent({
         className="flex text-gray-700 cursor-pointer"
         onClick={() => onClickEntryPlay(entry, true)}
       >
-        <div className="flex-auto w-1/2 pr-2 border-r border-solid border-gray-200">
+        <div
+          className={`flex-auto w-1/2 pr-2 border-r border-solid border-gray-200 ${BOOKMARKABLE_CLASSNAME}`}
+        >
           {text1}
         </div>
-        <div className="flex-auto w-1/2 pl-2">{text2}</div>
+        <div className={`flex-auto w-1/2 pl-2 ${BOOKMARKABLE_CLASSNAME}`}>
+          {text2}
+        </div>
       </div>
     </div>
   );

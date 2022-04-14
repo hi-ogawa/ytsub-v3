@@ -102,3 +102,13 @@ export function useMemoWrap<F extends (_: D) => any, D>(
 export function useDeserialize(data: any): any {
   return useMemoWrap(deserialize, data);
 }
+
+export function useSelection(listener: (selection?: Selection) => void) {
+  React.useEffect(() => {
+    function listenerImpl() {
+      listener(document.getSelection() ?? undefined);
+    }
+    document.addEventListener("selectionchange", listenerImpl);
+    return () => document.removeEventListener("selectionchange", listenerImpl);
+  }, [listener]);
+}

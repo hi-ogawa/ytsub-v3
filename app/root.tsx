@@ -14,6 +14,7 @@ import { LinksFunction, MetaFunction } from "@remix-run/server-runtime";
 import { last } from "lodash";
 import * as React from "react";
 import {
+  Bookmark,
   Clock,
   Code,
   Home,
@@ -278,7 +279,14 @@ const SIDE_MENU_ENTRIES: SideMenuEntry[] = [
   {
     to: R["/videos/history"],
     icon: Clock,
+    // TODO: Saved Videos
     title: "History",
+    requireSignin: true,
+  },
+  {
+    to: R["/bookmarks"],
+    icon: Bookmark,
+    title: "Bookmarks",
     requireSignin: true,
   },
 ];

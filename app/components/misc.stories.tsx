@@ -1,9 +1,9 @@
 import { Transition } from "@headlessui/react";
 import * as React from "react";
-import { LogOut, Settings, User, X } from "react-feather";
+import { Bookmark, LogOut, Settings, User, X } from "react-feather";
 import { useList } from "react-use";
 import { Collapse } from "./collapse";
-import { VideoComponent } from "./misc";
+import { Spinner, VideoComponent } from "./misc";
 import { Popover } from "./popover";
 import { Slide } from "./slide";
 import {
@@ -289,6 +289,51 @@ export function TestVideoComponent() {
             language2_id: ".en",
           }}
         />
+      </div>
+    </div>
+  );
+}
+
+export function TestFab() {
+  const [checked, setChecked] = React.useState(true);
+
+  return (
+    <div className="w-full flex justify-center">
+      <div className="w-full max-w-lg flex flex-col p-2 gap-2">
+        <div>
+          <input
+            className="toggle"
+            type="checkbox"
+            checked={checked}
+            onChange={() => setChecked(!checked)}
+          />
+        </div>
+        <div className="w-80 h-80 border relative">
+          <Transition
+            show={checked}
+            className="absolute flex gap-3 p-3 transition-all duration-300"
+            enterFrom="scale-[0.3] opacity-0"
+            enterTo="scale-100 opacity-100"
+            leaveFrom="scale-100 opacity-100"
+            leaveTo="scale-[0.3] opacity-0"
+          >
+            <button className="w-12 h-12 rounded-full bg-primary text-primary-content flex justify-center items-center shadow-lg hover:contrast-[0.8] transition-[filter] duration-300">
+              <Bookmark />
+            </button>
+          </Transition>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function TestSpinner() {
+  return (
+    <div className="w-full flex justify-center">
+      <div className="w-full max-w-lg flex flex-col p-2 gap-2">
+        <Spinner className="w-10 h-10" />
+        <Spinner className="w-20 h-20" />
+        <Spinner className="w-40 h-40" />
       </div>
     </div>
   );
