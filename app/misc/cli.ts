@@ -2,6 +2,7 @@ import * as assert from "assert";
 import { installGlobals } from "@remix-run/node";
 import { cac } from "cac";
 import { range, zip } from "lodash";
+import { z } from "zod";
 import { client } from "../db/client.server";
 import {
   filterNewVideo,
@@ -179,6 +180,93 @@ cli
       }
       const data = await fetchCaptionEntries(newVideo);
       await insertVideoAndCaptionEntries(newVideo, data, userId);
+    }
+    await client.destroy();
+  });
+
+const OLD_BOOKMARK_ENTRY_SCHEMA = z.object({
+  watchParameters: z.object({
+    videoId: z.string(),
+    captions: z.array(
+      z.object({
+        id: z.string(),
+        translation: z.string().optional(),
+      })
+    ),
+  }),
+  captionEntry: z.object({
+    begin: z.number(),
+    end: z.number(),
+    text1: z.string(),
+    text2: z.string(),
+  }),
+  bookmarkText: z.string(),
+});
+
+type OldBookamrkEntry = z.infer<typeof OLD_BOOKMARK_ENTRY_SCHEMA>;
+
+async function importBookmarkEntry(
+  old: OldBookamrkEntry,
+  userId: number
+): Promise<[boolean, string]> {
+  const {
+    watchParameters: {
+      videoId,
+      captions: [language1, language2],
+    },
+    captionEntry: { text1, text2 },
+    bookmarkText,
+  } = old;
+
+  const video = await filterNewVideo(
+    { videoId, language1, language2 },
+    userId
+  ).first();
+  if (!video) return [false, "Video not found"];
+
+  const captionEntry = await tables
+    .captionEntries()
+    .select("*")
+    .where("videoId", video.id)
+    .where("text1", text1)
+    .where("text2", text2)
+    .first();
+  if (!captionEntry) return [false, "CaptionEntry not found"];
+
+  // TODO: side, offset
+  // TODO: skip already existing data
+  const side = 0;
+  const offset = 0;
+  const [id] = await tables.bookmarkEntries().insert({
+    userId,
+    videoId: video.id,
+    captionEntryId: captionEntry.id,
+    side,
+    offset,
+    text: bookmarkText,
+  });
+  return [true, `Success (id = ${id})`];
+}
+
+cli
+  .command("import-bookmark-entries <username>")
+  .action(async (username: string) => {
+    const user = await tables
+      .users()
+      .where("username", username)
+      .select("id")
+      .first();
+    assert.ok(user);
+
+    const input = await streamToString(process.stdin);
+    const olds = z.array(OLD_BOOKMARK_ENTRY_SCHEMA).parse(JSON.parse(input));
+    for (const old of olds) {
+      console.log(
+        `:: importing (${old.watchParameters.videoId}) '${old.bookmarkText}'`
+      );
+      const [ok, message] = await importBookmarkEntry(old, user.id);
+      console.error(message);
+      if (!ok) console.error(old);
     }
     await client.destroy();
   });
