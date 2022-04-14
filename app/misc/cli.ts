@@ -214,7 +214,7 @@ async function importBookmarkEntry(
       videoId,
       captions: [language1, language2],
     },
-    captionEntry: { text1, text2 },
+    captionEntry: { begin },
     bookmarkText,
   } = old;
 
@@ -227,9 +227,8 @@ async function importBookmarkEntry(
   const captionEntry = await tables
     .captionEntries()
     .select("*")
-    .where("videoId", video.id)
-    .where("text1", text1)
-    .where("text2", text2)
+    .where({ videoId: video.id })
+    .where(client.raw("abs(begin - ?) < 0.1", begin))
     .first();
   if (!captionEntry) return [false, "CaptionEntry not found"];
 
@@ -293,7 +292,7 @@ cli
         `:: importing (${old.watchParameters.videoId}) ${old.bookmarkText}`
       );
       const [ok, message] = await importBookmarkEntry(old, user.id);
-      console.error(ok ? "✔" : "✘", message);
+      console.error(ok ? "✔" : "✘", message, ok ? "" : JSON.stringify(old));
     }
     await client.destroy();
   });

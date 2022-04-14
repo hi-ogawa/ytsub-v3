@@ -166,6 +166,7 @@ export function ttmlToEntries(
   return parsed.tt.body.div.p.map((p) => ({
     begin: parseTimestamp(p["@_begin"]),
     end: parseTimestamp(p["@_end"]),
+    // TODO: normalize white spaces (e.g. \u00a0)?
     text: p["#text"],
   }));
 }
