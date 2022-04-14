@@ -55,6 +55,7 @@ export function HistoryComponent({ videos }: { videos: VideoTable[] }) {
     <div className="w-full flex justify-center">
       <div className="h-full w-full max-w-lg">
         <div className="h-full flex flex-col p-2 gap-2">
+          {/* TODO: CTA when empty */}
           {videos.length === 0 && <div>Empty</div>}
           {videos.map((video) => (
             <VideoComponent key={video.id} video={video} />
