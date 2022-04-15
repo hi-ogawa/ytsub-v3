@@ -7,6 +7,7 @@ import {
   Meta,
   Outlet,
   Scripts,
+  ShouldReloadFunction,
   useMatches,
   useTransition,
 } from "@remix-run/react";
@@ -63,6 +64,10 @@ export const meta: MetaFunction = () => {
   };
 };
 
+//
+// loader
+//
+
 export const loader = makeLoader(Controller, async function () {
   const data: RootLoaderData = {
     currentUser: await this.currentUser(),
@@ -72,6 +77,17 @@ export const loader = makeLoader(Controller, async function () {
   };
   return this.serialize(data);
 });
+
+export const unstable_shouldReload: ShouldReloadFunction = ({ submission }) => {
+  if (submission?.action === R["/bookmarks/new"]) {
+    return false;
+  }
+  return true;
+};
+
+//
+// component
+//
 
 export default function DefaultComponent() {
   return (
