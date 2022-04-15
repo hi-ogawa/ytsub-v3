@@ -1,5 +1,11 @@
 import { Transition } from "@headlessui/react";
-import { Form, Link, useFetcher, useLoaderData } from "@remix-run/react";
+import {
+  Form,
+  Link,
+  ShouldReloadFunction,
+  useFetcher,
+  useLoaderData,
+} from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import * as React from "react";
 import { Bookmark, MoreVertical, Play, Repeat, X } from "react-feather";
@@ -60,6 +66,13 @@ export const loader = makeLoader(Controller, async function () {
   });
   return redirect(R["/"]);
 });
+
+export const unstable_shouldReload: ShouldReloadFunction = ({ submission }) => {
+  if (submission?.action === R["/bookmarks/new"]) {
+    return false;
+  }
+  return true;
+};
 
 //
 // component
