@@ -90,3 +90,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: make lint/all
+
+  health_check:
+    runs-on: ubuntu-20.04
+    container:
+      image: badouralix/curl-jq
+    steps:
+      - run: curl https://ytsub-v3-hiro18181.netlify.app/health-check | jq --exit-status '.success'
