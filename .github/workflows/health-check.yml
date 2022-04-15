@@ -6,7 +6,7 @@ name: health-check
   schedule:
     - cron: "* * * * *"
 jobs:
-  health_check:
+  health-check:
     runs-on: ubuntu-20.04
     container:
       image: badouralix/curl-jq
