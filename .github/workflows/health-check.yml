@@ -1,10 +1,14 @@
+#
+# https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#onschedule
+# >  The shortest interval you can run scheduled workflows is once every 5 minutes.
+#
 name: health-check
 "on":
-  # run health check every minute to warm up aws lambda
-  #   60 * 24 * 30 = 43,200
+  # run health check at every 10th minute to warm up aws lambda
+  #   60 / 10 * 24 * 30 = 4,320
   # note that netlify's free plan quota is 125,000 requests per month
   schedule:
-    - cron: "* * * * *"
+    - cron: "*/10 * * * *"
 jobs:
   health-check:
     runs-on: ubuntu-20.04
