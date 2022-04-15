@@ -28,6 +28,7 @@ import {
   YoutubePlayerOptions,
   stringifyTimestamp,
 } from "../../utils/youtube";
+import { zStringToInteger } from "../../utils/zod-utils";
 
 export const handle: PageHandle = {
   navBarTitle: "Watch",
@@ -39,7 +40,7 @@ export const handle: PageHandle = {
 //
 
 const SCHEMA = z.object({
-  id: z.string().regex(/^\d+$/).transform(Number),
+  id: zStringToInteger,
 });
 
 type LoaderData = { video: VideoTable; captionEntries: CaptionEntryTable[] };

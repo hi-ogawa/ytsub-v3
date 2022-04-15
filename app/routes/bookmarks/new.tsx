@@ -2,18 +2,18 @@ import { z } from "zod";
 import { tables } from "../../db/models";
 import { Controller, makeLoader } from "../../utils/controller-utils";
 import { AppError } from "../../utils/errors";
-import { zStringToNumber } from "../../utils/validation";
+import { zStringToInteger } from "../../utils/zod-utils";
 
 //
 // action
 //
 
 const ACTION_REQUEST_SCHEMA = z.object({
-  videoId: zStringToNumber,
-  captionEntryId: zStringToNumber,
+  videoId: zStringToInteger,
+  captionEntryId: zStringToInteger,
   text: z.string().nonempty(),
-  side: zStringToNumber.refine((x) => x === 0 || x === 1),
-  offset: zStringToNumber,
+  side: zStringToInteger.refine((x) => x === 0 || x === 1),
+  offset: zStringToInteger,
 });
 
 // TODO: error handling
