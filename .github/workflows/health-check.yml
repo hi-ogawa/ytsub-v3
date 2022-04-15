@@ -1,4 +1,4 @@
-name: CI
+name: health-check
 "on":
   # run health check every minute to warm up aws lambda
   #   60 * 24 * 30 = 43,200
