@@ -20,7 +20,7 @@ describe("signout.action", () => {
       const resSession = await getResponseSession(res);
       expect(resSession.data).toMatchInlineSnapshot(`
         {
-          "~~flash~phase2~~flash-messages": [
+          "__flash_flash-messages__": [
             {
               "content": "Signed out successfuly",
               "variant": "success",
