@@ -6,6 +6,10 @@ import { getSessionUser } from "./auth";
 import { getRequestSession, withResponseSession } from "./session-utils";
 import { fromRequestForm, fromRequestQuery } from "./url-data";
 
+//
+// Implementing controller-style request handler (as in Rails controller)
+//
+
 type LoaderArgs = Parameters<LoaderFunction>[0];
 type LoaderResult = ReturnType<LoaderFunction>;
 

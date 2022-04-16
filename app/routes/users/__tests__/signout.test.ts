@@ -34,9 +34,22 @@ describe("signout.action", () => {
   describe("error", () => {
     it("no-session-user", async () => {
       const res = await testLoader(action, {});
-      expect(res).toMatchInlineSnapshot(`
+
+      // redirect to root
+      assert(res instanceof Response);
+      expect(res.status).toBe(302);
+      expect(res.headers.get("location")).toBe("/");
+
+      // verify empty session user
+      const resSession = await getResponseSession(res);
+      expect(resSession.data).toMatchInlineSnapshot(`
         {
-          "message": "Invalid sign out",
+          "__flash_flash-messages__": [
+            {
+              "content": "Not signed in",
+              "variant": "error",
+            },
+          ],
         }
       `);
     });

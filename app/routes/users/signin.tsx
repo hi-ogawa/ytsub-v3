@@ -1,5 +1,5 @@
 import { Form, Link, useActionData } from "@remix-run/react";
-import { ActionFunction, redirect } from "@remix-run/server-runtime";
+import { redirect } from "@remix-run/server-runtime";
 import * as React from "react";
 import { R } from "../../misc/routes";
 import {
@@ -10,55 +10,49 @@ import {
   signinSession,
   verifySignin,
 } from "../../utils/auth";
+import { Controller, makeLoader } from "../../utils/controller-utils";
 import { AppError } from "../../utils/errors";
 import { pushFlashMessage } from "../../utils/flash-message";
 import { useIsFormValid } from "../../utils/hooks";
 import { PageHandle } from "../../utils/page-handle";
-import { withRequestSession } from "../../utils/session-utils";
-import { fromRequestForm } from "../../utils/url-data";
 
 export const handle: PageHandle = {
   navBarTitle: "Sign in",
 };
 
-export const loader: ActionFunction = withRequestSession(
-  async ({ session }) => {
-    // TOOD: generalize this routine (for "/users/register" too)
-    const user = await getSessionUser(session);
-    if (user) {
-      pushFlashMessage(session, {
-        content: `Already signed in as '${user.username}'`,
-        variant: "error",
-      });
-      return redirect(R["/users/me"]);
-    }
-    return null;
+export const loader = makeLoader(Controller, async function () {
+  const user = await getSessionUser(this.session);
+  if (user) {
+    pushFlashMessage(this.session, {
+      content: `Already signed in as '${user.username}'`,
+      variant: "error",
+    });
+    return redirect(R["/users/me"]);
   }
-);
+  return null;
+});
 
-export const action: ActionFunction = withRequestSession(
-  async ({ request, session }) => {
-    const parsed = SIGNIN_SCHEMA.safeParse(await fromRequestForm(request));
-    if (!parsed.success) {
-      return { success: false, message: "Invalid sign in" };
-    }
-
-    try {
-      const user = await verifySignin(parsed.data);
-      signinSession(session, user);
-      pushFlashMessage(session, {
-        content: `Succesfully signed in as '${user.username}'`,
-        variant: "success",
-      });
-      return redirect(R["/"]);
-    } catch (e) {
-      if (e instanceof AppError) {
-        return { success: false, message: e.message };
-      }
-      throw e;
-    }
+export const action = makeLoader(Controller, async function () {
+  const parsed = SIGNIN_SCHEMA.safeParse(await this.form());
+  if (!parsed.success) {
+    return { success: false, message: "Invalid sign in" };
   }
-);
+
+  try {
+    const user = await verifySignin(parsed.data);
+    signinSession(this.session, user);
+    pushFlashMessage(this.session, {
+      content: `Succesfully signed in as '${user.username}'`,
+      variant: "success",
+    });
+    return redirect(R["/"]);
+  } catch (e) {
+    if (e instanceof AppError) {
+      return { success: false, message: e.message };
+    }
+    throw e;
+  }
+});
 
 export default function DefaultComponent() {
   const actionData: { message: string } | undefined = useActionData();

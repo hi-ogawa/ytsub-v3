@@ -23,6 +23,7 @@ export function testLoader(
     form,
     params = {},
   }: { query?: any; form?: any; params?: Record<string, string> },
+  // TODO(refactor): move transform to the option object above
   transform?: (request: Request) => Request
 ) {
   let url = DUMMY_URL;

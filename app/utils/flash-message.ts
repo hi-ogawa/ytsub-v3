@@ -8,6 +8,7 @@ export interface FlashMessage {
   variant?: Variant;
 }
 
+// TODO(refactor): add to Controller.flash
 export function pushFlashMessage(
   session: Session,
   flashMessage: FlashMessage
