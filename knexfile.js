@@ -1,3 +1,8 @@
+// Allow writing migration files in typescript
+if (process.argv[1].endsWith("knex/bin/cli.js")) {
+  require("esbuild-register");
+}
+
 const NODE_ENV = process.env.NODE_ENV ?? "development";
 
 function env(key) {
@@ -21,6 +26,8 @@ module.exports = {
   },
   migrations: {
     directory: "app/db/migrations",
-    stub: "misc/db/migration-stub.js",
+    stub: "misc/db/migration-stub.ts",
+    extension: "ts",
+    loadExtensions: [".js", ".ts"],
   },
 };
