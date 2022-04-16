@@ -47,7 +47,6 @@ describe("models", () => {
       .users()
       .select("*")
       .whereIn("id", [ids[0], ids[0] + 1]);
-    expect(res[0]).toEqual(expect.objectContaining(data[0]));
-    expect(res[1]).toEqual(expect.objectContaining(data[1]));
+    expect(res).toMatchObject(data);
   });
 });

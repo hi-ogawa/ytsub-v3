@@ -28,6 +28,7 @@ import { useLeafLoaderData, useRootLoaderData } from "../../utils/loader-utils";
 import { PageHandle } from "../../utils/page-handle";
 import { pushFlashMessage } from "../../utils/session-utils";
 import { CaptionEntry } from "../../utils/types";
+import { toForm } from "../../utils/url-data";
 import {
   YoutubeIframeApi,
   YoutubePlayer,
@@ -35,6 +36,7 @@ import {
   stringifyTimestamp,
 } from "../../utils/youtube";
 import { zStringToInteger } from "../../utils/zod-utils";
+import { NewBookmark } from "../bookmarks/new";
 
 export const handle: PageHandle = {
   navBarTitle: "Watch",
@@ -230,17 +232,20 @@ function PageComponent({
   }, []);
 
   // TODO: e2e test
-  // TODO: fetcher invalidates this route's loader?
   function onClickBookmark() {
     if (!bookmarkState) return;
-    const data = {
-      videoId: String(video.id),
-      captionEntryId: String(bookmarkState.captionEntry.id),
+    const typedData: NewBookmark = {
+      videoId: video.id,
+      captionEntryId: bookmarkState.captionEntry.id,
       text: bookmarkState.text,
-      side: String(bookmarkState.side),
-      offset: String(bookmarkState.offset),
+      side: bookmarkState.side,
+      offset: bookmarkState.offset,
     };
-    fetcher.submit(data, { method: "post", action: R["/bookmarks/new"] });
+    // use `unstable_shouldReload` to prevent invalidating loaders
+    fetcher.submit(toForm(typedData), {
+      method: "post",
+      action: R["/bookmarks/new"],
+    });
   }
 
   //
@@ -260,7 +265,7 @@ function PageComponent({
   React.useEffect(() => {
     if (fetcher.type === "done") {
       if (fetcher.data.success) {
-        enqueueSnackbar("Bookmark saved", { variant: "success" });
+        enqueueSnackbar("Bookmark success", { variant: "success" });
       } else {
         enqueueSnackbar("Bookmark failed", { variant: "success" });
       }
@@ -308,6 +313,7 @@ function PageComponent({
             <button
               onClick={() => onClickBookmark()}
               className="w-12 h-12 rounded-full bg-primary text-white flex justify-center items-center shadow-xl hover:contrast-75 transition-[filter] duration-300"
+              data-test="new-bookmark-button"
             >
               {fetcher.state === "idle" ? (
                 <Bookmark />

@@ -13,6 +13,8 @@ const config: PlaywrightTestConfig = {
       name: "chromium",
       use: {
         browserName: "chromium",
+        viewport: { width: 360, height: 560 },
+        headless: !process.env.E2E_HEADED,
       },
     },
   ],

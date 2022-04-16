@@ -8,7 +8,7 @@ import { zStringToInteger } from "../../utils/zod-utils";
 // action
 //
 
-const ACTION_REQUEST_SCHEMA = z.object({
+const NEW_BOOKMARK_SCHEMA = z.object({
   videoId: zStringToInteger,
   captionEntryId: zStringToInteger,
   text: z.string().nonempty(),
@@ -16,9 +16,11 @@ const ACTION_REQUEST_SCHEMA = z.object({
   offset: zStringToInteger,
 });
 
+export type NewBookmark = z.infer<typeof NEW_BOOKMARK_SCHEMA>;
+
 // TODO: error handling
 export const action = makeLoader(Controller, async function () {
-  const parsed = ACTION_REQUEST_SCHEMA.safeParse(await this.form());
+  const parsed = NEW_BOOKMARK_SCHEMA.safeParse(await this.form());
   if (!parsed.success) throw new AppError("Invalid parameters");
 
   const user = await this.currentUser();

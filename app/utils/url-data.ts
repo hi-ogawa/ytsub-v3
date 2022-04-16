@@ -16,3 +16,15 @@ export function fromQuery(query: string): any {
 export function toQuery(obj: any): string {
   return qs.stringify(obj, { allowDots: true });
 }
+
+export function toURLSearchParams(obj: any): URLSearchParams {
+  return new URLSearchParams(toQuery(obj));
+}
+
+export function toForm(obj: any): FormData {
+  const res = new FormData();
+  for (let [name, value] of toURLSearchParams(obj)) {
+    res.append(name, value);
+  }
+  return res;
+}
