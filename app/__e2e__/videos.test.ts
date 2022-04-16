@@ -48,7 +48,6 @@ test.describe("videos-signed-in", () => {
       .select("*")
       .where({ userId: user().id })
       .first();
-    console.log(entry);
     expect(entry).toMatchObject({
       text: "qu'est-ce qu'on va faire ?",
       offset: 13,
