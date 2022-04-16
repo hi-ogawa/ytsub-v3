@@ -1,7 +1,7 @@
 import { useMatches } from "@remix-run/react";
 import { UserTable } from "../db/models";
+import { FlashMessage } from "./flash-message";
 import { useDeserialize } from "./hooks";
-import { FlashMessage } from "./session-utils";
 
 export interface RootLoaderData {
   currentUser?: UserTable;
