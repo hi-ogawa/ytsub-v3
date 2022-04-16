@@ -111,7 +111,7 @@ export function ComponentImpl(props: LoaderData) {
                 <ChevronLeft size={14} />
               </Link>
               <div className="bg-neutral text-neutral-content font-semibold text-xs flex justify-center items-center px-2">
-                {props.page}/{props.totalPage}
+                {props.page}/{props.totalPage} ({props.total})
               </div>
               {/* prettier-ignore */}
               <Link to={"?" + toQuery(newPages.next)} className={`btn btn-xs no-animation ${!newPages.next && "btn-disabled"}`} >
