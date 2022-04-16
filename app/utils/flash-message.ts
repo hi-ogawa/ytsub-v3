@@ -1,6 +1,5 @@
 import { Session } from "@remix-run/server-runtime";
 import { Variant } from "../components/snackbar";
-import { getFlash, setFlash } from "./session-utils";
 
 const KEY = "flash-messages";
 
@@ -13,13 +12,10 @@ export function pushFlashMessage(
   session: Session,
   flashMessage: FlashMessage
 ): void {
-  const current = getFlashMessages(session, "phase1");
-  setFlash(session, KEY, [...current, flashMessage]);
+  const current = getFlashMessages(session);
+  session.flash(KEY, [...current, flashMessage]);
 }
 
-export function getFlashMessages(
-  session: Session,
-  phase: "phase1" | "phase2" = "phase2"
-): FlashMessage[] {
-  return getFlash(session, KEY, phase) ?? [];
+export function getFlashMessages(session: Session): FlashMessage[] {
+  return session.get(KEY) ?? [];
 }
