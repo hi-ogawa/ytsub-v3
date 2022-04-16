@@ -1,9 +1,10 @@
 import { XMLParser } from "fast-xml-parser";
-import { memoize, sortBy } from "lodash";
+import { maxBy, memoize, sortBy } from "lodash";
 import { z } from "zod";
 import { AppError } from "./errors";
 import {
   FILTERED_LANGUAGE_CODES,
+  LANGUAGE_CODE_TO_NAME,
   LanguageCode,
   languageCodeToName,
 } from "./language";
@@ -134,6 +135,32 @@ export function findCaptionConfigPair(
     found2 = { ...found1, translation: code2 };
   }
   return [found1, found2];
+}
+
+export function guessLanguage(
+  videoMetadata: VideoMetadata
+): string | undefined {
+  const { keywords = [] } = videoMetadata.videoDetails;
+  const { captionTracks } =
+    videoMetadata.captions.playerCaptionsTracklistRenderer;
+  const counts: Record<string, number> = {};
+  for (const [k, v] of Object.entries(LANGUAGE_CODE_TO_NAME)) {
+    let count = 0;
+    for (const keyword of keywords) {
+      if (keyword.includes(v)) {
+        count++;
+      }
+    }
+    for (const captionTrack of captionTracks) {
+      if (k === captionTrack.languageCode.slice(0, 2)) {
+        count++;
+      }
+    }
+    counts[k] = count;
+  }
+  const found = maxBy(Object.entries(counts), ([, count]) => count);
+  if (found) return found[0];
+  return;
 }
 
 export function ttmlToEntries(
