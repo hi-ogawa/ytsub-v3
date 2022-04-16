@@ -29,7 +29,7 @@ export const loader: ActionFunction = withRequestSession(
     const user = await getSessionUser(session);
     if (user) {
       pushFlashMessage(session, {
-        content: `Already logged in as ${user.username}`,
+        content: `Already signed in as '${user.username}'`,
         variant: "error",
       });
       return redirect(R["/users/me"]);
