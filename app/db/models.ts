@@ -1,6 +1,7 @@
 import { CaptionEntry, VideoMetadata } from "../utils/types";
 import { NewVideo } from "../utils/youtube";
 import { client } from "./client.server";
+import { C, T } from "./schema";
 
 export interface UserTable {
   id: number;
@@ -8,8 +9,8 @@ export interface UserTable {
   passwordHash: string; // TODO: hide this field from the client
   createdAt: Date;
   updatedAt: Date;
-  language1?: string; // TODO: database returns `null`
-  language2?: string;
+  language1?: string | null;
+  language2?: string | null;
 }
 
 // TODO: manage "view count" and "last watched timestamp" etc...
@@ -17,15 +18,15 @@ export interface VideoTable {
   id: number;
   videoId: string; // video's id on youtube
   language1_id: string;
-  language1_translation?: string;
+  language1_translation?: string | null;
   language2_id: string;
-  language2_translation?: string;
+  language2_translation?: string | null;
   title: string;
   author: string;
   channelId: string;
   createdAt: Date;
   updatedAt: Date;
-  userId?: number; // associated to anonymous users when `null`
+  userId?: number | null; // associated to anonymous users when `null`
 }
 
 export interface CaptionEntryTable {
@@ -52,18 +53,11 @@ export interface BookmarkEntryTable {
   captionEntryId: number;
 }
 
-// TODO: use constants to facilitate static analysis
-// export const T = {
-//   users: "users",
-//   videos: "videos",
-//   captionEntries: "captionEntries",
-// }
-
 export const tables = {
-  users: () => client<UserTable>("users"),
-  videos: () => client<VideoTable>("videos"),
-  captionEntries: () => client<CaptionEntryTable>("captionEntries"),
-  bookmarkEntries: () => client<BookmarkEntryTable>("bookmarkEntries"),
+  users: () => client<UserTable>(T.users),
+  videos: () => client<VideoTable>(T.videos),
+  captionEntries: () => client<CaptionEntryTable>(T.captionEntries),
+  bookmarkEntries: () => client<BookmarkEntryTable>(T.bookmarkEntries),
 };
 
 //
@@ -75,37 +69,37 @@ export async function deleteOrphans(): Promise<void> {
   await tables
     .videos()
     .delete()
-    .leftJoin("users", "users.id", "videos.userId")
-    .where("users.id", null)
-    .whereNot("videos.id", null);
+    .leftJoin(T.users, C.users.id, C.videos.userId)
+    .where(C.users.id, null)
+    .whereNot(C.videos.id, null);
   await tables
     .captionEntries()
     .delete()
-    .leftJoin("videos", "videos.id", "captionEntries.videoId")
-    .where("videos.id", null);
+    .leftJoin(T.videos, C.videos.id, C.captionEntries.videoId)
+    .where(C.videos.id, null);
   await tables
     .bookmarkEntries()
     .delete()
     .leftJoin(
-      "captionEntries",
-      "captionEntries.id",
-      "bookmarkEntries.captionEntryId"
+      T.captionEntries,
+      C.captionEntries.id,
+      C.bookmarkEntries.captionEntryId
     )
-    .where("captionEntries.id", null);
+    .where(C.captionEntries.id, null);
 }
 
 export function filterNewVideo(
   { videoId, language1, language2 }: NewVideo,
   userId?: number
 ) {
-  return tables
-    .videos()
-    .where("videoId", videoId)
-    .where("language1_id", language1.id)
-    .where("language1_translation", language1.translation ?? null)
-    .where("language2_id", language2.id)
-    .where("language2_translation", language2.translation ?? null)
-    .where("userId", userId ?? null);
+  return tables.videos().where({
+    videoId,
+    language1_id: language1.id,
+    language1_translation: language1.translation ?? null,
+    language2_id: language2.id,
+    language2_translation: language2.translation ?? null,
+    userId: userId ?? null,
+  });
 }
 
 export async function insertVideoAndCaptionEntries(
@@ -154,7 +148,7 @@ export async function getVideoAndCaptionEntries(
     const captionEntries = await tables
       .captionEntries()
       .select("*")
-      .where("videoId", id);
+      .where(C.captionEntries.videoId, id);
     return { video, captionEntries };
   }
   return;

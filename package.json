@@ -29,6 +29,7 @@
     "test-e2e:headed": "NODE_ENV=test E2E_HEADED=1 playwright test",
     "netlify:build": "bash scripts/netlify.sh",
     "netlify:build:deploy": "npm run netlify:build && netlify deploy --prod",
+    "generate-schema": "npm run -s cli db:schema --ts > app/db/schema.ts",
     "cli": "node --require esbuild-register app/misc/cli.ts",
     "cli:production": "eval $(bash .env.production.sh) && node --require esbuild-register app/misc/cli.ts",
     "knex:staging": "eval $(bash .env.staging.sh) && knex",

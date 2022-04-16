@@ -1,7 +1,7 @@
 import * as assert from "assert";
 import { installGlobals } from "@remix-run/node";
 import { cac } from "cac";
-import { range, zip } from "lodash";
+import { mapValues, range, zip } from "lodash";
 import { z } from "zod";
 import { client } from "../db/client.server";
 import {
@@ -20,15 +20,31 @@ cli
   .option("--show-create-table", "[boolean]", { default: false })
   .option("--inclue-knex", "[boolean]", { default: false })
   .option("--json", "[boolean]", { default: false })
+  .option("--ts", "[boolean]", { default: false })
   .action(
     async (options: {
       showCreateTable: boolean;
       includeKnex: boolean;
       json: boolean;
+      ts: boolean;
     }) => {
       const schema = await getSchema(options);
-      const result = options.json ? JSON.stringify(schema, null, 2) : schema;
-      console.log(result);
+      if (options.ts) {
+        assert.ok(!options.showCreateTable);
+        const T = mapValues(schema, (_, table) => table);
+        const C = mapValues(schema, (columns, table) =>
+          mapValues(columns, (_, column) => `${table}.${column}`)
+        );
+        console.log(`// prettier-ignore`);
+        console.log(`export const T = ${JSON.stringify(T, null, 2)};`);
+        console.log();
+        console.log(`// prettier-ignore`);
+        console.log(`export const C = ${JSON.stringify(C, null, 2)};`);
+      } else if (options.json) {
+        console.log(JSON.stringify(schema, null, 2));
+      } else {
+        console.log(schema);
+      }
       await client.destroy();
     }
   );
