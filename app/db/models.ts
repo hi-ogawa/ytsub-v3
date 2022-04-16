@@ -1,3 +1,4 @@
+import { Knex } from "knex";
 import { CaptionEntry, VideoMetadata } from "../utils/types";
 import { NewVideo } from "../utils/youtube";
 import { client } from "./client.server";
@@ -158,4 +159,29 @@ export async function getVideoAndCaptionEntries(
     return { video, captionEntries };
   }
   return;
+}
+
+export interface PaginationResult<T> {
+  data: T[];
+  total: number;
+}
+
+// desperate typing hacks...
+export async function toPaginationResult<Q extends Knex.QueryBuilder>(
+  query: Q,
+  { page, perPage }: { page: number; perPage: number }
+): Promise<PaginationResult<Q extends Promise<(infer T)[]> ? T : never>> {
+  const queryData = query
+    .clone()
+    .offset((page - 1) * perPage)
+    .limit(perPage);
+  // https://github.com/knex/knex/blob/939d8a219c432a7d7dcb1ed1a79d1e5a4686eafd/lib/query/querybuilder.js#L1210
+  const queryTotal = query
+    .clone()
+    .clear("select")
+    .clear("order")
+    .count({ total: 0 })
+    .first();
+  const [data, { total }] = await Promise.all([queryData, queryTotal]);
+  return { data, total };
 }

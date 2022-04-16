@@ -49,4 +49,14 @@ describe("models", () => {
       .whereIn("id", [ids[0], ids[0] + 1]);
     expect(res).toMatchObject(data);
   });
+
+  it("count", async () => {
+    const query = tables.users().count({ total: 0 }).first();
+    expect(query.toSQL().sql).toMatchInlineSnapshot(
+      '"select count(0) as `total` from `users` limit ?"'
+    );
+    const res = await query;
+    assert(res);
+    assert(typeof res.total === "number");
+  });
 });

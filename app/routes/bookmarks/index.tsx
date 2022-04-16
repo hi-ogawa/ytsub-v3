@@ -1,42 +1,43 @@
-import { useLoaderData } from "@remix-run/react";
+import { Link, useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
-import { zip } from "lodash";
 import * as React from "react";
-import { ChevronDown, ChevronUp, X } from "react-feather";
+import {
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  ChevronUp,
+  ChevronsLeft,
+  ChevronsRight,
+  X,
+} from "react-feather";
 import {
   BookmarkEntryTable,
   CaptionEntryTable,
   VideoTable,
   tables,
+  toPaginationResult,
 } from "../../db/models";
 import { R } from "../../misc/routes";
+import { useToById } from "../../utils/by-id";
 import { Controller, makeLoader } from "../../utils/controller-utils";
-import { useDeserialize, useMemoWrap } from "../../utils/hooks";
+import { useDeserialize } from "../../utils/hooks";
 import { PageHandle } from "../../utils/page-handle";
+import { PAGINATION_PARAMS_SCHEMA, toNewPages } from "../../utils/pagination";
+import { toQuery } from "../../utils/url-data";
 import { CaptionEntryComponent, usePlayer } from "../videos/$id";
 
 export const handle: PageHandle = {
   navBarTitle: "Bookmarks",
 };
 
-// TODO filtering etc... simlar to "/videos"
-// TODO unit test
-
-export interface ById<T> {
-  ids: number[];
-  byId: Record<number, T>;
-}
-
-export function toById<T extends { id: number }>(data: T[]): ById<T> {
-  const ids = data.map((e) => e.id);
-  const byId: Record<number, T> = Object.fromEntries(zip(ids, data));
-  return { ids, byId };
-}
-
-interface HistoryLoaderData {
+interface LoaderData {
   videos: VideoTable[];
   captionEntries: CaptionEntryTable[];
   bookmarkEntries: BookmarkEntryTable[];
+  total: number;
+  page: number;
+  perPage: number;
+  totalPage: number;
 }
 
 export const loader = makeLoader(Controller, async function () {
@@ -48,13 +49,23 @@ export const loader = makeLoader(Controller, async function () {
     });
     return redirect(R["/users/signin"]);
   }
-  // TODO: optimize query
-  // TODO: order bookmark entries by captionEntry's index and offset
-  const bookmarkEntries = await tables
-    .bookmarkEntries()
-    .select("*")
-    .where("userId", user.id)
-    .orderBy("createdAt", "desc");
+
+  const parsed = PAGINATION_PARAMS_SCHEMA.safeParse(this.query());
+  if (!parsed.success) {
+    this.flash({ content: "invalid parameters", variant: "error" });
+    return redirect(R["/bookmarks"]);
+  }
+
+  const { page, perPage } = parsed.data;
+
+  const { data: bookmarkEntries, total } = await toPaginationResult(
+    tables
+      .bookmarkEntries()
+      .select("*")
+      .where("userId", user.id)
+      .orderBy("createdAt", "desc"),
+    parsed.data
+  );
   const videoIds = bookmarkEntries.map((x) => x.videoId);
   const captionEntryIds = bookmarkEntries.map((x) => x.captionEntryId);
   const videos = await tables.videos().select("*").whereIn("id", videoIds);
@@ -62,28 +73,56 @@ export const loader = makeLoader(Controller, async function () {
     .captionEntries()
     .select("*")
     .whereIn("id", captionEntryIds);
-  const data: HistoryLoaderData = { videos, captionEntries, bookmarkEntries };
+  const data: LoaderData = {
+    videos,
+    captionEntries,
+    bookmarkEntries,
+    total,
+    totalPage: Math.ceil(total / perPage),
+    page,
+    perPage,
+  };
   return this.serialize(data);
 });
 
 export default function DefaultComponent() {
-  const data: HistoryLoaderData = useDeserialize(useLoaderData());
+  const data: LoaderData = useDeserialize(useLoaderData());
   return <ComponentImpl {...data} />;
 }
 
-export function ComponentImpl(props: HistoryLoaderData) {
-  // TODO: type inference
-  const videos = useMemoWrap(toById, props.videos) as ById<VideoTable>;
-  const captionEntries = useMemoWrap(
-    toById,
-    props.captionEntries
-  ) as ById<CaptionEntryTable>;
+export function ComponentImpl(props: LoaderData) {
+  const videos = useToById(props.videos);
+  const captionEntries = useToById(props.captionEntries);
   const bookmarkEntries = props.bookmarkEntries;
+  const newPages = toNewPages(props);
 
   return (
     <div className="w-full flex justify-center">
       <div className="h-full w-full max-w-lg">
         <div className="h-full flex flex-col p-2 gap-2">
+          <div className="w-full flex justify-end">
+            <div className="flex-none flex btn-group">
+              {/* prettier-ignore */}
+              <Link to={"?" + toQuery(newPages.first)} className="btn btn-xs no-animation">
+                <ChevronsLeft size={14} />
+              </Link>
+              {/* prettier-ignore */}
+              <Link to={"?" + toQuery(newPages.previous)} className={`btn btn-xs no-animation ${!newPages.previous && "btn-disabled"}`} >
+                <ChevronLeft size={14} />
+              </Link>
+              <div className="bg-neutral text-neutral-content font-semibold text-xs flex justify-center items-center px-2">
+                {props.page}/{props.totalPage}
+              </div>
+              {/* prettier-ignore */}
+              <Link to={"?" + toQuery(newPages.next)} className={`btn btn-xs no-animation ${!newPages.next && "btn-disabled"}`} >
+                <ChevronRight size={14} />
+              </Link>
+              {/* prettier-ignore */}
+              <Link to={"?" + toQuery(newPages.last)} className="btn btn-xs no-animation">
+                <ChevronsRight size={14} />
+              </Link>
+            </div>
+          </div>
           {/* TODO: CTA when empty */}
           {bookmarkEntries.length === 0 && <div>Empty</div>}
           {bookmarkEntries.map((bookmarkEntry) => (
