@@ -11,7 +11,6 @@ import {
 } from "../../db/models";
 import { R } from "../../misc/routes";
 import { Controller, makeLoader } from "../../utils/controller-utils";
-import { pushFlashMessage } from "../../utils/flash-message";
 import { useDeserialize, useMemoWrap } from "../../utils/hooks";
 import { PageHandle } from "../../utils/page-handle";
 import { CaptionEntryComponent, usePlayer } from "../videos/$id";
@@ -43,8 +42,7 @@ interface HistoryLoaderData {
 export const loader = makeLoader(Controller, async function () {
   const user = await this.currentUser();
   if (!user) {
-    // TODO: it doesn't work probably because root loader is not reloaded during this navigation...
-    pushFlashMessage(this.session, {
+    this.flash({
       content: "Signin required.",
       variant: "error",
     });

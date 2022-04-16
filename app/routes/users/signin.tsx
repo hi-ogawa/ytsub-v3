@@ -12,7 +12,6 @@ import {
 } from "../../utils/auth";
 import { Controller, makeLoader } from "../../utils/controller-utils";
 import { AppError } from "../../utils/errors";
-import { pushFlashMessage } from "../../utils/flash-message";
 import { useIsFormValid } from "../../utils/hooks";
 import { PageHandle } from "../../utils/page-handle";
 
@@ -23,7 +22,7 @@ export const handle: PageHandle = {
 export const loader = makeLoader(Controller, async function () {
   const user = await getSessionUser(this.session);
   if (user) {
-    pushFlashMessage(this.session, {
+    this.flash({
       content: `Already signed in as '${user.username}'`,
       variant: "error",
     });
@@ -41,7 +40,7 @@ export const action = makeLoader(Controller, async function () {
   try {
     const user = await verifySignin(parsed.data);
     signinSession(this.session, user);
-    pushFlashMessage(this.session, {
+    this.flash({
       content: `Succesfully signed in as '${user.username}'`,
       variant: "success",
     });
