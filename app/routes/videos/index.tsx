@@ -5,9 +5,9 @@ import { VideoComponent } from "../../components/misc";
 import { VideoTable, tables } from "../../db/models";
 import { R } from "../../misc/routes";
 import { Controller, makeLoader } from "../../utils/controller-utils";
+import { pushFlashMessage } from "../../utils/flash-message";
 import { useDeserialize } from "../../utils/hooks";
 import { PageHandle } from "../../utils/page-handle";
-import { pushFlashMessage } from "../../utils/session-utils";
 
 export const handle: PageHandle = {
   // Saved or Created Videos?

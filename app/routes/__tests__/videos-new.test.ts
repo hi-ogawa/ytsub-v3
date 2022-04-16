@@ -38,7 +38,7 @@ describe("videos/new.loader", () => {
     const resSession = await getResponseSession(res);
     expect(resSession.data).toMatchInlineSnapshot(`
       {
-        "__flash_flashMessages__": [
+        "~~flash~phase2~~flash-messages": [
           {
             "content": "Invalid input",
             "variant": "error",

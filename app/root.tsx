@@ -38,6 +38,7 @@ import { TopProgressBar } from "./components/top-progress-bar";
 import { UserTable } from "./db/models";
 import { R } from "./misc/routes";
 import { Controller, makeLoader } from "./utils/controller-utils";
+import { getFlashMessages } from "./utils/flash-message";
 import { RootLoaderData, useRootLoaderData } from "./utils/loader-utils";
 import { Match } from "./utils/page-handle";
 
@@ -69,11 +70,10 @@ export const meta: MetaFunction = () => {
 //
 
 export const loader = makeLoader(Controller, async function () {
+  this.session;
   const data: RootLoaderData = {
     currentUser: await this.currentUser(),
-    // TODO: feels buggy (same messages appear repeatedly)
-    // TODO: can we use `useTransition` to get the cookie in the response? (but it would be difficult to clear)
-    flashMessages: this.session.get("flashMessages") ?? [],
+    flashMessages: getFlashMessages(this.session),
   };
   return this.serialize(data);
 });
@@ -116,6 +116,7 @@ function Root() {
     }
   }, [data]);
 
+  // `PageHandle` of the leaf compoment
   const matches: Match[] = useMatches();
   const { navBarTitle, NavBarMenuComponent } = last(matches)?.handle ?? {};
 
@@ -243,19 +244,19 @@ function Navbar({
                         Account
                       </Link>
                     </li>
-                    <li>
-                      <Form
-                        method="post"
-                        action={R["/users/signout"]}
-                        data-test="signout-form"
-                        onClick={() => setOpen(false)}
-                      >
+                    <Form
+                      method="post"
+                      action={R["/users/signout"]}
+                      data-test="signout-form"
+                      onClick={() => setOpen(false)}
+                    >
+                      <li>
                         <button type="submit" className="flex gap-3">
                           <LogOut />
                           Sign out
                         </button>
-                      </Form>
-                    </li>
+                      </li>
+                    </Form>
                   </>
                 ) : (
                   <>
@@ -337,7 +338,8 @@ function SideMenuDrawerWrapper({
                 <Link
                   to={entry.to}
                   onClick={() => toggleDrawer(false)}
-                  className={`${disabled && "cursor-not-allowed"}`}
+                  // workaround to refresh root loader for flush message
+                  reloadDocument={disabled}
                 >
                   <entry.icon size={28} className="pr-2" />
                   {entry.title}

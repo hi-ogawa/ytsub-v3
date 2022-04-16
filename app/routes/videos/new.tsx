@@ -6,10 +6,10 @@ import { filterNewVideo, insertVideoAndCaptionEntries } from "../../db/models";
 import { R } from "../../misc/routes";
 import { Controller, makeLoader } from "../../utils/controller-utils";
 import { AppError } from "../../utils/errors";
+import { pushFlashMessage } from "../../utils/flash-message";
 import { useIsFormValid } from "../../utils/hooks";
 import { useRootLoaderData } from "../../utils/loader-utils";
 import { PageHandle } from "../../utils/page-handle";
-import { pushFlashMessage } from "../../utils/session-utils";
 import { CaptionConfig, VideoMetadata } from "../../utils/types";
 import { NEW_VIDEO_SCHEMA, fetchCaptionEntries } from "../../utils/youtube";
 import {
