@@ -8,8 +8,8 @@ based on
 ```sh
 # development
 pnpm run install-with-patch
-make docker/up db/reset db/restore # username and password are "root" and "pass"
-npm run dev:all
+make docker/up db/reset db/restore # signin by "root" and "pass"
+npm run dev
 
 # lint
 npm run lint
