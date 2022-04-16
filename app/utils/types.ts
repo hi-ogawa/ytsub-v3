@@ -8,6 +8,7 @@ export interface VideoDetails {
   title: string;
   author: string;
   channelId: string;
+  keywords?: string[];
 }
 
 // aka. youtube player response

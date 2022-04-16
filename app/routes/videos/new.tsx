@@ -11,7 +11,11 @@ import { useRootLoaderData } from "../../utils/loader-utils";
 import { PageHandle } from "../../utils/page-handle";
 import { pushFlashMessage } from "../../utils/session-utils";
 import { CaptionConfig, VideoMetadata } from "../../utils/types";
-import { NEW_VIDEO_SCHEMA, fetchCaptionEntries } from "../../utils/youtube";
+import {
+  NEW_VIDEO_SCHEMA,
+  fetchCaptionEntries,
+  guessLanguage,
+} from "../../utils/youtube";
 import {
   fetchVideoMetadata,
   findCaptionConfigPair,
@@ -76,11 +80,11 @@ export default function DefaultComponent() {
   const videoMetadata: VideoMetadata = useLoaderData();
   const [isValid, formProps] = useIsFormValid();
 
-  // TODO: more heuristics to set default languages e.g.
-  //   language1 = { id: <any caption track> } (maybe we can infer from `videoDetails.keywords`)
-  //   language2 = { id: language1.id, translation: "en" }
   let defaultValues = ["", ""];
-  const { language1, language2 } = rootData.currentUser ?? {};
+  const { language1, language2 } = rootData.currentUser ?? {
+    language1: guessLanguage(videoMetadata),
+    language2: "en",
+  };
   if (language1 && language2) {
     const pair = findCaptionConfigPair(videoMetadata, [
       language1,
