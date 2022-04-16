@@ -9,7 +9,7 @@ describe("signout.action", () => {
 
   describe("success", () => {
     it("basic", async () => {
-      const res = await testLoader(action, {}, signin);
+      const res = await testLoader(action, { transform: signin });
 
       // redirect to root
       assert(res instanceof Response);
@@ -33,7 +33,7 @@ describe("signout.action", () => {
 
   describe("error", () => {
     it("no-session-user", async () => {
-      const res = await testLoader(action, {});
+      const res = await testLoader(action);
 
       // redirect to root
       assert(res instanceof Response);

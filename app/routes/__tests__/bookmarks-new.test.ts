@@ -18,7 +18,7 @@ describe("bookmarks/new.action", () => {
       side: 0,
       offset: 8,
     };
-    const res = await testLoader(action, { form: data }, signin);
+    const res = await testLoader(action, { form: data, transform: signin });
     assert(res instanceof Response);
 
     const resJson = await res.json();
@@ -45,7 +45,7 @@ describe("bookmarks/new.action", () => {
       offset: 8,
     };
     await expect(
-      testLoader(action, { form: data }, signin)
+      testLoader(action, { form: data, transform: signin })
     ).rejects.toBeInstanceOf(AppError);
   });
 });

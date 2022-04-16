@@ -69,7 +69,7 @@ describe("videos/new.action", () => {
         translation: "",
       },
     };
-    const res = await testLoader(action, { form: data }, signin);
+    const res = await testLoader(action, { form: data, transform: signin });
 
     // persist video and caption entries
     const video = await tables
@@ -133,7 +133,7 @@ describe("videos/new.action", () => {
     expect(res.headers.get("location")).toBe(`/videos/${video.id}`);
 
     // calling with the same parameters doesn't create new video
-    const res2 = await testLoader(action, { form: data }, signin);
+    const res2 = await testLoader(action, { form: data, transform: signin });
     assert(res2 instanceof Response);
     expect(res2.headers.get("location")).toBe(`/videos/${video.id}`);
   });
