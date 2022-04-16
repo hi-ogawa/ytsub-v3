@@ -16,7 +16,6 @@ import { last } from "lodash";
 import * as React from "react";
 import {
   Bookmark,
-  Clock,
   Code,
   Home,
   LogIn,
@@ -25,6 +24,7 @@ import {
   Search,
   Settings,
   User,
+  Video,
 } from "react-feather";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { Popover } from "./components/popover";
@@ -295,9 +295,8 @@ const SIDE_MENU_ENTRIES: SideMenuEntry[] = [
   },
   {
     to: R["/videos/history"],
-    icon: Clock,
-    // TODO: Saved Videos
-    title: "History",
+    icon: Video,
+    title: "Your Videos",
     requireSignin: true,
   },
   {

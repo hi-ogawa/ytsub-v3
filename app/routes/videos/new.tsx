@@ -56,9 +56,18 @@ export const action = makeLoader(Controller, async function () {
   const user = await this.currentUser();
   const row = await filterNewVideo(parsed.data, user?.id).select("id").first();
   let id = row?.id;
-  if (!id) {
+  if (id) {
+    pushFlashMessage(this.session, {
+      content: "Loaded existing video",
+      variant: "info",
+    });
+  } else {
     const data = await fetchCaptionEntries(parsed.data);
     id = await insertVideoAndCaptionEntries(parsed.data, data, user?.id);
+    pushFlashMessage(this.session, {
+      content: "Created new video",
+      variant: "success",
+    });
   }
   return redirect(R["/videos/$id"](id));
 });
@@ -72,7 +81,7 @@ export const handle: PageHandle = {
 };
 
 export default function DefaultComponent() {
-  const rootData = useRootLoaderData();
+  const { currentUser } = useRootLoaderData();
   const videoMetadata: VideoMetadata = useLoaderData();
   const [isValid, formProps] = useIsFormValid();
 
@@ -80,7 +89,7 @@ export default function DefaultComponent() {
   //   language1 = { id: <any caption track> } (maybe we can infer from `videoDetails.keywords`)
   //   language2 = { id: language1.id, translation: "en" }
   let defaultValues = ["", ""];
-  const { language1, language2 } = rootData.currentUser ?? {};
+  const { language1, language2 } = currentUser ?? {};
   if (language1 && language2) {
     const pair = findCaptionConfigPair(videoMetadata, [
       language1,
@@ -164,9 +173,8 @@ export default function DefaultComponent() {
                 propertyName="language2"
               />
             </div>
-            {/* TODO: "Save and Play" if signed in */}
             <button type="submit" className="btn mt-3" disabled={!isValid}>
-              Play
+              {currentUser ? "Save and Play" : "Play"}
             </button>
           </Form>
         </div>
