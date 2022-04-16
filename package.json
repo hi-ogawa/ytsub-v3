@@ -13,10 +13,10 @@
     "vite": "vite",
     "prettier": "prettier -w .",
     "prettier:check": "prettier -c .",
-    "prettier:diff": "prettier -w $(git diff --name-only HEAD) $(git ls-files --others --exclude-standard)",
+    "prettier:diff": "prettier -w $(npm run -s diff | grep -P '\\.(jsx?|tsx?|json|md|yml)$')",
     "eslint": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
     "eslint:check": "eslint . --ext .js,.jsx,.ts,.tsx",
-    "eslint:diff": "eslint --ext .js,.jsx,.ts,.tsx --fix $(git diff --name-only HEAD) $(git ls-files --others --exclude-standard)",
+    "eslint:diff": "eslint --ext .js,.jsx,.ts,.tsx --fix $(npm run -s diff | grep -P '\\.(jsx?|tsx?)$')",
     "lint": "npm run prettier && npm run eslint",
     "lint:check": "npm run prettier:check && npm run eslint:check",
     "lint:diff": "npm run prettier:diff && npm run eslint:diff",
@@ -30,6 +30,7 @@
     "cli:production": "eval $(bash .env.production.sh) && node --require esbuild-register app/misc/cli.ts",
     "knex:staging": "eval $(bash .env.staging.sh) && knex",
     "knex:production": "eval $(bash .env.production.sh) && knex",
+    "diff": "git diff --name-only HEAD && git ls-files --others --exclude-standard",
     "qrcode": "qrcode-terminal http://$(ip -o -4 address list wlan0 | awk '{print $4}' | cut -d / -f 1):3000"
   },
   "dependencies": {
