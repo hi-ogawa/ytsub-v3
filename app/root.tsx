@@ -294,7 +294,7 @@ const SIDE_MENU_ENTRIES: SideMenuEntry[] = [
     requireSignin: false,
   },
   {
-    to: R["/videos/history"],
+    to: R["/videos"],
     icon: Video,
     title: "Your Videos",
     requireSignin: true,

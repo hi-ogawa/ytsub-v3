@@ -20,7 +20,7 @@ export const handle: PageHandle = {
   navBarTitle: "Bookmarks",
 };
 
-// TODO filtering etc... simlar to "/videos/history"
+// TODO filtering etc... simlar to "/videos"
 // TODO unit test
 
 export interface ById<T> {
