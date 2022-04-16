@@ -1,4 +1,5 @@
 import { LoaderFunction, Session, json } from "@remix-run/server-runtime";
+import { isEqual } from "lodash";
 import superjson from "superjson";
 import { UserTable } from "../db/models";
 import { getSessionUser } from "./auth";
@@ -26,13 +27,14 @@ export class Controller {
   constructor(
     public args: LoaderArgs,
     public request: Request,
-    public session: Session
+    public session: Session,
+    public initialSessionData: any
   ) {}
 
   static async create(loaderArgs: LoaderArgs): Promise<Controller> {
     const { request } = loaderArgs;
     const session = await getRequestSession(request);
-    return new Controller(loaderArgs, request, session);
+    return new Controller(loaderArgs, request, session, session.data);
   }
 
   static async finalize(
@@ -40,7 +42,9 @@ export class Controller {
     result: LoaderResult
   ): Promise<LoaderResult> {
     const response = result instanceof Response ? result : json(result);
-    await withResponseSession(response, controller.session);
+    if (!isEqual(controller.session.data, controller.initialSessionData)) {
+      await withResponseSession(response, controller.session);
+    }
     return response;
   }
 

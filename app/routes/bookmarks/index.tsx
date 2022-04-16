@@ -11,9 +11,9 @@ import {
 } from "../../db/models";
 import { R } from "../../misc/routes";
 import { Controller, makeLoader } from "../../utils/controller-utils";
+import { pushFlashMessage } from "../../utils/flash-message";
 import { useDeserialize, useMemoWrap } from "../../utils/hooks";
 import { PageHandle } from "../../utils/page-handle";
-import { pushFlashMessage } from "../../utils/session-utils";
 import { CaptionEntryComponent, usePlayer } from "../videos/$id";
 
 export const handle: PageHandle = {

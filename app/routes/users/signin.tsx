@@ -11,12 +11,10 @@ import {
   verifySignin,
 } from "../../utils/auth";
 import { AppError } from "../../utils/errors";
+import { pushFlashMessage } from "../../utils/flash-message";
 import { useIsFormValid } from "../../utils/hooks";
 import { PageHandle } from "../../utils/page-handle";
-import {
-  pushFlashMessage,
-  withRequestSession,
-} from "../../utils/session-utils";
+import { withRequestSession } from "../../utils/session-utils";
 import { fromRequestForm } from "../../utils/url-data";
 
 export const handle: PageHandle = {
@@ -29,7 +27,7 @@ export const loader: ActionFunction = withRequestSession(
     const user = await getSessionUser(session);
     if (user) {
       pushFlashMessage(session, {
-        content: `Already logged in as ${user.username}`,
+        content: `Already signed in as '${user.username}'`,
         variant: "error",
       });
       return redirect(R["/users/me"]);
@@ -48,6 +46,10 @@ export const action: ActionFunction = withRequestSession(
     try {
       const user = await verifySignin(parsed.data);
       signinSession(session, user);
+      pushFlashMessage(session, {
+        content: `Succesfully signed in as '${user.username}'`,
+        variant: "success",
+      });
       return redirect(R["/"]);
     } catch (e) {
       if (e instanceof AppError) {

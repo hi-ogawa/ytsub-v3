@@ -1,11 +1,11 @@
 import { LoaderFunction, Session } from "@remix-run/server-runtime";
-import type { Variant } from "../components/snackbar";
 import { commitSession, getSession } from "./session.server";
 
 export async function getRequestSession(request: Request): Promise<Session> {
-  return getSession(request.headers.get("cookie"));
+  return await getSession(request.headers.get("cookie"));
 }
 
+// used for testing
 export async function getResponseSession(response: Response): Promise<Session> {
   return getSession(response.headers.get("set-cookie"));
 }
@@ -23,6 +23,7 @@ type LoaderFunctionWithSession = (
 ) => ReturnType<LoaderFunction>;
 
 // This cannot be exported as `session.server.ts` since the decorator will be called on client
+// TODO: migrate to `makeLoader(Controller, ...)`
 export function withRequestSession(
   loader: LoaderFunctionWithSession
 ): LoaderFunction {
@@ -34,27 +35,4 @@ export function withRequestSession(
     }
     return result;
   };
-}
-
-export function pushSession<T>(
-  session: Session,
-  key: string,
-  item: T,
-  options: { flash: boolean }
-) {
-  const pushed = [...(session.data[key] ?? []), item];
-  (options.flash ? session.flash : session.set)(key, pushed);
-}
-
-export interface FlashMessage {
-  content: string;
-  variant?: Variant;
-  // TODO: add id for testing?
-  // dataTest?: string;
-}
-
-export function pushFlashMessage(session: Session, flashMessage: FlashMessage) {
-  pushSession<FlashMessage>(session, "flashMessages", flashMessage, {
-    flash: true,
-  });
 }
