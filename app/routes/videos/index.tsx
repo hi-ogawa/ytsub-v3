@@ -9,8 +9,7 @@ import { useDeserialize } from "../../utils/hooks";
 import { PageHandle } from "../../utils/page-handle";
 
 export const handle: PageHandle = {
-  // Saved or Created Videos?
-  navBarTitle: "History",
+  navBarTitle: "Your Videos",
 };
 
 // TODO
