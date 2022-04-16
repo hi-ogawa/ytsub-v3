@@ -102,6 +102,7 @@ export default function DefaultComponent() {
             method="post"
             action={R["/videos/new"]}
             className="w-full flex flex-col gap-1"
+            // TODO: rename to new-video-form
             data-test="setup-form"
             {...formProps}
           >

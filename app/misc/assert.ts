@@ -12,6 +12,7 @@ export class AssertionError extends Error {
   }
 }
 
+// TODO: rename to tinyassert to avoid conflict when auto-completion
 export function assert(value: any, message?: string): asserts value {
   if (value) return;
   throw new AssertionError(message, assert);

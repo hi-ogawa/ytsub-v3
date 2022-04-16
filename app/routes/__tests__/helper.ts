@@ -116,6 +116,7 @@ export function useVideo(type: 0 | 1 | 2 = 2, userId?: () => number) {
   };
 }
 
+// TODO: jest/vitest doesn't serialize `before` hooks, so we cannot simply combine `useUser` and `useVideo`
 export function useUserVideo(
   type: 0 | 1 | 2 = 2,
   ...args: Parameters<typeof useUserImpl>

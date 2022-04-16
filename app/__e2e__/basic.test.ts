@@ -14,7 +14,8 @@ test("/ => /videos/new", async ({ page }) => {
   await expect(page).toHaveURL("/videos/new?videoId=EnPYXckiUVg");
 });
 
-test("/videos/new => videos/id", async ({ page }) => {
+// anonymous
+test("/videos/new => /videos/id", async ({ page }) => {
   await page.goto("/videos/new?videoId=EnPYXckiUVg");
 
   // Check readonly input
