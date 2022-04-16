@@ -6,7 +6,6 @@ import { filterNewVideo, insertVideoAndCaptionEntries } from "../../db/models";
 import { R } from "../../misc/routes";
 import { Controller, makeLoader } from "../../utils/controller-utils";
 import { AppError } from "../../utils/errors";
-import { pushFlashMessage } from "../../utils/flash-message";
 import { useIsFormValid } from "../../utils/hooks";
 import { useRootLoaderData } from "../../utils/loader-utils";
 import { PageHandle } from "../../utils/page-handle";
@@ -38,7 +37,7 @@ export const loader = makeLoader(Controller, async function () {
       }
     }
   }
-  pushFlashMessage(this.session, {
+  this.flash({
     content: "Invalid input",
     variant: "error",
   });
@@ -57,14 +56,14 @@ export const action = makeLoader(Controller, async function () {
   const row = await filterNewVideo(parsed.data, user?.id).select("id").first();
   let id = row?.id;
   if (id) {
-    pushFlashMessage(this.session, {
+    this.flash({
       content: "Loaded existing video",
       variant: "info",
     });
   } else {
     const data = await fetchCaptionEntries(parsed.data);
     id = await insertVideoAndCaptionEntries(parsed.data, data, user?.id);
-    pushFlashMessage(this.session, {
+    this.flash({
       content: "Created new video",
       variant: "success",
     });

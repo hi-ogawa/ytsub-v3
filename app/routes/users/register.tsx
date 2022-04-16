@@ -1,35 +1,35 @@
 import { Form, Link, useActionData } from "@remix-run/react";
-import { ActionFunction, redirect } from "@remix-run/server-runtime";
+import { redirect } from "@remix-run/server-runtime";
 import * as React from "react";
 import { R } from "../../misc/routes";
 import {
   PASSWORD_MAX_LENGTH,
   REGISTER_SCHEMA,
   USERNAME_MAX_LENGTH,
-  getSessionUser,
   register,
   signinSession,
 } from "../../utils/auth";
+import { Controller, makeLoader } from "../../utils/controller-utils";
 import { AppError } from "../../utils/errors";
 import { useIsFormValid } from "../../utils/hooks";
 import { mapOption } from "../../utils/misc";
 import { PageHandle } from "../../utils/page-handle";
-import { withRequestSession } from "../../utils/session-utils";
-import { fromRequestForm } from "../../utils/url-data";
 
 export const handle: PageHandle = {
   navBarTitle: "Register",
 };
 
-export const loader: ActionFunction = withRequestSession(
-  async ({ session }) => {
-    if (await getSessionUser(session)) {
-      // TODO: "Already logged in" snackbar
-      return redirect(R["/"]);
-    }
-    return null;
+export const loader = makeLoader(Controller, async function () {
+  const user = await this.currentUser();
+  if (user) {
+    this.flash({
+      content: `Already signed in as '${user.username}'`,
+      variant: "error",
+    });
+    return redirect(R["/users/me"]);
   }
-);
+  return null;
+});
 
 interface ActionData {
   message: string;
@@ -39,27 +39,25 @@ interface ActionData {
   };
 }
 
-export const action: ActionFunction = withRequestSession(
-  async ({ request, session }) => {
-    const parsed = REGISTER_SCHEMA.safeParse(await fromRequestForm(request));
-    if (!parsed.success) {
-      return {
-        message: "Invalid registration",
-        errors: parsed.error.flatten(),
-      };
-    }
-    try {
-      const user = await register(parsed.data);
-      signinSession(session, user);
-      return redirect(R["/"]);
-    } catch (e) {
-      if (e instanceof AppError) {
-        return { message: e.message };
-      }
-      throw e;
-    }
+export const action = makeLoader(Controller, async function () {
+  const parsed = REGISTER_SCHEMA.safeParse(await this.form());
+  if (!parsed.success) {
+    return {
+      message: "Invalid registration",
+      errors: parsed.error.flatten(),
+    };
   }
-);
+  try {
+    const user = await register(parsed.data);
+    signinSession(this.session, user);
+    return redirect(R["/"]);
+  } catch (e) {
+    if (e instanceof AppError) {
+      return { message: e.message };
+    }
+    throw e;
+  }
+});
 
 export default function DefaultComponent() {
   const actionData: ActionData | undefined = useActionData();

@@ -5,13 +5,11 @@ import { VideoComponent } from "../../components/misc";
 import { VideoTable, tables } from "../../db/models";
 import { R } from "../../misc/routes";
 import { Controller, makeLoader } from "../../utils/controller-utils";
-import { pushFlashMessage } from "../../utils/flash-message";
 import { useDeserialize } from "../../utils/hooks";
 import { PageHandle } from "../../utils/page-handle";
 
 export const handle: PageHandle = {
-  // Saved or Created Videos?
-  navBarTitle: "History",
+  navBarTitle: "Your Videos",
 };
 
 // TODO
@@ -30,7 +28,7 @@ export interface HistoryLoaderData {
 export const loader = makeLoader(Controller, async function () {
   const user = await this.currentUser();
   if (!user) {
-    pushFlashMessage(this.session, {
+    this.flash({
       content: "Signin required.",
       variant: "error",
     });

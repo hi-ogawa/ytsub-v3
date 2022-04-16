@@ -48,7 +48,8 @@ describe("register.action", () => {
         passwordConfirmation: "pass",
       };
       const res = await testLoader(action, { form: data });
-      expect(res).toMatchInlineSnapshot(`
+      const resJson = await res.json();
+      expect(resJson).toMatchInlineSnapshot(`
         {
           "errors": {
             "fieldErrors": {
@@ -70,7 +71,8 @@ describe("register.action", () => {
         passwordConfirmation: "ssap",
       };
       const res = await testLoader(action, { form: data });
-      expect(res).toMatchInlineSnapshot(`
+      const resJson = await res.json();
+      expect(resJson).toMatchInlineSnapshot(`
         {
           "errors": {
             "fieldErrors": {
@@ -98,7 +100,8 @@ describe("register.action", () => {
       }
       {
         const res = await testLoader(action, { form: data });
-        expect(res).toMatchInlineSnapshot(`
+        const resJson = await res.json();
+        expect(resJson).toMatchInlineSnapshot(`
           {
             "message": "Username 'root' is already taken",
           }

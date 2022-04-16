@@ -3,8 +3,13 @@ import { isEqual } from "lodash";
 import superjson from "superjson";
 import { UserTable } from "../db/models";
 import { getSessionUser } from "./auth";
+import { FlashMessage, pushFlashMessage } from "./flash-message";
 import { getRequestSession, withResponseSession } from "./session-utils";
 import { fromRequestForm, fromRequestQuery } from "./url-data";
+
+//
+// Implementing controller-style request handler (as in Rails controller)
+//
 
 type LoaderArgs = Parameters<LoaderFunction>[0];
 type LoaderResult = ReturnType<LoaderFunction>;
@@ -58,6 +63,10 @@ export class Controller {
 
   async currentUser(): Promise<UserTable | undefined> {
     return getSessionUser(this.session);
+  }
+
+  flash(message: FlashMessage): void {
+    pushFlashMessage(this.session, message);
   }
 
   serialize(data: any): any {

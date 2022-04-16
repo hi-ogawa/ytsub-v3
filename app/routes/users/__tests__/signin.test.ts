@@ -38,7 +38,8 @@ describe("signin.action", () => {
         password: "pass",
       };
       const res = await testLoader(action, { form: data });
-      expect(res).toMatchInlineSnapshot(`
+      const resJson = await res.json();
+      expect(resJson).toMatchInlineSnapshot(`
         {
           "message": "Invalid sign in",
           "success": false,
@@ -52,7 +53,8 @@ describe("signin.action", () => {
         username: "no-such-root",
       };
       const res = await testLoader(action, { form: data });
-      expect(res).toMatchInlineSnapshot(`
+      const resJson = await res.json();
+      expect(resJson).toMatchInlineSnapshot(`
         {
           "message": "Invalid username or password",
           "success": false,
@@ -66,7 +68,8 @@ describe("signin.action", () => {
         password: "no-such-pass",
       };
       const res = await testLoader(action, { form: data });
-      expect(res).toMatchInlineSnapshot(`
+      const resJson = await res.json();
+      expect(resJson).toMatchInlineSnapshot(`
         {
           "message": "Invalid username or password",
           "success": false,

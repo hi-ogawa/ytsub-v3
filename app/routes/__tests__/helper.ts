@@ -22,8 +22,13 @@ export function testLoader(
     query,
     form,
     params = {},
-  }: { query?: any; form?: any; params?: Record<string, string> },
-  transform?: (request: Request) => Request
+    transform,
+  }: {
+    query?: any;
+    form?: any;
+    params?: Record<string, string>;
+    transform?: (request: Request) => Request;
+  } = {}
 ) {
   let url = DUMMY_URL;
   if (query) {

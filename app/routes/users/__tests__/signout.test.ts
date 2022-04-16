@@ -9,7 +9,7 @@ describe("signout.action", () => {
 
   describe("success", () => {
     it("basic", async () => {
-      const res = await testLoader(action, {}, signin);
+      const res = await testLoader(action, { transform: signin });
 
       // redirect to root
       assert(res instanceof Response);
@@ -33,10 +33,23 @@ describe("signout.action", () => {
 
   describe("error", () => {
     it("no-session-user", async () => {
-      const res = await testLoader(action, {});
-      expect(res).toMatchInlineSnapshot(`
+      const res = await testLoader(action);
+
+      // redirect to root
+      assert(res instanceof Response);
+      expect(res.status).toBe(302);
+      expect(res.headers.get("location")).toBe("/");
+
+      // verify empty session user
+      const resSession = await getResponseSession(res);
+      expect(resSession.data).toMatchInlineSnapshot(`
         {
-          "message": "Invalid sign out",
+          "__flash_flash-messages__": [
+            {
+              "content": "Not signed in",
+              "variant": "error",
+            },
+          ],
         }
       `);
     });
