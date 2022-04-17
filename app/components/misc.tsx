@@ -1,9 +1,18 @@
 import { Transition } from "@headlessui/react";
 import { Link } from "@remix-run/react";
 import * as React from "react";
-import { Bookmark, MoreVertical } from "react-feather";
-import { VideoTable } from "../db/models";
+import {
+  Bookmark,
+  ChevronLeft,
+  ChevronRight,
+  ChevronsLeft,
+  ChevronsRight,
+  MoreVertical,
+} from "react-feather";
+import { PaginationMetadata, VideoTable } from "../db/models";
 import { R } from "../misc/routes";
+import { toNewPages } from "../utils/pagination";
+import { toQuery } from "../utils/url-data";
 import { parseVssId, toThumbnail } from "../utils/youtube";
 import { Popover } from "./popover";
 
@@ -122,3 +131,47 @@ export const Spinner: React.FC<{ className: string }> = (props) => {
     />
   );
 };
+
+export function PaginationComponent({
+  className = "",
+  query = "",
+  pagination,
+}: {
+  className?: string;
+  query?: string;
+  pagination: PaginationMetadata;
+}) {
+  const { first, previous, next, last } = toNewPages(pagination);
+  if (query) query += "&";
+  return (
+    <div className={`${className} btn-group`}>
+      <Link
+        to={"?" + query + toQuery(first)}
+        className="btn btn-xs no-animation"
+      >
+        <ChevronsLeft size={14} />
+      </Link>
+      <Link
+        to={"?" + query + toQuery(previous)}
+        className={`btn btn-xs no-animation ${!previous && "btn-disabled"}`}
+      >
+        <ChevronLeft size={14} />
+      </Link>
+      <div className="bg-neutral text-neutral-content font-semibold text-xs flex justify-center items-center px-2">
+        {pagination.page}/{pagination.totalPage} ({pagination.total})
+      </div>
+      <Link
+        to={"?" + query + toQuery(next)}
+        className={`btn btn-xs no-animation ${!next && "btn-disabled"}`}
+      >
+        <ChevronRight size={14} />
+      </Link>
+      <Link
+        to={"?" + query + toQuery(last)}
+        className="btn btn-xs no-animation"
+      >
+        <ChevronsRight size={14} />
+      </Link>
+    </div>
+  );
+}

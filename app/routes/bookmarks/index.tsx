@@ -1,18 +1,12 @@
-import { Link, useLoaderData } from "@remix-run/react";
+import { useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import * as React from "react";
-import {
-  ChevronDown,
-  ChevronLeft,
-  ChevronRight,
-  ChevronUp,
-  ChevronsLeft,
-  ChevronsRight,
-  X,
-} from "react-feather";
+import { ChevronDown, ChevronUp, X } from "react-feather";
+import { PaginationComponent } from "../../components/misc";
 import {
   BookmarkEntryTable,
   CaptionEntryTable,
+  PaginationResult,
   VideoTable,
   tables,
   toPaginationResult,
@@ -22,8 +16,7 @@ import { useToById } from "../../utils/by-id";
 import { Controller, makeLoader } from "../../utils/controller-utils";
 import { useDeserialize } from "../../utils/hooks";
 import { PageHandle } from "../../utils/page-handle";
-import { PAGINATION_PARAMS_SCHEMA, toNewPages } from "../../utils/pagination";
-import { toQuery } from "../../utils/url-data";
+import { PAGINATION_PARAMS_SCHEMA } from "../../utils/pagination";
 import { CaptionEntryComponent, usePlayer } from "../videos/$id";
 
 export const handle: PageHandle = {
@@ -31,13 +24,9 @@ export const handle: PageHandle = {
 };
 
 interface LoaderData {
+  pagination: PaginationResult<BookmarkEntryTable>;
   videos: VideoTable[];
   captionEntries: CaptionEntryTable[];
-  bookmarkEntries: BookmarkEntryTable[];
-  total: number;
-  page: number;
-  perPage: number;
-  totalPage: number;
 }
 
 export const loader = makeLoader(Controller, async function () {
@@ -56,9 +45,7 @@ export const loader = makeLoader(Controller, async function () {
     return redirect(R["/bookmarks"]);
   }
 
-  const { page, perPage } = parsed.data;
-
-  const { data: bookmarkEntries, total } = await toPaginationResult(
+  const pagination = await toPaginationResult(
     tables
       .bookmarkEntries()
       .select("*")
@@ -66,6 +53,7 @@ export const loader = makeLoader(Controller, async function () {
       .orderBy("createdAt", "desc"),
     parsed.data
   );
+  const bookmarkEntries = pagination.data;
   const videoIds = bookmarkEntries.map((x) => x.videoId);
   const captionEntryIds = bookmarkEntries.map((x) => x.captionEntryId);
   const videos = await tables.videos().select("*").whereIn("id", videoIds);
@@ -76,11 +64,7 @@ export const loader = makeLoader(Controller, async function () {
   const data: LoaderData = {
     videos,
     captionEntries,
-    bookmarkEntries,
-    total,
-    totalPage: Math.ceil(total / perPage),
-    page,
-    perPage,
+    pagination,
   };
   return this.serialize(data);
 });
@@ -93,35 +77,14 @@ export default function DefaultComponent() {
 export function ComponentImpl(props: LoaderData) {
   const videos = useToById(props.videos);
   const captionEntries = useToById(props.captionEntries);
-  const bookmarkEntries = props.bookmarkEntries;
-  const newPages = toNewPages(props);
+  const bookmarkEntries = props.pagination.data;
 
   return (
     <div className="w-full flex justify-center">
       <div className="h-full w-full max-w-lg">
         <div className="h-full flex flex-col p-2 gap-2">
           <div className="w-full flex justify-end">
-            <div className="flex-none flex btn-group">
-              {/* prettier-ignore */}
-              <Link to={"?" + toQuery(newPages.first)} className="btn btn-xs no-animation">
-                <ChevronsLeft size={14} />
-              </Link>
-              {/* prettier-ignore */}
-              <Link to={"?" + toQuery(newPages.previous)} className={`btn btn-xs no-animation ${!newPages.previous && "btn-disabled"}`} >
-                <ChevronLeft size={14} />
-              </Link>
-              <div className="bg-neutral text-neutral-content font-semibold text-xs flex justify-center items-center px-2">
-                {props.page}/{props.totalPage} ({props.total})
-              </div>
-              {/* prettier-ignore */}
-              <Link to={"?" + toQuery(newPages.next)} className={`btn btn-xs no-animation ${!newPages.next && "btn-disabled"}`} >
-                <ChevronRight size={14} />
-              </Link>
-              {/* prettier-ignore */}
-              <Link to={"?" + toQuery(newPages.last)} className="btn btn-xs no-animation">
-                <ChevronsRight size={14} />
-              </Link>
-            </div>
+            <PaginationComponent pagination={props.pagination} />
           </div>
           {/* TODO: CTA when empty */}
           {bookmarkEntries.length === 0 && <div>Empty</div>}

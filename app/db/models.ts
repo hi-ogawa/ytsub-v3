@@ -161,9 +161,15 @@ export async function getVideoAndCaptionEntries(
   return;
 }
 
-export interface PaginationResult<T> {
-  data: T[];
+export interface PaginationMetadata {
   total: number;
+  totalPage: number;
+  page: number;
+  perPage: number;
+}
+
+export interface PaginationResult<T> extends PaginationMetadata {
+  data: T[];
 }
 
 // desperate typing hacks...
@@ -180,8 +186,10 @@ export async function toPaginationResult<Q extends Knex.QueryBuilder>(
     .clone()
     .clear("select")
     .clear("order")
+    .clear("join") // TODO: this goes wrong when joined columns are used in `where` clause
+    .clear("group")
     .count({ total: 0 })
     .first();
   const [data, { total }] = await Promise.all([queryData, queryTotal]);
-  return { data, total };
+  return { data, total, page, perPage, totalPage: Math.ceil(total / perPage) };
 }
