@@ -4,9 +4,11 @@ import {
   PracticeActionType,
   PracticeEntryTable,
   PracticeQueueType,
+  Q,
   UserTable,
+  toCount,
 } from "../db/models";
-import { TimedeltaOptions } from "./timedelta";
+import { Timedelta, TimedeltaOptions } from "./timedelta";
 
 const QUEUE_RULES: Record<
   PracticeQueueType,
@@ -62,41 +64,129 @@ const DECK_OPTIONS = {
   reviewsPerDay: 200,
   easeMultiplier: 2,
   easeBonus: 1.5,
-  timezoneOffset: 9 * 60 * 60, // +09:00 JST
 };
 
-export class PracticeSystem {
-  //
-  // Pubic API
-  //
+// TODO(perf)
+// - db queries in parallel (Promise.all)
+// - cache counters
 
+export class PracticeSystem {
   constructor(private user: UserTable, private deck: DeckTable) {}
 
-  async getNextPracticeEntry(): Promise<PracticeEntryTable | undefined> {
-    DECK_OPTIONS;
-    this.deck;
+  // TODO
+  // async getDailyProgress() {}
+
+  async getNextPracticeEntry(
+    now: Date = new Date()
+  ): Promise<PracticeEntryTable | undefined> {
+    const deckId = this.deck.id;
+    const yesterday = Timedelta.make({ days: 1 }).rsub(now);
+    const { newEntriesPerDay, reviewsPerDay } = DECK_OPTIONS;
+
+    const qActions = Q.practiceActions()
+      .where({ deckId })
+      .where("createdAt", ">=", yesterday);
+    const qEntries = Q.practiceEntries()
+      .where({ deckId })
+      .where("scheduledAt", ">=", now)
+      .orderBy("scheduledAt");
+
+    // NEW queue
+    if (
+      (await toCount(qActions.clone().where({ queueType: "NEW" }))) <
+      newEntriesPerDay
+    ) {
+      const found = await qEntries.where({ queueType: "NEW" }).first();
+      if (found) return found;
+    }
+
+    // LEARN queue
+    {
+      const found = await qEntries.where({ queueType: "LEARN" }).first();
+      if (found) return found;
+    }
+
+    // REVIEW queue
+    if (
+      (await toCount(qActions.clone().where({ queueType: "REVIEW" }))) <
+      reviewsPerDay
+    ) {
+      const found = await qEntries.where({ queueType: "REVIEW" }).first();
+      if (found) return found;
+    }
+
     return;
   }
 
   async createPracticeEntry(
-    bookmarkEntry: BookmarkEntryTable
+    bookmarkEntry: BookmarkEntryTable,
+    now: Date = new Date()
   ): Promise<number> {
-    bookmarkEntry;
-    SCHEDULE_RULES;
-    return 0;
+    const deckId = this.deck.id;
+    const bookmarkEntryId = bookmarkEntry.id;
+    const [id] = await Q.practiceEntries().insert({
+      queueType: "NEW",
+      easeFactor: 1,
+      scheduledAt: now,
+      deckId,
+      bookmarkEntryId,
+    });
+    return id;
   }
 
-  async act(
+  async createPracticeAction(
     practiceEntry: PracticeEntryTable,
-    actionType: PracticeActionType
-  ): Promise<void> {
-    practiceEntry;
-    actionType;
-    QUEUE_RULES;
-    this.user;
-  }
+    actionType: PracticeActionType,
+    now: Date = new Date()
+  ): Promise<number> {
+    const { easeMultiplier, easeBonus } = DECK_OPTIONS;
+    const userId = this.user.id;
+    const {
+      id: practiceEntryId,
+      queueType,
+      easeFactor,
+      deckId,
+    } = practiceEntry;
 
-  //
-  // Internal API
-  //
+    const qActions = Q.practiceActions().insert({
+      queueType: queueType,
+      actionType,
+      userId,
+      deckId,
+      practiceEntryId,
+    });
+
+    // update schedule
+    let delta = Timedelta.make(SCHEDULE_RULES[queueType][actionType]);
+    if (queueType === "REVIEW") {
+      delta = delta.mul(practiceEntry.easeFactor);
+    }
+    const newScheduledAt = delta.radd(now);
+
+    // update queue type
+    const newQueueType = QUEUE_RULES[queueType][actionType];
+
+    // update ease factor
+    let newEaseFactor = easeFactor;
+    if (newQueueType === "REVIEW") {
+      newEaseFactor *= easeMultiplier;
+      if (actionType === "EASY") {
+        newEaseFactor *= easeBonus;
+      }
+    }
+    if (actionType === "AGAIN") {
+      newEaseFactor = 1;
+    }
+
+    const qEntries = Q.practiceEntries()
+      .update({
+        queueType: newQueueType,
+        easeFactor: newEaseFactor,
+        scheduledAt: newScheduledAt,
+      })
+      .where("id", practiceEntryId);
+
+    const [[id]] = await Promise.all([qActions, qEntries]);
+    return id;
+  }
 }

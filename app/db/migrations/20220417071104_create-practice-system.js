@@ -7,8 +7,6 @@ exports.up = async function (knex) {
     CREATE TABLE decks (
       id                    BIGINT AUTO_INCREMENT,
       name                  TEXT NOT NULL,
-      newEntriesPerDay      INT NOT NULL,
-      reviewsPerDay         INT NOT NULL,
       createdAt             DATETIME DEFAULT CURRENT_TIMESTAMP,
       updatedAt             DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
       userId                BIGINT NOT NULL,
@@ -34,13 +32,16 @@ exports.up = async function (knex) {
   await knex.raw(`
     CREATE TABLE practiceActions (
       id                    BIGINT AUTO_INCREMENT,
+      queueType             VARCHAR(32) NOT NULL,
       actionType            VARCHAR(32) NOT NULL,
       createdAt             DATETIME DEFAULT CURRENT_TIMESTAMP,
       updatedAt             DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
       userId                BIGINT NOT NULL,
+      deckId                BIGINT NOT NULL,
       practiceEntryId       BIGINT NOT NULL,
       PRIMARY KEY (id),
       KEY practiceActions_userId_key (userId),
+      KEY practiceActions_deckId_key (deckId),
       KEY practiceActions_practiceEntryId_key (practiceEntryId)
     )
   `);

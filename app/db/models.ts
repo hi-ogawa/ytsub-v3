@@ -44,8 +44,8 @@ export interface CaptionEntryTable {
 export interface BookmarkEntryTable {
   id: number;
   text: string;
-  offset: number;
   side: number; // 0 | 1
+  offset: number;
   createdAt: Date;
   updatedAt: Date;
   userId: number;
@@ -59,6 +59,11 @@ export interface BookmarkEntryTable {
 // - https://docs.ankiweb.net/deck-options.html
 //
 
+export const PRACTICE_ACTION_TYPES = ["AGAIN", "HARD", "GOOD", "EASY"] as const;
+export const PRACTICE_QUEUE_TYPES = ["NEW", "LEARN", "REVIEW"] as const;
+export type PracticeActionType = typeof PRACTICE_ACTION_TYPES[number];
+export type PracticeQueueType = typeof PRACTICE_QUEUE_TYPES[number];
+
 // TODO: deck options
 export interface DeckTable {
   id: number;
@@ -67,11 +72,6 @@ export interface DeckTable {
   updatedAt: Date;
   userId: number;
 }
-
-export const PRACTICE_ACTION_TYPES = ["AGAIN", "HARD", "GOOD", "EASY"];
-export const PRACTICE_QUEUE_TYPES = ["NEW", "LEARN", "REVIEW"];
-export type PracticeActionType = typeof PRACTICE_ACTION_TYPES[number];
-export type PracticeQueueType = typeof PRACTICE_QUEUE_TYPES[number];
 
 export interface PracticeEntryTable {
   id: number;
@@ -86,10 +86,12 @@ export interface PracticeEntryTable {
 
 export interface PracticeActionTable {
   id: number;
+  queueType: PracticeQueueType;
   actionType: PracticeActionType;
   createdAt: Date;
   updatedAt: Date;
   userId: number;
+  deckId: number;
   practiceEntryId: number;
 }
 
@@ -98,6 +100,9 @@ export const Q = {
   videos: () => client<VideoTable>("videos"),
   captionEntries: () => client<CaptionEntryTable>("captionEntries"),
   bookmarkEntries: () => client<BookmarkEntryTable>("bookmarkEntries"),
+  decks: () => client<DeckTable>("decks"),
+  practiceEntries: () => client<PracticeEntryTable>("practiceEntries"),
+  practiceActions: () => client<PracticeActionTable>("practiceActions"),
 };
 
 //
@@ -199,10 +204,10 @@ export interface PaginationResult<T> extends PaginationMetadata {
 }
 
 // desperate typing hacks...
-export async function toPaginationResult<Q extends Knex.QueryBuilder>(
-  query: Q,
+export async function toPaginationResult<QB extends Knex.QueryBuilder>(
+  query: QB,
   { page, perPage }: { page: number; perPage: number }
-): Promise<PaginationResult<Q extends Promise<(infer T)[]> ? T : never>> {
+): Promise<PaginationResult<QB extends Promise<(infer T)[]> ? T : never>> {
   const queryData = query
     .clone()
     .offset((page - 1) * perPage)
@@ -213,9 +218,12 @@ export async function toPaginationResult<Q extends Knex.QueryBuilder>(
     .clear("select")
     .clear("order")
     .clear("join") // TODO: this goes wrong when joined columns are used in `where` clause
-    .clear("group")
-    .count({ total: 0 })
-    .first();
-  const [data, { total }] = await Promise.all([queryData, queryTotal]);
+    .clear("group");
+  const [data, total] = await Promise.all([queryData, toCount(queryTotal)]);
   return { data, total, page, perPage, totalPage: Math.ceil(total / perPage) };
+}
+
+export async function toCount(query: Knex.QueryBuilder): Promise<number> {
+  const { total } = await query.count({ total: 0 }).first();
+  return total;
 }

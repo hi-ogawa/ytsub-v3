@@ -16,4 +16,10 @@ export const R = {
   "/users/register": "/users/register",
   "/users/signin": "/users/signin",
   "/users/signout": "/users/signout",
+  // TODO:
+  "/decks": "/decks",
+  "/decks/new": "/decks/new",
+  "/decks/$id": (id: number) => `/decks/${id}`,
+  "/practice": "/practice",
+  "/practice/$id": (id: number) => `/practice/${id}`,
 };
