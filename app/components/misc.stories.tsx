@@ -9,7 +9,7 @@ import {
   User,
   X,
 } from "react-feather";
-import { useList } from "react-use";
+import { useList, useToggle } from "react-use";
 import { Collapse } from "./collapse";
 import { Spinner, VideoComponent } from "./misc";
 import { Popover } from "./popover";
@@ -270,9 +270,20 @@ export function TestPopoverDaisyUI() {
 }
 
 export function TestVideoComponent() {
+  const [isLoading, toggle] = useToggle(true);
+
   return (
     <div className="w-full flex justify-center">
       <div className="w-full max-w-lg flex flex-col p-2 gap-2">
+        <label className="label flex justify-start gap-4 items-center">
+          <input
+            className="toggle"
+            type="checkbox"
+            checked={isLoading}
+            onChange={() => toggle()}
+          />
+          <span className="label-text">Toggle loading</span>
+        </label>
         <VideoComponent
           video={{
             title:
@@ -313,6 +324,7 @@ export function TestVideoComponent() {
             language2_id: ".en",
           }}
           bookmarkEntriesCount={17}
+          isLoading={isLoading}
         />
       </div>
     </div>

@@ -20,6 +20,7 @@ export function VideoComponent({
   video,
   bookmarkEntriesCount,
   actions,
+  isLoading = false,
 }: {
   video: Pick<
     VideoTable,
@@ -35,6 +36,7 @@ export function VideoComponent({
   >;
   bookmarkEntriesCount?: number;
   actions?: React.ReactNode;
+  isLoading?: boolean;
 }) {
   const { id, videoId, title, author, channelId } = video;
   const to = R["/videos/$id"](id);
@@ -51,7 +53,15 @@ export function VideoComponent({
    */
 
   return (
-    <div className="w-full flex border" style={{ aspectRatio: "36 / 9" }}>
+    <div
+      className="relative w-full flex border"
+      style={{ aspectRatio: "36 / 9" }}
+    >
+      {isLoading && (
+        <div className="absolute inset-0 flex justify-center items-center z-10 bg-black/[0.2]">
+          <Spinner className="w-16 h-16" />
+        </div>
+      )}
       <div className="flex-none w-[44%] relative aspect-video overflow-hidden">
         <Link to={to} className="w-full h-full">
           <img
