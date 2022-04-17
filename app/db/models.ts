@@ -53,13 +53,47 @@ export interface BookmarkEntryTable {
   captionEntryId: number;
 }
 
-// TODO: use constants to facilitate static analysis
-// export const T = {
-//   users: "users",
-//   videos: "videos",
-//   captionEntries: "captionEntries",
-// }
+//
+// Cf. Anki's practice system
+// - https://docs.ankiweb.net/studying.html
+// - https://docs.ankiweb.net/deck-options.html
+//
 
+// TODO: deck options
+export interface DeckTable {
+  id: number;
+  name: string;
+  createdAt: Date;
+  updatedAt: Date;
+  userId: number;
+}
+
+export const PRACTICE_ACTION_TYPES = ["AGAIN", "HARD", "GOOD", "EASY"];
+export const PRACTICE_QUEUE_TYPES = ["NEW", "LEARN", "REVIEW"];
+export type PracticeActionType = typeof PRACTICE_ACTION_TYPES[number];
+export type PracticeQueueType = typeof PRACTICE_QUEUE_TYPES[number];
+
+export interface PracticeEntryTable {
+  id: number;
+  queueType: PracticeQueueType;
+  easeFactor: number;
+  scheduledAt: Date;
+  createdAt: Date;
+  updatedAt: Date;
+  deckId: number;
+  bookmarkEntryId: number;
+}
+
+export interface PracticeActionTable {
+  id: number;
+  actionType: PracticeActionType;
+  createdAt: Date;
+  updatedAt: Date;
+  userId: number;
+  practiceEntryId: number;
+}
+
+// TODO: select("*") is redundant
 export const tables = {
   users: () => client<UserTable>("users"),
   videos: () => client<VideoTable>("videos"),
