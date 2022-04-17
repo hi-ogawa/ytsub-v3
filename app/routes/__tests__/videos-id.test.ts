@@ -1,10 +1,10 @@
 import { omit } from "lodash";
 import { describe, expect, it } from "vitest";
-import { CaptionEntryTable, VideoTable } from "../../db/models";
+import { CaptionEntryTable, VideoTable, tables } from "../../db/models";
 import { assert } from "../../misc/assert";
 import { deserialize } from "../../utils/controller-utils";
-import { loader } from "../videos/$id";
-import { useVideo } from "./helper";
+import { action, loader } from "../videos/$id";
+import { useUserVideo, useVideo } from "./helper";
 import { testLoader } from "./helper";
 
 describe("videos/id.loader", () => {
@@ -51,5 +51,34 @@ describe("videos/id.loader", () => {
         },
       ]
     `);
+  });
+});
+
+describe("videos/id.action", () => {
+  const { signin, user, video } = useUserVideo(2, {
+    seed: __filename + "videos/id.action",
+  });
+
+  it("delete", async () => {
+    const where = {
+      id: video().id,
+      userId: user().id,
+    };
+    expect(tables.videos().where(where).first()).resolves.toBeDefined();
+
+    const res = await testLoader(action, {
+      method: "DELETE",
+      params: { id: String(video().id) },
+      transform: signin,
+    });
+    const resJson = await res.json();
+    expect(resJson).toMatchInlineSnapshot(`
+      {
+        "success": true,
+        "type": "DELETE /videos/\$id",
+      }
+    `);
+
+    expect(tables.videos().where(where).first()).resolves.toBe(undefined);
   });
 });

@@ -19,11 +19,13 @@ const DUMMY_URL = "http://localhost:3000";
 export function testLoader(
   loader: LoaderFunction,
   {
+    method,
     query,
     form,
     params = {},
     transform,
   }: {
+    method?: "GET" | "POST" | "DELETE";
     query?: any;
     form?: any;
     params?: Record<string, string>;
@@ -34,10 +36,10 @@ export function testLoader(
   if (query) {
     url += "/?" + toQuery(query);
   }
-  let request = new Request(url);
+  let request = new Request(url, { method: method ?? "GET" });
   if (form) {
     request = new Request(url, {
-      method: "POST",
+      method: method ?? "POST",
       body: toQuery(form),
       headers: {
         "content-type": "application/x-www-form-urlencoded",

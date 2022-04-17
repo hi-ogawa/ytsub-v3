@@ -59,6 +59,10 @@ export function parseVideoMetadata(html: string): VideoMetadata {
   throw new Error();
 }
 
+export function parseVssId(vssId: string): LanguageCode {
+  return vssId.split(".")[1].slice(0, 2) as LanguageCode;
+}
+
 export function toCaptionConfigOptions(
   videoMetadata: VideoMetadata
 ): CaptionConfigOptions {

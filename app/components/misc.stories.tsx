@@ -1,6 +1,14 @@
 import { Transition } from "@headlessui/react";
 import * as React from "react";
-import { Bookmark, LogOut, Settings, User, X } from "react-feather";
+import {
+  Bookmark,
+  LogOut,
+  Save,
+  Settings,
+  Trash2,
+  User,
+  X,
+} from "react-feather";
 import { useList } from "react-use";
 import { Collapse } from "./collapse";
 import { Spinner, VideoComponent } from "./misc";
@@ -276,6 +284,22 @@ export function TestVideoComponent() {
             language1_id: ".fr-FR",
             language2_id: ".en",
           }}
+          actions={
+            <>
+              <li>
+                <button>
+                  <Save />
+                  Save
+                </button>
+              </li>
+              <li>
+                <button>
+                  <Trash2 />
+                  Delete
+                </button>
+              </li>
+            </>
+          }
         />
         <VideoComponent
           video={{
@@ -288,6 +312,7 @@ export function TestVideoComponent() {
             language1_id: ".ru",
             language2_id: ".en",
           }}
+          bookmarkEntriesCount={17}
         />
       </div>
     </div>

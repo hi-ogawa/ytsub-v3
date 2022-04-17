@@ -2,7 +2,7 @@ import { LoaderFunction, Session, json } from "@remix-run/server-runtime";
 import { isEqual } from "lodash";
 import superjson from "superjson";
 import { UserTable } from "../db/models";
-import { getSessionUser } from "./auth";
+import { getSessionUser, getSessionUserId } from "./auth";
 import { FlashMessage, pushFlashMessage } from "./flash-message";
 import { getRequestSession, withResponseSession } from "./session-utils";
 import { fromRequestForm, fromRequestQuery } from "./url-data";
@@ -59,6 +59,10 @@ export class Controller {
 
   async form(): Promise<any> {
     return fromRequestForm(this.request);
+  }
+
+  currentUserId(): number | undefined {
+    return getSessionUserId(this.session);
   }
 
   async currentUser(): Promise<UserTable | undefined> {
