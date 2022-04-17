@@ -7,8 +7,8 @@ import {
   BookmarkEntryTable,
   CaptionEntryTable,
   PaginationResult,
+  Q,
   VideoTable,
-  tables,
   toPaginationResult,
 } from "../../db/models";
 import { R } from "../../misc/routes";
@@ -46,19 +46,17 @@ export const loader = makeLoader(Controller, async function () {
   }
 
   const pagination = await toPaginationResult(
-    tables
-      .bookmarkEntries()
-      .where("userId", user.id)
-      .orderBy("createdAt", "desc"),
+    Q.bookmarkEntries().where("userId", user.id).orderBy("createdAt", "desc"),
     parsed.data
   );
   const bookmarkEntries = pagination.data;
   const videoIds = bookmarkEntries.map((x) => x.videoId);
   const captionEntryIds = bookmarkEntries.map((x) => x.captionEntryId);
-  const videos = await tables.videos().whereIn("id", videoIds);
-  const captionEntries = await tables
-    .captionEntries()
-    .whereIn("id", captionEntryIds);
+  const videos = await Q.videos().whereIn("id", videoIds);
+  const captionEntries = await Q.captionEntries().whereIn(
+    "id",
+    captionEntryIds
+  );
   const data: LoaderData = {
     videos,
     captionEntries,

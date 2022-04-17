@@ -3,8 +3,8 @@ import { redirect } from "@remix-run/server-runtime";
 import * as React from "react";
 import {
   PaginationResult,
+  Q,
   VideoTable,
-  tables,
   toPaginationResult,
 } from "../db/models";
 import { R } from "../misc/routes";
@@ -30,7 +30,7 @@ export const loader = makeLoader(Controller, async function () {
   }
 
   const pagination = await toPaginationResult(
-    tables.videos().where("userId", null).orderBy("updatedAt", "desc"),
+    Q.videos().where("userId", null).orderBy("updatedAt", "desc"),
     parsed.data
   );
   const data: LoaderData = { pagination };

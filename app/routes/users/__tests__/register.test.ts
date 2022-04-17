@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { tables } from "../../../db/models";
+import { Q } from "../../../db/models";
 import { assert } from "../../../misc/assert";
 import { getSessionUser } from "../../../utils/auth";
 import { getSession } from "../../../utils/session.server";
@@ -8,7 +8,7 @@ import { action } from "../register";
 
 describe("register.action", () => {
   beforeEach(async () => {
-    await tables.users().delete();
+    await Q.users().delete();
   });
 
   describe("success", () => {
@@ -20,10 +20,7 @@ describe("register.action", () => {
         passwordConfirmation: "pass",
       };
       const res = await testLoader(action, { form: data });
-      const found = await tables
-        .users()
-        .where("username", data.username)
-        .first();
+      const found = await Q.users().where("username", data.username).first();
       assert(found);
       expect(found.username).toBe(username);
 

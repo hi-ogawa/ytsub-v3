@@ -1,5 +1,5 @@
 import { beforeAll, describe, expect, it } from "vitest";
-import { UserTable, tables } from "../../../db/models";
+import { Q, UserTable } from "../../../db/models";
 import { assert } from "../../../misc/assert";
 import { getSessionUser, register } from "../../../utils/auth";
 import { getSession } from "../../../utils/session.server";
@@ -11,7 +11,7 @@ describe("signin.action", () => {
   const credentials = { username: "root", password: "pass" };
 
   beforeAll(async () => {
-    await tables.users().delete();
+    await Q.users().delete();
     user = await register(credentials);
   });
 

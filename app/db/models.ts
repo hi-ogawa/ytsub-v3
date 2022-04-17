@@ -93,7 +93,7 @@ export interface PracticeActionTable {
   practiceEntryId: number;
 }
 
-export const tables = {
+export const Q = {
   users: () => client<UserTable>("users"),
   videos: () => client<VideoTable>("videos"),
   captionEntries: () => client<CaptionEntryTable>("captionEntries"),
@@ -106,19 +106,16 @@ export const tables = {
 
 // no "FOREIGN KEY" constraint principle https://docs.planetscale.com/learn/operating-without-foreign-key-constraints#cleaning-up-orphaned-rows
 export async function deleteOrphans(): Promise<void> {
-  await tables
-    .videos()
+  await Q.videos()
     .delete()
     .leftJoin("users", "users.id", "videos.userId")
     .where("users.id", null)
     .whereNot("videos.id", null);
-  await tables
-    .captionEntries()
+  await Q.captionEntries()
     .delete()
     .leftJoin("videos", "videos.id", "captionEntries.videoId")
     .where("videos.id", null);
-  await tables
-    .bookmarkEntries()
+  await Q.bookmarkEntries()
     .delete()
     .leftJoin(
       "captionEntries",
@@ -132,8 +129,7 @@ export function filterNewVideo(
   { videoId, language1, language2 }: NewVideo,
   userId?: number
 ) {
-  return tables
-    .videos()
+  return Q.videos()
     .where("videoId", videoId)
     .where("language1_id", language1.id)
     .where("language1_translation", language1.translation ?? null)
@@ -167,13 +163,13 @@ export async function insertVideoAndCaptionEntries(
     language2_translation: language2.translation,
     userId,
   };
-  const [videoId] = await tables.videos().insert(videoRow);
+  const [videoId] = await Q.videos().insert(videoRow);
 
   const captionEntryRows = captionEntries.map((entry) => ({
     ...entry,
     videoId,
   }));
-  await tables.captionEntries().insert(captionEntryRows);
+  await Q.captionEntries().insert(captionEntryRows);
 
   return videoId;
 }
@@ -183,9 +179,9 @@ export async function getVideoAndCaptionEntries(
 ): Promise<
   { video: VideoTable; captionEntries: CaptionEntryTable[] } | undefined
 > {
-  const video = await tables.videos().where("id", id).first();
+  const video = await Q.videos().where("id", id).first();
   if (video) {
-    const captionEntries = await tables.captionEntries().where("videoId", id);
+    const captionEntries = await Q.captionEntries().where("videoId", id);
     return { video, captionEntries };
   }
   return;

@@ -1,6 +1,6 @@
 import { last, omit } from "lodash";
 import { beforeAll, describe, expect, it } from "vitest";
-import { tables } from "../../db/models";
+import { Q } from "../../db/models";
 import { assert } from "../../misc/assert";
 import { getResponseSession } from "../../utils/session-utils";
 import { action, loader } from "../videos/new";
@@ -54,7 +54,7 @@ describe("videos/new.action", () => {
 
   beforeAll(async () => {
     // cleanup anonymous data
-    await tables.videos().delete().where("userId", null);
+    await Q.videos().delete().where("userId", null);
   });
 
   it("basic", async () => {
@@ -72,12 +72,10 @@ describe("videos/new.action", () => {
     const res = await testLoader(action, { form: data, transform: signin });
 
     // persist video and caption entries
-    const video = await tables.videos().where("userId", user().id).first();
+    const video = await Q.videos().where("userId", user().id).first();
     assert(video);
 
-    const captionEntries = await tables
-      .captionEntries()
-      .where("videoId", video.id);
+    const captionEntries = await Q.captionEntries().where("videoId", video.id);
 
     expect(omit(video, ["id", "userId", "createdAt", "updatedAt"]))
       .toMatchInlineSnapshot(`
@@ -152,7 +150,7 @@ describe("videos/new.action", () => {
     assert(location);
 
     const id = last(location.split("/"));
-    const video = await tables.videos().where("id", id).first();
+    const video = await Q.videos().where("id", id).first();
     assert(video);
     expect(video.userId).toBe(null);
 

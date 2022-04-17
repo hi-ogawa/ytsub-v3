@@ -7,9 +7,9 @@ import { useSnackbar } from "../../components/snackbar";
 import { client } from "../../db/client.server";
 import {
   PaginationResult,
+  Q,
   UserTable,
   VideoTable,
-  tables,
   toPaginationResult,
 } from "../../db/models";
 import { R } from "../../misc/routes";
@@ -57,8 +57,7 @@ export const loader = makeLoader(Controller, async function () {
 
   // TODO: cache "has-many" counter (https://github.com/rails/rails/blob/de53ba56cab69fb9707785a397a59ac4aaee9d6f/activerecord/lib/active_record/counter_cache.rb#L159)
   const pagination = await toPaginationResult(
-    tables
-      .videos()
+    Q.videos()
       .select("videos.*", {
         bookmarkEntriesCount: client.raw("SUM(bookmarkEntries.id IS NOT NULL)"),
       })

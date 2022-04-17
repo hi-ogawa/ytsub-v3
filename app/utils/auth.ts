@@ -1,7 +1,7 @@
 import { Session } from "@remix-run/server-runtime";
 import * as bcrypt from "bcryptjs";
 import { z } from "zod";
-import { UserTable, tables } from "../db/models";
+import { Q, UserTable } from "../db/models";
 import { AppError } from "./errors";
 import { crypto } from "./node.server";
 import { commitSession, getSession } from "./session.server";
@@ -59,17 +59,17 @@ export async function register(data: {
   password: string;
 }): Promise<UserTable> {
   // Check uniqueness
-  if (await tables.users().select().where("username", data.username).first()) {
+  if (await Q.users().select().where("username", data.username).first()) {
     throw new AppError(`Username '${data.username}' is already taken`);
   }
 
   // Save
   const passwordHash = await toPasswordHash(data.password);
-  const [id] = await tables.users().insert({
+  const [id] = await Q.users().insert({
     username: data.username,
     passwordHash,
   });
-  const user = await tables.users().where("id", id).first();
+  const user = await Q.users().where("id", id).first();
   if (!user) {
     throw new AppError("Unknown registration error");
   }
@@ -81,8 +81,7 @@ export async function verifySignin(data: {
   password: string;
 }): Promise<UserTable> {
   // Find user
-  const user = await tables
-    .users()
+  const user = await Q.users()
     .select()
     .where("username", data.username)
     .first();
@@ -113,7 +112,7 @@ export async function getSessionUser(
 ): Promise<UserTable | undefined> {
   const id = getSessionUserId(session);
   if (id === undefined) return;
-  return await tables.users().where("id", id).first();
+  return await Q.users().where("id", id).first();
 }
 
 export async function createUserCookie(user: UserTable) {

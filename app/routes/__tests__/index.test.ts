@@ -1,5 +1,5 @@
 import { beforeAll, describe, expect, it } from "vitest";
-import { tables } from "../../db/models";
+import { Q } from "../../db/models";
 import { assert } from "../../misc/assert";
 import { loader } from "../index";
 import { testLoader } from "./helper";
@@ -7,7 +7,7 @@ import { testLoader } from "./helper";
 // TODO: use data
 describe("index.loader", () => {
   beforeAll(async () => {
-    await tables.videos().delete();
+    await Q.videos().delete();
   });
 
   it("basic", async () => {

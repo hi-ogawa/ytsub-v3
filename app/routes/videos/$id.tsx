@@ -15,10 +15,10 @@ import { Popover } from "../../components/popover";
 import { useSnackbar } from "../../components/snackbar";
 import {
   CaptionEntryTable,
+  Q,
   UserTable,
   VideoTable,
   getVideoAndCaptionEntries,
-  tables,
 } from "../../db/models";
 import { assert } from "../../misc/assert";
 import { R } from "../../misc/routes";
@@ -87,15 +87,12 @@ export const action = makeLoader(Controller, async function () {
       const { id } = parsed.data;
       const user = await this.currentUser();
       if (user) {
-        const video = await tables
-          .videos()
-          .where({ id, userId: user.id })
-          .first();
+        const video = await Q.videos().where({ id, userId: user.id }).first();
         if (video) {
           await Promise.all([
-            tables.videos().delete().where({ id, userId: user.id }),
-            tables.captionEntries().delete().where("videoId", id),
-            tables.bookmarkEntries().delete().where("videoId", id),
+            Q.videos().delete().where({ id, userId: user.id }),
+            Q.captionEntries().delete().where("videoId", id),
+            Q.bookmarkEntries().delete().where("videoId", id),
           ]);
           // return `type` so that `useFetchers` can identify where the response is from
           return { type: "DELETE /videos/$id", success: true };

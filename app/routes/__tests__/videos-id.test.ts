@@ -1,6 +1,6 @@
 import { omit } from "lodash";
 import { describe, expect, it } from "vitest";
-import { CaptionEntryTable, VideoTable, tables } from "../../db/models";
+import { CaptionEntryTable, Q, VideoTable } from "../../db/models";
 import { assert } from "../../misc/assert";
 import { deserialize } from "../../utils/controller-utils";
 import { action, loader } from "../videos/$id";
@@ -64,7 +64,7 @@ describe("videos/id.action", () => {
       id: video().id,
       userId: user().id,
     };
-    expect(tables.videos().where(where).first()).resolves.toBeDefined();
+    expect(Q.videos().where(where).first()).resolves.toBeDefined();
 
     const res = await testLoader(action, {
       method: "DELETE",
@@ -79,6 +79,6 @@ describe("videos/id.action", () => {
       }
     `);
 
-    expect(tables.videos().where(where).first()).resolves.toBe(undefined);
+    expect(Q.videos().where(where).first()).resolves.toBe(undefined);
   });
 });
