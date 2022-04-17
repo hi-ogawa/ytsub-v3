@@ -93,7 +93,6 @@ export interface PracticeActionTable {
   practiceEntryId: number;
 }
 
-// TODO: select("*") is redundant
 export const tables = {
   users: () => client<UserTable>("users"),
   videos: () => client<VideoTable>("videos"),
@@ -184,12 +183,9 @@ export async function getVideoAndCaptionEntries(
 ): Promise<
   { video: VideoTable; captionEntries: CaptionEntryTable[] } | undefined
 > {
-  const video = await tables.videos().select("*").where("id", id).first();
+  const video = await tables.videos().where("id", id).first();
   if (video) {
-    const captionEntries = await tables
-      .captionEntries()
-      .select("*")
-      .where("videoId", id);
+    const captionEntries = await tables.captionEntries().where("videoId", id);
     return { video, captionEntries };
   }
   return;

@@ -72,16 +72,11 @@ describe("videos/new.action", () => {
     const res = await testLoader(action, { form: data, transform: signin });
 
     // persist video and caption entries
-    const video = await tables
-      .videos()
-      .select("*")
-      .where("userId", user().id)
-      .first();
+    const video = await tables.videos().where("userId", user().id).first();
     assert(video);
 
     const captionEntries = await tables
       .captionEntries()
-      .select("*")
       .where("videoId", video.id);
 
     expect(omit(video, ["id", "userId", "createdAt", "updatedAt"]))
@@ -157,7 +152,7 @@ describe("videos/new.action", () => {
     assert(location);
 
     const id = last(location.split("/"));
-    const video = await tables.videos().select("*").where("id", id).first();
+    const video = await tables.videos().where("id", id).first();
     assert(video);
     expect(video.userId).toBe(null);
 

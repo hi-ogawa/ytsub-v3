@@ -69,7 +69,7 @@ export async function register(data: {
     username: data.username,
     passwordHash,
   });
-  const user = await tables.users().select("*").where("id", id).first();
+  const user = await tables.users().where("id", id).first();
   if (!user) {
     throw new AppError("Unknown registration error");
   }
@@ -113,7 +113,7 @@ export async function getSessionUser(
 ): Promise<UserTable | undefined> {
   const id = getSessionUserId(session);
   if (id === undefined) return;
-  return await tables.users().select("*").where("id", id).first();
+  return await tables.users().where("id", id).first();
 }
 
 export async function createUserCookie(user: UserTable) {

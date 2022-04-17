@@ -30,11 +30,7 @@ export const loader = makeLoader(Controller, async function () {
   }
 
   const pagination = await toPaginationResult(
-    tables
-      .videos()
-      .select("*")
-      .where("userId", null)
-      .orderBy("updatedAt", "desc"),
+    tables.videos().where("userId", null).orderBy("updatedAt", "desc"),
     parsed.data
   );
   const data: LoaderData = { pagination };

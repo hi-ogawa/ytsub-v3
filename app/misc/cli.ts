@@ -226,7 +226,6 @@ async function importBookmarkEntry(
 
   const captionEntry = await tables
     .captionEntries()
-    .select("*")
     .where({ videoId: video.id })
     .where(client.raw("abs(begin - ?) < 0.1", begin))
     .first();

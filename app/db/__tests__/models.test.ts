@@ -9,7 +9,7 @@ describe("models", () => {
   });
 
   it("basic", async () => {
-    const res = await tables.users().select("*");
+    const res = await tables.users();
     expect(res).toMatchInlineSnapshot("[]");
   });
 
@@ -21,7 +21,7 @@ describe("models", () => {
       language2: "en",
     };
     const [id] = await tables.users().insert(data);
-    const res = await tables.users().select("*").where("id", id).first();
+    const res = await tables.users().where("id", id).first();
     assert(res);
     expect(omit(res, ["id", "createdAt", "updatedAt"])).toEqual(data);
   });
@@ -43,10 +43,7 @@ describe("models", () => {
     const ids = await tables.users().insert(data);
     expect(ids.length).toBe(1);
 
-    const res = await tables
-      .users()
-      .select("*")
-      .whereIn("id", [ids[0], ids[0] + 1]);
+    const res = await tables.users().whereIn("id", [ids[0], ids[0] + 1]);
     expect(res).toMatchObject(data);
   });
 

@@ -48,7 +48,6 @@ export const loader = makeLoader(Controller, async function () {
   const pagination = await toPaginationResult(
     tables
       .bookmarkEntries()
-      .select("*")
       .where("userId", user.id)
       .orderBy("createdAt", "desc"),
     parsed.data
@@ -56,10 +55,9 @@ export const loader = makeLoader(Controller, async function () {
   const bookmarkEntries = pagination.data;
   const videoIds = bookmarkEntries.map((x) => x.videoId);
   const captionEntryIds = bookmarkEntries.map((x) => x.captionEntryId);
-  const videos = await tables.videos().select("*").whereIn("id", videoIds);
+  const videos = await tables.videos().whereIn("id", videoIds);
   const captionEntries = await tables
     .captionEntries()
-    .select("*")
     .whereIn("id", captionEntryIds);
   const data: LoaderData = {
     videos,

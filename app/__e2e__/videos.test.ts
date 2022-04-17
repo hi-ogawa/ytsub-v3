@@ -45,7 +45,6 @@ test.describe("videos-signed-in", () => {
     // verify database
     const entry = await tables
       .bookmarkEntries()
-      .select("*")
       .where({ userId: user().id })
       .first();
     expect(entry).toMatchObject({

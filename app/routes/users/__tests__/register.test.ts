@@ -22,7 +22,6 @@ describe("register.action", () => {
       const res = await testLoader(action, { form: data });
       const found = await tables
         .users()
-        .select("*")
         .where("username", data.username)
         .first();
       assert(found);

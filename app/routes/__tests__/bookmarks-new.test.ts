@@ -27,11 +27,7 @@ describe("bookmarks/new.action", () => {
     const id = resJson.data.id;
     assert(typeof id === "number");
 
-    const found = await tables
-      .bookmarkEntries()
-      .select("*")
-      .where("id", id)
-      .first();
+    const found = await tables.bookmarkEntries().where("id", id).first();
     assert(found);
     expect(found.text).toBe(data.text);
   });
