@@ -4,7 +4,7 @@ import { tables } from "../db/models";
 import { Controller, makeLoader } from "../utils/controller-utils";
 import { useDeserialize } from "../utils/hooks";
 import { PageHandle } from "../utils/page-handle";
-import { HistoryLoaderData, VideoListComponent } from "./videos";
+import { VideoListComponent, VideoListLoaderData } from "./videos";
 
 export const handle: PageHandle = {
   navBarTitle: "Examples",
@@ -16,11 +16,11 @@ export const loader = makeLoader(Controller, async function () {
     .select("*")
     .where("userId", null)
     .orderBy("createdAt", "desc");
-  const data: HistoryLoaderData = { videos };
+  const data: VideoListLoaderData = { videos };
   return this.serialize(data);
 });
 
 export default function DefaultComponent() {
-  const data: HistoryLoaderData = useDeserialize(useLoaderData());
+  const data: VideoListLoaderData = useDeserialize(useLoaderData());
   return <VideoListComponent videos={data.videos} />;
 }

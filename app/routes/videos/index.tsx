@@ -29,7 +29,7 @@ interface VideoTableExtra extends VideoTable {
   bookmarkEntriesCount?: number;
 }
 
-export interface HistoryLoaderData {
+export interface VideoListLoaderData {
   videos: VideoTableExtra[];
 }
 
@@ -52,13 +52,13 @@ export const loader = makeLoader(Controller, async function () {
     .join("bookmarkEntries", "bookmarkEntries.videoId", "videos.id")
     .groupBy("videos.id");
 
-  const data: HistoryLoaderData = { videos };
+  const data: VideoListLoaderData = { videos };
   return this.serialize(data);
 });
 
 export default function DefaultComponent() {
   const { currentUser } = useRootLoaderData();
-  const data: HistoryLoaderData = useDeserialize(useLoaderData());
+  const data: VideoListLoaderData = useDeserialize(useLoaderData());
   return <VideoListComponent videos={data.videos} currentUser={currentUser} />;
 }
 
