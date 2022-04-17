@@ -15,7 +15,13 @@ describe("videos/index.loader", () => {
     expect(await res.json()).toMatchInlineSnapshot(`
       {
         "json": {
-          "videos": [],
+          "pagination": {
+            "data": [],
+            "page": 1,
+            "perPage": 20,
+            "total": 0,
+            "totalPage": 0,
+          },
         },
       }
     `);
