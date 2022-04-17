@@ -118,6 +118,7 @@ export class PracticeSystem {
     return;
   }
 
+  // TODO: prevent duplicate (on conflict with unique key (deckId, bookmarkEntryId))
   async createPracticeEntry(
     bookmarkEntry: BookmarkEntryTable,
     now: Date = new Date()

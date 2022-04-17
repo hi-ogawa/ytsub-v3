@@ -70,7 +70,7 @@ export default function DefaultComponent() {
   return <ComponentImpl {...data} />;
 }
 
-export function ComponentImpl(props: LoaderData) {
+function ComponentImpl(props: LoaderData) {
   const videos = useToById(props.videos);
   const captionEntries = useToById(props.captionEntries);
   const bookmarkEntries = props.pagination.data;

@@ -1,7 +1,13 @@
-import { LoaderFunction, Session, json } from "@remix-run/server-runtime";
+import {
+  LoaderFunction,
+  Session,
+  json,
+  redirect,
+} from "@remix-run/server-runtime";
 import { isEqual } from "lodash";
 import superjson from "superjson";
 import { UserTable } from "../db/models";
+import { R } from "../misc/routes";
 import { getSessionUser, getSessionUserId } from "./auth";
 import { FlashMessage, pushFlashMessage } from "./flash-message";
 import { getRequestSession, withResponseSession } from "./session-utils";
@@ -18,13 +24,18 @@ export function makeLoader<C, R>(
   options: {
     create: (args: LoaderArgs) => Promise<C>;
     finalize: (controller: C, result: R) => LoaderResult;
+    rescue: (controller: C, caught: any) => LoaderResult;
   },
   method: (this: C) => R
 ): LoaderFunction {
   return async function (args: LoaderArgs) {
     const controller = await options.create(args);
-    const result = await method.apply(controller);
-    return options.finalize(controller, result);
+    try {
+      const result = await method.apply(controller);
+      return await options.finalize(controller, result);
+    } catch (error) {
+      return await options.rescue(controller, error);
+    }
   };
 }
 
@@ -53,6 +64,18 @@ export class Controller {
     return response;
   }
 
+  static async rescue(
+    controller: Controller,
+    caught: any
+  ): Promise<LoaderResult> {
+    if (caught instanceof Response) {
+      if (!isEqual(controller.session.data, controller.initialSessionData)) {
+        await withResponseSession(caught, controller.session);
+      }
+    }
+    throw caught;
+  }
+
   query(): any {
     return fromRequestQuery(this.request);
   }
@@ -67,6 +90,15 @@ export class Controller {
 
   async currentUser(): Promise<UserTable | undefined> {
     return getSessionUser(this.session);
+  }
+
+  async requireUser(): Promise<UserTable> {
+    const user = await this.currentUser();
+    if (!user) {
+      this.flash({ content: "Signin required", variant: "error" });
+      throw redirect(R["/users/signin"]);
+    }
+    return user;
   }
 
   flash(message: FlashMessage): void {
