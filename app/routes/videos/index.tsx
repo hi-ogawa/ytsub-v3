@@ -140,6 +140,7 @@ function VideoComponentExtra({
       key={video.id}
       video={video}
       bookmarkEntriesCount={video.bookmarkEntriesCount}
+      isLoading={fetcher.state !== "idle"}
       actions={
         currentUser &&
         currentUser.id === video.userId && (
@@ -156,7 +157,7 @@ function VideoComponentExtra({
             <li>
               <button type="submit">
                 <Trash2 />
-                {fetcher.state === "idle" ? "Delete" : "Deleting..."}
+                Delete
               </button>
             </li>
           </fetcher.Form>
