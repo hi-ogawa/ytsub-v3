@@ -553,11 +553,7 @@ function NavBarMenuComponentImpl({
   return (
     <>
       {user && user.id !== video.userId && (
-        <Form
-          method="post"
-          action={R["/videos/new"]}
-          className="flex-none pl-2"
-        >
+        <Form method="post" action={R["/videos/new"]} className="flex-none">
           {/* prettier-ignore */}
           <>
             <input readOnly hidden name="videoId" value={video.videoId} />
@@ -571,7 +567,7 @@ function NavBarMenuComponentImpl({
           </button>
         </Form>
       )}
-      <div className="flex-none pl-2">
+      <div className="flex-none">
         <Popover
           placement="bottom-end"
           reference={({ props }) => (

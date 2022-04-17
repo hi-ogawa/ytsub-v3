@@ -201,8 +201,8 @@ function Navbar({
   MenuComponent?: React.FC;
 }) {
   return (
-    <header className="w-full h-12 flex-none bg-primary text-primary-content flex items-center px-4 py-2 shadow-lg z-10">
-      <div className="flex-none pr-4">
+    <header className="w-full h-12 flex-none bg-primary text-primary-content flex items-center px-2 md:px-4 py-2 gap-0 md:gap-2 shadow-lg z-10">
+      <div className="flex-none pr-2 md:pr-0">
         <label
           className="btn btn-sm btn-ghost"
           htmlFor={DRAWER_TOGGLE_INPUT_ID}
@@ -212,7 +212,7 @@ function Navbar({
       </div>
       <div className="flex-1">{title}</div>
       {MenuComponent && <MenuComponent />}
-      <div className="flex-none pl-2">
+      <div className="flex-none">
         <Popover
           placement="bottom-end"
           reference={({ props }) => (
