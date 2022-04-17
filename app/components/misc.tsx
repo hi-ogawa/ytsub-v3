@@ -1,11 +1,16 @@
+import { Transition } from "@headlessui/react";
 import { Link } from "@remix-run/react";
 import * as React from "react";
+import { Bookmark, MoreVertical } from "react-feather";
 import { VideoTable } from "../db/models";
 import { R } from "../misc/routes";
-import { toThumbnail } from "../utils/youtube";
+import { parseVssId, toThumbnail } from "../utils/youtube";
+import { Popover } from "./popover";
 
 export function VideoComponent({
   video,
+  bookmarkEntriesCount,
+  actions,
 }: {
   video: Pick<
     VideoTable,
@@ -19,11 +24,13 @@ export function VideoComponent({
     | "language2_id"
     | "language2_translation"
   >;
+  bookmarkEntriesCount?: number;
+  actions?: React.ReactNode;
 }) {
   const { id, videoId, title, author, channelId } = video;
   const to = R["/videos/$id"](id);
-  const code1 = video.language1_translation ?? video.language1_id.slice(1, 3);
-  const code2 = video.language2_translation ?? video.language2_id.slice(1, 3);
+  const code1 = video.language1_translation ?? parseVssId(video.language1_id);
+  const code2 = video.language2_translation ?? parseVssId(video.language2_id);
 
   /*
     Layout
@@ -48,18 +55,56 @@ export function VideoComponent({
             {code1} - {code2}
           </div>
         </div>
+        {bookmarkEntriesCount && (
+          <div className="absolute right-1 top-1 px-1 py-0.5 rounded bg-black/75 text-white text-xs font-bold">
+            <div className="flex justify-center items-center gap-1">
+              <div>{bookmarkEntriesCount}</div>
+              <Bookmark size={12} />
+            </div>
+          </div>
+        )}
       </div>
-      <div className="p-2 flex flex-col relative text-sm">
+      <div className="grow p-2 flex flex-col relative text-sm">
         <Link to={to} className="line-clamp-2 mb-2">
           {title}
         </Link>
+        {/* TODO: use it as filtering in "/videos" */}
         <a
           href={"https://www.youtube.com/channel/" + channelId}
           target="_blank"
-          className="line-clamp-1 text-gray-600 text-xs"
+          className="line-clamp-1 text-gray-600 text-xs pr-8"
         >
           {author}
         </a>
+        {actions && (
+          <div className="absolute right-1 bottom-1 z-10">
+            <Popover
+              placement="bottom-end"
+              reference={({ props }) => (
+                <button className="btn btn-sm btn-ghost btn-circle" {...props}>
+                  <MoreVertical size={14} />
+                </button>
+              )}
+              floating={({ open, props }) => (
+                <Transition
+                  show={open}
+                  unmount={false}
+                  className="transition duration-200"
+                  enterFrom="scale-90 opacity-0"
+                  enterTo="scale-100 opacity-100"
+                  leaveFrom="scale-100 opacity-100"
+                  leaveTo="scale-90 opacity-0"
+                  {...props}
+                >
+                  <ul className="menu menu-compact rounded p-2 shadow w-48 bg-base-100 text-base-content text-sm">
+                    {/* TODO: how to let `actions` close the popover? */}
+                    {actions}
+                  </ul>
+                </Transition>
+              )}
+            />
+          </div>
+        )}
       </div>
     </div>
   );

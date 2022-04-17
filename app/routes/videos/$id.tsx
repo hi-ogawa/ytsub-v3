@@ -18,6 +18,7 @@ import {
   UserTable,
   VideoTable,
   getVideoAndCaptionEntries,
+  tables,
 } from "../../db/models";
 import { assert } from "../../misc/assert";
 import { R } from "../../misc/routes";
@@ -74,6 +75,40 @@ export const unstable_shouldReload: ShouldReloadFunction = ({ submission }) => {
   }
   return true;
 };
+
+//
+// action
+//
+
+export const action = makeLoader(Controller, async function () {
+  if (this.request.method === "DELETE") {
+    const parsed = SCHEMA.safeParse(this.args.params);
+    if (parsed.success) {
+      const { id } = parsed.data;
+      const user = await this.currentUser();
+      if (user) {
+        const video = await tables
+          .videos()
+          .where({ id, userId: user.id })
+          .first();
+        if (video) {
+          await Promise.all([
+            tables.videos().delete().where({ id, userId: user.id }),
+            tables.captionEntries().delete().where("videoId", id),
+            tables.bookmarkEntries().delete().where("videoId", id),
+          ]);
+          // return `type` so that `useFetchers` can identify where the response is from
+          return { type: "DELETE /videos/$id", success: true };
+        }
+      }
+    }
+  }
+  return {
+    type: "DELETE /videos/$id",
+    success: false,
+    message: "invalid request",
+  };
+});
 
 //
 // component
@@ -266,7 +301,7 @@ function PageComponent({
       if (fetcher.data.success) {
         enqueueSnackbar("Bookmark success", { variant: "success" });
       } else {
-        enqueueSnackbar("Bookmark failed", { variant: "success" });
+        enqueueSnackbar("Bookmark failed", { variant: "error" });
       }
       setBookmarkState(undefined);
     }

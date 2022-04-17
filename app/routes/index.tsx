@@ -4,7 +4,7 @@ import { tables } from "../db/models";
 import { Controller, makeLoader } from "../utils/controller-utils";
 import { useDeserialize } from "../utils/hooks";
 import { PageHandle } from "../utils/page-handle";
-import { HistoryComponent, HistoryLoaderData } from "./videos";
+import { HistoryLoaderData, VideoListComponent } from "./videos";
 
 export const handle: PageHandle = {
   navBarTitle: "Examples",
@@ -22,5 +22,5 @@ export const loader = makeLoader(Controller, async function () {
 
 export default function DefaultComponent() {
   const data: HistoryLoaderData = useDeserialize(useLoaderData());
-  return <HistoryComponent videos={data.videos} />;
+  return <VideoListComponent videos={data.videos} />;
 }
