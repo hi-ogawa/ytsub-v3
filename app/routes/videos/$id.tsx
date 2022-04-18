@@ -282,6 +282,11 @@ function PageComponent({
     });
   }
 
+  function onCancelBookmark() {
+    document.getSelection()?.removeAllRanges();
+    setBookmarkState(undefined);
+  }
+
   //
   // effects
   //
@@ -331,7 +336,7 @@ function PageComponent({
         currentUser &&
         currentUser.id === video.userId && (
           <Transition
-            show={!!bookmarkState}
+            show={!!bookmarkState || fetcher.state !== "idle"}
             className="absolute bottom-0 right-0 flex gap-2 p-1.5 transition-all duration-300"
             enterFrom="scale-[0.3] opacity-0"
             enterTo="scale-100 opacity-100"
@@ -339,13 +344,13 @@ function PageComponent({
             leaveTo="scale-[0.3] opacity-0"
           >
             <button
-              onClick={() => setBookmarkState(undefined)}
+              onClick={onCancelBookmark}
               className="w-12 h-12 rounded-full bg-secondary text-white flex justify-center items-center shadow-xl hover:contrast-75 transition-[filter] duration-300"
             >
               <X />
             </button>
             <button
-              onClick={() => onClickBookmark()}
+              onClick={onClickBookmark}
               className="w-12 h-12 rounded-full bg-primary text-white flex justify-center items-center shadow-xl hover:contrast-75 transition-[filter] duration-300"
               data-test="new-bookmark-button"
             >
