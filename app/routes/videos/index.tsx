@@ -143,23 +143,25 @@ function VideoComponentExtra({
       actions={
         currentUser &&
         currentUser.id === video.userId && (
-          <fetcher.Form
-            method="delete"
-            action={R["/videos/$id"](video.id)}
-            data-test="video-delete-form"
-            onSubmitCapture={(e) => {
-              if (!window.confirm("Are you sure?")) {
-                e.preventDefault();
-              }
-            }}
-          >
-            <li>
-              <button type="submit">
-                <Trash2 />
-                Delete
-              </button>
-            </li>
-          </fetcher.Form>
+          <>
+            <fetcher.Form
+              method="delete"
+              action={R["/videos/$id"](video.id)}
+              data-test="video-delete-form"
+              onSubmitCapture={(e) => {
+                if (!window.confirm("Are you sure?")) {
+                  e.preventDefault();
+                }
+              }}
+            >
+              <li>
+                <button type="submit">
+                  <Trash2 />
+                  Delete
+                </button>
+              </li>
+            </fetcher.Form>
+          </>
         )
       }
     />

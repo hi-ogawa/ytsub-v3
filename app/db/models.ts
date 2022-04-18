@@ -65,6 +65,7 @@ export type PracticeActionType = typeof PRACTICE_ACTION_TYPES[number];
 export type PracticeQueueType = typeof PRACTICE_QUEUE_TYPES[number];
 
 // TODO: deck options
+// TOOD: add `note` column for arbitrary content
 export interface DeckTable {
   id: number;
   name: string;

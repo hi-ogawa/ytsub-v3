@@ -1,7 +1,7 @@
 import { useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import * as React from "react";
-import { ChevronDown, ChevronUp, X } from "react-feather";
+import { ChevronDown, ChevronUp, FilePlus, X } from "react-feather";
 import { PaginationComponent } from "../../components/misc";
 import {
   BookmarkEntryTable,
@@ -124,12 +124,24 @@ function BookmarkEntryComponent({
         >
           {bookmarkEntry.text}
         </div>
-        <button
-          className="flex-none btn btn-xs btn-circle btn-ghost text-gray-500"
-          onClick={() => {}}
-        >
-          <X size={16} />
-        </button>
+        {/* TODO: add to deck */}
+        {false && (
+          <button
+            className="flex-none btn btn-xs btn-circle btn-ghost text-gray-500"
+            onClick={() => {}}
+          >
+            <FilePlus size={16} />
+          </button>
+        )}
+        {/* TODO: delete */}
+        {false && (
+          <button
+            className="flex-none btn btn-xs btn-circle btn-ghost text-gray-500"
+            onClick={() => {}}
+          >
+            <X size={16} />
+          </button>
+        )}
       </div>
       {open && <MiniPlayer video={video} captionEntry={captionEntry} />}
     </div>
