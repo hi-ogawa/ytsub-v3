@@ -1,8 +1,8 @@
-import { useLoaderData } from "@remix-run/react";
+import { Link, Outlet, useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import * as React from "react";
 import { ChevronDown, ChevronUp, FilePlus, X } from "react-feather";
-import { PaginationComponent } from "../../components/misc";
+import { PaginationComponent } from "../components/misc";
 import {
   BookmarkEntryTable,
   CaptionEntryTable,
@@ -10,14 +10,14 @@ import {
   Q,
   VideoTable,
   toPaginationResult,
-} from "../../db/models";
-import { R } from "../../misc/routes";
-import { useToById } from "../../utils/by-id";
-import { Controller, makeLoader } from "../../utils/controller-utils";
-import { useDeserialize } from "../../utils/hooks";
-import { PageHandle } from "../../utils/page-handle";
-import { PAGINATION_PARAMS_SCHEMA } from "../../utils/pagination";
-import { CaptionEntryComponent, usePlayer } from "../videos/$id";
+} from "../db/models";
+import { R } from "../misc/routes";
+import { useToById } from "../utils/by-id";
+import { Controller, makeLoader } from "../utils/controller-utils";
+import { useDeserialize } from "../utils/hooks";
+import { PageHandle } from "../utils/page-handle";
+import { PAGINATION_PARAMS_SCHEMA } from "../utils/pagination";
+import { CaptionEntryComponent, usePlayer } from "./videos/$id";
 
 export const handle: PageHandle = {
   navBarTitle: "Bookmarks",
@@ -76,25 +76,28 @@ function ComponentImpl(props: LoaderData) {
   const bookmarkEntries = props.pagination.data;
 
   return (
-    <div className="w-full flex justify-center">
-      <div className="h-full w-full max-w-lg">
-        <div className="h-full flex flex-col p-2 gap-2">
-          <div className="w-full flex justify-end">
-            <PaginationComponent pagination={props.pagination} />
+    <>
+      <div className="w-full flex justify-center">
+        <div className="h-full w-full max-w-lg">
+          <div className="h-full flex flex-col p-2 gap-2">
+            <div className="w-full flex justify-end">
+              <PaginationComponent pagination={props.pagination} />
+            </div>
+            {/* TODO: CTA when empty */}
+            {bookmarkEntries.length === 0 && <div>Empty</div>}
+            {bookmarkEntries.map((bookmarkEntry) => (
+              <BookmarkEntryComponent
+                key={bookmarkEntry.id}
+                video={videos.byId[bookmarkEntry.videoId]}
+                captionEntry={captionEntries.byId[bookmarkEntry.captionEntryId]}
+                bookmarkEntry={bookmarkEntry}
+              />
+            ))}
           </div>
-          {/* TODO: CTA when empty */}
-          {bookmarkEntries.length === 0 && <div>Empty</div>}
-          {bookmarkEntries.map((bookmarkEntry) => (
-            <BookmarkEntryComponent
-              key={bookmarkEntry.id}
-              video={videos.byId[bookmarkEntry.videoId]}
-              captionEntry={captionEntries.byId[bookmarkEntry.captionEntryId]}
-              bookmarkEntry={bookmarkEntry}
-            />
-          ))}
         </div>
       </div>
-    </div>
+      <Outlet />
+    </>
   );
 }
 
@@ -125,6 +128,12 @@ function BookmarkEntryComponent({
           {bookmarkEntry.text}
         </div>
         {/* TODO: add to deck */}
+        <Link
+          to="add-to-deck"
+          className="flex-none btn btn-xs btn-circle btn-ghost text-gray-500"
+        >
+          <FilePlus size={16} />
+        </Link>
         {false && (
           <button
             className="flex-none btn btn-xs btn-circle btn-ghost text-gray-500"

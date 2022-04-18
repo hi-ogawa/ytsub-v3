@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { assert } from "../../misc/assert";
-import { loader } from "../bookmarks/index";
+import { loader } from "../bookmarks";
 import { testLoader, useUser } from "./helper";
 
 // TODO: use data
