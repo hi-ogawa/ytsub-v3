@@ -12,6 +12,7 @@ import {
 import { useList, useToggle } from "react-use";
 import { Collapse } from "./collapse";
 import { Spinner, VideoComponent } from "./misc";
+import { ModalProvider, useModal } from "./modal";
 import { Popover } from "./popover";
 import { Slide } from "./slide";
 import {
@@ -373,5 +374,50 @@ export function TestSpinner() {
         <Spinner className="w-40 h-40" />
       </div>
     </div>
+  );
+}
+
+const TestModalInner: React.FC = () => {
+  const { openModal, closeModal } = useModal();
+
+  function onClick() {
+    openModal(
+      <div className="inline-block w-full max-w-sm p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
+        <div className="text-lg font-medium leading-6 text-gray-900">
+          Some title
+        </div>
+        <div className="mt-2">
+          <p className="text-sm text-gray-500">Some comments</p>
+        </div>
+
+        <div className="mt-4">
+          <button
+            type="button"
+            className="inline-flex justify-center px-4 py-2 text-sm font-medium text-blue-900 bg-blue-100 border border-transparent rounded-md hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500"
+            onClick={closeModal}
+          >
+            Done!
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="w-full flex justify-center">
+      <div className="w-full max-w-lg flex flex-col p-2 gap-2">
+        <button onClick={onClick} className="btn">
+          Show Modal
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export function TestModalProvider() {
+  return (
+    <ModalProvider>
+      <TestModalInner />
+    </ModalProvider>
   );
 }
