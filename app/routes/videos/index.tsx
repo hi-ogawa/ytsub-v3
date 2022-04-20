@@ -1,8 +1,9 @@
 import { useFetcher, useFetchers, useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import * as React from "react";
-import { Trash2 } from "react-feather";
+import { PlusSquare, Trash2 } from "react-feather";
 import { PaginationComponent, VideoComponent } from "../../components/misc";
+import { useModal } from "../../components/modal";
 import { useSnackbar } from "../../components/snackbar";
 import { client } from "../../db/client.server";
 import {
@@ -133,6 +134,11 @@ function VideoComponentExtra({
   currentUser?: UserTable;
 }) {
   const fetcher = useFetcher();
+  const { openModal } = useModal();
+
+  function onClickAddToDeck() {
+    openModal(React.cloneElement(<AddToDeckComponent />));
+  }
 
   return (
     <VideoComponent
@@ -143,25 +149,55 @@ function VideoComponentExtra({
       actions={
         currentUser &&
         currentUser.id === video.userId && (
-          <fetcher.Form
-            method="delete"
-            action={R["/videos/$id"](video.id)}
-            data-test="video-delete-form"
-            onSubmitCapture={(e) => {
-              if (!window.confirm("Are you sure?")) {
-                e.preventDefault();
-              }
-            }}
-          >
-            <li>
-              <button type="submit">
-                <Trash2 />
-                Delete
+          <>
+            <li onClick={onClickAddToDeck}>
+              <button>
+                <PlusSquare />
+                Add to Deck
               </button>
             </li>
-          </fetcher.Form>
+            <fetcher.Form
+              method="delete"
+              action={R["/videos/$id"](video.id)}
+              data-test="video-delete-form"
+              onSubmitCapture={(e) => {
+                if (!window.confirm("Are you sure?")) {
+                  e.preventDefault();
+                }
+              }}
+            >
+              <li>
+                <button type="submit">
+                  <Trash2 />
+                  Delete
+                </button>
+              </li>
+            </fetcher.Form>
+          </>
         )
       }
     />
+  );
+}
+
+function AddToDeckComponent() {
+  return (
+    <div className="w-full max-w-md border shadow-xl rounded-xl bg-base-100 p-4 flex flex-col gap-2">
+      <div className="text-lg">Select a Deck</div>
+      <ul className="menu">
+        <li>
+          <button className="flex rounded">
+            <div className="grow flex">Deck 1</div>
+            <PlusSquare className="flex-none text-gray-700" size={18} />
+          </button>
+        </li>
+        <li>
+          <button className="flex rounded">
+            <div className="grow flex">Deck 2</div>
+            <PlusSquare className="flex-none text-gray-700" size={18} />
+          </button>
+        </li>
+      </ul>
+    </div>
   );
 }

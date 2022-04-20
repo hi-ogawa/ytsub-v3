@@ -28,6 +28,7 @@ import {
   Video,
 } from "react-feather";
 import { QueryClient, QueryClientProvider } from "react-query";
+import { ModalProvider } from "./components/modal";
 import { Popover } from "./components/popover";
 import {
   SnackbarItemComponent,
@@ -154,7 +155,7 @@ function RootProviders({ children }: React.PropsWithChildren<{}>) {
         }}
         timeout={5000}
       >
-        {children}
+        <ModalProvider>{children}</ModalProvider>
       </SnackbarProvider>
     </QueryClientProvider>
   );
