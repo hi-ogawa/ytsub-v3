@@ -40,9 +40,9 @@ export const ModalProvider: React.FC = ({ children }) => {
     <DefaultModalContext.Provider value={{ openModal, closeModal }}>
       {children}
       <Transition appear show={state === "OPEN"}>
-        <div className="absolute inset-0 z-10">
+        <div className="absolute inset-0 z-50 flex justify-center items-center">
           <Transition.Child
-            className="transition duration-300 absolute inset-0"
+            className="transition duration-300 absolute inset-0 z-[-1]"
             enterFrom="opacity-0"
             enterTo="opacity-100"
             leaveFrom="opacity-100"
@@ -53,18 +53,18 @@ export const ModalProvider: React.FC = ({ children }) => {
               onClick={closeModal}
             />
           </Transition.Child>
-          <div className="text-center">
-            <Transition.Child
-              className="transition duration-300 "
-              enterFrom="opacity-0 scale-95"
-              enterTo="opacity-100 scale-100"
-              leaveFrom="opacity-100 scale-100"
-              leaveTo="opacity-0 scale-95"
-              afterLeave={closeModalFinal}
-            >
-              {content}
-            </Transition.Child>
-          </div>
+          <Transition.Child
+            as={React.Fragment}
+            enter="transition duration-300"
+            enterFrom="opacity-0 scale-95"
+            enterTo="opacity-100 scale-100"
+            leave="transition duration-300"
+            leaveFrom="opacity-100 scale-100"
+            leaveTo="opacity-0 scale-95"
+            afterLeave={closeModalFinal}
+          >
+            {content}
+          </Transition.Child>
         </div>
       </Transition>
     </DefaultModalContext.Provider>
