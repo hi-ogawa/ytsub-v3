@@ -74,7 +74,7 @@ export function VideoComponent({
             {code1} - {code2}
           </div>
         </div>
-        {bookmarkEntriesCount && (
+        {bookmarkEntriesCount !== undefined && (
           <div className="absolute right-1 top-1 px-1 py-0.5 rounded bg-black/75 text-white text-xs font-bold">
             <div className="flex justify-center items-center gap-1">
               <div>{bookmarkEntriesCount}</div>

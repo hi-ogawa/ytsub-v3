@@ -19,7 +19,7 @@ export const handle: PageHandle = {
 //
 
 // TODO: more data (e.g. deck statistics, etc...)
-interface LoaderData {
+export interface DecksLoaderData {
   decks: DeckTable[];
 }
 
@@ -28,7 +28,7 @@ export const loader = makeLoader(Controller, async function () {
   const decks = await Q.decks()
     .where({ userId: user.id })
     .orderBy("createdAt", "desc");
-  return this.serialize({ decks } as LoaderData);
+  return this.serialize({ decks } as DecksLoaderData);
 });
 
 //
@@ -36,7 +36,7 @@ export const loader = makeLoader(Controller, async function () {
 //
 
 export default function DefaultComponent() {
-  const data: LoaderData = useDeserialize(useLoaderData());
+  const data: DecksLoaderData = useDeserialize(useLoaderData());
   const { decks } = data;
   return (
     <div className="w-full flex justify-center">

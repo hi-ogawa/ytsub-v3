@@ -10,9 +10,12 @@ import { requireUserAndDeck } from ".";
 //
 
 const ACTION_REQUEST_SCHEMA = z.object({
+  videoId: zStringToInteger,
   bookmarkEntryId: zStringToInteger,
   now: zStringToDate,
 });
+
+export type NewPracticeEntryRequest = z.infer<typeof ACTION_REQUEST_SCHEMA>;
 
 export const action = makeLoader(Controller, async function () {
   const [user, deck] = await requireUserAndDeck.apply(this);

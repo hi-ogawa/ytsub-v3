@@ -54,7 +54,7 @@ export const ModalProvider: React.FC = ({ children }) => {
             />
           </Transition.Child>
           <Transition.Child
-            as={React.Fragment}
+            className="w-full max-w-xl" // TODO: options for `openModal`
             enter="transition duration-300"
             enterFrom="opacity-0 scale-95"
             enterTo="opacity-100 scale-100"

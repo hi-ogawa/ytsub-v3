@@ -2,11 +2,16 @@ import { useFetcher, useFetchers, useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import * as React from "react";
 import { PlusSquare, Trash2 } from "react-feather";
-import { PaginationComponent, VideoComponent } from "../../components/misc";
+import {
+  PaginationComponent,
+  Spinner,
+  VideoComponent,
+} from "../../components/misc";
 import { useModal } from "../../components/modal";
 import { useSnackbar } from "../../components/snackbar";
 import { client } from "../../db/client.server";
 import {
+  DeckTable,
   PaginationResult,
   Q,
   UserTable,
@@ -14,11 +19,19 @@ import {
   toPaginationResult,
 } from "../../db/models";
 import { R } from "../../misc/routes";
-import { Controller, makeLoader } from "../../utils/controller-utils";
+import {
+  Controller,
+  deserialize,
+  makeLoader,
+} from "../../utils/controller-utils";
 import { useDeserialize } from "../../utils/hooks";
 import { useRootLoaderData } from "../../utils/loader-utils";
+import { mapOption } from "../../utils/misc";
 import { PageHandle } from "../../utils/page-handle";
 import { PAGINATION_PARAMS_SCHEMA } from "../../utils/pagination";
+import { toForm } from "../../utils/url-data";
+import { DecksLoaderData } from "../decks";
+import { NewPracticeEntryRequest } from "../decks/$id/new-practice-entry";
 
 export const handle: PageHandle = {
   navBarTitle: "Your Videos",
@@ -60,7 +73,9 @@ export const loader = makeLoader(Controller, async function () {
   const pagination = await toPaginationResult(
     Q.videos()
       .select("videos.*", {
-        bookmarkEntriesCount: client.raw("SUM(bookmarkEntries.id IS NOT NULL)"),
+        bookmarkEntriesCount: client.raw(
+          "CAST(SUM(bookmarkEntries.id IS NOT NULL) AS SIGNED)"
+        ),
       })
       .where("videos.userId", user.id)
       .orderBy("videos.updatedAt", "desc")
@@ -135,9 +150,11 @@ function VideoComponentExtra({
 }) {
   const fetcher = useFetcher();
   const { openModal } = useModal();
+  const addToDeckDisabled = !video.bookmarkEntriesCount;
 
   function onClickAddToDeck() {
-    openModal(React.cloneElement(<AddToDeckComponent />));
+    if (addToDeckDisabled) return;
+    openModal(React.cloneElement(<AddToDeckComponent videoId={video.id} />));
   }
 
   return (
@@ -150,8 +167,8 @@ function VideoComponentExtra({
         currentUser &&
         currentUser.id === video.userId && (
           <>
-            <li onClick={onClickAddToDeck}>
-              <button>
+            <li className={`${addToDeckDisabled && "disabled"}`}>
+              <button onClick={onClickAddToDeck}>
                 <PlusSquare />
                 Add to Deck
               </button>
@@ -180,24 +197,51 @@ function VideoComponentExtra({
   );
 }
 
-function AddToDeckComponent() {
+function AddToDeckComponent({ videoId }: { videoId: number }) {
+  // get decks
+  const fetcher1 = useFetcher();
+  const data: DecksLoaderData | undefined = React.useMemo(
+    () => mapOption(fetcher1.data, deserialize),
+    [fetcher1.data]
+  );
+  React.useEffect(() => fetcher1.load(R["/decks"]), []);
+
+  // create practice entries
+  const fetcher2 = useFetcher();
+  function onClickPlus(deck: DeckTable) {
+    const data: NewPracticeEntryRequest = {
+      videoId,
+      bookmarkEntryId: 0,
+      now: new Date(),
+    };
+    fetcher2.submit(toForm(data), {
+      action: R["/decks/$id/new-practice-entry"](deck.id),
+      method: "post",
+    });
+  }
+
   return (
-    <div className="w-full max-w-md border shadow-xl rounded-xl bg-base-100 p-4 flex flex-col gap-2">
+    <div className="border shadow-xl rounded-xl bg-base-100 p-4 flex flex-col gap-2">
       <div className="text-lg">Select a Deck</div>
-      <ul className="menu">
-        <li>
-          <button className="flex rounded">
-            <div className="grow flex">Deck 1</div>
-            <PlusSquare className="flex-none text-gray-700" size={18} />
-          </button>
-        </li>
-        <li>
-          <button className="flex rounded">
-            <div className="grow flex">Deck 2</div>
-            <PlusSquare className="flex-none text-gray-700" size={18} />
-          </button>
-        </li>
-      </ul>
+      {data ? (
+        <ul className="menu">
+          {data.decks.map((deck) => (
+            <li key={deck.id}>
+              <button
+                className="flex rounded"
+                onClick={() => onClickPlus(deck)}
+              >
+                <div className="grow flex">{deck.name}</div>
+                <PlusSquare className="flex-none text-gray-700" size={18} />
+              </button>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <div className="flex justify-center p-2">
+          <Spinner className="w-20 h-20" />
+        </div>
+      )}
     </div>
   );
 }

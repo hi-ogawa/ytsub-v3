@@ -382,7 +382,7 @@ const TestModalInner: React.FC = () => {
 
   function onClick() {
     openModal(
-      <div className="w-full max-w-sm p-6 my-8 bg-white shadow-xl rounded-xl">
+      <div className="w-full p-6 my-8 bg-white shadow-xl rounded-xl">
         <div className="text-lg font-medium leading-6 text-gray-900">
           Some title
         </div>
