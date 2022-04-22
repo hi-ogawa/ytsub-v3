@@ -36,6 +36,7 @@ export const action = makeLoader(Controller, async function () {
   assert(videoId);
 
   let bookmarkEntries = await Q.bookmarkEntries()
+    .select("bookmarkEntries.*")
     .orWhere("bookmarkEntries.videoId", videoId)
     .leftJoin(
       "captionEntries",
@@ -54,10 +55,6 @@ export const action = makeLoader(Controller, async function () {
     ]);
 
   const system = new PracticeSystem(user, deck);
-  const ids = Promise.all(
-    bookmarkEntries.map((bookmarkEntry) =>
-      system.createPracticeEntry(bookmarkEntry, now)
-    )
-  );
-  return { success: true, data: { ids } };
+  await system.createPracticeEntries(bookmarkEntries, now);
+  return { success: true };
 });

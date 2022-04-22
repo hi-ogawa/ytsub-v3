@@ -41,8 +41,8 @@ describe("PracticeSystem", () => {
     const system = new PracticeSystem(user(), deck);
 
     // create practice
-    const practiceEntryId = await system.createPracticeEntry(
-      bookmarkEntry,
+    const [practiceEntryId] = await system.createPracticeEntries(
+      [bookmarkEntry],
       NOW
     );
     const practiceEntry = await Q.practiceEntries()

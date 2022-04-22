@@ -51,8 +51,8 @@ export async function requireUserAndDeck(
 
 interface LoaderData {
   deck: DeckTable;
-  bookmarkEntries: BookmarkEntryTable[];
   practiceEntries: PracticeEntryTable[]; // TODO: paginate
+  bookmarkEntries: BookmarkEntryTable[];
 }
 
 export const loader = makeLoader(Controller, async function () {
@@ -60,13 +60,11 @@ export const loader = makeLoader(Controller, async function () {
   const practiceEntries = await Q.practiceEntries()
     .where("deckId", deck.id)
     .orderBy("createdAt", "asc");
-  // TODO: not working?
   const bookmarkEntries = await Q.bookmarkEntries().whereIn(
     "id",
     practiceEntries.map((e) => e.bookmarkEntryId)
   );
   const res: LoaderData = { deck, practiceEntries, bookmarkEntries };
-  console.log(res);
   return this.serialize(res);
 });
 
@@ -75,7 +73,7 @@ export const loader = makeLoader(Controller, async function () {
 //
 
 export default function DefaultComponent() {
-  const { deck, practiceEntries, bookmarkEntries }: LoaderData = useDeserialize(
+  const { practiceEntries, bookmarkEntries }: LoaderData = useDeserialize(
     useLoaderData()
   );
   const bookmarkEntriesById = useToById(bookmarkEntries);
@@ -83,12 +81,15 @@ export default function DefaultComponent() {
   return (
     <div className="w-full flex justify-center">
       <div className="h-full w-full max-w-lg">
-        <div className="h-full flex flex-col p-2 gap-2">{deck.name}</div>
-        <div>
+        <div className="h-full flex flex-col p-2 gap-2">
           {practiceEntries.map((practiceEntry) => (
-            <div key={practiceEntry.id}>
-              {practiceEntry.id},{practiceEntry.bookmarkEntryId}
-              {bookmarkEntriesById.byId[practiceEntry.bookmarkEntryId]?.text}
+            <div
+              key={practiceEntry.id}
+              className="border border-gray-200 flex items-center p-2 gap-2"
+            >
+              <div className="grow pl-2">
+                {bookmarkEntriesById.byId[practiceEntry.bookmarkEntryId].text}
+              </div>
             </div>
           ))}
         </div>

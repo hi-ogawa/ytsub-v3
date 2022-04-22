@@ -1,3 +1,4 @@
+import { range } from "lodash";
 import {
   BookmarkEntryTable,
   DeckTable,
@@ -119,21 +120,21 @@ export class PracticeSystem {
   }
 
   // TODO: prevent duplicate (on conflict with unique key (deckId, bookmarkEntryId))
-  // TODO: multiple entries at once
-  async createPracticeEntry(
-    bookmarkEntry: BookmarkEntryTable,
+  async createPracticeEntries(
+    bookmarkEntries: BookmarkEntryTable[],
     now: Date = new Date()
-  ): Promise<number> {
+  ): Promise<number[]> {
     const deckId = this.deck.id;
-    const bookmarkEntryId = bookmarkEntry.id;
-    const [id] = await Q.practiceEntries().insert({
-      queueType: "NEW",
-      easeFactor: 1,
-      scheduledAt: now,
-      deckId,
-      bookmarkEntryId,
-    });
-    return id;
+    const [id] = await Q.practiceEntries().insert(
+      bookmarkEntries.map((e) => ({
+        queueType: "NEW",
+        easeFactor: 1,
+        scheduledAt: now,
+        deckId,
+        bookmarkEntryId: e.id,
+      }))
+    );
+    return range(id, id + bookmarkEntries.length);
   }
 
   async createPracticeAction(
