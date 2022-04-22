@@ -2,8 +2,15 @@ import { useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import * as React from "react";
 import { z } from "zod";
-import { DeckTable, Q, UserTable } from "../../../db/models";
+import {
+  BookmarkEntryTable,
+  DeckTable,
+  PracticeEntryTable,
+  Q,
+  UserTable,
+} from "../../../db/models";
 import { R } from "../../../misc/routes";
+import { useToById } from "../../../utils/by-id";
 import { Controller, makeLoader } from "../../../utils/controller-utils";
 import { useDeserialize } from "../../../utils/hooks";
 import { PageHandle } from "../../../utils/page-handle";
@@ -44,11 +51,23 @@ export async function requireUserAndDeck(
 
 interface LoaderData {
   deck: DeckTable;
+  bookmarkEntries: BookmarkEntryTable[];
+  practiceEntries: PracticeEntryTable[]; // TODO: paginate
 }
 
 export const loader = makeLoader(Controller, async function () {
   const [, deck] = await requireUserAndDeck.apply(this);
-  return this.serialize({ deck } as LoaderData);
+  const practiceEntries = await Q.practiceEntries()
+    .where("deckId", deck.id)
+    .orderBy("createdAt", "asc");
+  // TODO: not working?
+  const bookmarkEntries = await Q.bookmarkEntries().whereIn(
+    "id",
+    practiceEntries.map((e) => e.bookmarkEntryId)
+  );
+  const res: LoaderData = { deck, practiceEntries, bookmarkEntries };
+  console.log(res);
+  return this.serialize(res);
 });
 
 //
@@ -56,11 +75,23 @@ export const loader = makeLoader(Controller, async function () {
 //
 
 export default function DefaultComponent() {
-  const { deck }: LoaderData = useDeserialize(useLoaderData());
+  const { deck, practiceEntries, bookmarkEntries }: LoaderData = useDeserialize(
+    useLoaderData()
+  );
+  const bookmarkEntriesById = useToById(bookmarkEntries);
+
   return (
     <div className="w-full flex justify-center">
       <div className="h-full w-full max-w-lg">
         <div className="h-full flex flex-col p-2 gap-2">{deck.name}</div>
+        <div>
+          {practiceEntries.map((practiceEntry) => (
+            <div key={practiceEntry.id}>
+              {practiceEntry.id},{practiceEntry.bookmarkEntryId}
+              {bookmarkEntriesById.byId[practiceEntry.bookmarkEntryId]?.text}
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

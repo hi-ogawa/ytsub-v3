@@ -208,10 +208,21 @@ function AddToDeckComponent({ videoId }: { videoId: number }) {
 
   // create practice entries
   const fetcher2 = useFetcher();
+  const { enqueueSnackbar } = useSnackbar();
+
+  React.useEffect(() => {
+    if (fetcher2.type === "done") {
+      if (fetcher2.data.success) {
+        enqueueSnackbar("Added to a deck successfuly", { variant: "success" });
+      } else {
+        enqueueSnackbar("Failed to add to a deck", { variant: "error" });
+      }
+    }
+  }, [fetcher2.type]);
+
   function onClickPlus(deck: DeckTable) {
     const data: NewPracticeEntryRequest = {
       videoId,
-      bookmarkEntryId: 0,
       now: new Date(),
     };
     fetcher2.submit(toForm(data), {

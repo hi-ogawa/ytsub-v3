@@ -18,3 +18,11 @@ export function getCall<M extends string>(m: M) {
     return t[m]();
   };
 }
+
+export function isNullable<T>(value: T): value is T & (null | undefined) {
+  return value === null || typeof value === "undefined";
+}
+
+export function isNonNullable<T>(value: T): value is NonNullable<T> {
+  return !isNullable(value);
+}
