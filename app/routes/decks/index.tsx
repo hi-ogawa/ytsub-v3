@@ -10,7 +10,7 @@ import { useDeserialize } from "../../utils/hooks";
 import { PageHandle } from "../../utils/page-handle";
 
 export const handle: PageHandle = {
-  navBarTitle: "Practice Decks",
+  navBarTitle: () => "Practice Decks",
   NavBarMenuComponent,
 };
 

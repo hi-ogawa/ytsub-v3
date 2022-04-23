@@ -120,7 +120,8 @@ function Root() {
 
   // `PageHandle` of the leaf compoment
   const matches: Match[] = useMatches();
-  const { navBarTitle, NavBarMenuComponent } = last(matches)?.handle ?? {};
+  const { navBarTitle: navBarTitleV2, NavBarMenuComponent } =
+    last(matches)?.handle ?? {};
 
   return (
     <>
@@ -128,7 +129,7 @@ function Root() {
       <SideMenuDrawerWrapper isSignedIn={!!data.currentUser}>
         <div className="h-full flex flex-col">
           <Navbar
-            title={navBarTitle}
+            title={navBarTitleV2?.()}
             user={data.currentUser}
             MenuComponent={NavBarMenuComponent}
           />
@@ -198,7 +199,7 @@ function Navbar({
   user,
   MenuComponent,
 }: {
-  title?: string;
+  title?: React.ReactNode;
   user?: UserTable;
   MenuComponent?: React.FC;
 }) {

@@ -25,7 +25,7 @@ import {
 import { PageHandle } from "../../utils/page-handle";
 
 export const handle: PageHandle = {
-  navBarTitle: "Account",
+  navBarTitle: () => "Account",
 };
 
 export const loader = makeLoader(Controller, async function () {

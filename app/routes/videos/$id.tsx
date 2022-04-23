@@ -39,7 +39,7 @@ import { zStringToInteger } from "../../utils/zod-utils";
 import { NewBookmark } from "../bookmarks/new";
 
 export const handle: PageHandle = {
-  navBarTitle: "Watch",
+  navBarTitle: () => "Watch",
   NavBarMenuComponent,
 };
 

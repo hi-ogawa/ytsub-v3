@@ -37,7 +37,7 @@ import {
 } from "../decks/$id/new-practice-entry";
 
 export const handle: PageHandle = {
-  navBarTitle: "Your Videos",
+  navBarTitle: () => "Your Videos",
 };
 
 // TODO

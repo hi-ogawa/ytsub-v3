@@ -10,7 +10,7 @@ import { useIsFormValid } from "../../utils/hooks";
 import { PageHandle } from "../../utils/page-handle";
 
 export const handle: PageHandle = {
-  navBarTitle: "New Deck",
+  navBarTitle: () => "New Deck",
 };
 
 //

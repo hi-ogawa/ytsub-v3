@@ -22,7 +22,7 @@ import { PageHandle } from "../../../utils/page-handle";
 import { zStringToInteger } from "../../../utils/zod-utils";
 
 export const handle: PageHandle = {
-  navBarTitle: "Practice Decks", // TODO: Show deck name via `useLeafLoaderData`
+  navBarTitle: () => <NavBarTitleComponent />,
   NavBarMenuComponent,
 };
 
@@ -115,6 +115,15 @@ export default function DefaultComponent() {
       </div>
     </div>
   );
+}
+
+//
+// NavBarTitleComponent
+//
+
+function NavBarTitleComponent() {
+  const { deck }: LoaderData = useDeserialize(useLeafLoaderData());
+  return <>{deck.name}</>;
 }
 
 //

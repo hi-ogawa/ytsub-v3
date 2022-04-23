@@ -15,7 +15,7 @@ import { PAGINATION_PARAMS_SCHEMA } from "../utils/pagination";
 import { VideoListComponent } from "./videos";
 
 export const handle: PageHandle = {
-  navBarTitle: "Examples",
+  navBarTitle: () => "Examples",
 };
 
 interface LoaderData {

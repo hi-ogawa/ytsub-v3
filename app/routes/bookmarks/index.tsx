@@ -20,7 +20,7 @@ import { PAGINATION_PARAMS_SCHEMA } from "../../utils/pagination";
 import { CaptionEntryComponent, usePlayer } from "../videos/$id";
 
 export const handle: PageHandle = {
-  navBarTitle: "Bookmarks",
+  navBarTitle: () => "Bookmarks",
 };
 
 interface LoaderData {
