@@ -19,6 +19,10 @@ import { Controller, makeLoader } from "../../../utils/controller-utils";
 import { useDeserialize } from "../../../utils/hooks";
 import { useLeafLoaderData } from "../../../utils/loader-utils";
 import { PageHandle } from "../../../utils/page-handle";
+import {
+  DeckPracticeStatistics,
+  PracticeSystem,
+} from "../../../utils/practice-system";
 import { zStringToInteger } from "../../../utils/zod-utils";
 
 export const handle: PageHandle = {
@@ -56,12 +60,16 @@ export async function requireUserAndDeck(
 
 interface LoaderData {
   deck: DeckTable;
+  statistics: DeckPracticeStatistics;
   practiceEntries: PracticeEntryTable[]; // TODO: paginate
   bookmarkEntries: BookmarkEntryTable[];
 }
 
 export const loader = makeLoader(Controller, async function () {
-  const [, deck] = await requireUserAndDeck.apply(this);
+  const [user, deck] = await requireUserAndDeck.apply(this);
+  const system = new PracticeSystem(user, deck);
+  const now = new Date();
+  const statistics = await system.getStatistics(now);
   const practiceEntries = await Q.practiceEntries()
     .where("deckId", deck.id)
     .orderBy("createdAt", "asc");
@@ -69,7 +77,12 @@ export const loader = makeLoader(Controller, async function () {
     "id",
     practiceEntries.map((e) => e.bookmarkEntryId)
   );
-  const res: LoaderData = { deck, practiceEntries, bookmarkEntries };
+  const res: LoaderData = {
+    deck,
+    statistics,
+    practiceEntries,
+    bookmarkEntries,
+  };
   return this.serialize(res);
 });
 
@@ -90,16 +103,38 @@ export const action = makeLoader(Controller, async function () {
 //
 
 export default function DefaultComponent() {
-  const { practiceEntries, bookmarkEntries }: LoaderData = useDeserialize(
-    useLoaderData()
-  );
+  const { statistics, practiceEntries, bookmarkEntries }: LoaderData =
+    useDeserialize(useLoaderData());
   const bookmarkEntriesById = useToById(bookmarkEntries);
 
-  // TODO: simple table layout?
+  // TODO: simple table layout to show all `practiceEntry` data?
+  // - queueType
+  // - scheduledAt
   return (
     <div className="w-full flex justify-center">
       <div className="h-full w-full max-w-lg">
         <div className="h-full flex flex-col p-2 gap-2">
+          {/* TODO(refactor): copied from `practice.tsx` */}
+          <div className="w-full flex items-center bg-white p-2 px-4">
+            <div className="flex-none text-sm text-gray-600 uppercase">
+              Progress
+            </div>
+            <div className="grow flex px-4">
+              <div className="grow" />
+              <div className="flex-none text-blue-500">
+                {statistics.NEW.daily} / {statistics.NEW.total}
+              </div>
+              <div className="grow text-center text-gray-400">-</div>
+              <div className="flex-none text-red-500">
+                {statistics.LEARN.daily} / {statistics.LEARN.total}
+              </div>
+              <div className="grow text-center text-gray-400">-</div>
+              <div className="flex-none text-green-500">
+                {statistics.REVIEW.daily} / {statistics.REVIEW.total}
+              </div>
+              <div className="grow" />
+            </div>
+          </div>
           {practiceEntries.length === 0 && <div>Empty</div>}
           {practiceEntries.map((practiceEntry) => (
             <div
@@ -168,6 +203,7 @@ function NavBarMenuComponent() {
                     Practice
                   </Link>
                 </li>
+                {/* TODO: link to /bookmarks with "deck" filtering */}
                 <Form
                   action={R["/decks/$id"](deck.id) + "?index"}
                   method="delete"

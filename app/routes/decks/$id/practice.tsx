@@ -37,7 +37,7 @@ export const handle: PageHandle = {
 
 interface LoaderData {
   deck: DeckTable;
-  statistics: DeckPracticeStatistics; // TODO: practice statistics of the deck
+  statistics: DeckPracticeStatistics;
   // TODO: improve practice status message (e.g. when it shouldn't say "finished" when there's no practice entry to start with)
   data:
     | {
@@ -98,12 +98,11 @@ export default function DefaultComponent() {
     <div className="h-full w-full flex justify-center">
       <div className="h-full w-full max-w-lg">
         <div className="h-full flex flex-col p-2 gap-2">
-          <div className="w-full flex items-center border rounded bg-white p-2 px-4 my-3">
+          <div className="w-full flex items-center bg-white p-2 px-4">
             <div className="flex-none text-sm text-gray-600 uppercase">
               Progress
             </div>
             <div className="grow flex px-4">
-              {/* TODO: get statistics data */}
               <div className="grow" />
               <div className="flex-none text-blue-500">
                 {statistics.NEW.daily} / {statistics.NEW.total}
