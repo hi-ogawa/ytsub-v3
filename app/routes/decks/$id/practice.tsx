@@ -106,15 +106,15 @@ export default function DefaultComponent() {
               {/* TODO: get statistics data */}
               <div className="grow" />
               <div className="flex-none text-blue-500">
-                {statistics.NEW.daily}/{statistics.NEW.total}
+                {statistics.NEW.daily} / {statistics.NEW.total}
               </div>
               <div className="grow text-center text-gray-400">-</div>
               <div className="flex-none text-red-500">
-                {statistics.LEARN.daily}/{statistics.LEARN.total}
+                {statistics.LEARN.daily} / {statistics.LEARN.total}
               </div>
               <div className="grow text-center text-gray-400">-</div>
               <div className="flex-none text-green-500">
-                {statistics.REVIEW.daily}/{statistics.REVIEW.total}
+                {statistics.REVIEW.daily} / {statistics.REVIEW.total}
               </div>
               <div className="grow" />
             </div>
