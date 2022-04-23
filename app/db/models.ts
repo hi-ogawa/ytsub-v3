@@ -206,19 +206,19 @@ export interface PaginationResult<T> extends PaginationMetadata {
 // desperate typing hacks...
 export async function toPaginationResult<QB extends Knex.QueryBuilder>(
   query: QB,
-  { page, perPage }: { page: number; perPage: number }
+  { page, perPage }: { page: number; perPage: number },
+  { clearJoin = false }: { clearJoin?: boolean } = {}
 ): Promise<PaginationResult<QB extends Promise<(infer T)[]> ? T : never>> {
   const queryData = query
     .clone()
     .offset((page - 1) * perPage)
     .limit(perPage);
   // https://github.com/knex/knex/blob/939d8a219c432a7d7dcb1ed1a79d1e5a4686eafd/lib/query/querybuilder.js#L1210
-  const queryTotal = query
-    .clone()
-    .clear("select")
-    .clear("order")
-    .clear("join") // TODO: this goes wrong when joined columns are used in `where` clause
-    .clear("group");
+  let queryTotal = query.clone().clear("select").clear("order");
+  if (clearJoin) {
+    // this will break when `where` depends on joined columns
+    queryTotal = queryTotal.clear("join").clear("group");
+  }
   const [data, total] = await Promise.all([queryData, toCount(queryTotal)]);
   return { data, total, page, perPage, totalPage: Math.ceil(total / perPage) };
 }
