@@ -53,7 +53,8 @@ jobs:
           node-version: "16.14.0"
       - run: pnpm run install-with-patch -- --frozen-lockfile
       - run: make docker/up db/reset/test
-      - run: npm run test
+      - run: npm run test:coverage
+      - run: npm run test:coverage:publish
 
   test-e2e:
     runs-on: ubuntu-20.04
