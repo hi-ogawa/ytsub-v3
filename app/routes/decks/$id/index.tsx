@@ -23,7 +23,7 @@ import { zStringToInteger } from "../../../utils/zod-utils";
 
 export const handle: PageHandle = {
   navBarTitle: () => <NavBarTitleComponent />,
-  NavBarMenuComponent,
+  navBarMenu: () => <NavBarMenuComponent />,
 };
 
 // TODO

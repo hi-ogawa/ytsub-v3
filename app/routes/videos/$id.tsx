@@ -40,7 +40,7 @@ import { NewBookmark } from "../bookmarks/new";
 
 export const handle: PageHandle = {
   navBarTitle: () => "Watch",
-  NavBarMenuComponent,
+  navBarMenu: () => <NavBarMenuComponent />,
 };
 
 //

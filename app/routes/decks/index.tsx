@@ -11,7 +11,7 @@ import { PageHandle } from "../../utils/page-handle";
 
 export const handle: PageHandle = {
   navBarTitle: () => "Practice Decks",
-  NavBarMenuComponent,
+  navBarMenu: () => <NavBarMenuComponent />,
 };
 
 //
