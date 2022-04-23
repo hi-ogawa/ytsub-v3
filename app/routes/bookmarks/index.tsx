@@ -98,7 +98,7 @@ function ComponentImpl(props: LoaderData) {
   );
 }
 
-function BookmarkEntryComponent({
+export function BookmarkEntryComponent({
   video,
   captionEntry,
   bookmarkEntry,
@@ -124,12 +124,15 @@ function BookmarkEntryComponent({
         >
           {bookmarkEntry.text}
         </div>
-        <button
-          className="flex-none btn btn-xs btn-circle btn-ghost text-gray-500"
-          onClick={() => {}}
-        >
-          <X size={16} />
-        </button>
+        {/* TODO */}
+        {false && (
+          <button
+            className="flex-none btn btn-xs btn-circle btn-ghost text-gray-500"
+            onClick={() => {}}
+          >
+            <X size={16} />
+          </button>
+        )}
       </div>
       {open && <MiniPlayer video={video} captionEntry={captionEntry} />}
     </div>

@@ -27,6 +27,17 @@ export function isNonNullable<T>(value: T): value is NonNullable<T> {
   return !isNullable(value);
 }
 
+export function LOG<T>(value: T): T {
+  console.log(value);
+  return value;
+}
+// @ts-expect-error
+global.LOG = LOG;
+
+//
+// result type
+//
+
 export type Result<T, E> = ResultOk<T> | ResultErr<E>;
 
 interface ResultOk<T> {

@@ -70,12 +70,16 @@ const DECK_OPTIONS = {
 // TODO(perf)
 // - db queries in parallel (Promise.all)
 // - cache counters
+// - jitter something?
+//   - must be deterministic
+//   - which queue to pick in `getNextPracticeEntry`
+//   - `sheduledAt` in `createPracticeEntries`
 
 export class PracticeSystem {
   constructor(private user: UserTable, private deck: DeckTable) {}
 
   // TODO
-  // async getDailyProgress() {}
+  // async getStatistics() {}
 
   async getNextPracticeEntry(
     now: Date = new Date()
@@ -89,7 +93,7 @@ export class PracticeSystem {
       .where("createdAt", ">=", yesterday);
     const qEntries = Q.practiceEntries()
       .where({ deckId })
-      .where("scheduledAt", ">=", now)
+      .where("scheduledAt", "<=", now)
       .orderBy("scheduledAt");
 
     // NEW queue
@@ -97,13 +101,16 @@ export class PracticeSystem {
       (await toCount(qActions.clone().where({ queueType: "NEW" }))) <
       newEntriesPerDay
     ) {
-      const found = await qEntries.where({ queueType: "NEW" }).first();
+      const found = await qEntries.clone().where({ queueType: "NEW" }).first();
       if (found) return found;
     }
 
     // LEARN queue
     {
-      const found = await qEntries.where({ queueType: "LEARN" }).first();
+      const found = await qEntries
+        .clone()
+        .where({ queueType: "LEARN" })
+        .first();
       if (found) return found;
     }
 
@@ -112,7 +119,10 @@ export class PracticeSystem {
       (await toCount(qActions.clone().where({ queueType: "REVIEW" }))) <
       reviewsPerDay
     ) {
-      const found = await qEntries.where({ queueType: "REVIEW" }).first();
+      const found = await qEntries
+        .clone()
+        .where({ queueType: "REVIEW" })
+        .first();
       if (found) return found;
     }
 

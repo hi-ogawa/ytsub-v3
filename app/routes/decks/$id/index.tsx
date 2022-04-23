@@ -1,8 +1,8 @@
 import { Transition } from "@headlessui/react";
-import { Form, useLoaderData } from "@remix-run/react";
+import { Form, Link, useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import * as React from "react";
-import { MoreVertical, Trash2 } from "react-feather";
+import { MoreVertical, Play, Trash2 } from "react-feather";
 import { z } from "zod";
 import { Popover } from "../../../components/popover";
 import {
@@ -147,7 +147,7 @@ function NavBarMenuComponent() {
               <MoreVertical />
             </button>
           )}
-          floating={({ open, props }) => (
+          floating={({ open, setOpen, props }) => (
             <Transition
               show={open}
               unmount={false}
@@ -159,6 +159,15 @@ function NavBarMenuComponent() {
               {...props}
             >
               <ul className="menu rounded p-3 shadow w-48 bg-base-100 text-base-content text-sm">
+                <li>
+                  <Link
+                    to={R["/decks/$id/practice"](deck.id)}
+                    onClick={() => setOpen(false)}
+                  >
+                    <Play />
+                    Practice
+                  </Link>
+                </li>
                 <Form
                   action={R["/decks/$id"](deck.id) + "?index"}
                   method="delete"
