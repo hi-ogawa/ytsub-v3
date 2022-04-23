@@ -2,7 +2,7 @@ import { Transition } from "@headlessui/react";
 import { Form, Link, useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import * as React from "react";
-import { MoreVertical, Play, Trash2 } from "react-feather";
+import { Bookmark, MoreVertical, Play, Trash2 } from "react-feather";
 import { z } from "zod";
 import { Popover } from "../../../components/popover";
 import {
@@ -243,7 +243,15 @@ function NavBarMenuComponent() {
                     Practice
                   </Link>
                 </li>
-                {/* TODO: link to /bookmarks with "deck" filtering */}
+                <li>
+                  <Link
+                    to={R["/bookmarks"] + `?deckId=${deck.id}`}
+                    onClick={() => setOpen(false)}
+                  >
+                    <Bookmark />
+                    Bookmarks
+                  </Link>
+                </li>
                 <Form
                   action={R["/decks/$id"](deck.id) + "?index"}
                   method="delete"

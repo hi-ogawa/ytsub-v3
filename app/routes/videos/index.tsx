@@ -84,7 +84,8 @@ export const loader = makeLoader(Controller, async function () {
       .orderBy("videos.updatedAt", "desc")
       .leftJoin("bookmarkEntries", "bookmarkEntries.videoId", "videos.id")
       .groupBy("videos.id"),
-    parsed.data
+    parsed.data,
+    { clearJoin: true }
   );
 
   const data: LoaderData = { pagination };
@@ -163,7 +164,7 @@ function VideoComponentExtra({
 
   function onClickAddToDeck() {
     if (addToDeckDisabled) return;
-    openModal(React.cloneElement(<AddToDeckComponent videoId={video.id} />));
+    openModal(<AddToDeckComponent videoId={video.id} />);
   }
 
   return (
