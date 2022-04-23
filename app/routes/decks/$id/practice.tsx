@@ -1,5 +1,6 @@
-import { Form, useLoaderData, useSubmit } from "@remix-run/react";
+import { useLoaderData, useSubmit, useTransition } from "@remix-run/react";
 import * as React from "react";
+import { Spinner } from "../../../components/misc";
 import {
   BookmarkEntryTable,
   CaptionEntryTable,
@@ -138,6 +139,10 @@ function PracticeComponent({
   video: VideoTable;
 }) {
   const submit = useSubmit();
+  const transition = useTransition();
+  const isLoading =
+    transition.state !== "idle" &&
+    transition.location?.pathname.startsWith(R["/decks/$id"](deck.id));
 
   function onClickAction(actionType: PracticeActionType) {
     const data: NewPracticeActionRequest = {
@@ -153,19 +158,25 @@ function PracticeComponent({
 
   return (
     <>
-      <div className="grow">
-        <BookmarkEntryComponent
-          video={video}
-          captionEntry={captionEntry}
-          bookmarkEntry={bookmarkEntry}
-        />
+      <div className="grow w-full flex flex-col">
+        {isLoading ? (
+          <div className="w-full flex justify-center">
+            <Spinner className="w-16 h-16" />
+          </div>
+        ) : (
+          <BookmarkEntryComponent
+            video={video}
+            captionEntry={captionEntry}
+            bookmarkEntry={bookmarkEntry}
+          />
+        )}
       </div>
       <div className="flex justify-center pt-2 pb-4">
         <div className="btn-group">
           {PRACTICE_ACTION_TYPES.map((type) => (
             <button
               key={type}
-              className="btn"
+              className={`btn ${isLoading && "btn-disabled"}`}
               onClick={() => onClickAction(type)}
             >
               {type}

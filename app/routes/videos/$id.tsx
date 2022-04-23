@@ -525,6 +525,7 @@ export function CaptionEntryComponent({
   return (
     <div
       className={`
+        w-full
         flex flex-col
         ${border && "border border-solid border-gray-200"}
         ${isEntryPlaying ? "border-blue-400" : "border-gray-200"}
