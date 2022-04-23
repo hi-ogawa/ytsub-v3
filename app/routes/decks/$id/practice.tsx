@@ -1,4 +1,4 @@
-import { useLoaderData, useSubmit, useTransition } from "@remix-run/react";
+import { useFetcher, useLoaderData, useTransition } from "@remix-run/react";
 import * as React from "react";
 import { Spinner } from "../../../components/misc";
 import {
@@ -148,7 +148,7 @@ function PracticeComponent({
   captionEntry: CaptionEntryTable;
   video: VideoTable;
 }) {
-  const submit = useSubmit();
+  const fetcher = useFetcher();
   const transition = useTransition();
   const isLoading =
     transition.state !== "idle" &&
@@ -160,7 +160,7 @@ function PracticeComponent({
       now: new Date(),
       actionType,
     };
-    submit(toForm(data), {
+    fetcher.submit(toForm(data), {
       action: R["/decks/$id/new-practice-action"](deck.id),
       method: "post",
     });

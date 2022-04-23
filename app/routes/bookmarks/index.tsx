@@ -80,6 +80,7 @@ function ComponentImpl(props: LoaderData) {
       <div className="h-full w-full max-w-lg">
         <div className="h-full flex flex-col p-2 gap-2">
           <div className="w-full flex justify-end">
+            {/* TODO: make it float at the bottom? */}
             <PaginationComponent pagination={props.pagination} />
           </div>
           {/* TODO: CTA when empty */}
