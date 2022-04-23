@@ -54,6 +54,8 @@ jobs:
       - run: pnpm run install-with-patch -- --frozen-lockfile
       - run: make docker/up db/reset/test
       - run: npm run test:coverage
+      - run: git config --global user.email "you@example.com"
+      - run: git config --global user.name "Your Name"
       - run: npm run test:coverage:publish
 
   test-e2e:
