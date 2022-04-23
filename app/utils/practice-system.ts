@@ -1,4 +1,4 @@
-import { range } from "lodash";
+import { difference, range } from "lodash";
 import {
   BookmarkEntryTable,
   DeckTable,
@@ -119,22 +119,31 @@ export class PracticeSystem {
     return;
   }
 
-  // TODO: prevent duplicate (on conflict with unique key (deckId, bookmarkEntryId))
   async createPracticeEntries(
     bookmarkEntries: BookmarkEntryTable[],
     now: Date = new Date()
   ): Promise<number[]> {
     const deckId = this.deck.id;
+    // Prevent duplicates on applicatoin level (TODO: probably looks less surprising to do this outside...)
+    const bookmarkEntryIds = bookmarkEntries.map((e) => e.id);
+    const dupIds = await Q.practiceEntries()
+      .pluck("bookmarkEntryId")
+      .where({ deckId })
+      .whereIn("bookmarkEntryId", bookmarkEntryIds);
+    const newIds = difference(bookmarkEntryIds, dupIds);
+    if (newIds.length === 0) {
+      return [];
+    }
     const [id] = await Q.practiceEntries().insert(
-      bookmarkEntries.map((e) => ({
+      newIds.map((id) => ({
         queueType: "NEW",
         easeFactor: 1,
         scheduledAt: now,
         deckId,
-        bookmarkEntryId: e.id,
+        bookmarkEntryId: id,
       }))
     );
-    return range(id, id + bookmarkEntries.length);
+    return range(id, id + newIds.length);
   }
 
   async createPracticeAction(

@@ -2,7 +2,7 @@ import { z } from "zod";
 import { Q } from "../../../db/models";
 import { assert } from "../../../misc/assert";
 import { Controller, makeLoader } from "../../../utils/controller-utils";
-import { isNonNullable } from "../../../utils/misc";
+import { Result, isNonNullable } from "../../../utils/misc";
 import { PracticeSystem } from "../../../utils/practice-system";
 import { zStringToDate, zStringToInteger } from "../../../utils/zod-utils";
 import { requireUserAndDeck } from ".";
@@ -25,36 +25,44 @@ const ACTION_REQUEST_SCHEMA = z
 
 export type NewPracticeEntryRequest = z.infer<typeof ACTION_REQUEST_SCHEMA>;
 
-export const action = makeLoader(Controller, async function () {
-  const [user, deck] = await requireUserAndDeck.apply(this);
-  const parsed = ACTION_REQUEST_SCHEMA.safeParse(await this.form());
-  if (!parsed.success) {
-    return { success: false };
+export type NewPracticeEntryResponse = Result<
+  { ids: number[] },
+  { message: string }
+>;
+
+export const action = makeLoader(
+  Controller,
+  async function (): Promise<NewPracticeEntryResponse> {
+    const [user, deck] = await requireUserAndDeck.apply(this);
+    const parsed = ACTION_REQUEST_SCHEMA.safeParse(await this.form());
+    if (!parsed.success) {
+      return { ok: false, data: { message: "Invalid request" } };
+    }
+
+    const { videoId, now } = parsed.data;
+    assert(videoId);
+
+    const bookmarkEntries = await Q.bookmarkEntries()
+      .select("bookmarkEntries.*")
+      .orWhere("bookmarkEntries.videoId", videoId)
+      .leftJoin(
+        "captionEntries",
+        "captionEntries.id",
+        "bookmarkEntries.captionEntryId"
+      )
+      .orderBy([
+        {
+          column: "captionEntries.index",
+          order: "asc",
+        },
+        {
+          column: "bookmarkEntries.offset",
+          order: "asc",
+        },
+      ]);
+
+    const system = new PracticeSystem(user, deck);
+    const ids = await system.createPracticeEntries(bookmarkEntries, now);
+    return { ok: true, data: { ids } };
   }
-
-  const { videoId, now } = parsed.data;
-  assert(videoId);
-
-  let bookmarkEntries = await Q.bookmarkEntries()
-    .select("bookmarkEntries.*")
-    .orWhere("bookmarkEntries.videoId", videoId)
-    .leftJoin(
-      "captionEntries",
-      "captionEntries.id",
-      "bookmarkEntries.captionEntryId"
-    )
-    .orderBy([
-      {
-        column: "captionEntries.index",
-        order: "asc",
-      },
-      {
-        column: "bookmarkEntries.offset",
-        order: "asc",
-      },
-    ]);
-
-  const system = new PracticeSystem(user, deck);
-  await system.createPracticeEntries(bookmarkEntries, now);
-  return { success: true };
-});
+);

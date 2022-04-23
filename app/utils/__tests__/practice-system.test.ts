@@ -45,6 +45,7 @@ describe("PracticeSystem", () => {
       [bookmarkEntry],
       NOW
     );
+    assert(practiceEntryId);
     const practiceEntry = await Q.practiceEntries()
       .where({ id: practiceEntryId })
       .first();

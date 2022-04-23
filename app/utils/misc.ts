@@ -26,3 +26,15 @@ export function isNullable<T>(value: T): value is T & (null | undefined) {
 export function isNonNullable<T>(value: T): value is NonNullable<T> {
   return !isNullable(value);
 }
+
+export type Result<T, E> = ResultOk<T> | ResultErr<E>;
+
+interface ResultOk<T> {
+  ok: true;
+  data: T;
+}
+
+interface ResultErr<E> {
+  ok: false;
+  data: E;
+}

@@ -31,7 +31,10 @@ import { PageHandle } from "../../utils/page-handle";
 import { PAGINATION_PARAMS_SCHEMA } from "../../utils/pagination";
 import { toForm } from "../../utils/url-data";
 import { DecksLoaderData } from "../decks";
-import { NewPracticeEntryRequest } from "../decks/$id/new-practice-entry";
+import {
+  NewPracticeEntryRequest,
+  NewPracticeEntryResponse,
+} from "../decks/$id/new-practice-entry";
 
 export const handle: PageHandle = {
   navBarTitle: "Your Videos",
@@ -212,8 +215,11 @@ function AddToDeckComponent({ videoId }: { videoId: number }) {
 
   React.useEffect(() => {
     if (fetcher2.type === "done") {
-      if (fetcher2.data.success) {
-        enqueueSnackbar("Added to a deck successfuly", { variant: "success" });
+      const data: NewPracticeEntryResponse = fetcher2.data;
+      if (data.ok) {
+        enqueueSnackbar(`Added ${data.data.ids.length} to a deck`, {
+          variant: "success",
+        });
       } else {
         enqueueSnackbar("Failed to add to a deck", { variant: "error" });
       }
