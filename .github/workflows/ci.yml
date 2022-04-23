@@ -56,7 +56,7 @@ jobs:
       - run: npm run test:coverage
       - run: git config --global user.email "you@example.com"
       - run: git config --global user.name "Your Name"
-      - run: npm run test:coverage:publish
+      - run: npm run test:coverage:publish -- --repo "https://${GITHUB_ACTOR}:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git"
 
   test-e2e:
     runs-on: ubuntu-20.04
