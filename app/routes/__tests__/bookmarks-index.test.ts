@@ -23,6 +23,11 @@ describe("bookmarks/index.loader", () => {
             "total": 0,
             "totalPage": 0,
           },
+          "request": {
+            "order": "createdAt",
+            "page": 1,
+            "perPage": 20,
+          },
           "videos": [],
         },
       }
