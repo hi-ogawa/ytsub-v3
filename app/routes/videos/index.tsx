@@ -123,24 +123,30 @@ export function VideoListComponent({
   }, [fetchers]);
 
   return (
-    <div className="w-full flex justify-center">
-      <div className="h-full w-full max-w-lg">
-        <div className="h-full flex flex-col p-2 gap-2">
-          <div className="w-full flex justify-end">
+    <>
+      <div className="w-full flex justify-center">
+        <div className="h-full w-full max-w-lg">
+          <div className="h-full flex flex-col p-2 gap-2">
+            {/* <div className="w-full flex justify-end">
             <PaginationComponent pagination={pagination} />
+          </div> */}
+            {/* TODO: CTA when empty */}
+            {pagination.data.length === 0 && <div>Empty</div>}
+            {pagination.data.map((video) => (
+              <VideoComponentExtra
+                key={video.id}
+                video={video}
+                currentUser={currentUser}
+              />
+            ))}
           </div>
-          {/* TODO: CTA when empty */}
-          {pagination.data.length === 0 && <div>Empty</div>}
-          {pagination.data.map((video) => (
-            <VideoComponentExtra
-              key={video.id}
-              video={video}
-              currentUser={currentUser}
-            />
-          ))}
         </div>
       </div>
-    </div>
+      <div className="w-full h-8" /> {/* fake padding to allow scrool more */}
+      <div className="absolute bottom-2 w-full flex justify-center">
+        <PaginationComponent pagination={pagination} />
+      </div>
+    </>
   );
 }
 

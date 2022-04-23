@@ -76,26 +76,28 @@ function ComponentImpl(props: LoaderData) {
   const bookmarkEntries = props.pagination.data;
 
   return (
-    <div className="w-full flex justify-center">
-      <div className="h-full w-full max-w-lg">
-        <div className="h-full flex flex-col p-2 gap-2">
-          <div className="w-full flex justify-end">
-            {/* TODO: make it float at the bottom? */}
-            <PaginationComponent pagination={props.pagination} />
+    <>
+      <div className="w-full flex justify-center">
+        <div className="h-full w-full max-w-lg">
+          <div className="h-full flex flex-col p-2 gap-2">
+            {/* TODO: CTA when empty */}
+            {bookmarkEntries.length === 0 && <div>Empty</div>}
+            {bookmarkEntries.map((bookmarkEntry) => (
+              <BookmarkEntryComponent
+                key={bookmarkEntry.id}
+                video={videos.byId[bookmarkEntry.videoId]}
+                captionEntry={captionEntries.byId[bookmarkEntry.captionEntryId]}
+                bookmarkEntry={bookmarkEntry}
+              />
+            ))}
           </div>
-          {/* TODO: CTA when empty */}
-          {bookmarkEntries.length === 0 && <div>Empty</div>}
-          {bookmarkEntries.map((bookmarkEntry) => (
-            <BookmarkEntryComponent
-              key={bookmarkEntry.id}
-              video={videos.byId[bookmarkEntry.videoId]}
-              captionEntry={captionEntries.byId[bookmarkEntry.captionEntryId]}
-              bookmarkEntry={bookmarkEntry}
-            />
-          ))}
         </div>
       </div>
-    </div>
+      <div className="w-full h-8" /> {/* fake padding to allow scrool more */}
+      <div className="absolute bottom-2 w-full flex justify-center">
+        <PaginationComponent pagination={props.pagination} />
+      </div>
+    </>
   );
 }
 
