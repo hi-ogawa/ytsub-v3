@@ -23,6 +23,7 @@ import {
   DeckPracticeStatistics,
   PracticeSystem,
 } from "../../../utils/practice-system";
+import { Timedelta } from "../../../utils/timedelta";
 import { zStringToInteger } from "../../../utils/zod-utils";
 
 export const handle: PageHandle = {
@@ -107,9 +108,6 @@ export default function DefaultComponent() {
     useDeserialize(useLoaderData());
   const bookmarkEntriesById = useToById(bookmarkEntries);
 
-  // TODO: simple table layout to show all `practiceEntry` data?
-  // - queueType
-  // - scheduledAt
   return (
     <div className="w-full flex justify-center">
       <div className="h-full w-full max-w-lg">
@@ -137,19 +135,61 @@ export default function DefaultComponent() {
           </div>
           {practiceEntries.length === 0 && <div>Empty</div>}
           {practiceEntries.map((practiceEntry) => (
-            <div
+            <PracticeEntryComponent
               key={practiceEntry.id}
-              className="border border-gray-200 flex items-center p-2 gap-2"
-            >
-              <div className="grow pl-2">
-                {bookmarkEntriesById.byId[practiceEntry.bookmarkEntryId].text}
-              </div>
-            </div>
+              practiceEntry={practiceEntry}
+              bookmarkEntry={
+                bookmarkEntriesById.byId[practiceEntry.bookmarkEntryId]
+              }
+            />
           ))}
         </div>
       </div>
     </div>
   );
+}
+
+function PracticeEntryComponent({
+  practiceEntry,
+  bookmarkEntry,
+}: {
+  practiceEntry: PracticeEntryTable;
+  bookmarkEntry: BookmarkEntryTable;
+}) {
+  return (
+    <div
+      key={practiceEntry.id}
+      className={`
+        border border-gray-200 border-l-2 flex items-center p-2 gap-2
+        ${practiceEntry.queueType === "NEW" && "border-l-blue-400"}
+        ${practiceEntry.queueType === "LEARN" && "border-l-red-400"}
+        ${practiceEntry.queueType === "REVIEW" && "border-l-green-400"}
+      `}
+    >
+      <div className="grow pl-2 text-sm" title={bookmarkEntry.text}>
+        {bookmarkEntry.text}
+      </div>
+      <div className="flex-none text-xs text-gray-400">
+        {formatScheduledAt(practiceEntry.scheduledAt, new Date())}
+      </div>
+    </div>
+  );
+}
+
+const IntlRtf = new Intl.RelativeTimeFormat("en");
+
+function formatScheduledAt(date: Date, now: Date): string {
+  const delta = Timedelta.difference(date, now);
+  if (delta.value <= 0) {
+    return "";
+  }
+  const n = delta.normalize();
+  for (const unit of ["days", "hours", "minutes"] as const) {
+    if (n[unit] > 0) {
+      return IntlRtf.format(n[unit], unit);
+    }
+  }
+  return IntlRtf.format(n.seconds, "seconds");
 }
 
 //

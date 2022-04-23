@@ -5,9 +5,16 @@ export type TimedeltaOptions = Partial<
   Record<"days" | "hours" | "minutes" | "seconds" | "milliseconds", number>
 >;
 
+function divmod(x: number, y: number): [q: number, r: number] {
+  // x = q * y + r
+  const r = x % y;
+  const q = Math.round((x - r) / y);
+  return [q, r];
+}
+
 export class Timedelta {
   // milliseconds
-  constructor(private value: number) {}
+  constructor(public value: number) {}
 
   static make({
     days = 0,
@@ -20,6 +27,27 @@ export class Timedelta {
       (((days * 24 + hours) * 60 + minutes) * 60 + seconds) * 1000 +
       milliseconds;
     return new Timedelta(value);
+  }
+
+  static difference(x: Date, y: Date): Timedelta {
+    return new Timedelta(x.getTime() - y.getTime());
+  }
+
+  normalize(): Record<
+    "days" | "hours" | "minutes" | "seconds" | "milliseconds",
+    number
+  > {
+    let { value } = this;
+    let days: number;
+    let hours: number;
+    let minutes: number;
+    let seconds: number;
+    let milliseconds: number;
+    [value, milliseconds] = divmod(value, 1000);
+    [value, seconds] = divmod(value, 60);
+    [value, minutes] = divmod(value, 60);
+    [days, hours] = divmod(value, 24);
+    return { days, hours, minutes, seconds, milliseconds };
   }
 
   add(other: Timedelta): Timedelta {
