@@ -16,7 +16,7 @@ import { useIsFormValid } from "../../utils/hooks";
 import { PageHandle } from "../../utils/page-handle";
 
 export const handle: PageHandle = {
-  navBarTitle: "Sign in",
+  navBarTitle: () => "Sign in",
 };
 
 export const loader = makeLoader(Controller, async function () {

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { tables } from "../../db/models";
+import { Q } from "../../db/models";
 import { assert } from "../../misc/assert";
 import { AppError } from "../../utils/errors";
 import { action } from "../bookmarks/new";
@@ -27,11 +27,7 @@ describe("bookmarks/new.action", () => {
     const id = resJson.data.id;
     assert(typeof id === "number");
 
-    const found = await tables
-      .bookmarkEntries()
-      .select("*")
-      .where("id", id)
-      .first();
+    const found = await Q.bookmarkEntries().where("id", id).first();
     assert(found);
     expect(found.text).toBe(data.text);
   });

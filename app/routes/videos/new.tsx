@@ -76,7 +76,7 @@ export const action = makeLoader(Controller, async function () {
 //
 
 export const handle: PageHandle = {
-  navBarTitle: "Select languages",
+  navBarTitle: () => "Select languages",
 };
 
 export default function DefaultComponent() {

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { tables } from "../../db/models";
+import { Q } from "../../db/models";
 import { Controller, makeLoader } from "../../utils/controller-utils";
 import { AppError } from "../../utils/errors";
 import { zStringToInteger } from "../../utils/zod-utils";
@@ -28,20 +28,19 @@ export const action = makeLoader(Controller, async function () {
 
   const { videoId, captionEntryId } = parsed.data;
 
-  const video = await tables
-    .videos()
+  const video = await Q.videos()
     .where("userId", user.id)
     .where("id", videoId)
     .first();
-  const captionEntry = await tables
-    .captionEntries()
+  const captionEntry = await Q.captionEntries()
     .where("videoId", videoId)
     .where("id", captionEntryId)
     .first();
   if (!video || !captionEntry) throw new AppError("Resource not found");
 
-  const [id] = await tables
-    .bookmarkEntries()
-    .insert({ ...parsed.data, userId: user.id });
+  const [id] = await Q.bookmarkEntries().insert({
+    ...parsed.data,
+    userId: user.id,
+  });
   return { success: true, data: { id } };
 });

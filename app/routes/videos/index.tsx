@@ -1,26 +1,43 @@
 import { useFetcher, useFetchers, useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import * as React from "react";
-import { Trash2 } from "react-feather";
-import { PaginationComponent, VideoComponent } from "../../components/misc";
+import { PlusSquare, Trash2 } from "react-feather";
+import {
+  PaginationComponent,
+  Spinner,
+  VideoComponent,
+} from "../../components/misc";
+import { useModal } from "../../components/modal";
 import { useSnackbar } from "../../components/snackbar";
 import { client } from "../../db/client.server";
 import {
+  DeckTable,
   PaginationResult,
+  Q,
   UserTable,
   VideoTable,
-  tables,
   toPaginationResult,
 } from "../../db/models";
 import { R } from "../../misc/routes";
-import { Controller, makeLoader } from "../../utils/controller-utils";
+import {
+  Controller,
+  deserialize,
+  makeLoader,
+} from "../../utils/controller-utils";
 import { useDeserialize } from "../../utils/hooks";
 import { useRootLoaderData } from "../../utils/loader-utils";
+import { mapOption } from "../../utils/misc";
 import { PageHandle } from "../../utils/page-handle";
 import { PAGINATION_PARAMS_SCHEMA } from "../../utils/pagination";
+import { toForm } from "../../utils/url-data";
+import { DecksLoaderData } from "../decks";
+import {
+  NewPracticeEntryRequest,
+  NewPracticeEntryResponse,
+} from "../decks/$id/new-practice-entry";
 
 export const handle: PageHandle = {
-  navBarTitle: "Your Videos",
+  navBarTitle: () => "Your Videos",
 };
 
 // TODO
@@ -57,10 +74,11 @@ export const loader = makeLoader(Controller, async function () {
 
   // TODO: cache "has-many" counter (https://github.com/rails/rails/blob/de53ba56cab69fb9707785a397a59ac4aaee9d6f/activerecord/lib/active_record/counter_cache.rb#L159)
   const pagination = await toPaginationResult(
-    tables
-      .videos()
+    Q.videos()
       .select("videos.*", {
-        bookmarkEntriesCount: client.raw("SUM(bookmarkEntries.id IS NOT NULL)"),
+        bookmarkEntriesCount: client.raw(
+          "CAST(SUM(bookmarkEntries.id IS NOT NULL) AS SIGNED)"
+        ),
       })
       .where("videos.userId", user.id)
       .orderBy("videos.updatedAt", "desc")
@@ -134,6 +152,13 @@ function VideoComponentExtra({
   currentUser?: UserTable;
 }) {
   const fetcher = useFetcher();
+  const { openModal } = useModal();
+  const addToDeckDisabled = !video.bookmarkEntriesCount;
+
+  function onClickAddToDeck() {
+    if (addToDeckDisabled) return;
+    openModal(React.cloneElement(<AddToDeckComponent videoId={video.id} />));
+  }
 
   return (
     <VideoComponent
@@ -144,25 +169,96 @@ function VideoComponentExtra({
       actions={
         currentUser &&
         currentUser.id === video.userId && (
-          <fetcher.Form
-            method="delete"
-            action={R["/videos/$id"](video.id)}
-            data-test="video-delete-form"
-            onSubmitCapture={(e) => {
-              if (!window.confirm("Are you sure?")) {
-                e.preventDefault();
-              }
-            }}
-          >
-            <li>
-              <button type="submit">
-                <Trash2 />
-                Delete
+          <>
+            <li className={`${addToDeckDisabled && "disabled"}`}>
+              <button onClick={onClickAddToDeck}>
+                <PlusSquare />
+                Add to Deck
               </button>
             </li>
-          </fetcher.Form>
+            <fetcher.Form
+              method="delete"
+              action={R["/videos/$id"](video.id)}
+              data-test="video-delete-form"
+              onSubmitCapture={(e) => {
+                if (!window.confirm("Are you sure?")) {
+                  e.preventDefault();
+                }
+              }}
+            >
+              <li>
+                <button type="submit">
+                  <Trash2 />
+                  Delete
+                </button>
+              </li>
+            </fetcher.Form>
+          </>
         )
       }
     />
+  );
+}
+
+function AddToDeckComponent({ videoId }: { videoId: number }) {
+  // get decks
+  const fetcher1 = useFetcher();
+  const data: DecksLoaderData | undefined = React.useMemo(
+    () => mapOption(fetcher1.data, deserialize),
+    [fetcher1.data]
+  );
+  React.useEffect(() => fetcher1.load(R["/decks"]), []);
+
+  // create practice entries
+  const fetcher2 = useFetcher();
+  const { enqueueSnackbar } = useSnackbar();
+
+  React.useEffect(() => {
+    if (fetcher2.type === "done") {
+      const data: NewPracticeEntryResponse = fetcher2.data;
+      if (data.ok) {
+        enqueueSnackbar(`Added ${data.data.ids.length} to a deck`, {
+          variant: "success",
+        });
+      } else {
+        enqueueSnackbar("Failed to add to a deck", { variant: "error" });
+      }
+    }
+  }, [fetcher2.type]);
+
+  function onClickPlus(deck: DeckTable) {
+    const data: NewPracticeEntryRequest = {
+      videoId,
+      now: new Date(),
+    };
+    fetcher2.submit(toForm(data), {
+      action: R["/decks/$id/new-practice-entry"](deck.id),
+      method: "post",
+    });
+  }
+
+  return (
+    <div className="border shadow-xl rounded-xl bg-base-100 p-4 flex flex-col gap-2">
+      <div className="text-lg">Select a Deck</div>
+      {data ? (
+        <ul className="menu">
+          {data.decks.map((deck) => (
+            <li key={deck.id}>
+              <button
+                className="flex rounded"
+                onClick={() => onClickPlus(deck)}
+              >
+                <div className="grow flex">{deck.name}</div>
+                <PlusSquare className="flex-none text-gray-700" size={18} />
+              </button>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <div className="flex justify-center p-2">
+          <Spinner className="w-20 h-20" />
+        </div>
+      )}
+    </div>
   );
 }

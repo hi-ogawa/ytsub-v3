@@ -1,14 +1,9 @@
 # ytsub-v3
 
-based on
-
-- https://github.com/hi-ogawa/remix-netlify-manual-build
-- https://github.com/hi-ogawa/ytsub-v2
-
 ```sh
-# development
+# development (see https://github.com/hi-ogawa/ytsub-v3/wiki/development)
 pnpm run install-with-patch
-make docker/up db/reset db/restore # signin by "root" and "pass"
+make docker/up db/reset db/seed
 npm run dev
 
 # lint

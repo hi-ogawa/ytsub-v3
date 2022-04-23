@@ -15,6 +15,7 @@ import { LinksFunction, MetaFunction } from "@remix-run/server-runtime";
 import { last } from "lodash";
 import * as React from "react";
 import {
+  BookOpen,
   Bookmark,
   Code,
   Home,
@@ -27,6 +28,7 @@ import {
   Video,
 } from "react-feather";
 import { QueryClient, QueryClientProvider } from "react-query";
+import { ModalProvider } from "./components/modal";
 import { Popover } from "./components/popover";
 import {
   SnackbarItemComponent,
@@ -118,7 +120,7 @@ function Root() {
 
   // `PageHandle` of the leaf compoment
   const matches: Match[] = useMatches();
-  const { navBarTitle, NavBarMenuComponent } = last(matches)?.handle ?? {};
+  const { navBarTitle, navBarMenu } = last(matches)?.handle ?? {};
 
   return (
     <>
@@ -126,9 +128,9 @@ function Root() {
       <SideMenuDrawerWrapper isSignedIn={!!data.currentUser}>
         <div className="h-full flex flex-col">
           <Navbar
-            title={navBarTitle}
+            title={navBarTitle?.()}
             user={data.currentUser}
-            MenuComponent={NavBarMenuComponent}
+            menu={navBarMenu?.()}
           />
           <div className="flex-[1_0_0] flex flex-col">
             <div className="w-full flex-[1_0_0] h-full overflow-y-auto">
@@ -153,7 +155,7 @@ function RootProviders({ children }: React.PropsWithChildren<{}>) {
         }}
         timeout={5000}
       >
-        {children}
+        <ModalProvider>{children}</ModalProvider>
       </SnackbarProvider>
     </QueryClientProvider>
   );
@@ -194,11 +196,11 @@ function toggleDrawer(open?: boolean): void {
 function Navbar({
   title,
   user,
-  MenuComponent,
+  menu,
 }: {
-  title?: string;
+  title?: React.ReactNode;
   user?: UserTable;
-  MenuComponent?: React.FC;
+  menu?: React.ReactNode;
 }) {
   return (
     <header className="w-full h-12 flex-none bg-primary text-primary-content flex items-center px-2 md:px-4 py-2 gap-0 md:gap-2 shadow-lg z-10">
@@ -211,7 +213,7 @@ function Navbar({
         </label>
       </div>
       <div className="flex-1">{title}</div>
-      {MenuComponent && <MenuComponent />}
+      {menu}
       <div className="flex-none">
         <Popover
           placement="bottom-end"
@@ -304,6 +306,12 @@ const SIDE_MENU_ENTRIES: SideMenuEntry[] = [
     to: R["/bookmarks"],
     icon: Bookmark,
     title: "Bookmarks",
+    requireSignin: true,
+  },
+  {
+    to: R["/decks"],
+    icon: BookOpen,
+    title: "Practice",
     requireSignin: true,
   },
 ];

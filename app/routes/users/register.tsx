@@ -16,7 +16,7 @@ import { mapOption } from "../../utils/misc";
 import { PageHandle } from "../../utils/page-handle";
 
 export const handle: PageHandle = {
-  navBarTitle: "Register",
+  navBarTitle: () => "Register",
 };
 
 export const loader = makeLoader(Controller, async function () {

@@ -1,15 +1,15 @@
 import { omit } from "lodash";
 import { beforeEach, describe, expect, it } from "vitest";
 import { assert } from "../../misc/assert";
-import { tables } from "../models";
+import { Q } from "../models";
 
 describe("models", () => {
   beforeEach(async () => {
-    await tables.users().delete();
+    await Q.users().delete();
   });
 
   it("basic", async () => {
-    const res = await tables.users().select("*");
+    const res = await Q.users();
     expect(res).toMatchInlineSnapshot("[]");
   });
 
@@ -20,8 +20,8 @@ describe("models", () => {
       language1: "fr",
       language2: "en",
     };
-    const [id] = await tables.users().insert(data);
-    const res = await tables.users().select("*").where("id", id).first();
+    const [id] = await Q.users().insert(data);
+    const res = await Q.users().where("id", id).first();
     assert(res);
     expect(omit(res, ["id", "createdAt", "updatedAt"])).toEqual(data);
   });
@@ -40,18 +40,15 @@ describe("models", () => {
         passwordHash: "y",
       },
     ];
-    const ids = await tables.users().insert(data);
+    const ids = await Q.users().insert(data);
     expect(ids.length).toBe(1);
 
-    const res = await tables
-      .users()
-      .select("*")
-      .whereIn("id", [ids[0], ids[0] + 1]);
+    const res = await Q.users().whereIn("id", [ids[0], ids[0] + 1]);
     expect(res).toMatchObject(data);
   });
 
   it("count", async () => {
-    const query = tables.users().count({ total: 0 }).first();
+    const query = Q.users().count({ total: 0 }).first();
     expect(query.toSQL().sql).toMatchInlineSnapshot(
       '"select count(0) as `total` from `users` limit ?"'
     );

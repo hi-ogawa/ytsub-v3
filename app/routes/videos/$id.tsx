@@ -15,10 +15,10 @@ import { Popover } from "../../components/popover";
 import { useSnackbar } from "../../components/snackbar";
 import {
   CaptionEntryTable,
+  Q,
   UserTable,
   VideoTable,
   getVideoAndCaptionEntries,
-  tables,
 } from "../../db/models";
 import { assert } from "../../misc/assert";
 import { R } from "../../misc/routes";
@@ -39,8 +39,8 @@ import { zStringToInteger } from "../../utils/zod-utils";
 import { NewBookmark } from "../bookmarks/new";
 
 export const handle: PageHandle = {
-  navBarTitle: "Watch",
-  NavBarMenuComponent,
+  navBarTitle: () => "Watch",
+  navBarMenu: () => <NavBarMenuComponent />,
 };
 
 //
@@ -87,15 +87,12 @@ export const action = makeLoader(Controller, async function () {
       const { id } = parsed.data;
       const user = await this.currentUser();
       if (user) {
-        const video = await tables
-          .videos()
-          .where({ id, userId: user.id })
-          .first();
+        const video = await Q.videos().where({ id, userId: user.id }).first();
         if (video) {
           await Promise.all([
-            tables.videos().delete().where({ id, userId: user.id }),
-            tables.captionEntries().delete().where("videoId", id),
-            tables.bookmarkEntries().delete().where("videoId", id),
+            Q.videos().delete().where({ id, userId: user.id }),
+            Q.captionEntries().delete().where("videoId", id),
+            Q.bookmarkEntries().delete().where("videoId", id),
           ]);
           // return `type` so that `useFetchers` can identify where the response is from
           return { type: "DELETE /videos/$id", success: true };
@@ -528,6 +525,7 @@ export function CaptionEntryComponent({
   return (
     <div
       className={`
+        w-full
         flex flex-col
         ${border && "border border-solid border-gray-200"}
         ${isEntryPlaying ? "border-blue-400" : "border-gray-200"}

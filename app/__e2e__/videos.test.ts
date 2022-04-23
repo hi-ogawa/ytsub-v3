@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { tables } from "../db/models";
+import { Q } from "../db/models";
 import { useUserE2E } from "./helper";
 
 // TODO: maybe sourcemap is broken in playwright
@@ -43,9 +43,7 @@ test.describe("videos-signed-in", () => {
     await page.waitForSelector(`"Bookmark success"`);
 
     // verify database
-    const entry = await tables
-      .bookmarkEntries()
-      .select("*")
+    const entry = await Q.bookmarkEntries()
       .where({ userId: user().id })
       .first();
     expect(entry).toMatchObject({

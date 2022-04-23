@@ -1,4 +1,4 @@
-import { UserTable, tables } from "../db/models";
+import { Q, UserTable } from "../db/models";
 import { register, sha256 } from "../utils/auth";
 
 export function useUserImpl({
@@ -16,13 +16,13 @@ export function useUserImpl({
   }
 
   async function before(): Promise<UserTable> {
-    await tables.users().delete().where("username", username);
+    await Q.users().delete().where("username", username);
     const user = await register({ username, password });
     return user;
   }
 
   async function after(): Promise<void> {
-    await tables.users().delete().where("username", username);
+    await Q.users().delete().where("username", username);
   }
 
   return { before, after };

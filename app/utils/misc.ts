@@ -18,3 +18,33 @@ export function getCall<M extends string>(m: M) {
     return t[m]();
   };
 }
+
+export function isNullable<T>(value: T): value is T & (null | undefined) {
+  return value === null || typeof value === "undefined";
+}
+
+export function isNonNullable<T>(value: T): value is NonNullable<T> {
+  return !isNullable(value);
+}
+
+export function fromEntries<K extends string, V>(
+  entries: [K, V][]
+): Record<K, V> {
+  return Object.fromEntries(entries) as any;
+}
+
+//
+// result type
+//
+
+export type Result<T, E> = ResultOk<T> | ResultErr<E>;
+
+interface ResultOk<T> {
+  ok: true;
+  data: T;
+}
+
+interface ResultErr<E> {
+  ok: false;
+  data: E;
+}

@@ -4,11 +4,7 @@ import { cac } from "cac";
 import { range, zip } from "lodash";
 import { z } from "zod";
 import { client } from "../db/client.server";
-import {
-  filterNewVideo,
-  insertVideoAndCaptionEntries,
-  tables,
-} from "../db/models";
+import { Q, filterNewVideo, insertVideoAndCaptionEntries } from "../db/models";
 import { createUserCookie, register, verifySignin } from "../utils/auth";
 import { exec, streamToString } from "../utils/node.server";
 import { NewVideo, fetchCaptionEntries } from "../utils/youtube";
@@ -136,10 +132,7 @@ cli
       { language1, language2 }: { language1: string; language2: string }
     ) => {
       const user = await register({ username, password });
-      await tables
-        .users()
-        .update({ language1, language2 })
-        .where("id", user.id);
+      await Q.users().update({ language1, language2 }).where("id", user.id);
       await printSession(username, password);
       await client.destroy();
     }
@@ -160,8 +153,7 @@ cli
     const newVideos: NewVideo[] = JSON.parse(input);
     let userId = undefined;
     if (options.username) {
-      const user = await tables
-        .users()
+      const user = await Q.users()
         .where("username", options.username)
         .select("id")
         .first();
@@ -224,9 +216,7 @@ async function importBookmarkEntry(
   ).first();
   if (!video) return [false, "Video not found"];
 
-  const captionEntry = await tables
-    .captionEntries()
-    .select("*")
+  const captionEntry = await Q.captionEntries()
     .where({ videoId: video.id })
     .where(client.raw("abs(begin - ?) < 0.1", begin))
     .first();
@@ -249,8 +239,7 @@ async function importBookmarkEntry(
     offset = captionEntry.text2.indexOf(bookmarkText);
   }
 
-  const found = await tables
-    .bookmarkEntries()
+  const found = await Q.bookmarkEntries()
     .where({
       userId,
       videoId: video.id,
@@ -264,7 +253,7 @@ async function importBookmarkEntry(
     return [false, "Bookmark already exists"];
   }
 
-  const [id] = await tables.bookmarkEntries().insert({
+  const [id] = await Q.bookmarkEntries().insert({
     userId,
     videoId: video.id,
     captionEntryId: captionEntry.id,
@@ -278,8 +267,7 @@ async function importBookmarkEntry(
 cli
   .command("import-bookmark-entries <username>")
   .action(async (username: string) => {
-    const user = await tables
-      .users()
+    const user = await Q.users()
       .where("username", username)
       .select("id")
       .first();

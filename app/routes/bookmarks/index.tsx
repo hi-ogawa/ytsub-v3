@@ -7,8 +7,8 @@ import {
   BookmarkEntryTable,
   CaptionEntryTable,
   PaginationResult,
+  Q,
   VideoTable,
-  tables,
   toPaginationResult,
 } from "../../db/models";
 import { R } from "../../misc/routes";
@@ -20,7 +20,7 @@ import { PAGINATION_PARAMS_SCHEMA } from "../../utils/pagination";
 import { CaptionEntryComponent, usePlayer } from "../videos/$id";
 
 export const handle: PageHandle = {
-  navBarTitle: "Bookmarks",
+  navBarTitle: () => "Bookmarks",
 };
 
 interface LoaderData {
@@ -46,21 +46,17 @@ export const loader = makeLoader(Controller, async function () {
   }
 
   const pagination = await toPaginationResult(
-    tables
-      .bookmarkEntries()
-      .select("*")
-      .where("userId", user.id)
-      .orderBy("createdAt", "desc"),
+    Q.bookmarkEntries().where("userId", user.id).orderBy("createdAt", "desc"),
     parsed.data
   );
   const bookmarkEntries = pagination.data;
   const videoIds = bookmarkEntries.map((x) => x.videoId);
   const captionEntryIds = bookmarkEntries.map((x) => x.captionEntryId);
-  const videos = await tables.videos().select("*").whereIn("id", videoIds);
-  const captionEntries = await tables
-    .captionEntries()
-    .select("*")
-    .whereIn("id", captionEntryIds);
+  const videos = await Q.videos().whereIn("id", videoIds);
+  const captionEntries = await Q.captionEntries().whereIn(
+    "id",
+    captionEntryIds
+  );
   const data: LoaderData = {
     videos,
     captionEntries,
@@ -74,7 +70,7 @@ export default function DefaultComponent() {
   return <ComponentImpl {...data} />;
 }
 
-export function ComponentImpl(props: LoaderData) {
+function ComponentImpl(props: LoaderData) {
   const videos = useToById(props.videos);
   const captionEntries = useToById(props.captionEntries);
   const bookmarkEntries = props.pagination.data;
@@ -102,7 +98,7 @@ export function ComponentImpl(props: LoaderData) {
   );
 }
 
-function BookmarkEntryComponent({
+export function BookmarkEntryComponent({
   video,
   captionEntry,
   bookmarkEntry,
@@ -128,12 +124,15 @@ function BookmarkEntryComponent({
         >
           {bookmarkEntry.text}
         </div>
-        <button
-          className="flex-none btn btn-xs btn-circle btn-ghost text-gray-500"
-          onClick={() => {}}
-        >
-          <X size={16} />
-        </button>
+        {/* TODO */}
+        {false && (
+          <button
+            className="flex-none btn btn-xs btn-circle btn-ghost text-gray-500"
+            onClick={() => {}}
+          >
+            <X size={16} />
+          </button>
+        )}
       </div>
       {open && <MiniPlayer video={video} captionEntry={captionEntry} />}
     </div>
