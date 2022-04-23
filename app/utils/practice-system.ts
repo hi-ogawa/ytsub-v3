@@ -1,7 +1,9 @@
 import { difference, range } from "lodash";
+import { client } from "../db/client.server";
 import {
   BookmarkEntryTable,
   DeckTable,
+  PRACTICE_QUEUE_TYPES,
   PracticeActionType,
   PracticeEntryTable,
   PracticeQueueType,
@@ -9,6 +11,7 @@ import {
   UserTable,
   toCount,
 } from "../db/models";
+import { fromEntries } from "./misc";
 import { Timedelta, TimedeltaOptions } from "./timedelta";
 
 const QUEUE_RULES: Record<
@@ -67,6 +70,11 @@ const DECK_OPTIONS = {
   easeBonus: 1.5,
 };
 
+export type DeckPracticeStatistics = Record<
+  PracticeQueueType,
+  Record<"daily" | "total", number>
+>;
+
 // TODO(perf)
 // - db queries in parallel (Promise.all)
 // - cache counters
@@ -78,8 +86,33 @@ const DECK_OPTIONS = {
 export class PracticeSystem {
   constructor(private user: UserTable, private deck: DeckTable) {}
 
-  // TODO
-  // async getStatistics() {}
+  async getStatistics(now: Date): Promise<DeckPracticeStatistics> {
+    const deckId = this.deck.id;
+    const yesterday = Timedelta.make({ days: 1 }).rsub(now);
+
+    const [totals, dailys] = await Promise.all([
+      Q.practiceEntries()
+        .select("queueType", { count: client.raw("COUNT(0)") })
+        .where({ deckId })
+        .groupBy("queueType"),
+
+      Q.practiceActions()
+        .select("queueType", { count: client.raw("COUNT(0)") })
+        .where({ deckId })
+        .where("createdAt", ">=", yesterday)
+        .groupBy("queueType"),
+    ]);
+
+    return fromEntries(
+      PRACTICE_QUEUE_TYPES.map((type) => [
+        type,
+        {
+          total: totals.find((s) => s.queueType === type)?.count ?? 0,
+          daily: dailys.find((s) => s.queueType === type)?.count ?? 0,
+        },
+      ])
+    );
+  }
 
   async getNextPracticeEntry(
     now: Date = new Date()

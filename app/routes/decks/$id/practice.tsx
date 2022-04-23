@@ -17,7 +17,10 @@ import { Controller, makeLoader } from "../../../utils/controller-utils";
 import { useDeserialize } from "../../../utils/hooks";
 import { useLeafLoaderData } from "../../../utils/loader-utils";
 import { PageHandle } from "../../../utils/page-handle";
-import { PracticeSystem } from "../../../utils/practice-system";
+import {
+  DeckPracticeStatistics,
+  PracticeSystem,
+} from "../../../utils/practice-system";
 import { toForm } from "../../../utils/url-data";
 import { BookmarkEntryComponent } from "../../bookmarks";
 import { NewPracticeActionRequest } from "./new-practice-action";
@@ -34,7 +37,7 @@ export const handle: PageHandle = {
 
 interface LoaderData {
   deck: DeckTable;
-  statistics?: undefined; // TODO: practice statistics of the deck
+  statistics: DeckPracticeStatistics; // TODO: practice statistics of the deck
   // TODO: improve practice status message (e.g. when it shouldn't say "finished" when there's no practice entry to start with)
   data:
     | {
@@ -53,6 +56,7 @@ export const loader = makeLoader(Controller, async function () {
   const [user, deck] = await requireUserAndDeck.apply(this);
   const system = new PracticeSystem(user, deck);
   const now = new Date();
+  const statistics = await system.getStatistics(now);
   const practiceEntry = await system.getNextPracticeEntry(now);
   let data: LoaderData["data"];
   if (!practiceEntry) {
@@ -77,7 +81,7 @@ export const loader = makeLoader(Controller, async function () {
       video,
     };
   }
-  const res: LoaderData = { deck, data };
+  const res: LoaderData = { deck, statistics, data };
   return this.serialize(res);
 });
 
@@ -86,7 +90,9 @@ export const loader = makeLoader(Controller, async function () {
 //
 
 export default function DefaultComponent() {
-  const { deck, data }: LoaderData = useDeserialize(useLoaderData());
+  const { deck, statistics, data }: LoaderData = useDeserialize(
+    useLoaderData()
+  );
 
   return (
     <div className="h-full w-full flex justify-center">
@@ -95,21 +101,26 @@ export default function DefaultComponent() {
           <div className="w-full flex items-center border rounded bg-white p-2 px-4 my-3">
             <div className="flex-none text-sm text-gray-600 uppercase">
               Progress
-              {/* TODO: tooltip to explain the data */}
             </div>
             <div className="grow flex px-4">
               {/* TODO: get statistics data */}
               <div className="grow" />
-              <div className="flex-none text-blue-500">3/10</div>
+              <div className="flex-none text-blue-500">
+                {statistics.NEW.daily}/{statistics.NEW.total}
+              </div>
               <div className="grow text-center text-gray-400">-</div>
-              <div className="flex-none text-red-500">12/39</div>
+              <div className="flex-none text-red-500">
+                {statistics.LEARN.daily}/{statistics.LEARN.total}
+              </div>
               <div className="grow text-center text-gray-400">-</div>
-              <div className="flex-none text-green-500">9/26</div>
+              <div className="flex-none text-green-500">
+                {statistics.REVIEW.daily}/{statistics.REVIEW.total}
+              </div>
               <div className="grow" />
             </div>
           </div>
           {data.finished ? (
-            <div>Today's practice is completed!</div>
+            <div className="w-full text-center">Practice is completed!</div>
           ) : (
             <PracticeComponent
               deck={deck}

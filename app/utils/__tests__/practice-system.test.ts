@@ -69,5 +69,23 @@ describe("PracticeSystem", () => {
       queueType: "NEW",
       actionType: "GOOD",
     });
+
+    const statistics = await system.getStatistics(NOW);
+    expect(statistics).toMatchInlineSnapshot(`
+      {
+        "LEARN": {
+          "daily": 0,
+          "total": 1,
+        },
+        "NEW": {
+          "daily": 1,
+          "total": 0,
+        },
+        "REVIEW": {
+          "daily": 0,
+          "total": 0,
+        },
+      }
+    `);
   });
 });

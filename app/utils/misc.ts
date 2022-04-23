@@ -27,12 +27,11 @@ export function isNonNullable<T>(value: T): value is NonNullable<T> {
   return !isNullable(value);
 }
 
-export function LOG<T>(value: T): T {
-  console.log(value);
-  return value;
+export function fromEntries<K extends string, V>(
+  entries: [K, V][]
+): Record<K, V> {
+  return Object.fromEntries(entries) as any;
 }
-// @ts-expect-error
-global.LOG = LOG;
 
 //
 // result type
