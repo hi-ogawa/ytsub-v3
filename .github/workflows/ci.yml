@@ -54,14 +54,10 @@ jobs:
       - run: pnpm run install-with-patch -- --frozen-lockfile
       - run: make docker/up db/reset/test
       - run: npm run test:coverage
-      - name: publish coverage
-        run: |
-          echo "== HTML PREVIEW URL =="
-          echo "https://htmlpreview.github.io/?https://raw.githubusercontent.com/hi-ogawa/ytsub-v3/__coverage__/$(git rev-parse HEAD)/unit/index.html"
-          echo "======================"
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          npm run test:coverage:publish -- --repo "https://${GITHUB_ACTOR}:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git"
+      - uses: actions/upload-artifact@v3
+        with:
+          name: coverage-unit
+          path: coverage
 
   test-e2e:
     runs-on: ubuntu-20.04
@@ -77,6 +73,10 @@ jobs:
       - run: npx playwright install --with-deps
       - run: make docker/up db/reset/test
       - run: npm run test-e2e:coverage
+      - uses: actions/upload-artifact@v3
+        with:
+          name: coverage-e2e
+          path: coverage
 
   test-migrations:
     runs-on: ubuntu-20.04
@@ -93,19 +93,45 @@ jobs:
       - run: npm run cli -- db:test-migrations --unit-test
       - run: npm run cli -- db:test-migrations --reversibility-test
 
-  # TODO
-  # 1. download artifacts
-  # 2. move them to single directory
-  # 3. run `c8 report`
-  #   - unit
-  #   - e2e-server
-  #   - e2e-client
-  #   - all
-  # test-publish-coverage:
-  #   runs-on: ubuntu-20.04
-  #   needs:
-  #     - test
-  #     - test-e2e
+  test-publish-coverage:
+    runs-on: ubuntu-20.04
+    needs:
+      - test
+      - test-e2e
+    steps:
+      - uses: actions/checkout@v2
+      - uses: pnpm/action-setup@v2.0.1
+        with:
+          version: "6.29.1"
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "16.14.0"
+      - run: pnpm run install-with-patch -- --frozen-lockfile
+      - run: NODE_ENV=test && npm run dev:prepare && npx remix build --sourcemap
+      - uses: actions/download-artifact@v3
+        with:
+          name: coverage-unit
+          path: coverage-unit
+      - uses: actions/download-artifact@v3
+        with:
+          name: coverage-e2e
+          path: coverage-e2e
+      - run: ls coverage-unit
+      - run: ls coverage-e2e
+      - name: generate coverage report
+        run: |
+          mkdir -p coverage/all
+          mv coverage-unit/unit coverage-e2e/e2e-client coverage-e2e/e2e-server coverage
+          cp coverage/{unit,e2e-client,e2e-server}/tmp/*.json coverage/all/tmp
+          npx c8 report -o coverage/all -r text -r html --all --src app --exclude build --exclude-after-remap --temp-directory coverage/all/tmp
+      - name: publish coverage report
+        run: |
+          echo "== HTML PREVIEW URL =="
+          echo "https://htmlpreview.github.io/?https://raw.githubusercontent.com/hi-ogawa/ytsub-v3/__coverage__/$(git rev-parse HEAD)/all/index.html"
+          echo "======================"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          NODE_DEBUG=gh-pages npx gh-pages --add --branch __coverage__ --dist coverage --dest $(git rev-parse HEAD) --repo "https://${GITHUB_ACTOR}:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git"
 
   lint-misc:
     runs-on: ubuntu-20.04
