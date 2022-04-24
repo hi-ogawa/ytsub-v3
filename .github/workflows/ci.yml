@@ -107,7 +107,7 @@ jobs:
         with:
           node-version: "16.14.0"
       - run: pnpm run install-with-patch -- --frozen-lockfile
-      - run: NODE_ENV=test && npm run dev:prepare && npx remix build --sourcemap
+      - run: export NODE_ENV=test && npm run dev:prepare && npx remix build --sourcemap
       - uses: actions/download-artifact@v3
         with:
           name: coverage-unit
