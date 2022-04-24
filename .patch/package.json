@@ -3,6 +3,7 @@
     "build": "npm install && patch-package"
   },
   "dependencies": {
+    "@remix-run/dev": "^1.4.0",
     "@remix-run/serve": "^1.4.0"
   },
   "devDependencies": {

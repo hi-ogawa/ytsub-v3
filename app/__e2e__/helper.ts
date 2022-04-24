@@ -53,14 +53,26 @@ export const testCoverage = testDefault.extend({
     // create a json file with the same format as c8
     // - https://github.com/bcoe/c8
     // - https://nodejs.org/dist/latest-v16.x/docs/api/cli.html#node_v8_coveragedir
-    const result = await page.coverage.stopJSCoverage();
+    let entries = await page.coverage.stopJSCoverage();
+    entries = entries.map(preprocessCoverageEntry);
     const id = sha256([testInfo.file, ...testInfo.titlePath].join("@"), "hex");
     const outfile = path.resolve("coverage", "tmp-client", id + ".json");
     await fse.ensureDir(path.dirname(outfile));
-    await fse.writeFile(outfile, JSON.stringify({ result }));
+    await fse.writeFile(outfile, JSON.stringify({ result: entries }));
   },
 });
 
-// Goal is to support something like this:
-//   E2E_COVERAGE=1 npm run test-e2e app/__e2e__/basic.test.ts
-//   npx c8 report -r text -r html --all --src app --exclude build --exclude packages --exclude-after-remap --temp-directory tmp
+type CoverageEntry = Awaited<
+  ReturnType<Page["coverage"]["stopJSCoverage"]>
+>[number];
+
+const BUILD_URL = `http://localhost:3001/build`;
+const BUILD_DIR = path.resolve("build", "remix", "test", "public", "build");
+
+function preprocessCoverageEntry(entry: CoverageEntry): CoverageEntry {
+  let { url } = entry;
+  if (entry.url.startsWith(BUILD_URL)) {
+    url = entry.url.replace(BUILD_URL, BUILD_DIR);
+  }
+  return { ...entry, url };
+}

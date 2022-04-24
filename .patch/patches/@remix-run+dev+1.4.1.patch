@@ -1,0 +1,13 @@
+diff --git a/node_modules/@remix-run/dev/compiler.js b/node_modules/@remix-run/dev/compiler.js
+index 0de2694..91caea0 100644
+--- a/node_modules/@remix-run/dev/compiler.js
++++ b/node_modules/@remix-run/dev/compiler.js
+@@ -331,7 +331,7 @@ async function createBrowserBuild(config, options) {
+     bundle: true,
+     logLevel: "silent",
+     splitting: true,
+-    sourcemap: options.sourcemap,
++    sourcemap: options.sourcemap ? "inline" : false,
+     metafile: true,
+     incremental: options.incremental,
+     mainFields: ["browser", "module", "main"],
