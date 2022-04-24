@@ -1,5 +1,6 @@
-import { expect, test } from "@playwright/test";
+import { expect } from "@playwright/test";
 import { Q } from "../db/models";
+import { test } from "./coverage";
 import { useUserE2E } from "./helper";
 
 // TODO: maybe sourcemap is broken in playwright

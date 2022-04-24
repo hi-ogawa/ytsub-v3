@@ -4,6 +4,7 @@ set -eux -o pipefail
 export NODE_ENV=test
 export PORT=3001
 export E2E_NO_SERVER=1
+export E2E_COVERAGE_CLIENT=1
 
 log_file=logs/remix-coverage.log
 
@@ -26,3 +27,6 @@ wait "$coverage_pid"
 
 # print logs
 cat "$log_file"
+
+# print client coverage (TODO: merge all coverage info)
+npx c8 report -r text -r html --all --src app --exclude build --exclude-after-remap --temp-directory coverage/tmp-client

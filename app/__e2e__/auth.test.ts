@@ -1,4 +1,5 @@
-import { expect, test } from "@playwright/test";
+import { expect } from "@playwright/test";
+import { test } from "./coverage";
 import { useUserE2E } from "./helper";
 
 test("/users/register", async ({ page }) => {
