@@ -53,7 +53,15 @@ jobs:
           node-version: "16.14.0"
       - run: pnpm run install-with-patch -- --frozen-lockfile
       - run: make docker/up db/reset/test
-      - run: npm run test
+      - run: npm run test:coverage
+      - name: publish coverage
+        run: |
+          echo "== HTML PREVIEW URL =="
+          echo "https://htmlpreview.github.io/?https://raw.githubusercontent.com/hi-ogawa/ytsub-v3/__coverage__/$(git rev-parse HEAD)/index.html"
+          echo "======================"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          npm run test:coverage:publish -- --repo "https://${GITHUB_ACTOR}:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git"
 
   test-e2e:
     runs-on: ubuntu-20.04

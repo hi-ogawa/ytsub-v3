@@ -9,6 +9,9 @@ const VITEST_CONFIG: InlineConfig = {
   setupFiles: ["./app/misc/test-setup.ts"],
   // disable parallel execution since it's not trivial to deal with stateful modules and database uniqueness
   threads: false,
+  coverage: {
+    reporter: ["text", "html"],
+  },
 };
 
 export default defineConfig({
