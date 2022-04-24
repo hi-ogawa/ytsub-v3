@@ -4,6 +4,7 @@ set -eux -o pipefail
 export NODE_ENV=test
 export PORT=3001
 export E2E_NO_SERVER=1
+export E2E_COVERAGE_CLIENT=1
 
 log_file=logs/remix-coverage.log
 

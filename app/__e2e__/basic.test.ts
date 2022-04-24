@@ -1,7 +1,7 @@
 import { expect } from "@playwright/test";
-import { testCoverage } from "./helper";
+import { test } from "./coverage";
 
-testCoverage("/ => /videos/new", async ({ page }) => {
+test("/ => /videos/new", async ({ page }) => {
   await page.goto("/");
   await expect(page).toHaveTitle("ytsub-v3");
 
@@ -16,7 +16,7 @@ testCoverage("/ => /videos/new", async ({ page }) => {
 });
 
 // anonymous
-testCoverage("/videos/new => /videos/id", async ({ page }) => {
+test("/videos/new => /videos/id", async ({ page }) => {
   await page.goto("/videos/new?videoId=EnPYXckiUVg");
 
   // Check readonly input
