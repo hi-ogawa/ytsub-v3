@@ -29,4 +29,4 @@ wait "$coverage_pid"
 cat "$log_file"
 
 # print client coverage
-npx c8 report -o coverage/e2e-client -r text -r html --all --src app --exclude build --exclude-after-remap --temp-directory coverage/e2e-client/tmp
+npx c8 report -o coverage/e2e-client -r text -r html --exclude build --exclude-after-remap --temp-directory coverage/e2e-client/tmp
