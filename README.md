@@ -22,6 +22,7 @@ npm run test:coverage # view result e.g. via `xdg-open coverage/index.html`
 # testing (playwright)
 npx playwright install
 npm run test-e2e
+npm run test-e2e:coverage
 
 # migration on production
 npm run knex:production -- migrate:status

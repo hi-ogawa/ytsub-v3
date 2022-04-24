@@ -18,11 +18,13 @@ const config: PlaywrightTestConfig = {
       },
     },
   ],
-  webServer: {
-    command: "npm run dev:prepare && PORT=3001 npm run remix:dev",
-    port: 3001,
-    reuseExistingServer: true,
-  },
+  webServer: process.env.E2E_NO_SERVER
+    ? undefined
+    : {
+        command: "npm run dev:prepare && PORT=3001 npm run remix:dev",
+        port: 3001,
+        reuseExistingServer: true,
+      },
 };
 
 export default config;
