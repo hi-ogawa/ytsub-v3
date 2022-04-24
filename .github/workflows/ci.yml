@@ -120,7 +120,7 @@ jobs:
       - run: ls coverage-e2e
       - name: generate coverage report
         run: |
-          mkdir -p coverage/all
+          mkdir -p coverage/all/tmp
           mv coverage-unit/unit coverage-e2e/e2e-client coverage-e2e/e2e-server coverage
           cp coverage/{unit,e2e-client,e2e-server}/tmp/*.json coverage/all/tmp
           npx c8 report -o coverage/all -r text -r html --all --src app --exclude build --exclude-after-remap --temp-directory coverage/all/tmp
