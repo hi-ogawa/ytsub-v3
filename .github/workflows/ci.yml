@@ -116,15 +116,13 @@ jobs:
         with:
           name: coverage-e2e
           path: coverage-e2e
-      - run: ls coverage-unit
-      - run: ls coverage-e2e
-      - name: generate coverage report
+      - name: generate report
         run: |
           mkdir -p coverage/all/tmp
           mv coverage-unit/unit coverage-e2e/e2e-client coverage-e2e/e2e-server coverage
           cp coverage/{unit,e2e-client,e2e-server}/tmp/*.json coverage/all/tmp
           npx c8 report -o coverage/all -r text -r html --all --src app --exclude build --exclude-after-remap --temp-directory coverage/all/tmp
-      - name: publish coverage report
+      - name: publish report
         run: |
           echo "== HTML PREVIEW URL =="
           echo "https://htmlpreview.github.io/?https://raw.githubusercontent.com/hi-ogawa/ytsub-v3/__coverage__/$(git rev-parse HEAD)/all/index.html"
