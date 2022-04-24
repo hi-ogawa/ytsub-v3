@@ -57,7 +57,7 @@ jobs:
       - name: publish coverage
         run: |
           echo "== HTML PREVIEW URL =="
-          echo "https://htmlpreview.github.io/?https://raw.githubusercontent.com/hi-ogawa/ytsub-v3/__coverage__/$(git rev-parse HEAD)/index.html"
+          echo "https://htmlpreview.github.io/?https://raw.githubusercontent.com/hi-ogawa/ytsub-v3/__coverage__/$(git rev-parse HEAD)/unit/index.html"
           echo "======================"
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -92,6 +92,20 @@ jobs:
       - run: make docker/up db/recreate
       - run: npm run cli -- db:test-migrations --unit-test
       - run: npm run cli -- db:test-migrations --reversibility-test
+
+  # TODO
+  # 1. download artifacts
+  # 2. move them to single directory
+  # 3. run `c8 report`
+  #   - unit
+  #   - e2e-server
+  #   - e2e-client
+  #   - all
+  # test-publish-coverage:
+  #   runs-on: ubuntu-20.04
+  #   needs:
+  #     - test
+  #     - test-e2e
 
   lint-misc:
     runs-on: ubuntu-20.04

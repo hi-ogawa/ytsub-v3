@@ -8,7 +8,7 @@
     "dev:all": "npm run dev:prepare && concurrently -k 'npm:dev' 'npm:tsc:dev' 'npm:tailwind:dev' 'npm:vite' -c 'bgBlue.bold,bgYellow.bold,bgMagenta.bold,bgGreen.bold'",
     "copy-assets": "bash scripts/copy-assets.sh",
     "remix:dev": "remix dev",
-    "remix:dev:coverage": "c8 -r text -r html --all --src app --exclude build --exclude packages --exclude-after-remap node_modules/.bin/remix dev",
+    "remix:dev:coverage": "c8 -o coverage/e2e-server -r text -r html --all --src app --exclude build --exclude packages --exclude-after-remap node_modules/.bin/remix dev",
     "tsc": "tsc",
     "tsc:dev": "tsc --noEmit --watch --preserveWatchOutput",
     "tailwind": "tailwindcss -o \"./build/tailwind/${NODE_ENV:-development}/index.css\"",

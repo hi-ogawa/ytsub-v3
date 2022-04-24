@@ -21,7 +21,7 @@ export const test = testDefault.extend({
     let entries = await page.coverage.stopJSCoverage();
     entries = entries.map(preprocessCoverageEntry);
     const id = sha256([testInfo.file, ...testInfo.titlePath].join("@"), "hex");
-    const outfile = path.resolve("coverage", "tmp-client", id + ".json");
+    const outfile = path.resolve("coverage", "e2e-client", "tmp", id + ".json");
     await fse.ensureDir(path.dirname(outfile));
     await fse.writeFile(outfile, JSON.stringify({ result: entries }));
   },

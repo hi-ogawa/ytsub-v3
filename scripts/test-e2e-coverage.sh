@@ -28,5 +28,5 @@ wait "$coverage_pid"
 # print logs
 cat "$log_file"
 
-# print client coverage (TODO: merge all coverage info)
-npx c8 report -r text -r html --all --src app --exclude build --exclude-after-remap --temp-directory coverage/tmp-client
+# print client coverage
+npx c8 report -o coverage/e2e-client -r text -r html --all --src app --exclude build --exclude-after-remap --temp-directory coverage/e2e-client/tmp
