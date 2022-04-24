@@ -1,5 +1,5 @@
 #!/bin/bash
-set -eoux pipefail
+set -eux -o pipefail
 
 dest_dir="build/remix/${NODE_ENV:-"development"}/public/"
 

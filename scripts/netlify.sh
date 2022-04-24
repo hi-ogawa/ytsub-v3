@@ -1,5 +1,5 @@
 #!/bin/bash
-set -eoux pipefail
+set -eux -o pipefail
 
 # cleanup
 rm -rf build/remix/production
