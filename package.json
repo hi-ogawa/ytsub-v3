@@ -25,7 +25,7 @@
     "test": "NODE_ENV=test vitest --run",
     "test:watch": "NODE_ENV=test vitest",
     "test:coverage": "NODE_ENV=test vitest --run --coverage",
-    "test:coverage:publish": "NODE_DEBUG=gh-pages gh-pages --add --branch coverage-test --dist coverage --dest ${dest:-$(git rev-parse HEAD)}",
+    "test:coverage:publish": "NODE_DEBUG=gh-pages gh-pages --add --branch coverage-test --dist coverage --dest $(git rev-parse HEAD)",
     "test-e2e": "NODE_ENV=test playwright test",
     "test-e2e:debug": "NODE_ENV=test PWDEBUG=1 playwright test",
     "test-e2e:headed": "NODE_ENV=test E2E_HEADED=1 playwright test",
