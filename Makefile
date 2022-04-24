@@ -5,18 +5,23 @@
 # tools
 #
 SHELLCHECK ?= docker run --rm -v $(PWD):/mnt:ro koalaman/shellcheck:v0.7.2
+SCHEMACHECK ?= docker run --rm -i hiogawa/schemacheck # https://github.com/hi-ogawa/dockerfiles/blob/master/schemacheck/README.md
 
 #
 # lint
 #
 
-lint/all: lint/docker-compose lint/shellcheck
+lint/all: lint/docker-compose lint/shellcheck lint/github-workflow
 
 lint/docker-compose:
 	docker-compose config -q
 
 lint/shellcheck:
 	$(SHELLCHECK) scripts/*.sh
+
+lint/github-workflow:
+	$(SCHEMACHECK) -s github-workflow -y < .github/workflows/ci.yml
+	$(SCHEMACHECK) -s github-workflow -y < .github/workflows/health-check.yml
 
 #
 # db
