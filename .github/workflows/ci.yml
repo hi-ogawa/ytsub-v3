@@ -57,7 +57,7 @@ jobs:
       - name: publish coverage
         run: |
           echo "== HTML PREVIEW URL =="
-          echo "https://htmlpreview.github.io/?https://raw.githubusercontent.com/hi-ogawa/ytsub-v3/coverage-test/$(git rev-parse HEAD)/index.html"
+          echo "https://htmlpreview.github.io/?https://raw.githubusercontent.com/hi-ogawa/ytsub-v3/__coverage__/$(git rev-parse HEAD)/index.html"
           echo "======================"
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
