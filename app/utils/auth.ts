@@ -35,12 +35,15 @@ export const SIGNIN_SCHEMA = z.object({
 
 const BCRYPT_ROUNDS = 10;
 
-export function sha256(password: string): string {
+export function sha256(
+  password: string,
+  encoding: "base64" | "hex" = "base64"
+): string {
   return crypto
     .createHash("sha256")
     .update(password, "utf8")
     .digest()
-    .toString("base64");
+    .toString(encoding);
 }
 
 export async function toPasswordHash(password: string): Promise<string> {
