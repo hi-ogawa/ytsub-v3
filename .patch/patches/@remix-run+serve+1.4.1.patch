@@ -1,5 +1,5 @@
 diff --git a/node_modules/@remix-run/serve/index.js b/node_modules/@remix-run/serve/index.js
-index 7db39cf..2557caf 100644
+index a7d2a9c..dfd305c 100644
 --- a/node_modules/@remix-run/serve/index.js
 +++ b/node_modules/@remix-run/serve/index.js
 @@ -16,6 +16,7 @@ var express = require('express');
@@ -10,12 +10,18 @@ index 7db39cf..2557caf 100644
  
  function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
  
-@@ -27,7 +28,7 @@ function createApp(buildPath, mode = "production") {
+@@ -27,11 +28,12 @@ function createApp(buildPath, mode = "production") {
    let app = express__default["default"]();
    app.disable("x-powered-by");
    app.use(compression__default["default"]());
--  app.use(express__default["default"].static("public", {
-+  app.use(express__default["default"].static(path.resolve(buildPath, "..", "..", "public"), {
+-  app.use("/build", express__default["default"].static("public/build", {
++  const publicPath = path.resolve(buildPath, "..", "..", "public");
++  app.use("/build", express__default["default"].static(path.resolve(publicPath, "build"), {
      immutable: true,
      maxAge: "1y"
    }));
+-  app.use(express__default["default"].static("public", {
++  app.use(express__default["default"].static(publicPath, {
+     maxAge: "1h"
+   }));
+   app.use(morgan__default["default"]("tiny"));

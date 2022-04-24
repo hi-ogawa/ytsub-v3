@@ -1,4 +1,4 @@
-import { createCookieSessionStorage } from "@remix-run/server-runtime";
+import { createCookieSessionStorage } from "@remix-run/node";
 import { env } from "../misc/env";
 
 const { getSession, commitSession, destroySession } =
