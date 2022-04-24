@@ -74,7 +74,13 @@ jobs:
         with:
           node-version: "16.14.0"
       - run: pnpm run install-with-patch -- --frozen-lockfile
-      - run: npx playwright install --with-deps
+      - uses: actions/cache@v3
+        id: cache-playwright
+        with:
+          path: ~/.cache/ms-playwright
+          key: cache-playwright-1.19.2
+      - if: steps.cache-playwright.outputs.cache-hit != 'true'
+        run: npx playwright install --with-deps
       - run: make docker/up db/reset/test
       - run: npm run test-e2e:coverage
 
