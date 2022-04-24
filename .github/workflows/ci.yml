@@ -54,12 +54,14 @@ jobs:
       - run: pnpm run install-with-patch -- --frozen-lockfile
       - run: make docker/up db/reset/test
       - run: npm run test:coverage
-      - name: npm run test:coverage:publish
+      - name: publish coverage
         run: |
+          echo "== URL =="
+          echo "https://htmlpreview.github.io/?https://raw.githubusercontent.com/hi-ogawa/ytsub-v3/coverage-test/$(git rev-parse HEAD)/index.html"
+          echo "========="
           git config --global user.email "github-actions@github.com"
           git config --global user.name "github-actions"
           npm run test:coverage:publish -- --repo "https://${GITHUB_ACTOR}:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git"
-          echo "https://htmlpreview.github.io/?https://raw.githubusercontent.com/hi-ogawa/ytsub-v3/coverage-test/$(git rev-parse HEAD)/index.html"
 
   test-e2e:
     runs-on: ubuntu-20.04
