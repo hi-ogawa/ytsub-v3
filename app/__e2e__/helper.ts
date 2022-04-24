@@ -1,4 +1,4 @@
-import { Page, test as testDefault } from "@playwright/test";
+import type { Page, test as testDefault } from "@playwright/test";
 import { installGlobals } from "@remix-run/node";
 import { UserTable } from "../db/models";
 import { useUserImpl } from "../misc/helper";
