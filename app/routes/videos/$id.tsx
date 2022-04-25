@@ -189,6 +189,7 @@ function PageComponent({
   // handlers
   //
 
+  // TODO: use `useRafLoop` like in `MiniPlayer` (bookmarks/index.tsx)
   function startSynchronizePlayerState(player: YoutubePlayer): () => void {
     // Poll state change via RAF
     // (this assumes `player` and `captionEntries` don't change during the entire component lifecycle)
@@ -529,7 +530,7 @@ export function CaptionEntryComponent({
         flex flex-col
         ${border && "border border-solid border-gray-200"}
         ${isEntryPlaying ? "border-blue-400" : "border-gray-200"}
-        ${isCurrentEntry && "bg-gray-100"}
+        ${border && isCurrentEntry && "bg-gray-100"}
         p-1.5 gap-1
         text-xs
       `}

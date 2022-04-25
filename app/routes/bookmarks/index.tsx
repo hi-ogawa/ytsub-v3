@@ -19,12 +19,14 @@ import {
 import { R } from "../../misc/routes";
 import { useToById } from "../../utils/by-id";
 import { Controller, makeLoader } from "../../utils/controller-utils";
-import { useDeserialize } from "../../utils/hooks";
+import { useDeserialize, useRafLoop } from "../../utils/hooks";
 import { useLeafLoaderData } from "../../utils/loader-utils";
 import { isNonNullable } from "../../utils/misc";
 import { PageHandle } from "../../utils/page-handle";
 import { PAGINATION_PARAMS_SCHEMA } from "../../utils/pagination";
+import { CaptionEntry } from "../../utils/types";
 import { toQuery } from "../../utils/url-data";
+import { YoutubePlayer } from "../../utils/youtube";
 import { zStringToInteger } from "../../utils/zod-utils";
 import { CaptionEntryComponent, usePlayer } from "../videos/$id";
 
@@ -180,7 +182,10 @@ export function BookmarkEntryComponent({
   let [open, setOpen] = React.useState(false);
 
   return (
-    <div className="border border-gray-200 flex flex-col">
+    <div
+      className="border border-gray-200 flex flex-col"
+      data-test="bookmark-entry"
+    >
       <div className="flex items-center p-2 gap-2">
         <button
           className="flex-none btn btn-xs btn-circle btn-ghost text-gray-500"
@@ -191,6 +196,7 @@ export function BookmarkEntryComponent({
         <div
           className="grow text-sm cursor-pointer"
           onClick={() => setOpen(!open)}
+          data-test="bookmark-entry-text"
         >
           {bookmarkEntry.text}
         </div>
@@ -216,13 +222,66 @@ function MiniPlayer({
   video: VideoTable;
   captionEntry: CaptionEntryTable;
 }) {
-  const { begin } = captionEntry;
+  const [player, setPlayer] = React.useState<YoutubePlayer>();
+  const [isPlaying, setIsPlaying] = React.useState(false);
+  const [isRepeating, setIsRepeating] = React.useState(false);
+  const { begin, end } = captionEntry;
+
+  //
+  // handlers
+  //
+
+  function onClickEntryPlay(entry: CaptionEntry, toggle: boolean) {
+    if (!player) return;
+
+    // No-op if some text is selected (e.g. for google translate extension)
+    if (document.getSelection()?.toString()) return;
+
+    if (toggle) {
+      if (isPlaying) {
+        player.pauseVideo();
+      } else {
+        player.playVideo();
+      }
+    } else {
+      player.seekTo(entry.begin);
+      player.playVideo();
+    }
+  }
+
+  function onClickEntryRepeat() {
+    setIsRepeating(!isRepeating);
+  }
+
+  //
+  // effects
+  //
+
   const [playerRef, playerLoading] = usePlayer({
     defaultOptions: {
       videoId: video.videoId,
       playerVars: { start: Math.max(0, Math.floor(begin) - 1) },
     },
+    onLoad: setPlayer,
   });
+
+  useRafLoop(
+    React.useCallback(() => {
+      if (!player) return;
+
+      // update `isPlaying`
+      setIsPlaying(player.getPlayerState() === 1);
+
+      // handle `isRepeating`
+      if (isRepeating) {
+        const currentTime = player.getCurrentTime();
+        if (currentTime < begin || end < currentTime) {
+          player.seekTo(begin);
+        }
+      }
+    }, [player, isRepeating])
+  );
+
   return (
     <div className="w-full flex flex-col items-center p-2 pt-0">
       <div className="relative w-full">
@@ -242,13 +301,14 @@ function MiniPlayer({
           </div>
         )}
       </div>
-      {/* TODO: highlight bookmark text */}
+      {/* TODO: highlight bookmark text? */}
       <CaptionEntryComponent
         entry={captionEntry}
-        // TODO
-        onClickEntryPlay={() => {}}
-        onClickEntryRepeat={() => {}}
-        isPlaying={false}
+        currentEntry={captionEntry}
+        repeatingEntries={isRepeating ? [captionEntry] : []}
+        onClickEntryPlay={onClickEntryPlay}
+        onClickEntryRepeat={onClickEntryRepeat}
+        isPlaying={isPlaying}
         border={false}
       />
     </div>
