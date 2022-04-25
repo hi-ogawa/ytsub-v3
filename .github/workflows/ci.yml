@@ -99,7 +99,7 @@ jobs:
       - run: npm run cli -- db:test-migrations --unit-test
       - run: npm run cli -- db:test-migrations --reversibility-test
 
-  test-publish-coverage:
+  publish-coverage-report:
     runs-on: ubuntu-20.04
     needs:
       - test
