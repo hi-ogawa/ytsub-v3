@@ -3,6 +3,23 @@ import { UseQueryOptions, useQuery } from "react-query";
 import { deserialize } from "./controller-utils";
 import { loadYoutubeIframeApi } from "./youtube";
 
+export function useRafLoop(callback: () => void): void {
+  React.useEffect(() => {
+    let id: number | undefined;
+    function loop() {
+      callback();
+      id = requestAnimationFrame(loop);
+    }
+    loop();
+    return () => {
+      if (typeof id === "number") {
+        cancelAnimationFrame(id);
+      }
+    };
+  }, [callback]);
+}
+
+// TODO: can we reuse `useRafLoop` above to implement this?
 export function useRafTime(): [number, () => void, () => void] {
   const rafId = React.useRef<number>();
   const base = React.useRef<number>();
