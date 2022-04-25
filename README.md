@@ -17,7 +17,7 @@ npm run netlify:build:deploy
 
 # testing (vitest)
 npm run test
-npm run test:coverage # view result e.g. via `xdg-open coverage/index.html`
+npm run test:coverage # view result e.g. via `xdg-open coverage/unit/index.html`
 
 # testing (playwright)
 npx playwright install
