@@ -262,7 +262,6 @@ function PageComponent({
     setBookmarkState(newBookmarkState);
   }, []);
 
-  // TODO: e2e test
   function onClickBookmark() {
     if (!bookmarkState) return;
     const typedData: NewBookmark = {
@@ -277,6 +276,7 @@ function PageComponent({
       method: "post",
       action: R["/bookmarks/new"],
     });
+    document.getSelection()?.removeAllRanges();
   }
 
   function onCancelBookmark() {
