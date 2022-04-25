@@ -182,7 +182,10 @@ export function BookmarkEntryComponent({
   let [open, setOpen] = React.useState(false);
 
   return (
-    <div className="border border-gray-200 flex flex-col">
+    <div
+      className="border border-gray-200 flex flex-col"
+      data-test="bookmark-entry"
+    >
       <div className="flex items-center p-2 gap-2">
         <button
           className="flex-none btn btn-xs btn-circle btn-ghost text-gray-500"
@@ -193,6 +196,7 @@ export function BookmarkEntryComponent({
         <div
           className="grow text-sm cursor-pointer"
           onClick={() => setOpen(!open)}
+          data-test="bookmark-entry-text"
         >
           {bookmarkEntry.text}
         </div>

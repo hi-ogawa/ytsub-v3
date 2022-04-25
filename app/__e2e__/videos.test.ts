@@ -9,10 +9,15 @@ test.describe("videos-signed-in", () => {
     seed: __filename + "/users/me",
   });
 
-  test("new-video => show-video => new-bookmark", async ({ page }) => {
+  test("new-video => show-video => new-bookmark => list-bookmarks", async ({
+    page,
+  }) => {
     await signin(page);
 
-    // create https://www.youtube.com/watch?v=EnPYXckiUVg with fr/en
+    //
+    // navigate to /videos/new to create https://www.youtube.com/watch?v=EnPYXckiUVg with fr/en
+    //
+
     await page.goto("/videos/new?videoId=EnPYXckiUVg");
     await page
       .locator("data-test=setup-form >> select >> nth=0")
@@ -22,7 +27,10 @@ test.describe("videos-signed-in", () => {
       .selectOption('{"id":".en"}');
     await page.locator('data-test=setup-form >> button[type="submit"]').click();
 
+    //
     // navigate to /videos/$id
+    //
+
     await expect(page).toHaveURL(/\/videos\/\d+$/);
 
     // select text to bookmark
@@ -52,5 +60,19 @@ test.describe("videos-signed-in", () => {
       offset: 13,
       side: 0,
     });
+
+    //
+    // navigate to bookmark list
+    //
+
+    await page.goto("/bookmarks");
+
+    // verify bookmark text
+    await expect(
+      page.locator("data-test=bookmark-entry >> data-test=bookmark-entry-text")
+    ).toHaveText("qu'est-ce qu'on va faire ?");
+
+    // click "ChevronDown"
+    await page.locator("data-test=bookmark-entry >> button >> nth=0").click();
   });
 });
