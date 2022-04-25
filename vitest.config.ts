@@ -11,6 +11,7 @@ const VITEST_CONFIG: InlineConfig = {
   threads: false,
   coverage: {
     reporter: ["text", "html"],
+    reportsDirectory: "coverage/unit",
   },
 };
 
