@@ -67,19 +67,19 @@ describe("ttmlToEntries", () => {
 
 describe("ttmlsToCaptionEntries", () => {
   it("overlap-intervals-heuristics", () => {
-    const fr = wrapTtml(`
+    const ttml1 = wrapTtml(`
       <p begin="00:01:36.600" end="00:01:41.930" style="s2">prendre un peu de temps pour soi<br />pour mieux analyser une situation.</p>
       <p begin="00:01:41.960" end="00:01:44.340" style="s2">Prendre du recul, ça permet en général de</p>
       <p begin="00:01:44.370" end="00:01:49.380" style="s2">relativiser une situation ou de se rendre<br />compte qu&#39;elle est moins grave que prévu.</p>
       <p begin="00:01:49.410" end="00:01:52.080" style="s2">Ou alors de pouvoir prendre une grande</p>
     `);
-    const en = wrapTtml(`
+    const ttml2 = wrapTtml(`
       <p begin="00:01:36.710" end="00:01:41.930" style="s2">some time for yourself to<br />better analyze a situation.</p>
       <p begin="00:01:41.960" end="00:01:47.200" style="s2">Taking a step back usually allows you to<br />put a situation into perspective or to</p>
       <p begin="00:01:47.230" end="00:01:50.260" style="s2">realize that it is less<br />serious than expected.</p>
       <p begin="00:01:50.290" end="00:01:55.780" style="s2">Or to be able to make a big decision,<br />to change things in your life.</p>
     `);
-    expect(ttmlsToCaptionEntries(fr, en)).toMatchInlineSnapshot(`
+    expect(ttmlsToCaptionEntries(ttml1, ttml2)).toMatchInlineSnapshot(`
       [
         {
           "begin": 96.6,
@@ -108,6 +108,28 @@ describe("ttmlsToCaptionEntries", () => {
           "index": 3,
           "text1": "Ou alors de pouvoir prendre une grande",
           "text2": "Or to be able to make a big decision, to change things in your life.",
+        },
+      ]
+    `);
+  });
+
+  it("skip-empty", () => {
+    const ttml1 = wrapTtml(`
+      <p begin="1193:02:47.286" end="00:00:00.570" style="s2"></p>
+      <p begin="00:00:00.000" end="00:00:00.570" style="s2">hello friends and welcome to a</p>
+    `);
+    const ttml2 = wrapTtml(`
+      <p begin="1193:02:47.286" end="00:00:00.570" style="s2"></p>
+      <p begin="00:00:00.000" end="00:00:00.570" style="s2">bonjour les amis et bienvenue dans un</p>
+    `);
+    expect(ttmlsToCaptionEntries(ttml1, ttml2)).toMatchInlineSnapshot(`
+      [
+        {
+          "begin": 0,
+          "end": 0.57,
+          "index": 0,
+          "text1": "hello friends and welcome to a",
+          "text2": "bonjour les amis et bienvenue dans un",
         },
       ]
     `);

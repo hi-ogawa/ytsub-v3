@@ -163,7 +163,7 @@ export function ttmlToEntries(ttml: string): TtmlEntry[] {
           p: {
             "@_begin": string;
             "@_end": string;
-            "#text": string;
+            "#text"?: string;
           }[];
         };
       };
@@ -171,12 +171,14 @@ export function ttmlToEntries(ttml: string): TtmlEntry[] {
   }
   const parsed: Parsed = parser.parse(sanitized);
 
-  return parsed.tt.body.div.p.map((p) => ({
-    begin: parseTimestamp(p["@_begin"]),
-    end: parseTimestamp(p["@_end"]),
-    // TODO: normalize white spaces (e.g. \u00a0)?
-    text: p["#text"],
-  }));
+  return parsed.tt.body.div.p
+    .map((p) => ({
+      begin: parseTimestamp(p["@_begin"]),
+      end: parseTimestamp(p["@_end"]),
+      // TODO: normalize white spaces (e.g. \u00a0)?
+      text: p["#text"] ?? "",
+    }))
+    .filter((e) => e.text);
 }
 
 export function ttmlsToCaptionEntries(
@@ -201,7 +203,7 @@ function mergeTtmlEntries(
     if (candidates.length > 0) {
       // Merge all entries with overlap >= 2s
       text2 = candidates.map(([e2]) => e2.text).join("");
-    } else {
+    } else if (isects.length > 0) {
       // Or take maximum overlap
       text2 = maxBy(isects, ([, isect]) => isect)![0].text;
     }
