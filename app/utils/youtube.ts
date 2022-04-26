@@ -1,5 +1,5 @@
 import { XMLParser } from "fast-xml-parser";
-import { memoize, sortBy } from "lodash";
+import { maxBy, memoize } from "lodash";
 import { z } from "zod";
 import { AppError } from "./errors";
 import {
@@ -140,9 +140,13 @@ export function findCaptionConfigPair(
   return [found1, found2];
 }
 
-export function ttmlToEntries(
-  ttml: string
-): { begin: number; end: number; text: string }[] {
+interface TtmlEntry {
+  begin: number;
+  end: number;
+  text: string;
+}
+
+export function ttmlToEntries(ttml: string): TtmlEntry[] {
   const parser = new XMLParser({
     ignoreAttributes: false,
     alwaysCreateTextNode: true,
@@ -159,7 +163,7 @@ export function ttmlToEntries(
           p: {
             "@_begin": string;
             "@_end": string;
-            "#text": string;
+            "#text"?: string;
           }[];
         };
       };
@@ -167,12 +171,14 @@ export function ttmlToEntries(
   }
   const parsed: Parsed = parser.parse(sanitized);
 
-  return parsed.tt.body.div.p.map((p) => ({
-    begin: parseTimestamp(p["@_begin"]),
-    end: parseTimestamp(p["@_end"]),
-    // TODO: normalize white spaces (e.g. \u00a0)?
-    text: p["#text"],
-  }));
+  return parsed.tt.body.div.p
+    .map((p) => ({
+      begin: parseTimestamp(p["@_begin"]),
+      end: parseTimestamp(p["@_end"]),
+      // TODO: normalize white spaces (e.g. \u00a0)?
+      text: p["#text"] ?? "",
+    }))
+    .filter((e) => e.text);
 }
 
 export function ttmlsToCaptionEntries(
@@ -181,16 +187,41 @@ export function ttmlsToCaptionEntries(
 ): CaptionEntry[] {
   const entries1 = ttmlToEntries(ttml1);
   const entries2 = ttmlToEntries(ttml2);
-  return entries1.map(({ begin, end, text }, index) => {
-    const e2 = sortBy(entries2, (e2) => Math.abs(e2.begin - begin))[0];
+  return mergeTtmlEntries(entries1, entries2);
+}
+
+function mergeTtmlEntries(
+  entries1: TtmlEntry[],
+  entries2: TtmlEntry[]
+): CaptionEntry[] {
+  return entries1.map((e1, index) => {
+    const isects = entries2
+      .map((e2) => [e2, computeIntersection(e1, e2)] as const)
+      .filter(([, isect]) => isect > 0);
+    const candidates = isects.filter(([, isect]) => isect >= 2);
+    let text2 = "";
+    if (candidates.length > 0) {
+      // Merge all entries with overlap >= 2s
+      text2 = candidates.map(([e2]) => e2.text).join("");
+    } else if (isects.length > 0) {
+      // Or take maximum overlap
+      text2 = maxBy(isects, ([, isect]) => isect)![0].text;
+    }
     return {
       index,
-      begin,
-      end,
-      text1: text,
-      text2: e2?.text ?? "",
+      begin: e1.begin,
+      end: e1.end,
+      text1: e1.text,
+      text2,
     };
   });
+}
+
+function computeIntersection(e1: TtmlEntry, e2: TtmlEntry): number {
+  // length of intersection of [begin, end] intervals
+  const left = Math.max(e1.begin, e2.begin);
+  const right = Math.min(e1.end, e2.end);
+  return Math.max(right - left, 0);
 }
 
 export function parseTimestamp(text: string): number {
