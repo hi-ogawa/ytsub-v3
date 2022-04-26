@@ -1,4 +1,4 @@
-// See misc/youtube/languages.json
+// See misc/youtube/README.md
 const LANGUAGE_CODE_TO_NAME_YOUTUBE = {
   af: "Afrikaans",
   sq: "Albanian",
