@@ -4,7 +4,8 @@
   },
   "dependencies": {
     "@remix-run/dev": "^1.4.0",
-    "@remix-run/serve": "^1.4.0"
+    "@remix-run/serve": "^1.4.0",
+    "knex": "^1.0.4"
   },
   "devDependencies": {
     "patch-package": "^6.4.7"

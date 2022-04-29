@@ -1,7 +1,9 @@
 const NODE_ENV = process.env.NODE_ENV ?? "development";
 
 function env(key) {
-  return process.env[`APP_MYSQL_${key.toUpperCase()}`];
+  // return process.env[`APP_MYSQL_${key.toUpperCase()}`];
+  // @ts-ignore
+  return Deno.env.get(`APP_MYSQL_${key.toUpperCase()}`);
 }
 
 /** @type {import("knex").Knex.Config>} */
