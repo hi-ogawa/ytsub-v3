@@ -3,7 +3,3 @@ publish = "public"
 
 [build.processing]
 skip_processing = true
-
-[[edge_functions]]
-path = "/env"
-function = "env"

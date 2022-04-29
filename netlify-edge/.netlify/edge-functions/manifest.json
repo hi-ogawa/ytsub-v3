@@ -1,0 +1,7 @@
+{
+  "functions": [
+    { "function": "env", "path": "/env" },
+    { "function": "fallback", "path": "/*" }
+  ],
+  "version": 1
+}
