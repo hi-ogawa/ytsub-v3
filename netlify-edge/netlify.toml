@@ -5,5 +5,5 @@ publish = "public"
 skip_processing = true
 
 [[edge_functions]]
-path = "/hello"
-function = "hello"
+path = "/env"
+function = "env"

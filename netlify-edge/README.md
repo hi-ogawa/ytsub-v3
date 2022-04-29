@@ -14,3 +14,9 @@ netlify build
 # deploy
 netlify deploy --prod
 ```
+
+build manually
+
+```sh
+.netlify/edge-functions/manifest.json
+```
