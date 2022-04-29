@@ -1,4 +1,6 @@
 import * as assert from "assert";
+import * as childProcess from "child_process";
+import { promisify } from "util";
 import { installGlobals } from "@remix-run/node";
 import { cac } from "cac";
 import { range, zip } from "lodash";
@@ -6,8 +8,10 @@ import { z } from "zod";
 import { client } from "../db/client.server";
 import { Q, filterNewVideo, insertVideoAndCaptionEntries } from "../db/models";
 import { createUserCookie, register, verifySignin } from "../utils/auth";
-import { exec, streamToString } from "../utils/node.server";
+import { streamToString } from "../utils/node.server";
 import { NewVideo, fetchCaptionEntries } from "../utils/youtube";
+
+const exec = promisify(childProcess.exec);
 
 const cli = cac("cli").help();
 
