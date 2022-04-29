@@ -1,5 +1,5 @@
 diff --git a/node_modules/@remix-run/dev/compiler.js b/node_modules/@remix-run/dev/compiler.js
-index 0de2694..91caea0 100644
+index 0de2694..e8adbd8 100644
 --- a/node_modules/@remix-run/dev/compiler.js
 +++ b/node_modules/@remix-run/dev/compiler.js
 @@ -331,7 +331,7 @@ async function createBrowserBuild(config, options) {
@@ -11,3 +11,23 @@ index 0de2694..91caea0 100644
      metafile: true,
      incremental: options.incremental,
      mainFields: ["browser", "module", "main"],
+@@ -375,6 +375,7 @@ function createServerBuild(config, options, assetsManifestPromiseRef) {
+     absWorkingDir: config.rootDirectory,
+     stdin,
+     entryPoints,
++    external: ["mysql"],
+     outfile: config.serverBuildPath,
+     write: false,
+     conditions: isCloudflareRuntime ? ["worker"] : undefined,
+diff --git a/node_modules/@remix-run/dev/compiler/plugins/serverBareModulesPlugin.js b/node_modules/@remix-run/dev/compiler/plugins/serverBareModulesPlugin.js
+index dede8a5..1cbcbe4 100644
+--- a/node_modules/@remix-run/dev/compiler/plugins/serverBareModulesPlugin.js
++++ b/node_modules/@remix-run/dev/compiler/plugins/serverBareModulesPlugin.js
+@@ -82,6 +82,7 @@ function serverBareModulesPlugin(remixConfig, dependencies, onWarning) {
+           // Always bundle everything for cloudflare.
+           case "cloudflare-pages":
+           case "cloudflare-workers":
++          case "deno":
+             return undefined;
+         }
+ 

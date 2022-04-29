@@ -4,15 +4,6 @@ publish = "build/remix/production/public"
 [build.processing]
 skip_processing = true
 
-[functions]
-directory = "build/remix/production/server-bundle-zip"
-
-[[redirects]]
-from = "/*"
-to = "/.netlify/functions/index"
-status = 200
-force = false # serve static assets matching request paths without calling lambda
-
-[[headers]]
-for = "/build/*"
-values = { cache-control = "max-age=31536000, immutable" }
+# [[headers]]
+# for = "/build/*"
+# values = { cache-control = "max-age=31536000, immutable" }

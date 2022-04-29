@@ -66,6 +66,7 @@
   "devDependencies": {
     "@playwright/test": "^1.19.2",
     "@remix-run/dev": "file:./.patch/node_modules/@remix-run/dev",
+    "@remix-run/netlify-edge": "0.0.0-experimental-c6bf743d",
     "@remix-run/serve": "file:./.patch/node_modules/@remix-run/serve",
     "@tailwindcss/line-clamp": "^0.3.1",
     "@types/fs-extra": "^9.0.13",

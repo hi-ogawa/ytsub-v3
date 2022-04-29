@@ -1,7 +1,6 @@
 /node_modules
 /build
 /.cache
-/.netlify
 /.env.staging.sh
 /.env.production.sh
 /coverage

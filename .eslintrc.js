@@ -7,5 +7,5 @@ module.exports = {
     "import/order": ["error", { alphabetize: { order: "asc" } }],
     "sort-imports": ["error", { ignoreDeclarationSort: true }],
   },
-  ignorePatterns: [".cache", "build", "node_modules", "coverage"],
+  ignorePatterns: [".cache", "build", "node_modules", "coverage", ".netlify"],
 };
