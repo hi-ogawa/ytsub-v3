@@ -10,8 +10,5 @@ services:
     volumes:
       - mysql-volume:/var/lib/mysql
 
-  dockerize:
-    image: jwilder/dockerize:0.6.1
-
 volumes:
   mysql-volume:
