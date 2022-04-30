@@ -127,6 +127,7 @@ jobs:
           mkdir -p coverage/all/tmp
           mv coverage-unit/unit coverage-e2e/e2e-client coverage-e2e/e2e-server coverage
           bash scripts/merge-coverage.sh
+          rm coverage/*/tmp/*.json
       - name: publish report
         run: |
           echo "== HTML PREVIEW URL =="
