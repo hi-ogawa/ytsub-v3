@@ -6,7 +6,6 @@
 #
 SHELLCHECK ?= docker run --rm -v $(PWD):/mnt:ro koalaman/shellcheck:v0.7.2
 SCHEMACHECK ?= docker run --rm -i hiogawa/schemacheck # https://github.com/hi-ogawa/dockerfiles/blob/master/schemacheck/README.md
-DOCKERIZE ?= docker run --rm --network host jwilder/dockerize:0.6.1
 
 #
 # lint
@@ -69,7 +68,7 @@ db/migrate/test:
 
 docker/up:
 	docker-compose up -d mysql
-	$(DOCKERIZE) -timeout 60s -wait tcp://localhost:3306
+	docker-compose run --rm dockerize -timeout 60s -wait tcp://mysql:3306
 
 docker/down:
 	docker-compose down
