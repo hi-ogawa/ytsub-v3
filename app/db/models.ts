@@ -128,6 +128,7 @@ export async function deleteOrphans(): Promise<void> {
       "bookmarkEntries.captionEntryId"
     )
     .where("captionEntries.id", null);
+  // TODO: decks, practiceEntries, practiceActions
 }
 
 export function filterNewVideo(
