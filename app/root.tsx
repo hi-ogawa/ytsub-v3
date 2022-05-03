@@ -17,7 +17,6 @@ import * as React from "react";
 import {
   BookOpen,
   Bookmark,
-  Code,
   Home,
   LogIn,
   LogOut,
@@ -355,19 +354,6 @@ function SideMenuDrawerWrapper({
               </li>
             );
           })}
-          <li>
-            <a
-              href={
-                process.env.NODE_ENV === "production"
-                  ? "/ui-dev"
-                  : "http://localhost:3030"
-              }
-              target="_blank"
-            >
-              <Code size={28} className="pr-2" />
-              UI DEV
-            </a>
-          </li>
         </ul>
       </div>
     </div>
