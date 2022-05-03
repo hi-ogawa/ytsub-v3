@@ -1,11 +1,10 @@
 import { client } from "../db/client.server";
-import { deleteOrphans } from "../db/models";
+import { truncateAll } from "../db/models";
 
 export default async () => {
-  // cleanup at `setup` since it's more reliable than `teardown`
-  await deleteOrphans();
+  await truncateAll();
 
-  // returns teardown
+  // returns teardown callback
   return async () => {
     await client.destroy();
   };

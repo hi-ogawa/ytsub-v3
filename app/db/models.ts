@@ -109,6 +109,10 @@ export const Q = {
 // Helper queries
 //
 
+export async function truncateAll(): Promise<void> {
+  await Promise.all(Object.values(Q).map((table) => table().truncate()));
+}
+
 // no "FOREIGN KEY" constraint principle https://docs.planetscale.com/learn/operating-without-foreign-key-constraints#cleaning-up-orphaned-rows
 export async function deleteOrphans(): Promise<void> {
   await Q.videos()

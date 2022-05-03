@@ -297,14 +297,26 @@ cli
 
 cli
   .command("clean-data <only-username>")
-  .action(async (onlyUsername: string) => {
-    await Q.users().delete().whereNot("username", onlyUsername);
-    await deleteOrphans();
-    await Q.users()
-      .update({ username: "dev", passwordHash: await toPasswordHash("dev") })
-      .where("username", onlyUsername);
-    await client.destroy();
-  });
+  .option("--delete-anonymous-videos", "[boolean]", { default: false })
+  .action(
+    async (
+      onlyUsername: string,
+      options: { deleteAnonymousVideos: boolean }
+    ) => {
+      // delete except `onlyUsername`
+      await Q.users().delete().whereNot("username", onlyUsername);
+      if (options.deleteAnonymousVideos) {
+        // delete anonymous videos
+        await Q.videos().delete().where("userId", null);
+      }
+      await deleteOrphans();
+      // rename to "dev"
+      await Q.users()
+        .update({ username: "dev", passwordHash: await toPasswordHash("dev") })
+        .where("username", onlyUsername);
+      await client.destroy();
+    }
+  );
 
 async function printSession(username: string, password: string) {
   const user = await verifySignin({ username, password });
