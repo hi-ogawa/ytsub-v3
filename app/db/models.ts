@@ -115,6 +115,7 @@ export async function deleteOrphans(): Promise<void> {
     .delete()
     .leftJoin("users", "users.id", "videos.userId")
     .where("users.id", null)
+    .whereNot("videos.userId", null) // not delete "anonymous" videos
     .whereNot("videos.id", null);
   await Q.captionEntries()
     .delete()
@@ -128,7 +129,21 @@ export async function deleteOrphans(): Promise<void> {
       "bookmarkEntries.captionEntryId"
     )
     .where("captionEntries.id", null);
-  // TODO: decks, practiceEntries, practiceActions
+  await Q.decks()
+    .delete()
+    .leftJoin("users", "users.id", "decks.userId")
+    .where("users.id", null)
+    .whereNot("decks.id", null);
+  await Q.practiceEntries()
+    .delete()
+    .leftJoin("decks", "decks.id", "practiceEntries.deckId")
+    .where("decks.id", null)
+    .whereNot("practiceEntries.id", null);
+  await Q.practiceActions()
+    .delete()
+    .leftJoin("users", "users.id", "practiceActions.userId")
+    .where("users.id", null)
+    .whereNot("practiceActions.id", null);
 }
 
 export function filterNewVideo(

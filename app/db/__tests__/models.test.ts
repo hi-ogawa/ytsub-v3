@@ -1,7 +1,7 @@
 import { omit } from "lodash";
 import { beforeEach, describe, expect, it } from "vitest";
 import { assert } from "../../misc/assert";
-import { Q } from "../models";
+import { Q, deleteOrphans } from "../models";
 
 describe("models", () => {
   beforeEach(async () => {
@@ -55,5 +55,9 @@ describe("models", () => {
     const res = await query;
     assert(res);
     assert(typeof res.total === "number");
+  });
+
+  it("deleteOrphans", async () => {
+    await deleteOrphans();
   });
 });

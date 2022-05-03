@@ -4,8 +4,18 @@ import { cac } from "cac";
 import { range, zip } from "lodash";
 import { z } from "zod";
 import { client } from "../db/client.server";
-import { Q, filterNewVideo, insertVideoAndCaptionEntries } from "../db/models";
-import { createUserCookie, register, verifySignin } from "../utils/auth";
+import {
+  Q,
+  deleteOrphans,
+  filterNewVideo,
+  insertVideoAndCaptionEntries,
+} from "../db/models";
+import {
+  createUserCookie,
+  register,
+  toPasswordHash,
+  verifySignin,
+} from "../utils/auth";
 import { exec, streamToString } from "../utils/node.server";
 import { NewVideo, fetchCaptionEntries } from "../utils/youtube";
 
@@ -282,6 +292,17 @@ cli
       const [ok, message] = await importBookmarkEntry(old, user.id);
       console.error(ok ? "✔" : "✘", message, ok ? "" : JSON.stringify(old));
     }
+    await client.destroy();
+  });
+
+cli
+  .command("clean-data <only-username>")
+  .action(async (onlyUsername: string) => {
+    await Q.users().delete().whereNot("username", onlyUsername);
+    await deleteOrphans();
+    await Q.users()
+      .update({ username: "dev", passwordHash: await toPasswordHash("dev") })
+      .where("username", onlyUsername);
     await client.destroy();
   });
 
