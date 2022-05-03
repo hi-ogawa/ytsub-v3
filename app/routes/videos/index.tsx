@@ -214,7 +214,7 @@ function AddToDeckComponent({ videoId }: { videoId: number }) {
     () => mapOption(fetcher1.data, deserialize),
     [fetcher1.data]
   );
-  React.useEffect(() => fetcher1.load(R["/decks"]), []);
+  React.useEffect(() => fetcher1.load(R["/decks?index"]), []);
 
   // create practice entries
   const fetcher2 = useFetcher();
