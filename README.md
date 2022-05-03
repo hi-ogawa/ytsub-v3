@@ -10,7 +10,7 @@ npm run dev
 npm run lint
 
 # deploy
-netlify --version # netlify-cli/10.1.0 linux-x64 node-v16.15.0 (installed via `volta install netlify-cli`)
+netlify --version # netlify-cli/9.13.3 linux-x64 node-v16.15.0 (installed via `volta install netlify-cli@9.13.3`)
 netlify sites:create --name ytsub-v3-hiro18181
 netlify link --name ytsub-v3-hiro18181
 npm run netlify:build:deploy
