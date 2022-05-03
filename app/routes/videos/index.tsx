@@ -178,7 +178,10 @@ function VideoComponentExtra({
         currentUser.id === video.userId && (
           <>
             <li className={`${addToDeckDisabled && "disabled"}`}>
-              <button onClick={onClickAddToDeck}>
+              <button
+                onClick={onClickAddToDeck}
+                data-test="video-component-add-to-deck-button"
+              >
                 <PlusSquare />
                 Add to Deck
               </button>
@@ -214,7 +217,7 @@ function AddToDeckComponent({ videoId }: { videoId: number }) {
     () => mapOption(fetcher1.data, deserialize),
     [fetcher1.data]
   );
-  React.useEffect(() => fetcher1.load(R["/decks"]), []);
+  React.useEffect(() => fetcher1.load(R["/decks?index"]), []);
 
   // create practice entries
   const fetcher2 = useFetcher();
@@ -245,7 +248,10 @@ function AddToDeckComponent({ videoId }: { videoId: number }) {
   }
 
   return (
-    <div className="border shadow-xl rounded-xl bg-base-100 p-4 flex flex-col gap-2">
+    <div
+      className="border shadow-xl rounded-xl bg-base-100 p-4 flex flex-col gap-2"
+      data-test="add-to-deck-component"
+    >
       <div className="text-lg">Select a Deck</div>
       {data ? (
         <ul className="menu">

@@ -40,7 +40,10 @@ export const ModalProvider: React.FC = ({ children }) => {
     <DefaultModalContext.Provider value={{ openModal, closeModal }}>
       {children}
       <Transition appear show={state === "OPEN"}>
-        <div className="absolute inset-0 z-50 flex justify-center items-center">
+        <div
+          className="absolute inset-0 z-50 flex justify-center items-center"
+          data-test="modal"
+        >
           <Transition.Child
             className="transition duration-300 absolute inset-0 z-[-1]"
             enterFrom="opacity-0"

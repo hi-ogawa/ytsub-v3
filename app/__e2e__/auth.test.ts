@@ -62,14 +62,6 @@ test.describe("/users/signout", () => {
     // Signout from top menu
     await page.locator("header >> data-test=user-menu").click();
     await page.locator("header >> data-test=signout-form >> button").click();
-
-    // Find signin menu
-    await page.waitForSelector(`header >> a[href="/users/signin"]`, {
-      timeout: 10_000,
-    });
-
-    // Not available "/users/me"
-    await page.goto("/users/me", { waitUntil: "networkidle" });
-    await expect(page).toHaveURL("/users/signin");
+    await page.waitForSelector('"Signed out successfuly"');
   });
 });

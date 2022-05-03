@@ -1,6 +1,7 @@
 import type { Page, test as testDefault } from "@playwright/test";
 import { installGlobals } from "@remix-run/node";
-import { UserTable } from "../db/models";
+import { Q, UserTable } from "../db/models";
+import { assert } from "../misc/assert";
 import { useUserImpl } from "../misc/helper";
 import { createUserCookie } from "../utils/auth";
 
@@ -27,6 +28,28 @@ export function useUserE2E(
 
   test.afterAll(async () => {
     await after();
+  });
+
+  async function signin(page: Page) {
+    await page.context().addCookies([cookie]);
+  }
+
+  return { user: () => user, signin };
+}
+
+// cf. app/misc/test-setup-global-e2e.ts
+export function useDevUserE2e(test: typeof testDefault) {
+  let user: UserTable;
+  let cookie: any;
+
+  test.beforeAll(async () => {
+    const maybeUser = await Q.users().where("username", "dev").first();
+    assert(maybeUser);
+    user = maybeUser;
+
+    const rawCookie = await createUserCookie(user);
+    const [name, value] = rawCookie.split(";")[0].split("=");
+    cookie = { name, value, domain: "localhost", path: "/" };
   });
 
   async function signin(page: Page) {

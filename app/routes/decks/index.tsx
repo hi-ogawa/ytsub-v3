@@ -81,7 +81,7 @@ function NavBarMenuComponent() {
           reference={({ props }) => (
             <button
               className="btn btn-sm btn-ghost"
-              data-test="user-menu"
+              data-test="decks-menu"
               {...props}
             >
               <MoreVertical />

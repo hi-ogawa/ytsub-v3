@@ -253,7 +253,7 @@ function NavBarMenuComponent() {
                   </Link>
                 </li>
                 <Form
-                  action={R["/decks/$id"](deck.id) + "?index"}
+                  action={R["/decks/$id?index"](deck.id)}
                   method="delete"
                   onSubmitCapture={(e) => {
                     if (!window.confirm("Are you sure?")) {

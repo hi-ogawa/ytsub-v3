@@ -4,8 +4,18 @@ import { cac } from "cac";
 import { range, zip } from "lodash";
 import { z } from "zod";
 import { client } from "../db/client.server";
-import { Q, filterNewVideo, insertVideoAndCaptionEntries } from "../db/models";
-import { createUserCookie, register, verifySignin } from "../utils/auth";
+import {
+  Q,
+  deleteOrphans,
+  filterNewVideo,
+  insertVideoAndCaptionEntries,
+} from "../db/models";
+import {
+  createUserCookie,
+  register,
+  toPasswordHash,
+  verifySignin,
+} from "../utils/auth";
 import { exec, streamToString } from "../utils/node.server";
 import { NewVideo, fetchCaptionEntries } from "../utils/youtube";
 
@@ -284,6 +294,29 @@ cli
     }
     await client.destroy();
   });
+
+cli
+  .command("clean-data <only-username>")
+  .option("--delete-anonymous-videos", "[boolean]", { default: false })
+  .action(
+    async (
+      onlyUsername: string,
+      options: { deleteAnonymousVideos: boolean }
+    ) => {
+      // delete except `onlyUsername`
+      await Q.users().delete().whereNot("username", onlyUsername);
+      if (options.deleteAnonymousVideos) {
+        // delete anonymous videos
+        await Q.videos().delete().where("userId", null);
+      }
+      await deleteOrphans();
+      // rename to "dev"
+      await Q.users()
+        .update({ username: "dev", passwordHash: await toPasswordHash("dev") })
+        .where("username", onlyUsername);
+      await client.destroy();
+    }
+  );
 
 async function printSession(username: string, password: string) {
   const user = await verifySignin({ username, password });

@@ -1,16 +1,16 @@
 # ytsub-v3
 
 ```sh
-# development (see https://github.com/hi-ogawa/ytsub-v3/wiki/development)
+# development
 pnpm run install-with-patch
-make docker/up db/reset db/seed
+make docker/up db/reset db/restore  # username/password is dev/dev
 npm run dev
 
 # lint
 npm run lint
 
 # deploy
-netlify --version # netlify-cli/9.13.3 linux-x64 node-v16.13.2 (installed via `pnpm i -g netlify-cli`)
+netlify --version # netlify-cli/10.1.0 linux-x64 node-v16.15.0 (installed via `volta install netlify-cli`)
 netlify sites:create --name ytsub-v3-hiro18181
 netlify link --name ytsub-v3-hiro18181
 npm run netlify:build:deploy
