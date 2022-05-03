@@ -103,7 +103,11 @@ export function VideoComponent({
             <Popover
               placement="bottom-end"
               reference={({ props }) => (
-                <button className="btn btn-sm btn-ghost btn-circle" {...props}>
+                <button
+                  className="btn btn-sm btn-ghost btn-circle"
+                  {...props}
+                  data-test="video-component-popover-button"
+                >
                   <MoreVertical size={14} />
                 </button>
               )}

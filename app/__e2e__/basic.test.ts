@@ -35,6 +35,9 @@ test("/videos/new => /videos/id", async ({ page }) => {
   // Submit
   await page.locator('data-test=setup-form >> button[type="submit"]').click();
 
+  // video exists in e2e dump
+  await page.waitForSelector(`"Loaded existing video"`);
+
   // Navigate to /videos/$id
   await expect(page).toHaveURL(/\/videos\/\d+$/);
 });

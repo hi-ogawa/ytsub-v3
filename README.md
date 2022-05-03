@@ -1,9 +1,9 @@
 # ytsub-v3
 
 ```sh
-# development (see https://github.com/hi-ogawa/ytsub-v3/wiki/development)
+# development
 pnpm run install-with-patch
-make docker/up db/reset db/seed
+make docker/up db/reset db/restore  # username/password is dev/dev
 npm run dev
 
 # lint

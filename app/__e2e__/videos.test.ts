@@ -31,6 +31,8 @@ test.describe("videos-signed-in", () => {
     // navigate to /videos/$id
     //
 
+    await page.waitForSelector(`"Created new video"`);
+
     await expect(page).toHaveURL(/\/videos\/\d+$/);
 
     // select text to bookmark
