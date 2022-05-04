@@ -38,7 +38,7 @@ export const handle: PageHandle = {
 interface LoaderData {
   deck: DeckTable;
   statistics: DeckPracticeStatistics;
-  // TODO: improve practice status message (e.g. it shouldn't say "finished" when there's no practice entry to start with)
+  // TODO: improve practice status message (e.g. when it shouldn't say "finished" when there's no practice entry to start with)
   data:
     | {
         finished: true;
@@ -150,7 +150,9 @@ function PracticeComponent({
 }) {
   const fetcher = useFetcher();
   const transition = useTransition();
-  const isLoading = transition.state !== "idle";
+  const isLoading =
+    transition.state !== "idle" &&
+    transition.location?.pathname.startsWith(R["/decks/$id"](deck.id));
 
   function onClickAction(actionType: PracticeActionType) {
     const data: NewPracticeActionRequest = {
