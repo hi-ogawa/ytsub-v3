@@ -212,7 +212,7 @@ function NavBarMenuComponent() {
           reference={({ props }) => (
             <button
               className="btn btn-sm btn-ghost"
-              data-test="user-menu"
+              data-test="deck-menu-popover-reference"
               {...props}
             >
               <MoreVertical />
@@ -229,7 +229,10 @@ function NavBarMenuComponent() {
               leaveTo="scale-90 opacity-0"
               {...props}
             >
-              <ul className="menu rounded p-3 shadow w-48 bg-base-100 text-base-content text-sm">
+              <ul
+                className="menu rounded p-3 shadow w-48 bg-base-100 text-base-content text-sm"
+                data-test="deck-menu-popover-floating"
+              >
                 <li>
                   <Link
                     to={R["/decks/$id/practice"](deck.id)}

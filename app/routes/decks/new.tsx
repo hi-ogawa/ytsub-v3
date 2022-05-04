@@ -63,6 +63,7 @@ export const action = makeLoader(Controller, async function () {
     userId: user.id,
     ...parsed.data,
   });
+  this.flash({ content: "Deck created successfully", variant: "success" });
   return redirect(R["/decks/$id"](id));
 });
 

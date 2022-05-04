@@ -41,7 +41,7 @@ export const action = makeLoader(Controller, async function () {
   }
 
   await Q.decks().update(parsed.data).where("id", deck.id);
-  this.flash({ content: "Updated successfuly", variant: "success" });
+  this.flash({ content: "Deck updated successfully", variant: "success" });
   return redirect(R["/decks/$id"](deck.id));
 });
 
@@ -58,7 +58,7 @@ export default function DefaultComponent() {
       <Form
         method="post"
         className="card border w-80 p-4 px-6 gap-2"
-        data-test="new-deck-form"
+        data-test="edit-deck-form"
         {...formProps}
       >
         <div className="form-control mb-2">
