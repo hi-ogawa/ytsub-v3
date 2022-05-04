@@ -5,10 +5,10 @@
 exports.up = async function (knex) {
   await knex.raw(`
     ALTER TABLE decks
-      ADD newEntriesPerDay INTEGER DEFAULT 50,
-      ADD reviewsPerDay    INTEGER DEFAULT 200,
-      ADD easeMultiplier   FLOAT   DEFAULT 2,
-      ADD easeBonus        FLOAT   DEFAULT 1.5;
+      ADD newEntriesPerDay INTEGER NOT NULL DEFAULT 50,
+      ADD reviewsPerDay    INTEGER NOT NULL DEFAULT 200,
+      ADD easeMultiplier   FLOAT   NOT NULL DEFAULT 2,
+      ADD easeBonus        FLOAT   NOT NULL DEFAULT 1.5;
   `);
 };
 
