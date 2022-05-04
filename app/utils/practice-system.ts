@@ -62,14 +62,6 @@ const SCHEDULE_RULES: Record<
   },
 };
 
-// // TODO: move to `decks` table
-// const DECK_OPTIONS = {
-//   newEntriesPerDay: 50,
-//   reviewsPerDay: 200,
-//   easeMultiplier: 2,
-//   easeBonus: 1.5,
-// };
-
 export type DeckPracticeStatistics = Record<
   PracticeQueueType,
   Record<"daily" | "total", number>
