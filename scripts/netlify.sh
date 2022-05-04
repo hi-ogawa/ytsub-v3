@@ -15,7 +15,7 @@ NODE_ENV=production bash scripts/copy-assets.sh
 NODE_ENV=production BUILD_NETLIFY=1 npx remix build
 
 # build "storybook" static app
-if [ -z "$NO_UI_DEV" ]; then
+if [ -z "${NO_UI_DEV:-}" ]; then
   npx vite build --outDir build/remix/production/public/ui-dev --base /ui-dev/
 fi
 
