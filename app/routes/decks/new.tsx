@@ -59,10 +59,9 @@ export const action = makeLoader(Controller, async function () {
     return { message: "invalid request" } as ActionData;
   }
 
-  const { name } = parsed.data;
   const [id] = await Q.decks().insert({
-    name,
     userId: user.id,
+    ...parsed.data,
   });
   return redirect(R["/decks/$id"](id));
 });
