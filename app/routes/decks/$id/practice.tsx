@@ -151,8 +151,9 @@ function PracticeComponent({
   const fetcher = useFetcher();
   const transition = useTransition();
   const isLoading =
-    transition.state !== "idle" &&
-    transition.location?.pathname.startsWith(R["/decks/$id"](deck.id));
+    fetcher.state !== "idle" ||
+    (transition.state !== "idle" &&
+      transition.location?.pathname.startsWith(R["/decks/$id"](deck.id)));
 
   function onClickAction(actionType: PracticeActionType) {
     const data: NewPracticeActionRequest = {
