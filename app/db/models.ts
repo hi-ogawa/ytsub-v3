@@ -64,10 +64,13 @@ export const PRACTICE_QUEUE_TYPES = ["NEW", "LEARN", "REVIEW"] as const;
 export type PracticeActionType = typeof PRACTICE_ACTION_TYPES[number];
 export type PracticeQueueType = typeof PRACTICE_QUEUE_TYPES[number];
 
-// TODO: deck options
 export interface DeckTable {
   id: number;
   name: string;
+  newEntriesPerDay: number;
+  reviewsPerDay: number;
+  easeMultiplier: number;
+  easeBonus: number;
   createdAt: Date;
   updatedAt: Date;
   userId: number;
