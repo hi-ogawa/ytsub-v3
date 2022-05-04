@@ -2,7 +2,7 @@ import { Transition } from "@headlessui/react";
 import { Form, Link, useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import * as React from "react";
-import { Bookmark, MoreVertical, Play, Trash2 } from "react-feather";
+import { Bookmark, Edit, MoreVertical, Play, Trash2 } from "react-feather";
 import { z } from "zod";
 import { Popover } from "../../../components/popover";
 import {
@@ -30,10 +30,6 @@ export const handle: PageHandle = {
   navBarTitle: () => <NavBarTitleComponent />,
   navBarMenu: () => <NavBarMenuComponent />,
 };
-
-// TODO
-// - delete
-// - show statistics
 
 const PARAMS_SCHEMA = z.object({
   id: zStringToInteger,
@@ -216,7 +212,7 @@ function NavBarMenuComponent() {
           reference={({ props }) => (
             <button
               className="btn btn-sm btn-ghost"
-              data-test="user-menu"
+              data-test="deck-menu-popover-reference"
               {...props}
             >
               <MoreVertical />
@@ -233,7 +229,10 @@ function NavBarMenuComponent() {
               leaveTo="scale-90 opacity-0"
               {...props}
             >
-              <ul className="menu rounded p-3 shadow w-48 bg-base-100 text-base-content text-sm">
+              <ul
+                className="menu rounded p-3 shadow w-48 bg-base-100 text-base-content text-sm"
+                data-test="deck-menu-popover-floating"
+              >
                 <li>
                   <Link
                     to={R["/decks/$id/practice"](deck.id)}
@@ -250,6 +249,15 @@ function NavBarMenuComponent() {
                   >
                     <Bookmark />
                     Bookmarks
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to={R["/decks/$id/edit"](deck.id)}
+                    onClick={() => setOpen(false)}
+                  >
+                    <Edit />
+                    Edit
                   </Link>
                 </li>
                 <Form

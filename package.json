@@ -6,6 +6,7 @@
     "dev:prepare": "npm run tailwind && npm run copy-assets",
     "dev:extra": "concurrently -k 'npm:vite'",
     "dev:all": "npm run dev:prepare && concurrently -k 'npm:dev' 'npm:tsc:dev' 'npm:tailwind:dev' 'npm:vite' -c 'bgBlue.bold,bgYellow.bold,bgMagenta.bold,bgGreen.bold'",
+    "dev:e2e": "NODE_ENV=test npm run dev:prepare && NODE_ENV=test PORT=3001 npm run remix:dev",
     "copy-assets": "bash scripts/copy-assets.sh",
     "remix:dev": "remix dev",
     "remix:dev:coverage": "c8 -o coverage/e2e-server -r text -r html --exclude build --exclude packages --exclude-after-remap node_modules/.bin/remix dev",

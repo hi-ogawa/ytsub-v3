@@ -62,14 +62,6 @@ const SCHEDULE_RULES: Record<
   },
 };
 
-// TODO: move to `decks` table
-const DECK_OPTIONS = {
-  newEntriesPerDay: 50,
-  reviewsPerDay: 200,
-  easeMultiplier: 2,
-  easeBonus: 1.5,
-};
-
 export type DeckPracticeStatistics = Record<
   PracticeQueueType,
   Record<"daily" | "total", number>
@@ -117,9 +109,8 @@ export class PracticeSystem {
   async getNextPracticeEntry(
     now: Date = new Date()
   ): Promise<PracticeEntryTable | undefined> {
-    const deckId = this.deck.id;
+    const { id: deckId, newEntriesPerDay, reviewsPerDay } = this.deck;
     const yesterday = Timedelta.make({ days: 1 }).rsub(now);
-    const { newEntriesPerDay, reviewsPerDay } = DECK_OPTIONS;
 
     const qActions = Q.practiceActions()
       .where({ deckId })
@@ -194,7 +185,7 @@ export class PracticeSystem {
     actionType: PracticeActionType,
     now: Date = new Date()
   ): Promise<number> {
-    const { easeMultiplier, easeBonus } = DECK_OPTIONS;
+    const { easeMultiplier, easeBonus } = this.deck;
     const userId = this.user.id;
     const {
       id: practiceEntryId,

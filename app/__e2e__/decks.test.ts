@@ -5,7 +5,7 @@ import { useDevUserE2e } from "./helper";
 test.describe("decks", () => {
   const { signin } = useDevUserE2e(test);
 
-  test("decks => new-deck", async ({ page }) => {
+  test("decks => new-deck => edit-deck", async ({ page }) => {
     await signin(page);
 
     await page.goto("/decks");
@@ -15,6 +15,33 @@ test.describe("decks", () => {
     await page.locator("text=New deck").click();
 
     await expect(page).toHaveURL("/decks/new");
+
+    // create new deck
+    await page
+      .locator('data-test=new-deck-form >> input[name="name"]')
+      .fill("deck-e2e-test");
+    await page
+      .locator('data-test=new-deck-form >> button[type="submit"]')
+      .click();
+    await page.waitForSelector(`"Deck created successfully"`);
+    await expect(page).toHaveURL(/\/decks\/\d+$/);
+
+    // navigate to edit deck page
+    await page.locator("data-test=deck-menu-popover-reference").click();
+    await page
+      .locator("data-test=deck-menu-popover-floating >> text=Edit")
+      .click();
+    await expect(page).toHaveURL(/\/decks\/\d+\/edit$/);
+
+    // submit edit deck form
+    await page
+      .locator('data-test=edit-deck-form >> input[name="newEntriesPerDay"]')
+      .fill("25");
+    await page
+      .locator('data-test=edit-deck-form >> button[type="submit"]')
+      .click();
+    await page.waitForSelector(`"Deck updated successfully"`);
+    await expect(page).toHaveURL(/\/decks\/\d+$/);
   });
 
   test("videos => add-to-deck", async ({ page }) => {

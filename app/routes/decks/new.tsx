@@ -3,11 +3,12 @@ import { redirect } from "@remix-run/server-runtime";
 import * as React from "react";
 import { z } from "zod";
 import { useSnackbar } from "../../components/snackbar";
-import { Q } from "../../db/models";
+import { DeckTable, Q } from "../../db/models";
 import { R } from "../../misc/routes";
 import { Controller, makeLoader } from "../../utils/controller-utils";
 import { useIsFormValid } from "../../utils/hooks";
 import { PageHandle } from "../../utils/page-handle";
+import { zStringToInteger, zStringToNumber } from "../../utils/zod-utils";
 
 export const handle: PageHandle = {
   navBarTitle: () => "New Deck",
@@ -26,8 +27,24 @@ export const loader = makeLoader(Controller, async function () {
 // action
 //
 
-const REQUEST_SCHEMA = z.object({
+const DEFAULT_DECK_OPTIONS: Pick<
+  DeckTable,
+  "newEntriesPerDay" | "reviewsPerDay" | "easeMultiplier" | "easeBonus"
+> = {
+  newEntriesPerDay: 50,
+  reviewsPerDay: 200,
+  easeMultiplier: 2,
+  easeBonus: 1.5,
+};
+
+export const NEW_DECK_REQUEST_SCHEMA = z.object({
   name: z.string().nonempty(),
+  newEntriesPerDay: zStringToInteger,
+  reviewsPerDay: zStringToInteger,
+  easeMultiplier: zStringToNumber.default(
+    String(DEFAULT_DECK_OPTIONS.easeMultiplier)
+  ),
+  easeBonus: zStringToNumber.default(String(DEFAULT_DECK_OPTIONS.easeBonus)),
 });
 
 interface ActionData {
@@ -37,16 +54,16 @@ interface ActionData {
 export const action = makeLoader(Controller, async function () {
   const user = await this.requireUser();
 
-  const parsed = REQUEST_SCHEMA.safeParse(await this.form());
+  const parsed = NEW_DECK_REQUEST_SCHEMA.safeParse(await this.form());
   if (!parsed.success) {
     return { message: "invalid request" } as ActionData;
   }
 
-  const { name } = parsed.data;
   const [id] = await Q.decks().insert({
-    name,
     userId: user.id,
+    ...parsed.data,
   });
+  this.flash({ content: "Deck created successfully", variant: "success" });
   return redirect(R["/decks/$id"](id));
 });
 
@@ -81,6 +98,30 @@ export default function DefaultComponent() {
             type="text"
             name="name"
             className="input input-bordered"
+            required
+          />
+        </div>
+        <div className="form-control mb-2">
+          <label className="label">
+            <span className="label-text">New entries per day</span>
+          </label>
+          <input
+            type="number"
+            name="newEntriesPerDay"
+            className="input input-bordered"
+            defaultValue={String(DEFAULT_DECK_OPTIONS.newEntriesPerDay)}
+            required
+          />
+        </div>
+        <div className="form-control mb-2">
+          <label className="label">
+            <span className="label-text">Reviews per day</span>
+          </label>
+          <input
+            type="number"
+            name="reviewsPerDay"
+            className="input input-bordered"
+            defaultValue={String(DEFAULT_DECK_OPTIONS.reviewsPerDay)}
             required
           />
         </div>
