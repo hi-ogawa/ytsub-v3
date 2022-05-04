@@ -34,7 +34,7 @@ import { Controller, makeLoader } from "../../utils/controller-utils";
 import { useDeserialize, useSelection } from "../../utils/hooks";
 import { useYoutubeIframeApi } from "../../utils/hooks";
 import { useLeafLoaderData, useRootLoaderData } from "../../utils/loader-utils";
-import { isNonNullable } from "../../utils/misc";
+import { isNotNil } from "../../utils/misc";
 import { PageHandle } from "../../utils/page-handle";
 import { CaptionEntry } from "../../utils/types";
 import { toForm } from "../../utils/url-data";
@@ -548,7 +548,7 @@ export function CaptionEntryComponent({
     >
       <div className="flex items-center justify-end text-gray-500">
         <div>{timestamp}</div>
-        {isNonNullable(videoId) && (
+        {isNotNil(videoId) && (
           <Link
             to={R["/videos/$id"](videoId) + `?index=${entry.index}`}
             className={`ml-2 btn btn-xs btn-circle btn-ghost`}

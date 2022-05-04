@@ -19,12 +19,12 @@ export function getCall<M extends string>(m: M) {
   };
 }
 
-export function isNullable<T>(value: T): value is T & (null | undefined) {
+export function isNil<T>(value: T): value is T & (null | undefined) {
   return value === null || typeof value === "undefined";
 }
 
-export function isNonNullable<T>(value: T): value is NonNullable<T> {
-  return !isNullable(value);
+export function isNotNil<T>(value: T): value is NonNullable<T> {
+  return !isNil(value);
 }
 
 export function fromEntries<K extends string, V>(

@@ -2,7 +2,7 @@ import { z } from "zod";
 import { Q } from "../../../db/models";
 import { assert } from "../../../misc/assert";
 import { Controller, makeLoader } from "../../../utils/controller-utils";
-import { Result, isNonNullable } from "../../../utils/misc";
+import { Result, isNotNil } from "../../../utils/misc";
 import { PracticeSystem } from "../../../utils/practice-system";
 import { zStringToDate, zStringToInteger } from "../../../utils/zod-utils";
 import { requireUserAndDeck } from ".";
@@ -19,8 +19,7 @@ const ACTION_REQUEST_SCHEMA = z
     now: zStringToDate,
   })
   .refine(
-    (data) =>
-      [data.videoId, data.bookmarkEntryId].filter(isNonNullable).length === 1
+    (data) => [data.videoId, data.bookmarkEntryId].filter(isNotNil).length === 1
   );
 
 export type NewPracticeEntryRequest = z.infer<typeof ACTION_REQUEST_SCHEMA>;

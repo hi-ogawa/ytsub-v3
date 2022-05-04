@@ -21,7 +21,7 @@ import { useToById } from "../../utils/by-id";
 import { Controller, makeLoader } from "../../utils/controller-utils";
 import { useDeserialize, useRafLoop } from "../../utils/hooks";
 import { useLeafLoaderData } from "../../utils/loader-utils";
-import { isNonNullable } from "../../utils/misc";
+import { isNotNil } from "../../utils/misc";
 import { PageHandle } from "../../utils/page-handle";
 import { PAGINATION_PARAMS_SCHEMA } from "../../utils/pagination";
 import { CaptionEntry } from "../../utils/types";
@@ -332,7 +332,7 @@ function NavBarMenuComponent() {
     openModal(<DeckSelectComponent />);
   }
 
-  const isFilterActive = isNonNullable(request.videoId ?? request.deckId);
+  const isFilterActive = isNotNil(request.videoId ?? request.deckId);
 
   return (
     <>
