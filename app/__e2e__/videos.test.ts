@@ -76,5 +76,14 @@ test.describe("videos-signed-in", () => {
 
     // click "ChevronDown"
     await page.locator("data-test=bookmark-entry >> button >> nth=0").click();
+
+    // click link to navigate back to /videos/$id
+    await page
+      .locator(
+        "data-test=bookmark-entry >> data-test=caption-entry-component__video-link >> nth=0"
+      )
+      .click();
+
+    await expect(page).toHaveURL(/\/videos\/\d+\?index=\d+$/);
   });
 });
