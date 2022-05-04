@@ -31,7 +31,7 @@
     "test-e2e:headed": "NODE_ENV=test E2E_HEADED=1 playwright test",
     "test-e2e:coverage": "bash scripts/test-e2e-coverage.sh",
     "netlify:build": "bash scripts/netlify.sh",
-    "netlify:build:deploy:staging": "npm run netlify:build && netlify deploy",
+    "netlify:build:deploy:staging": "APP_DEFINE_STAGING=1 npm run netlify:build && netlify deploy",
     "netlify:build:deploy:production": "npm run netlify:build && netlify deploy --prod",
     "cli": "node --require esbuild-register app/misc/cli.ts",
     "cli:production": "eval $(bash .env.production.sh) && node --require esbuild-register app/misc/cli.ts",
