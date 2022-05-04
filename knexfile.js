@@ -1,6 +1,9 @@
 const NODE_ENV = process.env.NODE_ENV ?? "development";
 
 function env(key) {
+  if (process.env.APP_DEFINE_STAGING) {
+    return process.env[`APP_STAGING_MYSQL_${key.toUpperCase()}`];
+  }
   return process.env[`APP_MYSQL_${key.toUpperCase()}`];
 }
 

@@ -23,7 +23,7 @@ fi
 # - skip `mysql` which appears in https://github.com/knex/knex/blob/3616791ac2a6d17d55b29feed6a503a793d7c488/lib/dialects/mysql/index.js#L23
 npx esbuild build/remix/production/server/index.js --outfile=build/remix/production/server-bundle/index.js \
   --bundle --platform=node \
-  --define:process.env.APP_DEFINE_PREVIEW_DEPLOY="'${APP_DEFINE_PREVIEW_DEPLOY:-}'" \
+  --define:process.env.APP_DEFINE_STAGING="'${APP_DEFINE_STAGING:-}'" \
   --external:mysql
 
 # zip it as a prebuilt netlify function
