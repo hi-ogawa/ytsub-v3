@@ -8,7 +8,15 @@ import {
 } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import * as React from "react";
-import { Bookmark, MoreVertical, Play, Repeat, Save, X } from "react-feather";
+import {
+  Bookmark,
+  MoreVertical,
+  Play,
+  Repeat,
+  Save,
+  Video,
+  X,
+} from "react-feather";
 import { z } from "zod";
 import { Spinner } from "../../components/misc";
 import { Popover } from "../../components/popover";
@@ -26,6 +34,7 @@ import { Controller, makeLoader } from "../../utils/controller-utils";
 import { useDeserialize, useSelection } from "../../utils/hooks";
 import { useYoutubeIframeApi } from "../../utils/hooks";
 import { useLeafLoaderData, useRootLoaderData } from "../../utils/loader-utils";
+import { isNonNullable } from "../../utils/misc";
 import { PageHandle } from "../../utils/page-handle";
 import { CaptionEntry } from "../../utils/types";
 import { toForm } from "../../utils/url-data";
@@ -506,6 +515,7 @@ export function CaptionEntryComponent({
   onClickEntryPlay,
   onClickEntryRepeat,
   isPlaying,
+  videoId,
   border = true,
 }: {
   entry: CaptionEntry;
@@ -514,6 +524,7 @@ export function CaptionEntryComponent({
   onClickEntryPlay: (entry: CaptionEntry, toggle: boolean) => void;
   onClickEntryRepeat: (entry: CaptionEntry) => void;
   isPlaying: boolean;
+  videoId?: number;
   border?: boolean;
 }) {
   const { begin, end, text1, text2 } = entry;
@@ -537,6 +548,15 @@ export function CaptionEntryComponent({
     >
       <div className="flex items-center justify-end text-gray-500">
         <div>{timestamp}</div>
+        {isNonNullable(videoId) && (
+          <Link
+            to={R["/videos/$id"](videoId) + `?index=${entry.index}`}
+            className={`ml-2 btn btn-xs btn-circle btn-ghost`}
+            data-test="caption-entry-component__video-link"
+          >
+            <Video size={14} />
+          </Link>
+        )}
         <div
           className={`ml-2 btn btn-xs btn-circle btn-ghost ${
             isRepeating && "text-blue-700"

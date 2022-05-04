@@ -200,7 +200,7 @@ export function BookmarkEntryComponent({
         >
           {bookmarkEntry.text}
         </div>
-        {/* TODO */}
+        {/* TODO: ability to delete */}
         {false && (
           <button
             className="flex-none btn btn-xs btn-circle btn-ghost text-gray-500"
@@ -309,6 +309,7 @@ function MiniPlayer({
         onClickEntryPlay={onClickEntryPlay}
         onClickEntryRepeat={onClickEntryRepeat}
         isPlaying={isPlaying}
+        videoId={video.id}
         border={false}
       />
     </div>
