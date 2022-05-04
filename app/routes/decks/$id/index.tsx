@@ -2,7 +2,7 @@ import { Transition } from "@headlessui/react";
 import { Form, Link, useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import * as React from "react";
-import { Bookmark, MoreVertical, Play, Trash2 } from "react-feather";
+import { Bookmark, Edit, MoreVertical, Play, Trash2 } from "react-feather";
 import { z } from "zod";
 import { Popover } from "../../../components/popover";
 import {
@@ -30,10 +30,6 @@ export const handle: PageHandle = {
   navBarTitle: () => <NavBarTitleComponent />,
   navBarMenu: () => <NavBarMenuComponent />,
 };
-
-// TODO
-// - delete
-// - show statistics
 
 const PARAMS_SCHEMA = z.object({
   id: zStringToInteger,
@@ -250,6 +246,15 @@ function NavBarMenuComponent() {
                   >
                     <Bookmark />
                     Bookmarks
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to={R["/decks/$id/edit"](deck.id)}
+                    onClick={() => setOpen(false)}
+                  >
+                    <Edit />
+                    Edit
                   </Link>
                 </li>
                 <Form
