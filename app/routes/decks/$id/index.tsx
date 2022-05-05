@@ -13,6 +13,7 @@ import {
   PracticeEntryTable,
   Q,
   UserTable,
+  normalizeRelation,
   normalizeRelationWithPagination,
 } from "../../../db/models";
 import { assert } from "../../../misc/assert";
@@ -42,13 +43,21 @@ const PARAMS_SCHEMA = z.object({
 export async function requireUserAndDeck(
   this: Controller
 ): Promise<[UserTable, DeckTable]> {
-  const user = await this.requireUser();
-  const parsed = PARAMS_SCHEMA.safeParse(this.args.params);
-  if (parsed.success) {
-    const { id } = parsed.data;
-    const deck = await Q.decks().where({ id, userId: user.id }).first();
-    if (deck) {
-      return [user, deck];
+  const userId = this.currentUserId();
+  if (userId) {
+    const parsed = PARAMS_SCHEMA.safeParse(this.args.params);
+    if (parsed.success) {
+      const { id } = parsed.data;
+      const { users, decks } = await normalizeRelation(
+        Q.users().leftJoin("decks", "decks.userId", "users.id").where({
+          "users.id": userId,
+          "decks.id": id,
+        }),
+        ["decks", "users"]
+      );
+      if (users.length > 0 && decks.length > 0) {
+        return [users[0], decks[0]];
+      }
     }
   }
   this.flash({ content: "Deck not found", variant: "error" });
