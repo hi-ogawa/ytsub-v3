@@ -2,6 +2,7 @@ import { Knex } from "knex";
 import { CaptionEntry, VideoMetadata } from "../utils/types";
 import { NewVideo } from "../utils/youtube";
 import { client } from "./client.server";
+import RAW_SCHEMA from "./schema";
 
 export interface UserTable {
   id: number;
@@ -249,4 +250,67 @@ export async function toPaginationResult<QB extends Knex.QueryBuilder>(
 export async function toCount(query: Knex.QueryBuilder): Promise<number> {
   const { total } = await query.count({ total: 0 }).first();
   return total;
+}
+
+//
+// schema.json
+//
+
+// TODO: auto generate
+export interface Schema {
+  users: UserTable;
+  videos: VideoTable;
+  captionEntries: CaptionEntryTable;
+  bookmarkEntries: BookmarkEntryTable;
+  decks: DeckTable;
+  practiceEntries: PracticeEntryTable;
+  practiceActions: PracticeActionTable;
+}
+
+type TableName = keyof Schema;
+type TableSelectAliases = Record<TableName, Record<string, string>>;
+const TABLE_NAMES = Object.keys(RAW_SCHEMA) as TableName[];
+const TABLE_SELECT_ALIASES = {} as TableSelectAliases;
+
+initializeSelectAliases();
+
+function initializeSelectAliases(): void {
+  for (const t of TABLE_NAMES) {
+    TABLE_SELECT_ALIASES[t] = {};
+    for (const c of Object.keys(RAW_SCHEMA[t])) {
+      const actual = `${t}.${c}`;
+      const alias = `${t}#${c}`;
+      TABLE_SELECT_ALIASES[t][alias] = actual;
+    }
+  }
+}
+
+// TODO
+// - pagination
+// - optional relation
+// - remove duplicates
+export async function normalizeRelation<Ts extends TableName>(
+  qb: Knex.QueryBuilder,
+  tableNames: Ts[]
+): Promise<{ [T in Ts]: Schema[T][] }> {
+  const aliases = tableNames.map((t) => TABLE_SELECT_ALIASES[t]);
+  const rows = await qb.select(aliases);
+  const result = {} as Record<Ts, any[]>;
+  for (const t of tableNames) {
+    result[t] = [];
+  }
+  for (const row of rows) {
+    const tmp = {} as Record<Ts, any>;
+    for (const t of tableNames) {
+      tmp[t] = {};
+    }
+    for (const [k, v] of Object.entries(row)) {
+      const [t, c] = k.split("#") as [Ts, string];
+      tmp[t][c] = v;
+    }
+    for (const t of tableNames) {
+      result[t].push(tmp[t]);
+    }
+  }
+  return result;
 }

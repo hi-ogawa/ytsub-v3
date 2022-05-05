@@ -77,6 +77,7 @@ export const loader = makeLoader(Controller, async function () {
     this.flash({ content: "invalid parameters", variant: "error" });
     return redirect(R["/decks/$id"](deck.id));
   }
+
   // TODO: join `bookmarkEntries`
   const pagination = await toPaginationResult(
     Q.practiceEntries().where("deckId", deck.id).orderBy("createdAt", "asc"),

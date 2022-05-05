@@ -1,9 +1,10 @@
 import { omit } from "lodash";
-import { beforeEach, describe, expect, it } from "vitest";
+import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { assert } from "../../misc/assert";
-import { Q, deleteOrphans } from "../models";
+import { restoreDump } from "../../misc/test-setup-global-e2e";
+import { Q, deleteOrphans, normalizeRelation } from "../models";
 
-describe("models", () => {
+describe("models-basic", () => {
   beforeEach(async () => {
     await Q.users().delete();
   });
@@ -59,5 +60,130 @@ describe("models", () => {
 
   it("deleteOrphans", async () => {
     await deleteOrphans();
+  });
+});
+
+describe("models-with-dump", () => {
+  beforeAll(async () => {
+    await restoreDump();
+  });
+
+  afterAll(async () => {
+    await Q.users().delete().where("username", "dev");
+    await deleteOrphans();
+  });
+
+  it("normalizeRelation-has-one", async () => {
+    const qb = Q.practiceEntries()
+      .join(
+        "bookmarkEntries",
+        "bookmarkEntries.id",
+        "practiceEntries.bookmarkEntryId"
+      )
+      .join("users", "users.id", "bookmarkEntries.userId")
+      .join("decks", "decks.id", "practiceEntries.deckId")
+      .where("users.username", "dev")
+      .orderBy("bookmarkEntries.createdAt", "asc")
+      .limit(2);
+    const data = await normalizeRelation(qb, [
+      "bookmarkEntries",
+      "practiceEntries",
+      "users",
+      "decks",
+    ]);
+    expect(data).toMatchInlineSnapshot(`
+      {
+        "bookmarkEntries": [
+          {
+            "captionEntryId": 6127,
+            "createdAt": 2022-04-17T13:10:42.000Z,
+            "id": 314,
+            "offset": 28,
+            "side": 0,
+            "text": "passer sous une échelle",
+            "updatedAt": 2022-04-17T13:10:42.000Z,
+            "userId": 1,
+            "videoId": 58,
+          },
+          {
+            "captionEntryId": 6128,
+            "createdAt": 2022-04-17T13:11:43.000Z,
+            "id": 315,
+            "offset": 2,
+            "side": 0,
+            "text": " j'ai peur de casser un miroir parce qu'on dit qu'on aura 7 ans de malheur.",
+            "updatedAt": 2022-04-17T13:11:43.000Z,
+            "userId": 1,
+            "videoId": 58,
+          },
+        ],
+        "decks": [
+          {
+            "createdAt": 2022-04-22T23:07:33.000Z,
+            "easeBonus": 1.5,
+            "easeMultiplier": 2,
+            "id": 1,
+            "name": "test-main",
+            "newEntriesPerDay": 50,
+            "reviewsPerDay": 200,
+            "updatedAt": 2022-05-02T19:16:56.000Z,
+            "userId": 1,
+          },
+          {
+            "createdAt": 2022-04-22T23:07:33.000Z,
+            "easeBonus": 1.5,
+            "easeMultiplier": 2,
+            "id": 1,
+            "name": "test-main",
+            "newEntriesPerDay": 50,
+            "reviewsPerDay": 200,
+            "updatedAt": 2022-05-02T19:16:56.000Z,
+            "userId": 1,
+          },
+        ],
+        "practiceEntries": [
+          {
+            "bookmarkEntryId": 314,
+            "createdAt": 2022-04-22T23:07:50.000Z,
+            "deckId": 1,
+            "easeFactor": 1,
+            "id": 1,
+            "queueType": "LEARN",
+            "scheduledAt": 2022-05-04T10:22:16.000Z,
+            "updatedAt": 2022-05-04T01:17:16.000Z,
+          },
+          {
+            "bookmarkEntryId": 315,
+            "createdAt": 2022-04-22T23:07:50.000Z,
+            "deckId": 1,
+            "easeFactor": 1,
+            "id": 2,
+            "queueType": "LEARN",
+            "scheduledAt": 2022-04-25T00:25:12.000Z,
+            "updatedAt": 2022-04-24T00:25:13.000Z,
+          },
+        ],
+        "users": [
+          {
+            "createdAt": 2022-04-02T00:14:47.000Z,
+            "id": 1,
+            "language1": "fr",
+            "language2": "en",
+            "passwordHash": "\$2a\$10\$WPTRk4ui.NI6RE9OnbN/u.a6mhVfn3hkMSSQ0k86UXf/uw.PNRv6K",
+            "updatedAt": 2022-05-02T21:20:33.000Z,
+            "username": "dev",
+          },
+          {
+            "createdAt": 2022-04-02T00:14:47.000Z,
+            "id": 1,
+            "language1": "fr",
+            "language2": "en",
+            "passwordHash": "\$2a\$10\$WPTRk4ui.NI6RE9OnbN/u.a6mhVfn3hkMSSQ0k86UXf/uw.PNRv6K",
+            "updatedAt": 2022-05-02T21:20:33.000Z,
+            "username": "dev",
+          },
+        ],
+      }
+    `);
   });
 });
