@@ -1,8 +1,10 @@
 import { omit } from "lodash";
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { assert } from "../../misc/assert";
+import { getSchema } from "../../misc/cli";
 import { restoreDump } from "../../misc/test-setup-global-e2e";
 import { Q, deleteOrphans, normalizeRelation } from "../models";
+import SCHEMA from "../schema";
 
 describe("models-basic", () => {
   beforeEach(async () => {
@@ -60,6 +62,14 @@ describe("models-basic", () => {
 
   it("deleteOrphans", async () => {
     await deleteOrphans();
+  });
+
+  it("SCHEMA", async () => {
+    const expected = await getSchema({
+      includeKnex: false,
+      showCreateTable: false,
+    });
+    expect(expected).toEqual(SCHEMA);
   });
 });
 
