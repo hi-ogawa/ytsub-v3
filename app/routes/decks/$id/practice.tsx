@@ -10,6 +10,7 @@ import {
   PracticeEntryTable,
   Q,
   VideoTable,
+  normalizeRelation,
 } from "../../../db/models";
 import { assert } from "../../../misc/assert";
 import { R } from "../../../misc/routes";
@@ -56,32 +57,35 @@ export const loader = makeLoader(Controller, async function () {
   const [user, deck] = await requireUserAndDeck.apply(this);
   const system = new PracticeSystem(user, deck);
   const now = new Date();
-  const statistics = await system.getStatistics(now);
+  const statistics = system.getStatistics(now); // delay await
   const practiceEntry = await system.getNextPracticeEntry(now);
   let data: LoaderData["data"];
   if (!practiceEntry) {
     data = { finished: true };
   } else {
-    // TODO: optimize query
-    const bookmarkEntry = await Q.bookmarkEntries()
-      .where("id", practiceEntry.bookmarkEntryId)
-      .first();
-    assert(bookmarkEntry);
-    const [captionEntry, video] = await Promise.all([
-      Q.captionEntries().where("id", bookmarkEntry.captionEntryId).first(),
-      Q.videos().where("id", bookmarkEntry.videoId).first(),
-    ]);
-    assert(captionEntry);
-    assert(video);
+    const { bookmarkEntries, captionEntries, videos } = await normalizeRelation(
+      Q.bookmarkEntries()
+        .leftJoin(
+          "captionEntries",
+          "captionEntries.id",
+          "bookmarkEntries.captionEntryId"
+        )
+        .leftJoin("videos", "videos.id", "captionEntries.videoId")
+        .where("bookmarkEntries.id", practiceEntry.bookmarkEntryId),
+      ["bookmarkEntries", "captionEntries", "videos"]
+    );
+    assert(bookmarkEntries[0]);
+    assert(captionEntries[0]);
+    assert(videos[0]);
     data = {
       finished: false,
       practiceEntry,
-      bookmarkEntry,
-      captionEntry,
-      video,
+      bookmarkEntry: bookmarkEntries[0],
+      captionEntry: captionEntries[0],
+      video: videos[0],
     };
   }
-  const res: LoaderData = { deck, statistics, data };
+  const res: LoaderData = { deck, statistics: await statistics, data };
   return this.serialize(res);
 });
 

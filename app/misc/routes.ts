@@ -27,3 +27,7 @@ export const R = {
   "/decks/$id/new-practice-entry": (id: number) => `/decks/${id}/new-practice-entry`,
   "/decks/$id/new-practice-action": (id: number) => `/decks/${id}/new-practice-action`,
 };
+
+export const R_RE = {
+  "/decks/$id/practice": /\/decks\/\d+\/practice/,
+};
