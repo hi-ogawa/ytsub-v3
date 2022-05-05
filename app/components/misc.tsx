@@ -170,7 +170,9 @@ export function PaginationComponent({
       </Link>
       <Link
         to={"?" + query + toQuery(previous)}
-        className={`btn btn-xs no-animation ${!previous && "btn-disabled"}`}
+        // TODO: think of better "disabled" state
+        // className={`btn btn-xs no-animation ${!previous && "btn-disabled"}`}
+        className="btn btn-xs no-animation"
       >
         <ChevronLeft size={14} />
       </Link>
@@ -179,7 +181,7 @@ export function PaginationComponent({
       </div>
       <Link
         to={"?" + query + toQuery(next)}
-        className={`btn btn-xs no-animation ${!next && "btn-disabled"}`}
+        className="btn btn-xs no-animation"
       >
         <ChevronRight size={14} />
       </Link>
