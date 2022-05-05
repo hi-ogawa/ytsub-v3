@@ -2,7 +2,7 @@ import { client } from "../db/client.server";
 import { truncateAll } from "../db/models";
 import { exec } from "../utils/node.server";
 
-async function restoreDump() {
+export async function restoreDump() {
   const { stdout } = await exec(
     "gunzip -c misc/db/dump/2022_05_04_22_17_07.sql.gz"
   );

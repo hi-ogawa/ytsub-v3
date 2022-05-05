@@ -44,7 +44,7 @@ async function getTableNames(): Promise<string[]> {
   return rows.map((row: any) => row[columnDefs[0].name]);
 }
 
-async function getSchema(options: {
+export async function getSchema(options: {
   showCreateTable: boolean;
   includeKnex: boolean;
 }): Promise<Record<string, any>> {
