@@ -219,19 +219,23 @@ function AddToDeckComponent({ videoId }: { videoId: number }) {
   // create practice entries
   const fetcher2 = useFetcher();
   const { enqueueSnackbar } = useSnackbar();
+  const { closeModal } = useModal();
 
   React.useEffect(() => {
-    if (fetcher2.type === "done") {
+    // It doesn't have to wait until "done" since action response is ready on "actionReload"
+    // (actionSubmission => actionReload => done)
+    if (fetcher2.data) {
       const data: NewPracticeEntryResponse = fetcher2.data;
       if (data.ok) {
         enqueueSnackbar(`Added ${data.data.ids.length} to a deck`, {
           variant: "success",
         });
+        closeModal();
       } else {
         enqueueSnackbar("Failed to add to a deck", { variant: "error" });
       }
     }
-  }, [fetcher2.type]);
+  }, [fetcher2.data]);
 
   function onClickPlus(deck: DeckTable) {
     const data: NewPracticeEntryRequest = {
@@ -244,13 +248,15 @@ function AddToDeckComponent({ videoId }: { videoId: number }) {
     });
   }
 
+  const isLoading = fetcher1.state !== "idle" || fetcher2.state !== "idle";
+
   return (
     <div
       className="border shadow-xl rounded-xl bg-base-100 p-4 flex flex-col gap-2"
       data-test="add-to-deck-component"
     >
       <div className="text-lg">Select a Deck</div>
-      {data ? (
+      {data && !isLoading ? (
         <ul className="menu">
           {data.decks.map((deck) => (
             <li key={deck.id}>

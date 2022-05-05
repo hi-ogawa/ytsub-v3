@@ -43,7 +43,7 @@ async function actionImpl(this: Controller): Promise<NewPracticeEntryResponse> {
 
   const bookmarkEntries = await Q.bookmarkEntries()
     .select("bookmarkEntries.*")
-    .orWhere("bookmarkEntries.videoId", videoId)
+    .where("bookmarkEntries.videoId", videoId)
     .leftJoin(
       "captionEntries",
       "captionEntries.id",
