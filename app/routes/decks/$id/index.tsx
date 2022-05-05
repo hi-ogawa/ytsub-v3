@@ -4,13 +4,16 @@ import { redirect } from "@remix-run/server-runtime";
 import * as React from "react";
 import { Bookmark, Edit, MoreVertical, Play, Trash2 } from "react-feather";
 import { z } from "zod";
+import { PaginationComponent } from "../../../components/misc";
 import { Popover } from "../../../components/popover";
 import {
   BookmarkEntryTable,
   DeckTable,
+  PaginationResult,
   PracticeEntryTable,
   Q,
   UserTable,
+  toPaginationResult,
 } from "../../../db/models";
 import { assert } from "../../../misc/assert";
 import { R } from "../../../misc/routes";
@@ -19,6 +22,7 @@ import { Controller, makeLoader } from "../../../utils/controller-utils";
 import { useDeserialize } from "../../../utils/hooks";
 import { useLeafLoaderData } from "../../../utils/loader-utils";
 import { PageHandle } from "../../../utils/page-handle";
+import { PAGINATION_PARAMS_SCHEMA } from "../../../utils/pagination";
 import {
   DeckPracticeStatistics,
   PracticeSystem,
@@ -58,7 +62,7 @@ export async function requireUserAndDeck(
 interface LoaderData {
   deck: DeckTable;
   statistics: DeckPracticeStatistics;
-  practiceEntries: PracticeEntryTable[]; // TODO: paginate
+  pagination: PaginationResult<PracticeEntryTable>;
   bookmarkEntries: BookmarkEntryTable[];
 }
 
@@ -67,18 +71,26 @@ export const loader = makeLoader(Controller, async function () {
   const system = new PracticeSystem(user, deck);
   const now = new Date();
   const statistics = await system.getStatistics(now);
-  const practiceEntries = await Q.practiceEntries()
-    .where("deckId", deck.id)
-    .orderBy("createdAt", "asc");
+
+  const paginationParams = PAGINATION_PARAMS_SCHEMA.safeParse(this.query());
+  if (!paginationParams.success) {
+    this.flash({ content: "invalid parameters", variant: "error" });
+    return redirect(R["/decks/$id"](deck.id));
+  }
+  // TODO: join `bookmarkEntries`
+  const pagination = await toPaginationResult(
+    Q.practiceEntries().where("deckId", deck.id).orderBy("createdAt", "asc"),
+    paginationParams.data
+  );
   const bookmarkEntries = await Q.bookmarkEntries().whereIn(
     "id",
-    practiceEntries.map((e) => e.bookmarkEntryId)
+    pagination.data.map((e) => e.bookmarkEntryId)
   );
   const res: LoaderData = {
     deck,
     statistics,
-    practiceEntries,
     bookmarkEntries,
+    pagination,
   };
   return this.serialize(res);
 });
@@ -100,11 +112,11 @@ export const action = makeLoader(Controller, async function () {
 //
 
 export default function DefaultComponent() {
-  const { statistics, practiceEntries, bookmarkEntries }: LoaderData =
+  const { statistics, bookmarkEntries, pagination }: LoaderData =
     useDeserialize(useLoaderData());
   const bookmarkEntriesById = useToById(bookmarkEntries);
 
-  return (
+  const content = (
     <div className="w-full flex justify-center">
       <div className="h-full w-full max-w-lg">
         <div className="h-full flex flex-col p-2 gap-2">
@@ -129,8 +141,8 @@ export default function DefaultComponent() {
               <div className="grow" />
             </div>
           </div>
-          {practiceEntries.length === 0 && <div>Empty</div>}
-          {practiceEntries.map((practiceEntry) => (
+          {pagination.data.length === 0 && <div>Empty</div>}
+          {pagination.data.map((practiceEntry) => (
             <PracticeEntryComponent
               key={practiceEntry.id}
               practiceEntry={practiceEntry}
@@ -142,6 +154,15 @@ export default function DefaultComponent() {
         </div>
       </div>
     </div>
+  );
+  return (
+    <>
+      {content}
+      <div className="w-full h-8" /> {/* fake padding to allow scrool more */}
+      <div className="absolute bottom-2 w-full flex justify-center">
+        <PaginationComponent pagination={pagination} />
+      </div>
+    </>
   );
 }
 
