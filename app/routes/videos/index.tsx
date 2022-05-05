@@ -128,9 +128,6 @@ export function VideoListComponent({
       <div className="w-full flex justify-center">
         <div className="h-full w-full max-w-lg">
           <div className="h-full flex flex-col p-2 gap-2">
-            {/* <div className="w-full flex justify-end">
-            <PaginationComponent pagination={pagination} />
-          </div> */}
             {/* TODO: CTA when empty */}
             {pagination.data.length === 0 && <div>Empty</div>}
             {pagination.data.map((video) => (
