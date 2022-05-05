@@ -65,6 +65,7 @@ describe("models-basic", () => {
   });
 
   it("SCHEMA", async () => {
+    // run `npm run dump-schema` to update "schema.ts"
     const expected = await getSchema({
       includeKnex: false,
       showCreateTable: false,
