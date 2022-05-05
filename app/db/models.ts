@@ -294,7 +294,7 @@ export async function normalizeRelation<Ts extends TableName>(
   tableNames: Ts[]
 ): Promise<{ [T in Ts]: Schema[T][] }> {
   const aliases = tableNames.map((t) => TABLE_SELECT_ALIASES[t]);
-  const rows = await qb.select(aliases);
+  const rows = await qb.clone().select(aliases);
   const result = {} as Record<Ts, any[]>;
   for (const t of tableNames) {
     result[t] = [];
@@ -313,4 +313,27 @@ export async function normalizeRelation<Ts extends TableName>(
     }
   }
   return result;
+}
+
+export async function normalizeRelationWithPagination<Ts extends TableName>(
+  qb: Knex.QueryBuilder,
+  tableNames: Ts[],
+  { page, perPage }: { page: number; perPage: number }
+): Promise<{ [T in Ts]: Schema[T][] } & { pagination: PaginationMetadata }> {
+  const qbLimitOffset = qb
+    .clone()
+    .offset((page - 1) * perPage)
+    .limit(perPage);
+  const qbTotal = qb.clone().clear("select").clear("order");
+  const [data, total] = await Promise.all([
+    normalizeRelation(qbLimitOffset, tableNames),
+    toCount(qbTotal),
+  ]);
+  const pagination = {
+    total,
+    page,
+    perPage,
+    totalPage: Math.ceil(total / perPage),
+  };
+  return { ...data, pagination };
 }

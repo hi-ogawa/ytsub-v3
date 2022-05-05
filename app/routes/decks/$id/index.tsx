@@ -9,11 +9,11 @@ import { Popover } from "../../../components/popover";
 import {
   BookmarkEntryTable,
   DeckTable,
-  PaginationResult,
+  PaginationMetadata,
   PracticeEntryTable,
   Q,
   UserTable,
-  toPaginationResult,
+  normalizeRelationWithPagination,
 } from "../../../db/models";
 import { assert } from "../../../misc/assert";
 import { R } from "../../../misc/routes";
@@ -62,8 +62,9 @@ export async function requireUserAndDeck(
 interface LoaderData {
   deck: DeckTable;
   statistics: DeckPracticeStatistics;
-  pagination: PaginationResult<PracticeEntryTable>;
+  practiceEntries: PracticeEntryTable[];
   bookmarkEntries: BookmarkEntryTable[];
+  pagination: PaginationMetadata;
 }
 
 export const loader = makeLoader(Controller, async function () {
@@ -78,20 +79,23 @@ export const loader = makeLoader(Controller, async function () {
     return redirect(R["/decks/$id"](deck.id));
   }
 
-  // TODO: join `bookmarkEntries`
-  const pagination = await toPaginationResult(
-    Q.practiceEntries().where("deckId", deck.id).orderBy("createdAt", "asc"),
+  const data = await normalizeRelationWithPagination(
+    Q.practiceEntries()
+      .leftJoin(
+        "bookmarkEntries",
+        "bookmarkEntries.id",
+        "practiceEntries.bookmarkEntryId"
+      )
+      .where("practiceEntries.deckId", deck.id)
+      .orderBy("practiceEntries.createdAt", "asc"),
+    ["practiceEntries", "bookmarkEntries"],
     paginationParams.data
   );
-  const bookmarkEntries = await Q.bookmarkEntries().whereIn(
-    "id",
-    pagination.data.map((e) => e.bookmarkEntryId)
-  );
+
   const res: LoaderData = {
     deck,
     statistics,
-    bookmarkEntries,
-    pagination,
+    ...data,
   };
   return this.serialize(res);
 });
@@ -113,8 +117,12 @@ export const action = makeLoader(Controller, async function () {
 //
 
 export default function DefaultComponent() {
-  const { statistics, bookmarkEntries, pagination }: LoaderData =
-    useDeserialize(useLoaderData());
+  const {
+    statistics,
+    pagination,
+    practiceEntries,
+    bookmarkEntries,
+  }: LoaderData = useDeserialize(useLoaderData());
   const bookmarkEntriesById = useToById(bookmarkEntries);
 
   const content = (
@@ -142,8 +150,8 @@ export default function DefaultComponent() {
               <div className="grow" />
             </div>
           </div>
-          {pagination.data.length === 0 && <div>Empty</div>}
-          {pagination.data.map((practiceEntry) => (
+          {practiceEntries.length === 0 && <div>Empty</div>}
+          {practiceEntries.map((practiceEntry) => (
             <PracticeEntryComponent
               key={practiceEntry.id}
               practiceEntry={practiceEntry}
