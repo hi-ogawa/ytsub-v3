@@ -20,7 +20,9 @@ module.exports = {
     password: env("password") ?? "password",
     database: env("database") ?? `ytsub_${NODE_ENV}`,
     ssl:      env("ssl") === "true" ? {} : undefined,
-    multipleStatements: true
+    multipleStatements: true,
+    // TOOD: deal with timezone explicitly
+    timezone: "+00:00"
   },
   migrations: {
     directory: "app/db/migrations",
