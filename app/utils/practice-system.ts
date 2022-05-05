@@ -9,8 +9,8 @@ import {
   PracticeQueueType,
   Q,
   UserTable,
-  toCount,
 } from "../db/models";
+import { aggregate } from "../db/utils";
 import { fromEntries } from "./misc";
 import { Timedelta, TimedeltaOptions } from "./timedelta";
 
@@ -87,20 +87,20 @@ export class PracticeSystem {
         .select("queueType", { count: client.raw("COUNT(0)") })
         .where({ deckId })
         .groupBy("queueType"),
-
       Q.practiceActions()
         .select("queueType", { count: client.raw("COUNT(0)") })
         .where({ deckId })
         .where("createdAt", ">=", yesterday)
         .groupBy("queueType"),
     ]);
-
+    const aggTotal = aggregate(totals, "queueType");
+    const aggDaily = aggregate(dailys, "queueType");
     return fromEntries(
       PRACTICE_QUEUE_TYPES.map((type) => [
         type,
         {
-          total: totals.find((s) => s.queueType === type)?.count ?? 0,
-          daily: dailys.find((s) => s.queueType === type)?.count ?? 0,
+          total: aggTotal[type]?.count ?? 0,
+          daily: aggDaily[type]?.count ?? 0,
         },
       ])
     );
@@ -112,42 +112,47 @@ export class PracticeSystem {
     const { id: deckId, newEntriesPerDay, reviewsPerDay } = this.deck;
     const yesterday = Timedelta.make({ days: 1 }).rsub(now);
 
-    const qActions = Q.practiceActions()
-      .where({ deckId })
-      .where("createdAt", ">=", yesterday);
-    const qEntries = Q.practiceEntries()
-      .where({ deckId })
-      .where("scheduledAt", "<=", now)
-      .orderBy("scheduledAt");
+    const [actions, entries] = await Promise.all([
+      // TODO(refactor): copeid from `getStatistics`
+      Q.practiceActions()
+        .select("queueType", { count: client.raw("COUNT(0)") })
+        .where({ deckId })
+        .where("createdAt", ">=", yesterday)
+        .groupBy("queueType"),
+      // select `practiceEntries` with minimum `scheduledAt` for each `queueType`
+      Q.practiceEntries()
+        .select("practiceEntries.*")
+        .join(
+          Q.practiceEntries()
+            .select(
+              "queueType",
+              client.raw("MIN(scheduledAt) as minScheduledAt")
+            )
+            .where({ deckId })
+            .where("scheduledAt", "<=", now)
+            .groupBy("queueType")
+            .as("subQuery"),
+          function () {
+            this.on("subQuery.queueType", "practiceEntries.queueType").on(
+              "subQuery.minScheduledAt",
+              "practiceEntries.scheduledAt"
+            );
+          }
+        ) as Promise<PracticeEntryTable[]>,
+    ]);
+    const aggActions = aggregate(actions, "queueType");
+    const aggEntries = aggregate(entries, "queueType");
 
-    // NEW queue
-    if (
-      (await toCount(qActions.clone().where({ queueType: "NEW" }))) <
-      newEntriesPerDay
-    ) {
-      const found = await qEntries.clone().where({ queueType: "NEW" }).first();
-      if (found) return found;
+    if ((aggActions.NEW?.count ?? 0) < newEntriesPerDay && aggEntries.NEW) {
+      return aggEntries.NEW;
     }
 
-    // LEARN queue
-    {
-      const found = await qEntries
-        .clone()
-        .where({ queueType: "LEARN" })
-        .first();
-      if (found) return found;
+    if (aggEntries.LEARN) {
+      return aggEntries.LEARN;
     }
 
-    // REVIEW queue
-    if (
-      (await toCount(qActions.clone().where({ queueType: "REVIEW" }))) <
-      reviewsPerDay
-    ) {
-      const found = await qEntries
-        .clone()
-        .where({ queueType: "REVIEW" })
-        .first();
-      if (found) return found;
+    if ((aggActions.REVIEW?.count ?? 0) < reviewsPerDay && aggEntries.REVIEW) {
+      return aggEntries.REVIEW;
     }
 
     return;
