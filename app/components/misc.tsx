@@ -161,7 +161,7 @@ export function PaginationComponent({
   const { first, previous, next, last } = toNewPages(pagination);
   if (query) query += "&";
   return (
-    <div className={`${className} btn-group shadow-xl`}>
+    <div className={`${className} btn-group shadow-xl`} data-test="pagination">
       <Link
         to={"?" + query + toQuery(first)}
         className="btn btn-xs no-animation"

@@ -62,4 +62,17 @@ test.describe("decks", () => {
       "data-test=modal >> data-test=add-to-deck-component"
     );
   });
+
+  test("show-deck => pagination", async ({ page }) => {
+    await signin(page);
+    await page.goto("/decks");
+
+    // nagivate to "/decks/$id"
+    await page.locator("text=test-main").click();
+    await expect(page).toHaveURL(/\/decks\/\d+$/);
+
+    // navigate pagination
+    await page.locator("data-test=pagination >> a >> nth=2").click();
+    await expect(page).toHaveURL(/\/decks\/\d+\?perPage=20&page=2$/);
+  });
 });
