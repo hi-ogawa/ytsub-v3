@@ -37,7 +37,7 @@ import {
 } from "./components/snackbar";
 import { TopProgressBar } from "./components/top-progress-bar";
 import { UserTable } from "./db/models";
-import { R } from "./misc/routes";
+import { R, R_RE } from "./misc/routes";
 import { Controller, makeLoader } from "./utils/controller-utils";
 import { getFlashMessages } from "./utils/flash-message";
 import { RootLoaderData, useRootLoaderData } from "./utils/loader-utils";
@@ -79,10 +79,22 @@ export const loader = makeLoader(Controller, async function () {
   return this.serialize(data);
 });
 
-export const unstable_shouldReload: ShouldReloadFunction = ({ submission }) => {
+export const unstable_shouldReload: ShouldReloadFunction = ({
+  submission,
+  url,
+  prevUrl,
+}) => {
   if (submission?.action === R["/bookmarks/new"]) {
     return false;
   }
+  // skip reload during "practice" loop
+  if (
+    url.pathname === prevUrl.pathname &&
+    url.pathname.match(R_RE["/decks/$id/practice"])
+  ) {
+    return false;
+  }
+  // TODO: rest should fallback to default behavior
   return true;
 };
 
