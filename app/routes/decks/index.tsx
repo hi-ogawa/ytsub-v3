@@ -1,7 +1,7 @@
 import { Transition } from "@headlessui/react";
 import { Link, useLoaderData } from "@remix-run/react";
 import * as React from "react";
-import { MoreVertical, Play, PlusSquare } from "react-feather";
+import { MoreVertical, Play, PlusSquare, Settings } from "react-feather";
 import { Popover } from "../../components/popover";
 import { DeckTable, Q } from "../../db/models";
 import { R } from "../../misc/routes";
@@ -57,6 +57,12 @@ function DeckComponent({ deck }: { deck: DeckTable }) {
     <div className="relative border border-gray-200 flex items-center p-2 gap-2">
       <Link to={R["/decks/$id"](deck.id)} className="grow pl-2">
         {deck.name}
+      </Link>
+      <Link
+        to={R["/decks/$id"](deck.id)}
+        className="flex-none btn btn-circle btn-sm btn-ghost"
+      >
+        <Settings size={16} />
       </Link>
       <Link
         to={R["/decks/$id/practice"](deck.id)}
