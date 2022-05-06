@@ -68,7 +68,6 @@ export type DeckPracticeStatistics = Record<
 >;
 
 // TODO(perf)
-// - db queries in parallel (Promise.all)
 // - cache counters
 // - jitter something?
 //   - must be deterministic
