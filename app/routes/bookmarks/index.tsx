@@ -3,7 +3,15 @@ import { Link, useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import { omit } from "lodash";
 import * as React from "react";
-import { Book, ChevronDown, ChevronUp, Filter, Video, X } from "react-feather";
+import {
+  Book,
+  ChevronDown,
+  ChevronUp,
+  Filter,
+  Play,
+  Video,
+  X,
+} from "react-feather";
 import { z } from "zod";
 import { PaginationComponent } from "../../components/misc";
 import { useModal } from "../../components/modal";
@@ -174,12 +182,20 @@ export function BookmarkEntryComponent({
   video,
   captionEntry,
   bookmarkEntry,
+  showAutoplay = false,
 }: {
   video: VideoTable;
   captionEntry: CaptionEntryTable;
   bookmarkEntry: BookmarkEntryTable;
+  showAutoplay?: boolean;
 }) {
   let [open, setOpen] = React.useState(false);
+  let [autoplay, setAutoplay] = React.useState(false);
+
+  function onClickAutoPlay() {
+    setAutoplay(true);
+    setOpen(true);
+  }
 
   return (
     <div
@@ -200,6 +216,14 @@ export function BookmarkEntryComponent({
         >
           {bookmarkEntry.text}
         </div>
+        {showAutoplay && (
+          <button
+            className="flex-none btn btn-xs btn-circle btn-ghost text-gray-500"
+            onClick={onClickAutoPlay}
+          >
+            <Play size={16} />
+          </button>
+        )}
         {/* TODO: ability to delete */}
         {false && (
           <button
@@ -210,7 +234,14 @@ export function BookmarkEntryComponent({
           </button>
         )}
       </div>
-      {open && <MiniPlayer video={video} captionEntry={captionEntry} />}
+      {open && (
+        <MiniPlayer
+          video={video}
+          captionEntry={captionEntry}
+          autoplay={autoplay}
+          defaultIsRepeating={autoplay}
+        />
+      )}
     </div>
   );
 }
@@ -218,13 +249,17 @@ export function BookmarkEntryComponent({
 function MiniPlayer({
   video,
   captionEntry,
+  autoplay,
+  defaultIsRepeating,
 }: {
   video: VideoTable;
   captionEntry: CaptionEntryTable;
+  autoplay: boolean;
+  defaultIsRepeating: boolean;
 }) {
   const [player, setPlayer] = React.useState<YoutubePlayer>();
   const [isPlaying, setIsPlaying] = React.useState(false);
-  const [isRepeating, setIsRepeating] = React.useState(false);
+  const [isRepeating, setIsRepeating] = React.useState(defaultIsRepeating);
   const { begin, end } = captionEntry;
 
   //
@@ -260,7 +295,10 @@ function MiniPlayer({
   const [playerRef, playerLoading] = usePlayer({
     defaultOptions: {
       videoId: video.videoId,
-      playerVars: { start: Math.max(0, Math.floor(begin) - 1) },
+      playerVars: {
+        start: Math.max(0, Math.floor(begin) - 1),
+        autoplay: autoplay ? 1 : 0,
+      },
     },
     onLoad: setPlayer,
   });
