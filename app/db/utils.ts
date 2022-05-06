@@ -8,8 +8,8 @@ import { first, groupBy, mapValues } from "lodash";
   ]
     ⇓  aggregate(..., "c1")
   {
-    x: { c1: "x", c2: 0 },
-    y: { c1: "y", c2: 1 },
+    x: { c1: "x", c2: "hello" },
+    y: { c1: "y", c2: "world" },
   }
 */
 export function aggregate<T extends Record<string, any>>(
@@ -19,5 +19,5 @@ export function aggregate<T extends Record<string, any>>(
   return mapValues(
     groupBy(rows, (row) => row[column]),
     first
-  ) as any;
+  );
 }
