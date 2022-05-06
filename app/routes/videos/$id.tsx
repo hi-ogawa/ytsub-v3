@@ -413,7 +413,7 @@ export function usePlayer({
   onLoad = () => {},
   onError = () => {},
 }: {
-  defaultOptions: YoutubePlayerOptions;
+  defaultOptions: YoutubePlayerOptions; // only on mount effect
   onLoad?: (player: YoutubePlayer) => void;
   onError?: (e: Error) => void;
 }) {

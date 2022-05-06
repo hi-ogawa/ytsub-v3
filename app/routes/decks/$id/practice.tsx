@@ -39,7 +39,7 @@ export const handle: PageHandle = {
 interface LoaderData {
   deck: DeckTable;
   statistics: DeckPracticeStatistics;
-  // TODO: improve practice status message (e.g. when it shouldn't say "finished" when there's no practice entry to start with)
+  // TODO: improve practice status message (e.g. it shouldn't say "finished" when there's no practice entry to start with)
   data:
     | {
         finished: true;
@@ -183,6 +183,7 @@ function PracticeComponent({
             video={video}
             captionEntry={captionEntry}
             bookmarkEntry={bookmarkEntry}
+            showAutoplay
           />
         )}
       </div>
