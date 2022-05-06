@@ -22,7 +22,11 @@ module.exports = {
     ssl:      env("ssl") === "true" ? {} : undefined,
     multipleStatements: true,
     // TOOD: deal with timezone explicitly
-    timezone: "+00:00"
+    timezone: "+00:00",
+  },
+  pool: {
+    min: 2,
+    max: 10,
   },
   migrations: {
     directory: "app/db/migrations",
