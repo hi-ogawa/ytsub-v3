@@ -194,7 +194,7 @@ export function BookmarkEntryComponent({
 
   function onClickAutoPlay() {
     setAutoplay(true);
-    setOpen(true);
+    setOpen(!open);
   }
 
   return (
@@ -337,7 +337,7 @@ function MiniPlayer({
         videoId={video.id}
         border={false}
       />
-      <div className="relative w-full">
+      <div className={`relative w-full ${playerLoading && "bg-gray-100"}`}>
         <div className="relative pt-[56.2%]">
           <div className="absolute top-0 w-full h-full" ref={playerRef} />
         </div>
