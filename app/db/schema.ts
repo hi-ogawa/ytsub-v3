@@ -36,7 +36,7 @@ export default {
     createdAt: {
       Field: "createdAt",
       Type: "datetime",
-      Null: "YES",
+      Null: "NO",
       Key: "",
       Default: "CURRENT_TIMESTAMP",
       Extra: "DEFAULT_GENERATED",
@@ -44,7 +44,7 @@ export default {
     updatedAt: {
       Field: "updatedAt",
       Type: "datetime",
-      Null: "YES",
+      Null: "NO",
       Key: "",
       Default: "CURRENT_TIMESTAMP",
       Extra: "DEFAULT_GENERATED on update CURRENT_TIMESTAMP",
@@ -126,7 +126,7 @@ export default {
     createdAt: {
       Field: "createdAt",
       Type: "datetime",
-      Null: "YES",
+      Null: "NO",
       Key: "",
       Default: "CURRENT_TIMESTAMP",
       Extra: "DEFAULT_GENERATED",
@@ -134,7 +134,7 @@ export default {
     updatedAt: {
       Field: "updatedAt",
       Type: "datetime",
-      Null: "YES",
+      Null: "NO",
       Key: "",
       Default: "CURRENT_TIMESTAMP",
       Extra: "DEFAULT_GENERATED on update CURRENT_TIMESTAMP",
@@ -168,7 +168,7 @@ export default {
     createdAt: {
       Field: "createdAt",
       Type: "datetime",
-      Null: "YES",
+      Null: "NO",
       Key: "",
       Default: "CURRENT_TIMESTAMP",
       Extra: "DEFAULT_GENERATED",
@@ -176,7 +176,7 @@ export default {
     updatedAt: {
       Field: "updatedAt",
       Type: "datetime",
-      Null: "YES",
+      Null: "NO",
       Key: "",
       Default: "CURRENT_TIMESTAMP",
       Extra: "DEFAULT_GENERATED on update CURRENT_TIMESTAMP",
@@ -250,7 +250,7 @@ export default {
     createdAt: {
       Field: "createdAt",
       Type: "datetime",
-      Null: "YES",
+      Null: "NO",
       Key: "",
       Default: "CURRENT_TIMESTAMP",
       Extra: "DEFAULT_GENERATED",
@@ -258,7 +258,7 @@ export default {
     updatedAt: {
       Field: "updatedAt",
       Type: "datetime",
-      Null: "YES",
+      Null: "NO",
       Key: "",
       Default: "CURRENT_TIMESTAMP",
       Extra: "DEFAULT_GENERATED on update CURRENT_TIMESTAMP",
@@ -324,7 +324,7 @@ export default {
     createdAt: {
       Field: "createdAt",
       Type: "datetime",
-      Null: "YES",
+      Null: "NO",
       Key: "",
       Default: "CURRENT_TIMESTAMP",
       Extra: "DEFAULT_GENERATED",
@@ -332,7 +332,7 @@ export default {
     updatedAt: {
       Field: "updatedAt",
       Type: "datetime",
-      Null: "YES",
+      Null: "NO",
       Key: "",
       Default: "CURRENT_TIMESTAMP",
       Extra: "DEFAULT_GENERATED on update CURRENT_TIMESTAMP",
@@ -488,7 +488,7 @@ export default {
     createdAt: {
       Field: "createdAt",
       Type: "datetime",
-      Null: "YES",
+      Null: "NO",
       Key: "",
       Default: "CURRENT_TIMESTAMP",
       Extra: "DEFAULT_GENERATED",
@@ -496,7 +496,7 @@ export default {
     updatedAt: {
       Field: "updatedAt",
       Type: "datetime",
-      Null: "YES",
+      Null: "NO",
       Key: "",
       Default: "CURRENT_TIMESTAMP",
       Extra: "DEFAULT_GENERATED on update CURRENT_TIMESTAMP",
