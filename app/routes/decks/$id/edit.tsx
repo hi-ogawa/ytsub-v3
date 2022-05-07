@@ -5,6 +5,7 @@ import { DeckTable, Q } from "../../../db/models";
 import { R } from "../../../misc/routes";
 import { Controller, makeLoader } from "../../../utils/controller-utils";
 import { useDeserialize, useIsFormValid } from "../../../utils/hooks";
+import { dtf } from "../../../utils/intl";
 import { PageHandle } from "../../../utils/page-handle";
 import { NEW_DECK_REQUEST_SCHEMA } from "../new";
 import { requireUserAndDeck } from ".";
@@ -95,6 +96,16 @@ export default function DefaultComponent() {
             className="input input-bordered"
             defaultValue={deck.reviewsPerDay}
             required
+          />
+        </div>
+        <div className="form-control mb-2">
+          <label className="label">
+            <span className="label-text">Created At</span>
+          </label>
+          <input
+            className="input input-bordered bg-gray-100"
+            readOnly
+            value={dtf.format(deck.createdAt)}
           />
         </div>
         <div className="form-control">

@@ -2,7 +2,7 @@ import { Knex } from "knex";
 import { CaptionEntry, VideoMetadata } from "../utils/types";
 import { NewVideo } from "../utils/youtube";
 import { client } from "./client.server";
-import Schema from "./schema";
+import RAW_SCHEMA from "./schema";
 
 export interface UserTable {
   id: number;
@@ -269,7 +269,7 @@ export interface Schema {
 
 type TableName = keyof Schema;
 type TableSelectAliases = Record<TableName, Record<string, string>>;
-const TABLE_NAMES = Object.keys(Schema) as TableName[];
+const TABLE_NAMES = Object.keys(RAW_SCHEMA) as TableName[];
 const TABLE_SELECT_ALIASES = {} as TableSelectAliases;
 
 initializeSelectAliases();
@@ -277,7 +277,7 @@ initializeSelectAliases();
 function initializeSelectAliases(): void {
   for (const t of TABLE_NAMES) {
     TABLE_SELECT_ALIASES[t] = {};
-    for (const c of Object.keys(Schema[t])) {
+    for (const c of Object.keys(RAW_SCHEMA[t])) {
       const actual = `${t}.${c}`;
       const alias = `${t}#${c}`;
       TABLE_SELECT_ALIASES[t][alias] = actual;

@@ -21,8 +21,7 @@ module.exports = {
     database: env("database") ?? `ytsub_${NODE_ENV}`,
     ssl:      env("ssl") === "true" ? {} : undefined,
     multipleStatements: true,
-    // TOOD: deal with timezone explicitly
-    timezone: "+00:00",
+    timezone: "+00:00", // planetscale and development mysql image have UTC localtime
   },
   pool: {
     min: 2,

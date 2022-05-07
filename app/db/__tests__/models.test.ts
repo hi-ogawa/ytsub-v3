@@ -4,7 +4,7 @@ import { assert } from "../../misc/assert";
 import { getSchema } from "../../misc/cli";
 import { restoreDump } from "../../misc/test-setup-global-e2e";
 import { Q, deleteOrphans, normalizeRelation } from "../models";
-import SCHEMA from "../schema";
+import RAW_SCHEMA from "../schema";
 
 describe("models-basic", () => {
   beforeEach(async () => {
@@ -70,7 +70,7 @@ describe("models-basic", () => {
       includeKnex: false,
       showCreateTable: false,
     });
-    expect(expected).toEqual(SCHEMA);
+    expect(expected).toEqual(RAW_SCHEMA);
   });
 });
 
