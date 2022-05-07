@@ -54,7 +54,7 @@ db/recreate/dev:
 db/recreate/test:
 	docker-compose exec -T mysql mysql -uroot -ppassword -e 'DROP DATABASE IF EXISTS ytsub_test; CREATE DATABASE ytsub_test;'
 
-db/migrate: db/reset/dev db/reset/test
+db/migrate: db/migrate/dev db/migrate/test
 
 db/migrate/dev:
 	NODE_ENV=development npx knex migrate:latest
