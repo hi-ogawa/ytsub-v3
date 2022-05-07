@@ -12,6 +12,7 @@ services:
 
   dockerize:
     image: jwilder/dockerize:0.6.1
+    profiles: ["tools"]
 
 volumes:
   mysql-volume:
