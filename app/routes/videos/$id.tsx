@@ -510,6 +510,7 @@ export function CaptionEntryComponent({
   isPlaying,
   videoId,
   border = true,
+  highlight,
 }: {
   entry: CaptionEntry;
   currentEntry?: CaptionEntry;
@@ -519,6 +520,7 @@ export function CaptionEntryComponent({
   isPlaying: boolean;
   videoId?: number;
   border?: boolean;
+  highlight?: { side: number; offset: number; length: number };
 }) {
   const { begin, end, text1, text2 } = entry;
   const timestamp = [begin, end].map(stringifyTimestamp).join(" - ");
@@ -574,13 +576,50 @@ export function CaptionEntryComponent({
         <div
           className={`flex-auto w-1/2 pr-2 border-r border-solid border-gray-200 ${BOOKMARKABLE_CLASSNAME}`}
         >
-          {text1}
+          {highlight?.side === 0 ? (
+            <HighlightText
+              text={text1}
+              offset={highlight.offset}
+              length={highlight.length}
+            />
+          ) : (
+            text1
+          )}
         </div>
         <div className={`flex-auto w-1/2 pl-2 ${BOOKMARKABLE_CLASSNAME}`}>
-          {text2}
+          {highlight?.side === 1 ? (
+            <HighlightText
+              text={text2}
+              offset={highlight.offset}
+              length={highlight.length}
+            />
+          ) : (
+            text2
+          )}
         </div>
       </div>
     </div>
+  );
+}
+
+function HighlightText({
+  text,
+  offset,
+  length,
+}: {
+  text: string;
+  offset: number;
+  length: number;
+}) {
+  const t1 = text.slice(0, offset);
+  const t2 = text.slice(offset, offset + length);
+  const t3 = text.slice(offset + length);
+  return (
+    <>
+      {t1}
+      <span className="bg-sky-200/[0.7]">{t2}</span>
+      {t3}
+    </>
   );
 }
 

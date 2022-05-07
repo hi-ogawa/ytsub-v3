@@ -244,6 +244,11 @@ export function BookmarkEntryComponent({
           captionEntry={captionEntry}
           autoplay={autoplay}
           defaultIsRepeating={autoplay}
+          highlight={{
+            side: bookmarkEntry.side,
+            offset: bookmarkEntry.offset,
+            length: bookmarkEntry.text.length,
+          }}
         />
       )}
     </div>
@@ -255,11 +260,13 @@ function MiniPlayer({
   captionEntry,
   autoplay,
   defaultIsRepeating,
+  highlight,
 }: {
   video: VideoTable;
   captionEntry: CaptionEntryTable;
   autoplay: boolean;
   defaultIsRepeating: boolean;
+  highlight: { side: number; offset: number; length: number };
 }) {
   const [player, setPlayer] = React.useState<YoutubePlayer>();
   const [isPlaying, setIsPlaying] = React.useState(false);
@@ -336,6 +343,7 @@ function MiniPlayer({
         isPlaying={isPlaying}
         videoId={video.id}
         border={false}
+        highlight={highlight}
       />
       <div className={`relative w-full ${playerLoading && "bg-gray-100"}`}>
         <div className="relative pt-[56.2%]">
