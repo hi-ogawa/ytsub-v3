@@ -4,9 +4,13 @@
   },
   "dependencies": {
     "@remix-run/dev": "^1.4.0",
+    "@remix-run/node": "^1.4.0",
     "@remix-run/serve": "^1.4.0"
   },
   "devDependencies": {
     "patch-package": "^6.4.7"
+  },
+  "volta": {
+    "node": "14.19.1"
   }
 }
