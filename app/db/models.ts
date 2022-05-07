@@ -1,8 +1,41 @@
 import { Knex } from "knex";
+import { Replace, SIMPLIFY } from "../utils/type-utils";
 import { CaptionEntry, VideoMetadata } from "../utils/types";
 import { NewVideo } from "../utils/youtube";
 import { client } from "./client.server";
 import RAW_SCHEMA from "./schema";
+import { DeriveTableType, RawSchema } from "./types";
+
+export type UserTableV2 = SIMPLIFY<DeriveTableType<RawSchema["users"]>>;
+
+export type VideoTableV2 = SIMPLIFY<DeriveTableType<RawSchema["videos"]>>;
+
+export type CaptionEntryTableV2 = SIMPLIFY<DeriveTableType<RawSchema["captionEntries"]>>;
+
+export type BookmarkEntryTableV2 = SIMPLIFY<DeriveTableType<RawSchema["bookmarkEntries"]>>;
+
+export type DeckTableV2 = SIMPLIFY<DeriveTableType<RawSchema["decks"]>>;
+
+export type PracticeEntryTableV2 = SIMPLIFY<
+  Replace<DeriveTableType<RawSchema["practiceEntries"]>, { queueType: PracticeQueueType }>
+>;
+
+export type PracticeActionTableV2 = SIMPLIFY<
+  Replace<
+    DeriveTableType<RawSchema["practiceActions"]>,
+    { queueType: PracticeQueueType; actionType: PracticeActionType }
+  >
+>;
+
+type Schema = {
+  users: UserTableV2;
+  videos: VideoTableV2;
+  captionEntries: CaptionEntryTableV2;
+  bookmarkEntries: BookmarkEntryTableV2;
+  decks: DeckTableV2;
+  practiceEntries: PracticeEntryTableV2;
+  practiceActions: PracticeActionTableV2;
+};
 
 export interface UserTable {
   id: number;
@@ -216,6 +249,10 @@ export async function getVideoAndCaptionEntries(
   return;
 }
 
+//
+// pagination
+//
+
 export interface PaginationMetadata {
   total: number;
   totalPage: number;
@@ -247,34 +284,38 @@ export async function toPaginationResult<QB extends Knex.QueryBuilder>(
   return { data, total, page, perPage, totalPage: Math.ceil(total / perPage) };
 }
 
+//
+// count
+//
+
 export async function toCount(query: Knex.QueryBuilder): Promise<number> {
   const { total } = await query.count({ total: 0 }).first();
   return total;
 }
 
 //
-// schema.json
+// normalize relation
 //
-
-// TODO: auto generate
-export interface Schema {
-  users: UserTable;
-  videos: VideoTable;
-  captionEntries: CaptionEntryTable;
-  bookmarkEntries: BookmarkEntryTable;
-  decks: DeckTable;
-  practiceEntries: PracticeEntryTable;
-  practiceActions: PracticeActionTable;
-}
 
 type TableName = keyof Schema;
 type TableSelectAliases = Record<TableName, Record<string, string>>;
+
 const TABLE_NAMES = Object.keys(RAW_SCHEMA) as TableName[];
 const TABLE_SELECT_ALIASES = {} as TableSelectAliases;
 
 initializeSelectAliases();
 
 function initializeSelectAliases(): void {
+  /*
+    TABLE_SELECT_ALIASES = {
+      users: {
+        "users#id":       "users.id",
+        "users#username": "users.username",
+        ...
+      },
+      ...
+    }
+  */
   for (const t of TABLE_NAMES) {
     TABLE_SELECT_ALIASES[t] = {};
     for (const c of Object.keys(RAW_SCHEMA[t])) {

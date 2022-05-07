@@ -33,6 +33,8 @@ export function fromEntries<K extends string, V>(
   return Object.fromEntries(entries) as any;
 }
 
+export function CHECK_ASSIGNABLE<T>(_: T) {}
+
 //
 // result type
 //
