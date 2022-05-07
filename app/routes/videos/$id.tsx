@@ -469,14 +469,7 @@ function PlayerComponent({
         </div>
         {loading && (
           <div className="absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%]">
-            <div
-              className="w-20 h-20 rounded-full animate-spin"
-              style={{
-                border: "3px solid #999",
-                borderLeft: "3px solid #ddd",
-                borderTop: "3px solid #ddd",
-              }}
-            />
+            <Spinner className="w-20 h-20" />
           </div>
         )}
       </div>

@@ -136,18 +136,14 @@ export function VideoComponent({
   );
 }
 
-export const Spinner: React.FC<{ className: string }> = (props) => {
+// TODO: might be nicer to implener .spinner class
+export function Spinner(props: { className: string }) {
   return (
     <div
-      className={`${props.className} rounded-full animate-spin`}
-      style={{
-        border: "3px solid #999",
-        borderLeft: "3px solid #ddd",
-        borderTop: "3px solid #ddd",
-      }}
+      className={`${props.className} rounded-full animate-spin border-2 border-gray-400 border-t-gray-200 border-r-gray-200`}
     />
   );
-};
+}
 
 export function PaginationComponent({
   className = "",
