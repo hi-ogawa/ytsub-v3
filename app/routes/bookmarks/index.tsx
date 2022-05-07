@@ -202,7 +202,11 @@ export function BookmarkEntryComponent({
       className="border border-gray-200 flex flex-col"
       data-test="bookmark-entry"
     >
-      <div className="flex items-center p-2 gap-2">
+      <div
+        className={`flex items-center p-2 gap-2 ${
+          open && "border-b border-gray-200 border-dashed"
+        }`}
+      >
         <button
           className="flex-none btn btn-xs btn-circle btn-ghost text-gray-500"
           onClick={() => setOpen(!open)}
@@ -321,7 +325,18 @@ function MiniPlayer({
   );
 
   return (
-    <div className="w-full flex flex-col items-center p-2 pt-0">
+    <div className="w-full flex flex-col items-center p-2 pt-0 gap-2">
+      {/* TODO: highlight bookmark text? */}
+      <CaptionEntryComponent
+        entry={captionEntry}
+        currentEntry={captionEntry}
+        repeatingEntries={isRepeating ? [captionEntry] : []}
+        onClickEntryPlay={onClickEntryPlay}
+        onClickEntryRepeat={onClickEntryRepeat}
+        isPlaying={isPlaying}
+        videoId={video.id}
+        border={false}
+      />
       <div className="relative w-full">
         <div className="relative pt-[56.2%]">
           <div className="absolute top-0 w-full h-full" ref={playerRef} />
@@ -339,17 +354,6 @@ function MiniPlayer({
           </div>
         )}
       </div>
-      {/* TODO: highlight bookmark text? */}
-      <CaptionEntryComponent
-        entry={captionEntry}
-        currentEntry={captionEntry}
-        repeatingEntries={isRepeating ? [captionEntry] : []}
-        onClickEntryPlay={onClickEntryPlay}
-        onClickEntryRepeat={onClickEntryRepeat}
-        isPlaying={isPlaying}
-        videoId={video.id}
-        border={false}
-      />
     </div>
   );
 }
