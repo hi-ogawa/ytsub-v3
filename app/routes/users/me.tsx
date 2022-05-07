@@ -17,6 +17,7 @@ import {
   makeLoader,
 } from "../../utils/controller-utils";
 import { useIsFormValid } from "../../utils/hooks";
+import { dtf } from "../../utils/intl";
 import {
   FILTERED_LANGUAGE_CODES,
   LanguageCode,
@@ -105,12 +106,12 @@ export default function DefaultComponent() {
             </div>
             <div className="form-control">
               <label className="label">
-                <span className="label-text">Account Created At</span>
+                <span className="label-text">Created At</span>
               </label>
               <input
                 className="input input-bordered bg-gray-100"
                 readOnly
-                value={currentUser.createdAt.toISOString()}
+                value={dtf.format(currentUser.createdAt)}
               />
             </div>
             <div className="form-control">
