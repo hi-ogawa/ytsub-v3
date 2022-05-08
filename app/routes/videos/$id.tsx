@@ -617,7 +617,7 @@ function HighlightText({
   return (
     <>
       {t1}
-      <span className="bg-sky-200/[0.7]">{t2}</span>
+      <span className="underline">{t2}</span>
       {t3}
     </>
   );
