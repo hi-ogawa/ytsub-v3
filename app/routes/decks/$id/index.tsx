@@ -5,6 +5,8 @@ import * as React from "react";
 import {
   Bookmark,
   CheckCircle,
+  ChevronDown,
+  ChevronUp,
   Circle,
   Disc,
   Edit,
@@ -34,7 +36,7 @@ import { R } from "../../../misc/routes";
 import { useToById } from "../../../utils/by-id";
 import { Controller, makeLoader } from "../../../utils/controller-utils";
 import { useDeserialize } from "../../../utils/hooks";
-import { rtf } from "../../../utils/intl";
+import { dtfDateOnly, rtf } from "../../../utils/intl";
 import { useLeafLoaderData } from "../../../utils/loader-utils";
 import { PageHandle } from "../../../utils/page-handle";
 import { PAGINATION_PARAMS_SCHEMA } from "../../../utils/pagination";
@@ -254,9 +256,6 @@ export function PracticeBookmarkEntryComponent({
 }) {
   const [open, setOpen] = React.useState(false);
   const scheduledAt = formatScheduledAt(practiceEntry.scheduledAt, new Date());
-  // TODO: "reveal" UI to toggle `open`
-  // TODO: show practiceActions history
-
   return (
     <div
       className="border border-gray-200 flex flex-col"
@@ -267,11 +266,11 @@ export function PracticeBookmarkEntryComponent({
           ${open && "border-b border-gray-200 border-dashed"}
         `}
       >
-        <div className="flex gap-2">
-          <div
-            className="flex-none h-[20px] flex items-center"
-            onClick={() => setOpen(!open)}
-          >
+        <div
+          className="flex gap-2 cursor-pointer"
+          onClick={() => setOpen(!open)}
+        >
+          <div className="flex-none h-[20px] flex items-center">
             {practiceEntry.queueType === "NEW" && (
               <Circle size={16} className="text-blue-400" />
             )}
@@ -284,21 +283,24 @@ export function PracticeBookmarkEntryComponent({
           </div>
           <div
             className="grow text-sm cursor-pointer"
-            onClick={() => setOpen(!open)}
             data-test="bookmark-entry-text"
           >
             {bookmarkEntry.text}
           </div>
         </div>
-        <div className="flex items-center gap-2 ml-6 text-xs text-gray-500">
-          {/* TODO: hide if `practiceActionsCount === 0`? */}
-          <div>answered {formatCount(practiceActionsCount)}</div>
-          {scheduledAt && (
-            <>
-              {"⋅"}
-              <div>scheduled {scheduledAt}</div>
-            </>
-          )}
+        <div className="relative flex items-center gap-2 ml-6 text-xs text-gray-500">
+          {/* TODO: show practiceActions history (in modal?) */}
+          <div>Answered {formatCount(practiceActionsCount)}</div>
+          {"⋅"}
+          <div>Scheduled {scheduledAt}</div>
+          <div className="absolute right-0 bottom-0">
+            <button
+              className="flex-none btn btn-xs btn-circle btn-ghost text-gray-500"
+              onClick={() => setOpen(!open)}
+            >
+              {open ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+            </button>
+          </div>
         </div>
       </div>
       {open && (
@@ -320,14 +322,13 @@ export function PracticeBookmarkEntryComponent({
 
 function formatCount(n: number): string {
   if (n === 1) return "once";
-  if (n === 2) return "twice";
   return `${n} times`;
 }
 
 function formatScheduledAt(date: Date, now: Date): string | undefined {
   const delta = Timedelta.difference(date, now);
   if (delta.value <= 0) {
-    return;
+    return "at " + dtfDateOnly.format(date);
   }
   const n = delta.normalize();
   for (const unit of ["days", "hours", "minutes"] as const) {
