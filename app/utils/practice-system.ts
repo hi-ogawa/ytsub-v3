@@ -67,13 +67,6 @@ export type DeckPracticeStatistics = Record<
   Record<"daily" | "total", number>
 >;
 
-// TODO(perf)
-// - cache counters
-// - jitter something?
-//   - must be deterministic
-//   - which queue to pick in `getNextPracticeEntry`
-//   - `sheduledAt` in `createPracticeEntries`
-
 export class PracticeSystem {
   constructor(private user: UserTable, private deck: DeckTable) {}
 
@@ -117,8 +110,6 @@ export class PracticeSystem {
     const yesterday = Timedelta.make({ days: 1 }).rsub(now);
 
     if (randomMode) {
-      // TODO: coverage
-      // TODO: verify vitess mysql supports this exotic query
       const result: PracticeEntryTable = await Q.practiceEntries()
         .select("practiceEntries.*")
         .where("practiceEntries.deckId", deckId)
