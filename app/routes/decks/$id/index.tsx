@@ -16,6 +16,7 @@ import {
 } from "react-feather";
 import { z } from "zod";
 import { PaginationComponent } from "../../../components/misc";
+import { useModal } from "../../../components/modal";
 import { Popover } from "../../../components/popover";
 import { client } from "../../../db/client.server";
 import {
@@ -216,7 +217,6 @@ export default function DefaultComponent() {
                 bookmarkEntry={b}
                 captionEntry={c}
                 video={v}
-                practiceActionsCount={p.practiceActionsCount}
               />
             );
           })}
@@ -240,17 +240,25 @@ export function PracticeBookmarkEntryComponent({
   captionEntry,
   bookmarkEntry,
   practiceEntry,
-  practiceActionsCount,
 }: {
   video: VideoTable;
   captionEntry: CaptionEntryTable;
   bookmarkEntry: BookmarkEntryTable;
-  practiceEntry: PracticeEntryTable;
-  practiceActionsCount: number;
+  practiceEntry: PracticeEntryTableExtra;
   showAutoplay?: boolean;
 }) {
   const [open, setOpen] = React.useState(false);
+  const { openModal } = useModal();
   const scheduledAt = formatScheduledAt(practiceEntry.scheduledAt, new Date());
+  const actionsCount = practiceEntry.practiceActionsCount;
+
+  function onClickActionsCount() {
+    if (actionsCount === 0) return;
+    openModal(
+      <PracticeActionsModalContent practiceEntryId={practiceEntry.id} />
+    );
+  }
+
   return (
     <div
       className="border border-gray-200 flex flex-col"
@@ -284,8 +292,12 @@ export function PracticeBookmarkEntryComponent({
           </div>
         </div>
         <div className="relative flex items-center gap-2 ml-6 text-xs text-gray-500">
-          {/* TODO: show practiceActions history (in modal?) */}
-          <div>Answered {formatCount(practiceActionsCount)}</div>
+          <div
+            className={`${actionsCount > 0 && "cursor-pointer"}`}
+            onClick={onClickActionsCount}
+          >
+            Answered {formatCount(actionsCount)}
+          </div>
           {"⋅"}
           <div>Scheduled {scheduledAt}</div>
           <div className="absolute right-0 bottom-0">
@@ -332,6 +344,28 @@ function formatScheduledAt(date: Date, now: Date): string | undefined {
     }
   }
   return rtf.format(n.seconds, "seconds");
+}
+
+//
+// PracticeActionsModalContent
+//
+
+// TODO
+function PracticeActionsModalContent({
+  practiceEntryId,
+}: {
+  practiceEntryId: number;
+}) {
+  practiceEntryId;
+  return (
+    <div
+      className="border shadow-xl rounded-xl bg-base-100 p-4 flex flex-col gap-2"
+      data-test="add-to-deck-component"
+    >
+      <div className="text-lg">Answer History</div>
+      <div className="text-sm text-gray-500">TODO (ID = {practiceEntryId})</div>
+    </div>
+  );
 }
 
 //
