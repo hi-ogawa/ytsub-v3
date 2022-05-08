@@ -110,7 +110,6 @@ export const loader = makeLoader(Controller, async function () {
     return redirect(R["/decks/$id"](deck.id));
   }
 
-  // TODO: coverage
   const data = await normalizeRelationWithPagination(
     Q.practiceEntries()
       .leftJoin(

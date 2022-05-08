@@ -3,6 +3,7 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { assert } from "../../misc/assert";
 import { getSchema } from "../../misc/cli";
 import { restoreDump } from "../../misc/test-setup-global-e2e";
+import { client } from "../client.server";
 import { Q, deleteOrphans, normalizeRelation } from "../models";
 import RAW_SCHEMA from "../schema";
 
@@ -84,7 +85,7 @@ describe("models-with-dump", () => {
     await deleteOrphans();
   });
 
-  it("normalizeRelation-has-one", async () => {
+  it("normalizeRelation", async () => {
     const qb = Q.practiceEntries()
       .join(
         "bookmarkEntries",
@@ -93,15 +94,24 @@ describe("models-with-dump", () => {
       )
       .join("users", "users.id", "bookmarkEntries.userId")
       .join("decks", "decks.id", "practiceEntries.deckId")
+      .leftJoin(
+        "practiceActions",
+        "practiceActions.practiceEntryId",
+        "practiceEntries.id"
+      )
       .where("users.username", "dev")
+      .groupBy("practiceEntries.id")
       .orderBy("bookmarkEntries.createdAt", "asc")
       .limit(2);
-    const data = await normalizeRelation(qb, [
-      "bookmarkEntries",
-      "practiceEntries",
-      "users",
-      "decks",
-    ]);
+    const data = await normalizeRelation(
+      qb,
+      ["bookmarkEntries", "practiceEntries", "users", "decks"],
+      {
+        selectExtra: {
+          practiceActionsCount: client.raw("COUNT(practiceActions.id)"),
+        },
+      }
+    );
     expect(data).toMatchInlineSnapshot(`
       {
         "bookmarkEntries": [
@@ -110,6 +120,7 @@ describe("models-with-dump", () => {
             "createdAt": 2022-04-17T22:10:42.000Z,
             "id": 314,
             "offset": 28,
+            "practiceActionsCount": 2,
             "side": 0,
             "text": "passer sous une échelle",
             "updatedAt": 2022-04-17T22:10:42.000Z,
@@ -121,6 +132,7 @@ describe("models-with-dump", () => {
             "createdAt": 2022-04-17T22:11:43.000Z,
             "id": 315,
             "offset": 2,
+            "practiceActionsCount": 1,
             "side": 0,
             "text": " j'ai peur de casser un miroir parce qu'on dit qu'on aura 7 ans de malheur.",
             "updatedAt": 2022-04-17T22:11:43.000Z,
@@ -136,6 +148,7 @@ describe("models-with-dump", () => {
             "id": 1,
             "name": "test-main",
             "newEntriesPerDay": 50,
+            "practiceActionsCount": 2,
             "reviewsPerDay": 200,
             "updatedAt": 2022-05-03T04:16:56.000Z,
             "userId": 1,
@@ -147,6 +160,7 @@ describe("models-with-dump", () => {
             "id": 1,
             "name": "test-main",
             "newEntriesPerDay": 50,
+            "practiceActionsCount": 1,
             "reviewsPerDay": 200,
             "updatedAt": 2022-05-03T04:16:56.000Z,
             "userId": 1,
@@ -159,6 +173,7 @@ describe("models-with-dump", () => {
             "deckId": 1,
             "easeFactor": 1,
             "id": 1,
+            "practiceActionsCount": 2,
             "queueType": "LEARN",
             "scheduledAt": 2022-05-04T19:22:16.000Z,
             "updatedAt": 2022-05-04T10:17:16.000Z,
@@ -169,6 +184,7 @@ describe("models-with-dump", () => {
             "deckId": 1,
             "easeFactor": 1,
             "id": 2,
+            "practiceActionsCount": 1,
             "queueType": "LEARN",
             "scheduledAt": 2022-04-25T09:25:12.000Z,
             "updatedAt": 2022-04-24T09:25:13.000Z,
@@ -181,6 +197,7 @@ describe("models-with-dump", () => {
             "language1": "fr",
             "language2": "en",
             "passwordHash": "\$2a\$10\$WPTRk4ui.NI6RE9OnbN/u.a6mhVfn3hkMSSQ0k86UXf/uw.PNRv6K",
+            "practiceActionsCount": 2,
             "updatedAt": 2022-05-03T06:20:33.000Z,
             "username": "dev",
           },
@@ -190,6 +207,7 @@ describe("models-with-dump", () => {
             "language1": "fr",
             "language2": "en",
             "passwordHash": "\$2a\$10\$WPTRk4ui.NI6RE9OnbN/u.a6mhVfn3hkMSSQ0k86UXf/uw.PNRv6K",
+            "practiceActionsCount": 1,
             "updatedAt": 2022-05-03T06:20:33.000Z,
             "username": "dev",
           },
