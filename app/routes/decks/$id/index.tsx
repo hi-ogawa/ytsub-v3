@@ -30,7 +30,6 @@ import {
   normalizeRelation,
   normalizeRelationWithPagination,
 } from "../../../db/models";
-import { aggregate } from "../../../db/utils";
 import { assert } from "../../../misc/assert";
 import { R } from "../../../misc/routes";
 import { useToById } from "../../../utils/by-id";
@@ -85,14 +84,17 @@ export async function requireUserAndDeck(
 // loader
 //
 
+type PracticeEntryTableExtra = PracticeEntryTable & {
+  practiceActionsCount: number;
+};
+
 interface LoaderData {
   deck: DeckTable;
   statistics: DeckPracticeStatistics;
-  practiceEntries: PracticeEntryTable[];
+  practiceEntries: PracticeEntryTableExtra[];
   bookmarkEntries: BookmarkEntryTable[];
   captionEntries: CaptionEntryTable[];
   videos: VideoTable[];
-  practiceActionsCounts: Partial<Record<number, { count: number }>>;
   pagination: PaginationMetadata;
 }
 
@@ -108,6 +110,7 @@ export const loader = makeLoader(Controller, async function () {
     return redirect(R["/decks/$id"](deck.id));
   }
 
+  // TODO: coverage
   const data = await normalizeRelationWithPagination(
     Q.practiceEntries()
       .leftJoin(
@@ -121,35 +124,29 @@ export const loader = makeLoader(Controller, async function () {
         "bookmarkEntries.captionEntryId"
       )
       .leftJoin("videos", "videos.id", "captionEntries.videoId")
-      // TODO: enhance `normalizeRelationWithPagination` to support aggregation
-      // .leftJoin("practiceActions", "practiceActions.practiceEntryId", "bookmarkEntries.id")
-      // bookmarkEntriesCount: client.raw(
-      //   "CAST(SUM(bookmarkEntries.id IS NOT NULL) AS SIGNED)"
-      // ),
+      .leftJoin(
+        "practiceActions",
+        "practiceActions.practiceEntryId",
+        "practiceEntries.id"
+      )
       .where("practiceEntries.deckId", deck.id)
+      .groupBy("practiceEntries.id")
       .orderBy("practiceEntries.createdAt", "asc"),
     ["practiceEntries", "bookmarkEntries", "captionEntries", "videos"],
-    paginationParams.data
+    paginationParams.data,
+    {
+      clearJoinForTotal: true,
+      selectExtra: {
+        practiceActionsCount: client.raw("COUNT(practiceActions.id)"),
+      },
+    }
   );
-
-  // TODO: enhance `normalizeRelationWithPagination` to support aggregation
-  const practiceActionsCounts: Partial<Record<number, { count: number }>> =
-    aggregate(
-      await Q.practiceActions()
-        .select({ id: "practiceEntryId", count: client.raw("COUNT(0)") })
-        .whereIn(
-          "practiceEntryId",
-          data.practiceEntries.map((e) => e.id)
-        )
-        .groupBy("practiceEntryId"),
-      "id"
-    );
 
   const res: LoaderData = {
     deck,
     statistics,
     ...data,
-    practiceActionsCounts,
+    practiceEntries: data.practiceEntries as PracticeEntryTableExtra[],
   };
   return this.serialize(res);
 });
@@ -178,7 +175,6 @@ export default function DefaultComponent() {
     bookmarkEntries,
     captionEntries,
     videos,
-    practiceActionsCounts,
   }: LoaderData = useDeserialize(useLoaderData());
   const bookmarkEntriesById = useToById(bookmarkEntries);
   const captionEntriesById = useToById(captionEntries);
@@ -221,7 +217,7 @@ export default function DefaultComponent() {
                 bookmarkEntry={b}
                 captionEntry={c}
                 video={v}
-                practiceActionsCount={practiceActionsCounts[p.id]?.count ?? 0}
+                practiceActionsCount={p.practiceActionsCount}
               />
             );
           })}

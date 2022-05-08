@@ -275,6 +275,20 @@ const TABLE_SELECT_ALIASES = {} as TableSelectAliases;
 initializeSelectAliases();
 
 function initializeSelectAliases(): void {
+  /*
+    TABLE_SELECT_ALIASES = {
+      users: {
+        "users#id": "users.id",
+        "users#username": "users.username",
+        ...
+      },
+      videos: {
+        "videos#id": "videos.id",
+        ...
+      },
+      ...
+    }
+   */
   for (const t of TABLE_NAMES) {
     TABLE_SELECT_ALIASES[t] = {};
     for (const c of Object.keys(RAW_SCHEMA[t])) {
@@ -290,10 +304,12 @@ function initializeSelectAliases(): void {
 // - remove duplicates
 export async function normalizeRelation<Ts extends TableName>(
   qb: Knex.QueryBuilder,
-  tableNames: Ts[]
+  tableNames: Ts[],
+  { selectExtra = {} }: { selectExtra?: Record<string, any> } = {}
 ): Promise<{ [T in Ts]: Schema[T][] }> {
   const aliases = tableNames.map((t) => TABLE_SELECT_ALIASES[t]);
-  const rows = await qb.clone().select(aliases);
+  const select = Object.assign({}, selectExtra, ...aliases);
+  const rows = await qb.clone().select(select);
   const result = {} as Record<Ts, any[]>;
   for (const t of tableNames) {
     result[t] = [];
@@ -304,6 +320,12 @@ export async function normalizeRelation<Ts extends TableName>(
       tmp[t] = {};
     }
     for (const [k, v] of Object.entries(row)) {
+      if (k in selectExtra) {
+        for (const t of tableNames) {
+          tmp[t][k] = v;
+        }
+        continue;
+      }
       const [t, c] = k.split("#") as [Ts, string];
       tmp[t][c] = v;
     }
@@ -317,15 +339,23 @@ export async function normalizeRelation<Ts extends TableName>(
 export async function normalizeRelationWithPagination<Ts extends TableName>(
   qb: Knex.QueryBuilder,
   tableNames: Ts[],
-  { page, perPage }: { page: number; perPage: number }
+  { page, perPage }: { page: number; perPage: number },
+  {
+    clearJoinForTotal = false,
+    selectExtra = {},
+  }: { clearJoinForTotal?: boolean; selectExtra?: Record<string, any> } = {}
 ): Promise<{ [T in Ts]: Schema[T][] } & { pagination: PaginationMetadata }> {
   const qbLimitOffset = qb
     .clone()
     .offset((page - 1) * perPage)
     .limit(perPage);
-  const qbTotal = qb.clone().clear("select").clear("order");
+  let qbTotal = qb.clone().clear("select").clear("order");
+  if (clearJoinForTotal) {
+    // this will break when `where` depends on joined columns
+    qbTotal = qbTotal.clear("join").clear("group");
+  }
   const [data, total] = await Promise.all([
-    normalizeRelation(qbLimitOffset, tableNames),
+    normalizeRelation(qbLimitOffset, tableNames, { selectExtra }),
     toCount(qbTotal),
   ]);
   const pagination = {
