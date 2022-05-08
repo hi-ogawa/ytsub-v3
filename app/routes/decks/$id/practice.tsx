@@ -97,7 +97,6 @@ export default function DefaultComponent() {
   const { deck, statistics, data }: LoaderData = useDeserialize(
     useLoaderData()
   );
-  !data.finished && data.practiceEntry.queueType === "NEW";
 
   return (
     <div className="h-full w-full flex justify-center">
