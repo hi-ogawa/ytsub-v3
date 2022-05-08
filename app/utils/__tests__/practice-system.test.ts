@@ -88,4 +88,20 @@ describe("PracticeSystem", () => {
       }
     `);
   });
+
+  // TODO: setup data
+  it("randomMode", async () => {
+    const [deckId] = await Q.decks().insert({
+      userId: user().id,
+      name: __filename,
+      randomMode: true,
+    });
+    const deck = await Q.decks().where({ id: deckId }).first();
+    assert(deck);
+
+    // instantiate practice system
+    const system = new PracticeSystem(user(), deck);
+    const entry = await system.getNextPracticeEntry(NOW);
+    expect(entry).toBe(undefined);
+  });
 });

@@ -67,13 +67,6 @@ export type DeckPracticeStatistics = Record<
   Record<"daily" | "total", number>
 >;
 
-// TODO(perf)
-// - cache counters
-// - jitter something?
-//   - must be deterministic
-//   - which queue to pick in `getNextPracticeEntry`
-//   - `sheduledAt` in `createPracticeEntries`
-
 export class PracticeSystem {
   constructor(private user: UserTable, private deck: DeckTable) {}
 
@@ -108,8 +101,26 @@ export class PracticeSystem {
   async getNextPracticeEntry(
     now: Date = new Date()
   ): Promise<PracticeEntryTable | undefined> {
-    const { id: deckId, newEntriesPerDay, reviewsPerDay } = this.deck;
+    const {
+      id: deckId,
+      newEntriesPerDay,
+      reviewsPerDay,
+      randomMode,
+    } = this.deck;
     const yesterday = Timedelta.make({ days: 1 }).rsub(now);
+
+    if (randomMode) {
+      const result: PracticeEntryTable = await Q.practiceEntries()
+        .select("practiceEntries.*")
+        .where("practiceEntries.deckId", deckId)
+        .where("practiceEntries.scheduledAt", "<=", now)
+        .orderByRaw(
+          // pseudo random with "id" and "updatedAt" as seeds
+          "CONV(SUBSTRING(HEX(UNHEX(SHA1(id)) ^ UNHEX(SHA1(updatedAt))), 1, 8), 16, 10)"
+        )
+        .first();
+      return result;
+    }
 
     const [actions, entries] = await Promise.all([
       // TODO(refactor): copeid from `getStatistics`

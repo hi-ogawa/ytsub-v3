@@ -4,7 +4,7 @@ import { exec } from "../utils/node.server";
 
 export async function restoreDump() {
   const { stdout } = await exec(
-    "gunzip -c misc/db/dump/2022_05_07_11_38_00.sql.gz"
+    "gunzip -c misc/db/dump/2022_05_08_20_33_29.sql.gz"
   );
   await client.raw(stdout);
 }
