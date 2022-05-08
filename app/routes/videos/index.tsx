@@ -76,9 +76,7 @@ export const loader = makeLoader(Controller, async function () {
   const pagination = await toPaginationResult(
     Q.videos()
       .select("videos.*", {
-        bookmarkEntriesCount: client.raw(
-          "CAST(SUM(bookmarkEntries.id IS NOT NULL) AS SIGNED)"
-        ),
+        bookmarkEntriesCount: client.raw("COUNT(bookmarkEntries.id)"),
       })
       .where("videos.userId", user.id)
       .orderBy("videos.updatedAt", "desc")
