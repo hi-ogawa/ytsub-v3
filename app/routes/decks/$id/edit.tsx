@@ -26,7 +26,6 @@ interface LoaderData {
 export const loader = makeLoader(Controller, async function () {
   const [, deck] = await requireUserAndDeck.apply(this);
   const data: LoaderData = { deck };
-  console.log(data);
   return this.serialize(data);
 });
 
