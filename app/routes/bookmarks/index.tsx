@@ -255,7 +255,7 @@ export function BookmarkEntryComponent({
   );
 }
 
-function MiniPlayer({
+export function MiniPlayer({
   video,
   captionEntry,
   autoplay,

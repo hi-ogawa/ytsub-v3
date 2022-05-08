@@ -2,25 +2,39 @@ import { Transition } from "@headlessui/react";
 import { Form, Link, useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import * as React from "react";
-import { Bookmark, Edit, MoreVertical, Play, Trash2 } from "react-feather";
+import {
+  Bookmark,
+  CheckCircle,
+  Circle,
+  Disc,
+  Edit,
+  MoreVertical,
+  Play,
+  Trash2,
+} from "react-feather";
 import { z } from "zod";
 import { PaginationComponent } from "../../../components/misc";
 import { Popover } from "../../../components/popover";
+import { client } from "../../../db/client.server";
 import {
   BookmarkEntryTable,
+  CaptionEntryTable,
   DeckTable,
   PaginationMetadata,
   PracticeEntryTable,
   Q,
   UserTable,
+  VideoTable,
   normalizeRelation,
   normalizeRelationWithPagination,
 } from "../../../db/models";
+import { aggregate } from "../../../db/utils";
 import { assert } from "../../../misc/assert";
 import { R } from "../../../misc/routes";
 import { useToById } from "../../../utils/by-id";
 import { Controller, makeLoader } from "../../../utils/controller-utils";
 import { useDeserialize } from "../../../utils/hooks";
+import { rtf } from "../../../utils/intl";
 import { useLeafLoaderData } from "../../../utils/loader-utils";
 import { PageHandle } from "../../../utils/page-handle";
 import { PAGINATION_PARAMS_SCHEMA } from "../../../utils/pagination";
@@ -30,6 +44,7 @@ import {
 } from "../../../utils/practice-system";
 import { Timedelta } from "../../../utils/timedelta";
 import { zStringToInteger } from "../../../utils/zod-utils";
+import { MiniPlayer } from "../../bookmarks";
 
 export const handle: PageHandle = {
   navBarTitle: () => <NavBarTitleComponent />,
@@ -73,6 +88,9 @@ interface LoaderData {
   statistics: DeckPracticeStatistics;
   practiceEntries: PracticeEntryTable[];
   bookmarkEntries: BookmarkEntryTable[];
+  captionEntries: CaptionEntryTable[];
+  videos: VideoTable[];
+  practiceActionsCounts: Partial<Record<number, { count: number }>>;
   pagination: PaginationMetadata;
 }
 
@@ -95,16 +113,41 @@ export const loader = makeLoader(Controller, async function () {
         "bookmarkEntries.id",
         "practiceEntries.bookmarkEntryId"
       )
+      .leftJoin(
+        "captionEntries",
+        "captionEntries.id",
+        "bookmarkEntries.captionEntryId"
+      )
+      .leftJoin("videos", "videos.id", "captionEntries.videoId")
+      // TODO: enhance `normalizeRelationWithPagination` to support aggregation
+      // .leftJoin("practiceActions", "practiceActions.practiceEntryId", "bookmarkEntries.id")
+      // bookmarkEntriesCount: client.raw(
+      //   "CAST(SUM(bookmarkEntries.id IS NOT NULL) AS SIGNED)"
+      // ),
       .where("practiceEntries.deckId", deck.id)
       .orderBy("practiceEntries.createdAt", "asc"),
-    ["practiceEntries", "bookmarkEntries"],
+    ["practiceEntries", "bookmarkEntries", "captionEntries", "videos"],
     paginationParams.data
   );
+
+  // TODO: enhance `normalizeRelationWithPagination` to support aggregation
+  const practiceActionsCounts: Partial<Record<number, { count: number }>> =
+    aggregate(
+      await Q.practiceActions()
+        .select({ id: "practiceEntryId", count: client.raw("COUNT(0)") })
+        .whereIn(
+          "practiceEntryId",
+          data.practiceEntries.map((e) => e.id)
+        )
+        .groupBy("practiceEntryId"),
+      "id"
+    );
 
   const res: LoaderData = {
     deck,
     statistics,
     ...data,
+    practiceActionsCounts,
   };
   return this.serialize(res);
 });
@@ -131,8 +174,13 @@ export default function DefaultComponent() {
     pagination,
     practiceEntries,
     bookmarkEntries,
+    captionEntries,
+    videos,
+    practiceActionsCounts,
   }: LoaderData = useDeserialize(useLoaderData());
   const bookmarkEntriesById = useToById(bookmarkEntries);
+  const captionEntriesById = useToById(captionEntries);
+  const videosById = useToById(videos);
 
   const content = (
     <div className="w-full flex justify-center">
@@ -160,15 +208,21 @@ export default function DefaultComponent() {
             </div>
           </div>
           {practiceEntries.length === 0 && <div>Empty</div>}
-          {practiceEntries.map((practiceEntry) => (
-            <PracticeEntryComponent
-              key={practiceEntry.id}
-              practiceEntry={practiceEntry}
-              bookmarkEntry={
-                bookmarkEntriesById.byId[practiceEntry.bookmarkEntryId]
-              }
-            />
-          ))}
+          {practiceEntries.map((p) => {
+            const b = bookmarkEntriesById.byId[p.bookmarkEntryId];
+            const c = captionEntriesById.byId[b.captionEntryId];
+            const v = videosById.byId[c.videoId];
+            return (
+              <PracticeBookmarkEntryComponent
+                key={p.id}
+                practiceEntry={p}
+                bookmarkEntry={b}
+                captionEntry={c}
+                video={v}
+                practiceActionsCount={practiceActionsCounts[p.id]?.count ?? 0}
+              />
+            );
+          })}
         </div>
       </div>
     </div>
@@ -184,47 +238,104 @@ export default function DefaultComponent() {
   );
 }
 
-function PracticeEntryComponent({
-  practiceEntry,
+export function PracticeBookmarkEntryComponent({
+  video,
+  captionEntry,
   bookmarkEntry,
+  practiceEntry,
+  practiceActionsCount,
 }: {
-  practiceEntry: PracticeEntryTable;
+  video: VideoTable;
+  captionEntry: CaptionEntryTable;
   bookmarkEntry: BookmarkEntryTable;
+  practiceEntry: PracticeEntryTable;
+  practiceActionsCount: number;
+  showAutoplay?: boolean;
 }) {
+  const [open, setOpen] = React.useState(false);
+  const scheduledAt = formatScheduledAt(practiceEntry.scheduledAt, new Date());
+  // TODO: "reveal" UI to toggle `open`
+  // TODO: show practiceActions history
+
   return (
     <div
-      key={practiceEntry.id}
-      className={`
-        border border-gray-200 border-l-2 flex items-center p-2 gap-2
-        ${practiceEntry.queueType === "NEW" && "border-l-blue-400"}
-        ${practiceEntry.queueType === "LEARN" && "border-l-red-400"}
-        ${practiceEntry.queueType === "REVIEW" && "border-l-green-400"}
-      `}
+      className="border border-gray-200 flex flex-col"
+      data-test="bookmark-entry"
     >
-      <div className="grow pl-2 text-sm" title={bookmarkEntry.text}>
-        {bookmarkEntry.text}
+      <div
+        className={`flex flex-col p-2 gap-2 w-full items-stretch
+          ${open && "border-b border-gray-200 border-dashed"}
+        `}
+      >
+        <div className="flex gap-2">
+          <div
+            className="flex-none h-[20px] flex items-center"
+            onClick={() => setOpen(!open)}
+          >
+            {practiceEntry.queueType === "NEW" && (
+              <Circle size={16} className="text-blue-400" />
+            )}
+            {practiceEntry.queueType === "LEARN" && (
+              <Disc size={16} className="text-red-300" />
+            )}
+            {practiceEntry.queueType === "REVIEW" && (
+              <CheckCircle size={16} className="text-green-400" />
+            )}
+          </div>
+          <div
+            className="grow text-sm cursor-pointer"
+            onClick={() => setOpen(!open)}
+            data-test="bookmark-entry-text"
+          >
+            {bookmarkEntry.text}
+          </div>
+        </div>
+        <div className="flex items-center gap-2 ml-6 text-xs text-gray-500">
+          {/* TODO: hide if `practiceActionsCount === 0`? */}
+          <div>answered {formatCount(practiceActionsCount)}</div>
+          {scheduledAt && (
+            <>
+              {"⋅"}
+              <div>scheduled {scheduledAt}</div>
+            </>
+          )}
+        </div>
       </div>
-      <div className="flex-none text-xs text-gray-400">
-        {formatScheduledAt(practiceEntry.scheduledAt, new Date())}
-      </div>
+      {open && (
+        <MiniPlayer
+          video={video}
+          captionEntry={captionEntry}
+          autoplay={false}
+          defaultIsRepeating={false}
+          highlight={{
+            side: bookmarkEntry.side,
+            offset: bookmarkEntry.offset,
+            length: bookmarkEntry.text.length,
+          }}
+        />
+      )}
     </div>
   );
 }
 
-const IntlRtf = new Intl.RelativeTimeFormat("en");
+function formatCount(n: number): string {
+  if (n === 1) return "once";
+  if (n === 2) return "twice";
+  return `${n} times`;
+}
 
-function formatScheduledAt(date: Date, now: Date): string {
+function formatScheduledAt(date: Date, now: Date): string | undefined {
   const delta = Timedelta.difference(date, now);
   if (delta.value <= 0) {
-    return "";
+    return;
   }
   const n = delta.normalize();
   for (const unit of ["days", "hours", "minutes"] as const) {
     if (n[unit] > 0) {
-      return IntlRtf.format(n[unit], unit);
+      return rtf.format(n[unit], unit);
     }
   }
-  return IntlRtf.format(n.seconds, "seconds");
+  return rtf.format(n.seconds, "seconds");
 }
 
 //
