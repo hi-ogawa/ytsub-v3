@@ -114,9 +114,9 @@ export class PracticeSystem {
         .select("practiceEntries.*")
         .where("practiceEntries.deckId", deckId)
         .where("practiceEntries.scheduledAt", "<=", now)
-        // Use last `practiceActions.id` as cheap random seed
         .orderByRaw(
-          "RAND((select id from practiceActions order by id desc limit 1))"
+          // pseudo random with "id" and "updatedAt" as seeds
+          "CONV(SUBSTRING(HEX(UNHEX(SHA1(id)) ^ UNHEX(SHA1(updatedAt))), 1, 8), 16, 10)"
         )
         .first();
       return result;
