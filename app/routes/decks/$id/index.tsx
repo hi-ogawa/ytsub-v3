@@ -3,6 +3,7 @@ import { Form, Link, useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import * as React from "react";
 import {
+  Activity,
   Bookmark,
   CheckCircle,
   ChevronDown,
@@ -44,6 +45,7 @@ import {
   PracticeSystem,
 } from "../../../utils/practice-system";
 import { Timedelta } from "../../../utils/timedelta";
+import { toQuery } from "../../../utils/url-data";
 import { zStringToInteger } from "../../../utils/zod-utils";
 import { MiniPlayer } from "../../bookmarks";
 
@@ -168,6 +170,7 @@ export const action = makeLoader(Controller, async function () {
 
 export default function DefaultComponent() {
   const {
+    deck,
     statistics,
     pagination,
     practiceEntries,
@@ -216,6 +219,7 @@ export default function DefaultComponent() {
                 bookmarkEntry={b}
                 captionEntry={c}
                 video={v}
+                deck={deck}
               />
             );
           })}
@@ -239,16 +243,20 @@ export function PracticeBookmarkEntryComponent({
   captionEntry,
   bookmarkEntry,
   practiceEntry,
+  deck,
 }: {
   video: VideoTable;
   captionEntry: CaptionEntryTable;
   bookmarkEntry: BookmarkEntryTable;
   practiceEntry: PracticeEntryTableExtra;
+  deck: DeckTable;
   showAutoplay?: boolean;
 }) {
   const [open, setOpen] = React.useState(false);
   const scheduledAt = formatScheduledAt(practiceEntry.scheduledAt, new Date());
   const actionsCount = practiceEntry.practiceActionsCount;
+  const practiceEntryId = practiceEntry.id;
+
   return (
     <div
       className="border border-gray-200 flex flex-col"
@@ -282,8 +290,16 @@ export function PracticeBookmarkEntryComponent({
           </div>
         </div>
         <div className="relative flex items-center gap-2 ml-6 text-xs text-gray-500">
-          {/* TODO: create dedicated page for practice history */}
-          <div>Answered {formatCount(actionsCount)}</div>
+          <Link
+            to={
+              R["/decks/$id/history"](deck.id) +
+              "?" +
+              toQuery({ practiceEntryId })
+            }
+            className="hover:underline hover:text-primary"
+          >
+            Answered {formatCount(actionsCount)}
+          </Link>
           {"⋅"}
           <div>Scheduled {scheduledAt}</div>
           <div className="absolute right-0 bottom-0">
@@ -374,7 +390,7 @@ function NavBarMenuComponent() {
               {...props}
             >
               <ul
-                className="menu rounded p-3 shadow w-48 bg-base-100 text-base-content text-sm"
+                className="menu menu-compact rounded p-3 shadow w-48 bg-base-100 text-base-content text-sm"
                 data-test="deck-menu-popover-floating"
               >
                 <li>
@@ -384,6 +400,15 @@ function NavBarMenuComponent() {
                   >
                     <Play />
                     Practice
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to={R["/decks/$id/history"](deck.id)}
+                    onClick={() => setOpen(false)}
+                  >
+                    <Activity />
+                    History
                   </Link>
                 </li>
                 <li>
