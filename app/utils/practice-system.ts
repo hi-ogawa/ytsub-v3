@@ -108,8 +108,28 @@ export class PracticeSystem {
   async getNextPracticeEntry(
     now: Date = new Date()
   ): Promise<PracticeEntryTable | undefined> {
-    const { id: deckId, newEntriesPerDay, reviewsPerDay } = this.deck;
+    const {
+      id: deckId,
+      newEntriesPerDay,
+      reviewsPerDay,
+      randomMode,
+    } = this.deck;
     const yesterday = Timedelta.make({ days: 1 }).rsub(now);
+
+    if (randomMode) {
+      // TODO: coverage
+      // TODO: verify vitess mysql supports this exotic query
+      const result: PracticeEntryTable = await Q.practiceEntries()
+        .select("practiceEntries.*")
+        .where("practiceEntries.deckId", deckId)
+        .where("practiceEntries.scheduledAt", "<=", now)
+        // Use last `practiceActions.id` as cheap random seed
+        .orderByRaw(
+          "RAND((select id from practiceActions order by id desc limit 1))"
+        )
+        .first();
+      return result;
+    }
 
     const [actions, entries] = await Promise.all([
       // TODO(refactor): copeid from `getStatistics`

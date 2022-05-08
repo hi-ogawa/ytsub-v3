@@ -72,6 +72,7 @@ export interface DeckTable {
   reviewsPerDay: number;
   easeMultiplier: number;
   easeBonus: number;
+  randomMode: boolean; // TODO: 0 | 1
   createdAt: Date;
   updatedAt: Date;
   userId: number;

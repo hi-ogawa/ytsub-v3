@@ -221,6 +221,14 @@ export default {
       Default: "1.5",
       Extra: "",
     },
+    randomMode: {
+      Field: "randomMode",
+      Type: "tinyint(1)",
+      Null: "NO",
+      Key: "",
+      Default: "0",
+      Extra: "",
+    },
   },
   practiceActions: {
     id: {

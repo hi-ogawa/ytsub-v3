@@ -37,7 +37,7 @@ const DEFAULT_DECK_OPTIONS: Pick<
   easeBonus: 1.5,
 };
 
-export const NEW_DECK_REQUEST_SCHEMA = z.object({
+const NEW_DECK_REQUEST_SCHEMA = z.object({
   name: z.string().nonempty(),
   newEntriesPerDay: zStringToInteger,
   reviewsPerDay: zStringToInteger,
