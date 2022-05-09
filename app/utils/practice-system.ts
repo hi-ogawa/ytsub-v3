@@ -116,7 +116,7 @@ export class PracticeSystem {
         .where("practiceEntries.scheduledAt", "<=", now)
         .orderByRaw(
           // pseudo random with "id" and "updatedAt" as seeds
-          "CONV(SUBSTRING(HEX(UNHEX(SHA1(id)) ^ UNHEX(SHA1(updatedAt))), 1, 8), 16, 10)"
+          "CAST(CONV(SUBSTRING(HEX(UNHEX(SHA1(id)) ^ UNHEX(SHA1(updatedAt))), 1, 8), 16, 10) as UNSIGNED)"
         )
         .first();
       return result;
