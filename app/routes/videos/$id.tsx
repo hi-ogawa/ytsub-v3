@@ -17,6 +17,7 @@ import {
   Video,
   X,
 } from "react-feather";
+import { useSearchParams } from "react-router-dom";
 import { z } from "zod";
 import { Spinner } from "../../components/misc";
 import { Popover } from "../../components/popover";
@@ -44,7 +45,7 @@ import {
   YoutubePlayerOptions,
   stringifyTimestamp,
 } from "../../utils/youtube";
-import { zStringToInteger } from "../../utils/zod-utils";
+import { zStringToInteger, zStringToMaybeInteger } from "../../utils/zod-utils";
 import { NewBookmark } from "../bookmarks/new";
 
 export const handle: PageHandle = {
@@ -165,6 +166,19 @@ function findSelectionEntryIndex(selection: Selection): number {
   return index;
 }
 
+function scrollToCaptionEntry(index: number) {
+  const parentSelector = "#" + SCROLLABLE_ID;
+  const childSelector = `div > :nth-child(${index + 1})`;
+  const parent = document.querySelector<HTMLElement>(parentSelector)!;
+  const child = parent.querySelector<HTMLElement>(childSelector)!;
+  const hp = parent.clientHeight;
+  const hc = child.clientHeight;
+  const op = parent.offsetTop;
+  const oc = child.offsetTop;
+  parent.scroll({ top: oc - op + hc / 2 - hp / 2, behavior: "smooth" });
+}
+
+const SCROLLABLE_ID = "--scrollable--";
 const BOOKMARKABLE_CLASSNAME = "--bookmarkable--";
 
 interface BookmarkState {
@@ -181,6 +195,10 @@ function PageComponent({
 }: LoaderData & { currentUser?: UserTable }) {
   const fetcher = useFetcher();
   const { enqueueSnackbar } = useSnackbar();
+  const [searchParams] = useSearchParams();
+  const focusedIndex = zStringToMaybeInteger.parse(
+    searchParams.get("index") ?? ""
+  );
 
   //
   // state
@@ -319,6 +337,12 @@ function PageComponent({
     }
   }, [fetcher.type]);
 
+  React.useEffect(() => {
+    if (isNotNil(focusedIndex)) {
+      scrollToCaptionEntry(focusedIndex);
+    }
+  }, [focusedIndex]);
+
   useSelection(onSelection);
 
   return (
@@ -337,6 +361,7 @@ function PageComponent({
           onClickEntryPlay={onClickEntryPlay}
           onClickEntryRepeat={onClickEntryRepeat}
           isPlaying={isPlaying}
+          focusedIndex={focusedIndex}
         />
       }
       bookmarkActions={
@@ -399,7 +424,7 @@ function LayoutComponent(
     <div className="h-full w-full flex flex-col md:flex-row md:gap-2 md:p-2">
       <div className="flex-none md:grow">{props.player}</div>
       <div className="flex flex-col flex-[1_0_0] md:flex-none md:w-1/3 border-t md:border relative">
-        <div className="flex-[1_0_0] h-full overflow-y-auto">
+        <div className="flex-[1_0_0] h-full overflow-y-auto" id={SCROLLABLE_ID}>
           {props.subtitles}
         </div>
         {props.bookmarkActions}
@@ -479,6 +504,7 @@ function PlayerComponent({
 
 function CaptionEntriesComponent({
   entries,
+  focusedIndex,
   ...props
 }: {
   entries: CaptionEntry[];
@@ -487,6 +513,7 @@ function CaptionEntriesComponent({
   onClickEntryPlay: (entry: CaptionEntry, toggle: boolean) => void;
   onClickEntryRepeat: (entry: CaptionEntry) => void;
   isPlaying: boolean;
+  focusedIndex?: number;
 }) {
   return (
     <div className="flex flex-col p-1.5 gap-1.5">
@@ -494,6 +521,7 @@ function CaptionEntriesComponent({
         <CaptionEntryComponent
           key={toCaptionEntryId(entry)}
           entry={entry}
+          isFocused={focusedIndex === entry.index}
           {...props}
         />
       ))}
@@ -508,6 +536,7 @@ export function CaptionEntryComponent({
   onClickEntryPlay,
   onClickEntryRepeat,
   isPlaying,
+  isFocused,
   videoId,
   border = true,
   highlight,
@@ -518,6 +547,7 @@ export function CaptionEntryComponent({
   onClickEntryPlay: (entry: CaptionEntry, toggle: boolean) => void;
   onClickEntryRepeat: (entry: CaptionEntry) => void;
   isPlaying: boolean;
+  isFocused?: boolean;
   videoId?: number;
   border?: boolean;
   highlight?: { side: number; offset: number; length: number };
@@ -537,6 +567,7 @@ export function CaptionEntryComponent({
         ${border && "border border-solid border-gray-200"}
         ${isEntryPlaying ? "border-blue-400" : "border-gray-200"}
         ${border && isCurrentEntry && "bg-gray-100"}
+        ${isFocused && "border-l-2 border-l-orange-400"}
         p-1.5 gap-1
         text-xs
       `}
