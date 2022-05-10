@@ -37,6 +37,8 @@
     "netlify:build:deploy:production": "npm run netlify:build && netlify deploy --prod",
     "cli": "node --require esbuild-register app/misc/cli.ts",
     "cli:production": "eval $(bash .env.production.sh) && node --require esbuild-register app/misc/cli.ts",
+    "console": "node --experimental-repl-await -r esbuild-register -r ./app/misc/console.ts",
+    "console:staging": "eval $(bash .env.staging.sh) && npm run console",
     "knex:staging": "eval $(bash .env.staging.sh) && knex",
     "knex:production": "eval $(bash .env.production.sh) && knex",
     "diff": "git diff --name-only HEAD && git ls-files --others --exclude-standard",
