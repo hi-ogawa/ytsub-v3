@@ -32,7 +32,7 @@ import {
 import { assert } from "../../misc/assert";
 import { R } from "../../misc/routes";
 import { Controller, makeLoader } from "../../utils/controller-utils";
-import { useDeserialize, useMemoWrap, useSelection } from "../../utils/hooks";
+import { useDeserialize, useSelection } from "../../utils/hooks";
 import { useYoutubeIframeApi } from "../../utils/hooks";
 import { useLeafLoaderData, useRootLoaderData } from "../../utils/loader-utils";
 import { isNotNil } from "../../utils/misc";
