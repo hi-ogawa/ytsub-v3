@@ -32,7 +32,7 @@ import {
 import { assert } from "../../misc/assert";
 import { R } from "../../misc/routes";
 import { Controller, makeLoader } from "../../utils/controller-utils";
-import { useDeserialize, useSelection } from "../../utils/hooks";
+import { useDeserialize, useMemoWrap, useSelection } from "../../utils/hooks";
 import { useYoutubeIframeApi } from "../../utils/hooks";
 import { useLeafLoaderData, useRootLoaderData } from "../../utils/loader-utils";
 import { isNotNil } from "../../utils/misc";
@@ -45,7 +45,7 @@ import {
   YoutubePlayerOptions,
   stringifyTimestamp,
 } from "../../utils/youtube";
-import { zStringToInteger } from "../../utils/zod-utils";
+import { zStringToInteger, zStringToMaybeInteger } from "../../utils/zod-utils";
 import { NewBookmark } from "../bookmarks/new";
 
 export const handle: PageHandle = {
@@ -196,7 +196,9 @@ function PageComponent({
   const fetcher = useFetcher();
   const { enqueueSnackbar } = useSnackbar();
   const [searchParams] = useSearchParams();
-  const focusedIndex = parseInt(searchParams.get("index") ?? ""); // TODO: add special style
+  const paramIndex = zStringToMaybeInteger.parse(
+    searchParams.get("index") ?? ""
+  );
 
   //
   // state
@@ -336,10 +338,10 @@ function PageComponent({
   }, [fetcher.type]);
 
   React.useEffect(() => {
-    if (Number.isInteger(focusedIndex)) {
-      scrollToCaptionEntry(focusedIndex);
+    if (isNotNil(paramIndex)) {
+      scrollToCaptionEntry(paramIndex);
     }
-  }, [focusedIndex]);
+  }, [paramIndex]);
 
   useSelection(onSelection);
 
