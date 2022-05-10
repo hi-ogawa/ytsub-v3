@@ -196,7 +196,7 @@ function PageComponent({
   const fetcher = useFetcher();
   const { enqueueSnackbar } = useSnackbar();
   const [searchParams] = useSearchParams();
-  const paramIndex = zStringToMaybeInteger.parse(
+  const focusedIndex = zStringToMaybeInteger.parse(
     searchParams.get("index") ?? ""
   );
 
@@ -338,10 +338,10 @@ function PageComponent({
   }, [fetcher.type]);
 
   React.useEffect(() => {
-    if (isNotNil(paramIndex)) {
-      scrollToCaptionEntry(paramIndex);
+    if (isNotNil(focusedIndex)) {
+      scrollToCaptionEntry(focusedIndex);
     }
-  }, [paramIndex]);
+  }, [focusedIndex]);
 
   useSelection(onSelection);
 
@@ -361,6 +361,7 @@ function PageComponent({
           onClickEntryPlay={onClickEntryPlay}
           onClickEntryRepeat={onClickEntryRepeat}
           isPlaying={isPlaying}
+          focusedIndex={focusedIndex}
         />
       }
       bookmarkActions={
@@ -503,6 +504,7 @@ function PlayerComponent({
 
 function CaptionEntriesComponent({
   entries,
+  focusedIndex,
   ...props
 }: {
   entries: CaptionEntry[];
@@ -511,6 +513,7 @@ function CaptionEntriesComponent({
   onClickEntryPlay: (entry: CaptionEntry, toggle: boolean) => void;
   onClickEntryRepeat: (entry: CaptionEntry) => void;
   isPlaying: boolean;
+  focusedIndex?: number;
 }) {
   return (
     <div className="flex flex-col p-1.5 gap-1.5">
@@ -518,6 +521,7 @@ function CaptionEntriesComponent({
         <CaptionEntryComponent
           key={toCaptionEntryId(entry)}
           entry={entry}
+          isFocused={focusedIndex === entry.index}
           {...props}
         />
       ))}
@@ -532,6 +536,7 @@ export function CaptionEntryComponent({
   onClickEntryPlay,
   onClickEntryRepeat,
   isPlaying,
+  isFocused,
   videoId,
   border = true,
   highlight,
@@ -542,6 +547,7 @@ export function CaptionEntryComponent({
   onClickEntryPlay: (entry: CaptionEntry, toggle: boolean) => void;
   onClickEntryRepeat: (entry: CaptionEntry) => void;
   isPlaying: boolean;
+  isFocused?: boolean;
   videoId?: number;
   border?: boolean;
   highlight?: { side: number; offset: number; length: number };
@@ -561,6 +567,7 @@ export function CaptionEntryComponent({
         ${border && "border border-solid border-gray-200"}
         ${isEntryPlaying ? "border-blue-400" : "border-gray-200"}
         ${border && isCurrentEntry && "bg-gray-100"}
+        ${isFocused && "border-l-2 border-l-orange-400"}
         p-1.5 gap-1
         text-xs
       `}
