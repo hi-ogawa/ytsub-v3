@@ -111,12 +111,16 @@ export class PracticeSystem {
 
     if (randomMode) {
       const result: PracticeEntryTable = await Q.practiceEntries()
-        .select("practiceEntries.*")
+        .select("practiceEntries.*", {
+          __seed__: client.raw(
+            "(SELECT updatedAt FROM practiceEntries where deckId = 1 ORDER BY updatedAt DESC LIMIT 1)"
+          ),
+        })
         .where("practiceEntries.deckId", deckId)
         .where("practiceEntries.scheduledAt", "<=", now)
         .orderByRaw(
-          // pseudo random with "id" and "updatedAt" as seeds
-          "CAST(CONV(SUBSTRING(HEX(UNHEX(SHA1(id)) ^ UNHEX(SHA1(updatedAt))), 1, 8), 16, 10) as UNSIGNED)"
+          // pseudo random with "id", "updatedAt" and global seed `MAX(updatedAt)`
+          "CAST(CONV(SUBSTRING(HEX(UNHEX(SHA1(SHA1(__seed__))) ^ UNHEX(SHA1(id)) ^ UNHEX(SHA1(updatedAt))), 1, 8), 16, 10) as UNSIGNED)"
         )
         .first();
       return result;
