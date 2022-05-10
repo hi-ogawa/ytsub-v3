@@ -113,7 +113,8 @@ export class PracticeSystem {
       const result: PracticeEntryTable = await Q.practiceEntries()
         .select("practiceEntries.*", {
           __seed__: client.raw(
-            "(SELECT updatedAt FROM practiceEntries where deckId = 1 ORDER BY updatedAt DESC LIMIT 1)"
+            "(SELECT updatedAt FROM practiceEntries where deckId = ? ORDER BY updatedAt DESC LIMIT 1)",
+            deckId
           ),
         })
         .where("practiceEntries.deckId", deckId)
