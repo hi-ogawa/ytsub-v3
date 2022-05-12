@@ -111,7 +111,7 @@ export class PracticeSystem {
 
     if (randomMode) {
       const result: PracticeEntryTable = await Q.practiceEntries()
-        .select("practiceEntries.queueType", {
+        .select("practiceEntries.*", {
           // uniform random with "id" and "updatedAt"
           __uniform__: client.raw(
             "RAND(CAST(CONV(SUBSTRING(HEX(UNHEX(SHA1(SHA1(__subQuery__.__seed__))) ^ UNHEX(SHA1(id)) ^ UNHEX(SHA1(updatedAt))), 1, 8), 16, 10) as UNSIGNED))"
@@ -127,8 +127,17 @@ export class PracticeSystem {
           )
         )
         .orderByRaw(
-          // scale the distribution based on queueType
-          "(__uniform__ * (0.5 * (queueType = 'NEW') + 0.8 * (queueType = 'LEARN') + 1.0 * (queueType = 'REVIEW')))"
+          // scale the distribution based on
+          // - queueType
+          // - scheduledAt (normal mode is almost equivalent to having only this factor)
+          client.raw(
+            `(
+            __uniform__
+            * (0.5 * (queueType = 'NEW') + 0.8 * (queueType = 'LEARN') + 1.0 * (queueType = 'REVIEW')))
+            * (0.5 + 0.5 * LEAST(1, GREATEST(0, UNIX_TIMESTAMP(?) - UNIX_TIMESTAMP(scheduledAt)) / (60 * 60 * 24 * 5))
+          )`,
+            now
+          )
         )
         .first();
       return result;
