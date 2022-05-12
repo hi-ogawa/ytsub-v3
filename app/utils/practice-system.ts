@@ -134,8 +134,8 @@ export class PracticeSystem {
             `
             (
               __uniform__
-              * (0.5 * (queueType = 'NEW') + 0.8 * (queueType = 'LEARN') + 1.0 * (queueType = 'REVIEW')))
-              * (0.5 + 0.5 * LEAST(1, GREATEST(0, UNIX_TIMESTAMP(?) - UNIX_TIMESTAMP(scheduledAt)) / (60 * 60 * 24 * 5))
+              * (0.5 * (queueType = 'NEW') + 0.8 * (queueType = 'LEARN') + 1.0 * (queueType = 'REVIEW'))
+              * (1.0 + 0.5 * LEAST(-1, GREATEST(0, ((UNIX_TIMESTAMP(scheduledAt) - UNIX_TIMESTAMP(?)) / (60 * 60 * 24 * 5)))))
             )`,
             now
           )
