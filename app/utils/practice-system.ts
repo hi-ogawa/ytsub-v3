@@ -121,7 +121,7 @@ export class PracticeSystem {
         .where("practiceEntries.scheduledAt", "<=", now)
         .crossJoin(
           client.raw(
-            // global seed `MAX(updatedAt)` which gets updated on each `createPracticeAction`
+            // global seed `MAX(updatedAt)`, which gets updated on each `createPracticeAction`
             "(SELECT updatedAt as __seed__ FROM practiceEntries where deckId = ? ORDER BY updatedAt DESC LIMIT 1) as __subQuery__",
             deckId
           )
@@ -131,11 +131,12 @@ export class PracticeSystem {
           // - queueType
           // - scheduledAt (normal mode is almost equivalent to having only this factor)
           client.raw(
-            `(
-            __uniform__
-            * (0.5 * (queueType = 'NEW') + 0.8 * (queueType = 'LEARN') + 1.0 * (queueType = 'REVIEW')))
-            * (0.5 + 0.5 * LEAST(1, GREATEST(0, UNIX_TIMESTAMP(?) - UNIX_TIMESTAMP(scheduledAt)) / (60 * 60 * 24 * 5))
-          )`,
+            `
+            (
+              __uniform__
+              * (0.5 * (queueType = 'NEW') + 0.8 * (queueType = 'LEARN') + 1.0 * (queueType = 'REVIEW')))
+              * (0.5 + 0.5 * LEAST(1, GREATEST(0, UNIX_TIMESTAMP(?) - UNIX_TIMESTAMP(scheduledAt)) / (60 * 60 * 24 * 5))
+            )`,
             now
           )
         )
