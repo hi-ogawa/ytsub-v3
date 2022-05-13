@@ -29,6 +29,7 @@ specifiers:
   cac: ^6.7.12
   concurrently: ^7.0.0
   daisyui: ^2.2.2
+  echarts: ^5.3.2
   esbuild: ^0.14.23
   esbuild-register: ^3.3.2
   eslint: ^8.10.0
@@ -70,6 +71,7 @@ dependencies:
   '@remix-run/server-runtime': 1.4.1_react-dom@17.0.2+react@17.0.2
   '@types/bcryptjs': 2.4.2
   bcryptjs: 2.4.3
+  echarts: 5.3.2
   fast-xml-parser: 4.0.7
   knex: 1.0.4_mysql2@2.3.3
   lodash: 4.17.21
@@ -2148,6 +2150,13 @@ packages:
     dependencies:
       '@babel/runtime': 7.17.2
       csstype: 3.0.11
+    dev: false
+
+  /echarts/5.3.2:
+    resolution: {integrity: sha512-LWCt7ohOKdJqyiBJ0OGBmE9szLdfA9sGcsMEi+GGoc6+Xo75C+BkcT/6NNGRHAWtnQl2fNow05AQjznpap28TQ==}
+    dependencies:
+      tslib: 2.3.0
+      zrender: 5.3.1
     dev: false
 
   /ee-first/1.1.1:
@@ -5065,6 +5074,10 @@ packages:
     resolution: {integrity: sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==}
     dev: true
 
+  /tslib/2.3.0:
+    resolution: {integrity: sha512-N82ooyxVNm6h1riLCoyS9e3fuJ3AMG2zIZs2Gd1ATcSFjSA23Q0fzjjZeh0jbJvWVDZ0cJT8yaNNaaXHzueNjg==}
+    dev: false
+
   /tslib/2.3.1:
     resolution: {integrity: sha512-77EbyPPpMz+FRFRuAFlWMtmgUWGe9UOG2Z25NqCwiIjRhOf5iKGuzSe5P2w1laq+FkRy4p+PCuVkJSGkzTEKVw==}
     dev: false
@@ -5417,4 +5430,10 @@ packages:
 
   /zod/3.14.3:
     resolution: {integrity: sha512-OzwRCSXB1+/8F6w6HkYHdbuWysYWnAF4fkRgKDcSFc54CE+Sv0rHXKfeNUReGCrHukm1LNpi6AYeXotznhYJbQ==}
+    dev: false
+
+  /zrender/5.3.1:
+    resolution: {integrity: sha512-7olqIjy0gWfznKr6vgfnGBk7y4UtdMvdwFmK92vVQsQeDPyzkHW1OlrLEKg6GHz1W5ePf0FeN1q2vkl/HFqhXw==}
+    dependencies:
+      tslib: 2.3.0
     dev: false
