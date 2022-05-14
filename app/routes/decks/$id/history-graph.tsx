@@ -129,7 +129,6 @@ export const loader = makeLoader(Controller, async function () {
 
 export default function DefaultComponent() {
   const { data }: LoaderData = useDeserialize(useLeafLoaderData());
-  console.log(data);
   return (
     <div className="flex justify-center">
       <PracticeHistoryChart data={data} />
