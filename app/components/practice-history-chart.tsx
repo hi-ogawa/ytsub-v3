@@ -35,22 +35,11 @@ const BASE_ECHARTS_OPTION: echarts.EChartsOption = {
   },
   grid: {
     left: "3%",
-    right: "4%",
+    right: "6%",
     bottom: "3%",
     containLabel: true,
   },
-  dataset: {
-    dimensions: ["date", "total", "NEW", "LEARN", "REVIEW"],
-    source: [
-      { date: "5/8", total: 10, NEW: 3, LEARN: 4, REVIEW: 3 },
-      { date: "5/9", total: 9, NEW: 2, LEARN: 5, REVIEW: 2 },
-      { date: "5/10", total: 16, NEW: 7, LEARN: 6, REVIEW: 3 },
-      { date: "5/11", total: 18, NEW: 5, LEARN: 8, REVIEW: 5 },
-      { date: "5/12", total: 18, NEW: 8, LEARN: 7, REVIEW: 3 },
-      { date: "5/13", total: 14, NEW: 2, LEARN: 5, REVIEW: 7 },
-      { date: "5/14", total: 18, NEW: 5, LEARN: 8, REVIEW: 5 },
-    ],
-  },
+  dataset: {},
   xAxis: {
     type: "category",
     boundaryGap: false,
@@ -160,8 +149,10 @@ function formatDate(date: string): string {
 
 export function PracticeHistoryChart({
   data,
+  className,
 }: {
   data: PracticeHistoryChartData;
+  className?: string;
 }) {
   const option = React.useMemo(() => {
     return {
@@ -172,5 +163,5 @@ export function PracticeHistoryChart({
       },
     };
   }, [data]);
-  return <EchartsComponent option={option} className="w-[400px] h-[300px]" />;
+  return <EchartsComponent option={option} className={className} />;
 }

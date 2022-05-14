@@ -130,8 +130,10 @@ export const loader = makeLoader(Controller, async function () {
 export default function DefaultComponent() {
   const { data }: LoaderData = useDeserialize(useLeafLoaderData());
   return (
-    <div className="flex justify-center">
-      <PracticeHistoryChart data={data} />
+    <div className="w-full flex justify-center">
+      <div className="w-full max-w-lg">
+        <PracticeHistoryChart data={data} className="h-[300px] w-full" />
+      </div>
     </div>
   );
 }

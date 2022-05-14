@@ -429,8 +429,10 @@ export function TestPracticeHistoryChart() {
     { date: "2022-05-14", total: 18, NEW: 5, LEARN: 8, REVIEW: 5 },
   ];
   return (
-    <div className="flex justify-center">
-      <PracticeHistoryChart data={data} />
+    <div className="w-full flex justify-center">
+      <div className="w-full max-w-lg">
+        <PracticeHistoryChart data={data} className="h-[300px] w-full" />
+      </div>
     </div>
   );
 }
