@@ -14,7 +14,7 @@
     "tsc:dev": "tsc --noEmit --watch --preserveWatchOutput",
     "tailwind": "tailwindcss -o \"./build/tailwind/${NODE_ENV:-development}/index.css\"",
     "tailwind:dev": "npm run tailwind -- --watch",
-    "vite": "vite",
+    "vite": "vite --host",
     "prettier": "prettier -w .",
     "prettier:check": "prettier -c .",
     "prettier:diff": "prettier -w --ignore-unknown --no-error-on-unmatched-pattern $(npm run -s diff)",
