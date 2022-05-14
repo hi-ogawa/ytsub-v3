@@ -1,6 +1,7 @@
 import { mapKeys } from "lodash";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
+import { Menu } from "react-feather";
 import {
   BrowserRouter,
   NavLink,
@@ -20,10 +21,14 @@ function withBase(filePath: string): string {
   return import.meta.env.BASE_URL + filePath;
 }
 
-function App() {
+function App({ open }: { open: boolean }) {
   return (
-    <div className="h-full flex p-2 gap-2">
-      <div className="flex-none w-48 p-2 overflow-y-auto">
+    <div className="h-full flex p-2">
+      <div
+        className={`flex-none p-2 overflow-y-auto transition-[width] ${
+          open ? "w-48 mr-2" : "w-0 p-0 overflow-hidden"
+        }`}
+      >
         <ul className="menu menu-compact gap-1">
           {Object.entries(STORY_FILES).map(([file, stories]) => (
             <React.Fragment key={file}>
@@ -65,9 +70,21 @@ function App() {
 }
 
 function Root() {
+  const [open, setOpen] = React.useState(true);
+
   return (
     <BrowserRouter>
-      <App />
+      <div className="h-full w-full flex flex-col">
+        <header className="flex-none flex items-center p-2 bg-primary text-primary-content">
+          <button
+            className="flex-none btn btn-sm btn-ghost"
+            onClick={() => setOpen(!open)}
+          >
+            <Menu size={24} />
+          </button>
+        </header>
+        <App open={open} />
+      </div>
     </BrowserRouter>
   );
 }
