@@ -11,10 +11,17 @@ function EchartsComponent(props: {
   const instance = React.useRef<echarts.ECharts>();
 
   React.useEffect(() => {
-    if (!instance.current) {
-      assert(ref.current);
-      instance.current = echarts.init(ref.current);
-    }
+    assert(!instance.current);
+    assert(ref.current);
+    instance.current = echarts.init(ref.current);
+    return () => {
+      assert(instance.current);
+      instance.current.dispose();
+    };
+  }, []);
+
+  React.useEffect(() => {
+    assert(instance.current);
     instance.current.setOption(props.option);
   }, [props.option]);
 
