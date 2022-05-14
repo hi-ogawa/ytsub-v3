@@ -404,7 +404,7 @@ function NavBarMenuComponent() {
                 </li>
                 <li>
                   <Link
-                    to={R["/decks/$id/history"](deck.id)}
+                    to={R["/decks/$id/history-graph"](deck.id)}
                     onClick={() => setOpen(false)}
                   >
                     <Activity />

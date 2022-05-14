@@ -149,17 +149,26 @@ type PracticeHistoryChartDataEntry = {
   total: number;
 } & Record<PracticeQueueType, number>;
 
+export type PracticeHistoryChartData = PracticeHistoryChartDataEntry[];
+
+// TODO: can we move this within echarts transform
+function formatDate(date: string): string {
+  // 2022-05-14 => 05/14
+  const [, m, d] = date.split("-");
+  return m + "/" + d;
+}
+
 export function PracticeHistoryChart({
   data,
 }: {
-  data: PracticeHistoryChartDataEntry[];
+  data: PracticeHistoryChartData;
 }) {
   const option = React.useMemo(() => {
     return {
       ...BASE_ECHARTS_OPTION,
       dataset: {
         dimensions: ["date", "total", "NEW", "LEARN", "REVIEW"],
-        source: data,
+        source: data.map((e) => ({ ...e, date: formatDate(e.date) })),
       },
     };
   }, [data]);
