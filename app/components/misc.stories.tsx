@@ -11,6 +11,8 @@ import {
   X,
 } from "react-feather";
 import { useList, useToggle } from "react-use";
+import { PracticeQueueType } from "../db/models";
+import { assert } from "../misc/assert";
 import { Collapse } from "./collapse";
 import { Spinner, VideoComponent } from "./misc";
 import { ModalProvider, useModal } from "./modal";
@@ -418,26 +420,24 @@ export function TestModalProvider() {
   );
 }
 
-function EchartsWrapper(props: { option: echarts.EChartsOption }) {
+function EchartsWrapper(props: {
+  option: echarts.EChartsOption;
+  className?: string;
+}) {
   const ref = React.useRef(null);
+  const instance = React.useRef<echarts.ECharts>();
 
   React.useEffect(() => {
-    if (ref.current) {
-      const instance = echarts.init(ref.current);
-      instance.setOption(props.option);
+    if (!instance.current) {
+      assert(ref.current);
+      instance.current = echarts.init(ref.current);
     }
+    instance.current.setOption(props.option);
   }, [props.option]);
 
-  return (
-    <div>
-      {/* TODO: responsive size */}
-      <div ref={ref} className="w-6/12 h-[300px]" />
-    </div>
-  );
+  return <div ref={ref} className={props.className} />;
 }
 
-// based on https://echarts.apache.org/examples/en/editor.html?c=area-stack
-// TODO: is it possible to show label for the stack total?
 const option: echarts.EChartsOption = {
   animation: false,
   tooltip: {
@@ -448,6 +448,7 @@ const option: echarts.EChartsOption = {
         backgroundColor: "#6a7985",
       },
     },
+    order: "seriesDesc",
   },
   grid: {
     left: "3%",
@@ -455,85 +456,134 @@ const option: echarts.EChartsOption = {
     bottom: "3%",
     containLabel: true,
   },
-  xAxis: [
-    {
-      type: "category",
-      boundaryGap: false,
-      data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-    },
-  ],
-  yAxis: [
-    {
-      type: "value",
-    },
-  ],
+  dataset: {
+    dimensions: ["date", "total", "NEW", "LEARN", "REVIEW"],
+    source: [
+      { date: "5/8", total: 10, NEW: 3, LEARN: 4, REVIEW: 3 },
+      { date: "5/9", total: 9, NEW: 2, LEARN: 5, REVIEW: 2 },
+      { date: "5/10", total: 16, NEW: 7, LEARN: 6, REVIEW: 3 },
+      { date: "5/11", total: 18, NEW: 5, LEARN: 8, REVIEW: 5 },
+      { date: "5/12", total: 18, NEW: 8, LEARN: 7, REVIEW: 3 },
+      { date: "5/13", total: 14, NEW: 2, LEARN: 5, REVIEW: 7 },
+      { date: "5/14", total: 18, NEW: 5, LEARN: 8, REVIEW: 5 },
+    ],
+  },
+  xAxis: {
+    type: "category",
+    boundaryGap: false,
+  },
+  yAxis: {
+    type: "value",
+  },
   series: [
+    // colors are obtained by reordering default theme colors in
+    // https://github.com/apache/echarts/blob/1fb0d6f1c2d5a6084198bbc2a1b928df66abbaab/src/model/globalDefault.ts#L37-L47
     {
-      name: "Email",
       type: "line",
-      stack: "Total",
-      areaStyle: {},
+      stack: "total",
+      name: "new",
+      areaStyle: {
+        color: "#5470c6",
+      },
+      lineStyle: {
+        color: "#5470c6",
+      },
+      itemStyle: {
+        color: "#5470c6",
+      },
       emphasis: {
         focus: "series",
       },
-      data: [120, 132, 101, 134, 90, 230, 210],
+      encode: {
+        x: "date",
+        y: "NEW",
+      },
     },
     {
-      name: "Union Ads",
       type: "line",
-      stack: "Total",
-      areaStyle: {},
+      stack: "total",
+      name: "learn",
+      areaStyle: {
+        color: "#ee6666",
+      },
+      lineStyle: {
+        color: "#ee6666",
+      },
+      itemStyle: {
+        color: "#ee6666",
+      },
       emphasis: {
         focus: "series",
       },
-      data: [220, 182, 191, 234, 290, 330, 310],
+      encode: {
+        x: "date",
+        y: "LEARN",
+      },
     },
     {
-      name: "Video Ads",
       type: "line",
-      stack: "Total",
-      areaStyle: {},
+      stack: "total",
+      name: "review",
+      areaStyle: {
+        color: "#91cc75",
+      },
+      lineStyle: {
+        color: "#91cc75",
+      },
+      itemStyle: {
+        color: "#91cc75",
+      },
       emphasis: {
         focus: "series",
       },
-      data: [150, 232, 201, 154, 190, 330, 410],
+      encode: {
+        x: "date",
+        y: "REVIEW",
+      },
     },
     {
-      name: "Direct",
       type: "line",
-      stack: "Total",
-      areaStyle: {},
-      emphasis: {
-        focus: "series",
+      name: "total",
+      symbol: "none",
+      cursor: "none",
+      itemStyle: {
+        color: "#fac858",
       },
-      data: [320, 332, 301, 334, 390, 330, 320],
-    },
-    {
-      name: "Search Engine",
-      type: "line",
-      stack: "Total",
-      label: {
-        show: true,
-        position: "top",
+      lineStyle: {
+        color: "#fac858",
+        opacity: 0,
       },
-      areaStyle: {},
-      emphasis: {
-        focus: "series",
+      encode: {
+        x: "date",
+        y: "total",
       },
-      data: [820, 932, 901, 934, 1290, 1330, 1320],
     },
   ],
 };
 
-// TODO
-function PracticeHistoryChart() {
-  return <EchartsWrapper option={option} />;
+type PracticeHistoryChartEntry = {
+  date: string;
+  total: number;
+} & Record<PracticeQueueType, number>;
+
+function PracticeHistoryChart({ data }: { data: PracticeHistoryChartEntry[] }) {
+  data;
+  return <EchartsWrapper option={option} className="w-[400px] h-[300px]" />;
 }
 
 export function TestPracticeHistoryChart() {
+  const data = [
+    { date: "5/8", total: 10, NEW: 3, LEARN: 4, REVIEW: 3 },
+    { date: "5/9", total: 9, NEW: 2, LEARN: 5, REVIEW: 2 },
+    { date: "5/10", total: 16, NEW: 7, LEARN: 6, REVIEW: 3 },
+    { date: "5/11", total: 18, NEW: 5, LEARN: 8, REVIEW: 5 },
+    { date: "5/12", total: 18, NEW: 8, LEARN: 7, REVIEW: 3 },
+    { date: "5/13", total: 14, NEW: 2, LEARN: 5, REVIEW: 7 },
+    { date: "5/14", total: 18, NEW: 5, LEARN: 8, REVIEW: 5 },
+  ];
   return (
-    <div className="h-full">
-      <PracticeHistoryChart />
+    <div className="flex justify-center">
+      <PracticeHistoryChart data={data} />
     </div>
   );
 }
