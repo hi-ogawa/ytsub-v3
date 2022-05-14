@@ -80,6 +80,6 @@ test.describe("decks", () => {
     await page
       .locator("data-test=deck-menu-popover-floating >> text=History")
       .click();
-    await expect(page).toHaveURL(/\/decks\/\d+\/history$/);
+    await expect(page).toHaveURL(/\/decks\/\d+\/history-graph$/);
   });
 });
