@@ -52,6 +52,7 @@ const TIMEZONE = "+09:00";
 // - different date range (e.g. month, year)
 const REQUEST_SCHEMA = z.object({
   page: zStringToInteger.optional().default("0"), // 0 => this week, 1 => last week, ...
+  now: z.string().optional(), // currently only for testing
 });
 
 interface LoaderData {
@@ -81,7 +82,7 @@ export const loader = makeLoader(Controller, async function () {
   }
 
   const { page } = parsed.data;
-  const now = new Date();
+  const now = parsed.data.now ? new Date(parsed.data.now) : new Date();
   const begin = Timedelta.make({ days: -7 * (page + 1) }).radd(now);
   const end = Timedelta.make({ days: -7 * page }).radd(now);
 
