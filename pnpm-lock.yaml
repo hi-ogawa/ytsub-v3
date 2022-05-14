@@ -15,7 +15,7 @@ specifiers:
   '@types/bcryptjs': ^2.4.2
   '@types/fs-extra': ^9.0.13
   '@types/lodash': ^4.14.179
-  '@types/node': ^14
+  '@types/node': ^16
   '@types/qs': ^6.9.7
   '@types/react': ^17.0.39
   '@types/react-dom': ^17.0.11
@@ -93,7 +93,7 @@ devDependencies:
   '@tailwindcss/line-clamp': 0.3.1_tailwindcss@3.0.23
   '@types/fs-extra': 9.0.13
   '@types/lodash': 4.14.179
-  '@types/node': 14.18.12
+  '@types/node': 16.11.35
   '@types/qs': 6.9.7
   '@types/react': 17.0.39
   '@types/react-dom': 17.0.13
@@ -1168,8 +1168,8 @@ packages:
     resolution: {integrity: sha512-F0KIgDJfy2nA3zMLmWGKxcH2ZVEtCZXHHdOQs2gSaQ27+lNeEfGxzkIw90aXswATX7AZ33tahPbzy6KAfUreVw==}
     dev: true
 
-  /@types/node/14.18.12:
-    resolution: {integrity: sha512-q4jlIR71hUpWTnGhXWcakgkZeHa3CCjcQcnuzU8M891BAWA2jHiziiWEPEkdS5pFsz7H9HJiy8BrK7tBRNrY7A==}
+  /@types/node/16.11.35:
+    resolution: {integrity: sha512-QXu45LyepgnhUfnIAj/FyT4uM87ug5KpIrgXfQtUPNAlx8w5hmd8z8emqCLNvG11QkpRSCG9Qg2buMxvqfjfsQ==}
     dev: true
 
   /@types/node/17.0.21:

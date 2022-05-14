@@ -11,7 +11,7 @@ jobs:
           version: "6.29.1"
       - uses: actions/setup-node@v2
         with:
-          node-version: "16.14.0"
+          node-version: "16.15.0"
       - run: pnpm run install-with-patch -- --frozen-lockfile
       - run: npm run lint:check
 
@@ -24,7 +24,7 @@ jobs:
           version: "6.29.1"
       - uses: actions/setup-node@v2
         with:
-          node-version: "16.14.0"
+          node-version: "16.15.0"
       - run: pnpm run install-with-patch -- --frozen-lockfile
       - run: npm run tsc
 
@@ -37,7 +37,7 @@ jobs:
           version: "6.29.1"
       - uses: actions/setup-node@v2
         with:
-          node-version: "16.14.0"
+          node-version: "16.15.0"
       - run: pnpm run install-with-patch -- --frozen-lockfile
       - run: npm run netlify:build
 
@@ -50,7 +50,7 @@ jobs:
           version: "6.29.1"
       - uses: actions/setup-node@v2
         with:
-          node-version: "16.14.0"
+          node-version: "16.15.0"
       - run: pnpm run install-with-patch -- --frozen-lockfile
       - run: make docker/up db/reset/test
       - run: npm run test:coverage
@@ -68,7 +68,7 @@ jobs:
           version: "6.29.1"
       - uses: actions/setup-node@v2
         with:
-          node-version: "16.14.0"
+          node-version: "16.15.0"
       - run: pnpm run install-with-patch -- --frozen-lockfile
       - uses: actions/cache@v3
         id: cache-playwright
@@ -93,7 +93,7 @@ jobs:
           version: "6.29.1"
       - uses: actions/setup-node@v2
         with:
-          node-version: "16.14.0"
+          node-version: "16.15.0"
       - run: pnpm run install-with-patch -- --frozen-lockfile
       - run: make docker/up db/recreate
       - run: npm run cli -- db:test-migrations --unit-test
@@ -111,7 +111,7 @@ jobs:
           version: "6.29.1"
       - uses: actions/setup-node@v2
         with:
-          node-version: "16.14.0"
+          node-version: "16.15.0"
       - run: pnpm run install-with-patch -- --frozen-lockfile
       - run: export NODE_ENV=test && npm run dev:prepare && npx remix build --sourcemap
       - uses: actions/download-artifact@v3
