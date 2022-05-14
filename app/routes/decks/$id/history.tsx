@@ -19,6 +19,7 @@ import { useLeafLoaderData } from "../../../utils/loader-utils";
 import { PageHandle } from "../../../utils/page-handle";
 import { PAGINATION_PARAMS_SCHEMA } from "../../../utils/pagination";
 import { zStringToInteger } from "../../../utils/zod-utils";
+import { NavBarMenuComponent } from "./history-graph";
 import { requireUserAndDeck } from ".";
 
 //
@@ -27,6 +28,7 @@ import { requireUserAndDeck } from ".";
 
 export const handle: PageHandle = {
   navBarTitle: () => <NavBarTitleComponent />,
+  navBarMenu: () => <NavBarMenuComponent />,
 };
 
 //

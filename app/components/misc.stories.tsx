@@ -14,6 +14,7 @@ import { Collapse } from "./collapse";
 import { Spinner, VideoComponent } from "./misc";
 import { ModalProvider, useModal } from "./modal";
 import { Popover } from "./popover";
+import { PracticeHistoryChart } from "./practice-history-chart";
 import { Slide } from "./slide";
 import {
   SnackbarItemComponent,
@@ -414,5 +415,24 @@ export function TestModalProvider() {
     <ModalProvider>
       <TestModalInner />
     </ModalProvider>
+  );
+}
+
+export function TestPracticeHistoryChart() {
+  const data = [
+    { date: "2022-05-08", total: 10, NEW: 3, LEARN: 4, REVIEW: 3 },
+    { date: "2022-05-09", total: 9, NEW: 2, LEARN: 5, REVIEW: 2 },
+    { date: "2022-05-10", total: 16, NEW: 7, LEARN: 6, REVIEW: 3 },
+    { date: "2022-05-11", total: 18, NEW: 5, LEARN: 8, REVIEW: 5 },
+    { date: "2022-05-12", total: 18, NEW: 8, LEARN: 7, REVIEW: 3 },
+    { date: "2022-05-13", total: 14, NEW: 2, LEARN: 5, REVIEW: 7 },
+    { date: "2022-05-14", total: 18, NEW: 5, LEARN: 8, REVIEW: 5 },
+  ];
+  return (
+    <div className="w-full flex justify-center">
+      <div className="w-full max-w-lg">
+        <PracticeHistoryChart data={data} className="h-[300px] w-full" />
+      </div>
+    </div>
   );
 }
