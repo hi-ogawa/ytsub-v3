@@ -34,10 +34,9 @@ const BASE_ECHARTS_OPTION: echarts.EChartsOption = {
     order: "seriesDesc",
   },
   grid: {
-    left: "3%",
+    left: "8%",
     right: "6%",
-    bottom: "3%",
-    containLabel: true,
+    bottom: "8%",
   },
   dataset: {},
   xAxis: {
@@ -46,6 +45,7 @@ const BASE_ECHARTS_OPTION: echarts.EChartsOption = {
   },
   yAxis: {
     type: "value",
+    minInterval: 1,
   },
   series: [
     // colors are obtained by reordering default theme colors in

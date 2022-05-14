@@ -3,7 +3,13 @@ import { Link } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import { range } from "lodash";
 import * as React from "react";
-import { BarChart2, List, MoreVertical } from "react-feather";
+import {
+  BarChart2,
+  ChevronsLeft,
+  ChevronsRight,
+  List,
+  MoreVertical,
+} from "react-feather";
 import { z } from "zod";
 import { Popover } from "../../../components/popover";
 import {
@@ -19,6 +25,7 @@ import { useDeserialize } from "../../../utils/hooks";
 import { useLeafLoaderData } from "../../../utils/loader-utils";
 import { PageHandle } from "../../../utils/page-handle";
 import { Timedelta } from "../../../utils/timedelta";
+import { toQuery } from "../../../utils/url-data";
 import { zStringToInteger } from "../../../utils/zod-utils";
 import { requireUserAndDeck } from ".";
 
@@ -41,11 +48,10 @@ export const handle: PageHandle = {
 const TIMEZONE = "+09:00";
 
 // TODO
-// - page change weeks
 // - group by PracticeActionType
 // - different date range (e.g. month, year)
 const REQUEST_SCHEMA = z.object({
-  page: zStringToInteger.optional().default("1"), // 1 => this week, 2 => last week, ...
+  page: zStringToInteger.optional().default("0"), // 0 => this week, 1 => last week, ...
 });
 
 interface LoaderData {
@@ -76,8 +82,8 @@ export const loader = makeLoader(Controller, async function () {
 
   const { page } = parsed.data;
   const now = new Date();
-  const begin = Timedelta.make({ days: -7 * page }).radd(now);
-  const end = Timedelta.make({ days: -7 * (page - 1) }).radd(now);
+  const begin = Timedelta.make({ days: -7 * (page + 1) }).radd(now);
+  const end = Timedelta.make({ days: -7 * page }).radd(now);
 
   const rows: { queueType: PracticeQueueType; date: string; count: number }[] =
     await Q.practiceActions()
@@ -128,14 +134,41 @@ export const loader = makeLoader(Controller, async function () {
 //
 
 export default function DefaultComponent() {
-  const { data }: LoaderData = useDeserialize(useLeafLoaderData());
+  const { data, page }: LoaderData = useDeserialize(useLeafLoaderData());
   return (
     <div className="w-full flex justify-center">
-      <div className="w-full max-w-lg">
+      <div className="w-full max-w-lg flex flex-col gap-2">
         <PracticeHistoryChart data={data} className="h-[300px] w-full" />
+        <div className="w-full flex justify-center">
+          <div className="btn-group shadow-xl" data-test="pagination">
+            <Link
+              to={"?" + toQuery({ page: page + 1 })}
+              className="btn btn-xs no-animation"
+            >
+              <ChevronsLeft size={14} />
+            </Link>
+            <div className="bg-neutral text-neutral-content font-semibold text-xs flex justify-center items-center px-2">
+              {formatPage(page)}
+            </div>
+            <Link
+              to={"?" + toQuery({ page: page - 1 })}
+              className={`btn btn-xs no-animation ${
+                page === 0 && "btn-disabled"
+              }`}
+            >
+              <ChevronsRight size={14} />
+            </Link>
+          </div>
+        </div>
       </div>
     </div>
   );
+}
+
+function formatPage(page: number): string {
+  if (page === 0) return "this week";
+  if (page === 1) return "last week";
+  return `${page} weeks ago`;
 }
 
 //
