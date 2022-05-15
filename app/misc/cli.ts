@@ -18,6 +18,7 @@ import {
 } from "../utils/auth";
 import { exec, streamToString } from "../utils/node.server";
 import { NewVideo, fetchCaptionEntries } from "../utils/youtube";
+import { tinyassert } from "./tinyassert";
 
 const cli = cac("cli").help();
 
@@ -167,7 +168,7 @@ cli
         .where("username", options.username)
         .select("id")
         .first();
-      assert.ok(user);
+      tinyassert(user);
       userId = user.id;
     }
     const total = newVideos.length;
@@ -281,7 +282,7 @@ cli
       .where("username", username)
       .select("id")
       .first();
-    assert.ok(user);
+    tinyassert(user);
 
     const input = await streamToString(process.stdin);
     const olds = z.array(OLD_BOOKMARK_ENTRY_SCHEMA).parse(JSON.parse(input));
