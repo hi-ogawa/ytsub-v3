@@ -567,7 +567,7 @@ export function CaptionEntryComponent({
         ${border && "border border-solid border-gray-200"}
         ${isEntryPlaying ? "border-blue-400" : "border-gray-200"}
         ${border && isCurrentEntry && "bg-gray-100"}
-        ${isFocused && "border-l-2 border-l-orange-400"}
+        ${isFocused && "border-l-2 border-l-blue-500"}
         p-1.5 gap-1
         text-xs
       `}
