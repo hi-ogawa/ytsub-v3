@@ -1,8 +1,8 @@
 import { omit } from "lodash";
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
-import { assert } from "../../misc/assert";
 import { getSchema } from "../../misc/cli";
 import { restoreDump } from "../../misc/test-setup-global-e2e";
+import { tinyassert } from "../../misc/tinyassert";
 import { client } from "../client.server";
 import { Q, deleteOrphans, normalizeRelation } from "../models";
 import RAW_SCHEMA from "../schema";
@@ -26,7 +26,7 @@ describe("models-basic", () => {
     };
     const [id] = await Q.users().insert(data);
     const res = await Q.users().where("id", id).first();
-    assert(res);
+    tinyassert(res);
     expect(omit(res, ["id", "createdAt", "updatedAt"])).toEqual(data);
   });
 
@@ -57,8 +57,8 @@ describe("models-basic", () => {
       '"select count(0) as `total` from `users` limit ?"'
     );
     const res = await query;
-    assert(res);
-    assert(typeof res.total === "number");
+    tinyassert(res);
+    tinyassert(typeof res.total === "number");
   });
 
   it("deleteOrphans", async () => {

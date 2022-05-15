@@ -1,8 +1,8 @@
 import type { Page, test as testDefault } from "@playwright/test";
 import { installGlobals } from "@remix-run/node";
 import { Q, UserTable } from "../db/models";
-import { assert } from "../misc/assert";
 import { useUserImpl } from "../misc/helper";
+import { tinyassert } from "../misc/tinyassert";
 import { createUserCookie } from "../utils/auth";
 
 // Remix's cookie manipulation requires atob, sign, etc...
@@ -44,7 +44,7 @@ export function useDevUserE2e(test: typeof testDefault) {
 
   test.beforeAll(async () => {
     const maybeUser = await Q.users().where("username", "dev").first();
-    assert(maybeUser);
+    tinyassert(maybeUser);
     user = maybeUser;
 
     const rawCookie = await createUserCookie(user);

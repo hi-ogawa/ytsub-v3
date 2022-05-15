@@ -1,6 +1,6 @@
 import { beforeAll, describe, expect, it } from "vitest";
 import { Q, UserTable } from "../../../db/models";
-import { assert } from "../../../misc/assert";
+import { tinyassert } from "../../../misc/tinyassert";
 import { getSessionUser, register } from "../../../utils/auth";
 import { getSession } from "../../../utils/session.server";
 import { testLoader } from "../../__tests__/helper";
@@ -20,7 +20,7 @@ describe("signin.action", () => {
       const res = await testLoader(action, { form: credentials });
 
       // redirect to root
-      assert(res instanceof Response);
+      tinyassert(res instanceof Response);
       expect(res.status).toBe(302);
       expect(res.headers.get("location")).toBe("/");
 

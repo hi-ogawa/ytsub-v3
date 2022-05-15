@@ -29,8 +29,8 @@ import {
   VideoTable,
   getVideoAndCaptionEntries,
 } from "../../db/models";
-import { assert } from "../../misc/assert";
 import { R } from "../../misc/routes";
+import { tinyassert } from "../../misc/tinyassert";
 import { Controller, makeLoader } from "../../utils/controller-utils";
 import { useDeserialize, useSelection } from "../../utils/hooks";
 import { useYoutubeIframeApi } from "../../utils/hooks";
@@ -278,7 +278,7 @@ function PageComponent({
         const side = Array.from(el.parentNode!.children).findIndex(
           (c) => c === el
         );
-        assert(side === 0 || side === 1);
+        tinyassert(side === 0 || side === 1);
         newBookmarkState = {
           captionEntry: captionEntries[index],
           text: selection.toString(),

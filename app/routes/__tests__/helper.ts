@@ -8,8 +8,8 @@ import {
   getVideoAndCaptionEntries,
   insertVideoAndCaptionEntries,
 } from "../../db/models";
-import { assert } from "../../misc/assert";
 import { useUserImpl } from "../../misc/helper";
+import { tinyassert } from "../../misc/tinyassert";
 import { createUserCookie } from "../../utils/auth";
 import { toQuery } from "../../utils/url-data";
 import { NewVideo, fetchCaptionEntries } from "../../utils/youtube";
@@ -109,7 +109,7 @@ export function useVideo(type: 0 | 1 | 2 = 2, userId?: () => number) {
     const data = await fetchCaptionEntries(newVideo);
     const videoId = await insertVideoAndCaptionEntries(newVideo, data, id);
     const resultOption = await getVideoAndCaptionEntries(videoId);
-    assert(resultOption);
+    tinyassert(resultOption);
     result = resultOption;
   });
 
@@ -143,7 +143,7 @@ export function useUserVideo(
     const data = await fetchCaptionEntries(newVideo);
     const videoId = await insertVideoAndCaptionEntries(newVideo, data, user.id);
     const result = await getVideoAndCaptionEntries(videoId);
-    assert(result);
+    tinyassert(result);
     video = result.video;
     captionEntries = result.captionEntries;
   });

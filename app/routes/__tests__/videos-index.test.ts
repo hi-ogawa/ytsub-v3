@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { assert } from "../../misc/assert";
+import { tinyassert } from "../../misc/tinyassert";
 import { loader } from "../videos/index";
 import { testLoader, useUser } from "./helper";
 
@@ -11,7 +11,7 @@ describe("videos/index.loader", () => {
 
   it("basic", async () => {
     const res = await testLoader(loader, { transform: signin });
-    assert(res instanceof Response);
+    tinyassert(res instanceof Response);
     expect(await res.json()).toMatchInlineSnapshot(`
       {
         "json": {
