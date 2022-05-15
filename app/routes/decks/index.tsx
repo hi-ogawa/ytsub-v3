@@ -1,6 +1,6 @@
 import { Link, useLoaderData } from "@remix-run/react";
 import * as React from "react";
-import { Book, Play, PlusSquare, Settings } from "react-feather";
+import { Book, Play, PlusSquare } from "react-feather";
 import { DeckTable, Q } from "../../db/models";
 import { R } from "../../misc/routes";
 import { Controller, makeLoader } from "../../utils/controller-utils";
