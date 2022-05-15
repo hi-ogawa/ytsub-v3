@@ -80,7 +80,11 @@ function NavBarMenuComponent() {
   return (
     <>
       <div className="flex-none">
-        <Link to={R["/decks/new"]} className="btn btn-sm btn-ghost">
+        <Link
+          to={R["/decks/new"]}
+          className="btn btn-sm btn-ghost"
+          data-test="new-deck-link"
+        >
           <PlusSquare />
         </Link>
       </div>

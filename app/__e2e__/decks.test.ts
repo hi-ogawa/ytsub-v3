@@ -10,9 +10,7 @@ test.describe("decks", () => {
 
     await page.goto("/decks");
 
-    await page.locator('[data-test="decks-menu"]').click();
-
-    await page.locator("text=New deck").click();
+    await page.locator("data-test=new-deck-link").click();
 
     await expect(page).toHaveURL("/decks/new");
 
