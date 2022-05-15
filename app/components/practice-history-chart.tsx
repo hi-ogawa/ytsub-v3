@@ -5,6 +5,7 @@ import { assert } from "../misc/assert";
 
 function EchartsComponent(props: {
   option: echarts.EChartsOption;
+  setInstance?: (instance: echarts.ECharts) => void;
   className?: string;
 }) {
   const ref = React.useRef(null);
@@ -14,6 +15,9 @@ function EchartsComponent(props: {
     assert(!instance.current);
     assert(ref.current);
     instance.current = echarts.init(ref.current);
+    if (props.setInstance) {
+      props.setInstance(instance.current);
+    }
     return () => {
       assert(instance.current);
       instance.current.dispose();
@@ -33,7 +37,7 @@ const BASE_ECHARTS_OPTION: echarts.EChartsOption = {
   tooltip: {
     trigger: "axis",
     axisPointer: {
-      type: "cross",
+      type: "line",
       label: {
         backgroundColor: "#6a7985",
       },
@@ -71,7 +75,7 @@ const BASE_ECHARTS_OPTION: echarts.EChartsOption = {
         color: "#5470c6",
       },
       emphasis: {
-        focus: "series",
+        disabled: true,
       },
       encode: {
         x: "date",
@@ -92,7 +96,7 @@ const BASE_ECHARTS_OPTION: echarts.EChartsOption = {
         color: "#ee6666",
       },
       emphasis: {
-        focus: "series",
+        disabled: true,
       },
       encode: {
         x: "date",
@@ -113,7 +117,7 @@ const BASE_ECHARTS_OPTION: echarts.EChartsOption = {
         color: "#91cc75",
       },
       emphasis: {
-        focus: "series",
+        disabled: true,
       },
       encode: {
         x: "date",
@@ -156,9 +160,10 @@ function formatDate(date: string): string {
 
 export function PracticeHistoryChart({
   data,
-  className,
+  ...props
 }: {
   data: PracticeHistoryChartData;
+  setInstance?: (instance: echarts.ECharts) => void;
   className?: string;
 }) {
   const option = React.useMemo(() => {
@@ -170,5 +175,5 @@ export function PracticeHistoryChart({
       },
     };
   }, [data]);
-  return <EchartsComponent option={option} className={className} />;
+  return <EchartsComponent option={option} {...props} />;
 }

@@ -76,7 +76,7 @@ export function useIsFormValid() {
 let _hydrated = false;
 export function useHydrated() {
   const [hydrated, setHydrated] = React.useState(_hydrated);
-  React.useEffect(() => setHydrated((_hydrated = false)), []);
+  React.useEffect(() => setHydrated((_hydrated = true)), []);
   return hydrated;
 }
 

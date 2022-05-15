@@ -1,6 +1,7 @@
 import { Transition } from "@headlessui/react";
 import { Link } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
+import type { ECharts } from "echarts";
 import { range } from "lodash";
 import * as React from "react";
 import {
@@ -12,6 +13,7 @@ import {
   Play,
 } from "react-feather";
 import { z } from "zod";
+import { Spinner } from "../../../components/misc";
 import { Popover } from "../../../components/popover";
 import {
   PracticeHistoryChart,
@@ -22,7 +24,7 @@ import { DeckTable, PracticeQueueType, Q } from "../../../db/models";
 import { assert } from "../../../misc/assert";
 import { R } from "../../../misc/routes";
 import { Controller, makeLoader } from "../../../utils/controller-utils";
-import { useDeserialize } from "../../../utils/hooks";
+import { useDeserialize, useHydrated } from "../../../utils/hooks";
 import { useLeafLoaderData } from "../../../utils/loader-utils";
 import { PageHandle } from "../../../utils/page-handle";
 import { Timedelta } from "../../../utils/timedelta";
@@ -137,14 +139,48 @@ export const loader = makeLoader(Controller, async function () {
 
 export default function DefaultComponent() {
   const { data, page }: LoaderData = useDeserialize(useLeafLoaderData());
+
+  // show loading between SSR and echarts "rendered" event
+  const [isLoading, setIsLoading] = React.useState(!useHydrated());
+
+  const [instance, setInstance] = React.useState<ECharts>();
+
+  function setInstanceWrapper(instance: ECharts) {
+    instance.on("rendered", () => setIsLoading(false));
+    setInstance(instance);
+  }
+
+  function onClickPage() {
+    // TODO: "hideTip" also when click outside of chart (on mobile)
+    instance?.dispatchAction({ type: "hideTip" });
+    setIsLoading(true);
+  }
+
   return (
     <div className="w-full flex justify-center">
       <div className="w-full max-w-lg flex flex-col gap-2">
-        <PracticeHistoryChart data={data} className="h-[300px] w-full" />
+        <div className="relative w-full h-[300px]">
+          <PracticeHistoryChart
+            data={data}
+            setInstance={setInstanceWrapper}
+            className="w-full h-full"
+          />
+          <Transition
+            show={isLoading}
+            className="transition duration-100 z-50 absolute inset-0 flex justify-center items-center bg-white/[0.5]"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <Spinner className="w-20 h-20" />
+          </Transition>
+        </div>
         <div className="w-full flex justify-center">
           <div className="btn-group shadow-xl" data-test="pagination">
             <Link
               to={"?" + toQuery({ page: page + 1 })}
+              onClick={onClickPage}
               className="btn btn-xs no-animation"
             >
               <ChevronsLeft size={14} />
@@ -154,6 +190,7 @@ export default function DefaultComponent() {
             </div>
             <Link
               to={"?" + toQuery({ page: page - 1 })}
+              onClick={onClickPage}
               className={`btn btn-xs no-animation ${
                 page === 0 && "btn-disabled"
               }`}

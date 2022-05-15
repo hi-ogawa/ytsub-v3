@@ -40,6 +40,7 @@ import { UserTable } from "./db/models";
 import { R, R_RE } from "./misc/routes";
 import { Controller, makeLoader } from "./utils/controller-utils";
 import { getFlashMessages } from "./utils/flash-message";
+import { useHydrated } from "./utils/hooks";
 import { RootLoaderData, useRootLoaderData } from "./utils/loader-utils";
 import { Match } from "./utils/page-handle";
 
@@ -103,6 +104,8 @@ export const unstable_shouldReload: ShouldReloadFunction = ({
 //
 
 export default function DefaultComponent() {
+  useHydrated(); // initialize global hydration state shared via this hook
+
   return (
     <html lang="en" className="h-full">
       <head>
