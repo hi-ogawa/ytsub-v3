@@ -1,4 +1,4 @@
-import * as assert from "assert";
+import * as assert from "assert/strict";
 import { installGlobals } from "@remix-run/node";
 import { cac } from "cac";
 import { range, zip } from "lodash";
@@ -126,7 +126,7 @@ async function clieDbTestMigrations(options: {
   await client.destroy();
 
   if (options.reversibilityTest) {
-    assert.strict.deepEqual(ups, downs);
+    assert.deepEqual(ups, downs);
     console.error(":: reversibility test success");
   }
 }
