@@ -33,7 +33,7 @@ const BASE_ECHARTS_OPTION: echarts.EChartsOption = {
   tooltip: {
     trigger: "axis",
     axisPointer: {
-      type: "cross",
+      type: "line",
       label: {
         backgroundColor: "#6a7985",
       },
@@ -71,7 +71,7 @@ const BASE_ECHARTS_OPTION: echarts.EChartsOption = {
         color: "#5470c6",
       },
       emphasis: {
-        focus: "series",
+        disabled: true,
       },
       encode: {
         x: "date",
@@ -92,7 +92,7 @@ const BASE_ECHARTS_OPTION: echarts.EChartsOption = {
         color: "#ee6666",
       },
       emphasis: {
-        focus: "series",
+        disabled: true,
       },
       encode: {
         x: "date",
@@ -113,7 +113,7 @@ const BASE_ECHARTS_OPTION: echarts.EChartsOption = {
         color: "#91cc75",
       },
       emphasis: {
-        focus: "series",
+        disabled: true,
       },
       encode: {
         x: "date",
