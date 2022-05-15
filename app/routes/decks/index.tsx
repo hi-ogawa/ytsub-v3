@@ -1,8 +1,6 @@
-import { Transition } from "@headlessui/react";
 import { Link, useLoaderData } from "@remix-run/react";
 import * as React from "react";
-import { MoreVertical, Play, PlusSquare, Settings } from "react-feather";
-import { Popover } from "../../components/popover";
+import { Book, Play, PlusSquare } from "react-feather";
 import { DeckTable, Q } from "../../db/models";
 import { R } from "../../misc/routes";
 import { Controller, makeLoader } from "../../utils/controller-utils";
@@ -62,7 +60,7 @@ function DeckComponent({ deck }: { deck: DeckTable }) {
         to={R["/decks/$id"](deck.id)}
         className="flex-none btn btn-circle btn-sm btn-ghost"
       >
-        <Settings size={16} />
+        <Book size={16} />
       </Link>
       <Link
         to={R["/decks/$id/practice"](deck.id)}
@@ -82,39 +80,13 @@ function NavBarMenuComponent() {
   return (
     <>
       <div className="flex-none">
-        <Popover
-          placement="bottom-end"
-          reference={({ props }) => (
-            <button
-              className="btn btn-sm btn-ghost"
-              data-test="decks-menu"
-              {...props}
-            >
-              <MoreVertical />
-            </button>
-          )}
-          floating={({ open, setOpen, props }) => (
-            <Transition
-              show={open}
-              unmount={false}
-              className="transition duration-200"
-              enterFrom="scale-90 opacity-0"
-              enterTo="scale-100 opacity-100"
-              leaveFrom="scale-100 opacity-100"
-              leaveTo="scale-90 opacity-0"
-              {...props}
-            >
-              <ul className="menu rounded p-3 shadow w-48 bg-base-100 text-base-content text-sm">
-                <li>
-                  <Link to={R["/decks/new"]} onClick={() => setOpen(false)}>
-                    <PlusSquare />
-                    New deck
-                  </Link>
-                </li>
-              </ul>
-            </Transition>
-          )}
-        />
+        <Link
+          to={R["/decks/new"]}
+          className="btn btn-sm btn-ghost"
+          data-test="new-deck-link"
+        >
+          <PlusSquare />
+        </Link>
       </div>
     </>
   );

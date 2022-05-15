@@ -1,6 +1,14 @@
-import { useFetcher, useLoaderData, useTransition } from "@remix-run/react";
+import { Transition } from "@headlessui/react";
+import {
+  Link,
+  useFetcher,
+  useLoaderData,
+  useTransition,
+} from "@remix-run/react";
 import * as React from "react";
+import { Activity, Book, MoreVertical } from "react-feather";
 import { Spinner } from "../../../components/misc";
+import { Popover } from "../../../components/popover";
 import {
   BookmarkEntryTable,
   CaptionEntryTable,
@@ -175,7 +183,9 @@ function PracticeComponent({
   const isLoading =
     fetcher.state !== "idle" ||
     (transition.state !== "idle" &&
-      transition.location?.pathname.startsWith(R["/decks/$id"](deck.id)));
+      transition.location?.pathname.startsWith(
+        R["/decks/$id/practice"](deck.id)
+      ));
 
   function onClickAction(actionType: PracticeActionType) {
     const data: NewPracticeActionRequest = {
@@ -236,5 +246,60 @@ function NavBarTitleComponent() {
 //
 
 function NavBarMenuComponent() {
-  return <></>;
+  const { deck }: LoaderData = useDeserialize(useLeafLoaderData());
+
+  return (
+    <>
+      <div className="flex-none">
+        <Popover
+          placement="bottom-end"
+          reference={({ props }) => (
+            <button
+              className="btn btn-sm btn-ghost"
+              data-test="deck-menu-popover-reference"
+              {...props}
+            >
+              <MoreVertical />
+            </button>
+          )}
+          floating={({ open, setOpen, props }) => (
+            <Transition
+              show={open}
+              unmount={false}
+              className="transition duration-200"
+              enterFrom="scale-90 opacity-0"
+              enterTo="scale-100 opacity-100"
+              leaveFrom="scale-100 opacity-100"
+              leaveTo="scale-90 opacity-0"
+              {...props}
+            >
+              <ul
+                className="menu menu-compact rounded p-3 shadow w-48 bg-base-100 text-base-content text-sm"
+                data-test="deck-menu-popover-floating"
+              >
+                <li>
+                  <Link
+                    to={R["/decks/$id"](deck.id)}
+                    onClick={() => setOpen(false)}
+                  >
+                    <Book />
+                    Deck
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to={R["/decks/$id/history-graph"](deck.id)}
+                    onClick={() => setOpen(false)}
+                  >
+                    <Activity />
+                    History
+                  </Link>
+                </li>
+              </ul>
+            </Transition>
+          )}
+        />
+      </div>
+    </>
+  );
 }

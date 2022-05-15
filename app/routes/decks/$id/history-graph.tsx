@@ -9,6 +9,7 @@ import {
   ChevronsRight,
   List,
   MoreVertical,
+  Play,
 } from "react-feather";
 import { z } from "zod";
 import { Popover } from "../../../components/popover";
@@ -217,6 +218,15 @@ export function NavBarMenuComponent() {
                 className="menu menu-compact rounded p-3 shadow w-48 bg-base-100 text-base-content text-sm"
                 data-test="deck-menu-popover-floating"
               >
+                <li>
+                  <Link
+                    to={R["/decks/$id/practice"](deck.id)}
+                    onClick={() => setOpen(false)}
+                  >
+                    <Play />
+                    Practice
+                  </Link>
+                </li>
                 <li>
                   <Link
                     to={R["/decks/$id/history-graph"](deck.id)}
