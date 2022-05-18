@@ -136,7 +136,9 @@ export class PracticeSystem {
             `
             (
               __uniform__
-              + 0.1 * (queueType = 'LEARN') + 0.2 * (queueType = 'REVIEW')
+              + (queueType = 'REVIEW') * -10 * (RAND(__subQuery__.__seed__) <= 0.05)
+              + (queueType = 'LEARN' ) * -10 * (RAND(__subQuery__.__seed__) >  0.05) * (RAND(__subQuery__.__seed__) <= 0.2)
+              + (queueType = 'NEW'   ) * -10 *                                         (RAND(__subQuery__.__seed__) >  0.2)
               + LEAST(-0.5, 0.1 / (60 * 60 * 24 * 7) * (UNIX_TIMESTAMP(scheduledAt) - UNIX_TIMESTAMP(?)))
             )`,
             now
