@@ -123,8 +123,8 @@ export class PracticeSystem {
         .crossJoin(
           client.raw(
             // global seed `hash(hash(max(updatedAt)))` which satisfies a desired property:
-            // - a seed should be updated on each `createPracticeAction`
-            "(SELECT UNHEX(SHA1(SHA1(updatedAt))) as __seed__ FROM practiceEntries where deckId = ? ORDER BY updatedAt DESC LIMIT 1) as __subQuery__",
+            //   a seed should be updated on each `createPracticeAction`
+            "(SELECT UNHEX(SHA1(SHA1(updatedAt))) as __seed__, RAND(CAST(CONV(SUBSTRING(SHA1(updatedAt), 1, 8), 16, 10) as UNSIGNED)) as __seed_uniform__ FROM practiceEntries where deckId = ? ORDER BY updatedAt DESC LIMIT 1) as __subQuery__",
             deckId
           )
         )
@@ -136,9 +136,9 @@ export class PracticeSystem {
             `
             (
               __uniform__
-              + (queueType = 'REVIEW') * -10 * (RAND(__subQuery__.__seed__) <= 0.05)
-              + (queueType = 'LEARN' ) * -10 * (RAND(__subQuery__.__seed__) >  0.05) * (RAND(__subQuery__.__seed__) <= 0.2)
-              + (queueType = 'NEW'   ) * -10 *                                         (RAND(__subQuery__.__seed__) >  0.2)
+              + (queueType = 'NEW'   ) * -10 * (__subQuery__.__seed_uniform__ <= 0.80)
+              + (queueType = 'LEARN' ) * -10 * (__subQuery__.__seed_uniform__ >  0.80) * (__subQuery__.__seed_uniform__ <= 0.95)
+              + (queueType = 'REVIEW') * -10 *                                           (__subQuery__.__seed_uniform__ >  0.95)
               + LEAST(-0.5, 0.1 / (60 * 60 * 24 * 7) * (UNIX_TIMESTAMP(scheduledAt) - UNIX_TIMESTAMP(?)))
             )`,
             now
