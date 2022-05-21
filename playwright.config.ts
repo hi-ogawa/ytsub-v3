@@ -7,6 +7,7 @@ const config: PlaywrightTestConfig = {
     baseURL: "http://localhost:3001",
     actionTimeout: 10_000,
     navigationTimeout: 10_000,
+    trace: process.env.E2E_CLIENT_TRACE ? "on" : "off",
   },
   projects: [
     {
