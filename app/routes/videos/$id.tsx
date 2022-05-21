@@ -40,7 +40,6 @@ import { PageHandle } from "../../utils/page-handle";
 import { CaptionEntry } from "../../utils/types";
 import { toForm } from "../../utils/url-data";
 import {
-  YoutubeIframeApi,
   YoutubePlayer,
   YoutubePlayerOptions,
   stringifyTimestamp,
@@ -444,9 +443,7 @@ export function usePlayer({
 }) {
   const [loading, setLoading] = React.useState(true);
   const ref = React.useRef<HTMLDivElement>(null);
-  const api = useYoutubeIframeApi<YoutubeIframeApi>(null, {
-    onError,
-  });
+  const api = useYoutubeIframeApi(undefined, { onError });
 
   React.useEffect(() => {
     if (!api.isSuccess) return;

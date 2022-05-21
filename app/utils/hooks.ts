@@ -80,7 +80,7 @@ export function useHydrated() {
   return hydrated;
 }
 
-function createUseQuery<TQueryFnArg, TQueryFnData>(
+export function createUseQuery<TQueryFnArg, TQueryFnData>(
   key: any,
   queryFnWithArg: (arg: TQueryFnArg) => Promise<TQueryFnData>,
   defaultOptions?: Pick<
