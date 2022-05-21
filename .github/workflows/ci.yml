@@ -84,6 +84,7 @@ jobs:
           name: coverage-e2e
           path: coverage
       - uses: actions/upload-artifact@v3
+        if: always()
         with:
           name: test-results-e2e
           path: test-results
