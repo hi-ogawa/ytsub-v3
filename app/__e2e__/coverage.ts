@@ -9,10 +9,14 @@ import { sha256 } from "../utils/auth";
 export const test = testDefault.extend({
   page: async ({ page }, use, testInfo) => {
     if (process.env.E2E_CLIENT_LOG) {
-      const filename = `logs/e2e-client.${testInfo.workerIndex}.log`;
-      const fd = await fse.open(filename, "a");
       page.on("console", (msg) => {
-        fse.appendFileSync(fd, `[${msg.type()}] ${msg.text()}\n`);
+        console.log(
+          [
+            `e2e-client(${testInfo.workerIndex})`,
+            msg.type().toUpperCase(),
+            msg.text(),
+          ].join(" | ")
+        );
       });
     }
 

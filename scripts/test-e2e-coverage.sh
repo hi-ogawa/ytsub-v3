@@ -7,6 +7,7 @@ export E2E_NO_SERVER=1
 export E2E_COVERAGE_CLIENT=1
 
 log_file=logs/remix-coverage.log
+trap "cat ${log_file}" EXIT
 
 # run remix server with c8
 npm run dev:prepare
@@ -24,9 +25,6 @@ curl "http://localhost:$PORT/kill"
 
 # wait for c8 to create coverage
 wait "$coverage_pid"
-
-# print logs
-cat "$log_file"
 
 # print client coverage
 npx c8 report -o coverage/e2e-client -r text -r html --exclude build --exclude-after-remap --temp-directory coverage/e2e-client/tmp
