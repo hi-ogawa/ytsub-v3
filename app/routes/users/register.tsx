@@ -25,6 +25,7 @@ export const handle: PageHandle = {
 
 interface LoaderData {
   recaptchaKey: string;
+  recaptchaDisabled: boolean;
 }
 
 export const loader = makeLoader(Controller, async function () {
@@ -36,7 +37,10 @@ export const loader = makeLoader(Controller, async function () {
     });
     return redirect(R["/users/me"]);
   }
-  const res: LoaderData = { recaptchaKey: env.APP_RECAPTCHA_CLIENT_KEY };
+  const res: LoaderData = {
+    recaptchaKey: env.APP_RECAPTCHA_CLIENT_KEY,
+    recaptchaDisabled: env.APP_RECAPTCHA_DISABLED,
+  };
   return res;
 });
 
@@ -110,7 +114,7 @@ export const action = makeLoader(Controller, async function () {
 });
 
 export default function DefaultComponent() {
-  const { recaptchaKey }: LoaderData = useLoaderData();
+  const { recaptchaKey, recaptchaDisabled }: LoaderData = useLoaderData();
   const actionData: ActionData | undefined = useActionData();
   const [isValid, formProps] = useIsFormValid();
   const recaptchaApi = useRecaptchaApi(recaptchaKey);
@@ -129,10 +133,15 @@ export default function DefaultComponent() {
           const form = e.currentTarget;
           assert(recaptchaApi.data);
           assert(recaptchaTokenInputRef.current);
-          const recaptchaToken = await recaptchaApi.data.execute(recaptchaKey, {
-            action: "submit",
-          });
-          recaptchaTokenInputRef.current.value = recaptchaToken;
+          if (!recaptchaDisabled) {
+            const recaptchaToken = await recaptchaApi.data.execute(
+              recaptchaKey,
+              {
+                action: "submit",
+              }
+            );
+            recaptchaTokenInputRef.current.value = recaptchaToken;
+          }
           form.submit();
         }}
       >
