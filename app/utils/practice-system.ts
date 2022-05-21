@@ -112,30 +112,34 @@ export class PracticeSystem {
     if (randomMode) {
       const result: PracticeEntryTable = await Q.practiceEntries()
         .select("practiceEntries.*", {
-          // uniform random with "id" and "updatedAt"
+          // uniform random with "id" and "updatedAt" computed by
+          //   rand(hash(id) ^ hash(updatedAt) ^ seed)
           __uniform__: client.raw(
-            "RAND(CAST(CONV(SUBSTRING(HEX(UNHEX(SHA1(SHA1(__subQuery__.__seed__))) ^ UNHEX(SHA1(id)) ^ UNHEX(SHA1(updatedAt))), 1, 8), 16, 10) as UNSIGNED))"
+            "RAND(CAST(CONV(SUBSTRING(HEX(UNHEX(SHA1(id)) ^ UNHEX(SHA1(updatedAt)) ^ __subQuery__.__seed__), 1, 8), 16, 10) as UNSIGNED))"
           ),
         })
         .where("practiceEntries.deckId", deckId)
         .where("practiceEntries.scheduledAt", "<=", now)
         .crossJoin(
           client.raw(
-            // global seed `MAX(updatedAt)`, which gets updated on each `createPracticeAction`
-            "(SELECT updatedAt as __seed__ FROM practiceEntries where deckId = ? ORDER BY updatedAt DESC LIMIT 1) as __subQuery__",
+            // global seed `hash(hash(max(updatedAt)))` which satisfies a desired property:
+            //   a seed should be updated on each `createPracticeAction`
+            "(SELECT UNHEX(SHA1(SHA1(updatedAt))) as __seed__, RAND(CAST(CONV(SUBSTRING(SHA1(updatedAt), 1, 8), 16, 10) as UNSIGNED)) as __seed_uniform__ FROM practiceEntries where deckId = ? ORDER BY updatedAt DESC LIMIT 1) as __subQuery__",
             deckId
           )
         )
         .orderByRaw(
-          // scale the distribution based on
+          // tweak the distribution based on
           // - queueType
-          // - scheduledAt (normal mode is almost equivalent to having only this factor)
+          // - scheduledAt
           client.raw(
             `
             (
               __uniform__
-              * (0.5 * (queueType = 'NEW') + 0.8 * (queueType = 'LEARN') + 1.0 * (queueType = 'REVIEW'))
-              * (1.0 + 0.5 * LEAST(-1, GREATEST(0, ((UNIX_TIMESTAMP(scheduledAt) - UNIX_TIMESTAMP(?)) / (60 * 60 * 24 * 5)))))
+              + (queueType = 'NEW'   ) * -10 * (__subQuery__.__seed_uniform__ <= 0.80)
+              + (queueType = 'LEARN' ) * -10 * (__subQuery__.__seed_uniform__ >  0.80) * (__subQuery__.__seed_uniform__ <= 0.95)
+              + (queueType = 'REVIEW') * -10 *                                           (__subQuery__.__seed_uniform__ >  0.95)
+              + LEAST(-0.5, 0.1 / (60 * 60 * 24 * 7) * (UNIX_TIMESTAMP(scheduledAt) - UNIX_TIMESTAMP(?)))
             )`,
             now
           )
