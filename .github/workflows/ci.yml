@@ -78,7 +78,7 @@ jobs:
       - if: steps.cache-playwright.outputs.cache-hit != 'true'
         run: npx playwright install --with-deps
       - run: make docker/up db/reset/test
-      - run: npm run test-e2e:coverage
+      - run: APP_RECAPTCHA_DISABLED=1 npm run test-e2e:coverage
       - uses: actions/upload-artifact@v3
         with:
           name: coverage-e2e
