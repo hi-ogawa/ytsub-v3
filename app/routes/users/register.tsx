@@ -135,10 +135,7 @@ export default function DefaultComponent() {
           assert(recaptchaTokenInputRef.current);
           if (!recaptchaDisabled) {
             const recaptchaToken = await recaptchaApi.data.execute(
-              recaptchaKey,
-              {
-                action: "submit",
-              }
+              recaptchaKey
             );
             recaptchaTokenInputRef.current.value = recaptchaToken;
           }
@@ -217,7 +214,7 @@ export default function DefaultComponent() {
 
 interface RecaptchaApi {
   ready: (callback: () => void) => void;
-  execute: (key: string, options: { action: "submit" }) => Promise<string>;
+  execute: (key: string) => Promise<string>;
 }
 
 async function loadRecaptchaApi(siteKey: string): Promise<RecaptchaApi> {
