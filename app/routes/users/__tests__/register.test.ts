@@ -1,10 +1,19 @@
-import { beforeEach, describe, expect, it } from "vitest";
+import { cloneDeep } from "lodash";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { Q } from "../../../db/models";
 import { assert } from "../../../misc/assert";
 import { getSessionUser } from "../../../utils/auth";
 import { getSession } from "../../../utils/session.server";
 import { testLoader } from "../../__tests__/helper";
 import { action } from "../register";
+
+// disable recaptcha during this tests
+vi.mock("../../../misc/env.server", async () => {
+  let actual: any = await vi.importActual("../../../misc/env.server");
+  actual = cloneDeep(actual);
+  actual.env.APP_RECAPTCHA_DISABLED = true;
+  return actual;
+});
 
 describe("register.action", () => {
   beforeEach(async () => {
