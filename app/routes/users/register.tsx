@@ -131,9 +131,9 @@ export default function DefaultComponent() {
         onSubmit={async (e) => {
           e.preventDefault();
           const form = e.currentTarget;
-          assert(recaptchaApi.data);
-          assert(recaptchaTokenInputRef.current);
           if (!recaptchaDisabled) {
+            assert(recaptchaApi.data);
+            assert(recaptchaTokenInputRef.current);
             const recaptchaToken = await recaptchaApi.data.execute(
               recaptchaKey
             );
