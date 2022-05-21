@@ -18,6 +18,7 @@ describe("register.action", () => {
         username,
         password: "pass",
         passwordConfirmation: "pass",
+        recaptchaToken: "",
       };
       const res = await testLoader(action, { form: data });
       const found = await Q.users().where("username", data.username).first();
@@ -42,6 +43,7 @@ describe("register.action", () => {
         username: "r@@t",
         password: "pass",
         passwordConfirmation: "pass",
+        recaptchaToken: "",
       };
       const res = await testLoader(action, { form: data });
       const resJson = await res.json();
@@ -65,6 +67,7 @@ describe("register.action", () => {
         username: "root",
         password: "pass",
         passwordConfirmation: "ssap",
+        recaptchaToken: "",
       };
       const res = await testLoader(action, { form: data });
       const resJson = await res.json();
@@ -88,6 +91,7 @@ describe("register.action", () => {
         username: "root",
         password: "pass",
         passwordConfirmation: "pass",
+        recaptchaToken: "",
       };
       {
         const res = await testLoader(action, { form: data });

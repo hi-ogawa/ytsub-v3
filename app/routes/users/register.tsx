@@ -49,6 +49,11 @@ interface ActionData {
 }
 
 async function verifyRecaptchaToken(token: string): Promise<boolean> {
+  // for loader unit tests
+  if (env.APP_RECAPTCHA_DISABLED) {
+    return true;
+  }
+
   // https://developers.google.com/recaptcha/docs/verify
   const url = "https://www.google.com/recaptcha/api/siteverify";
   const payload = {
@@ -94,7 +99,7 @@ export const action = makeLoader(Controller, async function () {
   try {
     const user = await register(parsed.data);
     signinSession(this.session, user);
-    this.flash({ content: "Succesfully registered", variant: "success" });
+    this.flash({ content: "Successfully registered", variant: "success" });
     return redirect(R["/"]);
   } catch (e) {
     if (e instanceof AppError) {
