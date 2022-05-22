@@ -7,7 +7,7 @@ export E2E_NO_SERVER=1
 export E2E_COVERAGE_CLIENT=1
 
 log_file=logs/remix-coverage.log
-trap "cat ${log_file}" EXIT
+trap 'cat "${log_file}"' EXIT
 
 # run remix server with c8
 npm run dev:prepare
