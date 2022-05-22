@@ -1,6 +1,6 @@
 import { omit } from "lodash";
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
-import { assert } from "../../misc/assert";
+import { assertOk } from "../../misc/assert-ok";
 import { getSchema } from "../../misc/cli";
 import { restoreDump } from "../../misc/test-setup-global-e2e";
 import { client } from "../client.server";
@@ -26,7 +26,7 @@ describe("models-basic", () => {
     };
     const [id] = await Q.users().insert(data);
     const res = await Q.users().where("id", id).first();
-    assert(res);
+    assertOk(res);
     expect(omit(res, ["id", "createdAt", "updatedAt"])).toEqual(data);
   });
 
@@ -57,8 +57,8 @@ describe("models-basic", () => {
       '"select count(0) as `total` from `users` limit ?"'
     );
     const res = await query;
-    assert(res);
-    assert(typeof res.total === "number");
+    assertOk(res);
+    assertOk(typeof res.total === "number");
   });
 
   it("deleteOrphans", async () => {

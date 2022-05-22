@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { Q } from "../../db/models";
-import { assert } from "../../misc/assert";
+import { assertOk } from "../../misc/assert-ok";
 import { AppError } from "../../utils/errors";
 import { action } from "../bookmarks/new";
 import { testLoader, useUserVideo } from "./helper";
@@ -19,16 +19,16 @@ describe("bookmarks/new.action", () => {
       offset: 8,
     };
     const res = await testLoader(action, { form: data, transform: signin });
-    assert(res instanceof Response);
+    assertOk(res instanceof Response);
 
     const resJson = await res.json();
     expect(resJson.success).toBe(true);
 
     const id = resJson.data.id;
-    assert(typeof id === "number");
+    assertOk(typeof id === "number");
 
     const found = await Q.bookmarkEntries().where("id", id).first();
-    assert(found);
+    assertOk(found);
     expect(found.text).toBe(data.text);
   });
 

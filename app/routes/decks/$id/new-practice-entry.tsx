@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { Q } from "../../../db/models";
-import { assert } from "../../../misc/assert";
+import { assertOk } from "../../../misc/assert-ok";
 import { Controller, makeLoader } from "../../../utils/controller-utils";
 import { Result, isNotNil } from "../../../utils/misc";
 import { PracticeSystem } from "../../../utils/practice-system";
@@ -39,7 +39,7 @@ async function actionImpl(this: Controller): Promise<NewPracticeEntryResponse> {
   }
 
   const { videoId, now } = parsed.data;
-  assert(videoId);
+  assertOk(videoId);
 
   const bookmarkEntries = await Q.bookmarkEntries()
     .select("bookmarkEntries.*")

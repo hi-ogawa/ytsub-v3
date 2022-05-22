@@ -21,7 +21,7 @@ import {
 } from "../../../components/practice-history-chart";
 import { client } from "../../../db/client.server";
 import { DeckTable, PracticeQueueType, Q } from "../../../db/models";
-import { assert } from "../../../misc/assert";
+import { assertOk } from "../../../misc/assert-ok";
 import { R } from "../../../misc/routes";
 import { Controller, makeLoader } from "../../../utils/controller-utils";
 import { useDeserialize, useHydrated } from "../../../utils/hooks";
@@ -67,7 +67,7 @@ interface LoaderData {
 function formatYmd(date: Date, timezone: string): string {
   // date +%Y-%m-%d
   // => 2022-05-14
-  assert(timezone.match(/^[+-]\d{2}:\d{2}$/));
+  assertOk(timezone.match(/^[+-]\d{2}:\d{2}$/));
   const tzsign = timezone[0] === "+" ? 1 : -1;
   const [tzh, tzm] = timezone.slice(1).split(":").map(Number);
   const tzoffset = tzsign * (tzh * 60 + tzm);

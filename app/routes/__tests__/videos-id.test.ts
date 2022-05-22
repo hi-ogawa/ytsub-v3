@@ -1,7 +1,7 @@
 import { omit } from "lodash";
 import { describe, expect, it } from "vitest";
 import { CaptionEntryTable, Q, VideoTable } from "../../db/models";
-import { assert } from "../../misc/assert";
+import { assertOk } from "../../misc/assert-ok";
 import { deserialize } from "../../utils/controller-utils";
 import { action, loader } from "../videos/$id";
 import { useUserVideo, useVideo } from "./helper";
@@ -14,7 +14,7 @@ describe("videos/id.loader", () => {
     const res = await testLoader(loader, {
       params: { id: String(video().id) },
     });
-    assert(res instanceof Response);
+    assertOk(res instanceof Response);
     const resJson: { video: VideoTable; captionEntries: CaptionEntryTable[] } =
       deserialize(await res.json());
     expect(resJson.video.videoId).toBe("EnPYXckiUVg");

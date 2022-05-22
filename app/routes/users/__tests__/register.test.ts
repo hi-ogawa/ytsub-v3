@@ -1,7 +1,7 @@
 import { cloneDeep } from "lodash";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { Q } from "../../../db/models";
-import { assert } from "../../../misc/assert";
+import { assertOk } from "../../../misc/assert-ok";
 import type * as env from "../../../misc/env.server";
 import { getSessionUser } from "../../../utils/auth";
 import { getSession } from "../../../utils/session.server";
@@ -32,11 +32,11 @@ describe("register.action", () => {
       };
       const res = await testLoader(action, { form: data });
       const found = await Q.users().where("username", data.username).first();
-      assert(found);
+      assertOk(found);
       expect(found.username).toBe(username);
 
       // redirect to root
-      assert(res instanceof Response);
+      assertOk(res instanceof Response);
       expect(res.status).toBe(302);
       expect(res.headers.get("location")).toBe("/");
 
@@ -105,7 +105,7 @@ describe("register.action", () => {
       };
       {
         const res = await testLoader(action, { form: data });
-        assert(res instanceof Response);
+        assertOk(res instanceof Response);
         expect(res.status).toBe(302);
       }
       {

@@ -1,7 +1,7 @@
 import { Form, Link, useActionData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import * as React from "react";
-import { assert } from "../../misc/assert";
+import { assertOk } from "../../misc/assert-ok";
 import { PUBLIC, SECRET } from "../../misc/env.server";
 import { R } from "../../misc/routes";
 import {
@@ -126,8 +126,8 @@ export default function DefaultComponent() {
           e.preventDefault();
           const form = e.currentTarget;
           if (!APP_RECAPTCHA_DISABLED) {
-            assert(recaptchaApi.data);
-            assert(recaptchaTokenInputRef.current);
+            assertOk(recaptchaApi.data);
+            assertOk(recaptchaTokenInputRef.current);
             const recaptchaToken = await recaptchaApi.data.execute(
               APP_RECAPTCHA_CLIENT_KEY
             );
@@ -220,7 +220,7 @@ async function loadRecaptchaApi(siteKey: string): Promise<RecaptchaApi> {
     `https://www.google.com/recaptcha/api.js?render=${siteKey}`
   );
   const api = (window as any).grecaptcha as RecaptchaApi;
-  assert(api);
+  assertOk(api);
   await new Promise((resolve) => api.ready(() => resolve(undefined)));
   return api;
 }

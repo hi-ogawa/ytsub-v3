@@ -20,7 +20,7 @@ import {
   VideoTable,
   normalizeRelation,
 } from "../../../db/models";
-import { assert } from "../../../misc/assert";
+import { assertOk } from "../../../misc/assert-ok";
 import { R } from "../../../misc/routes";
 import { Controller, makeLoader } from "../../../utils/controller-utils";
 import { useDeserialize } from "../../../utils/hooks";
@@ -82,9 +82,9 @@ export const loader = makeLoader(Controller, async function () {
         .where("bookmarkEntries.id", practiceEntry.bookmarkEntryId),
       ["bookmarkEntries", "captionEntries", "videos"]
     );
-    assert(bookmarkEntries[0]);
-    assert(captionEntries[0]);
-    assert(videos[0]);
+    assertOk(bookmarkEntries[0]);
+    assertOk(captionEntries[0]);
+    assertOk(videos[0]);
     data = {
       finished: false,
       practiceEntry,

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { Q } from "../../db/models";
-import { assert } from "../../misc/assert";
+import { assertOk } from "../../misc/assert-ok";
 import { useUserVideo } from "../../routes/__tests__/helper";
 import { PracticeSystem } from "../practice-system";
 
@@ -21,7 +21,7 @@ describe("PracticeSystem", () => {
       name: __filename,
     });
     const deck = await Q.decks().where({ id: deckId }).first();
-    assert(deck);
+    assertOk(deck);
 
     // TODO: move to `use...` helpers
     const [bookmarkEntryId] = await Q.bookmarkEntries().insert({
@@ -35,7 +35,7 @@ describe("PracticeSystem", () => {
     const bookmarkEntry = await Q.bookmarkEntries()
       .where({ id: bookmarkEntryId })
       .first();
-    assert(bookmarkEntry);
+    assertOk(bookmarkEntry);
 
     // instantiate practice system
     const system = new PracticeSystem(user(), deck);
@@ -45,11 +45,11 @@ describe("PracticeSystem", () => {
       [bookmarkEntry],
       NOW
     );
-    assert(practiceEntryId);
+    assertOk(practiceEntryId);
     const practiceEntry = await Q.practiceEntries()
       .where({ id: practiceEntryId })
       .first();
-    assert(practiceEntry);
+    assertOk(practiceEntry);
 
     // receive next practice
     const nextPracticeEntry = await system.getNextPracticeEntry(NOW);
@@ -64,7 +64,7 @@ describe("PracticeSystem", () => {
     const practiceAction = await Q.practiceActions()
       .where({ id: practiceActionId })
       .first();
-    assert(practiceAction);
+    assertOk(practiceAction);
     expect(practiceAction).toMatchObject({
       queueType: "NEW",
       actionType: "GOOD",
@@ -97,7 +97,7 @@ describe("PracticeSystem", () => {
       randomMode: true,
     });
     const deck = await Q.decks().where({ id: deckId }).first();
-    assert(deck);
+    assertOk(deck);
 
     // instantiate practice system
     const system = new PracticeSystem(user(), deck);

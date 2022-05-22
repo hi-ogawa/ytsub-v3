@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { assert } from "../../misc/assert";
+import { assertOk } from "../../misc/assert-ok";
 import { loader } from "../decks/index";
 import { testLoader, useUser } from "./helper";
 
@@ -11,7 +11,7 @@ describe("decks/index.loader", () => {
 
   it("basic", async () => {
     const res = await testLoader(loader, { transform: signin });
-    assert(res instanceof Response);
+    assertOk(res instanceof Response);
     expect(await res.json()).toMatchInlineSnapshot(`
       {
         "json": {

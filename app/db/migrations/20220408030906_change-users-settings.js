@@ -45,10 +45,11 @@ const testUp = {
     `);
   },
   after: async function (knex) {
+    const assert = await import("assert/strict");
     const [rows] = await knex.raw(
       `SELECT language1, language2 FROM users ORDER BY username`
     );
-    require("assert").deepStrictEqual(rows, [
+    assert.deepEqual(rows, [
       { language1: null, language2: null },
       { language1: "fr", language2: null },
       { language1: "fr", language2: "en" },
@@ -67,10 +68,11 @@ const testDown = {
     `);
   },
   after: async function (knex) {
+    const assert = await import("assert/strict");
     const [rows] = await knex.raw(
       `SELECT settings FROM users ORDER BY username`
     );
-    require("assert").deepStrictEqual(rows, [
+    assert.deepEqual(rows, [
       { settings: { language1: null, language2: null } },
       { settings: { language1: "fr", language2: null } },
       { settings: { language1: "fr", language2: "en" } },

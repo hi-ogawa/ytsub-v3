@@ -1,7 +1,7 @@
 import type { Page, test as testDefault } from "@playwright/test";
 import { installGlobals } from "@remix-run/node";
 import { Q, UserTable } from "../db/models";
-import { assert } from "../misc/assert";
+import { assertOk } from "../misc/assert-ok";
 import { useUserImpl } from "../misc/helper";
 import { createUserCookie } from "../utils/auth";
 
@@ -44,7 +44,7 @@ export function useDevUserE2e(test: typeof testDefault) {
 
   test.beforeAll(async () => {
     const maybeUser = await Q.users().where("username", "dev").first();
-    assert(maybeUser);
+    assertOk(maybeUser);
     user = maybeUser;
 
     const rawCookie = await createUserCookie(user);
