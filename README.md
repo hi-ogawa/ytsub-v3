@@ -9,11 +9,17 @@ npm run dev
 # lint
 npm run lint
 
-# deploy
+# deploy (netlify)
 netlify --version # netlify-cli/9.13.3 linux-x64 node-v16.15.0 (installed via `volta install netlify-cli@9.13.3`)
 netlify sites:create --name ytsub-v3-hiro18181
 netlify link --name ytsub-v3-hiro18181
 npm run netlify:build:deploy:production
+
+# deploy (vercel)
+vercel --version # Vercel CLI 24.2.4
+vercel projects add ytsub-v3-hiro18181
+vercel link -p ytsub-v3-hiro18181
+npm run vercel:build:deploy:production
 
 # testing (vitest)
 npm run test
