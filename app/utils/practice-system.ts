@@ -67,13 +67,6 @@ export type DeckPracticeStatistics = Record<
   Record<"daily" | "total", number>
 >;
 
-// TODO(perf)
-// - cache counters
-// - jitter something?
-//   - must be deterministic
-//   - which queue to pick in `getNextPracticeEntry`
-//   - `sheduledAt` in `createPracticeEntries`
-
 export class PracticeSystem {
   constructor(private user: UserTable, private deck: DeckTable) {}
 
@@ -108,8 +101,52 @@ export class PracticeSystem {
   async getNextPracticeEntry(
     now: Date = new Date()
   ): Promise<PracticeEntryTable | undefined> {
-    const { id: deckId, newEntriesPerDay, reviewsPerDay } = this.deck;
+    const {
+      id: deckId,
+      newEntriesPerDay,
+      reviewsPerDay,
+      randomMode,
+    } = this.deck;
     const yesterday = Timedelta.make({ days: 1 }).rsub(now);
+
+    if (randomMode) {
+      const result: PracticeEntryTable = await Q.practiceEntries()
+        .select("practiceEntries.*", {
+          // uniform random with "id" and "updatedAt" computed by
+          //   rand(hash(id) ^ hash(updatedAt) ^ seed)
+          __uniform__: client.raw(
+            "RAND(CAST(CONV(SUBSTRING(HEX(UNHEX(SHA1(id)) ^ UNHEX(SHA1(updatedAt)) ^ __subQuery__.__seed__), 1, 8), 16, 10) as UNSIGNED))"
+          ),
+        })
+        .where("practiceEntries.deckId", deckId)
+        .where("practiceEntries.scheduledAt", "<=", now)
+        .crossJoin(
+          client.raw(
+            // global seed `hash(hash(max(updatedAt)))` which satisfies a desired property:
+            //   a seed should be updated on each `createPracticeAction`
+            "(SELECT UNHEX(SHA1(SHA1(updatedAt))) as __seed__, RAND(CAST(CONV(SUBSTRING(SHA1(updatedAt), 1, 8), 16, 10) as UNSIGNED)) as __seed_uniform__ FROM practiceEntries where deckId = ? ORDER BY updatedAt DESC LIMIT 1) as __subQuery__",
+            deckId
+          )
+        )
+        .orderByRaw(
+          // tweak the distribution based on
+          // - queueType
+          // - scheduledAt
+          client.raw(
+            `
+            (
+              __uniform__
+              + (queueType = 'NEW'   ) * -10 * (__subQuery__.__seed_uniform__ <= 0.80)
+              + (queueType = 'LEARN' ) * -10 * (__subQuery__.__seed_uniform__ >  0.80) * (__subQuery__.__seed_uniform__ <= 0.95)
+              + (queueType = 'REVIEW') * -10 *                                           (__subQuery__.__seed_uniform__ >  0.95)
+              + LEAST(-0.5, 0.1 / (60 * 60 * 24 * 7) * (UNIX_TIMESTAMP(scheduledAt) - UNIX_TIMESTAMP(?)))
+            )`,
+            now
+          )
+        )
+        .first();
+      return result;
+    }
 
     const [actions, entries] = await Promise.all([
       // TODO(refactor): copeid from `getStatistics`

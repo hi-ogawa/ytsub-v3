@@ -8,6 +8,18 @@ import { sha256 } from "../utils/auth";
 // - https://playwright.dev/docs/api/class-coverage
 export const test = testDefault.extend({
   page: async ({ page }, use, testInfo) => {
+    if (process.env.E2E_CLIENT_LOG) {
+      page.on("console", (msg) => {
+        console.log(
+          [
+            `e2e-client(${testInfo.workerIndex})`,
+            msg.type().toUpperCase(),
+            msg.text(),
+          ].join(" | ")
+        );
+      });
+    }
+
     if (!process.env.E2E_COVERAGE_CLIENT) {
       await use(page);
       return;

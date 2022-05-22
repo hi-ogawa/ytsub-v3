@@ -11,7 +11,7 @@ jobs:
           version: "6.29.1"
       - uses: actions/setup-node@v2
         with:
-          node-version: "16.14.0"
+          node-version: "16.15.0"
       - run: pnpm run install-with-patch -- --frozen-lockfile
       - run: npm run lint:check
 
@@ -24,7 +24,7 @@ jobs:
           version: "6.29.1"
       - uses: actions/setup-node@v2
         with:
-          node-version: "16.14.0"
+          node-version: "16.15.0"
       - run: pnpm run install-with-patch -- --frozen-lockfile
       - run: npm run tsc
 
@@ -37,7 +37,7 @@ jobs:
           version: "6.29.1"
       - uses: actions/setup-node@v2
         with:
-          node-version: "16.14.0"
+          node-version: "16.15.0"
       - run: pnpm run install-with-patch -- --frozen-lockfile
       - run: npm run netlify:build
 
@@ -50,7 +50,7 @@ jobs:
           version: "6.29.1"
       - uses: actions/setup-node@v2
         with:
-          node-version: "16.14.0"
+          node-version: "16.15.0"
       - run: pnpm run install-with-patch -- --frozen-lockfile
       - run: make docker/up db/reset/test
       - run: npm run test:coverage
@@ -68,7 +68,7 @@ jobs:
           version: "6.29.1"
       - uses: actions/setup-node@v2
         with:
-          node-version: "16.14.0"
+          node-version: "16.15.0"
       - run: pnpm run install-with-patch -- --frozen-lockfile
       - uses: actions/cache@v3
         id: cache-playwright
@@ -78,11 +78,16 @@ jobs:
       - if: steps.cache-playwright.outputs.cache-hit != 'true'
         run: npx playwright install --with-deps
       - run: make docker/up db/reset/test
-      - run: npm run test-e2e:coverage
+      - run: APP_RECAPTCHA_DISABLED=1 E2E_CLIENT_TRACE=1 npm run test-e2e:coverage
       - uses: actions/upload-artifact@v3
         with:
           name: coverage-e2e
           path: coverage
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: test-results-e2e
+          path: test-results
 
   test-migrations:
     runs-on: ubuntu-20.04
@@ -93,7 +98,7 @@ jobs:
           version: "6.29.1"
       - uses: actions/setup-node@v2
         with:
-          node-version: "16.14.0"
+          node-version: "16.15.0"
       - run: pnpm run install-with-patch -- --frozen-lockfile
       - run: make docker/up db/recreate
       - run: npm run cli -- db:test-migrations --unit-test
@@ -111,7 +116,7 @@ jobs:
           version: "6.29.1"
       - uses: actions/setup-node@v2
         with:
-          node-version: "16.14.0"
+          node-version: "16.15.0"
       - run: pnpm run install-with-patch -- --frozen-lockfile
       - run: export NODE_ENV=test && npm run dev:prepare && npx remix build --sourcemap
       - uses: actions/download-artifact@v3

@@ -76,11 +76,11 @@ export function useIsFormValid() {
 let _hydrated = false;
 export function useHydrated() {
   const [hydrated, setHydrated] = React.useState(_hydrated);
-  React.useEffect(() => setHydrated((_hydrated = false)), []);
+  React.useEffect(() => setHydrated((_hydrated = true)), []);
   return hydrated;
 }
 
-function createUseQuery<TQueryFnArg, TQueryFnData>(
+export function createUseQuery<TQueryFnArg, TQueryFnData>(
   key: any,
   queryFnWithArg: (arg: TQueryFnArg) => Promise<TQueryFnData>,
   defaultOptions?: Pick<

@@ -1,13 +1,24 @@
 import { expect } from "@playwright/test";
+import { sha256 } from "../utils/auth";
 import { test } from "./coverage";
 import { useUserE2E } from "./helper";
 
 test("/users/register", async ({ page }) => {
   await page.goto("/users/register");
-  // TODO: test registration
-  await expect(
-    page.locator("data-test=register-form >> button[type=submit]")
-  ).toBeDisabled();
+
+  // submit form
+  // prettier-ignore
+  {
+    const username = "user-" + sha256(__filename + "/users/register", "hex").slice(0, 8);
+    await page.locator('data-test=register-form >> input[name=username]').fill(username);
+    await page.locator('data-test=register-form >> input[name=password]').fill('password');
+    await page.locator('data-test=register-form >> input[name=passwordConfirmation]').fill('password');
+    await page.locator('data-test=register-form >> button[type=submit]').click();
+  }
+
+  // navgiate to root
+  await expect(page).toHaveURL("/");
+  await page.waitForSelector(`"Successfully registered"`);
 });
 
 test("/users/signin", async ({ page }) => {

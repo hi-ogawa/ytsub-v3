@@ -41,7 +41,7 @@ export const action = makeLoader(Controller, async function () {
     const user = await verifySignin(parsed.data);
     signinSession(this.session, user);
     this.flash({
-      content: `Succesfully signed in as '${user.username}'`,
+      content: `Successfully signed in as '${user.username}'`,
       variant: "success",
     });
     return redirect(R["/"]);

@@ -1,10 +1,20 @@
-import { beforeEach, describe, expect, it } from "vitest";
+import { cloneDeep } from "lodash";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { Q } from "../../../db/models";
 import { assert } from "../../../misc/assert";
+import type * as env from "../../../misc/env.server";
 import { getSessionUser } from "../../../utils/auth";
 import { getSession } from "../../../utils/session.server";
 import { testLoader } from "../../__tests__/helper";
 import { action } from "../register";
+
+// disable recaptcha during this tests
+vi.mock("../../../misc/env.server", async () => {
+  let actual: typeof env = await vi.importActual("../../../misc/env.server");
+  actual = cloneDeep(actual);
+  actual.PUBLIC.APP_RECAPTCHA_DISABLED = "1";
+  return actual;
+});
 
 describe("register.action", () => {
   beforeEach(async () => {
@@ -18,6 +28,7 @@ describe("register.action", () => {
         username,
         password: "pass",
         passwordConfirmation: "pass",
+        recaptchaToken: "",
       };
       const res = await testLoader(action, { form: data });
       const found = await Q.users().where("username", data.username).first();
@@ -42,6 +53,7 @@ describe("register.action", () => {
         username: "r@@t",
         password: "pass",
         passwordConfirmation: "pass",
+        recaptchaToken: "",
       };
       const res = await testLoader(action, { form: data });
       const resJson = await res.json();
@@ -65,6 +77,7 @@ describe("register.action", () => {
         username: "root",
         password: "pass",
         passwordConfirmation: "ssap",
+        recaptchaToken: "",
       };
       const res = await testLoader(action, { form: data });
       const resJson = await res.json();
@@ -88,6 +101,7 @@ describe("register.action", () => {
         username: "root",
         password: "pass",
         passwordConfirmation: "pass",
+        recaptchaToken: "",
       };
       {
         const res = await testLoader(action, { form: data });

@@ -10,9 +10,7 @@ test.describe("decks", () => {
 
     await page.goto("/decks");
 
-    await page.locator('[data-test="decks-menu"]').click();
-
-    await page.locator("text=New deck").click();
+    await page.locator("data-test=new-deck-link").click();
 
     await expect(page).toHaveURL("/decks/new");
 
@@ -63,7 +61,7 @@ test.describe("decks", () => {
     );
   });
 
-  test("show-deck => pagination", async ({ page }) => {
+  test("show-deck => pagination => deck-history", async ({ page }) => {
     await signin(page);
     await page.goto("/decks");
 
@@ -74,5 +72,12 @@ test.describe("decks", () => {
     // navigate pagination
     await page.locator("data-test=pagination >> a >> nth=2").click();
     await expect(page).toHaveURL(/\/decks\/\d+\?perPage=20&page=2$/);
+
+    // navigate to "/decks/$id/history"
+    await page.locator("data-test=deck-menu-popover-reference").click();
+    await page
+      .locator("data-test=deck-menu-popover-floating >> text=History")
+      .click();
+    await expect(page).toHaveURL(/\/decks\/\d+\/history-graph$/);
   });
 });

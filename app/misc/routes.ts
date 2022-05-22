@@ -24,6 +24,8 @@ export const R = {
   "/decks/$id?index": (id: number) => `/decks/${id}?index`,
   "/decks/$id/edit": (id: number) => `/decks/${id}/edit`,
   "/decks/$id/practice": (id: number) => `/decks/${id}/practice`,
+  "/decks/$id/history": (id: number) => `/decks/${id}/history`,
+  "/decks/$id/history-graph": (id: number) => `/decks/${id}/history-graph`,
   "/decks/$id/new-practice-entry": (id: number) => `/decks/${id}/new-practice-entry`,
   "/decks/$id/new-practice-action": (id: number) => `/decks/${id}/new-practice-action`,
 };
