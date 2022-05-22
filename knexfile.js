@@ -1,12 +1,3 @@
-const NODE_ENV = process.env.NODE_ENV ?? "development";
-
-function env(key) {
-  if (process.env.APP_DEFINE_STAGING) {
-    return process.env[`APP_STAGING_MYSQL_${key.toUpperCase()}`];
-  }
-  return process.env[`APP_MYSQL_${key.toUpperCase()}`];
-}
-
 /** @type {import("knex").Knex.Config>} */
 module.exports = {
   // statically require knex dialect so that esbuild can bundle it
@@ -14,12 +5,12 @@ module.exports = {
   client: require("knex/lib/dialects/mysql2"),
   // prettier-ignore
   connection: {
-    host:     env("host")     ?? "localhost",
-    port:     env("port")     ?? "3306",
-    user:     env("user")     ?? "root",
-    password: env("password") ?? "password",
-    database: env("database") ?? `ytsub_${NODE_ENV}`,
-    ssl:      env("ssl") === "true" ? {} : undefined,
+    host:     process.env.APP_MYSQL_HOST     ?? "localhost",
+    port:     process.env.APP_MYSQL_PORT     ?? "3306",
+    user:     process.env.APP_MYSQL_USER     ?? "root",
+    password: process.env.APP_MYSQL_PASSWORD ?? "password",
+    database: process.env.APP_MYSQL_DATABASE ?? `ytsub_${process.env.NODE_ENV ?? "development"}`,
+    ssl:      process.env.APP_MYSQL_SSL === "true" ? {} : undefined,
     multipleStatements: true,
     timezone: "+00:00", // planetscale and development mysql image have UTC localtime
   },
