@@ -3,7 +3,9 @@
 /.cache
 /.netlify
 /.vercel
+/.env.staging
 /.env.staging.sh
+/.env.production
 /.env.production.sh
 /coverage
 /test-results
