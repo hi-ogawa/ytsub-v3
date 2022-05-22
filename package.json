@@ -36,7 +36,7 @@
     "netlify:build:deploy:staging": "APP_DEFINE_STAGING=1 npm run netlify:build && netlify deploy",
     "netlify:build:deploy:production": "npm run netlify:build && netlify deploy --prod",
     "vercel:build": "bash scripts/vercel.sh",
-    "vercel:build:deploy:staging": "APP_DEFINE_STAGING=1 npm run vercel:build && vercel deploy build/remix/production/vercel",
+    "vercel:build:deploy:staging": "npm run vercel:build && vercel deploy build/remix/production/vercel",
     "vercel:build:deploy:production": "npm run vercel:build && vercel deploy build/remix/production/vercel --prod",
     "cli": "node --require esbuild-register app/misc/cli.ts",
     "cli:production": "eval $(bash .env.production.sh) && node --require esbuild-register app/misc/cli.ts",
