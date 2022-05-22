@@ -4,6 +4,10 @@ const env = process.env.NODE_ENV ?? "development";
 module.exports = {
   serverBuildPath: `build/remix/${env}/server/index.js`,
   assetsBuildDirectory: `build/remix/${env}/public/build`, // @remix-run/serve is patched to serve this directory
-  server: process.env.BUILD_NETLIFY ? "./app/misc/netlify.ts" : undefined,
+  server: process.env.BUILD_VERCEL
+    ? "./app/misc/vercel.ts"
+    : process.env.BUILD_NETLIFY
+    ? "./app/misc/netlify.ts"
+    : undefined,
   ignoredRouteFiles: ["**/__tests__/**/*"],
 };
