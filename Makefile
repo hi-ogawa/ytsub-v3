@@ -37,7 +37,7 @@ db/restore:
 	gunzip -c $$(ls misc/db/dump/*.sql.gz | tail -n 1) | docker-compose exec -T mysql mysql -uroot -ppassword ytsub_development
 
 db/dump/production:
-	pscale database dump ytsub_production main--us-east-1 --output misc/db/dump-pscale/$$(date '+%Y_%m_%d_%H_%M_%S')
+	pscale database dump ytsub_production main --output misc/db/dump-pscale/$$(date '+%Y_%m_%d_%H_%M_%S')
 
 db/restore/production:
 	ls $$(find misc/db/dump-pscale -mindepth 1 -type d | sort | tail -n 1)/*.sql | sort -r | xargs cat | docker-compose exec -T mysql mysql -uroot -ppassword --default-character-set=utf8mb4 ytsub_development
