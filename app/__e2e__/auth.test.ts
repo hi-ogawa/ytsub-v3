@@ -4,7 +4,15 @@ import { test } from "./coverage";
 import { useUserE2E } from "./helper";
 
 test("/users/register", async ({ page }) => {
-  await page.goto("/users/register");
+  await page.goto("/");
+
+  // navigate to signin
+  await page.locator("header >> data-test=login-icon").click();
+  await expect(page).toHaveURL("/users/signin");
+
+  // navigate to register
+  await page.locator("data-test=signin-form >> text=Register").click();
+  await expect(page).toHaveURL("/users/register");
 
   // submit form
   // prettier-ignore
@@ -22,11 +30,20 @@ test("/users/register", async ({ page }) => {
 });
 
 test("/users/signin", async ({ page }) => {
-  await page.goto("/users/signin");
-  // TODO: test signin
-  await expect(
-    page.locator("data-test=signin-form >> button[type=submit]")
-  ).toBeDisabled();
+  await page.goto("/");
+
+  // navigate to signin
+  await page.locator("header >> data-test=login-icon").click();
+  await expect(page).toHaveURL("/users/signin");
+
+  // submit form
+  await page.locator('input[name="username"]').fill("dev");
+  await page.locator('input[name="password"]').fill("dev");
+  await page.locator('[data-test="signin-form"] >> text="Sign in"').click();
+
+  // navigate to root
+  await expect(page).toHaveURL("/");
+  await page.waitForSelector(`"Successfully signed in as 'dev'"`);
 });
 
 test.describe("/users/me", () => {

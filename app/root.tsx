@@ -232,7 +232,7 @@ function Navbar({
       {!user && (
         <div className="flex-none">
           <Link to={R["/users/signin"]} className="btn btn-sm btn-ghost">
-            <LogIn />
+            <LogIn data-test="login-icon" />
           </Link>
         </div>
       )}
