@@ -61,7 +61,7 @@ export default function DefaultComponent() {
     <div className="w-full p-4 flex justify-center">
       <Form
         method="post"
-        className="card border w-80 p-4 px-6"
+        className="card border w-full max-w-sm p-4 px-6 gap-2"
         data-test="signin-form"
         {...formProps}
       >
@@ -70,7 +70,7 @@ export default function DefaultComponent() {
             <div>Error: {actionData.message}</div>
           </div>
         ) : null}
-        <div className="form-control mb-2">
+        <div className="form-control">
           <label className="label">
             <span className="label-text">Username</span>
           </label>
@@ -82,7 +82,7 @@ export default function DefaultComponent() {
             maxLength={USERNAME_MAX_LENGTH}
           />
         </div>
-        <div className="form-control mb-6">
+        <div className="form-control">
           <label className="label">
             <span className="label-text">Password</span>
           </label>
@@ -94,7 +94,7 @@ export default function DefaultComponent() {
             maxLength={PASSWORD_MAX_LENGTH}
           />
         </div>
-        <div className="form-control">
+        <div className="form-control mt-2">
           <button type="submit" className="btn" disabled={!isValid}>
             Sign in
           </button>

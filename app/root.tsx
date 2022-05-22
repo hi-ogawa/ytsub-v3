@@ -229,70 +229,63 @@ function Navbar({
       </div>
       <div className="flex-1">{title}</div>
       {menu}
-      <div className="flex-none">
-        <Popover
-          placement="bottom-end"
-          reference={({ props }) => (
-            <button
-              className="btn btn-sm btn-ghost"
-              data-test="user-menu"
-              {...props}
-            >
-              <User />
-            </button>
-          )}
-          floating={({ open, setOpen, props }) => (
-            <Transition
-              show={open}
-              unmount={false}
-              className="transition duration-200"
-              enterFrom="scale-90 opacity-0"
-              enterTo="scale-100 opacity-100"
-              leaveFrom="scale-100 opacity-100"
-              leaveTo="scale-90 opacity-0"
-              {...props}
-            >
-              <ul className="menu rounded p-3 shadow w-48 bg-base-100 text-base-content text-sm">
-                {user ? (
-                  <>
+      {!user && (
+        <div className="flex-none">
+          <Link to={R["/users/signin"]} className="btn btn-sm btn-ghost">
+            <LogIn data-test="login-icon" />
+          </Link>
+        </div>
+      )}
+      {user && (
+        <div className="flex-none">
+          <Popover
+            placement="bottom-end"
+            reference={({ props }) => (
+              <button
+                className="btn btn-sm btn-ghost"
+                data-test="user-menu"
+                {...props}
+              >
+                <User />
+              </button>
+            )}
+            floating={({ open, setOpen, props }) => (
+              <Transition
+                show={open}
+                unmount={false}
+                className="transition duration-200"
+                enterFrom="scale-90 opacity-0"
+                enterTo="scale-100 opacity-100"
+                leaveFrom="scale-100 opacity-100"
+                leaveTo="scale-90 opacity-0"
+                {...props}
+              >
+                <ul className="menu rounded p-3 shadow w-48 bg-base-100 text-base-content text-sm">
+                  <li>
+                    <Link to={R["/users/me"]} onClick={() => setOpen(false)}>
+                      <Settings />
+                      Account
+                    </Link>
+                  </li>
+                  <Form
+                    method="post"
+                    action={R["/users/signout"]}
+                    data-test="signout-form"
+                    onClick={() => setOpen(false)}
+                  >
                     <li>
-                      <Link to={R["/users/me"]} onClick={() => setOpen(false)}>
-                        <Settings />
-                        Account
-                      </Link>
+                      <button type="submit" className="flex gap-3">
+                        <LogOut />
+                        Sign out
+                      </button>
                     </li>
-                    <Form
-                      method="post"
-                      action={R["/users/signout"]}
-                      data-test="signout-form"
-                      onClick={() => setOpen(false)}
-                    >
-                      <li>
-                        <button type="submit" className="flex gap-3">
-                          <LogOut />
-                          Sign out
-                        </button>
-                      </li>
-                    </Form>
-                  </>
-                ) : (
-                  <>
-                    <li>
-                      <Link
-                        to={R["/users/signin"]}
-                        onClick={() => setOpen(false)}
-                      >
-                        <LogIn />
-                        Sign in
-                      </Link>
-                    </li>
-                  </>
-                )}
-              </ul>
-            </Transition>
-          )}
-        />
-      </div>
+                  </Form>
+                </ul>
+              </Transition>
+            )}
+          />
+        </div>
+      )}
     </header>
   );
 }

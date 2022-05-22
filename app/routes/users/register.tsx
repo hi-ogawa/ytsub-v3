@@ -189,7 +189,11 @@ export default function DefaultComponent() {
           name="recaptchaToken"
         />
         <div className="form-control mt-2">
-          <button type="submit" className="btn" disabled={!isValid}>
+          <button
+            type="submit"
+            className="btn"
+            disabled={!isValid || !recaptchaApi.isSuccess}
+          >
             Register
           </button>
           <label className="label">
