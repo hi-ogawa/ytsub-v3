@@ -9,7 +9,7 @@ test("/users/register", async ({ page }) => {
   // submit form
   // prettier-ignore
   {
-    const username = "user-" + sha256(__filename + "/users/register");
+    const username = "user-" + sha256(__filename + "/users/register", "hex").slice(0, 8);
     await page.locator('data-test=register-form >> input[name=username]').fill(username);
     await page.locator('data-test=register-form >> input[name=password]').fill('password');
     await page.locator('data-test=register-form >> input[name=passwordConfirmation]').fill('password');
