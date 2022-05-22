@@ -39,7 +39,7 @@ jobs:
         with:
           node-version: "16.15.0"
       - run: pnpm run install-with-patch -- --frozen-lockfile
-      - run: npm run netlify:build
+      - run: npm run vercel:build
 
   test:
     runs-on: ubuntu-20.04

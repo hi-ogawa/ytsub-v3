@@ -47,8 +47,6 @@
   "dependencies": {
     "@floating-ui/react-dom-interactions": "^0.0.15",
     "@headlessui/react": "^0.0.0-insiders.ab6310c",
-    "@netlify/functions": "^0.10.0",
-    "@remix-run/netlify": "^1.4.0",
     "@remix-run/node": "^1.4.0",
     "@remix-run/react": "^1.4.0",
     "@remix-run/server-runtime": "^1.4.0",
