@@ -79,7 +79,6 @@ async function verifyRecaptchaToken(token: string): Promise<boolean> {
 
 export const action = makeLoader(Controller, async function () {
   const parsed = REGISTER_SCHEMA.safeParse(await this.form());
-  console.log("======= debug ci", { parsed });
   if (!parsed.success) {
     return {
       message: "Invalid registration",
