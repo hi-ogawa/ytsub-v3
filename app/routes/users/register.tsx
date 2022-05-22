@@ -1,8 +1,8 @@
-import { Form, Link, useActionData, useLoaderData } from "@remix-run/react";
+import { Form, Link, useActionData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import * as React from "react";
 import { assert } from "../../misc/assert";
-import { env } from "../../misc/env.server";
+import { PUBLIC, SECRET } from "../../misc/env.server";
 import { R } from "../../misc/routes";
 import {
   PASSWORD_MAX_LENGTH,
@@ -14,6 +14,7 @@ import {
 import { Controller, makeLoader } from "../../utils/controller-utils";
 import { AppError } from "../../utils/errors";
 import { createUseQuery, useIsFormValid } from "../../utils/hooks";
+import { useRootLoaderData } from "../../utils/loader-utils";
 import { mapOption } from "../../utils/misc";
 import { PageHandle } from "../../utils/page-handle";
 import { loadScriptMemoized } from "../../utils/script";
@@ -22,11 +23,6 @@ import { toForm } from "../../utils/url-data";
 export const handle: PageHandle = {
   navBarTitle: () => "Register",
 };
-
-interface LoaderData {
-  recaptchaKey: string;
-  recaptchaDisabled: boolean;
-}
 
 export const loader = makeLoader(Controller, async function () {
   const user = await this.currentUser();
@@ -37,11 +33,7 @@ export const loader = makeLoader(Controller, async function () {
     });
     return redirect(R["/users/me"]);
   }
-  const res: LoaderData = {
-    recaptchaKey: env.APP_RECAPTCHA_CLIENT_KEY,
-    recaptchaDisabled: env.APP_RECAPTCHA_DISABLED,
-  };
-  return res;
+  return null;
 });
 
 interface ActionData {
@@ -54,14 +46,14 @@ interface ActionData {
 
 async function verifyRecaptchaToken(token: string): Promise<boolean> {
   // for loader unit tests
-  if (env.APP_RECAPTCHA_DISABLED) {
+  if (PUBLIC.APP_RECAPTCHA_DISABLED) {
     return true;
   }
 
   // https://developers.google.com/recaptcha/docs/verify
   const url = "https://www.google.com/recaptcha/api/siteverify";
   const payload = {
-    secret: env.APP_RECAPTCHA_SERVER_KEY,
+    secret: SECRET.APP_RECAPTCHA_SERVER_KEY,
     response: token,
   };
   const res = await fetch(url, {
@@ -78,7 +70,7 @@ async function verifyRecaptchaToken(token: string): Promise<boolean> {
     score: number; // [0, 1]
   }
   const resJson: VerifyResponse = await res.json();
-  const ok = resJson.success && resJson.score > 0.5;
+  const ok = resJson.success && resJson.score >= 0.5;
   if (!ok) {
     console.error("verifyRecaptchaToken", resJson);
   }
@@ -114,10 +106,12 @@ export const action = makeLoader(Controller, async function () {
 });
 
 export default function DefaultComponent() {
-  const { recaptchaKey, recaptchaDisabled }: LoaderData = useLoaderData();
+  const {
+    PUBLIC: { APP_RECAPTCHA_CLIENT_KEY, APP_RECAPTCHA_DISABLED },
+  } = useRootLoaderData();
   const actionData: ActionData | undefined = useActionData();
   const [isValid, formProps] = useIsFormValid();
-  const recaptchaApi = useRecaptchaApi(recaptchaKey);
+  const recaptchaApi = useRecaptchaApi(APP_RECAPTCHA_CLIENT_KEY);
   const recaptchaTokenInputRef = React.createRef<HTMLInputElement>();
   const errors = mapOption(actionData?.errors?.fieldErrors, Object.keys) ?? [];
 
@@ -131,11 +125,11 @@ export default function DefaultComponent() {
         onSubmit={async (e) => {
           e.preventDefault();
           const form = e.currentTarget;
-          if (!recaptchaDisabled) {
+          if (!APP_RECAPTCHA_DISABLED) {
             assert(recaptchaApi.data);
             assert(recaptchaTokenInputRef.current);
             const recaptchaToken = await recaptchaApi.data.execute(
-              recaptchaKey
+              APP_RECAPTCHA_CLIENT_KEY
             );
             recaptchaTokenInputRef.current.value = recaptchaToken;
           }
