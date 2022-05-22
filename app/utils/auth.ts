@@ -18,6 +18,7 @@ export const REGISTER_SCHEMA = z
       .regex(/^[a-zA-Z0-9_.-]+$/),
     password: z.string().nonempty().max(PASSWORD_MAX_LENGTH),
     passwordConfirmation: z.string().nonempty().max(PASSWORD_MAX_LENGTH),
+    recaptchaToken: z.string(),
   })
   .refine((obj) => obj.password === obj.passwordConfirmation, {
     message: "Invalid",

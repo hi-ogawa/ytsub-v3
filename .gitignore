@@ -5,3 +5,4 @@
 /.env.staging.sh
 /.env.production.sh
 /coverage
+/test-results

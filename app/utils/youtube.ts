@@ -1,5 +1,5 @@
 import { XMLParser } from "fast-xml-parser";
-import { maxBy, memoize } from "lodash";
+import { maxBy } from "lodash";
 import { z } from "zod";
 import { AppError } from "./errors";
 import {
@@ -7,6 +7,7 @@ import {
   LanguageCode,
   languageCodeToName,
 } from "./language";
+import { loadScriptMemoized } from "./script";
 import {
   CaptionConfig,
   CaptionConfigOptions,
@@ -300,6 +301,7 @@ export type YoutubePlayerOptions = {
 };
 
 export type YoutubeIframeApi = {
+  ready: (callback: () => void) => void;
   Player: new (...args: any[]) => YoutubePlayer;
 };
 
@@ -314,18 +316,9 @@ export interface YoutubePlayer {
 // The script https://www.youtube.com/iframe_api is self-modifying,
 // so it would cause hydration mismatch if it's simply rendered via `<script src="https://www.youtube.com/iframe_api" />`
 // since the modified `script` appears after SSR and before HYDRATE.
-function _loadYoutubeIframeApi(): Promise<YoutubeIframeApi> {
-  return new Promise((resolve, reject) => {
-    const el = document.createElement("script");
-    el.src = "https://www.youtube.com/iframe_api";
-    el.async = true;
-    el.addEventListener("load", () => {
-      const { YT } = window as any;
-      YT.ready(() => resolve(YT));
-    });
-    el.addEventListener("error", reject);
-    document.body.appendChild(el);
-  });
+export async function loadYoutubeIframeApi(): Promise<YoutubeIframeApi> {
+  await loadScriptMemoized("https://www.youtube.com/iframe_api");
+  const api = (window as any).YT as YoutubeIframeApi;
+  await new Promise((resolve) => api.ready(() => resolve(undefined)));
+  return api;
 }
-
-export const loadYoutubeIframeApi = memoize(_loadYoutubeIframeApi);

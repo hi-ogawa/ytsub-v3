@@ -12,7 +12,7 @@ export function useUserImpl({
 }) {
   // Generating random-ish username to avoid db uniqueness constraint
   if (seed !== undefined) {
-    username += "-" + sha256(seed).slice(0, 8);
+    username += "-" + sha256(seed, "hex").slice(0, 8);
   }
 
   async function before(): Promise<UserTable> {

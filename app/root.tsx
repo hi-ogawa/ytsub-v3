@@ -37,6 +37,7 @@ import {
 } from "./components/snackbar";
 import { TopProgressBar } from "./components/top-progress-bar";
 import { UserTable } from "./db/models";
+import { PUBLIC } from "./misc/env.server";
 import { R, R_RE } from "./misc/routes";
 import { Controller, makeLoader } from "./utils/controller-utils";
 import { getFlashMessages } from "./utils/flash-message";
@@ -72,10 +73,10 @@ export const meta: MetaFunction = () => {
 //
 
 export const loader = makeLoader(Controller, async function () {
-  this.session;
   const data: RootLoaderData = {
     currentUser: await this.currentUser(),
     flashMessages: getFlashMessages(this.session),
+    PUBLIC,
   };
   return this.serialize(data);
 });
