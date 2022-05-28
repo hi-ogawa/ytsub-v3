@@ -13,7 +13,7 @@ import {
 import { aggregate } from "../db/utils";
 import { fromEntries } from "./misc";
 import { Timedelta, TimedeltaOptions } from "./timedelta";
-import { getMinutesOffset, getStartOfDay } from "./timezone";
+import { getStartOfDay } from "./timezone";
 
 const QUEUE_RULES: Record<
   PracticeQueueType,
