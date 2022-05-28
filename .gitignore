@@ -1,6 +1,7 @@
 /node_modules
 /build
 /.cache
+/.eslintcache
 /.vercel
 /.env.staging
 /.env.staging.sh
