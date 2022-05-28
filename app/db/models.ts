@@ -12,6 +12,7 @@ export interface UserTable {
   updatedAt: Date;
   language1?: string; // TODO: database returns `null`
   language2?: string;
+  timezone: string; // e.g. +09:00 (see app/utils/timezone.ts)
 }
 
 // TODO: manage "view count" and "last watched timestamp" etc...

@@ -8,4 +8,5 @@ export const SECRET = {
 export const PUBLIC = {
   APP_RECAPTCHA_CLIENT_KEY: process.env.APP_RECAPTCHA_CLIENT_KEY ?? "6Lc79AcgAAAAAOdPnmAZfQqhVwL7mJngRndTyG19",
   APP_RECAPTCHA_DISABLED: process.env.APP_RECAPTCHA_DISABLED ?? "",
+  APP_STAGING: process.env.VERCEL_ENV === "preview",
 };

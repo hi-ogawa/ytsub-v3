@@ -7,8 +7,9 @@ export function useRafLoop(callback: () => void): void {
   React.useEffect(() => {
     let id: number | undefined;
     function loop() {
-      callback();
+      // NOTE: queue next loop before `callback` since `callback` can cause "effect cleanup"
       id = requestAnimationFrame(loop);
+      callback();
     }
     loop();
     return () => {

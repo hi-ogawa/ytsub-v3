@@ -2,9 +2,10 @@ import { client } from "../db/client.server";
 import { truncateAll } from "../db/models";
 import { exec } from "../utils/node.server";
 
+// TODO: move to common helper for unit/e2e
 export async function restoreDump() {
   const { stdout } = await exec(
-    "gunzip -c misc/db/dump/2022_05_08_20_33_29.sql.gz"
+    "gunzip -c misc/db/dump/2022_05_28_16_47_09.sql.gz"
   );
   await client.raw(stdout);
 }

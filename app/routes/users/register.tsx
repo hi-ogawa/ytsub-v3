@@ -18,6 +18,7 @@ import { useRootLoaderData } from "../../utils/loader-utils";
 import { mapOption } from "../../utils/misc";
 import { PageHandle } from "../../utils/page-handle";
 import { loadScriptMemoized } from "../../utils/script";
+import { TIMEZONE_RE, getTimezone } from "../../utils/timezone";
 import { toForm } from "../../utils/url-data";
 
 export const handle: PageHandle = {
@@ -92,6 +93,12 @@ export const action = makeLoader(Controller, async function () {
     return { message: "Invalid reCAPTCHA" };
   }
 
+  // double check just in case
+  if (parsed.data.timezone && !parsed.data.timezone.match(TIMEZONE_RE)) {
+    console.error("invalid timezone", parsed.data.timezone);
+    parsed.data.timezone = undefined;
+  }
+
   try {
     const user = await register(parsed.data);
     signinSession(this.session, user);
@@ -114,6 +121,7 @@ export default function DefaultComponent() {
   const recaptchaApi = useRecaptchaApi(APP_RECAPTCHA_CLIENT_KEY);
   const recaptchaTokenInputRef = React.createRef<HTMLInputElement>();
   const errors = mapOption(actionData?.errors?.fieldErrors, Object.keys) ?? [];
+  const timezone = React.useMemo(getTimezone, []);
 
   return (
     <div className="w-full p-4 flex justify-center">
@@ -188,6 +196,7 @@ export default function DefaultComponent() {
           type="hidden"
           name="recaptchaToken"
         />
+        <input type="hidden" name="timezone" value={timezone} />
         <div className="form-control mt-2">
           <button
             type="submit"
