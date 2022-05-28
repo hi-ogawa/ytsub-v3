@@ -39,7 +39,7 @@ import { TopProgressBar } from "./components/top-progress-bar";
 import { UserTable } from "./db/models";
 import { PUBLIC } from "./misc/env.server";
 import { R, R_RE } from "./misc/routes";
-import { Controller, makeLoader } from "./utils/controller-utils";
+import { Controller, deserialize, makeLoader } from "./utils/controller-utils";
 import { getFlashMessages } from "./utils/flash-message";
 import { useHydrated } from "./utils/hooks";
 import { RootLoaderData, useRootLoaderData } from "./utils/loader-utils";
@@ -60,9 +60,10 @@ export const links: LinksFunction = () => {
   ];
 };
 
-export const meta: MetaFunction = () => {
+export const meta: MetaFunction = (args) => {
+  const { PUBLIC }: RootLoaderData = deserialize(args.data);
   return {
-    title: "ytsub-v3",
+    title: (PUBLIC.APP_STAGING ? "[STAGING] " : "") + "ytsub-v3",
     viewport:
       "width=device-width, height=device-height, initial-scale=1, maximum-scale=1, user-scalable=no",
   };

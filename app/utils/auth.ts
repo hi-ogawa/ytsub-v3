@@ -19,6 +19,7 @@ export const REGISTER_SCHEMA = z
     password: z.string().nonempty().max(PASSWORD_MAX_LENGTH),
     passwordConfirmation: z.string().nonempty().max(PASSWORD_MAX_LENGTH),
     recaptchaToken: z.string(),
+    timezone: z.string().optional(),
   })
   .refine((obj) => obj.password === obj.passwordConfirmation, {
     message: "Invalid",
@@ -61,6 +62,7 @@ export async function verifyPassword(
 export async function register(data: {
   username: string;
   password: string;
+  timezone?: string;
 }): Promise<UserTable> {
   // Check uniqueness
   if (await Q.users().select().where("username", data.username).first()) {
@@ -72,6 +74,7 @@ export async function register(data: {
   const [id] = await Q.users().insert({
     username: data.username,
     passwordHash,
+    timezone: data.timezone,
   });
   const user = await Q.users().where("id", id).first();
   if (!user) {

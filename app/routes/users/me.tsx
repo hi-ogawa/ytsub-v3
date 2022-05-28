@@ -6,6 +6,7 @@ import {
 } from "@remix-run/react";
 import { json, redirect } from "@remix-run/server-runtime";
 import * as React from "react";
+import { HelpCircle } from "react-feather";
 import { z } from "zod";
 import { useSnackbar } from "../../components/snackbar";
 import { Q } from "../../db/models";
@@ -24,6 +25,8 @@ import {
   languageCodeToName,
 } from "../../utils/language";
 import { PageHandle } from "../../utils/page-handle";
+import { TIMEZONE_RE } from "../../utils/timezone";
+import { zKeys } from "../../utils/zod-utils";
 
 export const handle: PageHandle = {
   navBarTitle: () => "Account",
@@ -41,13 +44,13 @@ export const loader = makeLoader(Controller, async function () {
 const ACTION_SCHEMA = z.object({
   language1: z.string().nonempty(),
   language2: z.string().nonempty(),
+  timezone: z.string().regex(TIMEZONE_RE),
 });
 
+const ACTION_SCHEMA_KEYS = zKeys(ACTION_SCHEMA);
+
 export const action = makeLoader(Controller, async function () {
-  const user = await this.currentUser();
-  if (user === undefined) {
-    return redirect(R["/users/signin"]);
-  }
+  const user = await this.requireUser();
   const parsed = ACTION_SCHEMA.safeParse(await this.form());
   if (!parsed.success) {
     return json({ success: false, message: "Fail to update settings" });
@@ -119,7 +122,7 @@ export default function DefaultComponent() {
                 <label className="label-text">1st language</label>
               </label>
               <LanguageSelect
-                name="language1"
+                name={ACTION_SCHEMA_KEYS.language1}
                 className="select select-bordered font-normal"
                 defaultValue={currentUser.language1 ?? ""}
                 languageCodes={FILTERED_LANGUAGE_CODES}
@@ -131,10 +134,34 @@ export default function DefaultComponent() {
                 <label className="label-text">2nd language</label>
               </label>
               <LanguageSelect
-                name="language2"
+                name={ACTION_SCHEMA_KEYS.language2}
                 className="select select-bordered font-normal"
                 defaultValue={currentUser.language2 ?? ""}
                 languageCodes={FILTERED_LANGUAGE_CODES}
+                required
+              />
+            </div>
+            <div className="form-control">
+              <label className="label">
+                <label className="label-text flex items-center gap-2">
+                  <div>Timezone</div>
+                  <div
+                    className="cursor-pointer text-gray-600"
+                    onClick={() => {
+                      // TODO: use Popover
+                      window.alert(
+                        "UTC offset e.g.\n+09:00 (Asia/Tokyo)\n-05:00 (EST)"
+                      );
+                    }}
+                  >
+                    <HelpCircle size={16} />
+                  </div>
+                </label>
+              </label>
+              <input
+                name={ACTION_SCHEMA_KEYS.timezone}
+                className="input input-bordered"
+                defaultValue={currentUser.timezone}
                 required
               />
             </div>

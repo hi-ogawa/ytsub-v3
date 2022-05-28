@@ -1,4 +1,3 @@
-import { omit } from "lodash";
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { assert } from "../../misc/assert";
 import { getSchema } from "../../misc/cli";
@@ -23,11 +22,12 @@ describe("models-basic", () => {
       passwordHash: "xyz",
       language1: "fr",
       language2: "en",
+      timezone: "+09:00",
     };
     const [id] = await Q.users().insert(data);
     const res = await Q.users().where("id", id).first();
     assert(res);
-    expect(omit(res, ["id", "createdAt", "updatedAt"])).toEqual(data);
+    expect(res).toMatchObject(data);
   });
 
   // cf.
@@ -94,14 +94,23 @@ describe("models-with-dump", () => {
       )
       .join("users", "users.id", "bookmarkEntries.userId")
       .join("decks", "decks.id", "practiceEntries.deckId")
-      .leftJoin(
+      .join(
         "practiceActions",
         "practiceActions.practiceEntryId",
         "practiceEntries.id"
       )
       .where("users.username", "dev")
       .groupBy("practiceEntries.id")
-      .orderBy("bookmarkEntries.createdAt", "asc")
+      .orderBy([
+        {
+          column: "practiceActionsCount",
+          order: "desc",
+        },
+        {
+          column: "practiceEntries.id",
+          order: "asc",
+        },
+      ])
       .limit(2);
     const data = await normalizeRelation(
       qb,
@@ -116,28 +125,28 @@ describe("models-with-dump", () => {
       {
         "bookmarkEntries": [
           {
-            "captionEntryId": 4174,
-            "createdAt": 2022-04-14T14:56:10.000Z,
-            "id": 106,
-            "offset": 17,
-            "practiceActionsCount": 0,
+            "captionEntryId": 6127,
+            "createdAt": 2022-04-17T22:10:42.000Z,
+            "id": 314,
+            "offset": 28,
+            "practiceActionsCount": 3,
             "side": 0,
-            "text": "je l'ai invité à boire un verre  mais il m'a dit non. Je me suis pris un râteau",
-            "updatedAt": 2022-04-14T14:56:10.000Z,
+            "text": "passer sous une échelle",
+            "updatedAt": 2022-04-17T22:10:42.000Z,
             "userId": 1,
-            "videoId": 41,
+            "videoId": 58,
           },
           {
-            "captionEntryId": 4176,
-            "createdAt": 2022-04-14T14:56:10.000Z,
-            "id": 104,
-            "offset": 0,
-            "practiceActionsCount": 0,
+            "captionEntryId": 6128,
+            "createdAt": 2022-04-17T22:11:43.000Z,
+            "id": 315,
+            "offset": 2,
+            "practiceActionsCount": 2,
             "side": 0,
-            "text": "d'enfiler un chapeau et une veste en cuir pour  aller traquer des nazis en Égypte",
-            "updatedAt": 2022-04-14T14:56:10.000Z,
+            "text": " j'ai peur de casser un miroir parce qu'on dit qu'on aura 7 ans de malheur.",
+            "updatedAt": 2022-04-17T22:11:43.000Z,
             "userId": 1,
-            "videoId": 41,
+            "videoId": 58,
           },
         ],
         "decks": [
@@ -148,10 +157,10 @@ describe("models-with-dump", () => {
             "id": 1,
             "name": "test-main",
             "newEntriesPerDay": 50,
-            "practiceActionsCount": 0,
-            "randomMode": 0,
+            "practiceActionsCount": 3,
+            "randomMode": 1,
             "reviewsPerDay": 200,
-            "updatedAt": 2022-05-08T10:51:22.000Z,
+            "updatedAt": 2022-05-08T15:20:25.000Z,
             "userId": 1,
           },
           {
@@ -161,35 +170,35 @@ describe("models-with-dump", () => {
             "id": 1,
             "name": "test-main",
             "newEntriesPerDay": 50,
-            "practiceActionsCount": 0,
-            "randomMode": 0,
+            "practiceActionsCount": 2,
+            "randomMode": 1,
             "reviewsPerDay": 200,
-            "updatedAt": 2022-05-08T10:51:22.000Z,
+            "updatedAt": 2022-05-08T15:20:25.000Z,
             "userId": 1,
           },
         ],
         "practiceEntries": [
           {
-            "bookmarkEntryId": 106,
-            "createdAt": 2022-05-08T10:21:23.000Z,
+            "bookmarkEntryId": 314,
+            "createdAt": 2022-04-23T08:07:50.000Z,
             "deckId": 1,
-            "easeFactor": 1,
-            "id": 99,
-            "practiceActionsCount": 0,
-            "queueType": "NEW",
-            "scheduledAt": 2022-05-08T10:21:23.000Z,
-            "updatedAt": 2022-05-08T10:21:23.000Z,
+            "easeFactor": 2,
+            "id": 1,
+            "practiceActionsCount": 3,
+            "queueType": "REVIEW",
+            "scheduledAt": 2022-05-19T12:55:49.000Z,
+            "updatedAt": 2022-05-18T12:55:49.000Z,
           },
           {
-            "bookmarkEntryId": 104,
-            "createdAt": 2022-05-08T10:21:23.000Z,
+            "bookmarkEntryId": 315,
+            "createdAt": 2022-04-23T08:07:50.000Z,
             "deckId": 1,
-            "easeFactor": 1,
-            "id": 100,
-            "practiceActionsCount": 0,
-            "queueType": "NEW",
-            "scheduledAt": 2022-05-08T10:21:23.000Z,
-            "updatedAt": 2022-05-08T10:21:23.000Z,
+            "easeFactor": 2,
+            "id": 2,
+            "practiceActionsCount": 2,
+            "queueType": "REVIEW",
+            "scheduledAt": 2022-05-11T14:23:25.000Z,
+            "updatedAt": 2022-05-10T14:23:25.000Z,
           },
         ],
         "users": [
@@ -199,8 +208,9 @@ describe("models-with-dump", () => {
             "language1": "fr",
             "language2": "en",
             "passwordHash": "\$2a\$10\$WPTRk4ui.NI6RE9OnbN/u.a6mhVfn3hkMSSQ0k86UXf/uw.PNRv6K",
-            "practiceActionsCount": 0,
-            "updatedAt": 2022-05-03T06:20:33.000Z,
+            "practiceActionsCount": 3,
+            "timezone": "+09:00",
+            "updatedAt": 2022-05-28T06:44:50.000Z,
             "username": "dev",
           },
           {
@@ -209,8 +219,9 @@ describe("models-with-dump", () => {
             "language1": "fr",
             "language2": "en",
             "passwordHash": "\$2a\$10\$WPTRk4ui.NI6RE9OnbN/u.a6mhVfn3hkMSSQ0k86UXf/uw.PNRv6K",
-            "practiceActionsCount": 0,
-            "updatedAt": 2022-05-03T06:20:33.000Z,
+            "practiceActionsCount": 2,
+            "timezone": "+09:00",
+            "updatedAt": 2022-05-28T06:44:50.000Z,
             "username": "dev",
           },
         ],
