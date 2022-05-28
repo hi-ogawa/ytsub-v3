@@ -6,7 +6,6 @@ name: health-check
 "on":
   # run health check at every 10th minute to warm up aws lambda
   #   60 / 10 * 24 * 30 = 4,320
-  # note that netlify's free plan quota is 125,000 requests per month
   schedule:
     - cron: "*/10 * * * *"
 jobs:
@@ -15,4 +14,4 @@ jobs:
     container:
       image: badouralix/curl-jq
     steps:
-      - run: curl https://ytsub-v3-hiro18181.netlify.app/health-check | jq --exit-status '.success'
+      - run: curl https://ytsub-v3-hiro18181.vercel.app/health-check | jq --exit-status '.success'

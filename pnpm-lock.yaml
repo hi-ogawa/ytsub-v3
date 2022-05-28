@@ -3,10 +3,8 @@ lockfileVersion: 5.3
 specifiers:
   '@floating-ui/react-dom-interactions': ^0.0.15
   '@headlessui/react': ^0.0.0-insiders.ab6310c
-  '@netlify/functions': ^0.10.0
   '@playwright/test': ^1.19.2
   '@remix-run/dev': file:./.patch/node_modules/@remix-run/dev
-  '@remix-run/netlify': ^1.4.0
   '@remix-run/node': ^1.4.0
   '@remix-run/react': ^1.4.0
   '@remix-run/serve': file:./.patch/node_modules/@remix-run/serve
@@ -66,8 +64,6 @@ specifiers:
 dependencies:
   '@floating-ui/react-dom-interactions': 0.0.15_b8fdba992ce7d797017dc07106486496
   '@headlessui/react': 0.0.0-insiders.ab6310c_react-dom@17.0.2+react@17.0.2
-  '@netlify/functions': 0.10.0
-  '@remix-run/netlify': 1.4.1_1d1ce03cfafdba27bba741ad8440c333
   '@remix-run/node': 1.4.1_react-dom@17.0.2+react@17.0.2
   '@remix-run/react': 1.4.1_react-dom@17.0.2+react@17.0.2
   '@remix-run/server-runtime': 1.4.1_react-dom@17.0.2+react@17.0.2
@@ -934,13 +930,6 @@ packages:
       '@jridgewell/sourcemap-codec': 1.4.11
     dev: true
 
-  /@netlify/functions/0.10.0:
-    resolution: {integrity: sha512-NNFADTPnokuoMY1OUhaXlE/Jrzk5lHOl1uB4L/8pw1UJ/CaectZJACMExijbJnqaKIhOQG0WmbBQUh1lgnK/Qg==}
-    engines: {node: '>=8.3.0'}
-    dependencies:
-      is-promise: 4.0.0
-    dev: false
-
   /@nodelib/fs.scandir/2.1.5:
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
     engines: {node: '>= 8'}
@@ -1010,19 +999,6 @@ packages:
       - supports-color
       - utf-8-validate
     dev: true
-
-  /@remix-run/netlify/1.4.1_1d1ce03cfafdba27bba741ad8440c333:
-    resolution: {integrity: sha512-KW3fCYHwMEtjCIsC6CjOGFnezuGvqTjHUEHe8BtOYKz/y1Nzf8h6owweoVGiJImGtZ2eyKxLoDEZIpSjwuEUlQ==}
-    peerDependencies:
-      '@netlify/functions': ^0.10.0
-    dependencies:
-      '@netlify/functions': 0.10.0
-      '@remix-run/node': 1.4.1_react-dom@17.0.2+react@17.0.2
-    transitivePeerDependencies:
-      - encoding
-      - react
-      - react-dom
-    dev: false
 
   /@remix-run/node/1.4.1_react-dom@17.0.2+react@17.0.2:
     resolution: {integrity: sha512-82nujfiZTt7DyceeTWtKRL0L6QtHZy6WnW0zGFnOW2mjCsG9dA166po8X7026VWTa254BxckJLY9GgF+5957Bw==}
@@ -3469,10 +3445,6 @@ packages:
     resolution: {integrity: sha512-41Cifkg6e8TylSpdtTpeLVMqvSBEVzTttHvERD741+pnZ8ANv0004MRL43QKPDlK9cGvNp6NZWZUBlbGXYxxng==}
     engines: {node: '>=0.12.0'}
     dev: true
-
-  /is-promise/4.0.0:
-    resolution: {integrity: sha512-hvpoI6korhJMnej285dSg6nu1+e6uxs7zG3BYAm5byqDsgJNWwxzM6z6iZiAgQR4TJ30JmBTOwqZUw3WlyH3AQ==}
-    dev: false
 
   /is-property/1.0.2:
     resolution: {integrity: sha1-V/4cTkhHTt1lsJkR8msc1Ald2oQ=}
