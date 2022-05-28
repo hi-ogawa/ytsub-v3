@@ -21,5 +21,10 @@ npx esbuild build/remix/production/server/index.js --outfile=build/remix/product
   --define:process.env.APP_DEFINE_STAGING="'${APP_DEFINE_STAGING:-}'" \
   --external:mysql
 
-# setup vercel-cli-deploy-able files
-cp -rf vercel.json .vercel build/remix/production/public build/remix/production/vercel
+# setup files for `verce deploy` to work
+cp -r build/remix/production/public build/remix/production/vercel
+cp vercel.json build/remix/production/vercel
+if [ -d .vercel ]; then
+  # skip CI
+  cp -r .vercel build/remix/production/vercel
+fi
