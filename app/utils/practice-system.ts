@@ -13,6 +13,7 @@ import {
 import { aggregate } from "../db/utils";
 import { fromEntries } from "./misc";
 import { Timedelta, TimedeltaOptions } from "./timedelta";
+import { getStartOfDay } from "./timezone";
 
 const QUEUE_RULES: Record<
   PracticeQueueType,
@@ -72,7 +73,7 @@ export class PracticeSystem {
 
   async getStatistics(now: Date): Promise<DeckPracticeStatistics> {
     const deckId = this.deck.id;
-    const yesterday = Timedelta.make({ days: 1 }).rsub(now);
+    const start = getStartOfDay(now, this.user.timezone);
 
     const [totals, dailys] = await Promise.all([
       Q.practiceEntries()
@@ -82,7 +83,7 @@ export class PracticeSystem {
       Q.practiceActions()
         .select("queueType", { count: client.raw("COUNT(0)") })
         .where({ deckId })
-        .where("createdAt", ">=", yesterday)
+        .where("createdAt", ">=", start)
         .groupBy("queueType"),
     ]);
     const aggTotal = aggregate(totals, "queueType");
@@ -107,7 +108,7 @@ export class PracticeSystem {
       reviewsPerDay,
       randomMode,
     } = this.deck;
-    const yesterday = Timedelta.make({ days: 1 }).rsub(now);
+    const start = getStartOfDay(now, this.user.timezone);
 
     if (randomMode) {
       const result: PracticeEntryTable = await Q.practiceEntries()
@@ -153,7 +154,7 @@ export class PracticeSystem {
       Q.practiceActions()
         .select("queueType", { count: client.raw("COUNT(0)") })
         .where({ deckId })
-        .where("createdAt", ">=", yesterday)
+        .where("createdAt", ">=", start)
         .groupBy("queueType"),
       // select `practiceEntries` with minimum `scheduledAt` for each `queueType`
       Q.practiceEntries()

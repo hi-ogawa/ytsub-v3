@@ -34,6 +34,7 @@ describe("register.action", () => {
       const found = await Q.users().where("username", data.username).first();
       assert(found);
       expect(found.username).toBe(username);
+      expect(found.timezone).toBe("+00:00");
 
       // redirect to root
       assert(res instanceof Response);
