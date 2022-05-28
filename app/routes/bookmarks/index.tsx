@@ -314,8 +314,6 @@ export function MiniPlayer({
     onLoad: setPlayer,
   });
 
-  // TODO: toggling `isRepeating` might be broken (on mobile).
-  //       it seems `useRafLoop` is not unregistering the old callback properly.
   useRafLoop(
     React.useCallback(() => {
       if (!player) return;
