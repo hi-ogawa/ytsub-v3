@@ -1,5 +1,11 @@
+[build]
+publish = ".dummy"
+
+[build.processing]
+skip_processing = true
+
 [[redirects]]
 from = "/*"
-to = "https://ytsub-v3-hiro18181.vercel.app/"
+to = "https://ytsub-v3-hiro18181.vercel.app"
 status = 301
 force = true
