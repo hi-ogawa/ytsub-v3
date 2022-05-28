@@ -1,5 +1,16 @@
 import { describe, expect, it } from "vitest";
-import { ttmlToEntries, ttmlsToCaptionEntries } from "../youtube";
+import {
+  fetchVideoMetadata,
+  ttmlToEntries,
+  ttmlsToCaptionEntries,
+} from "../youtube";
+
+describe("fetchVideoMetadata", () => {
+  it("basic", async () => {
+    const res = await fetchVideoMetadata("EnPYXckiUVg");
+    expect(res.videoDetails.author).toBe("Piece of French");
+  });
+});
 
 function wrapTtml(content: string): string {
   return `
