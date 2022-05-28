@@ -1,4 +1,3 @@
-import { omit } from "lodash";
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { assert } from "../../misc/assert";
 import { getSchema } from "../../misc/cli";
