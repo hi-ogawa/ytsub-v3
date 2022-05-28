@@ -21,13 +21,13 @@ import {
 } from "../../../components/practice-history-chart";
 import { client } from "../../../db/client.server";
 import { DeckTable, PracticeQueueType, Q } from "../../../db/models";
-import { assert } from "../../../misc/assert";
 import { R } from "../../../misc/routes";
 import { Controller, makeLoader } from "../../../utils/controller-utils";
 import { useDeserialize, useHydrated } from "../../../utils/hooks";
 import { useLeafLoaderData } from "../../../utils/loader-utils";
 import { PageHandle } from "../../../utils/page-handle";
 import { Timedelta } from "../../../utils/timedelta";
+import { toMinutesOffset } from "../../../utils/timezone";
 import { toQuery } from "../../../utils/url-data";
 import { zStringToInteger } from "../../../utils/zod-utils";
 import { requireUserAndDeck } from ".";
@@ -45,11 +45,6 @@ export const handle: PageHandle = {
 // loader
 //
 
-// TODO: adjust timezone by users
-// - use geoip database (e.g. https://github.com/geoip-lite/node-geoip)
-// - timezone in user setting (initialized via `Intl.DateTimeFormat().resolvedOptions().timeZone` on registration)
-const TIMEZONE = "+09:00";
-
 // TODO
 // - group by PracticeActionType
 // - different date range (e.g. month, year)
@@ -65,18 +60,16 @@ interface LoaderData {
 }
 
 function formatYmd(date: Date, timezone: string): string {
+  toMinutesOffset(timezone);
   // date +%Y-%m-%d
   // => 2022-05-14
-  assert(timezone.match(/^[+-]\d{2}:\d{2}$/));
-  const tzsign = timezone[0] === "+" ? 1 : -1;
-  const [tzh, tzm] = timezone.slice(1).split(":").map(Number);
-  const tzoffset = tzsign * (tzh * 60 + tzm);
+  const tzoffset = toMinutesOffset(timezone);
   const adjusted = Timedelta.make({ minutes: tzoffset }).radd(date);
   return adjusted.toISOString().slice(0, 10);
 }
 
 export const loader = makeLoader(Controller, async function () {
-  const [, deck] = await requireUserAndDeck.apply(this);
+  const [user, deck] = await requireUserAndDeck.apply(this);
 
   const parsed = REQUEST_SCHEMA.safeParse(this.query());
   if (!parsed.success) {
@@ -94,7 +87,7 @@ export const loader = makeLoader(Controller, async function () {
       .select("queueType", {
         date: client.raw(
           "DATE_FORMAT(CONVERT_TZ(createdAt, '+00:00', ?), '%Y-%m-%d')",
-          TIMEZONE
+          user.timezone
         ), // Date
         count: client.raw("COUNT(0)"), // number
       })
@@ -105,7 +98,9 @@ export const loader = makeLoader(Controller, async function () {
 
   const dates = range(7)
     .reverse()
-    .map((i) => formatYmd(Timedelta.make({ days: i }).rsub(end), TIMEZONE));
+    .map((i) =>
+      formatYmd(Timedelta.make({ days: i }).rsub(end), user.timezone)
+    );
 
   const tmpData: {
     [date: string]: PracticeHistoryChartData[number];

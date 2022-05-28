@@ -419,6 +419,14 @@ export default {
       Default: null,
       Extra: "",
     },
+    timezone: {
+      Field: "timezone",
+      Type: "varchar(32)",
+      Null: "NO",
+      Key: "",
+      Default: "+00:00",
+      Extra: "",
+    },
   },
   videos: {
     id: {
