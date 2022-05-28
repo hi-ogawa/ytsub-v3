@@ -31,6 +31,13 @@ describe("decks/id/history-graph.loader", () => {
           "LEARN": 0,
           "NEW": 0,
           "REVIEW": 0,
+          "date": "2022-04-29",
+          "total": 0,
+        },
+        {
+          "LEARN": 0,
+          "NEW": 0,
+          "REVIEW": 0,
           "date": "2022-04-30",
           "total": 0,
         },
@@ -67,13 +74,6 @@ describe("decks/id/history-graph.loader", () => {
           "NEW": 0,
           "REVIEW": 0,
           "date": "2022-05-05",
-          "total": 0,
-        },
-        {
-          "LEARN": 0,
-          "NEW": 0,
-          "REVIEW": 0,
-          "date": "2022-05-06",
           "total": 0,
         },
       ]

@@ -23,11 +23,12 @@ describe("models-basic", () => {
       passwordHash: "xyz",
       language1: "fr",
       language2: "en",
+      timezone: "+09:00",
     };
     const [id] = await Q.users().insert(data);
     const res = await Q.users().where("id", id).first();
     assert(res);
-    expect(omit(res, ["id", "createdAt", "updatedAt"])).toEqual(data);
+    expect(res).toMatchObject(data);
   });
 
   // cf.
@@ -149,9 +150,9 @@ describe("models-with-dump", () => {
             "name": "test-main",
             "newEntriesPerDay": 50,
             "practiceActionsCount": 0,
-            "randomMode": 0,
+            "randomMode": 1,
             "reviewsPerDay": 200,
-            "updatedAt": 2022-05-08T10:51:22.000Z,
+            "updatedAt": 2022-05-08T15:20:25.000Z,
             "userId": 1,
           },
           {
@@ -162,9 +163,9 @@ describe("models-with-dump", () => {
             "name": "test-main",
             "newEntriesPerDay": 50,
             "practiceActionsCount": 0,
-            "randomMode": 0,
+            "randomMode": 1,
             "reviewsPerDay": 200,
-            "updatedAt": 2022-05-08T10:51:22.000Z,
+            "updatedAt": 2022-05-08T15:20:25.000Z,
             "userId": 1,
           },
         ],
@@ -200,7 +201,8 @@ describe("models-with-dump", () => {
             "language2": "en",
             "passwordHash": "\$2a\$10\$WPTRk4ui.NI6RE9OnbN/u.a6mhVfn3hkMSSQ0k86UXf/uw.PNRv6K",
             "practiceActionsCount": 0,
-            "updatedAt": 2022-05-03T06:20:33.000Z,
+            "timezone": "+09:00",
+            "updatedAt": 2022-05-28T06:44:50.000Z,
             "username": "dev",
           },
           {
@@ -210,7 +212,8 @@ describe("models-with-dump", () => {
             "language2": "en",
             "passwordHash": "\$2a\$10\$WPTRk4ui.NI6RE9OnbN/u.a6mhVfn3hkMSSQ0k86UXf/uw.PNRv6K",
             "practiceActionsCount": 0,
-            "updatedAt": 2022-05-03T06:20:33.000Z,
+            "timezone": "+09:00",
+            "updatedAt": 2022-05-28T06:44:50.000Z,
             "username": "dev",
           },
         ],
