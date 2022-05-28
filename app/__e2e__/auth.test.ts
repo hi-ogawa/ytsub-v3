@@ -64,6 +64,7 @@ test.describe("/users/me", () => {
     await expect(page.locator("text=Save")).toBeDisabled();
     await page.locator('select[name="language1"]').selectOption("fr");
     await page.locator('select[name="language2"]').selectOption("en");
+    await page.locator('input[name="timezone"]').fill("+09:00");
     await expect(page.locator("text=Save")).toBeEnabled();
     await page.locator("text=Save").click();
 
@@ -72,6 +73,7 @@ test.describe("/users/me", () => {
     await expect(page.locator("text=Save")).toBeDisabled();
     await expect(page.locator('select[name="language1"]')).toHaveValue("fr");
     await expect(page.locator('select[name="language2"]')).toHaveValue("en");
+    await expect(page.locator('input[name="timezone"]')).toHaveValue("+09:00");
   });
 
   test("without-session", async ({ page }) => {
