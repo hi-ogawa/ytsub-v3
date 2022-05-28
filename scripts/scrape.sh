@@ -16,7 +16,8 @@ echo "::"
 curl -H 'accept-language: en' "https://www.youtube.com/watch?v=$video_id" > "$out_dir/watch.html"
 
 # parse "player response" metadata
-python -c 'import re, sys; print(re.search("var ytInitialPlayerResponse = ({.+?});", sys.stdin.read()).group(1))' < "$out_dir/watch.html" \
+# https://github.com/ytdl-org/youtube-dl/blob/a7f61feab2dbfc50a7ebe8b0ea390bd0e5edf77a/youtube_dl/extractor/youtube.py#L282-L284
+python -c 'import re, sys; print(re.search("ytInitialPlayerResponse\s*=\s*({.+?})\s*;\s*(?:var\s+meta|</script|\n)", sys.stdin.read()).group(1))' < "$out_dir/watch.html" \
   | jq > "$out_dir/player-response.json"
 
 # list captions
