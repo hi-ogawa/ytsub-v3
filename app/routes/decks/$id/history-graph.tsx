@@ -27,7 +27,7 @@ import { useDeserialize, useHydrated } from "../../../utils/hooks";
 import { useLeafLoaderData } from "../../../utils/loader-utils";
 import { PageHandle } from "../../../utils/page-handle";
 import { Timedelta } from "../../../utils/timedelta";
-import { toMinutesOffset } from "../../../utils/timezone";
+import { formatYmd, getMinutesOffset } from "../../../utils/timezone";
 import { toQuery } from "../../../utils/url-data";
 import { zStringToInteger } from "../../../utils/zod-utils";
 import { requireUserAndDeck } from ".";
@@ -57,15 +57,6 @@ interface LoaderData {
   deck: DeckTable;
   page: number;
   data: PracticeHistoryChartData;
-}
-
-function formatYmd(date: Date, timezone: string): string {
-  toMinutesOffset(timezone);
-  // date +%Y-%m-%d
-  // => 2022-05-14
-  const tzoffset = toMinutesOffset(timezone);
-  const adjusted = Timedelta.make({ minutes: tzoffset }).radd(date);
-  return adjusted.toISOString().slice(0, 10);
 }
 
 export const loader = makeLoader(Controller, async function () {
