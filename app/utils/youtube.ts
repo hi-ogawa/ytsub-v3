@@ -39,7 +39,6 @@ export function toThumbnail(videoId: string): string {
   return `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
 }
 
-// TODO: caching
 export async function fetchVideoMetadata(
   videoId: string
 ): Promise<VideoMetadata> {
@@ -52,8 +51,10 @@ export async function fetchVideoMetadata(
 }
 
 export function parseVideoMetadata(html: string): VideoMetadata {
-  // cf. https://github.com/ytdl-org/youtube-dl/blob/a7f61feab2dbfc50a7ebe8b0ea390bd0e5edf77a/youtube_dl/extractor/youtube.py#L283
-  const match = html.match(/var ytInitialPlayerResponse = ({.+?});/);
+  // https://github.com/ytdl-org/youtube-dl/blob/a7f61feab2dbfc50a7ebe8b0ea390bd0e5edf77a/youtube_dl/extractor/youtube.py#L282-L284
+  const match = html.match(
+    /ytInitialPlayerResponse\s*=\s*({.+?})\s*;\s*(?:var\s+meta|<\/script|\n)/
+  );
   if (match && match[1]) {
     return JSON.parse(match[1]);
   }
