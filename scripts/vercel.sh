@@ -25,6 +25,6 @@ npx esbuild build/remix/production/server/index.js --outfile=build/remix/product
   --bundle --platform=node \
   --external:mysql
 
-# setup vercel-cli deployable directory
+# setup files for `verce deploy`
 mkdir -p .vercel
 cp -rf vercel.json .vercel build/remix/production/public build/remix/production/vercel
