@@ -1,4 +1,4 @@
-import * as assert from "assert/strict";
+import { deepEqual } from "assert/strict";
 import { installGlobals } from "@remix-run/node";
 import { cac } from "cac";
 import { range, zip } from "lodash";
@@ -18,6 +18,7 @@ import {
 } from "../utils/auth";
 import { exec, streamToString } from "../utils/node.server";
 import { NewVideo, fetchCaptionEntries } from "../utils/youtube";
+import { assert } from "./assert";
 
 const cli = cac("cli").help();
 
@@ -126,7 +127,7 @@ async function clieDbTestMigrations(options: {
   await client.destroy();
 
   if (options.reversibilityTest) {
-    assert.deepEqual(ups, downs);
+    deepEqual(ups, downs);
     console.error(":: reversibility test success");
   }
 }
@@ -167,7 +168,7 @@ cli
         .where("username", options.username)
         .select("id")
         .first();
-      assert.ok(user);
+      assert(user);
       userId = user.id;
     }
     const total = newVideos.length;
@@ -281,7 +282,7 @@ cli
       .where("username", username)
       .select("id")
       .first();
-    assert.ok(user);
+    assert(user);
 
     const input = await streamToString(process.stdin);
     const olds = z.array(OLD_BOOKMARK_ENTRY_SCHEMA).parse(JSON.parse(input));
