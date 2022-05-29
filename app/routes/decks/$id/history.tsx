@@ -72,6 +72,7 @@ export const loader = makeLoader(Controller, async function () {
       "bookmarkEntries.id",
       "practiceEntries.bookmarkEntryId"
     )
+    .where("practiceActions.deckId", deck.id)
     .orderBy("practiceActions.createdAt", "desc");
 
   if (parsed.data.practiceEntryId) {

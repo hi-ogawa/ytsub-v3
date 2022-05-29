@@ -148,7 +148,7 @@ function Root() {
             user={data.currentUser}
             menu={navBarMenu?.()}
           />
-          <div className="flex-[1_0_0] flex flex-col">
+          <div className="flex-[1_0_0] flex flex-col" data-test="main">
             <div className="w-full flex-[1_0_0] h-full overflow-y-auto">
               <Outlet />
             </div>

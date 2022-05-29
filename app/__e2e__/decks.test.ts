@@ -73,11 +73,35 @@ test.describe("decks", () => {
     await page.locator("data-test=pagination >> a >> nth=2").click();
     await expect(page).toHaveURL(/\/decks\/\d+\?perPage=20&page=2$/);
 
-    // navigate to "/decks/$id/history"
+    // navigate to "/decks/$id/history-graph"
     await page.locator("data-test=deck-menu-popover-reference").click();
     await page
       .locator("data-test=deck-menu-popover-floating >> text=History")
       .click();
     await expect(page).toHaveURL(/\/decks\/\d+\/history-graph$/);
+  });
+
+  test("show-deck-empty", async ({ page }) => {
+    await signin(page);
+    await page.goto("/decks");
+
+    // navigate to "test-empty"
+    await page.locator("text=test-empty").click();
+    await expect(page).toHaveURL(/\/decks\/\d+$/);
+
+    // navigate to "/decks/$id/history-graph"
+    await page.locator("data-test=deck-menu-popover-reference").click();
+    await page
+      .locator("data-test=deck-menu-popover-floating >> text=History")
+      .click();
+    await expect(page).toHaveURL(/\/decks\/\d+\/history-graph$/);
+
+    // navigate to "/decks/$id/history"
+    await page.locator("data-test=deck-menu-history-popover-reference").click();
+    await page
+      .locator("data-test=deck-menu-history-popover-floating >> text=List")
+      .click();
+    await expect(page).toHaveURL(/\/decks\/\d+\/history$/);
+    await expect(page.locator(`data-test=main >> "Empty"`)).toBeVisible();
   });
 });
