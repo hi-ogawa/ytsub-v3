@@ -220,7 +220,7 @@ export function NavBarMenuComponent() {
           reference={({ props }) => (
             <button
               className="btn btn-sm btn-ghost"
-              data-test="deck-menu-popover-reference"
+              data-test="deck-menu-history-popover-reference"
               {...props}
             >
               <MoreVertical />
@@ -239,7 +239,7 @@ export function NavBarMenuComponent() {
             >
               <ul
                 className="menu menu-compact rounded p-3 shadow w-48 bg-base-100 text-base-content text-sm"
-                data-test="deck-menu-popover-floating"
+                data-test="deck-menu-history-popover-floating"
               >
                 <li>
                   <Link
