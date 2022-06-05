@@ -11,7 +11,7 @@ import {
 } from "react-feather";
 import { useList, useToggle } from "react-use";
 import { Collapse } from "./collapse";
-import { Spinner, VideoComponent } from "./misc";
+import { RadialProgress, Spinner, VideoComponent } from "./misc";
 import { ModalProvider, useModal } from "./modal";
 import { Popover } from "./popover";
 import { PracticeHistoryChart } from "./practice-history-chart";
@@ -432,6 +432,16 @@ export function TestPracticeHistoryChart() {
     <div className="w-full flex justify-center">
       <div className="w-full max-w-lg">
         <PracticeHistoryChart data={data} className="h-[300px] w-full" />
+      </div>
+    </div>
+  );
+}
+
+export function TestRadiulProgress() {
+  return (
+    <div className="w-full flex justify-center">
+      <div className="w-full max-w-lg p-4 flex flex-col gap-2 items-center">
+        <RadialProgress className="w-20 h-20" progress={0.7} />
       </div>
     </div>
   );

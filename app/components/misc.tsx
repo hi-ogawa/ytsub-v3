@@ -190,3 +190,31 @@ export function PaginationComponent({
     </div>
   );
 }
+
+export const RadialProgress: React.FC<{
+  progress: number;
+  className: string;
+}> = (props) => {
+  const deg = Math.floor(360 * props.progress);
+
+  if (deg <= 180) {
+    // prettier-ignore
+    return (
+      <div className={`${props.className} relative`} style={{ transform: "rotate(45deg)" }}>
+        <div className="absolute inset-0 rounded-full border-4 border-gray-200" />
+        <div className="absolute inset-0 rounded-full border-4 border-t-transparent border-r-transparent border-b-gray-400 border-l-gray-400" style={{ transform: `rotate(${deg}deg)` }} />
+        {/* TODO: gray-400 above looks leaking over gray-200 below */}
+        <div className="absolute inset-0 rounded-full border-4 border-t-transparent border-r-transparent border-b-gray-200 border-l-gray-200" />
+      </div>
+    );
+  }
+
+  // prettier-ignore
+  return (
+    <div className={`${props.className} relative`} style={{ transform: "rotate(45deg)" }}>
+      <div className="absolute inset-0 rounded-full border-4 border-gray-200" />
+      <div className="absolute inset-0 rounded-full border-4 border-t-transparent border-r-transparent border-b-gray-400 border-l-gray-400" style={{ transform: `rotate(${deg}deg)` }} />
+      <div className="absolute inset-0 rounded-full border-4 border-t-transparent border-r-transparent border-b-gray-400 border-l-gray-400" style={{ transform: `rotate(180deg)`    }} />
+    </div>
+  );
+};
