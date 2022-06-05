@@ -11,7 +11,12 @@ import {
 } from "react-feather";
 import { useList, useToggle } from "react-use";
 import { Collapse } from "./collapse";
-import { RadialProgress, Spinner, VideoComponent } from "./misc";
+import {
+  RadialProgress,
+  RadialProgressV2,
+  Spinner,
+  VideoComponent,
+} from "./misc";
 import { ModalProvider, useModal } from "./modal";
 import { Popover } from "./popover";
 import { PracticeHistoryChart } from "./practice-history-chart";
@@ -437,10 +442,11 @@ export function TestPracticeHistoryChart() {
   );
 }
 
-export function TestRadiulProgress() {
+export function TestRadialProgress() {
   return (
     <div className="w-full flex justify-center">
       <div className="w-full max-w-lg p-4 flex flex-col gap-2 items-center">
+        <RadialProgressV2 className="w-20 h-20" progress={0.7} />
         <RadialProgress className="w-20 h-20" progress={0.7} />
       </div>
     </div>

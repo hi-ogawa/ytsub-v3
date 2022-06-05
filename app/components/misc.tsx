@@ -218,3 +218,40 @@ export const RadialProgress: React.FC<{
     </div>
   );
 };
+
+// cf. https://github.com/mui/material-ui/blob/3f30cf2ad67d87db4df9e3f6dad0b028b5f9c7cd/packages/mui-material/src/CircularProgress/CircularProgress.js
+export const RadialProgressV2: React.FC<{
+  progress: number;
+  className: string;
+}> = (props) => {
+  const dashLength = Math.ceil(PATH_LENGTH * props.progress);
+
+  // https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke-dasharray
+  // https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke-dashoffset
+  return (
+    <svg
+      className={props.className}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    >
+      <circle
+        className="transition-[stroke-dasharray] transition-duration-200"
+        cx="12"
+        cy="12"
+        r="10"
+        stroke-dasharray={`${dashLength} ${GAP_LENGTH}`}
+        pathLength={PATH_LENGTH}
+      />
+    </svg>
+  );
+};
+
+const PATH_LENGTH = 100;
+const GAP_LENGTH = 10000;
