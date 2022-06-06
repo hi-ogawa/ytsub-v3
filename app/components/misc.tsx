@@ -243,6 +243,7 @@ export const RadialProgressV2: React.FC<{
     >
       <circle
         className="transition-[stroke-dasharray] transition-duration-200"
+        transform="rotate(-90 12 12)"
         cx="12"
         cy="12"
         r="10"
