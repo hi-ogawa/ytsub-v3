@@ -9,7 +9,6 @@ import {
 } from "../../components/misc";
 import { useModal } from "../../components/modal";
 import { useSnackbar } from "../../components/snackbar";
-import { client } from "../../db/client.server";
 import {
   DeckTable,
   PaginationResult,
@@ -48,12 +47,8 @@ export const handle: PageHandle = {
 //   - by "lastWatchedAt"
 // - better layout for desktop
 
-interface VideoTableExtra extends VideoTable {
-  bookmarkEntriesCount?: number;
-}
-
 interface LoaderData {
-  pagination: PaginationResult<VideoTableExtra>;
+  pagination: PaginationResult<VideoTable>;
 }
 
 export const loader = makeLoader(Controller, async function () {
@@ -72,16 +67,10 @@ export const loader = makeLoader(Controller, async function () {
     return redirect(R["/bookmarks"]);
   }
 
-  // TODO: cache "has-many" counter (https://github.com/rails/rails/blob/de53ba56cab69fb9707785a397a59ac4aaee9d6f/activerecord/lib/active_record/counter_cache.rb#L159)
   const pagination = await toPaginationResult(
     Q.videos()
-      .select("videos.*", {
-        bookmarkEntriesCount: client.raw("COUNT(bookmarkEntries.id)"),
-      })
       .where("videos.userId", user.id)
-      .orderBy("videos.updatedAt", "desc")
-      .leftJoin("bookmarkEntries", "bookmarkEntries.videoId", "videos.id")
-      .groupBy("videos.id"),
+      .orderBy("videos.updatedAt", "desc"),
     parsed.data,
     { clearJoin: true }
   );
@@ -150,7 +139,7 @@ function VideoComponentExtra({
   video,
   currentUser,
 }: {
-  video: VideoTableExtra;
+  video: VideoTable;
   currentUser?: UserTable;
 }) {
   const fetcher = useFetcher();

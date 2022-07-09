@@ -21,7 +21,7 @@ describe("videos/id.loader", () => {
     expect(resJson.video.title).toMatchInlineSnapshot(
       '"Are French People Really That Mean?! // French Girls React to Emily In Paris (in FR w/ FR & EN subs)"'
     );
-    expect(resJson.captionEntries.length).toMatchInlineSnapshot("182");
+    expect(resJson.captionEntries.length).toMatchInlineSnapshot("199");
     expect(
       resJson.captionEntries
         .slice(0, 3)

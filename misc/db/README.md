@@ -6,5 +6,5 @@ create dump for development and testing
 make db/dump/production         # create dump from planetscale
 make db/restore/production      # restore to local
 npm run cli clean-data hiroshi  # filter only 'hiroshi' data and rename to 'dev'
-make db/dump                    # create dump from local
+make db/dump                    # create dump from local, then rename the dump to `misc/db/dev.sql.gz`
 ```

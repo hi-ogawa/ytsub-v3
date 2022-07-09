@@ -525,5 +525,13 @@ export default {
       Default: null,
       Extra: "",
     },
+    bookmarkEntriesCount: {
+      Field: "bookmarkEntriesCount",
+      Type: "int",
+      Null: "NO",
+      Key: "",
+      Default: "0",
+      Extra: "",
+    },
   },
 } as const;

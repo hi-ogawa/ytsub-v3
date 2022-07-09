@@ -79,18 +79,19 @@ describe("videos/new.action", () => {
 
     expect(omit(video, ["id", "userId", "createdAt", "updatedAt"]))
       .toMatchInlineSnapshot(`
-      {
-        "author": "Piece of French",
-        "channelId": "UCVzyfpNuFF4ENY8zNTIW7ug",
-        "language1_id": ".fr",
-        "language1_translation": null,
-        "language2_id": ".en",
-        "language2_translation": null,
-        "title": "Are French People Really That Mean?! // French Girls React to Emily In Paris (in FR w/ FR & EN subs)",
-        "videoId": "EnPYXckiUVg",
-      }
-    `);
-    expect(captionEntries.length).toMatchInlineSnapshot("182");
+        {
+          "author": "Piece of French",
+          "bookmarkEntriesCount": 0,
+          "channelId": "UCVzyfpNuFF4ENY8zNTIW7ug",
+          "language1_id": ".fr",
+          "language1_translation": null,
+          "language2_id": ".en",
+          "language2_translation": null,
+          "title": "Are French People Really That Mean?! // French Girls React to Emily In Paris (in FR w/ FR & EN subs)",
+          "videoId": "EnPYXckiUVg",
+        }
+      `);
+    expect(captionEntries.length).toMatchInlineSnapshot("199");
     expect(
       captionEntries
         .slice(0, 3)

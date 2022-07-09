@@ -4,9 +4,7 @@ import { exec } from "../utils/node.server";
 
 // TODO: move to common helper for unit/e2e
 export async function restoreDump() {
-  const { stdout } = await exec(
-    "gunzip -c misc/db/dump/2022_05_28_16_47_09.sql.gz"
-  );
+  const { stdout } = await exec("gunzip -c misc/db/dev.sql.gz");
   await client.raw(stdout);
 }
 

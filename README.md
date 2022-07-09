@@ -3,7 +3,7 @@
 ```sh
 # development
 pnpm run install-with-patch
-make docker/up db/reset db/restore  # username/password is dev/dev
+make docker/up db/reset db/restore/dev  # username/password is dev/dev
 npm run dev
 
 # lint
