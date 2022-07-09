@@ -22,4 +22,5 @@ module.exports = {
     directory: "app/db/migrations",
     stub: "misc/db/migration-stub.js",
   },
+  debug: Boolean(process.env.APP_KNEX_DEBUG),
 };

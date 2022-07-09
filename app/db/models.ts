@@ -29,6 +29,7 @@ export interface VideoTable {
   createdAt: Date;
   updatedAt: Date;
   userId?: number; // associated to anonymous users when `null`
+  bookmarkEntriesCount: number;
 }
 
 export interface CaptionEntryTable {

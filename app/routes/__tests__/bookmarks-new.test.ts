@@ -26,10 +26,16 @@ describe("bookmarks/new.action", () => {
 
     const id = resJson.data.id;
     assert(typeof id === "number");
-
-    const found = await Q.bookmarkEntries().where("id", id).first();
-    assert(found);
-    expect(found.text).toBe(data.text);
+    {
+      const found = await Q.bookmarkEntries().where("id", id).first();
+      assert(found);
+      expect(found.text).toBe(data.text);
+    }
+    {
+      const found = await Q.videos().where("id", data.videoId).first();
+      assert(found);
+      expect(found.bookmarkEntriesCount).toBe(1);
+    }
   });
 
   it("error", async () => {

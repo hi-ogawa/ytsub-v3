@@ -319,6 +319,33 @@ cli
     }
   );
 
+cli.command("reset-counter-cache").action(async () => {
+  await client.transaction(async (trx) => {
+    const rows = await Q.videos()
+      .transacting(trx)
+      .select({
+        id: "videos.id",
+        bookmarkEntriesCount: client.raw("COUNT(bookmarkEntries.id)"),
+        updatedAt: "videos.updatedAt", // prevent changing `updatedAt` timestamp for the migration
+        videoId: client.raw("'dummy'"),
+        language1_id: client.raw("'dummy'"),
+        language2_id: client.raw("'dummy'"),
+        title: client.raw("'dummy'"),
+        author: client.raw("'dummy'"),
+        channelId: client.raw("'dummy'"),
+      })
+      .leftJoin("bookmarkEntries", "bookmarkEntries.videoId", "videos.id")
+      .groupBy("videos.id")
+      .having("bookmarkEntriesCount", ">", 0);
+    await Q.videos()
+      .transacting(trx)
+      .insert(rows)
+      .onConflict("id")
+      .merge(["id", "bookmarkEntriesCount", "updatedAt"]);
+  });
+  await client.destroy();
+});
+
 async function printSession(username: string, password: string) {
   const user = await verifySignin({ username, password });
   const cookie = await createUserCookie(user);

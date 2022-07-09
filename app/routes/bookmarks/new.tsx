@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { client } from "../../db/client.server";
 import { Q } from "../../db/models";
 import { Controller, makeLoader } from "../../utils/controller-utils";
 import { AppError } from "../../utils/errors";
@@ -38,9 +39,19 @@ export const action = makeLoader(Controller, async function () {
     .first();
   if (!video || !captionEntry) throw new AppError("Resource not found");
 
-  const [id] = await Q.bookmarkEntries().insert({
-    ...parsed.data,
-    userId: user.id,
+  const id = await client.transaction(async (trx) => {
+    const { videoId } = parsed.data;
+    const [id] = await Q.bookmarkEntries()
+      .transacting(trx)
+      .insert({
+        ...parsed.data,
+        userId: user.id,
+      });
+    await Q.videos()
+      .transacting(trx)
+      .where("id", videoId)
+      .increment("bookmarkEntriesCount");
+    return id;
   });
   return { success: true, data: { id } };
 });
