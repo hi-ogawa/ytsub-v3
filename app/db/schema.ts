@@ -229,6 +229,15 @@ export default {
       Default: "0",
       Extra: "",
     },
+    practiceEntriesCountByQueueType: {
+      Field: "practiceEntriesCountByQueueType",
+      Type: "json",
+      Null: "NO",
+      Key: "",
+      Default:
+        "json_object(_utf8mb4\\'NEW\\',0,_utf8mb4\\'LEARN\\',0,_utf8mb4\\'REVIEW\\',0)",
+      Extra: "DEFAULT_GENERATED",
+    },
   },
   practiceActions: {
     id: {

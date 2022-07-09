@@ -50,6 +50,22 @@ describe("PracticeSystem", () => {
       .where({ id: practiceEntryId })
       .first();
     assert(practiceEntry);
+    expect(await system.getStatistics(NOW)).toMatchInlineSnapshot(`
+      {
+        "LEARN": {
+          "daily": 0,
+          "total": 0,
+        },
+        "NEW": {
+          "daily": 0,
+          "total": 1,
+        },
+        "REVIEW": {
+          "daily": 0,
+          "total": 0,
+        },
+      }
+    `);
 
     // receive next practice
     const nextPracticeEntry = await system.getNextPracticeEntry(NOW);
