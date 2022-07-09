@@ -30,6 +30,7 @@
     "vercel:build:deploy:staging": "npm run vercel:build && vercel deploy --prebuilt build/remix/production/deploy",
     "vercel:build:deploy:production": "npm run vercel:build && vercel deploy --prebuilt build/remix/production/deploy --prod",
     "cli": "node --require esbuild-register app/misc/cli.ts",
+    "cli:staging": "eval $(bash scripts/env-shell.sh < .env.staging) && node --require esbuild-register app/misc/cli.ts",
     "cli:production": "eval $(bash scripts/env-shell.sh < .env.production) && node --require esbuild-register app/misc/cli.ts",
     "console": "node --experimental-repl-await -r esbuild-register -r ./app/misc/console.ts",
     "console:staging": "eval $(bash scripts/env-shell.sh < .env.staging) && npm run console",
