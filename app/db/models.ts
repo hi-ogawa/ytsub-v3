@@ -78,6 +78,7 @@ export interface DeckTable {
   createdAt: Date;
   updatedAt: Date;
   userId: number;
+  practiceEntriesCountByQueueType: Record<PracticeQueueType, number>;
 }
 
 export interface PracticeEntryTable {

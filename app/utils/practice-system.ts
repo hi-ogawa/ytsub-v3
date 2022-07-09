@@ -11,6 +11,7 @@ import {
   UserTable,
 } from "../db/models";
 import { aggregate } from "../db/utils";
+import { assert } from "../misc/assert";
 import { fromEntries } from "./misc";
 import { Timedelta, TimedeltaOptions } from "./timedelta";
 import { getStartOfDay } from "./timezone";
@@ -74,25 +75,21 @@ export class PracticeSystem {
   async getStatistics(now: Date): Promise<DeckPracticeStatistics> {
     const deckId = this.deck.id;
     const start = getStartOfDay(now, this.user.timezone);
-
-    const [totals, dailys] = await Promise.all([
-      Q.practiceEntries()
-        .select("queueType", { count: client.raw("COUNT(0)") })
-        .where({ deckId })
-        .groupBy("queueType"),
+    const [deck, daily] = await Promise.all([
+      Q.decks().where("id", deckId).first(), // reload deck for simplicity
       Q.practiceActions()
         .select("queueType", { count: client.raw("COUNT(0)") })
         .where({ deckId })
         .where("createdAt", ">=", start)
         .groupBy("queueType"),
     ]);
-    const aggTotal = aggregate(totals, "queueType");
-    const aggDaily = aggregate(dailys, "queueType");
+    assert(deck);
+    const aggDaily = aggregate(daily, "queueType");
     return fromEntries(
       PRACTICE_QUEUE_TYPES.map((type) => [
         type,
         {
-          total: aggTotal[type]?.count ?? 0,
+          total: deck.practiceEntriesCountByQueueType[type],
           daily: aggDaily[type]?.count ?? 0,
         },
       ])
@@ -219,6 +216,9 @@ export class PracticeSystem {
         bookmarkEntryId: id,
       }))
     );
+    await updateDeckPracticeEntriesCountByQueueType(deckId, {
+      NEW: newIds.length,
+    });
     return range(id, id + newIds.length);
   }
 
@@ -236,6 +236,7 @@ export class PracticeSystem {
       deckId,
     } = practiceEntry;
 
+    // sql: create practiceAction
     const qActions = Q.practiceActions().insert({
       queueType: queueType,
       actionType,
@@ -266,6 +267,7 @@ export class PracticeSystem {
       newEaseFactor = 1;
     }
 
+    // sql: update practiceEntry
     const qEntries = Q.practiceEntries()
       .update({
         queueType: newQueueType,
@@ -275,7 +277,57 @@ export class PracticeSystem {
       })
       .where("id", practiceEntryId);
 
-    const [[id]] = await Promise.all([qActions, qEntries]);
+    // sql: update decks.practiceEntriesCountByQueueType
+    let qDecks;
+    if (queueType !== newQueueType) {
+      qDecks = updateDeckPracticeEntriesCountByQueueType(deckId, {
+        [queueType]: -1,
+        [newQueueType]: 1,
+      });
+    }
+
+    const [[id]] = await Promise.all([qActions, qEntries, qDecks]);
     return id;
   }
+}
+
+async function updateDeckPracticeEntriesCountByQueueType(
+  deckId: number,
+  increments: Partial<Record<PracticeQueueType, number>>
+): Promise<void> {
+  await Q.decks()
+    .where("id", deckId)
+    .update(
+      "practiceEntriesCountByQueueType",
+      client.raw(
+        `JSON_SET(:column:,
+          '$."NEW"',    JSON_EXTRACT(:column:, '$."NEW"')    + ${
+            increments.NEW ?? 0
+          },
+          '$."LEARN"',  JSON_EXTRACT(:column:, '$."LEARN"')  + ${
+            increments.LEARN ?? 0
+          },
+          '$."REVIEW"', JSON_EXTRACT(:column:, '$."REVIEW"') + ${
+            increments.REVIEW ?? 0
+          }
+         )`,
+        {
+          column: "practiceEntriesCountByQueueType",
+        }
+      )
+    );
+}
+
+// used by "reset-counter-cache:decks.practiceEntriesCountByQueueType" in cli.ts
+export async function queryDeckPracticeEntriesCountByQueueType(
+  deckId: number
+): Promise<Record<PracticeQueueType, number>> {
+  const query = await Q.practiceEntries()
+    .select("queueType", { count: client.raw("COUNT(0)") })
+    .where({ deckId })
+    .groupBy("queueType");
+  const aggregated = aggregate(query, "queueType");
+  return Object.fromEntries(
+    PRACTICE_QUEUE_TYPES.map((type) => [type, aggregated[type]?.count ?? 0])
+  ) as any;
 }

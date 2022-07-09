@@ -17,6 +17,7 @@ import {
   verifySignin,
 } from "../utils/auth";
 import { exec, streamToString } from "../utils/node.server";
+import { queryDeckPracticeEntriesCountByQueueType } from "../utils/practice-system";
 import { NewVideo, fetchCaptionEntries } from "../utils/youtube";
 import { assert } from "./assert";
 
@@ -377,6 +378,19 @@ cli
         .onConflict("id")
         .merge(["id", "practiceActionsCount", "updatedAt"]);
     });
+    await client.destroy();
+  });
+
+cli
+  .command("reset-counter-cache:decks.practiceEntriesCountByQueueType")
+  .action(async () => {
+    const ids = await Q.decks().pluck("id");
+    for (const id of ids) {
+      const result = await queryDeckPracticeEntriesCountByQueueType(id);
+      await Q.decks()
+        .where("id", id)
+        .update("practiceEntriesCountByQueueType", JSON.stringify(result));
+    }
     await client.destroy();
   });
 
