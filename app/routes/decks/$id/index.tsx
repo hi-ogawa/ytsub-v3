@@ -18,7 +18,6 @@ import {
 import { z } from "zod";
 import { PaginationComponent } from "../../../components/misc";
 import { Popover } from "../../../components/popover";
-import { client } from "../../../db/client.server";
 import {
   BookmarkEntryTable,
   CaptionEntryTable,
