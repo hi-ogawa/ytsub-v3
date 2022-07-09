@@ -319,32 +319,66 @@ cli
     }
   );
 
-cli.command("reset-counter-cache").action(async () => {
-  await client.transaction(async (trx) => {
-    const rows = await Q.videos()
-      .transacting(trx)
-      .select({
-        id: "videos.id",
-        bookmarkEntriesCount: client.raw("COUNT(bookmarkEntries.id)"),
-        updatedAt: "videos.updatedAt", // prevent changing `updatedAt` timestamp for the migration
-        videoId: client.raw("'dummy'"),
-        language1_id: client.raw("'dummy'"),
-        language2_id: client.raw("'dummy'"),
-        title: client.raw("'dummy'"),
-        author: client.raw("'dummy'"),
-        channelId: client.raw("'dummy'"),
-      })
-      .leftJoin("bookmarkEntries", "bookmarkEntries.videoId", "videos.id")
-      .groupBy("videos.id")
-      .having("bookmarkEntriesCount", ">", 0);
-    await Q.videos()
-      .transacting(trx)
-      .insert(rows)
-      .onConflict("id")
-      .merge(["id", "bookmarkEntriesCount", "updatedAt"]);
+cli
+  .command("reset-counter-cache:videos.bookmarkEntriesCount")
+  .action(async () => {
+    await client.transaction(async (trx) => {
+      const rows = await Q.videos()
+        .transacting(trx)
+        .select({
+          id: "videos.id",
+          bookmarkEntriesCount: client.raw("COUNT(bookmarkEntries.id)"),
+          updatedAt: "videos.updatedAt", // prevent changing `updatedAt` timestamp for the migration
+          videoId: client.raw("'dummy'"),
+          language1_id: client.raw("'dummy'"),
+          language2_id: client.raw("'dummy'"),
+          title: client.raw("'dummy'"),
+          author: client.raw("'dummy'"),
+          channelId: client.raw("'dummy'"),
+        })
+        .leftJoin("bookmarkEntries", "bookmarkEntries.videoId", "videos.id")
+        .groupBy("videos.id")
+        .having("bookmarkEntriesCount", ">", 0);
+      await Q.videos()
+        .transacting(trx)
+        .insert(rows)
+        .onConflict("id")
+        .merge(["id", "bookmarkEntriesCount", "updatedAt"]);
+    });
+    await client.destroy();
   });
-  await client.destroy();
-});
+
+cli
+  .command("reset-counter-cache:practiceEntries.practiceActionsCount")
+  .action(async () => {
+    await client.transaction(async (trx) => {
+      const rows = await Q.practiceEntries()
+        .transacting(trx)
+        .select({
+          id: "practiceEntries.id",
+          practiceActionsCount: client.raw("COUNT(practiceActions.id)"),
+          updatedAt: "practiceEntries.updatedAt", // prevent changing `updatedAt` timestamp for the migration
+          queueType: client.raw("'dummy'"),
+          easeFactor: 0,
+          scheduledAt: client.raw("'2022-06-24 12:00:00'"),
+          deckId: 0,
+          bookmarkEntryId: 0,
+        })
+        .leftJoin(
+          "practiceActions",
+          "practiceActions.practiceEntryId",
+          "practiceEntries.id"
+        )
+        .groupBy("practiceEntries.id")
+        .having("practiceActionsCount", ">", 0);
+      await Q.practiceEntries()
+        .transacting(trx)
+        .insert(rows)
+        .onConflict("id")
+        .merge(["id", "practiceActionsCount", "updatedAt"]);
+    });
+    await client.destroy();
+  });
 
 async function printSession(username: string, password: string) {
   const user = await verifySignin({ username, password });

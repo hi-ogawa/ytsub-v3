@@ -89,6 +89,7 @@ export interface PracticeEntryTable {
   updatedAt: Date;
   deckId: number;
   bookmarkEntryId: number;
+  practiceActionsCount: number;
 }
 
 export interface PracticeActionTable {

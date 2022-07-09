@@ -271,6 +271,7 @@ export class PracticeSystem {
         queueType: newQueueType,
         easeFactor: newEaseFactor,
         scheduledAt: newScheduledAt,
+        practiceActionsCount: client.raw("practiceActionsCount + 1"),
       })
       .where("id", practiceEntryId);
 

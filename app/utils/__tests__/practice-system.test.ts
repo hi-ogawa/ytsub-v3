@@ -70,6 +70,13 @@ describe("PracticeSystem", () => {
       actionType: "GOOD",
     });
 
+    // check counter cache
+    const practiceEntryWithActions = await Q.practiceEntries()
+      .where({ id: practiceEntryId })
+      .first();
+    assert(practiceEntryWithActions);
+    expect(practiceEntryWithActions.practiceActionsCount).toBe(1);
+
     const statistics = await system.getStatistics(NOW);
     expect(statistics).toMatchInlineSnapshot(`
       {

@@ -361,6 +361,14 @@ export default {
       Default: null,
       Extra: "",
     },
+    practiceActionsCount: {
+      Field: "practiceActionsCount",
+      Type: "int",
+      Null: "NO",
+      Key: "",
+      Default: "0",
+      Extra: "",
+    },
   },
   users: {
     id: {

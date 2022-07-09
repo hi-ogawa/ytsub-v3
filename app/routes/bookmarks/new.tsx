@@ -39,6 +39,7 @@ export const action = makeLoader(Controller, async function () {
     .first();
   if (!video || !captionEntry) throw new AppError("Resource not found");
 
+  // insert with counter cache increment
   const id = await client.transaction(async (trx) => {
     const { videoId } = parsed.data;
     const [id] = await Q.bookmarkEntries()
