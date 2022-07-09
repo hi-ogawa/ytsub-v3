@@ -18,7 +18,6 @@ import {
 import { z } from "zod";
 import { PaginationComponent } from "../../../components/misc";
 import { Popover } from "../../../components/popover";
-import { client } from "../../../db/client.server";
 import {
   BookmarkEntryTable,
   CaptionEntryTable,
@@ -125,22 +124,10 @@ export const loader = makeLoader(Controller, async function () {
         "bookmarkEntries.captionEntryId"
       )
       .leftJoin("videos", "videos.id", "captionEntries.videoId")
-      .leftJoin(
-        "practiceActions",
-        "practiceActions.practiceEntryId",
-        "practiceEntries.id"
-      )
       .where("practiceEntries.deckId", deck.id)
-      .groupBy("practiceEntries.id")
       .orderBy("practiceEntries.createdAt", "asc"),
     ["practiceEntries", "bookmarkEntries", "captionEntries", "videos"],
-    paginationParams.data,
-    {
-      clearJoinForTotal: true,
-      selectExtra: {
-        practiceActionsCount: client.raw("COUNT(practiceActions.id)"),
-      },
-    }
+    paginationParams.data
   );
 
   const res: LoaderData = {
