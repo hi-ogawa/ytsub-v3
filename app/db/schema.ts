@@ -268,7 +268,7 @@ export default {
       Field: "createdAt",
       Type: "datetime",
       Null: "NO",
-      Key: "",
+      Key: "MUL",
       Default: "CURRENT_TIMESTAMP",
       Extra: "DEFAULT_GENERATED",
     },
