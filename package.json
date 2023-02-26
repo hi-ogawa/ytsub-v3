@@ -1,6 +1,5 @@
 {
   "scripts": {
-    "install-with-patch": "npm -C .patch run build && pnpm install",
     "clean": "rm -rf build",
     "dev": "pnpm dev:prepare && run-p remix:dev tsc:dev tailwind:dev",
     "dev:prepare": "pnpm tailwind && bash scripts/copy-assets.sh",
