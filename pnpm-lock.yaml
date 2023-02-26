@@ -4,6 +4,9 @@ patchedDependencies:
   '@remix-run/dev@1.4.1':
     hash: stojxe6rvkuiyvdec5abatvvv4
     path: patches/@remix-run__dev@1.4.1.patch
+  '@remix-run/serve@1.4.1':
+    hash: yjdvfjiu2lmiptxkd6bjomzlcu
+    path: patches/@remix-run__serve@1.4.1.patch
 
 specifiers:
   '@floating-ui/react-dom-interactions': ^0.0.15
@@ -92,7 +95,7 @@ devDependencies:
   '@hiogawa/isort-ts': 1.0.0-pre.11_zkoxyffzjtjkijl5hapnwta2ea
   '@playwright/test': 1.19.2
   '@remix-run/dev': 1.4.1_stojxe6rvkuiyvdec5abatvvv4_sfoxds7t5ydpegc3knd667wn6m
-  '@remix-run/serve': 1.4.1_sfoxds7t5ydpegc3knd667wn6m
+  '@remix-run/serve': 1.4.1_yjdvfjiu2lmiptxkd6bjomzlcu_sfoxds7t5ydpegc3knd667wn6m
   '@tailwindcss/line-clamp': 0.3.1_tailwindcss@3.0.23
   '@types/fs-extra': 9.0.13
   '@types/lodash': 4.14.179
@@ -1625,7 +1628,7 @@ packages:
       react-router-dom: 6.3.0_sfoxds7t5ydpegc3knd667wn6m
     dev: false
 
-  /@remix-run/serve/1.4.1_sfoxds7t5ydpegc3knd667wn6m:
+  /@remix-run/serve/1.4.1_yjdvfjiu2lmiptxkd6bjomzlcu_sfoxds7t5ydpegc3knd667wn6m:
     resolution: {integrity: sha512-K/tGLiT3zPywLIb1nqcJaXioo0xV9/nCCoNPQFiPHnUIAsYcY0sEVRWYct0ff4TlxJkZfJ9wY0xu1K6Vr9rrOw==}
     hasBin: true
     dependencies:
@@ -1639,6 +1642,7 @@ packages:
       - react-dom
       - supports-color
     dev: true
+    patched: true
 
   /@remix-run/server-runtime/1.4.1_sfoxds7t5ydpegc3knd667wn6m:
     resolution: {integrity: sha512-vC5+7IZSNbAQEHC0436O3bYl6DpPAguJT0sSoemHE1jwJ1x+hUej3/k1QjIy1T/bioa6/7eHPggnm0hUlIFX1g==}
