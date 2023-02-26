@@ -13,7 +13,7 @@ jobs:
         with:
           node-version: "16.15.0"
       - run: pnpm run install-with-patch -- --frozen-lockfile
-      - run: npm run lint:check
+      - run: npm run lint-check
 
   tsc:
     runs-on: ubuntu-20.04
