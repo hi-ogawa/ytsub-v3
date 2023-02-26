@@ -1,14 +1,19 @@
 lockfileVersion: 5.4
 
+patchedDependencies:
+  '@remix-run/dev@1.4.1':
+    hash: stojxe6rvkuiyvdec5abatvvv4
+    path: patches/@remix-run__dev@1.4.1.patch
+
 specifiers:
   '@floating-ui/react-dom-interactions': ^0.0.15
   '@headlessui/react': ^0.0.0-insiders.ab6310c
   '@hiogawa/isort-ts': 1.0.0-pre.11
   '@playwright/test': ^1.19.2
-  '@remix-run/dev': file:./.patch/node_modules/@remix-run/dev
+  '@remix-run/dev': 1.4.1
   '@remix-run/node': ^1.4.0
   '@remix-run/react': ^1.4.0
-  '@remix-run/serve': file:./.patch/node_modules/@remix-run/serve
+  '@remix-run/serve': 1.4.1
   '@remix-run/server-runtime': ^1.4.0
   '@remix-run/vercel': ^1.4.0
   '@tailwindcss/line-clamp': ^0.3.1
@@ -86,8 +91,8 @@ dependencies:
 devDependencies:
   '@hiogawa/isort-ts': 1.0.0-pre.11_zkoxyffzjtjkijl5hapnwta2ea
   '@playwright/test': 1.19.2
-  '@remix-run/dev': file:.patch/node_modules/@remix-run/dev_sfoxds7t5ydpegc3knd667wn6m
-  '@remix-run/serve': file:.patch/node_modules/@remix-run/serve_sfoxds7t5ydpegc3knd667wn6m
+  '@remix-run/dev': 1.4.1_stojxe6rvkuiyvdec5abatvvv4_sfoxds7t5ydpegc3knd667wn6m
+  '@remix-run/serve': 1.4.1_sfoxds7t5ydpegc3knd667wn6m
   '@tailwindcss/line-clamp': 0.3.1_tailwindcss@3.0.23
   '@types/fs-extra': 9.0.13
   '@types/lodash': 4.14.179
@@ -1503,6 +1508,62 @@ packages:
       - utf-8-validate
     dev: true
 
+  /@remix-run/dev/1.4.1_stojxe6rvkuiyvdec5abatvvv4_sfoxds7t5ydpegc3knd667wn6m:
+    resolution: {integrity: sha512-bIq6UPjOJeBp8ifA9MAMGQ4WLjkMOGSqNlomEwmga1VwZUYmx/rZUFy0vqtBdCLSuhTj6tmfWA6b+aMdi1kcew==}
+    hasBin: true
+    dependencies:
+      '@babel/core': 7.17.8
+      '@babel/plugin-syntax-jsx': 7.16.7_@babel+core@7.17.8
+      '@babel/preset-typescript': 7.16.7_@babel+core@7.17.8
+      '@esbuild-plugins/node-modules-polyfill': 0.1.4_esbuild@0.14.22
+      '@npmcli/package-json': 2.0.0
+      '@remix-run/server-runtime': 1.4.1_sfoxds7t5ydpegc3knd667wn6m
+      cacache: 15.3.0
+      chalk: 4.1.2
+      chokidar: 3.5.3
+      dotenv: 16.0.3
+      esbuild: 0.14.22
+      esbuild-plugin-cache: 0.2.10
+      execa: 5.1.1
+      exit-hook: 2.2.1
+      express: 4.17.3
+      fast-glob: 3.2.11
+      fs-extra: 10.1.0
+      get-port: 5.1.1
+      gunzip-maybe: 1.4.2
+      inquirer: 8.2.5
+      jscodeshift: 0.13.1
+      jsesc: 3.0.2
+      json5: 2.2.3
+      lodash: 4.17.21
+      lodash.debounce: 4.0.8
+      meow: 7.1.1
+      minimatch: 3.1.2
+      node-fetch: 2.6.9
+      ora: 5.4.1
+      prettier: 2.6.1
+      pretty-ms: 7.0.1
+      remark-frontmatter: 4.0.1
+      remark-mdx-frontmatter: 1.1.1
+      semver: 7.3.8
+      sort-package-json: 1.57.0
+      strip-bom: 4.0.0
+      tar-fs: 2.1.1
+      tsconfig-paths: 3.14.2
+      ws: 7.5.9
+      xdm: 2.1.0
+    transitivePeerDependencies:
+      - '@babel/preset-env'
+      - bluebird
+      - bufferutil
+      - encoding
+      - react
+      - react-dom
+      - supports-color
+      - utf-8-validate
+    dev: true
+    patched: true
+
   /@remix-run/express/1.4.1_izxlydkikh6icedwo6izm2si6m:
     resolution: {integrity: sha512-nXoAIws+i3GUeAujqJPJNT3l2XZi6wLSmxPua46eeFLnStzk4FyW9Ckqtypzq7WYb+yaOMhXPrTv1puvrAAbLA==}
     peerDependencies:
@@ -1563,6 +1624,21 @@ packages:
       react-dom: 17.0.2_react@17.0.2
       react-router-dom: 6.3.0_sfoxds7t5ydpegc3knd667wn6m
     dev: false
+
+  /@remix-run/serve/1.4.1_sfoxds7t5ydpegc3knd667wn6m:
+    resolution: {integrity: sha512-K/tGLiT3zPywLIb1nqcJaXioo0xV9/nCCoNPQFiPHnUIAsYcY0sEVRWYct0ff4TlxJkZfJ9wY0xu1K6Vr9rrOw==}
+    hasBin: true
+    dependencies:
+      '@remix-run/express': 1.4.1_izxlydkikh6icedwo6izm2si6m
+      compression: 1.7.4
+      express: 4.17.3
+      morgan: 1.10.0
+    transitivePeerDependencies:
+      - encoding
+      - react
+      - react-dom
+      - supports-color
+    dev: true
 
   /@remix-run/server-runtime/1.4.1_sfoxds7t5ydpegc3knd667wn6m:
     resolution: {integrity: sha512-vC5+7IZSNbAQEHC0436O3bYl6DpPAguJT0sSoemHE1jwJ1x+hUej3/k1QjIy1T/bioa6/7eHPggnm0hUlIFX1g==}
@@ -8845,80 +8921,4 @@ packages:
 
   /zwitch/2.0.4:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
-    dev: true
-
-  file:.patch/node_modules/@remix-run/dev_sfoxds7t5ydpegc3knd667wn6m:
-    resolution: {directory: .patch/node_modules/@remix-run/dev, type: directory}
-    id: file:.patch/node_modules/@remix-run/dev
-    name: '@remix-run/dev'
-    version: 1.4.1
-    hasBin: true
-    dependencies:
-      '@babel/core': 7.17.8
-      '@babel/plugin-syntax-jsx': 7.16.7_@babel+core@7.17.8
-      '@babel/preset-typescript': 7.16.7_@babel+core@7.17.8
-      '@esbuild-plugins/node-modules-polyfill': 0.1.4_esbuild@0.14.22
-      '@npmcli/package-json': 2.0.0
-      '@remix-run/server-runtime': 1.4.1_sfoxds7t5ydpegc3knd667wn6m
-      cacache: 15.3.0
-      chalk: 4.1.2
-      chokidar: 3.5.3
-      dotenv: 16.0.3
-      esbuild: 0.14.22
-      esbuild-plugin-cache: 0.2.10
-      execa: 5.1.1
-      exit-hook: 2.2.1
-      express: 4.17.3
-      fast-glob: 3.2.11
-      fs-extra: 10.1.0
-      get-port: 5.1.1
-      gunzip-maybe: 1.4.2
-      inquirer: 8.2.5
-      jscodeshift: 0.13.1
-      jsesc: 3.0.2
-      json5: 2.2.3
-      lodash: 4.17.21
-      lodash.debounce: 4.0.8
-      meow: 7.1.1
-      minimatch: 3.1.2
-      node-fetch: 2.6.9
-      ora: 5.4.1
-      prettier: 2.6.1
-      pretty-ms: 7.0.1
-      remark-frontmatter: 4.0.1
-      remark-mdx-frontmatter: 1.1.1
-      semver: 7.3.8
-      sort-package-json: 1.57.0
-      strip-bom: 4.0.0
-      tar-fs: 2.1.1
-      tsconfig-paths: 3.14.2
-      ws: 7.5.9
-      xdm: 2.1.0
-    transitivePeerDependencies:
-      - '@babel/preset-env'
-      - bluebird
-      - bufferutil
-      - encoding
-      - react
-      - react-dom
-      - supports-color
-      - utf-8-validate
-    dev: true
-
-  file:.patch/node_modules/@remix-run/serve_sfoxds7t5ydpegc3knd667wn6m:
-    resolution: {directory: .patch/node_modules/@remix-run/serve, type: directory}
-    id: file:.patch/node_modules/@remix-run/serve
-    name: '@remix-run/serve'
-    version: 1.4.1
-    hasBin: true
-    dependencies:
-      '@remix-run/express': 1.4.1_izxlydkikh6icedwo6izm2si6m
-      compression: 1.7.4
-      express: 4.17.3
-      morgan: 1.10.0
-    transitivePeerDependencies:
-      - encoding
-      - react
-      - react-dom
-      - supports-color
     dev: true

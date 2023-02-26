@@ -1,0 +1,30 @@
+diff --git a/compiler.js b/compiler.js
+index 0de26949135f495eb16c7f61060752f6e2904603..a162f9a7c5fdc500174f566d2e94957643ca39d1 100644
+--- a/compiler.js
++++ b/compiler.js
+@@ -331,7 +331,7 @@ async function createBrowserBuild(config, options) {
+     bundle: true,
+     logLevel: "silent",
+     splitting: true,
+-    sourcemap: options.sourcemap,
++    sourcemap: options.sourcemap ? "inline" : false,
+     metafile: true,
+     incremental: options.incremental,
+     mainFields: ["browser", "module", "main"],
+@@ -375,6 +375,7 @@ function createServerBuild(config, options, assetsManifestPromiseRef) {
+     absWorkingDir: config.rootDirectory,
+     stdin,
+     entryPoints,
++    external: ["mysql"],
+     outfile: config.serverBuildPath,
+     write: false,
+     conditions: isCloudflareRuntime ? ["worker"] : undefined,
+@@ -389,7 +390,7 @@ function createServerBuild(config, options, assetsManifestPromiseRef) {
+     bundle: true,
+     logLevel: "silent",
+     incremental: options.incremental,
+-    sourcemap: options.sourcemap,
++    sourcemap: options.sourcemap ? "inline" : false,
+     // use linked (true) to fix up .map file
+     // The server build needs to know how to generate asset URLs for imports
+     // of CSS and other files.
