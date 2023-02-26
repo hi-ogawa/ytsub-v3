@@ -32,8 +32,8 @@ import {
 } from "../../../utils/practice-system";
 import { toForm } from "../../../utils/url-data";
 import { BookmarkEntryComponent } from "../../bookmarks";
-import { NewPracticeActionRequest } from "./new-practice-action";
 import { requireUserAndDeck } from "./index";
+import { NewPracticeActionRequest } from "./new-practice-action";
 
 export const handle: PageHandle = {
   navBarTitle: () => <NavBarTitleComponent />,

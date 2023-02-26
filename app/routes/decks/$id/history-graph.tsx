@@ -1,3 +1,4 @@
+import { requireUserAndDeck } from ".";
 import { Transition } from "@headlessui/react";
 import { Link } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
@@ -30,7 +31,6 @@ import { Timedelta } from "../../../utils/timedelta";
 import { formatYmd } from "../../../utils/timezone";
 import { toQuery } from "../../../utils/url-data";
 import { zStringToInteger } from "../../../utils/zod-utils";
-import { requireUserAndDeck } from ".";
 
 //
 // handle

@@ -1,3 +1,4 @@
+import { requireUserAndDeck } from ".";
 import { useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import * as React from "react";
@@ -20,7 +21,6 @@ import { PageHandle } from "../../../utils/page-handle";
 import { PAGINATION_PARAMS_SCHEMA } from "../../../utils/pagination";
 import { zStringToInteger } from "../../../utils/zod-utils";
 import { NavBarMenuComponent } from "./history-graph";
-import { requireUserAndDeck } from ".";
 
 //
 // handle

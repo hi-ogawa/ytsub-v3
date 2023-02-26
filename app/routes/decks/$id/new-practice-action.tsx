@@ -1,3 +1,4 @@
+import { requireUserAndDeck } from ".";
 import { redirect } from "@remix-run/server-runtime";
 import { z } from "zod";
 import { PRACTICE_ACTION_TYPES, Q } from "../../../db/models";
@@ -6,7 +7,6 @@ import { R } from "../../../misc/routes";
 import { Controller, makeLoader } from "../../../utils/controller-utils";
 import { PracticeSystem } from "../../../utils/practice-system";
 import { zStringToDate, zStringToInteger } from "../../../utils/zod-utils";
-import { requireUserAndDeck } from ".";
 
 //
 // action
