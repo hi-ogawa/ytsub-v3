@@ -1,9 +1,8 @@
 name: health-check
 "on":
   schedule:
-    # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#onschedule
-    # >  The shortest interval you can run scheduled workflows is once every 5 minutes.
-    - cron: "*/30 * * * *"
+    # every hour
+    - cron: "0 * * * *"
 jobs:
   health-check:
     runs-on: ubuntu-20.04
@@ -12,8 +11,10 @@ jobs:
     steps:
       - run: curl https://ytsub-v3-hiro18181.vercel.app/health-check | jq --exit-status '.success'
 
-  # TODO: wake up planetscale by triggering misc databaase write
-  # wake-db:
-  #   runs-on: ubuntu-20.04
-  #   steps:
-  #     - run: echo todo
+  # TODO: wake up planetscale by database write
+  health-check-db:
+    runs-on: ubuntu-20.04
+    container:
+      image: badouralix/curl-jq
+    steps:
+      - run: curl https://ytsub-v3-hiro18181.vercel.app/health-check-db | jq --exit-status '.success'
