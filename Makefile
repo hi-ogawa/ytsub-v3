@@ -1,5 +1,5 @@
 # auto generate phony targets
-.PHONY: $(shell grep --no-filename -E '^([a-zA-Z_-]|\/)+:' $(MAKEFILE_LIST) | sed 's/:.*//')
+.PHONY: $(shell grep --no-filename -E '^([a-zA-Z_-]|/)+:' $(MAKEFILE_LIST) | sed 's/:.*//')
 
 #
 # tools
@@ -11,7 +11,7 @@ SCHEMACHECK ?= docker run --rm -i hiogawa/schemacheck # https://github.com/hi-og
 # lint
 #
 
-lint/all: lint/docker-compose lint/shellcheck lint/github-workflow
+lint: lint/docker-compose lint/shellcheck lint/github-workflow
 
 lint/docker-compose:
 	docker-compose config -q

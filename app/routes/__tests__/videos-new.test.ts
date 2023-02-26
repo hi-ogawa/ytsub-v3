@@ -91,7 +91,7 @@ describe("videos/new.action", () => {
           "videoId": "EnPYXckiUVg",
         }
       `);
-    expect(captionEntries.length).toMatchInlineSnapshot("199");
+    expect(captionEntries.length).toMatchInlineSnapshot("183");
     expect(
       captionEntries
         .slice(0, 3)
@@ -116,7 +116,7 @@ describe("videos/new.action", () => {
           "begin": 9.93,
           "end": 11.67,
           "index": 2,
-          "text1": "vu dans d'autres vidéos.",
+          "text1": "vue dans d'autres vidéos.",
           "text2": "seen in other videos.",
         },
       ]

@@ -8,7 +8,7 @@ export const VARIANTS = [
   "error",
 ] as const;
 
-export type Variant = typeof VARIANTS[number];
+export type Variant = (typeof VARIANTS)[number];
 
 export interface SnackbarItemProps {
   id: string;

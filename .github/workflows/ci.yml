@@ -2,44 +2,20 @@ name: ci
 "on":
   - push
 jobs:
-  lint:
-    runs-on: ubuntu-20.04
-    steps:
-      - uses: actions/checkout@v2
-      - uses: pnpm/action-setup@v2.0.1
-        with:
-          version: "6.29.1"
-      - uses: actions/setup-node@v2
-        with:
-          node-version: "16.15.0"
-      - run: pnpm run install-with-patch -- --frozen-lockfile
-      - run: npm run lint:check
-
-  tsc:
-    runs-on: ubuntu-20.04
-    steps:
-      - uses: actions/checkout@v2
-      - uses: pnpm/action-setup@v2.0.1
-        with:
-          version: "6.29.1"
-      - uses: actions/setup-node@v2
-        with:
-          node-version: "16.15.0"
-      - run: pnpm run install-with-patch -- --frozen-lockfile
-      - run: npm run tsc
-
   build:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
       - uses: pnpm/action-setup@v2.0.1
         with:
-          version: "6.29.1"
+          version: 7
       - uses: actions/setup-node@v2
         with:
-          node-version: "16.15.0"
-      - run: pnpm run install-with-patch -- --frozen-lockfile
-      - run: npm run vercel:build
+          node-version: 16
+      - run: pnpm install-with-patch
+      - run: pnpm lint-check
+      - run: pnpm tsc
+      - run: pnpm vercel:build
 
   test:
     runs-on: ubuntu-20.04
@@ -47,13 +23,13 @@ jobs:
       - uses: actions/checkout@v2
       - uses: pnpm/action-setup@v2.0.1
         with:
-          version: "6.29.1"
+          version: 7
       - uses: actions/setup-node@v2
         with:
-          node-version: "16.15.0"
-      - run: pnpm run install-with-patch -- --frozen-lockfile
+          node-version: 16
+      - run: pnpm install-with-patch
       - run: make docker/up db/reset/test
-      - run: npm run test:coverage
+      - run: pnpm test:coverage
       - uses: actions/upload-artifact@v3
         with:
           name: coverage-unit
@@ -65,11 +41,11 @@ jobs:
       - uses: actions/checkout@v2
       - uses: pnpm/action-setup@v2.0.1
         with:
-          version: "6.29.1"
+          version: 7
       - uses: actions/setup-node@v2
         with:
-          node-version: "16.15.0"
-      - run: pnpm run install-with-patch -- --frozen-lockfile
+          node-version: 16
+      - run: pnpm install-with-patch
       - uses: actions/cache@v3
         id: cache-playwright
         with:
@@ -78,7 +54,7 @@ jobs:
       - if: steps.cache-playwright.outputs.cache-hit != 'true'
         run: npx playwright install --with-deps
       - run: make docker/up db/reset/test
-      - run: APP_RECAPTCHA_DISABLED=1 E2E_CLIENT_TRACE=1 npm run test-e2e:coverage
+      - run: APP_RECAPTCHA_DISABLED=1 E2E_CLIENT_TRACE=1 pnpm test-e2e:coverage
       - uses: actions/upload-artifact@v3
         with:
           name: coverage-e2e
@@ -95,14 +71,14 @@ jobs:
       - uses: actions/checkout@v2
       - uses: pnpm/action-setup@v2.0.1
         with:
-          version: "6.29.1"
+          version: 7
       - uses: actions/setup-node@v2
         with:
-          node-version: "16.15.0"
-      - run: pnpm run install-with-patch -- --frozen-lockfile
+          node-version: 16
+      - run: pnpm install-with-patch
       - run: make docker/up db/recreate
-      - run: npm run cli -- db:test-migrations --unit-test
-      - run: npm run cli -- db:test-migrations --reversibility-test
+      - run: pnpm cli db:test-migrations --unit-test
+      - run: pnpm cli db:test-migrations --reversibility-test
 
   publish-coverage-report:
     runs-on: ubuntu-20.04
@@ -113,12 +89,12 @@ jobs:
       - uses: actions/checkout@v2
       - uses: pnpm/action-setup@v2.0.1
         with:
-          version: "6.29.1"
+          version: 7
       - uses: actions/setup-node@v2
         with:
-          node-version: "16.15.0"
-      - run: pnpm run install-with-patch -- --frozen-lockfile
-      - run: export NODE_ENV=test && npm run dev:prepare && npx remix build --sourcemap
+          node-version: 16
+      - run: pnpm install-with-patch
+      - run: export NODE_ENV=test && pnpm dev:prepare && npx remix build --sourcemap
       - uses: actions/download-artifact@v3
         with:
           name: coverage-unit
@@ -149,4 +125,4 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
-      - run: make lint/all
+      - run: make lint

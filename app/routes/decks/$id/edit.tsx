@@ -1,3 +1,4 @@
+import { requireUserAndDeck } from ".";
 import { Form, useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import * as React from "react";
@@ -9,7 +10,6 @@ import { useDeserialize, useIsFormValid } from "../../../utils/hooks";
 import { dtf } from "../../../utils/intl";
 import { PageHandle } from "../../../utils/page-handle";
 import { zStringToInteger } from "../../../utils/zod-utils";
-import { requireUserAndDeck } from ".";
 
 export const handle: PageHandle = {
   navBarTitle: () => "Edit Deck",

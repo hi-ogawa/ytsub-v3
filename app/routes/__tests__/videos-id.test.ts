@@ -21,7 +21,7 @@ describe("videos/id.loader", () => {
     expect(resJson.video.title).toMatchInlineSnapshot(
       '"Are French People Really That Mean?! // French Girls React to Emily In Paris (in FR w/ FR & EN subs)"'
     );
-    expect(resJson.captionEntries.length).toMatchInlineSnapshot("199");
+    expect(resJson.captionEntries.length).toMatchInlineSnapshot("183");
     expect(
       resJson.captionEntries
         .slice(0, 3)
@@ -46,7 +46,7 @@ describe("videos/id.loader", () => {
           "begin": 9.93,
           "end": 11.67,
           "index": 2,
-          "text1": "vu dans d'autres vidéos.",
+          "text1": "vue dans d'autres vidéos.",
           "text2": "seen in other videos.",
         },
       ]

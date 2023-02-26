@@ -64,8 +64,8 @@ export interface BookmarkEntryTable {
 
 export const PRACTICE_ACTION_TYPES = ["AGAIN", "HARD", "GOOD", "EASY"] as const;
 export const PRACTICE_QUEUE_TYPES = ["NEW", "LEARN", "REVIEW"] as const;
-export type PracticeActionType = typeof PRACTICE_ACTION_TYPES[number];
-export type PracticeQueueType = typeof PRACTICE_QUEUE_TYPES[number];
+export type PracticeActionType = (typeof PRACTICE_ACTION_TYPES)[number];
+export type PracticeQueueType = (typeof PRACTICE_QUEUE_TYPES)[number];
 
 export interface DeckTable {
   id: number;

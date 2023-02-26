@@ -1,13 +1,8 @@
-#
-# https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#onschedule
-# >  The shortest interval you can run scheduled workflows is once every 5 minutes.
-#
 name: health-check
 "on":
-  # run health check at every 10th minute to warm up aws lambda
-  #   60 / 10 * 24 * 30 = 4,320
   schedule:
-    - cron: "*/10 * * * *"
+    # every hour
+    - cron: "0 * * * *"
 jobs:
   health-check:
     runs-on: ubuntu-20.04
@@ -15,3 +10,11 @@ jobs:
       image: badouralix/curl-jq
     steps:
       - run: curl https://ytsub-v3-hiro18181.vercel.app/health-check | jq --exit-status '.success'
+
+  # TODO: wake up planetscale by database write
+  health-check-db:
+    runs-on: ubuntu-20.04
+    container:
+      image: badouralix/curl-jq
+    steps:
+      - run: curl https://ytsub-v3-hiro18181.vercel.app/health-check-db | jq --exit-status '.success'
