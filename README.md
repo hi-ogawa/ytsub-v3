@@ -2,7 +2,7 @@
 
 ```sh
 # development
-pnpm install-with-patch
+pnpm i
 make docker/up db/reset db/restore/dev  # username/password is dev/dev
 pnpm dev
 

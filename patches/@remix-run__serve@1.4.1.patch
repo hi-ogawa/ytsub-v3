@@ -1,7 +1,7 @@
-diff --git a/node_modules/@remix-run/serve/index.js b/node_modules/@remix-run/serve/index.js
-index a7d2a9c..dfd305c 100644
---- a/node_modules/@remix-run/serve/index.js
-+++ b/node_modules/@remix-run/serve/index.js
+diff --git a/index.js b/index.js
+index a7d2a9ce293d1042ee96a296ef4057b86af51a83..c6378f51867d971b73243fc500968ac81351b677 100644
+--- a/index.js
++++ b/index.js
 @@ -16,6 +16,7 @@ var express = require('express');
  var compression = require('compression');
  var morgan = require('morgan');
@@ -10,12 +10,14 @@ index a7d2a9c..dfd305c 100644
  
  function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
  
-@@ -27,11 +28,12 @@ function createApp(buildPath, mode = "production") {
+@@ -25,13 +26,14 @@ var morgan__default = /*#__PURE__*/_interopDefaultLegacy(morgan);
+ 
+ function createApp(buildPath, mode = "production") {
    let app = express__default["default"]();
++  const publicPath = path.resolve(buildPath, "..", "..", "public");
    app.disable("x-powered-by");
    app.use(compression__default["default"]());
 -  app.use("/build", express__default["default"].static("public/build", {
-+  const publicPath = path.resolve(buildPath, "..", "..", "public");
 +  app.use("/build", express__default["default"].static(path.resolve(publicPath, "build"), {
      immutable: true,
      maxAge: "1y"

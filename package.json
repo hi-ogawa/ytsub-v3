@@ -1,6 +1,5 @@
 {
   "scripts": {
-    "install-with-patch": "npm -C .patch run build && pnpm install",
     "clean": "rm -rf build",
     "dev": "pnpm dev:prepare && run-p remix:dev tsc:dev tailwind:dev",
     "dev:prepare": "pnpm tailwind && bash scripts/copy-assets.sh",
@@ -65,8 +64,8 @@
   "devDependencies": {
     "@hiogawa/isort-ts": "1.0.0-pre.11",
     "@playwright/test": "^1.19.2",
-    "@remix-run/dev": "file:./.patch/node_modules/@remix-run/dev",
-    "@remix-run/serve": "file:./.patch/node_modules/@remix-run/serve",
+    "@remix-run/dev": "1.4.1",
+    "@remix-run/serve": "1.4.1",
     "@tailwindcss/line-clamp": "^0.3.1",
     "@types/fs-extra": "^9.0.13",
     "@types/lodash": "^4.14.179",
@@ -97,5 +96,11 @@
   },
   "volta": {
     "node": "16.15.0"
+  },
+  "pnpm": {
+    "patchedDependencies": {
+      "@remix-run/dev@1.4.1": "patches/@remix-run__dev@1.4.1.patch",
+      "@remix-run/serve@1.4.1": "patches/@remix-run__serve@1.4.1.patch"
+    }
   }
 }
