@@ -1,5 +1,6 @@
 name: health-check
 "on":
+  workflow_dispatch:
   schedule:
     # every hour
     - cron: "0 * * * *"
