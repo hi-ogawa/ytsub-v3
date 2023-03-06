@@ -25,5 +25,5 @@ vercel link -p ytsub-v3-hiro18181
 pnpm vercel:build:deploy:production
 
 # migration on production
-pnpm knex:production -- migrate:status
+pnpm knex-production -- migrate:status
 ```
