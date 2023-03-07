@@ -23,7 +23,13 @@ NODE_ENV=production BUILD_VERCEL=1 npx remix build
 # - skip `mysql` which appears in https://github.com/knex/knex/blob/3616791ac2a6d17d55b29feed6a503a793d7c488/lib/dialects/mysql/index.js#L23
 npx esbuild build/remix/production/server/index.js --outfile=build/remix/production/server/index-bundled.js \
   --bundle --platform=node \
-  --external:mysql
+  --external:mysql \
+  --external:sqlite3 \
+  --external:better-sqlite3 \
+  --external:tedious \
+  --external:pg \
+  --external:oracledb \
+  --external:pg-query-stream
 
 #
 # setup files for `vercel deploy --prebuilt`
