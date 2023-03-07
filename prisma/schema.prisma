@@ -8,15 +8,15 @@ datasource db {
 }
 
 model bookmarkEntries {
-  id             BigInt   @id @default(autoincrement())
+  id             Int      @id @default(autoincrement()) @db.UnsignedInt
   text           String   @db.Text
   side           Int
   offset         Int
   createdAt      DateTime @default(now()) @db.DateTime(0)
   updatedAt      DateTime @default(now()) @db.DateTime(0)
-  userId         BigInt
-  videoId        BigInt
-  captionEntryId BigInt
+  userId         Int      @db.UnsignedInt
+  videoId        Int      @db.UnsignedInt
+  captionEntryId Int      @db.UnsignedInt
 
   @@index([captionEntryId], map: "bookmarkEntries_captionEntryId_key")
   @@index([userId], map: "bookmarkEntries_userId_key")
@@ -24,7 +24,7 @@ model bookmarkEntries {
 }
 
 model captionEntries {
-  id        BigInt   @id @default(autoincrement())
+  id        Int      @id @default(autoincrement()) @db.UnsignedInt
   index     Int
   begin     Float    @db.Float
   end       Float    @db.Float
@@ -32,17 +32,17 @@ model captionEntries {
   text2     String   @db.Text
   createdAt DateTime @default(now()) @db.DateTime(0)
   updatedAt DateTime @default(now()) @db.DateTime(0)
-  videoId   BigInt
+  videoId   Int      @db.UnsignedInt
 
   @@index([videoId], map: "captionEntries_videoId_key")
 }
 
 model decks {
-  id                              BigInt   @id @default(autoincrement())
+  id                              Int      @id @default(autoincrement()) @db.UnsignedInt
   name                            String   @db.Text
   createdAt                       DateTime @default(now()) @db.DateTime(0)
   updatedAt                       DateTime @default(now()) @db.DateTime(0)
-  userId                          BigInt
+  userId                          Int      @db.UnsignedInt
   newEntriesPerDay                Int      @default(50)
   reviewsPerDay                   Int      @default(200)
   easeMultiplier                  Float    @default(2) @db.Float
@@ -66,14 +66,14 @@ model knex_migrations_lock {
 }
 
 model practiceActions {
-  id              BigInt   @id @default(autoincrement())
+  id              Int      @id @default(autoincrement()) @db.UnsignedInt
   queueType       String   @db.VarChar(32)
   actionType      String   @db.VarChar(32)
   createdAt       DateTime @default(now()) @db.DateTime(0)
   updatedAt       DateTime @default(now()) @db.DateTime(0)
-  userId          BigInt
-  deckId          BigInt
-  practiceEntryId BigInt
+  userId          Int      @db.UnsignedInt
+  deckId          Int      @db.UnsignedInt
+  practiceEntryId Int      @db.UnsignedInt
 
   @@index([createdAt], map: "practiceActions_createdAt_key")
   @@index([deckId], map: "practiceActions_deckId_key")
@@ -82,14 +82,14 @@ model practiceActions {
 }
 
 model practiceEntries {
-  id                   BigInt   @id @default(autoincrement())
+  id                   Int      @id @default(autoincrement()) @db.UnsignedInt
   queueType            String   @db.VarChar(32)
   easeFactor           Float    @db.Float
   scheduledAt          DateTime @db.DateTime(0)
   createdAt            DateTime @default(now()) @db.DateTime(0)
   updatedAt            DateTime @default(now()) @db.DateTime(0)
-  deckId               BigInt
-  bookmarkEntryId      BigInt
+  deckId               Int      @db.UnsignedInt
+  bookmarkEntryId      Int      @db.UnsignedInt
   practiceActionsCount Int      @default(0)
 
   @@index([bookmarkEntryId], map: "practiceEntries_bookmarkEntry_key")
@@ -108,7 +108,7 @@ model users {
 }
 
 model videos {
-  id                    BigInt   @id @default(autoincrement())
+  id                    Int      @id @default(autoincrement()) @db.UnsignedInt
   videoId               String   @db.VarChar(32)
   language1_id          String   @db.VarChar(32)
   language1_translation String?  @db.VarChar(32)
@@ -119,7 +119,7 @@ model videos {
   channelId             String   @db.VarChar(32)
   createdAt             DateTime @default(now()) @db.DateTime(0)
   updatedAt             DateTime @default(now()) @db.DateTime(0)
-  userId                BigInt?
+  userId                Int?     @db.UnsignedInt
   bookmarkEntriesCount  Int      @default(0)
 
   @@unique([videoId, language1_id, language1_translation, language2_id, language2_translation, userId], map: "videoId")
