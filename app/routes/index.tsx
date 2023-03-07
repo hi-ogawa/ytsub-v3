@@ -7,6 +7,7 @@ import {
   VideoTable,
   toPaginationResult,
 } from "../db/models";
+import { prismaClient } from "../db/prisma-client.server";
 import { R } from "../misc/routes";
 import { Controller, makeLoader } from "../utils/controller-utils";
 import { useDeserialize } from "../utils/hooks";
@@ -28,6 +29,16 @@ export const loader = makeLoader(Controller, async function () {
     this.flash({ content: "invalid parameters", variant: "error" });
     return redirect(R["/"]);
   }
+
+  const results = await prismaClient.videos.findMany({
+    where: {
+      userId: null,
+    },
+    orderBy: {
+      updatedAt: "desc",
+    },
+  });
+  console.log(results);
 
   const pagination = await toPaginationResult(
     Q.videos().where("userId", null).orderBy("updatedAt", "desc"),
