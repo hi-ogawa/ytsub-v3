@@ -382,7 +382,7 @@ export default {
   users: {
     id: {
       Field: "id",
-      Type: "bigint",
+      Type: "int unsigned",
       Null: "NO",
       Key: "PRI",
       Default: null,
