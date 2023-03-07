@@ -64,7 +64,7 @@ db/migrate/dev:
 	NODE_ENV=development pnpm knex migrate:latest
 
 db/migrate/test:
-	NODE_ENV=test npx pnpm migrate:latest
+	NODE_ENV=test pnpm knex migrate:latest
 
 #
 # docker
