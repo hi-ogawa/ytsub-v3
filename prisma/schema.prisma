@@ -1,0 +1,127 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model bookmarkEntries {
+  id             BigInt   @id @default(autoincrement())
+  text           String   @db.Text
+  side           Int
+  offset         Int
+  createdAt      DateTime @default(now()) @db.DateTime(0)
+  updatedAt      DateTime @default(now()) @db.DateTime(0)
+  userId         BigInt
+  videoId        BigInt
+  captionEntryId BigInt
+
+  @@index([captionEntryId], map: "bookmarkEntries_captionEntryId_key")
+  @@index([userId], map: "bookmarkEntries_userId_key")
+  @@index([videoId], map: "bookmarkEntries_videoId_key")
+}
+
+model captionEntries {
+  id        BigInt   @id @default(autoincrement())
+  index     Int
+  begin     Float    @db.Float
+  end       Float    @db.Float
+  text1     String   @db.Text
+  text2     String   @db.Text
+  createdAt DateTime @default(now()) @db.DateTime(0)
+  updatedAt DateTime @default(now()) @db.DateTime(0)
+  videoId   BigInt
+
+  @@index([videoId], map: "captionEntries_videoId_key")
+}
+
+model decks {
+  id                              BigInt   @id @default(autoincrement())
+  name                            String   @db.Text
+  createdAt                       DateTime @default(now()) @db.DateTime(0)
+  updatedAt                       DateTime @default(now()) @db.DateTime(0)
+  userId                          BigInt
+  newEntriesPerDay                Int      @default(50)
+  reviewsPerDay                   Int      @default(200)
+  easeMultiplier                  Float    @default(2) @db.Float
+  easeBonus                       Float    @default(1.5) @db.Float
+  randomMode                      Boolean  @default(false)
+  practiceEntriesCountByQueueType Json     @default(dbgenerated("(json_object(_utf8mb4\\'NEW\\',0,_utf8mb4\\'LEARN\\',0,_utf8mb4\\'REVIEW\\',0))"))
+
+  @@index([userId], map: "decks_userId_key")
+}
+
+model knex_migrations {
+  id             Int       @id @default(autoincrement()) @db.UnsignedInt
+  name           String?   @db.VarChar(255)
+  batch          Int?
+  migration_time DateTime? @db.Timestamp(0)
+}
+
+model knex_migrations_lock {
+  index     Int  @id @default(autoincrement()) @db.UnsignedInt
+  is_locked Int?
+}
+
+model practiceActions {
+  id              BigInt   @id @default(autoincrement())
+  queueType       String   @db.VarChar(32)
+  actionType      String   @db.VarChar(32)
+  createdAt       DateTime @default(now()) @db.DateTime(0)
+  updatedAt       DateTime @default(now()) @db.DateTime(0)
+  userId          BigInt
+  deckId          BigInt
+  practiceEntryId BigInt
+
+  @@index([createdAt], map: "practiceActions_createdAt_key")
+  @@index([deckId], map: "practiceActions_deckId_key")
+  @@index([practiceEntryId], map: "practiceActions_practiceEntryId_key")
+  @@index([userId], map: "practiceActions_userId_key")
+}
+
+model practiceEntries {
+  id                   BigInt   @id @default(autoincrement())
+  queueType            String   @db.VarChar(32)
+  easeFactor           Float    @db.Float
+  scheduledAt          DateTime @db.DateTime(0)
+  createdAt            DateTime @default(now()) @db.DateTime(0)
+  updatedAt            DateTime @default(now()) @db.DateTime(0)
+  deckId               BigInt
+  bookmarkEntryId      BigInt
+  practiceActionsCount Int      @default(0)
+
+  @@index([bookmarkEntryId], map: "practiceEntries_bookmarkEntry_key")
+  @@index([deckId], map: "practiceEntries_deckId_key")
+}
+
+model users {
+  id           BigInt   @id @default(autoincrement())
+  username     String   @unique(map: "username") @db.VarChar(128)
+  passwordHash String   @db.VarChar(128)
+  createdAt    DateTime @default(now()) @db.DateTime(0)
+  updatedAt    DateTime @default(now()) @db.DateTime(0)
+  language1    String?  @db.VarChar(32)
+  language2    String?  @db.VarChar(32)
+  timezone     String   @default("+00:00") @db.VarChar(32)
+}
+
+model videos {
+  id                    BigInt   @id @default(autoincrement())
+  videoId               String   @db.VarChar(32)
+  language1_id          String   @db.VarChar(32)
+  language1_translation String?  @db.VarChar(32)
+  language2_id          String   @db.VarChar(32)
+  language2_translation String?  @db.VarChar(32)
+  title                 String   @db.Text
+  author                String   @db.Text
+  channelId             String   @db.VarChar(32)
+  createdAt             DateTime @default(now()) @db.DateTime(0)
+  updatedAt             DateTime @default(now()) @db.DateTime(0)
+  userId                BigInt?
+  bookmarkEntriesCount  Int      @default(0)
+
+  @@unique([videoId, language1_id, language1_translation, language2_id, language2_translation, userId], map: "videoId")
+  @@index([userId], map: "videos_userId_key")
+}
