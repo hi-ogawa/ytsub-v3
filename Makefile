@@ -61,10 +61,10 @@ db/recreate/test:
 db/migrate: db/migrate/dev db/migrate/test
 
 db/migrate/dev:
-	NODE_ENV=development npx knex migrate:latest
+	NODE_ENV=development pnpm knex migrate:latest
 
 db/migrate/test:
-	NODE_ENV=test npx knex migrate:latest
+	NODE_ENV=test npx pnpm migrate:latest
 
 #
 # docker

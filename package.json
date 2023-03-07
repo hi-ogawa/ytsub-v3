@@ -31,9 +31,9 @@
     "cli:production": "eval $(bash scripts/env-shell.sh < .env.production) && node --require esbuild-register app/misc/cli.ts",
     "console": "node --experimental-repl-await -r esbuild-register -r ./app/misc/console.ts",
     "console:staging": "eval $(bash scripts/env-shell.sh < .env.staging) && npm run console",
-    "knex": "NODE_OPTIONS='-r esbuild-register' knex",
-    "knex-staging": "eval $(bash scripts/env-shell.sh < .env.staging) && knex",
-    "knex-production": "eval $(bash scripts/env-shell.sh < .env.production) && knex",
+    "knex": "NODE_OPTIONS='-r esbuild-register' knex --knexfile app/db/knexfile.ts",
+    "knex-staging": "eval $(bash scripts/env-shell.sh < .env.staging) && pnpm knex",
+    "knex-production": "eval $(bash scripts/env-shell.sh < .env.production) && pnpm knex",
     "qrcode": "qrcode-terminal http://$(ip -o -4 address list wlan0 | awk '{print $4}' | cut -d / -f 1):3000"
   },
   "dependencies": {
