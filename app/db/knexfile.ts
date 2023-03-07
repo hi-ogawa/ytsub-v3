@@ -1,12 +1,14 @@
-/** @type {import("knex").Knex.Config>} */
-module.exports = {
-  // statically require knex dialect so that esbuild can bundle it
-  // otherwise it relies on dynamic require (https://github.com/knex/knex/blob/3616791ac2a6d17d55b29feed6a503a793d7c488/lib/knex-builder/internal/config-resolver.js#L38)
-  client: require("knex/lib/dialects/mysql2"),
+import * as path from "node:path";
+import { Knex } from "knex";
+
+// TODO: move to env.server.ts
+
+const KNEX_CONFIG: Knex.Config = {
+  client: "mysql2",
   // prettier-ignore
   connection: {
     host:     process.env.APP_MYSQL_HOST     ?? "localhost",
-    port:     process.env.APP_MYSQL_PORT     ?? "3306",
+    port:     Number(process.env.APP_MYSQL_PORT ?? "3306"),
     user:     process.env.APP_MYSQL_USER     ?? "root",
     password: process.env.APP_MYSQL_PASSWORD ?? "password",
     database: process.env.APP_MYSQL_DATABASE ?? `ytsub_${process.env.NODE_ENV ?? "development"}`,
@@ -19,8 +21,10 @@ module.exports = {
     max: 10,
   },
   migrations: {
-    directory: "app/db/migrations",
-    stub: "misc/db/migration-stub.js",
+    directory: path.join(__dirname, "migrations"),
+    stub: path.join(__dirname, "__migration-stub.ts"),
   },
   debug: Boolean(process.env.APP_KNEX_DEBUG),
 };
+
+export default KNEX_CONFIG;
