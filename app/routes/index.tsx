@@ -1,12 +1,7 @@
 import { useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import * as React from "react";
-import {
-  PaginationResult,
-  Q,
-  VideoTable,
-  toPaginationResult,
-} from "../db/models";
+import { PaginationResult, VideoTable } from "../db/models";
 import { prismaClient } from "../db/prisma-client.server";
 import { R } from "../misc/routes";
 import { Controller, makeLoader } from "../utils/controller-utils";
@@ -30,6 +25,7 @@ export const loader = makeLoader(Controller, async function () {
     return redirect(R["/"]);
   }
 
+  const { page, perPage } = parsed.data;
   const results = await prismaClient.videos.findMany({
     where: {
       userId: null,
@@ -37,14 +33,22 @@ export const loader = makeLoader(Controller, async function () {
     orderBy: {
       updatedAt: "desc",
     },
+    skip: (page - 1) * perPage,
+    take: perPage,
   });
-  console.log(results);
-
-  const pagination = await toPaginationResult(
-    Q.videos().where("userId", null).orderBy("updatedAt", "desc"),
-    parsed.data
-  );
-  const data: LoaderData = { pagination };
+  const total = await prismaClient.videos.count({
+    where: {
+      userId: null,
+    },
+  });
+  const pagination = {
+    data: results,
+    page,
+    perPage,
+    total,
+    totalPage: Math.ceil(total / perPage),
+  };
+  const data: LoaderData = { pagination } as any; // TODO: typing difference null vs undefined
   return this.serialize(data);
 });
 
