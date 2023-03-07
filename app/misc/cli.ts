@@ -111,14 +111,14 @@ async function clieDbTestMigrations(options: {
   ups.push(await getSchema_());
   for (const i of range(n)) {
     console.error(`(⇑:${i + 1}/${n}) ${pending[i].file}`);
-    await exec("npx knex migrate:up");
+    await exec("pnpm knex migrate:up");
     ups.push(await getSchema_());
   }
 
   downs.unshift(await getSchema_());
   for (const i of range(n)) {
     console.error(`(⇓:${i + 1}/${n}) ${pending[n - i - 1].file}`);
-    await exec("npx knex migrate:down");
+    await exec("pnpm knex migrate:down");
     downs.unshift(await getSchema_());
   }
 
