@@ -1,5 +1,8 @@
 generator client {
   provider = "prisma-client-js"
+  // https://github.com/prisma/ecosystem-tests/blob/dev/platforms-serverless/lambda/prisma/schema.prisma
+  // see scripts/vercel.sh
+  binaryTargets = ["native", "rhel-openssl-1.0.x"]
 }
 
 datasource db {

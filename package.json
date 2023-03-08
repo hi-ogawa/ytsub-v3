@@ -34,8 +34,8 @@
     "knex": "NODE_OPTIONS='-r esbuild-register' knex --knexfile app/db/knexfile.ts",
     "knex:staging": "eval $(bash scripts/env-shell.sh < .env.staging) && pnpm knex",
     "knex:production": "eval $(bash scripts/env-shell.sh < .env.production) && pnpm knex",
-    "prisma-update-schema": "DATABASE_URL=mysql://root:password@localhost:3306/ytsub_development prisma db pull --force",
-    "prisma-generate-client": "prisma generate",
+    "prisma-schema": "DATABASE_URL=mysql://root:password@localhost:3306/ytsub_development prisma db pull --force",
+    "prisma-client": "prisma generate",
     "qrcode": "qrcode-terminal http://$(ip -o -4 address list wlan0 | awk '{print $4}' | cut -d / -f 1):3000"
   },
   "dependencies": {

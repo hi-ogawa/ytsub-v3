@@ -55,6 +55,12 @@ mkdir -p "$deploy_dir/.vercel/output/static"
 mkdir -p "$deploy_dir/.vercel/output/functions/server/index.func"
 cp -r build/remix/production/public "$deploy_dir/.vercel/output/static"
 cp build/remix/production/server/index-bundled.js "$deploy_dir/.vercel/output/functions/server/index.func"
+
+# copy runtime library files (cf. https://github.com/prisma/prisma/blob/98eb6ed30dd41d2978142f704b8caa4a0ed412f6/packages/engine-core/src/library/LibraryEngine.ts#L63)
+# PRISMA_QUERY_ENGINE_LIBRARY=./libquery_engine.so.node
+cp node_modules/.pnpm/@prisma+client@4.11.0_prisma@4.11.0/node_modules/.prisma/client/libquery_engine-rhel-openssl-1.0.x.so.node "$deploy_dir/.vercel/output/functions/server/index.func/libquery_engine.so.node"
+cp node_modules/.pnpm/@prisma+client@4.11.0_prisma@4.11.0/node_modules/.prisma/client/schema.prisma "$deploy_dir/.vercel/output/functions/server/index.func"
+
 cat > "$deploy_dir/.vercel/output/config.json" << "EOF"
 {
   "version": 3,

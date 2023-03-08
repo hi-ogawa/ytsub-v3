@@ -15,10 +15,11 @@ if (!globalThis.__prismaClient) {
 prismaClient = globalThis.__prismaClient;
 
 function createPrismaClient() {
-  // TODO: ssl? https://www.prisma.io/docs/concepts/database-connectors/mysql#configuring-an-ssl-connection
-  const { user, password, host, port, database } =
+  // https://www.prisma.io/docs/concepts/database-connectors/mysql
+  const { user, password, host, port, database, ssl } =
     KNEX_CONFIG.connection as any;
-  const url = `mysql://${user}:${password}@${host}:${port}/${database}`;
+  const params = ssl ? "?sslaccept=strict" : "";
+  const url = `mysql://${user}:${password}@${host}:${port}/${database}${params}`;
   return new PrismaClient({
     datasources: {
       db: {
