@@ -3,7 +3,7 @@ export default {
   bookmarkEntries: {
     id: {
       Field: "id",
-      Type: "int unsigned",
+      Type: "bigint",
       Null: "NO",
       Key: "PRI",
       Default: null,
@@ -51,7 +51,7 @@ export default {
     },
     userId: {
       Field: "userId",
-      Type: "int unsigned",
+      Type: "bigint",
       Null: "NO",
       Key: "MUL",
       Default: null,
@@ -59,7 +59,7 @@ export default {
     },
     videoId: {
       Field: "videoId",
-      Type: "int unsigned",
+      Type: "bigint",
       Null: "NO",
       Key: "MUL",
       Default: null,
@@ -67,7 +67,7 @@ export default {
     },
     captionEntryId: {
       Field: "captionEntryId",
-      Type: "int unsigned",
+      Type: "bigint",
       Null: "NO",
       Key: "MUL",
       Default: null,
@@ -77,7 +77,7 @@ export default {
   captionEntries: {
     id: {
       Field: "id",
-      Type: "int unsigned",
+      Type: "bigint",
       Null: "NO",
       Key: "PRI",
       Default: null,
@@ -141,7 +141,7 @@ export default {
     },
     videoId: {
       Field: "videoId",
-      Type: "int unsigned",
+      Type: "bigint",
       Null: "NO",
       Key: "MUL",
       Default: null,
@@ -151,7 +151,7 @@ export default {
   decks: {
     id: {
       Field: "id",
-      Type: "int unsigned",
+      Type: "bigint",
       Null: "NO",
       Key: "PRI",
       Default: null,
@@ -183,7 +183,7 @@ export default {
     },
     userId: {
       Field: "userId",
-      Type: "int unsigned",
+      Type: "bigint",
       Null: "NO",
       Key: "MUL",
       Default: null,
@@ -242,7 +242,7 @@ export default {
   practiceActions: {
     id: {
       Field: "id",
-      Type: "int unsigned",
+      Type: "bigint",
       Null: "NO",
       Key: "PRI",
       Default: null,
@@ -282,7 +282,7 @@ export default {
     },
     userId: {
       Field: "userId",
-      Type: "int unsigned",
+      Type: "bigint",
       Null: "NO",
       Key: "MUL",
       Default: null,
@@ -290,7 +290,7 @@ export default {
     },
     deckId: {
       Field: "deckId",
-      Type: "int unsigned",
+      Type: "bigint",
       Null: "NO",
       Key: "MUL",
       Default: null,
@@ -298,7 +298,7 @@ export default {
     },
     practiceEntryId: {
       Field: "practiceEntryId",
-      Type: "int unsigned",
+      Type: "bigint",
       Null: "NO",
       Key: "MUL",
       Default: null,
@@ -308,7 +308,7 @@ export default {
   practiceEntries: {
     id: {
       Field: "id",
-      Type: "int unsigned",
+      Type: "bigint",
       Null: "NO",
       Key: "PRI",
       Default: null,
@@ -356,7 +356,7 @@ export default {
     },
     deckId: {
       Field: "deckId",
-      Type: "int unsigned",
+      Type: "bigint",
       Null: "NO",
       Key: "MUL",
       Default: null,
@@ -364,7 +364,7 @@ export default {
     },
     bookmarkEntryId: {
       Field: "bookmarkEntryId",
-      Type: "int unsigned",
+      Type: "bigint",
       Null: "NO",
       Key: "MUL",
       Default: null,
@@ -382,7 +382,7 @@ export default {
   users: {
     id: {
       Field: "id",
-      Type: "int unsigned",
+      Type: "bigint",
       Null: "NO",
       Key: "PRI",
       Default: null,
@@ -448,7 +448,7 @@ export default {
   videos: {
     id: {
       Field: "id",
-      Type: "int unsigned",
+      Type: "bigint",
       Null: "NO",
       Key: "PRI",
       Default: null,
@@ -536,7 +536,7 @@ export default {
     },
     userId: {
       Field: "userId",
-      Type: "int unsigned",
+      Type: "bigint",
       Null: "YES",
       Key: "MUL",
       Default: null,
