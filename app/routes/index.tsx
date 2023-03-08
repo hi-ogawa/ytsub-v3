@@ -3,6 +3,7 @@ import { redirect } from "@remix-run/server-runtime";
 import * as React from "react";
 import { PaginationResult, VideoTable } from "../db/models";
 import { prismaClient } from "../db/prisma-client.server";
+import { compatVideoTable } from "../db/prisma-compat";
 import { R } from "../misc/routes";
 import { Controller, makeLoader } from "../utils/controller-utils";
 import { useDeserialize } from "../utils/hooks";
@@ -42,13 +43,13 @@ export const loader = makeLoader(Controller, async function () {
     },
   });
   const pagination = {
-    data: results,
+    data: results.map(compatVideoTable),
     page,
     perPage,
     total,
     totalPage: Math.ceil(total / perPage),
   };
-  const data: LoaderData = { pagination } as any; // TODO: typing difference null vs undefined
+  const data: LoaderData = { pagination };
   return this.serialize(data);
 });
 
