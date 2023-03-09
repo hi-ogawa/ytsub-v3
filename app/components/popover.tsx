@@ -52,6 +52,7 @@ export function Popover(props: PopoverProps) {
         open,
         setOpen,
         update,
+        // @ts-expect-error
         props: getReferenceProps({ ref: refs.reference }),
       })}
       {props.floating({

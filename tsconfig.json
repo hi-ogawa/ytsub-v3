@@ -1,20 +1,17 @@
 {
+  "extends": "@tsconfig/strictest/tsconfig.json",
   "include": ["app"],
   "compilerOptions": {
-    "rootDir": "app",
-    "outDir": "build/tsc",
-    "module": "commonjs",
-    "target": "es2021",
-    "lib": ["es2021", "dom"],
-    "types": [],
+    "importsNotUsedAsValues": "preserve",
+    "noPropertyAccessFromIndexSignature": false,
+    "exactOptionalPropertyTypes": false,
+    "noUncheckedIndexedAccess": false,
+    "checkJs": false,
+    "noEmit": true,
     "moduleResolution": "Node",
-    "jsx": "react",
-    "strict": true,
-    "skipLibCheck": true,
-    "noImplicitAny": true,
-    "noImplicitThis": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noImplicitReturns": true
+    "module": "ESNext",
+    "target": "ESNext",
+    "lib": ["ESNext", "DOM"],
+    "jsx": "react-jsx"
   }
 }

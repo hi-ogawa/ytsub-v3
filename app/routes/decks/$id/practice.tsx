@@ -5,7 +5,6 @@ import {
   useLoaderData,
   useTransition,
 } from "@remix-run/react";
-import * as React from "react";
 import { Activity, Book, MoreVertical } from "react-feather";
 import { Spinner } from "../../../components/misc";
 import { Popover } from "../../../components/popover";

@@ -1,6 +1,5 @@
 import { useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
-import * as React from "react";
 import {
   PaginationResult,
   Q,

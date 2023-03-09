@@ -1,7 +1,6 @@
 import { requireUserAndDeck } from ".";
 import { useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
-import * as React from "react";
 import { CheckCircle, Circle, Disc } from "react-feather";
 import { z } from "zod";
 import { PaginationComponent } from "../../../components/misc";

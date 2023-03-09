@@ -1,6 +1,5 @@
 import { Form, Link, useActionData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
-import * as React from "react";
 import { R } from "../../misc/routes";
 import {
   PASSWORD_MAX_LENGTH,

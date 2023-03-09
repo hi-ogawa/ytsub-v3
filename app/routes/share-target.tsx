@@ -1,6 +1,5 @@
 import { useCatch } from "@remix-run/react";
 import { LoaderFunction, json, redirect } from "@remix-run/server-runtime";
-import * as React from "react";
 import { R } from "../misc/routes";
 import { parseVideoId } from "../utils/youtube";
 
