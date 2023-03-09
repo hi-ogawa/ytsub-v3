@@ -8,7 +8,7 @@ export function compatVideoTable(data: videos): VideoTable {
     id: Number(id),
     userId: userId ? Number(userId) : undefined,
     language1_translation: language1_translation ?? undefined,
-    language2_translation: language1_translation ?? undefined,
+    language2_translation: language2_translation ?? undefined,
     ...rest,
   };
 }
