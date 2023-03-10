@@ -9,9 +9,10 @@
     "checkJs": false,
     "noEmit": true,
     "moduleResolution": "Node",
-    "module": "ESNext",
-    "target": "ESNext",
-    "lib": ["ESNext", "DOM"],
+    "module": "CommonJS",
+    "target": "ES2021",
+    "lib": ["ES2021", "DOM"],
+    "types": [],
     "jsx": "react-jsx"
   }
 }
