@@ -2,7 +2,7 @@
   "extends": "@tsconfig/strictest/tsconfig.json",
   "include": ["app"],
   "compilerOptions": {
-    "importsNotUsedAsValues": "preserve",
+    "importsNotUsedAsValues": "remove",
     "noPropertyAccessFromIndexSignature": false,
     "exactOptionalPropertyTypes": false,
     "noUncheckedIndexedAccess": false,
