@@ -48,3 +48,7 @@ interface ResultErr<E> {
   ok: false;
   data: E;
 }
+
+export function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
