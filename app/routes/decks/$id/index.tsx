@@ -1,7 +1,7 @@
 import { Transition } from "@headlessui/react";
 import { Form, Link, useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
-import * as React from "react";
+import React from "react";
 import {
   Activity,
   Bookmark,

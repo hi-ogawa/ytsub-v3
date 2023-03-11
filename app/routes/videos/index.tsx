@@ -1,6 +1,6 @@
 import { useFetcher, useFetchers, useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
-import * as React from "react";
+import React from "react";
 import { PlusSquare, Trash2 } from "react-feather";
 import {
   PaginationComponent,

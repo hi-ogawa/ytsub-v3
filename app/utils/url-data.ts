@@ -1,4 +1,4 @@
-import * as qs from "qs";
+import qs from "qs";
 
 export function fromRequestQuery(request: Request): any {
   return fromQuery(new URL(request.url).search);

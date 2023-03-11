@@ -1,6 +1,6 @@
 import { Form, useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
-import * as React from "react";
+import React from "react";
 import { z } from "zod";
 import { filterNewVideo, insertVideoAndCaptionEntries } from "../../db/models";
 import { R } from "../../misc/routes";

@@ -9,7 +9,7 @@ import {
   useFocusTrap,
   useInteractions,
 } from "@floating-ui/react-dom-interactions";
-import * as React from "react";
+import React from "react";
 
 interface PopoverRenderProps {
   open: boolean;

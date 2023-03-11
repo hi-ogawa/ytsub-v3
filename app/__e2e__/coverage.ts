@@ -1,6 +1,6 @@
-import * as path from "path";
+import path from "path";
 import { Page, test as testDefault } from "@playwright/test";
-import * as fse from "fs-extra";
+import fse from "fs-extra";
 import { sha256 } from "../utils/auth";
 
 // cf.

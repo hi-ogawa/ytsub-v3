@@ -4,7 +4,7 @@ import { Link } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import type { ECharts } from "echarts";
 import { range } from "lodash";
-import * as React from "react";
+import React from "react";
 import {
   BarChart2,
   ChevronsLeft,

@@ -1,6 +1,6 @@
 import { Form, useActionData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
-import * as React from "react";
+import React from "react";
 import { z } from "zod";
 import { useSnackbar } from "../../components/snackbar";
 import { DeckTable, Q } from "../../db/models";

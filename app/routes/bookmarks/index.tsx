@@ -2,7 +2,7 @@ import { Transition } from "@headlessui/react";
 import { Link, useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import { omit } from "lodash";
-import * as React from "react";
+import React from "react";
 import {
   Book,
   ChevronDown,

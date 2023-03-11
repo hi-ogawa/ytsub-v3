@@ -1,6 +1,6 @@
 import { Form, Link, useActionData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
-import * as React from "react";
+import React from "react";
 import { assert } from "../../misc/assert";
 import { PUBLIC, SECRET } from "../../misc/env.server";
 import { R } from "../../misc/routes";

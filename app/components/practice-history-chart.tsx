@@ -1,5 +1,5 @@
 import * as echarts from "echarts";
-import * as React from "react";
+import React from "react";
 import { PracticeQueueType } from "../db/models";
 import { assert } from "../misc/assert";
 

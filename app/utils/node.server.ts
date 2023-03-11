@@ -1,5 +1,5 @@
-import * as childProcess from "child_process";
-import * as crypto from "crypto";
+import childProcess from "child_process";
+import crypto from "crypto";
 import type { Readable } from "stream";
 import { promisify } from "util";
 

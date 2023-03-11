@@ -13,7 +13,7 @@ import {
 } from "@remix-run/react";
 import { LinksFunction, MetaFunction } from "@remix-run/server-runtime";
 import { last } from "lodash";
-import * as React from "react";
+import React from "react";
 import {
   BookOpen,
   Bookmark,
