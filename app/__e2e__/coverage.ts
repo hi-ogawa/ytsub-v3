@@ -1,4 +1,4 @@
-import path from "path";
+import path from "node:path";
 import { Page, test as testDefault } from "@playwright/test";
 import fse from "fs-extra";
 import { sha256 } from "../utils/auth";
