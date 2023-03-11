@@ -60,7 +60,7 @@
     "react-transition-group": "^4.4.2",
     "react-use": "^17.3.2",
     "superjson": "^1.8.1",
-    "zod": "^3.14.3"
+    "zod": "^3.21.4"
   },
   "devDependencies": {
     "@hiogawa/isort-ts": "1.0.0-pre.11",

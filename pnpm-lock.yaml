@@ -63,7 +63,7 @@ specifiers:
   typescript: 4.5.5
   vite: ^2.8.6
   vitest: ^0.7.12
-  zod: ^3.14.3
+  zod: ^3.21.4
 
 dependencies:
   '@floating-ui/react-dom-interactions': 0.0.15_xd63vgjm47lzoal5ybyqmsdesy
@@ -89,7 +89,7 @@ dependencies:
   react-transition-group: 4.4.2_sfoxds7t5ydpegc3knd667wn6m
   react-use: 17.3.2_sfoxds7t5ydpegc3knd667wn6m
   superjson: 1.8.1
-  zod: 3.14.3
+  zod: 3.21.4
 
 devDependencies:
   '@hiogawa/isort-ts': 1.0.0-pre.11_zkoxyffzjtjkijl5hapnwta2ea
@@ -8941,8 +8941,8 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-  /zod/3.14.3:
-    resolution: {integrity: sha512-OzwRCSXB1+/8F6w6HkYHdbuWysYWnAF4fkRgKDcSFc54CE+Sv0rHXKfeNUReGCrHukm1LNpi6AYeXotznhYJbQ==}
+  /zod/3.21.4:
+    resolution: {integrity: sha512-m46AKbrzKVzOzs/DZgVnG5H55N1sv1M8qZU3A8RIKbs3mrACDNeIOeilDymVb2HdmP8uwshOCF4uJ8uM9rCqJw==}
     dev: false
 
   /zrender/5.3.1:
