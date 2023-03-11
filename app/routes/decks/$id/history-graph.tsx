@@ -26,7 +26,7 @@ import { R } from "../../../misc/routes";
 import { Controller, makeLoader } from "../../../utils/controller-utils";
 import { useDeserialize, useHydrated } from "../../../utils/hooks";
 import { useLeafLoaderData } from "../../../utils/loader-utils";
-import { PageHandle } from "../../../utils/page-handle";
+import type { PageHandle } from "../../../utils/page-handle";
 import { Timedelta } from "../../../utils/timedelta";
 import { formatYmd } from "../../../utils/timezone";
 import { toQuery } from "../../../utils/url-data";

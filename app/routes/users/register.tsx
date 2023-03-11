@@ -16,7 +16,7 @@ import { AppError } from "../../utils/errors";
 import { createUseQuery, useIsFormValid } from "../../utils/hooks";
 import { useRootLoaderData } from "../../utils/loader-utils";
 import { mapOption } from "../../utils/misc";
-import { PageHandle } from "../../utils/page-handle";
+import type { PageHandle } from "../../utils/page-handle";
 import { loadScriptMemoized } from "../../utils/script";
 import { TIMEZONE_RE, getTimezone } from "../../utils/timezone";
 import { toForm } from "../../utils/url-data";

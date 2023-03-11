@@ -1,6 +1,6 @@
 import { Transition } from "@headlessui/react";
 import { Link } from "@remix-run/react";
-import React from "react";
+import type React from "react";
 import {
   Bookmark,
   ChevronLeft,
@@ -9,7 +9,7 @@ import {
   ChevronsRight,
   MoreVertical,
 } from "react-feather";
-import { PaginationMetadata, VideoTable } from "../db/models";
+import type { PaginationMetadata, VideoTable } from "../db/models";
 import { R } from "../misc/routes";
 import { toNewPages } from "../utils/pagination";
 import { toQuery } from "../utils/url-data";

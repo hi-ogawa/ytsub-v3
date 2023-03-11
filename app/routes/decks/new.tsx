@@ -7,7 +7,7 @@ import { DeckTable, Q } from "../../db/models";
 import { R } from "../../misc/routes";
 import { Controller, makeLoader } from "../../utils/controller-utils";
 import { useIsFormValid } from "../../utils/hooks";
-import { PageHandle } from "../../utils/page-handle";
+import type { PageHandle } from "../../utils/page-handle";
 import { zStringToInteger, zStringToNumber } from "../../utils/zod-utils";
 
 export const handle: PageHandle = {

@@ -1,7 +1,7 @@
 import { useMatches } from "@remix-run/react";
-import { UserTable } from "../db/models";
-import { PUBLIC } from "../misc/env.server";
-import { FlashMessage } from "./flash-message";
+import type { UserTable } from "../db/models";
+import type { PUBLIC } from "../misc/env.server";
+import type { FlashMessage } from "./flash-message";
 import { useDeserialize } from "./hooks";
 
 export interface RootLoaderData {

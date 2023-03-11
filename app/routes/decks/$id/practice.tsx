@@ -24,7 +24,7 @@ import { R } from "../../../misc/routes";
 import { Controller, makeLoader } from "../../../utils/controller-utils";
 import { useDeserialize } from "../../../utils/hooks";
 import { useLeafLoaderData } from "../../../utils/loader-utils";
-import { PageHandle } from "../../../utils/page-handle";
+import type { PageHandle } from "../../../utils/page-handle";
 import {
   DeckPracticeStatistics,
   PracticeSystem,
@@ -32,7 +32,7 @@ import {
 import { toForm } from "../../../utils/url-data";
 import { BookmarkEntryComponent } from "../../bookmarks";
 import { requireUserAndDeck } from "./index";
-import { NewPracticeActionRequest } from "./new-practice-action";
+import type { NewPracticeActionRequest } from "./new-practice-action";
 
 export const handle: PageHandle = {
   navBarTitle: () => <NavBarTitleComponent />,

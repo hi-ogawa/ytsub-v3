@@ -1,4 +1,4 @@
-import { Session } from "@remix-run/server-runtime";
+import type { Session } from "@remix-run/server-runtime";
 import { commitSession, getSession } from "./session.server";
 
 export async function getRequestSession(request: Request): Promise<Session> {

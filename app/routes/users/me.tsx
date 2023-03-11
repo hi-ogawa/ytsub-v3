@@ -24,7 +24,7 @@ import {
   LanguageCode,
   languageCodeToName,
 } from "../../utils/language";
-import { PageHandle } from "../../utils/page-handle";
+import type { PageHandle } from "../../utils/page-handle";
 import { TIMEZONE_RE } from "../../utils/timezone";
 import { zKeys } from "../../utils/zod-utils";
 

@@ -8,7 +8,7 @@ import {
   languageCodeToName,
 } from "./language";
 import { loadScriptMemoized } from "./script";
-import {
+import type {
   CaptionConfig,
   CaptionConfigOptions,
   CaptionEntry,

@@ -1,6 +1,6 @@
 import type { Knex } from "knex";
-import { CaptionEntry, VideoMetadata } from "../utils/types";
-import { NewVideo } from "../utils/youtube";
+import type { CaptionEntry, VideoMetadata } from "../utils/types";
+import type { NewVideo } from "../utils/youtube";
 import { client } from "./client.server";
 import RAW_SCHEMA from "./schema";
 

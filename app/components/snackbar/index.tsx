@@ -1,4 +1,4 @@
-import React from "react";
+import type React from "react";
 import { AlertTriangle, CheckCircle, Info, X, XCircle } from "react-feather";
 import { useList } from "react-use";
 import { Collapse } from "../collapse";

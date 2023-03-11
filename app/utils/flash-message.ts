@@ -1,5 +1,5 @@
-import { Session } from "@remix-run/server-runtime";
-import { Variant } from "../components/snackbar";
+import type { Session } from "@remix-run/server-runtime";
+import type { Variant } from "../components/snackbar";
 
 const KEY = "flash-messages";
 

@@ -1,4 +1,4 @@
-import { Session } from "@remix-run/server-runtime";
+import type { Session } from "@remix-run/server-runtime";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
 import { Q, UserTable } from "../db/models";

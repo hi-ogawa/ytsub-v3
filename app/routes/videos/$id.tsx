@@ -36,8 +36,8 @@ import { useDeserialize, useSelection } from "../../utils/hooks";
 import { useYoutubeIframeApi } from "../../utils/hooks";
 import { useLeafLoaderData, useRootLoaderData } from "../../utils/loader-utils";
 import { isNotNil } from "../../utils/misc";
-import { PageHandle } from "../../utils/page-handle";
-import { CaptionEntry } from "../../utils/types";
+import type { PageHandle } from "../../utils/page-handle";
+import type { CaptionEntry } from "../../utils/types";
 import { toForm } from "../../utils/url-data";
 import {
   YoutubePlayer,
@@ -45,7 +45,7 @@ import {
   stringifyTimestamp,
 } from "../../utils/youtube";
 import { zStringToInteger, zStringToMaybeInteger } from "../../utils/zod-utils";
-import { NewBookmark } from "../bookmarks/new";
+import type { NewBookmark } from "../bookmarks/new";
 
 export const handle: PageHandle = {
   navBarTitle: () => "Watch",

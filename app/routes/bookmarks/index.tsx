@@ -30,11 +30,11 @@ import { Controller, makeLoader } from "../../utils/controller-utils";
 import { useDeserialize, useRafLoop } from "../../utils/hooks";
 import { useLeafLoaderData } from "../../utils/loader-utils";
 import { isNotNil } from "../../utils/misc";
-import { PageHandle } from "../../utils/page-handle";
+import type { PageHandle } from "../../utils/page-handle";
 import { PAGINATION_PARAMS_SCHEMA } from "../../utils/pagination";
-import { CaptionEntry } from "../../utils/types";
+import type { CaptionEntry } from "../../utils/types";
 import { toQuery } from "../../utils/url-data";
-import { YoutubePlayer } from "../../utils/youtube";
+import type { YoutubePlayer } from "../../utils/youtube";
 import { zStringToInteger } from "../../utils/zod-utils";
 import { CaptionEntryComponent, usePlayer } from "../videos/$id";
 

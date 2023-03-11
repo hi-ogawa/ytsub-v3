@@ -12,7 +12,7 @@ import {
 import { Controller, makeLoader } from "../../utils/controller-utils";
 import { AppError } from "../../utils/errors";
 import { useIsFormValid } from "../../utils/hooks";
-import { PageHandle } from "../../utils/page-handle";
+import type { PageHandle } from "../../utils/page-handle";
 
 export const handle: PageHandle = {
   navBarTitle: () => "Sign in",

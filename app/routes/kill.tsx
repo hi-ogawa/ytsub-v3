@@ -1,4 +1,4 @@
-import { LoaderFunction } from "@remix-run/server-runtime";
+import type { LoaderFunction } from "@remix-run/server-runtime";
 
 export const loader: LoaderFunction = async () => {
   if (process.env.NODE_ENV === "production") {

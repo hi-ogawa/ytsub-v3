@@ -7,7 +7,7 @@ import { R } from "../../../misc/routes";
 import { Controller, makeLoader } from "../../../utils/controller-utils";
 import { useDeserialize, useIsFormValid } from "../../../utils/hooks";
 import { dtf } from "../../../utils/intl";
-import { PageHandle } from "../../../utils/page-handle";
+import type { PageHandle } from "../../../utils/page-handle";
 import { zStringToInteger } from "../../../utils/zod-utils";
 
 export const handle: PageHandle = {
