@@ -214,7 +214,7 @@ function AddToDeckComponent({ videoId }: { videoId: number }) {
     if (fetcher2.data) {
       const data: NewPracticeEntryResponse = fetcher2.data;
       if (data.ok) {
-        enqueueSnackbar(`Added ${data.data.ids.length} to a deck`, {
+        enqueueSnackbar(`Added ${data.value.ids.length} to a deck`, {
           variant: "success",
         });
         closeModal();

@@ -34,26 +34,6 @@ export function fromEntries<K extends string, V>(
 }
 
 //
-// result type
-//
-
-export type Result<T, E> = ResultOk<T> | ResultErr<E>;
-
-interface ResultOk<T> {
-  ok: true;
-  data: T;
-}
-
-interface ResultErr<E> {
-  ok: false;
-  data: E;
-}
-
-export function sleep(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-//
 // Proxy to warn unexpected access
 //
 

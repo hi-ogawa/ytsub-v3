@@ -1,9 +1,10 @@
 import { requireUserAndDeck } from ".";
+import { Err, Ok, Result } from "@hiogawa/utils";
 import { z } from "zod";
 import { Q } from "../../../db/models";
 import { assert } from "../../../misc/assert";
 import { Controller, makeLoader } from "../../../utils/controller-utils";
-import { Result, isNotNil } from "../../../utils/misc";
+import { isNotNil } from "../../../utils/misc";
 import { PracticeSystem } from "../../../utils/practice-system";
 import { zStringToDate, zStringToInteger } from "../../../utils/zod-utils";
 
@@ -35,7 +36,7 @@ async function actionImpl(this: Controller): Promise<NewPracticeEntryResponse> {
   const [user, deck] = await requireUserAndDeck.apply(this);
   const parsed = ACTION_REQUEST_SCHEMA.safeParse(await this.form());
   if (!parsed.success) {
-    return { ok: false, data: { message: "Invalid request" } };
+    return Err({ message: "Invalid request" });
   }
 
   const { videoId, now } = parsed.data;
@@ -62,5 +63,5 @@ async function actionImpl(this: Controller): Promise<NewPracticeEntryResponse> {
 
   const system = new PracticeSystem(user, deck);
   const ids = await system.createPracticeEntries(bookmarkEntries, now);
-  return { ok: true, data: { ids } };
+  return Ok({ ids });
 }
