@@ -18,7 +18,6 @@ import {
   toPaginationResult,
 } from "../../db/models";
 import { R } from "../../misc/routes";
-import { publicConfig } from "../../utils/config";
 import {
   Controller,
   deserialize,
@@ -116,9 +115,6 @@ export function VideoListComponent({
       <div className="w-full flex justify-center">
         <div className="h-full w-full max-w-lg">
           <div className="h-full flex flex-col p-2 gap-2">
-            <details>
-              <pre>{JSON.stringify(publicConfig, null, 2)}</pre>
-            </details>
             {/* TODO: CTA when empty */}
             {pagination.data.length === 0 && <div>Empty</div>}
             {pagination.data.map((video) => (
