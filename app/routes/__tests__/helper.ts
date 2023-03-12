@@ -1,4 +1,4 @@
-import { LoaderFunction } from "@remix-run/server-runtime";
+import type { LoaderFunction } from "@remix-run/server-runtime";
 import { afterAll, beforeAll } from "vitest";
 import {
   CaptionEntryTable,

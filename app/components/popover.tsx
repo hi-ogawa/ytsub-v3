@@ -9,7 +9,7 @@ import {
   useFocusTrap,
   useInteractions,
 } from "@floating-ui/react-dom-interactions";
-import * as React from "react";
+import React from "react";
 
 interface PopoverRenderProps {
   open: boolean;
@@ -52,6 +52,7 @@ export function Popover(props: PopoverProps) {
         open,
         setOpen,
         update,
+        // @ts-expect-error
         props: getReferenceProps({ ref: refs.reference }),
       })}
       {props.floating({

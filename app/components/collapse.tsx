@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import { Transition } from "react-transition-group";
 
 // based on https://github.com/mui/material-ui/blob/bbdf5080fc9bd9d979d657a3cb237d88b27035d9/packages/mui-material/src/Collapse/Collapse.js

@@ -1,5 +1,5 @@
-import * as path from "node:path";
-import { Knex } from "knex";
+import path from "node:path";
+import type { Knex } from "knex";
 
 // TODO: move to env.server.ts
 

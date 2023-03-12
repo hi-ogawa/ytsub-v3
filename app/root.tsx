@@ -11,9 +11,9 @@ import {
   useMatches,
   useTransition,
 } from "@remix-run/react";
-import { LinksFunction, MetaFunction } from "@remix-run/server-runtime";
+import type { LinksFunction, MetaFunction } from "@remix-run/server-runtime";
 import { last } from "lodash";
-import * as React from "react";
+import React from "react";
 import {
   BookOpen,
   Bookmark,
@@ -36,14 +36,14 @@ import {
   useSnackbar,
 } from "./components/snackbar";
 import { TopProgressBar } from "./components/top-progress-bar";
-import { UserTable } from "./db/models";
+import type { UserTable } from "./db/models";
 import { PUBLIC } from "./misc/env.server";
 import { R, R_RE } from "./misc/routes";
 import { Controller, deserialize, makeLoader } from "./utils/controller-utils";
 import { getFlashMessages } from "./utils/flash-message";
 import { useHydrated } from "./utils/hooks";
 import { RootLoaderData, useRootLoaderData } from "./utils/loader-utils";
-import { Match } from "./utils/page-handle";
+import type { Match } from "./utils/page-handle";
 
 const ASSETS = {
   "index.css": require("../build/tailwind/" +

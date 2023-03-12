@@ -1,5 +1,5 @@
 import { Transition } from "@headlessui/react";
-import * as React from "react";
+import React from "react";
 import {
   Bookmark,
   LogOut,

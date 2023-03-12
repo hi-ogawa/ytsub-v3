@@ -6,7 +6,7 @@ import {
 } from "@remix-run/server-runtime";
 import { isEqual } from "lodash";
 import superjson from "superjson";
-import { UserTable } from "../db/models";
+import type { UserTable } from "../db/models";
 import { R } from "../misc/routes";
 import { getSessionUser, getSessionUserId } from "./auth";
 import { FlashMessage, pushFlashMessage } from "./flash-message";

@@ -4,7 +4,7 @@ import { Link } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import type { ECharts } from "echarts";
 import { range } from "lodash";
-import * as React from "react";
+import React from "react";
 import {
   BarChart2,
   ChevronsLeft,
@@ -26,7 +26,7 @@ import { R } from "../../../misc/routes";
 import { Controller, makeLoader } from "../../../utils/controller-utils";
 import { useDeserialize, useHydrated } from "../../../utils/hooks";
 import { useLeafLoaderData } from "../../../utils/loader-utils";
-import { PageHandle } from "../../../utils/page-handle";
+import type { PageHandle } from "../../../utils/page-handle";
 import { Timedelta } from "../../../utils/timedelta";
 import { formatYmd } from "../../../utils/timezone";
 import { toQuery } from "../../../utils/url-data";
