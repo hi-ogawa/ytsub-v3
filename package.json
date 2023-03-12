@@ -39,6 +39,7 @@
   "dependencies": {
     "@floating-ui/react-dom-interactions": "^0.0.15",
     "@headlessui/react": "^0.0.0-insiders.ab6310c",
+    "@hiogawa/utils": "^1.2.0",
     "@remix-run/node": "^1.4.0",
     "@remix-run/react": "^1.4.0",
     "@remix-run/server-runtime": "^1.4.0",
@@ -60,7 +61,7 @@
     "react-transition-group": "^4.4.2",
     "react-use": "^17.3.2",
     "superjson": "^1.8.1",
-    "zod": "^3.14.3"
+    "zod": "^3.21.4"
   },
   "devDependencies": {
     "@hiogawa/isort-ts": "1.0.0-pre.11",

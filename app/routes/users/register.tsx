@@ -2,7 +2,6 @@ import { Form, Link, useActionData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import React from "react";
 import { assert } from "../../misc/assert";
-import { PUBLIC, SECRET } from "../../misc/env.server";
 import { R } from "../../misc/routes";
 import {
   PASSWORD_MAX_LENGTH,
@@ -11,10 +10,10 @@ import {
   register,
   signinSession,
 } from "../../utils/auth";
+import { publicConfig, serverConfig } from "../../utils/config";
 import { Controller, makeLoader } from "../../utils/controller-utils";
 import { AppError } from "../../utils/errors";
 import { createUseQuery, useIsFormValid } from "../../utils/hooks";
-import { useRootLoaderData } from "../../utils/loader-utils";
 import { mapOption } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 import { loadScriptMemoized } from "../../utils/script";
@@ -47,14 +46,14 @@ interface ActionData {
 
 async function verifyRecaptchaToken(token: string): Promise<boolean> {
   // for loader unit tests
-  if (PUBLIC.APP_RECAPTCHA_DISABLED) {
+  if (publicConfig.APP_RECAPTCHA_DISABLED) {
     return true;
   }
 
   // https://developers.google.com/recaptcha/docs/verify
   const url = "https://www.google.com/recaptcha/api/siteverify";
   const payload = {
-    secret: SECRET.APP_RECAPTCHA_SERVER_KEY,
+    secret: serverConfig.APP_RECAPTCHA_SERVER_KEY,
     response: token,
   };
   const res = await fetch(url, {
@@ -113,9 +112,7 @@ export const action = makeLoader(Controller, async function () {
 });
 
 export default function DefaultComponent() {
-  const {
-    PUBLIC: { APP_RECAPTCHA_CLIENT_KEY, APP_RECAPTCHA_DISABLED },
-  } = useRootLoaderData();
+  const { APP_RECAPTCHA_CLIENT_KEY, APP_RECAPTCHA_DISABLED } = publicConfig;
   const actionData: ActionData | undefined = useActionData();
   const [isValid, formProps] = useIsFormValid();
   const recaptchaApi = useRecaptchaApi(APP_RECAPTCHA_CLIENT_KEY);
