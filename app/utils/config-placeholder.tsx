@@ -4,7 +4,7 @@ import { CONFIG_SCRIPT_ID, CONFIG_SCRIPT_PLACEHOLDER } from "./config";
 
 // modified by server (injectConfigScript)
 // read by client (initializeConfigClient)
-export function ConfigScriptPlaceholder() {
+export function ConfigPlaceholder() {
   return (
     <script
       id={CONFIG_SCRIPT_ID}

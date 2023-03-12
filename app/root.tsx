@@ -39,7 +39,7 @@ import { TopProgressBar } from "./components/top-progress-bar";
 import type { UserTable } from "./db/models";
 import { PUBLIC } from "./misc/env.server";
 import { R, R_RE } from "./misc/routes";
-import { ConfigScriptPlaceholder } from "./utils/config-placeholder";
+import { ConfigPlaceholder } from "./utils/config-placeholder";
 import { Controller, deserialize, makeLoader } from "./utils/controller-utils";
 import { getFlashMessages } from "./utils/flash-message";
 import { useHydrated } from "./utils/hooks";
@@ -115,7 +115,7 @@ export default function DefaultComponent() {
         <meta charSet="utf-8" />
         <Meta />
         <Links />
-        <ConfigScriptPlaceholder />
+        <ConfigPlaceholder />
       </head>
       <body className="h-full">
         <RootProviders>
