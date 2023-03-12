@@ -34,21 +34,9 @@ export let serverConfig: z.infer<typeof Z_SERVER_CONFIG> =
 export let publicConfig: z.infer<typeof Z_PUBLIC_CONFIG> =
   throwGetterProxy as any;
 
-const CONFIG_SCRIPT_ID = "__configScript";
-const CONFIG_SCRIPT_PLACEHOLDER = "@@__configScriptPlaceholder@@";
+export const CONFIG_SCRIPT_ID = "__configScript";
 
-// modified by server (injectConfigScript)
-// read by client (initializeConfigClient)
-export function ConfigScriptPlaceholder() {
-  return (
-    <script
-      id={CONFIG_SCRIPT_ID}
-      type="application/json"
-      dangerouslySetInnerHTML={{ __html: CONFIG_SCRIPT_PLACEHOLDER }}
-      suppressHydrationWarning
-    />
-  );
-}
+export const CONFIG_SCRIPT_PLACEHOLDER = "@@__configScriptPlaceholder@@";
 
 //
 // server

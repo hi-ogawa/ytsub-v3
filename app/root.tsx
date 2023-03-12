@@ -39,7 +39,7 @@ import { TopProgressBar } from "./components/top-progress-bar";
 import type { UserTable } from "./db/models";
 import { PUBLIC } from "./misc/env.server";
 import { R, R_RE } from "./misc/routes";
-import { ConfigScriptPlaceholder } from "./utils/config";
+import { ConfigScriptPlaceholder } from "./utils/config-placeholder";
 import { Controller, deserialize, makeLoader } from "./utils/controller-utils";
 import { getFlashMessages } from "./utils/flash-message";
 import { useHydrated } from "./utils/hooks";
