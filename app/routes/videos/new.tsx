@@ -1,6 +1,6 @@
 import { Form, useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
-import * as React from "react";
+import React from "react";
 import { z } from "zod";
 import { filterNewVideo, insertVideoAndCaptionEntries } from "../../db/models";
 import { R } from "../../misc/routes";
@@ -8,8 +8,8 @@ import { Controller, makeLoader } from "../../utils/controller-utils";
 import { AppError } from "../../utils/errors";
 import { useIsFormValid } from "../../utils/hooks";
 import { useRootLoaderData } from "../../utils/loader-utils";
-import { PageHandle } from "../../utils/page-handle";
-import { CaptionConfig, VideoMetadata } from "../../utils/types";
+import type { PageHandle } from "../../utils/page-handle";
+import type { CaptionConfig, VideoMetadata } from "../../utils/types";
 import { NEW_VIDEO_SCHEMA, fetchCaptionEntries } from "../../utils/youtube";
 import {
   fetchVideoMetadata,

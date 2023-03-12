@@ -1,7 +1,6 @@
 import { requireUserAndDeck } from ".";
 import { useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
-import * as React from "react";
 import { CheckCircle, Circle, Disc } from "react-feather";
 import { z } from "zod";
 import { PaginationComponent } from "../../../components/misc";
@@ -17,7 +16,7 @@ import { Controller, makeLoader } from "../../../utils/controller-utils";
 import { useDeserialize } from "../../../utils/hooks";
 import { dtf } from "../../../utils/intl";
 import { useLeafLoaderData } from "../../../utils/loader-utils";
-import { PageHandle } from "../../../utils/page-handle";
+import type { PageHandle } from "../../../utils/page-handle";
 import { PAGINATION_PARAMS_SCHEMA } from "../../../utils/pagination";
 import { zStringToInteger } from "../../../utils/zod-utils";
 import { NavBarMenuComponent } from "./history-graph";

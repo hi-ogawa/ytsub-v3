@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import { UseQueryOptions, useQuery } from "react-query";
 import { deserialize } from "./controller-utils";
 import { loadYoutubeIframeApi } from "./youtube";

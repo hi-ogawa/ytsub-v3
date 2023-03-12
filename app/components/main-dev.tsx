@@ -1,6 +1,6 @@
 import { mapKeys } from "lodash";
-import * as React from "react";
-import * as ReactDOM from "react-dom";
+import React from "react";
+import ReactDOM from "react-dom";
 import { Menu } from "react-feather";
 import {
   BrowserRouter,

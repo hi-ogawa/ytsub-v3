@@ -1,5 +1,5 @@
-import { Session } from "@remix-run/server-runtime";
-import * as bcrypt from "bcryptjs";
+import type { Session } from "@remix-run/server-runtime";
+import bcrypt from "bcryptjs";
 import { z } from "zod";
 import { Q, UserTable } from "../db/models";
 import { AppError } from "./errors";

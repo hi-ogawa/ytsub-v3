@@ -1,5 +1,5 @@
 import BarOfProgress from "@badrap/bar-of-progress";
-import * as React from "react";
+import React from "react";
 
 export function TopProgressBar({ loading }: { loading: boolean }) {
   const [barOfProgress] = React.useState(

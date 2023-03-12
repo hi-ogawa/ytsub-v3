@@ -1,14 +1,13 @@
 import { requireUserAndDeck } from ".";
 import { Form, useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
-import * as React from "react";
 import { z } from "zod";
 import { DeckTable, Q } from "../../../db/models";
 import { R } from "../../../misc/routes";
 import { Controller, makeLoader } from "../../../utils/controller-utils";
 import { useDeserialize, useIsFormValid } from "../../../utils/hooks";
 import { dtf } from "../../../utils/intl";
-import { PageHandle } from "../../../utils/page-handle";
+import type { PageHandle } from "../../../utils/page-handle";
 import { zStringToInteger } from "../../../utils/zod-utils";
 
 export const handle: PageHandle = {

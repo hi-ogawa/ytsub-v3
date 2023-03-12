@@ -1,13 +1,13 @@
 import { Form, useActionData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
-import * as React from "react";
+import React from "react";
 import { z } from "zod";
 import { useSnackbar } from "../../components/snackbar";
 import { DeckTable, Q } from "../../db/models";
 import { R } from "../../misc/routes";
 import { Controller, makeLoader } from "../../utils/controller-utils";
 import { useIsFormValid } from "../../utils/hooks";
-import { PageHandle } from "../../utils/page-handle";
+import type { PageHandle } from "../../utils/page-handle";
 import { zStringToInteger, zStringToNumber } from "../../utils/zod-utils";
 
 export const handle: PageHandle = {

@@ -1,7 +1,10 @@
 import { RemixServer } from "@remix-run/react";
 import type { HandleDocumentRequestFunction } from "@remix-run/server-runtime";
-import * as React from "react";
 import { renderToString } from "react-dom/server";
+import { initializeConfigServer, injectConfigScript } from "./utils/config";
+
+// TODO: avoid side-effect
+initializeConfigServer();
 
 const handler: HandleDocumentRequestFunction = (
   request,
@@ -9,9 +12,10 @@ const handler: HandleDocumentRequestFunction = (
   responseHeaders,
   remixContext
 ) => {
-  const markup = renderToString(
+  let markup = renderToString(
     <RemixServer context={remixContext} url={request.url} />
   );
+  markup = injectConfigScript(markup);
   responseHeaders.set("content-type", "text/html");
   return new Response("<!DOCTYPE html>" + markup, {
     status: responseStatusCode,

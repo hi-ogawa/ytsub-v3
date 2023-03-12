@@ -1,6 +1,5 @@
 import { useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
-import * as React from "react";
 import {
   PaginationResult,
   Q,
@@ -10,7 +9,7 @@ import {
 import { R } from "../misc/routes";
 import { Controller, makeLoader } from "../utils/controller-utils";
 import { useDeserialize } from "../utils/hooks";
-import { PageHandle } from "../utils/page-handle";
+import type { PageHandle } from "../utils/page-handle";
 import { PAGINATION_PARAMS_SCHEMA } from "../utils/pagination";
 import { VideoListComponent } from "./videos";
 

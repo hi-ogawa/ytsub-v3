@@ -52,3 +52,17 @@ interface ResultErr<E> {
 export function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
+
+//
+// Proxy to warn unexpected access
+//
+
+export const throwGetterProxy = new Proxy(
+  {},
+  {
+    get: (_target, p) => {
+      console.error("throwGetterProxy", p);
+      throw new Error(`throwGetterProxy: ` + p.toString());
+    },
+  }
+);
