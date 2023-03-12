@@ -1,11 +1,14 @@
 import { createCookieSessionStorage } from "@remix-run/node";
-import { SECRET } from "../misc/env.server";
+import { initializeConfigServer, serverConfig } from "./config";
+
+// TODO: avoid config dependent side-effect
+initializeConfigServer();
 
 const { getSession, commitSession, destroySession } =
   createCookieSessionStorage({
     cookie: {
       httpOnly: true,
-      secrets: [SECRET.APP_SESSION_SECRET],
+      secrets: [serverConfig.APP_SESSION_SECRET],
     },
   });
 

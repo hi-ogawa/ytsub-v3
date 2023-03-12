@@ -1,4 +1,5 @@
 import { Transition } from "@headlessui/react";
+import { booleanGuard } from "@hiogawa/utils";
 import {
   Form,
   Link,
@@ -37,10 +38,10 @@ import {
 } from "./components/snackbar";
 import { TopProgressBar } from "./components/top-progress-bar";
 import type { UserTable } from "./db/models";
-import { PUBLIC } from "./misc/env.server";
 import { R, R_RE } from "./misc/routes";
+import { publicConfig } from "./utils/config";
 import { ConfigPlaceholder } from "./utils/config-placeholder";
-import { Controller, deserialize, makeLoader } from "./utils/controller-utils";
+import { Controller, makeLoader } from "./utils/controller-utils";
 import { getFlashMessages } from "./utils/flash-message";
 import { useHydrated } from "./utils/hooks";
 import { RootLoaderData, useRootLoaderData } from "./utils/loader-utils";
@@ -61,10 +62,13 @@ export const links: LinksFunction = () => {
   ];
 };
 
-export const meta: MetaFunction = (args) => {
-  const { PUBLIC }: RootLoaderData = deserialize(args.data);
+export const meta: MetaFunction = () => {
+  [publicConfig.VERCEL_ENV == "preview" && "[PREVIEW]", "ytsub-v3"].filter(
+    booleanGuard
+  );
   return {
-    title: (PUBLIC.APP_STAGING ? "[STAGING] " : "") + "ytsub-v3",
+    title:
+      (publicConfig.VERCEL_ENV === "preview" ? "[PREVIEW] " : "") + "ytsub-v3",
     viewport:
       "width=device-width, height=device-height, initial-scale=1, maximum-scale=1, user-scalable=no",
   };
@@ -78,7 +82,6 @@ export const loader = makeLoader(Controller, async function () {
   const data: RootLoaderData = {
     currentUser: await this.currentUser(),
     flashMessages: getFlashMessages(this.session),
-    PUBLIC,
   };
   return this.serialize(data);
 });
