@@ -1,11 +1,10 @@
 import { RemixServer } from "@remix-run/react";
 import type { HandleDocumentRequestFunction } from "@remix-run/server-runtime";
 import { renderToString } from "react-dom/server";
-import {
-  CONFIG_SCRIPT_PLACEHOLDER,
-  initializeConfigServer,
-  publicConfig,
-} from "./utils/config";
+import { initializeConfigServer, injectConfigScript } from "./utils/config";
+
+// TODO: avoid side-effect
+initializeConfigServer();
 
 const handler: HandleDocumentRequestFunction = (
   request,
@@ -23,15 +22,5 @@ const handler: HandleDocumentRequestFunction = (
     headers: responseHeaders,
   });
 };
-
-// TODO: do this elsewhere not as as side-effect
-initializeConfigServer();
-
-function injectConfigScript(markup: string): string {
-  return markup.replace(
-    CONFIG_SCRIPT_PLACEHOLDER,
-    JSON.stringify(publicConfig)
-  );
-}
 
 export default handler;

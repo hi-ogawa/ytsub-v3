@@ -39,7 +39,7 @@ import { TopProgressBar } from "./components/top-progress-bar";
 import type { UserTable } from "./db/models";
 import { PUBLIC } from "./misc/env.server";
 import { R, R_RE } from "./misc/routes";
-import { CONFIG_SCRIPT_ID, CONFIG_SCRIPT_PLACEHOLDER } from "./utils/config";
+import { ConfigScriptPlaceholder } from "./utils/config";
 import { Controller, deserialize, makeLoader } from "./utils/controller-utils";
 import { getFlashMessages } from "./utils/flash-message";
 import { useHydrated } from "./utils/hooks";
@@ -115,12 +115,7 @@ export default function DefaultComponent() {
         <meta charSet="utf-8" />
         <Meta />
         <Links />
-        <script
-          id={CONFIG_SCRIPT_ID}
-          type="application/json"
-          dangerouslySetInnerHTML={{ __html: CONFIG_SCRIPT_PLACEHOLDER }}
-          suppressHydrationWarning
-        />
+        <ConfigScriptPlaceholder />
       </head>
       <body className="h-full">
         <RootProviders>
