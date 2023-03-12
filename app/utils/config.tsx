@@ -55,6 +55,9 @@ export function ConfigScriptPlaceholder() {
 //
 
 export function initializeConfigServer() {
+  if (serverConfig !== throwGetterProxy) {
+    return;
+  }
   serverConfig = Z_SERVER_CONFIG.parse(process.env);
   publicConfig = Z_PUBLIC_CONFIG.parse(process.env);
 }
@@ -71,6 +74,9 @@ export function injectConfigScript(markup: string): string {
 //
 
 export function initializeConfigClient() {
+  if (publicConfig !== throwGetterProxy) {
+    return;
+  }
   const el = document.querySelector("#" + CONFIG_SCRIPT_ID);
   tinyassert(el);
   publicConfig = JSON.parse(el.innerHTML);
