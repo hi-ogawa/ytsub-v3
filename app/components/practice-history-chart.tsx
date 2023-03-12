@@ -1,6 +1,6 @@
 import * as echarts from "echarts";
-import * as React from "react";
-import { PracticeQueueType } from "../db/models";
+import React from "react";
+import type { PracticeQueueType } from "../db/models";
 import { assert } from "../misc/assert";
 
 function EchartsComponent(props: {

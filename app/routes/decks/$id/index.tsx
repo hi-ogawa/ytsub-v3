@@ -1,7 +1,7 @@
 import { Transition } from "@headlessui/react";
 import { Form, Link, useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
-import * as React from "react";
+import React from "react";
 import {
   Activity,
   Bookmark,
@@ -37,7 +37,7 @@ import { Controller, makeLoader } from "../../../utils/controller-utils";
 import { useDeserialize } from "../../../utils/hooks";
 import { dtfDateOnly, rtf } from "../../../utils/intl";
 import { useLeafLoaderData } from "../../../utils/loader-utils";
-import { PageHandle } from "../../../utils/page-handle";
+import type { PageHandle } from "../../../utils/page-handle";
 import { PAGINATION_PARAMS_SCHEMA } from "../../../utils/pagination";
 import {
   DeckPracticeStatistics,

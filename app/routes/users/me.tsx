@@ -5,7 +5,7 @@ import {
   useTransition,
 } from "@remix-run/react";
 import { json, redirect } from "@remix-run/server-runtime";
-import * as React from "react";
+import React from "react";
 import { HelpCircle } from "react-feather";
 import { z } from "zod";
 import { useSnackbar } from "../../components/snackbar";
@@ -24,7 +24,7 @@ import {
   LanguageCode,
   languageCodeToName,
 } from "../../utils/language";
-import { PageHandle } from "../../utils/page-handle";
+import type { PageHandle } from "../../utils/page-handle";
 import { TIMEZONE_RE } from "../../utils/timezone";
 import { zKeys } from "../../utils/zod-utils";
 

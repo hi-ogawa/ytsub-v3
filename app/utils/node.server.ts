@@ -1,7 +1,7 @@
-import * as childProcess from "child_process";
-import * as crypto from "crypto";
-import type { Readable } from "stream";
-import { promisify } from "util";
+import childProcess from "node:child_process";
+import crypto from "node:crypto";
+import type { Readable } from "node:stream";
+import { promisify } from "node:util";
 
 export { crypto as crypto };
 export const exec = promisify(childProcess.exec);

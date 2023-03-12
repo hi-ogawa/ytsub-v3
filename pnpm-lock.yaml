@@ -21,6 +21,7 @@ specifiers:
   '@remix-run/server-runtime': ^1.4.0
   '@remix-run/vercel': ^1.4.0
   '@tailwindcss/line-clamp': ^0.3.1
+  '@tsconfig/strictest': ^1.0.2
   '@types/bcryptjs': ^2.4.2
   '@types/fs-extra': ^9.0.13
   '@types/lodash': ^4.14.179
@@ -61,7 +62,7 @@ specifiers:
   react-use: ^17.3.2
   superjson: ^1.8.1
   tailwindcss: ^3.0.23
-  typescript: 4.5.5
+  typescript: ^4.9.5
   vite: ^2.8.6
   vitest: ^0.7.12
   zod: ^3.21.4
@@ -94,11 +95,12 @@ dependencies:
   zod: 3.21.4
 
 devDependencies:
-  '@hiogawa/isort-ts': 1.0.0-pre.11_zkoxyffzjtjkijl5hapnwta2ea
+  '@hiogawa/isort-ts': 1.0.0-pre.11_silln3pw57har7jydmecgzoypa
   '@playwright/test': 1.19.2
   '@remix-run/dev': 1.4.1_stojxe6rvkuiyvdec5abatvvv4_sfoxds7t5ydpegc3knd667wn6m
   '@remix-run/serve': 1.4.1_yjdvfjiu2lmiptxkd6bjomzlcu_sfoxds7t5ydpegc3knd667wn6m
   '@tailwindcss/line-clamp': 0.3.1_tailwindcss@3.0.23
+  '@tsconfig/strictest': 1.0.2
   '@types/fs-extra': 9.0.13
   '@types/lodash': 4.14.179
   '@types/node': 16.11.35
@@ -122,7 +124,7 @@ devDependencies:
   prettier: 2.8.4
   qrcode-terminal: 0.12.0
   tailwindcss: 3.0.23_iwc7stpd5lcuyf56paxiwujvfq
-  typescript: 4.5.5
+  typescript: 4.9.5
   vite: 2.8.6
   vitest: 0.7.12_c8@7.11.2+happy-dom@2.50.0
 
@@ -1336,7 +1338,7 @@ packages:
       react-dom: 17.0.2_react@17.0.2
     dev: false
 
-  /@hiogawa/isort-ts/1.0.0-pre.11_zkoxyffzjtjkijl5hapnwta2ea:
+  /@hiogawa/isort-ts/1.0.0-pre.11_silln3pw57har7jydmecgzoypa:
     resolution: {integrity: sha512-55Id9ENzKjWfm89wuiLMvAflKm+UggLjPHqk99kV/XYYQsPhM81ig1PN/1nCGym3BK811NLhlKbpdBFyPKU1NA==}
     hasBin: true
     peerDependencies:
@@ -1347,7 +1349,7 @@ packages:
       consola: 2.15.3
       lodash: 4.17.21
       prettier: 2.8.4
-      typescript: 4.5.5
+      typescript: 4.9.5
     dev: true
 
   /@hiogawa/utils/1.2.0:
@@ -1765,6 +1767,10 @@ packages:
       tailwindcss: '>=2.0.0 || >=3.0.0 || >=3.0.0-alpha.1'
     dependencies:
       tailwindcss: 3.0.23_iwc7stpd5lcuyf56paxiwujvfq
+    dev: true
+
+  /@tsconfig/strictest/1.0.2:
+    resolution: {integrity: sha512-IRKlC8cnP7zMz1SDBjyIVyPapkEGWLZ6wkF6Z8T+xU80P9sO5uGXlIUvtzjx+7ehPJRWxkB6CeIDwUfyqNtYkQ==}
     dev: true
 
   /@types/acorn/4.0.6:
@@ -8418,8 +8424,8 @@ packages:
     hasBin: true
     dev: false
 
-  /typescript/4.5.5:
-    resolution: {integrity: sha512-TCTIul70LyWe6IJWT8QSYeA54WQe8EjQFU4wY52Fasj5UKx88LNYKCgBEHcOMOrFF1rKGbD8v/xcNWVUq9SymA==}
+  /typescript/4.9.5:
+    resolution: {integrity: sha512-1FXk9E2Hm+QzZQ7z+McJiHL4NW1F2EzMu9Nq9i3zAaGqibafqYwCVU6WyWAuyQRRzOlxou8xZSyXLEN8oKj24g==}
     engines: {node: '>=4.2.0'}
     hasBin: true
     dev: true

@@ -1,6 +1,5 @@
 import { RemixServer } from "@remix-run/react";
 import type { HandleDocumentRequestFunction } from "@remix-run/server-runtime";
-import * as React from "react";
 import { renderToString } from "react-dom/server";
 import {
   CONFIG_SCRIPT_PLACEHOLDER,

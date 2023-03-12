@@ -1,5 +1,5 @@
-import { useMatches } from "@remix-run/react";
-import * as React from "react";
+import type { useMatches } from "@remix-run/react";
+import type React from "react";
 
 export interface PageHandle {
   navBarTitle?: () => React.ReactNode;

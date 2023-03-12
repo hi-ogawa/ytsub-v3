@@ -1,6 +1,6 @@
 import { useFetcher, useFetchers, useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
-import * as React from "react";
+import React from "react";
 import { PlusSquare, Trash2 } from "react-feather";
 import {
   PaginationComponent,
@@ -27,11 +27,11 @@ import {
 import { useDeserialize } from "../../utils/hooks";
 import { useRootLoaderData } from "../../utils/loader-utils";
 import { mapOption } from "../../utils/misc";
-import { PageHandle } from "../../utils/page-handle";
+import type { PageHandle } from "../../utils/page-handle";
 import { PAGINATION_PARAMS_SCHEMA } from "../../utils/pagination";
 import { toForm } from "../../utils/url-data";
-import { DecksLoaderData } from "../decks";
-import {
+import type { DecksLoaderData } from "../decks";
+import type {
   NewPracticeEntryRequest,
   NewPracticeEntryResponse,
 } from "../decks/$id/new-practice-entry";

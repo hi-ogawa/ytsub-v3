@@ -1,5 +1,5 @@
-import * as path from "node:path";
-import { Knex } from "knex";
+import path from "node:path";
+import type { Knex } from "knex";
 import { initializeConfigServer, serverConfig } from "../utils/config";
 
 export default function knexConfig(): Knex.Config {
