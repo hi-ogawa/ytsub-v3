@@ -1,4 +1,5 @@
 import { Transition } from "@headlessui/react";
+import { useRafLoop } from "@hiogawa/utils-react";
 import {
   Form,
   Link,
@@ -215,26 +216,13 @@ function PageComponent({
   // handlers
   //
 
-  // TODO: use `useRafLoop` like in `MiniPlayer` (bookmarks/index.tsx)
-  function startSynchronizePlayerState(player: YoutubePlayer): () => void {
-    // Poll state change via RAF
-    // (this assumes `player` and `captionEntries` don't change during the entire component lifecycle)
-    let id: number | undefined;
-    function loop() {
-      // On development rendering takes more than 100ms depending on the amount of subtitles
-      setIsPlaying(player.getPlayerState() === 1);
-      setCurrentEntry(
-        findCurrentEntry(captionEntries, player.getCurrentTime())
-      );
-      id = requestAnimationFrame(loop);
+  useRafLoop(() => {
+    if (!player) {
+      return;
     }
-    loop();
-    return () => {
-      if (typeof id === "number") {
-        cancelAnimationFrame(id);
-      }
-    };
-  }
+    setIsPlaying(player.getPlayerState() === 1);
+    setCurrentEntry(findCurrentEntry(captionEntries, player.getCurrentTime()));
+  });
 
   function repeatEntry(player: YoutubePlayer) {
     if (repeatingEntries.length === 0) return;
@@ -314,11 +302,6 @@ function PageComponent({
   //
   // effects
   //
-
-  React.useEffect(() => {
-    if (!player) return;
-    return startSynchronizePlayerState(player);
-  }, [player, captionEntries]);
 
   React.useEffect(() => {
     if (!player) return;
