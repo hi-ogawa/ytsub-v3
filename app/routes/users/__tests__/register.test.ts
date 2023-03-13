@@ -1,6 +1,6 @@
+import { tinyassert } from "@hiogawa/utils";
 import { beforeEach, describe, expect, it } from "vitest";
 import { Q } from "../../../db/models";
-import { assert } from "../../../misc/assert";
 import { getSessionUser } from "../../../utils/auth";
 import { getSession } from "../../../utils/session.server";
 import { testLoader } from "../../__tests__/helper";
@@ -22,12 +22,12 @@ describe("register.action", () => {
       };
       const res = await testLoader(action, { form: data });
       const found = await Q.users().where("username", data.username).first();
-      assert(found);
+      tinyassert(found);
       expect(found.username).toBe(username);
       expect(found.timezone).toBe("+00:00");
 
       // redirect to root
-      assert(res instanceof Response);
+      tinyassert(res instanceof Response);
       expect(res.status).toBe(302);
       expect(res.headers.get("location")).toBe("/");
 
@@ -96,7 +96,7 @@ describe("register.action", () => {
       };
       {
         const res = await testLoader(action, { form: data });
-        assert(res instanceof Response);
+        tinyassert(res instanceof Response);
         expect(res.status).toBe(302);
       }
       {

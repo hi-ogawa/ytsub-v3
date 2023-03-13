@@ -1,7 +1,7 @@
+import { tinyassert } from "@hiogawa/utils";
 import * as echarts from "echarts";
 import React from "react";
 import type { PracticeQueueType } from "../db/models";
-import { assert } from "../misc/assert";
 
 function EchartsComponent(props: {
   option: echarts.EChartsOption;
@@ -12,20 +12,20 @@ function EchartsComponent(props: {
   const instance = React.useRef<echarts.ECharts>();
 
   React.useEffect(() => {
-    assert(!instance.current);
-    assert(ref.current);
+    tinyassert(!instance.current);
+    tinyassert(ref.current);
     instance.current = echarts.init(ref.current);
     if (props.setInstance) {
       props.setInstance(instance.current);
     }
     return () => {
-      assert(instance.current);
+      tinyassert(instance.current);
       instance.current.dispose();
     };
   }, []);
 
   React.useEffect(() => {
-    assert(instance.current);
+    tinyassert(instance.current);
     instance.current.setOption(props.option);
   }, [props.option]);
 

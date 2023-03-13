@@ -1,8 +1,8 @@
 import { requireUserAndDeck } from ".";
 import { Err, Ok, Result } from "@hiogawa/utils";
+import { tinyassert } from "@hiogawa/utils";
 import { z } from "zod";
 import { Q } from "../../../db/models";
-import { assert } from "../../../misc/assert";
 import { Controller, makeLoader } from "../../../utils/controller-utils";
 import { isNotNil } from "../../../utils/misc";
 import { PracticeSystem } from "../../../utils/practice-system";
@@ -40,7 +40,7 @@ async function actionImpl(this: Controller): Promise<NewPracticeEntryResponse> {
   }
 
   const { videoId, now } = parsed.data;
-  assert(videoId);
+  tinyassert(videoId);
 
   const bookmarkEntries = await Q.bookmarkEntries()
     .select("bookmarkEntries.*")

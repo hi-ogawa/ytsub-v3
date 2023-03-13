@@ -1,6 +1,6 @@
+import { tinyassert } from "@hiogawa/utils";
 import { beforeAll, describe, expect, it } from "vitest";
 import { Q } from "../../db/models";
-import { assert } from "../../misc/assert";
 import { loader } from "../index";
 import { testLoader } from "./helper";
 
@@ -12,7 +12,7 @@ describe("index.loader", () => {
 
   it("basic", async () => {
     const res = await testLoader(loader);
-    assert(res instanceof Response);
+    tinyassert(res instanceof Response);
     expect(await res.json()).toMatchInlineSnapshot(`
       {
         "json": {
