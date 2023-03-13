@@ -1,3 +1,5 @@
+// TODO: use utils
+
 // Cf.
 // https://github.com/nodejs/node/blob/a0461255c05c79cf6c78b967cf8f11167a5d06b4/lib/internal/assert/assertion_error.js#L328
 // https://github.com/DefinitelyTyped/DefinitelyTyped/blob/dac9b82160ab002f77a400383d2663c264041080/types/node/assert.d.ts#L12
