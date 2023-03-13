@@ -25,11 +25,6 @@ export function isNil<T>(value: T): value is T & (null | undefined) {
   return value === null || typeof value === "undefined";
 }
 
-// TODO: use !isNil
-export function isNotNil<T>(value: T): value is NonNullable<T> {
-  return !isNil(value);
-}
-
 export function fromEntries<K extends string, V>(
   entries: [K, V][]
 ): Record<K, V> {

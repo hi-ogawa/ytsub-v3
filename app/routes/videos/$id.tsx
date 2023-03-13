@@ -36,7 +36,7 @@ import { Controller, makeLoader } from "../../utils/controller-utils";
 import { useDeserialize, useSelection } from "../../utils/hooks";
 import { useYoutubeIframeApi } from "../../utils/hooks";
 import { useLeafLoaderData, useRootLoaderData } from "../../utils/loader-utils";
-import { isNotNil } from "../../utils/misc";
+import { isNil } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 import type { CaptionEntry } from "../../utils/types";
 import { toForm } from "../../utils/url-data";
@@ -298,7 +298,7 @@ function PageComponent({
   }, [fetcher.type]);
 
   React.useEffect(() => {
-    if (isNotNil(focusedIndex)) {
+    if (!isNil(focusedIndex)) {
       scrollToCaptionEntry(focusedIndex);
     }
   }, [focusedIndex]);
@@ -551,7 +551,7 @@ export function CaptionEntryComponent({
     >
       <div className="flex items-center justify-end text-gray-500">
         <div>{timestamp}</div>
-        {isNotNil(videoId) && (
+        {!isNil(videoId) && (
           <Link
             to={R["/videos/$id"](videoId) + `?index=${entry.index}`}
             className={`ml-2 btn btn-xs btn-circle btn-ghost`}
