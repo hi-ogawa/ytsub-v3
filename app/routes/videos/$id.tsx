@@ -220,10 +220,13 @@ function PageComponent({
     if (!player) {
       return;
     }
+
+    // TODO: on dev build, it might drop frames depending on the amount of subtitles.
     setIsPlaying(player.getPlayerState() === 1);
     setCurrentEntry(findCurrentEntry(captionEntries, player.getCurrentTime()));
   });
 
+  // TODO: move it inside useRafLoop
   function repeatEntry(player: YoutubePlayer) {
     if (repeatingEntries.length === 0) return;
     const begin = Math.min(...repeatingEntries.map((entry) => entry.begin));
