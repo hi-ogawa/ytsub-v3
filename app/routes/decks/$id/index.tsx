@@ -1,4 +1,5 @@
 import { Transition } from "@headlessui/react";
+import { tinyassert } from "@hiogawa/utils";
 import { Form, Link, useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import React from "react";
@@ -30,7 +31,6 @@ import {
   normalizeRelation,
   normalizeRelationWithPagination,
 } from "../../../db/models";
-import { assert } from "../../../misc/assert";
 import { R } from "../../../misc/routes";
 import { useToById } from "../../../utils/by-id";
 import { Controller, makeLoader } from "../../../utils/controller-utils";
@@ -144,7 +144,7 @@ export const loader = makeLoader(Controller, async function () {
 //
 
 export const action = makeLoader(Controller, async function () {
-  assert(this.request.method === "DELETE");
+  tinyassert(this.request.method === "DELETE");
   const [, deck] = await requireUserAndDeck.apply(this);
   await Q.decks().delete().where("id", deck.id);
   this.flash({ content: `Deck '${deck.name}' is deleted`, variant: "info" });

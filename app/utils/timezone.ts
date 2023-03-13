@@ -1,4 +1,4 @@
-import { assert } from "../misc/assert";
+import { tinyassert } from "@hiogawa/utils";
 import { Timedelta } from "./timedelta";
 
 export const TIMEZONE_RE = /^[+-]\d{2}:\d{2}$/;
@@ -19,7 +19,7 @@ export function getTimezone(): string {
 }
 
 export function getMinutesOffset(timezone: string): number {
-  assert(timezone.match(TIMEZONE_RE));
+  tinyassert(timezone.match(TIMEZONE_RE));
   const sign = timezone[0] === "+" ? 1 : -1;
   const [h, m] = timezone.slice(1).split(":").map(Number);
   return sign * (h * 60 + m);

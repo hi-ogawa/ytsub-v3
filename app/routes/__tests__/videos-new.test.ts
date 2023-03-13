@@ -1,7 +1,7 @@
+import { tinyassert } from "@hiogawa/utils";
 import { last, omit } from "lodash";
 import { beforeAll, describe, expect, it } from "vitest";
 import { Q } from "../../db/models";
-import { assert } from "../../misc/assert";
 import { getResponseSession } from "../../utils/session-utils";
 import { action, loader } from "../videos/new";
 import { testLoader, useUser } from "./helper";
@@ -31,7 +31,7 @@ describe("videos/new.loader", () => {
     const data = { videoId: "xxx" };
     const res = await testLoader(loader, { query: data });
 
-    assert(res instanceof Response);
+    tinyassert(res instanceof Response);
     expect(res.status).toBe(302);
     expect(res.headers.get("location")).toBe("/");
 
@@ -73,7 +73,7 @@ describe("videos/new.action", () => {
 
     // persist video and caption entries
     const video = await Q.videos().where("userId", user().id).first();
-    assert(video);
+    tinyassert(video);
 
     const captionEntries = await Q.captionEntries().where("videoId", video.id);
 
@@ -123,12 +123,12 @@ describe("videos/new.action", () => {
     `);
 
     // redirect
-    assert(res instanceof Response);
+    tinyassert(res instanceof Response);
     expect(res.headers.get("location")).toBe(`/videos/${video.id}`);
 
     // calling with the same parameters doesn't create new video
     const res2 = await testLoader(action, { form: data, transform: signin });
-    assert(res2 instanceof Response);
+    tinyassert(res2 instanceof Response);
     expect(res2.headers.get("location")).toBe(`/videos/${video.id}`);
   });
 
@@ -145,19 +145,19 @@ describe("videos/new.action", () => {
       },
     };
     const res = await testLoader(action, { form: data });
-    assert(res instanceof Response);
+    tinyassert(res instanceof Response);
 
     const location = res.headers.get("location");
-    assert(location);
+    tinyassert(location);
 
     const id = last(location.split("/"));
     const video = await Q.videos().where("id", id).first();
-    assert(video);
+    tinyassert(video);
     expect(video.userId).toBe(null);
 
     // calling with the same parameters doesn't create new video
     const res2 = await testLoader(action, { form: data });
-    assert(res2 instanceof Response);
+    tinyassert(res2 instanceof Response);
     expect(res2.headers.get("location")).toBe(`/videos/${video.id}`);
   });
 });
