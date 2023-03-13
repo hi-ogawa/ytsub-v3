@@ -9,6 +9,7 @@ patchedDependencies:
     path: patches/@remix-run__serve@1.4.1.patch
 
 specifiers:
+  '@badrap/bar-of-progress': ^0.2.2
   '@floating-ui/react-dom-interactions': ^0.0.15
   '@headlessui/react': ^0.0.0-insiders.ab6310c
   '@hiogawa/isort-ts': 1.0.0-pre.11
@@ -68,6 +69,7 @@ specifiers:
   zod: ^3.21.4
 
 dependencies:
+  '@badrap/bar-of-progress': 0.2.2
   '@floating-ui/react-dom-interactions': 0.0.15_xd63vgjm47lzoal5ybyqmsdesy
   '@headlessui/react': 0.0.0-insiders.ab6310c_sfoxds7t5ydpegc3knd667wn6m
   '@hiogawa/utils': 1.2.0
@@ -1272,6 +1274,10 @@ packages:
       '@babel/helper-validator-identifier': 7.19.1
       to-fast-properties: 2.0.0
     dev: true
+
+  /@badrap/bar-of-progress/0.2.2:
+    resolution: {integrity: sha512-Ig7MdFQM3OA7Ror5UB1ZutXNZFwxh6YExZvcd6EZloOgcXUR8PKNLH2wUVoeh92NMPnPWr6J/l9Mp+f3z7O7MQ==}
+    dev: false
 
   /@bcoe/v8-coverage/0.2.3:
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}

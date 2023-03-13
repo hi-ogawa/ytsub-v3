@@ -37,6 +37,7 @@
     "qrcode": "qrcode-terminal http://$(ip -o -4 address list wlan0 | awk '{print $4}' | cut -d / -f 1):3000"
   },
   "dependencies": {
+    "@badrap/bar-of-progress": "^0.2.2",
     "@floating-ui/react-dom-interactions": "^0.0.15",
     "@headlessui/react": "^0.0.0-insiders.ab6310c",
     "@hiogawa/utils": "^1.2.0",
