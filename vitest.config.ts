@@ -1,3 +1,4 @@
+import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 import type { InlineConfig } from "vitest";
 
@@ -16,5 +17,6 @@ const VITEST_CONFIG: InlineConfig = {
 };
 
 export default defineConfig({
+  plugins: [react()],
   test: VITEST_CONFIG,
 });
