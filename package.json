@@ -41,7 +41,7 @@
     "@floating-ui/react-dom-interactions": "^0.0.15",
     "@headlessui/react": "^0.0.0-insiders.ab6310c",
     "@hiogawa/utils": "^1.3.0",
-    "@hiogawa/utils-react": "^1.1.0",
+    "@hiogawa/utils-react": "^1.1.1",
     "@remix-run/node": "^1.4.0",
     "@remix-run/react": "^1.4.0",
     "@remix-run/server-runtime": "^1.4.0",
@@ -105,8 +105,7 @@
   "pnpm": {
     "patchedDependencies": {
       "@remix-run/dev@1.4.1": "patches/@remix-run__dev@1.4.1.patch",
-      "@remix-run/serve@1.4.1": "patches/@remix-run__serve@1.4.1.patch",
-      "@hiogawa/utils-react@1.1.0": "patches/@hiogawa__utils-react@1.1.0.patch"
+      "@remix-run/serve@1.4.1": "patches/@remix-run__serve@1.4.1.patch"
     }
   }
 }

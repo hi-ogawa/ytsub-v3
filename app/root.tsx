@@ -1,5 +1,5 @@
 import { Transition } from "@headlessui/react";
-import { booleanGuard } from "@hiogawa/utils";
+import { typedBoolean } from "@hiogawa/utils";
 import {
   Form,
   Link,
@@ -64,7 +64,7 @@ export const links: LinksFunction = () => {
 
 export const meta: MetaFunction = () => {
   [publicConfig.VERCEL_ENV == "preview" && "[PREVIEW]", "ytsub-v3"].filter(
-    booleanGuard
+    typedBoolean
   );
   return {
     title:
