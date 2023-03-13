@@ -1,3 +1,4 @@
+import { useStableRef } from "@hiogawa/utils-react";
 import React from "react";
 import { UseQueryOptions, useQuery } from "react-query";
 import { deserialize } from "./controller-utils";
@@ -66,11 +67,15 @@ export function useDeserialize(data: any): any {
 }
 
 export function useSelection(listener: (selection?: Selection) => void) {
+  const listenerRef = useStableRef(listener);
+
   React.useEffect(() => {
     function listenerImpl() {
-      listener(document.getSelection() ?? undefined);
+      listenerRef.current(document.getSelection() ?? undefined);
     }
     document.addEventListener("selectionchange", listenerImpl);
-    return () => document.removeEventListener("selectionchange", listenerImpl);
-  }, [listener]);
+    return () => {
+      document.removeEventListener("selectionchange", listenerImpl);
+    };
+  }, []);
 }

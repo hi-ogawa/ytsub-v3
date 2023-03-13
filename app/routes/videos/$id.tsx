@@ -260,27 +260,6 @@ function PageComponent({
     setRepeatingEntries(toggleArrayInclusion(repeatingEntries, entry));
   }
 
-  const onSelection = React.useCallback((selection?: Selection): void => {
-    let newBookmarkState = undefined;
-    if (selection) {
-      const index = findSelectionEntryIndex(selection);
-      if (index >= 0) {
-        const el = selection.anchorNode!.parentNode!;
-        const side = Array.from(el.parentNode!.children).findIndex(
-          (c) => c === el
-        );
-        assert(side === 0 || side === 1);
-        newBookmarkState = {
-          captionEntry: captionEntries[index],
-          text: selection.toString(),
-          side: side,
-          offset: selection.anchorOffset,
-        };
-      }
-    }
-    setBookmarkState(newBookmarkState);
-  }, []);
-
   function onClickBookmark() {
     if (!bookmarkState) return;
     const typedData: NewBookmark = {
@@ -324,7 +303,26 @@ function PageComponent({
     }
   }, [focusedIndex]);
 
-  useSelection(onSelection);
+  useSelection((selection?: Selection): void => {
+    let newBookmarkState = undefined;
+    if (selection) {
+      const index = findSelectionEntryIndex(selection);
+      if (index >= 0) {
+        const el = selection.anchorNode!.parentNode!;
+        const side = Array.from(el.parentNode!.children).findIndex(
+          (c) => c === el
+        );
+        assert(side === 0 || side === 1);
+        newBookmarkState = {
+          captionEntry: captionEntries[index],
+          text: selection.toString(),
+          side: side,
+          offset: selection.anchorOffset,
+        };
+      }
+    }
+    setBookmarkState(newBookmarkState);
+  });
 
   return (
     <LayoutComponent
