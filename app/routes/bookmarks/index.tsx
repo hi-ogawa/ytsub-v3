@@ -318,10 +318,8 @@ export function MiniPlayer({
   useRafLoop(() => {
     if (!player) return;
 
-    // update `isPlaying`
     setIsPlaying(player.getPlayerState() === 1);
 
-    // handle `isRepeating`
     if (isRepeating) {
       const currentTime = player.getCurrentTime();
       if (currentTime < begin || end < currentTime) {

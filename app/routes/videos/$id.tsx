@@ -221,21 +221,22 @@ function PageComponent({
       return;
     }
 
-    // TODO: on dev build, it might drop frames depending on the amount of subtitles.
+    // TODO
+    // on dev build, the render might take more than 100ms depending on the amount of subtitles and thus drops some frames.
+    // probably we should virtualize the subtitle list.
+
     setIsPlaying(player.getPlayerState() === 1);
     setCurrentEntry(findCurrentEntry(captionEntries, player.getCurrentTime()));
-  });
 
-  // TODO: move it inside useRafLoop
-  function repeatEntry(player: YoutubePlayer) {
-    if (repeatingEntries.length === 0) return;
-    const begin = Math.min(...repeatingEntries.map((entry) => entry.begin));
-    const end = Math.max(...repeatingEntries.map((entry) => entry.end));
-    const currentTime = player.getCurrentTime();
-    if (currentTime < begin || end < currentTime) {
-      player.seekTo(begin);
+    if (repeatingEntries.length > 0) {
+      const begin = Math.min(...repeatingEntries.map((entry) => entry.begin));
+      const end = Math.max(...repeatingEntries.map((entry) => entry.end));
+      const currentTime = player.getCurrentTime();
+      if (currentTime < begin || end < currentTime) {
+        player.seekTo(begin);
+      }
     }
-  }
+  });
 
   function onClickEntryPlay(entry: CaptionEntry, toggle: boolean) {
     if (!player) return;
@@ -305,11 +306,6 @@ function PageComponent({
   //
   // effects
   //
-
-  React.useEffect(() => {
-    if (!player) return;
-    repeatEntry(player);
-  }, [player, isPlaying, currentEntry, repeatingEntries, captionEntries]);
 
   React.useEffect(() => {
     if (fetcher.type === "done") {
