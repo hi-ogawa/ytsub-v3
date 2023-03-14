@@ -10,6 +10,11 @@ import {
   useLoaderData,
 } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
+import {
+  VirtualItem,
+  Virtualizer,
+  useVirtualizer,
+} from "@tanstack/react-virtual";
 import React from "react";
 import {
   Bookmark,
@@ -324,8 +329,24 @@ function PageComponent({
     setBookmarkState(newBookmarkState);
   });
 
+  //
+  // perf: virtualize subtitle scroll list (cf. https://github.com/TanStack/virtual/blob/623ac63988f16e6ea6755d8b2e190c123134501c/examples/react/dynamic/src/main.tsx)
+  //
+  const scrollElementRef = React.useRef<HTMLDivElement>(null);
+
+  // TODO: disable when count is small?
+  const virtualizer = useVirtualizer({
+    count: captionEntries.length,
+    getScrollElement: () => scrollElementRef.current,
+    // TODO: improve estimation based on entry text length? (it would be language and container width dependent)
+    estimateSize: (_index) => 50,
+    overscan: 5,
+  });
+
   return (
     <LayoutComponent
+      virtualizer={virtualizer}
+      scrollElementRef={scrollElementRef}
       player={
         <PlayerComponent
           defaultOptions={{ videoId: video.videoId }}
@@ -334,6 +355,7 @@ function PageComponent({
       }
       subtitles={
         <CaptionEntriesComponent
+          virtualizer={virtualizer}
           entries={captionEntries}
           currentEntry={currentEntry}
           repeatingEntries={repeatingEntries}
@@ -378,9 +400,13 @@ function PageComponent({
   );
 }
 
-function LayoutComponent(
-  props: Record<"player" | "subtitles" | "bookmarkActions", React.ReactNode>
-) {
+function LayoutComponent(props: {
+  player: React.ReactNode;
+  subtitles: React.ReactNode;
+  bookmarkActions: React.ReactNode;
+  virtualizer: Virtualizer<HTMLDivElement, Element>;
+  scrollElementRef: React.RefObject<HTMLDivElement>;
+}) {
   //
   // - Mobile layout
   //
@@ -403,7 +429,11 @@ function LayoutComponent(
     <div className="h-full w-full flex flex-col md:flex-row md:gap-2 md:p-2">
       <div className="flex-none md:grow">{props.player}</div>
       <div className="flex flex-col flex-[1_0_0] md:flex-none md:w-1/3 border-t md:border relative">
-        <div className="flex-[1_0_0] h-full overflow-y-auto" id={SCROLLABLE_ID}>
+        <div
+          className="flex-[1_0_0] h-full overflow-y-auto"
+          id={SCROLLABLE_ID}
+          ref={props.scrollElementRef}
+        >
           {props.subtitles}
         </div>
         {props.bookmarkActions}
@@ -484,6 +514,7 @@ function CaptionEntriesComponent({
   focusedIndex,
   ...props
 }: {
+  virtualizer: Virtualizer<HTMLDivElement, Element>;
   entries: CaptionEntry[];
   currentEntry?: CaptionEntry;
   repeatingEntries: CaptionEntry[];
@@ -492,21 +523,43 @@ function CaptionEntriesComponent({
   isPlaying: boolean;
   focusedIndex?: number;
 }) {
+  const virtualItems = props.virtualizer.getVirtualItems();
   return (
-    <div className="flex flex-col p-1.5 gap-1.5">
-      {entries.map((entry) => (
-        <CaptionEntryComponent
-          key={toCaptionEntryId(entry)}
-          entry={entry}
-          isFocused={focusedIndex === entry.index}
-          {...props}
-        />
-      ))}
+    <div
+      className="flex flex-col m-1.5"
+      style={{
+        position: "relative",
+        height: props.virtualizer.getTotalSize(),
+      }}
+    >
+      {/* TODO: compare with the other approach of offsetting all child elements by `virtualItem.start` */}
+      <div
+        className="flex flex-col gap-1.5"
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100%",
+          transform: `translateY(${virtualItems[0].start}px)`,
+        }}
+      >
+        {virtualItems.map((item) => (
+          <CaptionEntryComponent
+            key={item.key}
+            entry={entries[item.index]}
+            isFocused={focusedIndex === item.index}
+            virtualItem={item}
+            {...props}
+          />
+        ))}
+      </div>
     </div>
   );
 }
 
 export function CaptionEntryComponent({
+  virtualizer,
+  virtualItem,
   entry,
   currentEntry,
   repeatingEntries = [],
@@ -518,6 +571,8 @@ export function CaptionEntryComponent({
   border = true,
   highlight,
 }: {
+  virtualizer?: Virtualizer<HTMLDivElement, Element>;
+  virtualItem?: VirtualItem;
   entry: CaptionEntry;
   currentEntry?: CaptionEntry;
   repeatingEntries?: CaptionEntry[];
@@ -548,6 +603,8 @@ export function CaptionEntryComponent({
         p-1.5 gap-1
         text-xs
       `}
+      ref={virtualizer?.measureElement}
+      data-index={virtualItem?.index}
     >
       <div className="flex items-center justify-end text-gray-500">
         <div>{timestamp}</div>
@@ -631,6 +688,7 @@ function HighlightText({
   );
 }
 
+// @ts-ignore
 function toCaptionEntryId({ begin, end }: CaptionEntry): string {
   return `${begin}--${end}`;
 }
