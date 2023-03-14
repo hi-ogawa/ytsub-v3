@@ -1,10 +1,10 @@
 import { requireUserAndDeck } from ".";
 import { Err, Ok, Result } from "@hiogawa/utils";
 import { tinyassert } from "@hiogawa/utils";
+import { isNil } from "@hiogawa/utils";
 import { z } from "zod";
 import { Q } from "../../../db/models";
 import { Controller, makeLoader } from "../../../utils/controller-utils";
-import { isNil } from "../../../utils/misc";
 import { PracticeSystem } from "../../../utils/practice-system";
 import { zStringToDate, zStringToInteger } from "../../../utils/zod-utils";
 
