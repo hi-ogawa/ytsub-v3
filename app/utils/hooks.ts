@@ -1,63 +1,8 @@
+import { useStableRef } from "@hiogawa/utils-react";
 import React from "react";
 import { UseQueryOptions, useQuery } from "react-query";
 import { deserialize } from "./controller-utils";
 import { loadYoutubeIframeApi } from "./youtube";
-
-export function useRafLoop(callback: () => void): void {
-  React.useEffect(() => {
-    let id: number | undefined;
-    function loop() {
-      // NOTE: queue next loop before `callback` since `callback` can cause "effect cleanup"
-      id = requestAnimationFrame(loop);
-      callback();
-    }
-    loop();
-    return () => {
-      if (typeof id === "number") {
-        cancelAnimationFrame(id);
-      }
-    };
-  }, [callback]);
-}
-
-// TODO: can we reuse `useRafLoop` above to implement this?
-export function useRafTime(): [number, () => void, () => void] {
-  const rafId = React.useRef<number>();
-  const base = React.useRef<number>();
-  const [time, setTime] = React.useState(0);
-
-  const loop = React.useCallback((rafTime: number) => {
-    if (typeof base.current === "undefined") {
-      base.current = rafTime;
-    }
-    setTime(rafTime - base.current);
-    rafId.current = requestAnimationFrame(loop);
-  }, []);
-
-  React.useEffect(() => {
-    return () => {
-      if (typeof rafId.current !== "undefined") {
-        cancelAnimationFrame(rafId.current);
-      }
-    };
-  }, []);
-
-  function start() {
-    end();
-    rafId.current = requestAnimationFrame(loop);
-  }
-
-  function end() {
-    if (rafId.current) {
-      cancelAnimationFrame(rafId.current);
-      rafId.current = undefined;
-    }
-    base.current = undefined;
-    setTime(0);
-  }
-
-  return [time, start, end];
-}
 
 export function useIsFormValid() {
   const ref = React.useRef<HTMLFormElement>(null);
@@ -122,11 +67,15 @@ export function useDeserialize(data: any): any {
 }
 
 export function useSelection(listener: (selection?: Selection) => void) {
+  const listenerRef = useStableRef(listener);
+
   React.useEffect(() => {
     function listenerImpl() {
-      listener(document.getSelection() ?? undefined);
+      listenerRef.current(document.getSelection() ?? undefined);
     }
     document.addEventListener("selectionchange", listenerImpl);
-    return () => document.removeEventListener("selectionchange", listenerImpl);
-  }, [listener]);
+    return () => {
+      document.removeEventListener("selectionchange", listenerImpl);
+    };
+  }, []);
 }

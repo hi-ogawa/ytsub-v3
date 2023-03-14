@@ -1,3 +1,4 @@
+import { mapOption } from "@hiogawa/utils";
 import { useFetcher, useFetchers, useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import React from "react";
@@ -25,7 +26,6 @@ import {
 } from "../../utils/controller-utils";
 import { useDeserialize } from "../../utils/hooks";
 import { useRootLoaderData } from "../../utils/loader-utils";
-import { mapOption } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 import { PAGINATION_PARAMS_SCHEMA } from "../../utils/pagination";
 import { toForm } from "../../utils/url-data";
@@ -214,7 +214,7 @@ function AddToDeckComponent({ videoId }: { videoId: number }) {
     if (fetcher2.data) {
       const data: NewPracticeEntryResponse = fetcher2.data;
       if (data.ok) {
-        enqueueSnackbar(`Added ${data.data.ids.length} to a deck`, {
+        enqueueSnackbar(`Added ${data.value.ids.length} to a deck`, {
           variant: "success",
         });
         closeModal();

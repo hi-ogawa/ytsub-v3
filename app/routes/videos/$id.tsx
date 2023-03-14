@@ -1,4 +1,7 @@
 import { Transition } from "@headlessui/react";
+import { tinyassert } from "@hiogawa/utils";
+import { isNil } from "@hiogawa/utils";
+import { useRafLoop } from "@hiogawa/utils-react";
 import {
   Form,
   Link,
@@ -29,13 +32,11 @@ import {
   VideoTable,
   getVideoAndCaptionEntries,
 } from "../../db/models";
-import { assert } from "../../misc/assert";
 import { R } from "../../misc/routes";
 import { Controller, makeLoader } from "../../utils/controller-utils";
 import { useDeserialize, useSelection } from "../../utils/hooks";
 import { useYoutubeIframeApi } from "../../utils/hooks";
 import { useLeafLoaderData, useRootLoaderData } from "../../utils/loader-utils";
-import { isNotNil } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 import type { CaptionEntry } from "../../utils/types";
 import { toForm } from "../../utils/url-data";
@@ -215,36 +216,27 @@ function PageComponent({
   // handlers
   //
 
-  // TODO: use `useRafLoop` like in `MiniPlayer` (bookmarks/index.tsx)
-  function startSynchronizePlayerState(player: YoutubePlayer): () => void {
-    // Poll state change via RAF
-    // (this assumes `player` and `captionEntries` don't change during the entire component lifecycle)
-    let id: number | undefined;
-    function loop() {
-      // On development rendering takes more than 100ms depending on the amount of subtitles
-      setIsPlaying(player.getPlayerState() === 1);
-      setCurrentEntry(
-        findCurrentEntry(captionEntries, player.getCurrentTime())
-      );
-      id = requestAnimationFrame(loop);
+  useRafLoop(() => {
+    if (!player) {
+      return;
     }
-    loop();
-    return () => {
-      if (typeof id === "number") {
-        cancelAnimationFrame(id);
-      }
-    };
-  }
 
-  function repeatEntry(player: YoutubePlayer) {
-    if (repeatingEntries.length === 0) return;
-    const begin = Math.min(...repeatingEntries.map((entry) => entry.begin));
-    const end = Math.max(...repeatingEntries.map((entry) => entry.end));
-    const currentTime = player.getCurrentTime();
-    if (currentTime < begin || end < currentTime) {
-      player.seekTo(begin);
+    // TODO
+    // on dev build, the render might take more than 100ms depending on the amount of subtitles and thus drops some frames.
+    // probably we should virtualize the subtitle list.
+
+    setIsPlaying(player.getPlayerState() === 1);
+    setCurrentEntry(findCurrentEntry(captionEntries, player.getCurrentTime()));
+
+    if (repeatingEntries.length > 0) {
+      const begin = Math.min(...repeatingEntries.map((entry) => entry.begin));
+      const end = Math.max(...repeatingEntries.map((entry) => entry.end));
+      const currentTime = player.getCurrentTime();
+      if (currentTime < begin || end < currentTime) {
+        player.seekTo(begin);
+      }
     }
-  }
+  });
 
   function onClickEntryPlay(entry: CaptionEntry, toggle: boolean) {
     if (!player) return;
@@ -267,27 +259,6 @@ function PageComponent({
   function onClickEntryRepeat(entry: CaptionEntry) {
     setRepeatingEntries(toggleArrayInclusion(repeatingEntries, entry));
   }
-
-  const onSelection = React.useCallback((selection?: Selection): void => {
-    let newBookmarkState = undefined;
-    if (selection) {
-      const index = findSelectionEntryIndex(selection);
-      if (index >= 0) {
-        const el = selection.anchorNode!.parentNode!;
-        const side = Array.from(el.parentNode!.children).findIndex(
-          (c) => c === el
-        );
-        assert(side === 0 || side === 1);
-        newBookmarkState = {
-          captionEntry: captionEntries[index],
-          text: selection.toString(),
-          side: side,
-          offset: selection.anchorOffset,
-        };
-      }
-    }
-    setBookmarkState(newBookmarkState);
-  }, []);
 
   function onClickBookmark() {
     if (!bookmarkState) return;
@@ -316,16 +287,6 @@ function PageComponent({
   //
 
   React.useEffect(() => {
-    if (!player) return;
-    return startSynchronizePlayerState(player);
-  }, [player, captionEntries]);
-
-  React.useEffect(() => {
-    if (!player) return;
-    repeatEntry(player);
-  }, [player, isPlaying, currentEntry, repeatingEntries, captionEntries]);
-
-  React.useEffect(() => {
     if (fetcher.type === "done") {
       if (fetcher.data.success) {
         enqueueSnackbar("Bookmark success", { variant: "success" });
@@ -337,12 +298,31 @@ function PageComponent({
   }, [fetcher.type]);
 
   React.useEffect(() => {
-    if (isNotNil(focusedIndex)) {
+    if (!isNil(focusedIndex)) {
       scrollToCaptionEntry(focusedIndex);
     }
   }, [focusedIndex]);
 
-  useSelection(onSelection);
+  useSelection((selection?: Selection): void => {
+    let newBookmarkState = undefined;
+    if (selection) {
+      const index = findSelectionEntryIndex(selection);
+      if (index >= 0) {
+        const el = selection.anchorNode!.parentNode!;
+        const side = Array.from(el.parentNode!.children).findIndex(
+          (c) => c === el
+        );
+        tinyassert(side === 0 || side === 1);
+        newBookmarkState = {
+          captionEntry: captionEntries[index],
+          text: selection.toString(),
+          side: side,
+          offset: selection.anchorOffset,
+        };
+      }
+    }
+    setBookmarkState(newBookmarkState);
+  });
 
   return (
     <LayoutComponent
@@ -571,7 +551,7 @@ export function CaptionEntryComponent({
     >
       <div className="flex items-center justify-end text-gray-500">
         <div>{timestamp}</div>
-        {isNotNil(videoId) && (
+        {!isNil(videoId) && (
           <Link
             to={R["/videos/$id"](videoId) + `?index=${entry.index}`}
             className={`ml-2 btn btn-xs btn-circle btn-ghost`}

@@ -1,7 +1,8 @@
+import { tinyassert } from "@hiogawa/utils";
+import { mapOption } from "@hiogawa/utils";
 import { Form, Link, useActionData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import React from "react";
-import { assert } from "../../misc/assert";
 import { R } from "../../misc/routes";
 import {
   PASSWORD_MAX_LENGTH,
@@ -14,7 +15,6 @@ import { publicConfig, serverConfig } from "../../utils/config";
 import { Controller, makeLoader } from "../../utils/controller-utils";
 import { AppError } from "../../utils/errors";
 import { createUseQuery, useIsFormValid } from "../../utils/hooks";
-import { mapOption } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 import { loadScriptMemoized } from "../../utils/script";
 import { TIMEZONE_RE, getTimezone } from "../../utils/timezone";
@@ -131,8 +131,8 @@ export default function DefaultComponent() {
           e.preventDefault();
           const form = e.currentTarget;
           if (!APP_RECAPTCHA_DISABLED) {
-            assert(recaptchaApi.data);
-            assert(recaptchaTokenInputRef.current);
+            tinyassert(recaptchaApi.data);
+            tinyassert(recaptchaTokenInputRef.current);
             const recaptchaToken = await recaptchaApi.data.execute(
               APP_RECAPTCHA_CLIENT_KEY
             );
@@ -226,7 +226,7 @@ async function loadRecaptchaApi(siteKey: string): Promise<RecaptchaApi> {
     `https://www.google.com/recaptcha/api.js?render=${siteKey}`
   );
   const api = (window as any).grecaptcha as RecaptchaApi;
-  assert(api);
+  tinyassert(api);
   await new Promise((resolve) => api.ready(() => resolve(undefined)));
   return api;
 }

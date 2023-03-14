@@ -1,4 +1,5 @@
 import { deepEqual } from "assert/strict";
+import { tinyassert } from "@hiogawa/utils";
 import { installGlobals } from "@remix-run/node";
 import { cac } from "cac";
 import { range, zip } from "lodash";
@@ -19,7 +20,6 @@ import {
 import { exec, streamToString } from "../utils/node.server";
 import { queryDeckPracticeEntriesCountByQueueType } from "../utils/practice-system";
 import { NewVideo, fetchCaptionEntries } from "../utils/youtube";
-import { assert } from "./assert";
 
 const cli = cac("cli").help();
 
@@ -169,7 +169,7 @@ cli
         .where("username", options.username)
         .select("id")
         .first();
-      assert(user);
+      tinyassert(user);
       userId = user.id;
     }
     const total = newVideos.length;
@@ -283,7 +283,7 @@ cli
       .where("username", username)
       .select("id")
       .first();
-    assert(user);
+    tinyassert(user);
 
     const input = await streamToString(process.stdin);
     const olds = z.array(OLD_BOOKMARK_ENTRY_SCHEMA).parse(JSON.parse(input));

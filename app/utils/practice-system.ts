@@ -1,3 +1,4 @@
+import { tinyassert } from "@hiogawa/utils";
 import { difference, range } from "lodash";
 import { client } from "../db/client.server";
 import {
@@ -11,7 +12,6 @@ import {
   UserTable,
 } from "../db/models";
 import { aggregate } from "../db/utils";
-import { assert } from "../misc/assert";
 import { fromEntries } from "./misc";
 import { Timedelta, TimedeltaOptions } from "./timedelta";
 import { getStartOfDay } from "./timezone";
@@ -83,7 +83,7 @@ export class PracticeSystem {
         .where("createdAt", ">=", start)
         .groupBy("queueType"),
     ]);
-    assert(deck);
+    tinyassert(deck);
     const aggDaily = aggregate(daily, "queueType");
     return fromEntries(
       PRACTICE_QUEUE_TYPES.map((type) => [

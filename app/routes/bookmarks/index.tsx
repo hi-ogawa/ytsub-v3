@@ -1,4 +1,6 @@
 import { Transition } from "@headlessui/react";
+import { isNil } from "@hiogawa/utils";
+import { useRafLoop } from "@hiogawa/utils-react";
 import { Link, useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import { omit } from "lodash";
@@ -27,9 +29,8 @@ import {
 import { R } from "../../misc/routes";
 import { useToById } from "../../utils/by-id";
 import { Controller, makeLoader } from "../../utils/controller-utils";
-import { useDeserialize, useRafLoop } from "../../utils/hooks";
+import { useDeserialize } from "../../utils/hooks";
 import { useLeafLoaderData } from "../../utils/loader-utils";
-import { isNotNil } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 import { PAGINATION_PARAMS_SCHEMA } from "../../utils/pagination";
 import type { CaptionEntry } from "../../utils/types";
@@ -314,22 +315,18 @@ export function MiniPlayer({
     onLoad: setPlayer,
   });
 
-  useRafLoop(
-    React.useCallback(() => {
-      if (!player) return;
+  useRafLoop(() => {
+    if (!player) return;
 
-      // update `isPlaying`
-      setIsPlaying(player.getPlayerState() === 1);
+    setIsPlaying(player.getPlayerState() === 1);
 
-      // handle `isRepeating`
-      if (isRepeating) {
-        const currentTime = player.getCurrentTime();
-        if (currentTime < begin || end < currentTime) {
-          player.seekTo(begin);
-        }
+    if (isRepeating) {
+      const currentTime = player.getCurrentTime();
+      if (currentTime < begin || end < currentTime) {
+        player.seekTo(begin);
       }
-    }, [player, isRepeating])
-  );
+    }
+  });
 
   return (
     <div className="w-full flex flex-col items-center p-2 pt-0 gap-2">
@@ -375,7 +372,7 @@ function NavBarMenuComponent() {
     openModal(<DeckSelectComponent />);
   }
 
-  const isFilterActive = isNotNil(request.videoId ?? request.deckId);
+  const isFilterActive = !isNil(request.videoId ?? request.deckId);
 
   return (
     <>

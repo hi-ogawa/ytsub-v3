@@ -1,6 +1,6 @@
+import { tinyassert } from "@hiogawa/utils";
 import { describe, expect, it } from "vitest";
 import { Q } from "../../db/models";
-import { assert } from "../../misc/assert";
 import { AppError } from "../../utils/errors";
 import { action } from "../bookmarks/new";
 import { testLoader, useUserVideo } from "./helper";
@@ -19,21 +19,21 @@ describe("bookmarks/new.action", () => {
       offset: 8,
     };
     const res = await testLoader(action, { form: data, transform: signin });
-    assert(res instanceof Response);
+    tinyassert(res instanceof Response);
 
     const resJson = await res.json();
     expect(resJson.success).toBe(true);
 
     const id = resJson.data.id;
-    assert(typeof id === "number");
+    tinyassert(typeof id === "number");
     {
       const found = await Q.bookmarkEntries().where("id", id).first();
-      assert(found);
+      tinyassert(found);
       expect(found.text).toBe(data.text);
     }
     {
       const found = await Q.videos().where("id", data.videoId).first();
-      assert(found);
+      tinyassert(found);
       expect(found.bookmarkEntriesCount).toBe(1);
     }
   });
