@@ -152,6 +152,7 @@ function toggleArrayInclusion<T>(container: T[], element: T): T[] {
 }
 
 // adhoc routines to derive `BookmarkState` by probing dom tree
+// TODO: support virtualized list
 function findSelectionEntryIndex(selection: Selection): number {
   const isValid =
     selection.toString().trim() &&
@@ -171,6 +172,7 @@ function findSelectionEntryIndex(selection: Selection): number {
   return index;
 }
 
+// TODO: support virtualized list
 function scrollToCaptionEntry(index: number) {
   const parentSelector = "#" + SCROLLABLE_ID;
   const childSelector = `div > :nth-child(${index + 1})`;
@@ -309,7 +311,7 @@ function PageComponent({
   }, [focusedIndex]);
 
   useSelection((selection?: Selection): void => {
-    let newBookmarkState = undefined;
+    let newBookmarkState: BookmarkState | undefined = undefined;
     if (selection) {
       const index = findSelectionEntryIndex(selection);
       if (index >= 0) {
