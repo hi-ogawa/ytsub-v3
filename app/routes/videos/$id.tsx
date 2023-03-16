@@ -1,7 +1,7 @@
 import { Transition } from "@headlessui/react";
 import { tinyassert } from "@hiogawa/utils";
 import { isNil } from "@hiogawa/utils";
-import { useRafLoop } from "@hiogawa/utils-react";
+import { Debug, useRafLoop } from "@hiogawa/utils-react";
 import {
   Form,
   Link,
@@ -152,7 +152,6 @@ function toggleArrayInclusion<T>(container: T[], element: T): T[] {
 }
 
 // adhoc routines to derive `BookmarkState` by probing dom tree
-// TODO: support virtualized list
 function findSelectionEntryIndex(selection: Selection): number {
   const isValid =
     selection.toString().trim() &&
@@ -164,11 +163,10 @@ function findSelectionEntryIndex(selection: Selection): number {
     );
   if (!isValid) return -1;
   const textElement = selection.getRangeAt(0).startContainer;
-  const entryNode = textElement.parentElement?.parentElement?.parentElement!;
-  const entriesContainer = entryNode.parentElement!;
-  const index = Array.from(entriesContainer.childNodes).findIndex(
-    (other) => other === entryNode
-  );
+  const entryNode = textElement.parentElement?.parentElement?.parentElement;
+  tinyassert(entryNode);
+  const dataIndex = entryNode.getAttribute("data-index");
+  const index = z.coerce.number().int().parse(dataIndex);
   return index;
 }
 
@@ -203,8 +201,8 @@ function PageComponent({
   const fetcher = useFetcher();
   const { enqueueSnackbar } = useSnackbar();
   const [searchParams] = useSearchParams();
-  const focusedIndex = zStringToMaybeInteger.parse(
-    searchParams.get("index") ?? ""
+  const [focusedIndex] = React.useState(() =>
+    zStringToMaybeInteger.parse(searchParams.get("index") ?? undefined)
   );
 
   //
@@ -341,7 +339,7 @@ function PageComponent({
     count: captionEntries.length,
     getScrollElement: () => scrollElementRef.current,
     // TODO: improve estimation based on entry text length? (it would be language and container width dependent)
-    estimateSize: (_index) => 50,
+    estimateSize: (_index) => 100,
     overscan: 5,
   });
 
@@ -350,10 +348,13 @@ function PageComponent({
       virtualizer={virtualizer}
       scrollElementRef={scrollElementRef}
       player={
-        <PlayerComponent
-          defaultOptions={{ videoId: video.videoId }}
-          onLoad={setPlayer}
-        />
+        <>
+          <PlayerComponent
+            defaultOptions={{ videoId: video.videoId }}
+            onLoad={setPlayer}
+          />
+          <Debug debug={bookmarkState} />
+        </>
       }
       subtitles={
         <CaptionEntriesComponent
