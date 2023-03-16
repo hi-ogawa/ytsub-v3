@@ -502,7 +502,6 @@ function CaptionEntriesComponent({
   focusedIndex,
   ...props
 }: {
-  virtualizer: Virtualizer<HTMLDivElement, Element>;
   entries: CaptionEntry[];
   currentEntry?: CaptionEntry;
   repeatingEntries: CaptionEntry[];
@@ -510,6 +509,7 @@ function CaptionEntriesComponent({
   onClickEntryRepeat: (entry: CaptionEntry) => void;
   isPlaying: boolean;
   focusedIndex?: number;
+  virtualizer: Virtualizer<HTMLDivElement, Element>;
 }) {
   const virtualItems = props.virtualizer.getVirtualItems();
   return (
@@ -548,9 +548,6 @@ function CaptionEntriesComponent({
 }
 
 export function CaptionEntryComponent({
-  virtualizer,
-  virtualItem,
-  isActualLast,
   entry,
   currentEntry,
   repeatingEntries = [],
@@ -561,11 +558,11 @@ export function CaptionEntryComponent({
   videoId,
   border = true,
   highlight,
+  // virtualized list
+  virtualizer,
+  virtualItem,
+  isActualLast,
 }: {
-  // for virtualize list
-  virtualizer?: Virtualizer<HTMLDivElement, Element>;
-  virtualItem?: VirtualItem;
-  isActualLast?: boolean;
   entry: CaptionEntry;
   currentEntry?: CaptionEntry;
   repeatingEntries?: CaptionEntry[];
@@ -576,6 +573,10 @@ export function CaptionEntryComponent({
   videoId?: number;
   border?: boolean;
   highlight?: { side: number; offset: number; length: number };
+  // virtualized list
+  virtualizer?: Virtualizer<HTMLDivElement, Element>;
+  virtualItem?: VirtualItem;
+  isActualLast?: boolean;
 }) {
   const { begin, end, text1, text2 } = entry;
   const timestamp = [begin, end].map(stringifyTimestamp).join(" - ");
