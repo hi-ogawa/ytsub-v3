@@ -1,7 +1,7 @@
 import { Transition } from "@headlessui/react";
 import { tinyassert } from "@hiogawa/utils";
 import { isNil } from "@hiogawa/utils";
-import { Debug, useRafLoop } from "@hiogawa/utils-react";
+import { useRafLoop } from "@hiogawa/utils-react";
 import {
   Form,
   Link,
@@ -333,13 +333,10 @@ function PageComponent({
   // perf: virtualize subtitle scroll list (cf. https://github.com/TanStack/virtual/blob/623ac63988f16e6ea6755d8b2e190c123134501c/examples/react/dynamic/src/main.tsx)
   //
   const scrollElementRef = React.useRef<HTMLDivElement>(null);
-
-  // TODO: disable when count is small?
   const virtualizer = useVirtualizer({
     count: captionEntries.length,
     getScrollElement: () => scrollElementRef.current,
-    // TODO: improve estimation based on entry text length? (it would be language and container width dependent)
-    estimateSize: (_index) => 100,
+    estimateSize: (_index) => 100, // rough estimation
     overscan: 5,
   });
 
@@ -353,7 +350,6 @@ function PageComponent({
             defaultOptions={{ videoId: video.videoId }}
             onLoad={setPlayer}
           />
-          <Debug debug={bookmarkState} />
         </>
       }
       subtitles={
