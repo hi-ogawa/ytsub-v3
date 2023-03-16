@@ -514,7 +514,7 @@ function CaptionEntriesComponent({
   const virtualItems = props.virtualizer.getVirtualItems();
   return (
     <div
-      className="flex flex-col m-1.5"
+      className="flex flex-col"
       style={{
         position: "relative",
         height: props.virtualizer.getTotalSize(),
@@ -522,7 +522,7 @@ function CaptionEntriesComponent({
     >
       {/* TODO: compare with the other approach of offsetting all child elements by `virtualItem.start` */}
       <div
-        className="flex flex-col gap-1.5"
+        className="flex flex-col gap-1.5 px-1.5"
         style={{
           position: "absolute",
           top: 0,
@@ -537,6 +537,8 @@ function CaptionEntriesComponent({
             entry={entries[item.index]}
             isFocused={focusedIndex === item.index}
             virtualItem={item}
+            // workaround disappearing bottom margin (paddingEnd option doesn't seem to work)
+            isActualLast={item.index === entries.length - 1}
             {...props}
           />
         ))}
@@ -548,6 +550,7 @@ function CaptionEntriesComponent({
 export function CaptionEntryComponent({
   virtualizer,
   virtualItem,
+  isActualLast,
   entry,
   currentEntry,
   repeatingEntries = [],
@@ -559,8 +562,10 @@ export function CaptionEntryComponent({
   border = true,
   highlight,
 }: {
+  // for virtualize list
   virtualizer?: Virtualizer<HTMLDivElement, Element>;
   virtualItem?: VirtualItem;
+  isActualLast?: boolean;
   entry: CaptionEntry;
   currentEntry?: CaptionEntry;
   repeatingEntries?: CaptionEntry[];
@@ -588,6 +593,8 @@ export function CaptionEntryComponent({
         ${isEntryPlaying ? "border-blue-400" : "border-gray-200"}
         ${border && isCurrentEntry && "bg-gray-100"}
         ${isFocused && "border-l-2 border-l-blue-500"}
+        ${virtualItem?.index === 0 && "mt-1.5"}
+        ${isActualLast && "mb-1.5"}
         p-1.5 gap-1
         text-xs
       `}
