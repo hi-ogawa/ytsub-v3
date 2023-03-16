@@ -170,20 +170,6 @@ function findSelectionEntryIndex(selection: Selection): number {
   return index;
 }
 
-// TODO: support virtualized list
-function scrollToCaptionEntry(index: number) {
-  const parentSelector = "#" + SCROLLABLE_ID;
-  const childSelector = `div > :nth-child(${index + 1})`;
-  const parent = document.querySelector<HTMLElement>(parentSelector)!;
-  const child = parent.querySelector<HTMLElement>(childSelector)!;
-  const hp = parent.clientHeight;
-  const hc = child.clientHeight;
-  const op = parent.offsetTop;
-  const oc = child.offsetTop;
-  parent.scroll({ top: oc - op + hc / 2 - hp / 2, behavior: "smooth" });
-}
-
-const SCROLLABLE_ID = "--scrollable--";
 const BOOKMARKABLE_CLASSNAME = "--bookmarkable--";
 
 interface BookmarkState {
@@ -304,7 +290,11 @@ function PageComponent({
 
   React.useEffect(() => {
     if (!isNil(focusedIndex)) {
-      scrollToCaptionEntry(focusedIndex);
+      // smooth scroll ends up wrong positions due to over-estimation by `estimateSize`.
+      virtualizer.scrollToIndex(focusedIndex, {
+        align: "center",
+        behavior: "auto",
+      });
     }
   }, [focusedIndex]);
 
@@ -430,7 +420,6 @@ function LayoutComponent(props: {
       <div className="flex flex-col flex-[1_0_0] md:flex-none md:w-1/3 border-t md:border relative">
         <div
           className="flex-[1_0_0] h-full overflow-y-auto"
-          id={SCROLLABLE_ID}
           ref={props.scrollElementRef}
         >
           {props.subtitles}
