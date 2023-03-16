@@ -212,10 +212,6 @@ function PageComponent({
       return;
     }
 
-    // TODO
-    // on dev build, the render might take more than 100ms depending on the amount of subtitles and thus drops some frames.
-    // probably we should virtualize the subtitle list.
-
     setIsPlaying(player.getPlayerState() === 1);
     setCurrentEntry(findCurrentEntry(captionEntries, player.getCurrentTime()));
 
