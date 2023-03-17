@@ -16,7 +16,7 @@ import {
 } from "react-feather";
 import { z } from "zod";
 import { PaginationComponent, Spinner } from "../../components/misc";
-import { useModal } from "../../components/modal";
+import { useModalV2 } from "../../components/modal-v2";
 import { Popover } from "../../components/popover";
 import {
   BookmarkEntryTable,
@@ -362,15 +362,8 @@ export function MiniPlayer({
 
 function NavBarMenuComponent() {
   const { request }: LoaderData = useDeserialize(useLeafLoaderData());
-  const { openModal } = useModal();
-
-  function onClickVideoFilter() {
-    openModal(<VideoSelectComponent />);
-  }
-
-  function onClickDeckFilter() {
-    openModal(<DeckSelectComponent />);
-  }
+  const videoSelectModal = useModalV2();
+  const deckSelectModal = useModalV2();
 
   const isFilterActive = !isNil(request.videoId ?? request.deckId);
 
@@ -402,13 +395,13 @@ function NavBarMenuComponent() {
             >
               <ul className="menu rounded p-3 shadow w-48 bg-base-100 text-base-content text-sm">
                 <li>
-                  <button onClick={onClickVideoFilter}>
+                  <button onClick={() => videoSelectModal.setOpen(true)}>
                     <Video />
                     Select Video
                   </button>
                 </li>
                 <li>
-                  <button onClick={onClickDeckFilter}>
+                  <button onClick={() => deckSelectModal.setOpen(true)}>
                     <Book />
                     Select Deck
                   </button>
@@ -424,6 +417,12 @@ function NavBarMenuComponent() {
           )}
         />
       </div>
+      <videoSelectModal.Wrapper>
+        <VideoSelectComponent />
+      </videoSelectModal.Wrapper>
+      <deckSelectModal.Wrapper>
+        <DeckSelectComponent />
+      </deckSelectModal.Wrapper>
     </>
   );
 }
