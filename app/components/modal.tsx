@@ -12,9 +12,9 @@ import React from "react";
 import { RemoveScroll } from "react-remove-scroll";
 import { cls } from "../utils/misc";
 
-// copied from https://github.com/hi-ogawa/web-ext-tab-manager/blame/81710dead04859525b9c8be3a73a71926cae6da4/src/components/modal.tsx
+// based on https://github.com/hi-ogawa/unocss-preset-antd/blob/02adfc9dfcb7cebbc31cd4651395e1ecc67d813e/packages/app/src/components/modal.tsx
 
-export function ModalV2(props: {
+export function Modal(props: {
   open: boolean;
   onClose: () => void;
   children: React.ReactNode;
@@ -69,7 +69,7 @@ export function ModalV2(props: {
   );
 }
 
-export function useModalV2() {
+export function useModal() {
   const [open, setOpen] = React.useState(false);
   const openRef = useStableRef(open); // pass stable ref to Wrapper
 
@@ -80,7 +80,7 @@ export function useModalV2() {
         children: React.ReactNode;
       }) {
         return (
-          <ModalV2
+          <Modal
             open={openRef.current}
             onClose={() => setOpen(false)}
             {...props}

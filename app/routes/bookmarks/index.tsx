@@ -16,7 +16,7 @@ import {
 } from "react-feather";
 import { z } from "zod";
 import { PaginationComponent, Spinner } from "../../components/misc";
-import { useModalV2 } from "../../components/modal-v2";
+import { useModal } from "../../components/modal";
 import { Popover } from "../../components/popover";
 import {
   BookmarkEntryTable,
@@ -362,8 +362,8 @@ export function MiniPlayer({
 
 function NavBarMenuComponent() {
   const { request }: LoaderData = useDeserialize(useLeafLoaderData());
-  const videoSelectModal = useModalV2();
-  const deckSelectModal = useModalV2();
+  const videoSelectModal = useModal();
+  const deckSelectModal = useModal();
 
   const isFilterActive = !isNil(request.videoId ?? request.deckId);
 

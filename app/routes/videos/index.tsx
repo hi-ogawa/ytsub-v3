@@ -8,7 +8,7 @@ import {
   Spinner,
   VideoComponent,
 } from "../../components/misc";
-import { useModalV2 } from "../../components/modal-v2";
+import { useModal } from "../../components/modal";
 import { useSnackbar } from "../../components/snackbar";
 import {
   DeckTable,
@@ -143,7 +143,7 @@ function VideoComponentExtra({
   currentUser?: UserTable;
 }) {
   const fetcher = useFetcher();
-  const modal = useModalV2();
+  const modal = useModal();
   const addToDeckDisabled = !video.bookmarkEntriesCount;
 
   const videoComponent = (
