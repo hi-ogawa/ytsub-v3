@@ -27,7 +27,7 @@ import {
   User,
   Video,
 } from "react-feather";
-import { Toaster } from "react-hot-toast";
+import { Toaster, toast } from "react-hot-toast";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { ModalProvider } from "./components/modal";
 import { Popover } from "./components/popover";
@@ -123,6 +123,12 @@ export default function DefaultComponent() {
       </head>
       <body className="h-full">
         <Toaster position="bottom-left" />
+        {/* escape hatch to close all toasts for e2e test (cf. forceDismissToast in helper.ts) */}
+        <button
+          data-test="forceDismissToast"
+          hidden
+          onClick={() => toast.dismiss()}
+        />
         <RootProviders>
           <Root />
         </RootProviders>
