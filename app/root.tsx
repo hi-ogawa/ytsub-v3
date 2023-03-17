@@ -27,6 +27,7 @@ import {
   User,
   Video,
 } from "react-feather";
+import { Toaster } from "react-hot-toast";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { ModalProvider } from "./components/modal";
 import { Popover } from "./components/popover";
@@ -124,6 +125,7 @@ export default function DefaultComponent() {
         <RootProviders>
           <Root />
         </RootProviders>
+        <Toaster position="bottom-left" />
       </body>
     </html>
   );
