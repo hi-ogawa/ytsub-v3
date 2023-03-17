@@ -59,6 +59,7 @@ export function Modal(props: {
                 ref: floating,
                 className: "w-full h-full",
               })}
+              data-test="modal"
             >
               {props.children}
             </div>
