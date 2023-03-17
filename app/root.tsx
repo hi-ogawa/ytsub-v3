@@ -125,7 +125,7 @@ export default function DefaultComponent() {
         <RootProviders>
           <Root />
         </RootProviders>
-        <Toaster position="bottom-left" />
+        <Toaster position="bottom-left" toastOptions={{ duration: 5000 }} />
       </body>
     </html>
   );
