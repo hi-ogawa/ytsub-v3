@@ -38,6 +38,7 @@ export function ModalV2(props: {
           className="transition duration-300 fixed inset-0 bg-black"
           enterFrom="opacity-0"
           enterTo="opacity-40"
+          entered="opacity-40"
           leaveFrom="opacity-40"
           leaveTo="opacity-0"
         />
@@ -46,7 +47,7 @@ export function ModalV2(props: {
           <Transition.Child
             className={cls(
               props.className,
-              "transition duration-300 transform w-[90%] max-w-[700px] h-[90%] max-h-[500px] bg-colorBgContainer shadow-lg"
+              "transition duration-300 transform w-[90%] max-w-xl shadow-lg"
             )}
             enterFrom="opacity-0 scale-95"
             enterTo="opacity-100 scale-100"
