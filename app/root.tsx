@@ -122,10 +122,10 @@ export default function DefaultComponent() {
         <ConfigPlaceholder />
       </head>
       <body className="h-full">
+        <Toaster position="bottom-left" />
         <RootProviders>
           <Root />
         </RootProviders>
-        <Toaster position="bottom-left" />
       </body>
     </html>
   );
