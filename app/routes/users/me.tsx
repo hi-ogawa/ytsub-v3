@@ -7,8 +7,8 @@ import {
 import { json, redirect } from "@remix-run/server-runtime";
 import React from "react";
 import { HelpCircle } from "react-feather";
+import toast from "react-hot-toast";
 import { z } from "zod";
-import { useSnackbar } from "../../components/snackbar";
 import { Q } from "../../db/models";
 import type { UserTable } from "../../db/models";
 import { R } from "../../misc/routes";
@@ -65,15 +65,16 @@ export default function DefaultComponent() {
   const actionData = useActionData<{ success: boolean; message: string }>();
   const [changed, setChanged] = React.useState(false);
   const [isValid, formProps] = useIsFormValid();
-  const { enqueueSnackbar } = useSnackbar();
 
   // Reset form on success
   React.useEffect(() => {
     if (!actionData) return;
     const { message, success } = actionData;
-    enqueueSnackbar(message, { variant: success ? "success" : "error" });
     if (success) {
+      toast.success(message);
       setChanged(false);
+    } else {
+      toast.error(message);
     }
   }, [actionData]);
 

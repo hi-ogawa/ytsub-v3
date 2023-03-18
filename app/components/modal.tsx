@@ -1,75 +1,98 @@
+import {
+  FloatingPortal,
+  useDismiss,
+  useFloating,
+  useId,
+  useInteractions,
+} from "@floating-ui/react-dom-interactions";
 import { Transition } from "@headlessui/react";
+import { tinyassert } from "@hiogawa/utils";
+import { useStableRef } from "@hiogawa/utils-react";
 import React from "react";
+import { RemoveScroll } from "react-remove-scroll";
+import { cls } from "../utils/misc";
 
-interface ModalContext {
-  openModal: (content: React.ReactNode) => void;
-  closeModal: () => void;
-}
+// based on https://github.com/hi-ogawa/unocss-preset-antd/blob/02adfc9dfcb7cebbc31cd4651395e1ecc67d813e/packages/app/src/components/modal.tsx
 
-const DefaultModalContext = React.createContext<ModalContext | undefined>(
-  undefined
-);
-
-export function useModal(): ModalContext {
-  const value = React.useContext(DefaultModalContext);
-  if (!value) throw new Error("ModalContext undefined");
-  return value;
-}
-
-type ModalState = "OPEN" | "CLOSING" | "CLOSED";
-
-export const ModalProvider: React.FC = ({ children }) => {
-  const [content, setContent] = React.useState<React.ReactNode>();
-  const [state, setState] = React.useState<ModalState>("CLOSED");
-
-  function openModal(content: React.ReactNode) {
-    setContent(content);
-    setState("OPEN");
-  }
-
-  function closeModal() {
-    setState("CLOSING");
-  }
-
-  function closeModalFinal() {
-    setContent(undefined);
-    setState("CLOSED");
-  }
+export function Modal(props: {
+  open: boolean;
+  onClose: () => void;
+  children: React.ReactNode;
+  className?: string; // override modal content container style e.g. max width/height
+}) {
+  const { floating, context } = useFloating({
+    open: props.open,
+    onOpenChange: (open) => {
+      tinyassert(!open); // should get only `open = false` via `useDismiss`
+      props.onClose();
+    },
+  });
+  const { getFloatingProps } = useInteractions([useDismiss(context)]);
+  const id = useId();
 
   return (
-    <DefaultModalContext.Provider value={{ openModal, closeModal }}>
-      {children}
-      <Transition appear show={state === "OPEN"}>
-        <div
-          className="absolute inset-0 z-50 flex justify-center items-center"
-          data-test="modal"
-        >
+    <FloatingPortal id={id}>
+      <Transition appear show={props.open} className="z-100">
+        {/* backdrop */}
+        <Transition.Child
+          className="transition duration-300 fixed inset-0 bg-black"
+          enterFrom="opacity-0"
+          enterTo="opacity-40"
+          entered="opacity-40"
+          leaveFrom="opacity-40"
+          leaveTo="opacity-0"
+        />
+        {/* content */}
+        <RemoveScroll className="fixed inset-0 overflow-hidden flex justify-center items-center">
           <Transition.Child
-            className="transition duration-300 absolute inset-0 z-[-1]"
-            enterFrom="opacity-0"
-            enterTo="opacity-100"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0"
-          >
-            <div
-              className="absolute inset-0 bg-black/[0.3]"
-              onClick={closeModal}
-            />
-          </Transition.Child>
-          <Transition.Child
-            className="w-full max-w-xl" // TODO: options for `openModal`
-            enter="transition duration-300"
+            className={cls(
+              props.className,
+              "transition duration-300 transform w-[90%] max-w-xl shadow-lg"
+            )}
             enterFrom="opacity-0 scale-95"
             enterTo="opacity-100 scale-100"
-            leave="transition duration-300"
             leaveFrom="opacity-100 scale-100"
             leaveTo="opacity-0 scale-95"
-            afterLeave={closeModalFinal}
           >
-            {content}
+            <div
+              {...getFloatingProps({
+                ref: floating,
+                className: "w-full h-full",
+              })}
+              data-test="modal"
+            >
+              {props.children}
+            </div>
           </Transition.Child>
-        </div>
+        </RemoveScroll>
       </Transition>
-    </DefaultModalContext.Provider>
+    </FloatingPortal>
   );
-};
+}
+
+export function useModal() {
+  const [open, setOpen] = React.useState(false);
+  const openRef = useStableRef(open); // pass stable ref to Wrapper
+
+  const [Wrapper] = React.useState(
+    () =>
+      function Wrapper(props: {
+        className?: string;
+        children: React.ReactNode;
+      }) {
+        return (
+          <Modal
+            open={openRef.current}
+            onClose={() => setOpen(false)}
+            {...props}
+          />
+        );
+      }
+  );
+
+  return {
+    open,
+    setOpen,
+    Wrapper,
+  };
+}

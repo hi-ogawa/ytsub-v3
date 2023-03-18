@@ -14,7 +14,6 @@ import {
 } from "@remix-run/react";
 import type { LinksFunction, MetaFunction } from "@remix-run/server-runtime";
 import { last } from "lodash";
-import React from "react";
 import {
   BookOpen,
   Bookmark,
@@ -27,15 +26,9 @@ import {
   User,
   Video,
 } from "react-feather";
+import { Toaster, toast } from "react-hot-toast";
 import { QueryClient, QueryClientProvider } from "react-query";
-import { ModalProvider } from "./components/modal";
 import { Popover } from "./components/popover";
-import {
-  SnackbarItemComponent,
-  SnackbarProvider,
-  SnackbardContainerComponent,
-  useSnackbar,
-} from "./components/snackbar";
 import { TopProgressBar } from "./components/top-progress-bar";
 import type { UserTable } from "./db/models";
 import { R, R_RE } from "./misc/routes";
@@ -43,6 +36,7 @@ import { publicConfig } from "./utils/config";
 import { ConfigPlaceholder } from "./utils/config-placeholder";
 import { Controller, makeLoader } from "./utils/controller-utils";
 import { getFlashMessages } from "./utils/flash-message";
+import { useFlashMessages } from "./utils/flash-message-hook";
 import { useHydrated } from "./utils/hooks";
 import { RootLoaderData, useRootLoaderData } from "./utils/loader-utils";
 import type { Match } from "./utils/page-handle";
@@ -121,6 +115,13 @@ export default function DefaultComponent() {
         <ConfigPlaceholder />
       </head>
       <body className="h-full">
+        <Toaster position="bottom-left" />
+        {/* escape hatch to close all toasts for e2e test (cf. forceDismissToast in helper.ts) */}
+        <button
+          data-test="forceDismissToast"
+          hidden
+          onClick={() => toast.dismiss()}
+        />
         <RootProviders>
           <Root />
         </RootProviders>
@@ -131,13 +132,7 @@ export default function DefaultComponent() {
 
 function Root() {
   const data = useRootLoaderData();
-
-  const { enqueueSnackbar } = useSnackbar();
-  React.useEffect(() => {
-    for (const message of data.flashMessages) {
-      enqueueSnackbar(message.content, { variant: message.variant });
-    }
-  }, [data]);
+  useFlashMessages(data.flashMessages);
 
   // `PageHandle` of the leaf compoment
   const matches: Match[] = useMatches();
@@ -168,17 +163,7 @@ function Root() {
 
 function RootProviders({ children }: React.PropsWithChildren<{}>) {
   return (
-    <QueryClientProvider client={queryClient}>
-      <SnackbarProvider
-        components={{
-          Container: SnackbardContainerComponent,
-          Item: SnackbarItemComponent,
-        }}
-        timeout={5000}
-      >
-        <ModalProvider>{children}</ModalProvider>
-      </SnackbarProvider>
-    </QueryClientProvider>
+    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
   );
 }
 

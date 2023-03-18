@@ -3,13 +3,13 @@ import { useFetcher, useFetchers, useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import React from "react";
 import { PlusSquare, Trash2 } from "react-feather";
+import toast from "react-hot-toast";
 import {
   PaginationComponent,
   Spinner,
   VideoComponent,
 } from "../../components/misc";
 import { useModal } from "../../components/modal";
-import { useSnackbar } from "../../components/snackbar";
 import {
   DeckTable,
   PaginationResult,
@@ -93,7 +93,6 @@ export function VideoListComponent({
 }) {
   // cannot run this effect in `VideoComponentExtra` because the component is already gone when action returns response
   const fetchers = useFetchers();
-  const { enqueueSnackbar } = useSnackbar();
 
   React.useEffect(() => {
     for (const fetcher of fetchers) {
@@ -102,9 +101,9 @@ export function VideoListComponent({
         fetcher.data.type === "DELETE /videos/$id"
       ) {
         if (fetcher.data.success) {
-          enqueueSnackbar("Deleted successfuly", { variant: "success" });
+          toast.success("Deletion success");
         } else {
-          enqueueSnackbar("Deletion failed", { variant: "error" });
+          toast.error("Deleted failed");
         }
       }
     }
@@ -143,15 +142,10 @@ function VideoComponentExtra({
   currentUser?: UserTable;
 }) {
   const fetcher = useFetcher();
-  const { openModal } = useModal();
+  const modal = useModal();
   const addToDeckDisabled = !video.bookmarkEntriesCount;
 
-  function onClickAddToDeck() {
-    if (addToDeckDisabled) return;
-    openModal(<AddToDeckComponent videoId={video.id} />);
-  }
-
-  return (
+  const videoComponent = (
     <VideoComponent
       key={video.id}
       video={video}
@@ -163,7 +157,11 @@ function VideoComponentExtra({
           <>
             <li className={`${addToDeckDisabled && "disabled"}`}>
               <button
-                onClick={onClickAddToDeck}
+                onClick={() => {
+                  if (!addToDeckDisabled) {
+                    modal.setOpen(true);
+                  }
+                }}
                 data-test="video-component-add-to-deck-button"
               >
                 <PlusSquare />
@@ -192,9 +190,27 @@ function VideoComponentExtra({
       }
     />
   );
+
+  return (
+    <>
+      {videoComponent}
+      <modal.Wrapper>
+        <AddToDeckComponent
+          videoId={video.id}
+          onSuccess={() => modal.setOpen(false)}
+        />
+      </modal.Wrapper>
+    </>
+  );
 }
 
-function AddToDeckComponent({ videoId }: { videoId: number }) {
+function AddToDeckComponent({
+  videoId,
+  onSuccess,
+}: {
+  videoId: number;
+  onSuccess: () => void;
+}) {
   // get decks
   const fetcher1 = useFetcher();
   const data: DecksLoaderData | undefined = React.useMemo(
@@ -205,8 +221,6 @@ function AddToDeckComponent({ videoId }: { videoId: number }) {
 
   // create practice entries
   const fetcher2 = useFetcher();
-  const { enqueueSnackbar } = useSnackbar();
-  const { closeModal } = useModal();
 
   React.useEffect(() => {
     // It doesn't have to wait until "done" since action response is ready on "actionReload"
@@ -214,12 +228,10 @@ function AddToDeckComponent({ videoId }: { videoId: number }) {
     if (fetcher2.data) {
       const data: NewPracticeEntryResponse = fetcher2.data;
       if (data.ok) {
-        enqueueSnackbar(`Added ${data.value.ids.length} to a deck`, {
-          variant: "success",
-        });
-        closeModal();
+        toast.success(`Added ${data.value.ids.length} to a deck`);
+        onSuccess();
       } else {
-        enqueueSnackbar("Failed to add to a deck", { variant: "error" });
+        toast.error("Failed to add to a deck");
       }
     }
   }, [fetcher2.data]);
