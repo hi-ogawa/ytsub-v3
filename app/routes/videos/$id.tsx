@@ -18,6 +18,7 @@ import {
 import React from "react";
 import {
   Bookmark,
+  Check,
   MoreVertical,
   Play,
   Repeat,
@@ -38,6 +39,7 @@ import {
   getVideoAndCaptionEntries,
 } from "../../db/models";
 import { R } from "../../misc/routes";
+import { useAutoScrollState } from "../../utils/auto-scroll";
 import { Controller, makeLoader } from "../../utils/controller-utils";
 import { useDeserialize, useSelection } from "../../utils/hooks";
 import { useYoutubeIframeApi } from "../../utils/hooks";
@@ -189,6 +191,8 @@ function PageComponent({
   const [focusedIndex] = React.useState(() =>
     zStringToMaybeInteger.parse(searchParams.get("index") ?? undefined)
   );
+  const autoScrollState = useAutoScrollState();
+  const autoScroll = autoScrollState.enabled(video.id);
 
   //
   // state
@@ -207,18 +211,33 @@ function PageComponent({
   //
 
   useRafLoop(() => {
-    if (!player) {
-      return;
-    }
+    if (!player) return;
 
-    setIsPlaying(player.getPlayerState() === 1);
+    const isPlaying = player.getPlayerState() === 1;
+    setIsPlaying(isPlaying);
+
+    if (!isPlaying) return;
+
     // TODO: try to predict when repeating back. currently `currentEntry` flickers by picking next non-repeating entry momentarily.
-    setCurrentEntry(findCurrentEntry(captionEntries, player.getCurrentTime()));
+    const currentTime = player.getCurrentTime();
+    const currentEntry = findCurrentEntry(captionEntries, currentTime);
+    setCurrentEntry(currentEntry);
+
+    if (autoScroll && currentEntry) {
+      // TODO: find visible indices (note that "overscan" leads to some deviation)
+      const indices = virtualizer.getVirtualItems().map((i) => i.index);
+      const centerIndex = indices[Math.floor(indices.length / 2)];
+      if (Math.abs(centerIndex - currentEntry.index) > 3) {
+        virtualizer.scrollToIndex(currentEntry.index, {
+          align: "start",
+          behavior: "auto",
+        });
+      }
+    }
 
     if (repeatingEntries.length > 0) {
       const begin = Math.min(...repeatingEntries.map((entry) => entry.begin));
       const end = Math.max(...repeatingEntries.map((entry) => entry.end));
-      const currentTime = player.getCurrentTime();
       if (currentTime < begin || end < currentTime) {
         player.seekTo(begin);
       }
@@ -698,6 +717,8 @@ function NavBarMenuComponentImpl({
   user?: UserTable;
   video: VideoTable;
 }) {
+  const autoScrollState = useAutoScrollState();
+
   // TODO: refactor too much copy-paste of `Popover` from `NavBar` in `root.tsx`
   return (
     <>
@@ -747,6 +768,12 @@ function NavBarMenuComponentImpl({
                   >
                     Change languages
                   </Link>
+                </li>
+                <li onClick={() => autoScrollState.toggle(video.id)}>
+                  <button>
+                    Auto scroll
+                    {autoScrollState.enabled(video.id) && <Check size={16} />}
+                  </button>
                 </li>
               </ul>
             </Transition>
