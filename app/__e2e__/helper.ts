@@ -58,3 +58,10 @@ export function useDevUserE2e(test: typeof testDefault) {
 
   return { user: () => user, signin };
 }
+
+// force dismissing toasts since they can interfere with interactions.
+export async function forceDismissToast(page: Page) {
+  await page
+    .locator("data-test=forceDismissToast")
+    .evaluate((node: HTMLElement) => node.click());
+}

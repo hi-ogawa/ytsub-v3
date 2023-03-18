@@ -1,6 +1,6 @@
 import { expect } from "@playwright/test";
 import { test } from "./coverage";
-import { useDevUserE2e } from "./helper";
+import { forceDismissToast, useDevUserE2e } from "./helper";
 
 test.describe("decks", () => {
   const { signin } = useDevUserE2e(test);
@@ -23,6 +23,7 @@ test.describe("decks", () => {
       .click();
     await page.waitForSelector(`"Deck created successfully"`);
     await expect(page).toHaveURL(/\/decks\/\d+$/);
+    await forceDismissToast(page);
 
     // navigate to edit deck page
     await page.locator("data-test=deck-menu-popover-reference").click();

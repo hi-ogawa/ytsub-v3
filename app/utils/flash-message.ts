@@ -1,11 +1,10 @@
 import type { Session } from "@remix-run/server-runtime";
-import type { Variant } from "../components/snackbar";
 
 const KEY = "flash-messages";
 
 export interface FlashMessage {
   content: string;
-  variant?: Variant;
+  variant?: "success" | "error" | "info";
 }
 
 export function pushFlashMessage(
