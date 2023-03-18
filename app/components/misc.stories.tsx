@@ -49,8 +49,6 @@ export function TestPopover() {
               </button>
             )}
             floating={({ open, props }) => (
-              // Use @headlessui/react@insiders to pass ref
-              // https://github.com/tailwindlabs/headlessui/issues/273#issuecomment-1049961182
               <Transition
                 show={open}
                 unmount={false}
