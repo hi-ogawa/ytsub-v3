@@ -1,10 +1,36 @@
 import { Transition } from "@headlessui/react";
 import React from "react";
-import { Bookmark, LogOut, Save, Settings, Trash2, User } from "react-feather";
+import {
+  Bookmark,
+  Check,
+  LogOut,
+  Save,
+  Settings,
+  Trash2,
+  User,
+} from "react-feather";
 import { useToggle } from "react-use";
 import { Spinner, VideoComponent } from "./misc";
 import { Popover } from "./popover";
 import { PracticeHistoryChart } from "./practice-history-chart";
+
+export function TestDev() {
+  return (
+    <div className="p-4 flex flex-col items-center">
+      <ul className="menu rounded p-3 shadow w-48 bg-base-100 text-base-content">
+        <li>
+          <span>Change languages</span>
+        </li>
+        <li>
+          <span>
+            Auto scroll
+            <Check />
+          </span>
+        </li>
+      </ul>
+    </div>
+  );
+}
 
 export function TestPopover() {
   return (
