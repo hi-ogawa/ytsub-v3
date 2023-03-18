@@ -12,6 +12,7 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: 16
+      - run: make lint
       - run: pnpm i
       - run: pnpm lint-check
       - run: pnpm tsc
@@ -81,6 +82,7 @@ jobs:
       - run: pnpm cli db:test-migrations --reversibility-test
 
   publish-coverage-report:
+    if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-20.04
     needs:
       - test
@@ -120,9 +122,3 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           NODE_DEBUG=gh-pages npx gh-pages --add --branch __coverage__ --dist coverage --dest $(git rev-parse HEAD) --repo "https://${GITHUB_ACTOR}:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git"
-
-  lint-misc:
-    runs-on: ubuntu-20.04
-    steps:
-      - uses: actions/checkout@v2
-      - run: make lint
