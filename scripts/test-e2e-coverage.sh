@@ -10,8 +10,8 @@ log_file=logs/remix-coverage.log
 trap 'cat "${log_file}"' EXIT
 
 # run remix server with c8
-npm run dev:prepare
-npm run remix:dev:coverage >> "$log_file" 2>&1 &
+pnpm dev-pre
+pnpm dev-coverage:remix >> "$log_file" 2>&1 &
 coverage_pid="$!"
 
 # wait server

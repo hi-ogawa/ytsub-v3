@@ -11,12 +11,12 @@ pnpm lint
 
 # testing (vitest)
 pnpm test
-pnpm test:coverage # view result e.g. via `xdg-open coverage/unit/index.html`
+pnpm test-coverage # view result e.g. via `xdg-open coverage/unit/index.html`
 
 # testing (playwright)
 npx playwright install
 pnpm test-e2e
-pnpm test-e2e:coverage
+pnpm test-e2e-coverage
 
 # deploy (vercel)
 vercel --version # Vercel CLI 24.2.4
