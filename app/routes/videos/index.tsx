@@ -3,13 +3,13 @@ import { useFetcher, useFetchers, useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import React from "react";
 import { PlusSquare, Trash2 } from "react-feather";
+import toast from "react-hot-toast";
 import {
   PaginationComponent,
   Spinner,
   VideoComponent,
 } from "../../components/misc";
 import { useModal } from "../../components/modal";
-import { useSnackbar } from "../../components/snackbar";
 import {
   DeckTable,
   PaginationResult,
@@ -93,7 +93,6 @@ export function VideoListComponent({
 }) {
   // cannot run this effect in `VideoComponentExtra` because the component is already gone when action returns response
   const fetchers = useFetchers();
-  const { enqueueSnackbar } = useSnackbar();
 
   React.useEffect(() => {
     for (const fetcher of fetchers) {
@@ -102,9 +101,9 @@ export function VideoListComponent({
         fetcher.data.type === "DELETE /videos/$id"
       ) {
         if (fetcher.data.success) {
-          enqueueSnackbar("Deleted successfuly", { variant: "success" });
+          toast.success("Deletion success");
         } else {
-          enqueueSnackbar("Deletion failed", { variant: "error" });
+          toast.error("Deleted failed");
         }
       }
     }
@@ -205,7 +204,6 @@ function AddToDeckComponent({ videoId }: { videoId: number }) {
 
   // create practice entries
   const fetcher2 = useFetcher();
-  const { enqueueSnackbar } = useSnackbar();
   const { closeModal } = useModal();
 
   React.useEffect(() => {
@@ -214,12 +212,10 @@ function AddToDeckComponent({ videoId }: { videoId: number }) {
     if (fetcher2.data) {
       const data: NewPracticeEntryResponse = fetcher2.data;
       if (data.ok) {
-        enqueueSnackbar(`Added ${data.value.ids.length} to a deck`, {
-          variant: "success",
-        });
+        toast.success(`Added ${data.value.ids.length} to a deck`);
         closeModal();
       } else {
-        enqueueSnackbar("Failed to add to a deck", { variant: "error" });
+        toast.error("Failed to add to a deck");
       }
     }
   }, [fetcher2.data]);

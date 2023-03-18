@@ -1,8 +1,8 @@
 import { Form, useActionData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import React from "react";
+import toast from "react-hot-toast";
 import { z } from "zod";
-import { useSnackbar } from "../../components/snackbar";
 import { DeckTable, Q } from "../../db/models";
 import { R } from "../../misc/routes";
 import { Controller, makeLoader } from "../../utils/controller-utils";
@@ -73,12 +73,11 @@ export const action = makeLoader(Controller, async function () {
 
 export default function DefaultComponent() {
   const actionData = useActionData<ActionData>();
-  const { enqueueSnackbar } = useSnackbar();
   const [isValid, formProps] = useIsFormValid();
 
   React.useEffect(() => {
     if (actionData?.message) {
-      enqueueSnackbar(actionData?.message, { variant: "error" });
+      toast.error(actionData.message);
     }
   }, [actionData]);
 

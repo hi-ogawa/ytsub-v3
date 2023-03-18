@@ -25,11 +25,11 @@ import {
   Video,
   X,
 } from "react-feather";
+import toast from "react-hot-toast";
 import { useSearchParams } from "react-router-dom";
 import { z } from "zod";
 import { Spinner } from "../../components/misc";
 import { Popover } from "../../components/popover";
-import { useSnackbar } from "../../components/snackbar";
 import {
   CaptionEntryTable,
   Q,
@@ -185,7 +185,6 @@ function PageComponent({
   currentUser,
 }: LoaderData & { currentUser?: UserTable }) {
   const fetcher = useFetcher();
-  const { enqueueSnackbar } = useSnackbar();
   const [searchParams] = useSearchParams();
   const [focusedIndex] = React.useState(() =>
     zStringToMaybeInteger.parse(searchParams.get("index") ?? undefined)
@@ -276,9 +275,9 @@ function PageComponent({
   React.useEffect(() => {
     if (fetcher.type === "done") {
       if (fetcher.data.success) {
-        enqueueSnackbar("Bookmark success", { variant: "success" });
+        toast.success("Bookmark success");
       } else {
-        enqueueSnackbar("Bookmark failed", { variant: "error" });
+        toast.success("Bookmark failed");
       }
       setBookmarkState(undefined);
     }
