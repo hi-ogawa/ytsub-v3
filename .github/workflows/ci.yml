@@ -16,7 +16,7 @@ jobs:
       - run: pnpm i
       - run: pnpm lint-check
       - run: pnpm tsc
-      - run: pnpm vercel:build
+      - run: pnpm build
 
   test:
     runs-on: ubuntu-20.04
@@ -30,7 +30,7 @@ jobs:
           node-version: 16
       - run: pnpm i
       - run: make docker/up db/reset/test
-      - run: pnpm test:coverage
+      - run: pnpm test-coverage
       - uses: actions/upload-artifact@v3
         with:
           name: coverage-unit
@@ -55,7 +55,7 @@ jobs:
       - if: steps.cache-playwright.outputs.cache-hit != 'true'
         run: npx playwright install --with-deps
       - run: make docker/up db/reset/test
-      - run: APP_RECAPTCHA_DISABLED=1 E2E_CLIENT_TRACE=1 pnpm test-e2e:coverage
+      - run: APP_RECAPTCHA_DISABLED=1 E2E_CLIENT_TRACE=1 pnpm test-e2e-coverage
       - uses: actions/upload-artifact@v3
         with:
           name: coverage-e2e
@@ -96,7 +96,7 @@ jobs:
         with:
           node-version: 16
       - run: pnpm i
-      - run: export NODE_ENV=test && pnpm dev:prepare && npx remix build --sourcemap
+      - run: export NODE_ENV=test && pnpm dev-pre && npx remix build --sourcemap
       - uses: actions/download-artifact@v3
         with:
           name: coverage-unit

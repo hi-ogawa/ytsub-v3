@@ -6,7 +6,7 @@ rm -rf build/remix/production
 rm -rf build/tailwind/production
 
 # tailwind
-NODE_ENV=production npm run tailwind
+NODE_ENV=production pnpm tailwind
 
 # copy assets not managed by remix
 NODE_ENV=production bash scripts/copy-assets.sh
