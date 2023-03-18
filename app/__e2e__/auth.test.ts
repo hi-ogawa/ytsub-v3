@@ -91,7 +91,7 @@ test.describe("/users/signout", () => {
 
     // Signout from top menu
     await page.locator("header >> data-test=user-menu").click();
-    await page.locator("header >> data-test=signout-form >> button").click();
+    await page.locator("data-test=signout-form >> button").click();
     await page.waitForSelector('"Signed out successfuly"');
   });
 });
