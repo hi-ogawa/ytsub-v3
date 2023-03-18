@@ -1,7 +1,7 @@
 import { Transition } from "@headlessui/react";
 import { tinyassert } from "@hiogawa/utils";
 import { isNil } from "@hiogawa/utils";
-import { useRafLoop } from "@hiogawa/utils-react";
+import { toArraySetState, useRafLoop } from "@hiogawa/utils-react";
 import {
   Form,
   Link,
@@ -45,7 +45,7 @@ import { Controller, makeLoader } from "../../utils/controller-utils";
 import { useDeserialize, useSelection } from "../../utils/hooks";
 import { useYoutubeIframeApi } from "../../utils/hooks";
 import { useLeafLoaderData, useRootLoaderData } from "../../utils/loader-utils";
-import { cls, toToggleArrayState } from "../../utils/misc";
+import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 import type { CaptionEntry } from "../../utils/types";
 import { toForm } from "../../utils/url-data";
@@ -800,7 +800,7 @@ const repeatingEntriesAtom = atom(new Array<CaptionEntry>());
 
 function useRepeatingEntries() {
   const [state, setState] = useAtom(repeatingEntriesAtom);
-  return [state, setState, toToggleArrayState(setState)] as const;
+  return [state, setState, toArraySetState(setState).toggle] as const;
 }
 
 const autoScrollStorageAtom = atomWithStorage(
@@ -810,5 +810,5 @@ const autoScrollStorageAtom = atomWithStorage(
 
 export function useAutoScrollState() {
   const [state, setState] = useAtom(autoScrollStorageAtom);
-  return [state, toToggleArrayState(setState)] as const;
+  return [state, toArraySetState(setState).toggle] as const;
 }

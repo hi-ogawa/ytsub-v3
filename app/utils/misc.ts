@@ -1,5 +1,3 @@
-import { toImmutableSetState } from "@hiogawa/utils-react";
-
 // E.g.
 //  fetch("...").then(getCall("json"))
 //  fetch("...").then(getCall("text"))
@@ -33,23 +31,4 @@ export const throwGetterProxy = new Proxy(
 
 export function cls(...args: unknown[]): string {
   return args.filter(Boolean).join(" ");
-}
-
-export function toToggleArrayState<T>(
-  setState: React.Dispatch<React.SetStateAction<T[]>>
-) {
-  return toImmutableSetState(
-    setState,
-    toggleArray as (value: T) => void,
-    (ls) => [...ls]
-  );
-}
-
-function toggleArray<T>(this: T[], value: T): void {
-  const index = this.indexOf(value);
-  if (index < 0) {
-    this.push(value);
-  } else {
-    this.splice(index, 1);
-  }
 }

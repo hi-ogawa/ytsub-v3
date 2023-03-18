@@ -14,7 +14,7 @@ specifiers:
   '@headlessui/react': ^0.0.0-insiders.ab6310c
   '@hiogawa/isort-ts': 1.0.0-pre.11
   '@hiogawa/utils': ^1.4.1
-  '@hiogawa/utils-react': ^1.1.1
+  '@hiogawa/utils-react': ^1.2.0
   '@playwright/test': ^1.19.2
   '@remix-run/dev': 1.4.1
   '@remix-run/node': ^1.4.0
@@ -78,7 +78,7 @@ dependencies:
   '@floating-ui/react-dom-interactions': 0.0.15_xd63vgjm47lzoal5ybyqmsdesy
   '@headlessui/react': 0.0.0-insiders.ab6310c_sfoxds7t5ydpegc3knd667wn6m
   '@hiogawa/utils': 1.4.1
-  '@hiogawa/utils-react': 1.1.1_react@17.0.2
+  '@hiogawa/utils-react': 1.2.0_react@17.0.2
   '@remix-run/node': 1.4.1_sfoxds7t5ydpegc3knd667wn6m
   '@remix-run/react': 1.4.1_sfoxds7t5ydpegc3knd667wn6m
   '@remix-run/server-runtime': 1.4.1_sfoxds7t5ydpegc3knd667wn6m
@@ -1368,8 +1368,8 @@ packages:
       typescript: 4.9.5
     dev: true
 
-  /@hiogawa/utils-react/1.1.1_react@17.0.2:
-    resolution: {integrity: sha512-k6sjPb9iOdyhFVkN662PjpVHILL2cdmtJQj/AbTk4nekA0cLf09n3W47ckviNU9LCb96rX03hB4hRk0EUKKDZQ==}
+  /@hiogawa/utils-react/1.2.0_react@17.0.2:
+    resolution: {integrity: sha512-hQZhYgJDs6Lw3wMoriKNk1eZnnR+WK+Ef2LUo7XXJFug7w+Mu7RRr0YL8WtCoXymH3izVGJ15udHYkCLmKdfjg==}
     peerDependencies:
       react: '*'
     dependencies:
@@ -4608,8 +4608,8 @@ packages:
       responselike: 2.0.1
     dev: true
 
-  /graceful-fs/4.2.10:
-    resolution: {integrity: sha512-9ByhssR2fPVsNZj478qUUbKfmL0+t5BDVyjShtyZZLiK7ZDAArFFfopyOTj0M05wE2tJPisA4iTnnXl2YoPvOA==}
+  /graceful-fs/4.2.11:
+    resolution: {integrity: sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ==}
     dev: true
 
   /graceful-fs/4.2.9:
@@ -5331,7 +5331,7 @@ packages:
       '@jest/types': 27.5.1
       '@types/stack-utils': 2.0.1
       chalk: 4.1.2
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
       micromatch: 4.0.4
       pretty-format: 27.5.1
       slash: 3.0.0
@@ -5395,7 +5395,7 @@ packages:
       babel-core: 7.0.0-bridge.0_@babel+core@7.17.8
       chalk: 4.1.2
       flow-parser: 0.200.1
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
       micromatch: 3.1.10
       neo-async: 2.6.2
       node-dir: 0.1.17
@@ -5458,7 +5458,7 @@ packages:
   /jsonfile/4.0.0:
     resolution: {integrity: sha1-h3Gq4HmbZAdrdmQPygWPnBDjPss=}
     optionalDependencies:
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.9
     dev: true
 
   /jsonfile/6.1.0:
@@ -5466,7 +5466,7 @@ packages:
     dependencies:
       universalify: 2.0.0
     optionalDependencies:
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.9
     dev: true
 
   /keyv/4.5.2:
@@ -5564,7 +5564,7 @@ packages:
     resolution: {integrity: sha512-Kx8hMakjX03tiGTLAIdJ+lL0htKnXjEZN6hk/tozf/WOuYGdZBJrZ+rCJRbVCugsjB3jMLn9746NsQIf5VjBMw==}
     engines: {node: '>=4'}
     dependencies:
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
       parse-json: 4.0.0
       pify: 3.0.0
       strip-bom: 3.0.0
@@ -7111,7 +7111,7 @@ packages:
   /proper-lockfile/4.1.2:
     resolution: {integrity: sha512-TjNPblN4BwAWMXU8s9AEz4JmQxnD1NNL7bNOY/AKUzyamc379FWASUhc/K1pL2noVb+XmZKLL68cjzLsiOAMaA==}
     dependencies:
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
       retry: 0.12.0
       signal-exit: 3.0.7
     dev: true
@@ -8983,7 +8983,7 @@ packages:
   /write-file-atomic/2.4.3:
     resolution: {integrity: sha512-GaETH5wwsX+GcnzhPgKcKjJ6M2Cq3/iZp1WyY/X1CSqrW+jVNM9Y7D8EC2sM4ZG/V8wZlSniJnCKWPmBYAucRQ==}
     dependencies:
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
       imurmurhash: 0.1.4
       signal-exit: 3.0.7
     dev: true
