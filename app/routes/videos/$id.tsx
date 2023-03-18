@@ -783,21 +783,6 @@ function NavBarMenuComponentImpl({
                     Clear Repeat
                   </button>
                 </li>
-                <li
-                  className={cls(
-                    repeatingEntries.length === 0 &&
-                      "disabled pointer-events-none"
-                  )}
-                >
-                  <button
-                    onClick={() => {
-                      setRepeatingEntries([]);
-                      setOpen(false);
-                    }}
-                  >
-                    Clear Repeat
-                  </button>
-                </li>
               </ul>
             </Transition>
           )}
