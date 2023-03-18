@@ -4,7 +4,7 @@ import {
   useFloating,
   useId,
   useInteractions,
-} from "@floating-ui/react-dom-interactions";
+} from "@floating-ui/react";
 import { Transition } from "@headlessui/react";
 import { tinyassert } from "@hiogawa/utils";
 import { useStableRef } from "@hiogawa/utils-react";

@@ -1,69 +1,88 @@
 import {
+  FloatingPortal,
   Placement,
+  arrow,
   autoUpdate,
   flip,
   offset,
   shift,
   useClick,
+  useDismiss,
   useFloating,
-  useFocusTrap,
+  useId,
   useInteractions,
-} from "@floating-ui/react-dom-interactions";
+} from "@floating-ui/react";
 import React from "react";
+
+// copied from https://github.com/hi-ogawa/unocss-preset-antd/blob/95b2359ca2a7bcec3ccc36762fae4929937b628e/packages/app/src/components/popover.tsx
 
 interface PopoverRenderProps {
   open: boolean;
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setOpen: (open: boolean) => void;
   props: {};
-  update: () => void;
+  arrowProps?: {};
 }
 
-interface PopoverProps {
-  placement?: Placement;
-  reference: (props: PopoverRenderProps) => React.ReactNode;
-  floating: (props: PopoverRenderProps) => React.ReactNode;
-}
-
-export function Popover(props: PopoverProps) {
+export function Popover(props: {
+  placement: Placement;
+  reference: (renderProps: PopoverRenderProps) => React.ReactNode;
+  floating: (renderProps: PopoverRenderProps) => React.ReactNode;
+}) {
   const [open, setOpen] = React.useState(false);
+  const arrowRef = React.useRef<Element>(null);
 
-  const { refs, context, update, x, y, strategy } = useFloating({
-    open,
-    onOpenChange: setOpen,
-    placement: props.placement,
-    middleware: [offset(5), flip(), shift()],
-  });
+  const { reference, floating, context, x, y, strategy, middlewareData } =
+    useFloating({
+      open,
+      onOpenChange: setOpen,
+      placement: props.placement,
+      middleware: [
+        offset(5),
+        flip(),
+        shift(),
+        arrow({ element: arrowRef, padding: 10 }), // TODO: arrow
+      ].filter(Boolean),
+      whileElementsMounted: autoUpdate,
+    });
 
   const { getReferenceProps, getFloatingProps } = useInteractions([
     useClick(context),
-    useFocusTrap(context, { modal: false, order: ["reference", "content"] }),
+    useDismiss(context),
   ]);
 
-  React.useEffect(() => {
-    if (open && refs.reference.current && refs.floating.current) {
-      return autoUpdate(refs.reference.current, refs.floating.current, update);
-    }
-    return;
-  }, [open, refs.reference, refs.floating]);
+  const id = useId();
 
   return (
     <>
       {props.reference({
         open,
         setOpen,
-        update,
-        // @ts-expect-error
-        props: getReferenceProps({ ref: refs.reference }),
-      })}
-      {props.floating({
-        open,
-        setOpen,
-        update,
-        props: getFloatingProps({
-          ref: refs.floating,
-          style: { top: y ?? "", left: x ?? "", position: strategy },
+        props: getReferenceProps({
+          ref: reference,
         }),
       })}
+      <FloatingPortal id={id}>
+        {props.floating({
+          open,
+          setOpen,
+          props: getFloatingProps({
+            ref: floating,
+            style: {
+              top: y ?? "",
+              left: x ?? "",
+              position: strategy,
+            },
+          }),
+          arrowProps: {
+            ref: arrowRef,
+            style: {
+              top: middlewareData.arrow?.y ?? "",
+              left: middlewareData.arrow?.x ?? "",
+              position: "absolute",
+            },
+          },
+        })}
+      </FloatingPortal>
     </>
   );
 }

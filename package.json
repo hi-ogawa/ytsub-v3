@@ -36,7 +36,7 @@
   },
   "dependencies": {
     "@badrap/bar-of-progress": "^0.2.2",
-    "@floating-ui/react-dom-interactions": "^0.0.15",
+    "@floating-ui/react": "^0.21.1",
     "@headlessui/react": "^0.0.0-insiders.ab6310c",
     "@hiogawa/utils": "^1.4.1",
     "@hiogawa/utils-react": "^1.2.0",
