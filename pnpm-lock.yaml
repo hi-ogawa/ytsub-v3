@@ -59,6 +59,7 @@ specifiers:
   react: ^17.0.2
   react-dom: ^17.0.2
   react-feather: ^2.0.9
+  react-hot-toast: ^2.4.0
   react-query: ^3.34.18
   react-router-dom: ^6.3.0
   react-transition-group: ^4.4.2
@@ -93,6 +94,7 @@ dependencies:
   react: 17.0.2
   react-dom: 17.0.2_react@17.0.2
   react-feather: 2.0.9_react@17.0.2
+  react-hot-toast: 2.4.0_sfoxds7t5ydpegc3knd667wn6m
   react-query: 3.34.18_sfoxds7t5ydpegc3knd667wn6m
   react-router-dom: 6.3.0_sfoxds7t5ydpegc3knd667wn6m
   react-transition-group: 4.4.2_sfoxds7t5ydpegc3knd667wn6m
@@ -4565,6 +4567,12 @@ packages:
       pinkie-promise: 2.0.1
     dev: true
 
+  /goober/2.1.12:
+    resolution: {integrity: sha512-yXHAvO08FU1JgTXX6Zn6sYCUFfB/OJSX8HHjDSgerZHZmFKAb08cykp5LBw5QnmyMcZyPRMqkdyHUSSzge788Q==}
+    peerDependencies:
+      csstype: ^3.0.10
+    dev: false
+
   /gopd/1.0.1:
     resolution: {integrity: sha512-d65bNlIadxvpb/A2abVdlqKqV563juRnZ1Wtk6s1sIR8uNsXR70xqIzVqxVf1eTqDunwT2MkczEeaezCKTZhwA==}
     dependencies:
@@ -7181,6 +7189,20 @@ packages:
     dependencies:
       prop-types: 15.8.1
       react: 17.0.2
+    dev: false
+
+  /react-hot-toast/2.4.0_sfoxds7t5ydpegc3knd667wn6m:
+    resolution: {integrity: sha512-qnnVbXropKuwUpriVVosgo8QrB+IaPJCpL8oBI6Ov84uvHZ5QQcTp2qg6ku2wNfgJl6rlQXJIQU5q+5lmPOutA==}
+    engines: {node: '>=10'}
+    peerDependencies:
+      react: '>=16'
+      react-dom: '>=16'
+    dependencies:
+      goober: 2.1.12
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
+    transitivePeerDependencies:
+      - csstype
     dev: false
 
   /react-is/16.13.1:
