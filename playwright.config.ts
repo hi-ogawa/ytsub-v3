@@ -21,7 +21,7 @@ const config: PlaywrightTestConfig = {
   webServer: process.env.E2E_NO_SERVER
     ? undefined
     : {
-        command: "npm run dev:e2e >> logs/dev-e2e.log 2>&1",
+        command: "pnpm dev-e2e >> logs/dev-e2e.log 2>&1",
         port: 3001,
         reuseExistingServer: true,
       },
