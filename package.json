@@ -37,7 +37,7 @@
   "dependencies": {
     "@badrap/bar-of-progress": "^0.2.2",
     "@floating-ui/react": "^0.21.1",
-    "@headlessui/react": "^0.0.0-insiders.ab6310c",
+    "@headlessui/react": "^1.7.13",
     "@hiogawa/utils": "^1.4.1",
     "@hiogawa/utils-react": "^1.2.0",
     "@remix-run/node": "^1.4.0",
