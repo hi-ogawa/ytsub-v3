@@ -15,6 +15,7 @@ import {
   Virtualizer,
   useVirtualizer,
 } from "@tanstack/react-virtual";
+import { atom, useAtom } from "jotai";
 import React from "react";
 import {
   Bookmark,
@@ -44,6 +45,7 @@ import { Controller, makeLoader } from "../../utils/controller-utils";
 import { useDeserialize, useSelection } from "../../utils/hooks";
 import { useYoutubeIframeApi } from "../../utils/hooks";
 import { useLeafLoaderData, useRootLoaderData } from "../../utils/loader-utils";
+import { cls, toToggleArrayState } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 import type { CaptionEntry } from "../../utils/types";
 import { toForm } from "../../utils/url-data";
@@ -146,13 +148,6 @@ function findCurrentEntry(
   return;
 }
 
-function toggleArrayInclusion<T>(container: T[], element: T): T[] {
-  if (container.includes(element)) {
-    return container.filter((other) => other !== element);
-  }
-  return [...container, element];
-}
-
 // adhoc routines to derive `BookmarkState` by probing dom tree
 function findSelectionEntryIndex(selection: Selection): number {
   const isValid =
@@ -193,6 +188,7 @@ function PageComponent({
   );
   const [autoScrollState] = useAutoScrollState();
   const autoScroll = autoScrollState.has(video.id);
+  const [repeatingEntries, , toggleRepeatingEntries] = useRepeatingEntries();
 
   //
   // state
@@ -201,9 +197,6 @@ function PageComponent({
   const [player, setPlayer] = React.useState<YoutubePlayer>();
   const [isPlaying, setIsPlaying] = React.useState(false);
   const [currentEntry, setCurrentEntry] = React.useState<CaptionEntry>();
-  const [repeatingEntries, setRepeatingEntries] = React.useState<
-    CaptionEntry[]
-  >([]);
   const [bookmarkState, setBookmarkState] = React.useState<BookmarkState>();
 
   //
@@ -263,10 +256,6 @@ function PageComponent({
       player.seekTo(entry.begin);
       player.playVideo();
     }
-  }
-
-  function onClickEntryRepeat(entry: CaptionEntry) {
-    setRepeatingEntries(toggleArrayInclusion(repeatingEntries, entry));
   }
 
   function onClickBookmark() {
@@ -367,7 +356,7 @@ function PageComponent({
           currentEntry={currentEntry}
           repeatingEntries={repeatingEntries}
           onClickEntryPlay={onClickEntryPlay}
-          onClickEntryRepeat={onClickEntryRepeat}
+          onClickEntryRepeat={(entry) => toggleRepeatingEntries(entry)}
           isPlaying={isPlaying}
           focusedIndex={focusedIndex}
         />
@@ -722,6 +711,7 @@ function NavBarMenuComponentImpl({
 }) {
   const [autoScrollState, setAutoScrollState] = useAutoScrollState();
   const autoScroll = autoScrollState.has(video.id);
+  const [repeatingEntries, setRepeatingEntries] = useRepeatingEntries();
 
   // TODO: refactor too much copy-paste of `Popover` from `NavBar` in `root.tsx`
   return (
@@ -773,16 +763,31 @@ function NavBarMenuComponentImpl({
                     Change languages
                   </Link>
                 </li>
-                <li
-                  onClick={() =>
-                    autoScroll
-                      ? setAutoScrollState.delete(video.id)
-                      : setAutoScrollState.add(video.id)
-                  }
-                >
-                  <button>
+                <li>
+                  <button
+                    onClick={() =>
+                      autoScroll
+                        ? setAutoScrollState.delete(video.id)
+                        : setAutoScrollState.add(video.id)
+                    }
+                  >
                     Auto scroll
                     {autoScroll && <Check size={16} />}
+                  </button>
+                </li>
+                <li
+                  className={cls(
+                    repeatingEntries.length === 0 &&
+                      "disabled pointer-events-none"
+                  )}
+                >
+                  <button
+                    onClick={() => {
+                      setRepeatingEntries([]);
+                      setOpen(false);
+                    }}
+                  >
+                    Clear Repeat
                   </button>
                 </li>
               </ul>
@@ -792,4 +797,15 @@ function NavBarMenuComponentImpl({
       </div>
     </>
   );
+}
+
+//
+// page local state
+//
+
+const repeatingEntriesAtom = atom(new Array<CaptionEntry>());
+
+function useRepeatingEntries() {
+  const [state, setState] = useAtom(repeatingEntriesAtom);
+  return [state, setState, toToggleArrayState(setState)] as const;
 }
