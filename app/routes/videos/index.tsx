@@ -142,15 +142,10 @@ function VideoComponentExtra({
   currentUser?: UserTable;
 }) {
   const fetcher = useFetcher();
-  const { openModal } = useModal();
+  const modal = useModal();
   const addToDeckDisabled = !video.bookmarkEntriesCount;
 
-  function onClickAddToDeck() {
-    if (addToDeckDisabled) return;
-    openModal(<AddToDeckComponent videoId={video.id} />);
-  }
-
-  return (
+  const videoComponent = (
     <VideoComponent
       key={video.id}
       video={video}
@@ -162,7 +157,11 @@ function VideoComponentExtra({
           <>
             <li className={`${addToDeckDisabled && "disabled"}`}>
               <button
-                onClick={onClickAddToDeck}
+                onClick={() => {
+                  if (!addToDeckDisabled) {
+                    modal.setOpen(true);
+                  }
+                }}
                 data-test="video-component-add-to-deck-button"
               >
                 <PlusSquare />
@@ -191,9 +190,27 @@ function VideoComponentExtra({
       }
     />
   );
+
+  return (
+    <>
+      {videoComponent}
+      <modal.Wrapper>
+        <AddToDeckComponent
+          videoId={video.id}
+          onSuccess={() => modal.setOpen(false)}
+        />
+      </modal.Wrapper>
+    </>
+  );
 }
 
-function AddToDeckComponent({ videoId }: { videoId: number }) {
+function AddToDeckComponent({
+  videoId,
+  onSuccess,
+}: {
+  videoId: number;
+  onSuccess: () => void;
+}) {
   // get decks
   const fetcher1 = useFetcher();
   const data: DecksLoaderData | undefined = React.useMemo(
@@ -204,7 +221,6 @@ function AddToDeckComponent({ videoId }: { videoId: number }) {
 
   // create practice entries
   const fetcher2 = useFetcher();
-  const { closeModal } = useModal();
 
   React.useEffect(() => {
     // It doesn't have to wait until "done" since action response is ready on "actionReload"
@@ -213,7 +229,7 @@ function AddToDeckComponent({ videoId }: { videoId: number }) {
       const data: NewPracticeEntryResponse = fetcher2.data;
       if (data.ok) {
         toast.success(`Added ${data.value.ids.length} to a deck`);
-        closeModal();
+        onSuccess();
       } else {
         toast.error("Failed to add to a deck");
       }

@@ -3,7 +3,6 @@ import React from "react";
 import { Bookmark, LogOut, Save, Settings, Trash2, User } from "react-feather";
 import { useToggle } from "react-use";
 import { Spinner, VideoComponent } from "./misc";
-import { ModalProvider, useModal } from "./modal";
 import { Popover } from "./popover";
 import { PracticeHistoryChart } from "./practice-history-chart";
 
@@ -200,46 +199,6 @@ export function TestSpinner() {
         <Spinner className="w-40 h-40" />
       </div>
     </div>
-  );
-}
-
-const TestModalInner: React.FC = () => {
-  const { openModal, closeModal } = useModal();
-
-  function onClick() {
-    openModal(
-      <div className="w-full p-6 my-8 bg-white shadow-xl rounded-xl">
-        <div className="text-lg font-medium leading-6 text-gray-900">
-          Some title
-        </div>
-        <div className="mt-2">
-          <div className="text-sm text-gray-500">Some comments</div>
-        </div>
-        <div className="mt-4">
-          <button className="btn" onClick={closeModal}>
-            Done!
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="w-full flex justify-center">
-      <div className="w-full max-w-lg flex flex-col p-2 gap-2">
-        <button onClick={onClick} className="btn">
-          Show Modal
-        </button>
-      </div>
-    </div>
-  );
-};
-
-export function TestModalProvider() {
-  return (
-    <ModalProvider>
-      <TestModalInner />
-    </ModalProvider>
   );
 }
 

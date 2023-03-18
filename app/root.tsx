@@ -28,7 +28,6 @@ import {
 } from "react-feather";
 import { Toaster, toast } from "react-hot-toast";
 import { QueryClient, QueryClientProvider } from "react-query";
-import { ModalProvider } from "./components/modal";
 import { Popover } from "./components/popover";
 import { TopProgressBar } from "./components/top-progress-bar";
 import type { UserTable } from "./db/models";
@@ -164,9 +163,7 @@ function Root() {
 
 function RootProviders({ children }: React.PropsWithChildren<{}>) {
   return (
-    <QueryClientProvider client={queryClient}>
-      <ModalProvider>{children}</ModalProvider>
-    </QueryClientProvider>
+    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
   );
 }
 

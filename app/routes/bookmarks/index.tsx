@@ -362,15 +362,8 @@ export function MiniPlayer({
 
 function NavBarMenuComponent() {
   const { request }: LoaderData = useDeserialize(useLeafLoaderData());
-  const { openModal } = useModal();
-
-  function onClickVideoFilter() {
-    openModal(<VideoSelectComponent />);
-  }
-
-  function onClickDeckFilter() {
-    openModal(<DeckSelectComponent />);
-  }
+  const videoSelectModal = useModal();
+  const deckSelectModal = useModal();
 
   const isFilterActive = !isNil(request.videoId ?? request.deckId);
 
@@ -402,13 +395,13 @@ function NavBarMenuComponent() {
             >
               <ul className="menu rounded p-3 shadow w-48 bg-base-100 text-base-content text-sm">
                 <li>
-                  <button onClick={onClickVideoFilter}>
+                  <button onClick={() => videoSelectModal.setOpen(true)}>
                     <Video />
                     Select Video
                   </button>
                 </li>
                 <li>
-                  <button onClick={onClickDeckFilter}>
+                  <button onClick={() => deckSelectModal.setOpen(true)}>
                     <Book />
                     Select Deck
                   </button>
@@ -424,6 +417,12 @@ function NavBarMenuComponent() {
           )}
         />
       </div>
+      <videoSelectModal.Wrapper>
+        <VideoSelectComponent />
+      </videoSelectModal.Wrapper>
+      <deckSelectModal.Wrapper>
+        <DeckSelectComponent />
+      </deckSelectModal.Wrapper>
     </>
   );
 }
