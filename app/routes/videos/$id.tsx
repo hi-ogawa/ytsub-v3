@@ -10,6 +10,11 @@ import {
   useLoaderData,
 } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
+import {
+  VirtualItem,
+  Virtualizer,
+  useVirtualizer,
+} from "@tanstack/react-virtual";
 import React from "react";
 import {
   Bookmark,
@@ -158,27 +163,13 @@ function findSelectionEntryIndex(selection: Selection): number {
     );
   if (!isValid) return -1;
   const textElement = selection.getRangeAt(0).startContainer;
-  const entryNode = textElement.parentElement?.parentElement?.parentElement!;
-  const entriesContainer = entryNode.parentElement!;
-  const index = Array.from(entriesContainer.childNodes).findIndex(
-    (other) => other === entryNode
-  );
+  const entryNode = textElement.parentElement?.parentElement?.parentElement;
+  tinyassert(entryNode);
+  const dataIndex = entryNode.getAttribute("data-index");
+  const index = z.coerce.number().int().parse(dataIndex);
   return index;
 }
 
-function scrollToCaptionEntry(index: number) {
-  const parentSelector = "#" + SCROLLABLE_ID;
-  const childSelector = `div > :nth-child(${index + 1})`;
-  const parent = document.querySelector<HTMLElement>(parentSelector)!;
-  const child = parent.querySelector<HTMLElement>(childSelector)!;
-  const hp = parent.clientHeight;
-  const hc = child.clientHeight;
-  const op = parent.offsetTop;
-  const oc = child.offsetTop;
-  parent.scroll({ top: oc - op + hc / 2 - hp / 2, behavior: "smooth" });
-}
-
-const SCROLLABLE_ID = "--scrollable--";
 const BOOKMARKABLE_CLASSNAME = "--bookmarkable--";
 
 interface BookmarkState {
@@ -196,8 +187,8 @@ function PageComponent({
   const fetcher = useFetcher();
   const { enqueueSnackbar } = useSnackbar();
   const [searchParams] = useSearchParams();
-  const focusedIndex = zStringToMaybeInteger.parse(
-    searchParams.get("index") ?? ""
+  const [focusedIndex] = React.useState(() =>
+    zStringToMaybeInteger.parse(searchParams.get("index") ?? undefined)
   );
 
   //
@@ -220,10 +211,6 @@ function PageComponent({
     if (!player) {
       return;
     }
-
-    // TODO
-    // on dev build, the render might take more than 100ms depending on the amount of subtitles and thus drops some frames.
-    // probably we should virtualize the subtitle list.
 
     setIsPlaying(player.getPlayerState() === 1);
     setCurrentEntry(findCurrentEntry(captionEntries, player.getCurrentTime()));
@@ -299,12 +286,16 @@ function PageComponent({
 
   React.useEffect(() => {
     if (!isNil(focusedIndex)) {
-      scrollToCaptionEntry(focusedIndex);
+      // smooth scroll ends up wrong positions due to over-estimation by `estimateSize`.
+      virtualizer.scrollToIndex(focusedIndex, {
+        align: "center",
+        behavior: "auto",
+      });
     }
   }, [focusedIndex]);
 
   useSelection((selection?: Selection): void => {
-    let newBookmarkState = undefined;
+    let newBookmarkState: BookmarkState | undefined = undefined;
     if (selection) {
       const index = findSelectionEntryIndex(selection);
       if (index >= 0) {
@@ -324,16 +315,32 @@ function PageComponent({
     setBookmarkState(newBookmarkState);
   });
 
+  //
+  // perf: virtualize subtitle scroll list (cf. https://github.com/TanStack/virtual/blob/623ac63988f16e6ea6755d8b2e190c123134501c/examples/react/dynamic/src/main.tsx)
+  //
+  const scrollElementRef = React.useRef<HTMLDivElement>(null);
+  const virtualizer = useVirtualizer({
+    count: captionEntries.length,
+    getScrollElement: () => scrollElementRef.current,
+    estimateSize: (_index) => 100, // rough estimation
+    overscan: 5,
+  });
+
   return (
     <LayoutComponent
+      virtualizer={virtualizer}
+      scrollElementRef={scrollElementRef}
       player={
-        <PlayerComponent
-          defaultOptions={{ videoId: video.videoId }}
-          onLoad={setPlayer}
-        />
+        <>
+          <PlayerComponent
+            defaultOptions={{ videoId: video.videoId }}
+            onLoad={setPlayer}
+          />
+        </>
       }
       subtitles={
         <CaptionEntriesComponent
+          virtualizer={virtualizer}
           entries={captionEntries}
           currentEntry={currentEntry}
           repeatingEntries={repeatingEntries}
@@ -378,9 +385,13 @@ function PageComponent({
   );
 }
 
-function LayoutComponent(
-  props: Record<"player" | "subtitles" | "bookmarkActions", React.ReactNode>
-) {
+function LayoutComponent(props: {
+  player: React.ReactNode;
+  subtitles: React.ReactNode;
+  bookmarkActions: React.ReactNode;
+  virtualizer: Virtualizer<HTMLDivElement, Element>;
+  scrollElementRef: React.RefObject<HTMLDivElement>;
+}) {
   //
   // - Mobile layout
   //
@@ -403,7 +414,10 @@ function LayoutComponent(
     <div className="h-full w-full flex flex-col md:flex-row md:gap-2 md:p-2">
       <div className="flex-none md:grow">{props.player}</div>
       <div className="flex flex-col flex-[1_0_0] md:flex-none md:w-1/3 border-t md:border relative">
-        <div className="flex-[1_0_0] h-full overflow-y-auto" id={SCROLLABLE_ID}>
+        <div
+          className="flex-[1_0_0] h-full overflow-y-auto"
+          ref={props.scrollElementRef}
+        >
           {props.subtitles}
         </div>
         {props.bookmarkActions}
@@ -491,17 +505,40 @@ function CaptionEntriesComponent({
   onClickEntryRepeat: (entry: CaptionEntry) => void;
   isPlaying: boolean;
   focusedIndex?: number;
+  virtualizer: Virtualizer<HTMLDivElement, Element>;
 }) {
+  const virtualItems = props.virtualizer.getVirtualItems();
   return (
-    <div className="flex flex-col p-1.5 gap-1.5">
-      {entries.map((entry) => (
-        <CaptionEntryComponent
-          key={toCaptionEntryId(entry)}
-          entry={entry}
-          isFocused={focusedIndex === entry.index}
-          {...props}
-        />
-      ))}
+    <div
+      className="flex flex-col"
+      style={{
+        position: "relative",
+        height: props.virtualizer.getTotalSize(),
+      }}
+    >
+      {/* TODO: compare with the other approach of offsetting all child elements by `virtualItem.start` */}
+      <div
+        className="flex flex-col gap-1.5 px-1.5"
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100%",
+          transform: `translateY(${virtualItems[0].start}px)`,
+        }}
+      >
+        {virtualItems.map((item) => (
+          <CaptionEntryComponent
+            key={item.key}
+            entry={entries[item.index]}
+            isFocused={focusedIndex === item.index}
+            virtualItem={item}
+            // workaround disappearing bottom margin (paddingEnd option doesn't seem to work)
+            isActualLast={item.index === entries.length - 1}
+            {...props}
+          />
+        ))}
+      </div>
     </div>
   );
 }
@@ -517,6 +554,10 @@ export function CaptionEntryComponent({
   videoId,
   border = true,
   highlight,
+  // virtualized list
+  virtualizer,
+  virtualItem,
+  isActualLast,
 }: {
   entry: CaptionEntry;
   currentEntry?: CaptionEntry;
@@ -528,6 +569,10 @@ export function CaptionEntryComponent({
   videoId?: number;
   border?: boolean;
   highlight?: { side: number; offset: number; length: number };
+  // virtualized list
+  virtualizer?: Virtualizer<HTMLDivElement, Element>;
+  virtualItem?: VirtualItem;
+  isActualLast?: boolean;
 }) {
   const { begin, end, text1, text2 } = entry;
   const timestamp = [begin, end].map(stringifyTimestamp).join(" - ");
@@ -545,9 +590,13 @@ export function CaptionEntryComponent({
         ${isEntryPlaying ? "border-blue-400" : "border-gray-200"}
         ${border && isCurrentEntry && "bg-gray-100"}
         ${isFocused && "border-l-2 border-l-blue-500"}
+        ${virtualItem?.index === 0 && "mt-1.5"}
+        ${isActualLast && "mb-1.5"}
         p-1.5 gap-1
         text-xs
       `}
+      ref={virtualizer?.measureElement}
+      data-index={virtualItem?.index}
     >
       <div className="flex items-center justify-end text-gray-500">
         <div>{timestamp}</div>
@@ -631,6 +680,7 @@ function HighlightText({
   );
 }
 
+// @ts-ignore
 function toCaptionEntryId({ begin, end }: CaptionEntry): string {
   return `${begin}--${end}`;
 }

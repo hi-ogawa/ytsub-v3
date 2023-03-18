@@ -23,6 +23,7 @@ specifiers:
   '@remix-run/server-runtime': ^1.4.0
   '@remix-run/vercel': ^1.4.0
   '@tailwindcss/line-clamp': ^0.3.1
+  '@tanstack/react-virtual': 3.0.0-beta.54
   '@tsconfig/strictest': ^1.0.2
   '@types/bcryptjs': ^2.4.2
   '@types/fs-extra': ^9.0.13
@@ -79,6 +80,7 @@ dependencies:
   '@remix-run/react': 1.4.1_sfoxds7t5ydpegc3knd667wn6m
   '@remix-run/server-runtime': 1.4.1_sfoxds7t5ydpegc3knd667wn6m
   '@remix-run/vercel': 1.5.1_k6hruc77s5hpaeubsncsxur3qu
+  '@tanstack/react-virtual': 3.0.0-beta.54_react@17.0.2
   '@types/bcryptjs': 2.4.2
   '@vercel/node': 1.15.3
   bcryptjs: 2.4.3
@@ -1784,6 +1786,19 @@ packages:
     dependencies:
       tailwindcss: 3.0.23_iwc7stpd5lcuyf56paxiwujvfq
     dev: true
+
+  /@tanstack/react-virtual/3.0.0-beta.54_react@17.0.2:
+    resolution: {integrity: sha512-D1mDMf4UPbrtHRZZriCly5bXTBMhylslm4dhcHqTtDJ6brQcgGmk8YD9JdWBGWfGSWPKoh2x1H3e7eh+hgPXtQ==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+    dependencies:
+      '@tanstack/virtual-core': 3.0.0-beta.54
+      react: 17.0.2
+    dev: false
+
+  /@tanstack/virtual-core/3.0.0-beta.54:
+    resolution: {integrity: sha512-jtkwqdP2rY2iCCDVAFuaNBH3fiEi29aTn2RhtIoky8DTTiCdc48plpHHreLwmv1PICJ4AJUUESaq3xa8fZH8+g==}
+    dev: false
 
   /@tsconfig/strictest/1.0.2:
     resolution: {integrity: sha512-IRKlC8cnP7zMz1SDBjyIVyPapkEGWLZ6wkF6Z8T+xU80P9sO5uGXlIUvtzjx+7ehPJRWxkB6CeIDwUfyqNtYkQ==}
@@ -5404,7 +5419,7 @@ packages:
   /jsonfile/4.0.0:
     resolution: {integrity: sha1-h3Gq4HmbZAdrdmQPygWPnBDjPss=}
     optionalDependencies:
-      graceful-fs: 4.2.9
+      graceful-fs: 4.2.10
     dev: true
 
   /jsonfile/6.1.0:
@@ -5412,7 +5427,7 @@ packages:
     dependencies:
       universalify: 2.0.0
     optionalDependencies:
-      graceful-fs: 4.2.9
+      graceful-fs: 4.2.10
     dev: true
 
   /keyv/4.5.2:
