@@ -16,6 +16,7 @@ import {
   useVirtualizer,
 } from "@tanstack/react-virtual";
 import { atom, useAtom } from "jotai";
+import { atomWithStorage } from "jotai/utils";
 import React from "react";
 import {
   Bookmark,
@@ -40,7 +41,6 @@ import {
   getVideoAndCaptionEntries,
 } from "../../db/models";
 import { R } from "../../misc/routes";
-import { useAutoScrollState } from "../../utils/auto-scroll";
 import { Controller, makeLoader } from "../../utils/controller-utils";
 import { useDeserialize, useSelection } from "../../utils/hooks";
 import { useYoutubeIframeApi } from "../../utils/hooks";
@@ -801,4 +801,14 @@ const repeatingEntriesAtom = atom(new Array<CaptionEntry>());
 function useRepeatingEntries() {
   const [state, setState] = useAtom(repeatingEntriesAtom);
   return [state, setState, toToggleArrayState(setState)] as const;
+}
+
+const storageAtom = atomWithStorage(
+  "video-subtitle-auto-scroll",
+  Array<number>()
+);
+
+export function useAutoScrollState() {
+  const [state, setState] = useAtom(storageAtom);
+  return [state, toToggleArrayState(setState)] as const;
 }
