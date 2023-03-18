@@ -2,7 +2,6 @@ import { Transition } from "@headlessui/react";
 import { tinyassert } from "@hiogawa/utils";
 import { isNil } from "@hiogawa/utils";
 import { useRafLoop } from "@hiogawa/utils-react";
-import { toSetSetState } from "@hiogawa/utils-react";
 import {
   Form,
   Link,
@@ -46,7 +45,7 @@ import { Controller, makeLoader } from "../../utils/controller-utils";
 import { useDeserialize, useSelection } from "../../utils/hooks";
 import { useYoutubeIframeApi } from "../../utils/hooks";
 import { useLeafLoaderData, useRootLoaderData } from "../../utils/loader-utils";
-import { cls } from "../../utils/misc";
+import { cls, toToggleArrayState } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 import type { CaptionEntry } from "../../utils/types";
 import { toForm } from "../../utils/url-data";
@@ -189,7 +188,7 @@ function PageComponent({
   );
   const [autoScrollState] = useAutoScrollState();
   const autoScroll = autoScrollState.has(video.id);
-  const [repeatingEntries, setRepeatingEntries] = useRepeatingEntries();
+  const [repeatingEntries, , toggleRepeatingEntries] = useRepeatingEntries();
 
   //
   // state
@@ -232,10 +231,9 @@ function PageComponent({
       }
     }
 
-    if (repeatingEntries.size > 0) {
-      const ls = [...repeatingEntries];
-      const begin = Math.min(...ls.map((entry) => entry.begin));
-      const end = Math.max(...ls.map((entry) => entry.end));
+    if (repeatingEntries.length > 0) {
+      const begin = Math.min(...repeatingEntries.map((entry) => entry.begin));
+      const end = Math.max(...repeatingEntries.map((entry) => entry.end));
       if (currentTime < begin || end < currentTime) {
         player.seekTo(begin);
       }
@@ -356,13 +354,9 @@ function PageComponent({
           virtualizer={virtualizer}
           entries={captionEntries}
           currentEntry={currentEntry}
-          repeatingEntries={[...repeatingEntries]}
+          repeatingEntries={repeatingEntries}
           onClickEntryPlay={onClickEntryPlay}
-          onClickEntryRepeat={(entry) =>
-            repeatingEntries.has(entry)
-              ? setRepeatingEntries.delete(entry)
-              : setRepeatingEntries.add(entry)
-          }
+          onClickEntryRepeat={(entry) => toggleRepeatingEntries(entry)}
           isPlaying={isPlaying}
           focusedIndex={focusedIndex}
         />
@@ -781,10 +775,15 @@ function NavBarMenuComponentImpl({
                     {autoScroll && <Check size={16} />}
                   </button>
                 </li>
-                <li className={cls(repeatingEntries.size === 0 && "disabled")}>
+                <li
+                  className={cls(
+                    repeatingEntries.length === 0 &&
+                      "disabled pointer-events-none"
+                  )}
+                >
                   <button
                     onClick={() => {
-                      setRepeatingEntries.clear();
+                      setRepeatingEntries([]);
                       setOpen(false);
                     }}
                   >
@@ -804,9 +803,9 @@ function NavBarMenuComponentImpl({
 // page local state
 //
 
-const repeatingEntriesAtom = atom(new Set<CaptionEntry>());
+const repeatingEntriesAtom = atom(new Array<CaptionEntry>());
 
 function useRepeatingEntries() {
   const [state, setState] = useAtom(repeatingEntriesAtom);
-  return [state, toSetSetState(setState)] as const;
+  return [state, setState, toToggleArrayState(setState)] as const;
 }
