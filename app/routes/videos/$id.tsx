@@ -191,8 +191,8 @@ function PageComponent({
   const [focusedIndex] = React.useState(() =>
     zStringToMaybeInteger.parse(searchParams.get("index") ?? undefined)
   );
-  const autoScrollState = useAutoScrollState();
-  const autoScroll = autoScrollState.enabled(video.id);
+  const [autoScrollState] = useAutoScrollState();
+  const autoScroll = autoScrollState.has(video.id);
 
   //
   // state
@@ -223,13 +223,16 @@ function PageComponent({
     const currentEntry = findCurrentEntry(captionEntries, currentTime);
     setCurrentEntry(currentEntry);
 
-    if (autoScroll && currentEntry) {
-      // TODO: find visible indices (note that "overscan" leads to some deviation)
-      const indices = virtualizer.getVirtualItems().map((i) => i.index);
-      const centerIndex = indices[Math.floor(indices.length / 2)];
-      if (Math.abs(centerIndex - currentEntry.index) > 3) {
+    if (autoScroll && currentEntry && virtualizer.scrollElement) {
+      const { scrollTop, clientHeight } = virtualizer.scrollElement;
+      const currentCenter = scrollTop + clientHeight / 2;
+      const items = virtualizer.getVirtualItems();
+      const currentItem = items.find(
+        (item) => item.index === currentEntry.index
+      );
+      if (!currentItem || Math.abs(currentItem.start - currentCenter) > 150) {
         virtualizer.scrollToIndex(currentEntry.index, {
-          align: "start",
+          align: "center",
           behavior: "auto",
         });
       }
@@ -717,7 +720,8 @@ function NavBarMenuComponentImpl({
   user?: UserTable;
   video: VideoTable;
 }) {
-  const autoScrollState = useAutoScrollState();
+  const [autoScrollState, setAutoScrollState] = useAutoScrollState();
+  const autoScroll = autoScrollState.has(video.id);
 
   // TODO: refactor too much copy-paste of `Popover` from `NavBar` in `root.tsx`
   return (
@@ -769,10 +773,16 @@ function NavBarMenuComponentImpl({
                     Change languages
                   </Link>
                 </li>
-                <li onClick={() => autoScrollState.toggle(video.id)}>
+                <li
+                  onClick={() =>
+                    autoScroll
+                      ? setAutoScrollState.delete(video.id)
+                      : setAutoScrollState.add(video.id)
+                  }
+                >
                   <button>
                     Auto scroll
-                    {autoScrollState.enabled(video.id) && <Check size={16} />}
+                    {autoScroll && <Check size={16} />}
                   </button>
                 </li>
               </ul>
