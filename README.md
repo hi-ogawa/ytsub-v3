@@ -22,8 +22,9 @@ pnpm test-e2e:coverage
 vercel --version # Vercel CLI 24.2.4
 vercel projects add ytsub-v3-hiro18181
 vercel link -p ytsub-v3-hiro18181
-pnpm vercel:build:deploy:production
+pnpm build
+pnpm release-production
 
 # migration on production
-pnpm knex:production -- migrate:status
+pnpm knex-production -- migrate:status
 ```

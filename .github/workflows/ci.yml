@@ -15,7 +15,7 @@ jobs:
       - run: pnpm i
       - run: pnpm lint-check
       - run: pnpm tsc
-      - run: pnpm vercel:build
+      - run: pnpm build
 
   test:
     runs-on: ubuntu-20.04
