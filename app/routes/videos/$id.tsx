@@ -187,7 +187,7 @@ function PageComponent({
     zStringToMaybeInteger.parse(searchParams.get("index") ?? undefined)
   );
   const [autoScrollState] = useAutoScrollState();
-  const autoScroll = autoScrollState.has(video.id);
+  const autoScroll = autoScrollState.includes(video.id);
   const [repeatingEntries, , toggleRepeatingEntries] = useRepeatingEntries();
 
   //
@@ -709,8 +709,7 @@ function NavBarMenuComponentImpl({
   user?: UserTable;
   video: VideoTable;
 }) {
-  const [autoScrollState, setAutoScrollState] = useAutoScrollState();
-  const autoScroll = autoScrollState.has(video.id);
+  const [autoScrollState, toggleAutoScrollState] = useAutoScrollState();
   const [repeatingEntries, setRepeatingEntries] = useRepeatingEntries();
 
   // TODO: refactor too much copy-paste of `Popover` from `NavBar` in `root.tsx`
@@ -764,15 +763,9 @@ function NavBarMenuComponentImpl({
                   </Link>
                 </li>
                 <li>
-                  <button
-                    onClick={() =>
-                      autoScroll
-                        ? setAutoScrollState.delete(video.id)
-                        : setAutoScrollState.add(video.id)
-                    }
-                  >
+                  <button onClick={() => toggleAutoScrollState(video.id)}>
                     Auto scroll
-                    {autoScroll && <Check size={16} />}
+                    {autoScrollState.includes(video.id) && <Check size={16} />}
                   </button>
                 </li>
                 <li
