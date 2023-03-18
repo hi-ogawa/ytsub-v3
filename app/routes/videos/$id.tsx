@@ -803,12 +803,12 @@ function useRepeatingEntries() {
   return [state, setState, toToggleArrayState(setState)] as const;
 }
 
-const storageAtom = atomWithStorage(
+const autoScrollStorageAtom = atomWithStorage(
   "video-subtitle-auto-scroll",
   Array<number>()
 );
 
 export function useAutoScrollState() {
-  const [state, setState] = useAtom(storageAtom);
+  const [state, setState] = useAtom(autoScrollStorageAtom);
   return [state, toToggleArrayState(setState)] as const;
 }
