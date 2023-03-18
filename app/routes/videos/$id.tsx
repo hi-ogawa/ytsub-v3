@@ -16,6 +16,7 @@ import {
   useVirtualizer,
 } from "@tanstack/react-virtual";
 import { atom, useAtom } from "jotai";
+import { atomWithStorage } from "jotai/utils";
 import React from "react";
 import {
   Bookmark,
@@ -40,7 +41,6 @@ import {
   getVideoAndCaptionEntries,
 } from "../../db/models";
 import { R } from "../../misc/routes";
-import { useAutoScrollState } from "../../utils/auto-scroll";
 import { Controller, makeLoader } from "../../utils/controller-utils";
 import { useDeserialize, useSelection } from "../../utils/hooks";
 import { useYoutubeIframeApi } from "../../utils/hooks";
@@ -187,7 +187,7 @@ function PageComponent({
     zStringToMaybeInteger.parse(searchParams.get("index") ?? undefined)
   );
   const [autoScrollState] = useAutoScrollState();
-  const autoScroll = autoScrollState.has(video.id);
+  const autoScroll = autoScrollState.includes(video.id);
   const [repeatingEntries, , toggleRepeatingEntries] = useRepeatingEntries();
 
   //
@@ -709,8 +709,7 @@ function NavBarMenuComponentImpl({
   user?: UserTable;
   video: VideoTable;
 }) {
-  const [autoScrollState, setAutoScrollState] = useAutoScrollState();
-  const autoScroll = autoScrollState.has(video.id);
+  const [autoScrollState, toggleAutoScrollState] = useAutoScrollState();
   const [repeatingEntries, setRepeatingEntries] = useRepeatingEntries();
 
   // TODO: refactor too much copy-paste of `Popover` from `NavBar` in `root.tsx`
@@ -764,15 +763,9 @@ function NavBarMenuComponentImpl({
                   </Link>
                 </li>
                 <li>
-                  <button
-                    onClick={() =>
-                      autoScroll
-                        ? setAutoScrollState.delete(video.id)
-                        : setAutoScrollState.add(video.id)
-                    }
-                  >
+                  <button onClick={() => toggleAutoScrollState(video.id)}>
                     Auto scroll
-                    {autoScroll && <Check size={16} />}
+                    {autoScrollState.includes(video.id) && <Check size={16} />}
                   </button>
                 </li>
                 <li
@@ -808,4 +801,14 @@ const repeatingEntriesAtom = atom(new Array<CaptionEntry>());
 function useRepeatingEntries() {
   const [state, setState] = useAtom(repeatingEntriesAtom);
   return [state, setState, toToggleArrayState(setState)] as const;
+}
+
+const autoScrollStorageAtom = atomWithStorage(
+  "video-subtitle-auto-scroll",
+  Array<number>()
+);
+
+export function useAutoScrollState() {
+  const [state, setState] = useAtom(autoScrollStorageAtom);
+  return [state, toToggleArrayState(setState)] as const;
 }
