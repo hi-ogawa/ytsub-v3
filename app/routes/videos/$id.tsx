@@ -18,6 +18,7 @@ import {
 import React from "react";
 import {
   Bookmark,
+  Check,
   MoreVertical,
   Play,
   Repeat,
@@ -38,6 +39,7 @@ import {
   getVideoAndCaptionEntries,
 } from "../../db/models";
 import { R } from "../../misc/routes";
+import { useAutoScrollState } from "../../utils/auto-scroll";
 import { Controller, makeLoader } from "../../utils/controller-utils";
 import { useDeserialize, useSelection } from "../../utils/hooks";
 import { useYoutubeIframeApi } from "../../utils/hooks";
@@ -189,6 +191,8 @@ function PageComponent({
   const [focusedIndex] = React.useState(() =>
     zStringToMaybeInteger.parse(searchParams.get("index") ?? undefined)
   );
+  const [autoScrollState] = useAutoScrollState();
+  const autoScroll = autoScrollState.has(video.id);
 
   //
   // state
@@ -207,17 +211,36 @@ function PageComponent({
   //
 
   useRafLoop(() => {
-    if (!player) {
-      return;
-    }
+    if (!player) return;
 
-    setIsPlaying(player.getPlayerState() === 1);
-    setCurrentEntry(findCurrentEntry(captionEntries, player.getCurrentTime()));
+    const isPlaying = player.getPlayerState() === 1;
+    setIsPlaying(isPlaying);
+
+    if (!isPlaying) return;
+
+    // TODO: try to predict when repeating back. currently `currentEntry` flickers by picking next non-repeating entry momentarily.
+    const currentTime = player.getCurrentTime();
+    const currentEntry = findCurrentEntry(captionEntries, currentTime);
+    setCurrentEntry(currentEntry);
+
+    if (autoScroll && currentEntry && virtualizer.scrollElement) {
+      const { scrollTop, clientHeight } = virtualizer.scrollElement;
+      const currentCenter = scrollTop + clientHeight / 2;
+      const items = virtualizer.getVirtualItems();
+      const currentItem = items.find(
+        (item) => item.index === currentEntry.index
+      );
+      if (!currentItem || Math.abs(currentItem.start - currentCenter) > 150) {
+        virtualizer.scrollToIndex(currentEntry.index, {
+          align: "center",
+          behavior: "auto",
+        });
+      }
+    }
 
     if (repeatingEntries.length > 0) {
       const begin = Math.min(...repeatingEntries.map((entry) => entry.begin));
       const end = Math.max(...repeatingEntries.map((entry) => entry.end));
-      const currentTime = player.getCurrentTime();
       if (currentTime < begin || end < currentTime) {
         player.seekTo(begin);
       }
@@ -697,6 +720,9 @@ function NavBarMenuComponentImpl({
   user?: UserTable;
   video: VideoTable;
 }) {
+  const [autoScrollState, setAutoScrollState] = useAutoScrollState();
+  const autoScroll = autoScrollState.has(video.id);
+
   // TODO: refactor too much copy-paste of `Popover` from `NavBar` in `root.tsx`
   return (
     <>
@@ -746,6 +772,18 @@ function NavBarMenuComponentImpl({
                   >
                     Change languages
                   </Link>
+                </li>
+                <li
+                  onClick={() =>
+                    autoScroll
+                      ? setAutoScrollState.delete(video.id)
+                      : setAutoScrollState.add(video.id)
+                  }
+                >
+                  <button>
+                    Auto scroll
+                    {autoScroll && <Check size={16} />}
+                  </button>
                 </li>
               </ul>
             </Transition>

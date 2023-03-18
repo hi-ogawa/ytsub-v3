@@ -48,6 +48,7 @@ specifiers:
   fs-extra: ^10.1.0
   gh-pages: ^3.2.3
   happy-dom: ^2.50.0
+  jotai: ^2.0.3
   knex: ^2.4.2
   lodash: ^4.17.21
   mysql2: ^2.3.3
@@ -88,6 +89,7 @@ dependencies:
   bcryptjs: 2.4.3
   echarts: 5.3.2
   fast-xml-parser: 4.0.7
+  jotai: 2.0.3_react@17.0.2
   knex: 2.4.2_mysql2@2.3.3
   lodash: 4.17.21
   mysql2: 2.3.3
@@ -5340,6 +5342,18 @@ packages:
     resolution: {integrity: sha512-4bfKq2zie+x16okqDXjXn9ql2B0dScQu+vcwe4TvFVhkVyuWLqpZrZtXxLLWoXYgn0E87I6r6GRYHF7wFZBUvg==}
     engines: {node: ^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0}
     dev: true
+
+  /jotai/2.0.3_react@17.0.2:
+    resolution: {integrity: sha512-MMjhSPAL3RoeZD9WbObufRT2quThEAEknHHridf2ma8Ml7ZVQmUiHk0ssdbR3F0h3kcwhYqSGJ59OjhPge7RRg==}
+    engines: {node: '>=12.20.0'}
+    peerDependencies:
+      react: '>=17.0.0'
+    peerDependenciesMeta:
+      react:
+        optional: true
+    dependencies:
+      react: 17.0.2
+    dev: false
 
   /jpeg-js/0.4.3:
     resolution: {integrity: sha512-ru1HWKek8octvUHFHvE5ZzQ1yAsJmIvRdGWvSoKV52XKyuyYA437QWDttXT8eZXDSbuMpHlLzPDZUPd6idIz+Q==}
