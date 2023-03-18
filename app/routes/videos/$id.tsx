@@ -212,6 +212,7 @@ function PageComponent({
     }
 
     setIsPlaying(player.getPlayerState() === 1);
+    // TODO: try to predict when repeating back. currently `currentEntry` flickers by picking next non-repeating entry momentarily.
     setCurrentEntry(findCurrentEntry(captionEntries, player.getCurrentTime()));
 
     if (repeatingEntries.length > 0) {
