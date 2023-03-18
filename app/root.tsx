@@ -14,7 +14,6 @@ import {
 } from "@remix-run/react";
 import type { LinksFunction, MetaFunction } from "@remix-run/server-runtime";
 import { last } from "lodash";
-import React from "react";
 import {
   BookOpen,
   Bookmark,
@@ -31,7 +30,6 @@ import { Toaster, toast } from "react-hot-toast";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { ModalProvider } from "./components/modal";
 import { Popover } from "./components/popover";
-import { useSnackbar } from "./components/snackbar";
 import { TopProgressBar } from "./components/top-progress-bar";
 import type { UserTable } from "./db/models";
 import { R, R_RE } from "./misc/routes";
@@ -39,6 +37,7 @@ import { publicConfig } from "./utils/config";
 import { ConfigPlaceholder } from "./utils/config-placeholder";
 import { Controller, makeLoader } from "./utils/controller-utils";
 import { getFlashMessages } from "./utils/flash-message";
+import { useFlashMessages } from "./utils/flash-message-hook";
 import { useHydrated } from "./utils/hooks";
 import { RootLoaderData, useRootLoaderData } from "./utils/loader-utils";
 import type { Match } from "./utils/page-handle";
@@ -134,13 +133,7 @@ export default function DefaultComponent() {
 
 function Root() {
   const data = useRootLoaderData();
-
-  const { enqueueSnackbar } = useSnackbar();
-  React.useEffect(() => {
-    for (const message of data.flashMessages) {
-      enqueueSnackbar(message.content, { variant: message.variant });
-    }
-  }, [data]);
+  useFlashMessages(data.flashMessages);
 
   // `PageHandle` of the leaf compoment
   const matches: Match[] = useMatches();

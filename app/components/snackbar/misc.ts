@@ -11,7 +11,6 @@ interface SnackbarOptions {
 
 interface SnackbarContext {
   enqueueSnackbar: (node: React.ReactNode, options?: SnackbarOptions) => string;
-  closeSnackbar: (id: string) => void;
 }
 
 // TODO: replace with direct `toast` calls
@@ -26,9 +25,6 @@ export function useSnackbar(): SnackbarContext {
         return toast.error(el);
       }
       return toast(el);
-    },
-    closeSnackbar: (id) => {
-      toast.dismiss(id);
     },
   };
 }
