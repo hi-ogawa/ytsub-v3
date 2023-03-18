@@ -31,12 +31,7 @@ import { Toaster, toast } from "react-hot-toast";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { ModalProvider } from "./components/modal";
 import { Popover } from "./components/popover";
-import {
-  SnackbarItemComponent,
-  SnackbarProvider,
-  SnackbardContainerComponent,
-  useSnackbar,
-} from "./components/snackbar";
+import { useSnackbar } from "./components/snackbar";
 import { TopProgressBar } from "./components/top-progress-bar";
 import type { UserTable } from "./db/models";
 import { R, R_RE } from "./misc/routes";
@@ -177,15 +172,7 @@ function Root() {
 function RootProviders({ children }: React.PropsWithChildren<{}>) {
   return (
     <QueryClientProvider client={queryClient}>
-      <SnackbarProvider
-        components={{
-          Container: SnackbardContainerComponent,
-          Item: SnackbarItemComponent,
-        }}
-        timeout={5000}
-      >
-        <ModalProvider>{children}</ModalProvider>
-      </SnackbarProvider>
+      <ModalProvider>{children}</ModalProvider>
     </QueryClientProvider>
   );
 }
