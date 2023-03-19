@@ -64,7 +64,7 @@ export function VideoComponent({
             src={toThumbnail(videoId)}
           />
         </Link>
-        <div className="absolute right-1 bottom-1 px-1 py-0.5 rounded bg-black/75 text-white text-xs font-bold">
+        <div className="absolute right-1 bottom-1 px-1 py-0.5 bg-black/75 text-white text-xs font-bold">
           <div>
             {code1} - {code2}
           </div>
@@ -72,7 +72,7 @@ export function VideoComponent({
         {bookmarkEntriesCount !== undefined && (
           <Link
             to={R["/bookmarks"] + `?videoId=${video.id}&order=caption`}
-            className="absolute right-1 top-1 px-1 py-0.5 rounded bg-black/75 text-white text-xs font-bold"
+            className="absolute right-1 top-1 px-1 py-0.5 bg-black/75 text-white text-xs font-bold"
           >
             <div className="flex justify-center items-center gap-1">
               <div>{bookmarkEntriesCount}</div>
