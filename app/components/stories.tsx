@@ -1,6 +1,6 @@
 import { Transition } from "@headlessui/react";
 import React from "react";
-import { Bookmark, LogOut, Save, Settings, Trash2, User } from "react-feather";
+import { Bookmark, Save, Trash2 } from "react-feather";
 import { useToggle } from "react-use";
 import { cls } from "../utils/misc";
 import { Spinner, VideoComponent } from "./misc";
@@ -35,33 +35,34 @@ export function TestMenu() {
 export function TestPopover() {
   return (
     <div className="p-4 flex flex-col items-center">
-      <div className="border rounded w-full max-w-sm p-4 flex flex-col gap-2">
+      <div className="border w-full max-w-sm p-4 flex flex-col gap-2">
         <div>
           <PopoverSimple
             placement="bottom-end"
             reference={(context) => (
               <button
                 className={cls(
-                  "btn btn-sm btn-ghost",
-                  context.open && "btn-active"
+                  "antd-btn antd-btn-ghost flex items-center",
+                  context.open &&
+                    "text-colorPrimaryActive border-colorPrimaryActive"
                 )}
               >
-                <User />
+                <span className="i-ri-user-line w-6 h-6"></span>
               </button>
             )}
             floating={
-              <ul className="menu rounded p-3 w-48">
-                <li>
-                  <span>
-                    <Settings />
+              <ul className="flex flex-col gap-2 p-3 w-[200px]">
+                <li className="flex">
+                  <button className="flex-1 antd-menu-item p-2 flex items-center gap-3">
+                    <span className="i-ri-settings-line w-5 h-5"></span>
                     Account
-                  </span>
+                  </button>
                 </li>
-                <li>
-                  <span>
-                    <LogOut />
+                <li className="flex">
+                  <button className="flex-1 antd-menu-item p-2 flex items-center gap-3">
+                    <span className="i-ri-logout-circle-line w-5 h-5"></span>
                     Sign out
-                  </span>
+                  </button>
                 </li>
               </ul>
             }
