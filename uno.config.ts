@@ -1,3 +1,4 @@
+import fs from "node:fs";
 import { antdPreset } from "@hiogawa/unocss-preset-antd";
 import {
   defineConfig,
@@ -26,4 +27,13 @@ export default defineConfig({
     "antd-menu-item": "antd-btn antd-btn-text",
     "antd-menu-item-active": "important:(text-colorPrimary bg-[var(--antd-controlItemBgActive)] dark:(text-white bg-colorPrimary))",
   },
+  preflights: [
+    {
+      getCSS: () =>
+        fs.readFileSync(
+          require.resolve("@hiogawa/unocss-preset-antd/dist/reset.css"),
+          "utf-8"
+        ),
+    },
+  ],
 });

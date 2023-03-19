@@ -47,9 +47,6 @@ import type { Match } from "./utils/page-handle";
 export const links: LinksFunction = () => {
   // prettier-ignore
   return [
-    // TODO: combine css
-    { rel: "stylesheet", href: require("@unocss/reset/tailwind.css") },
-    { rel: "stylesheet", href: require("./styles/antd-reset.css") },
     { rel: "stylesheet", href: require("../build/tailwind/" + process.env.NODE_ENV + "/index.css") },
     { rel: "icon", href: require("./assets/icon-32.png"), sizes: "32x32" },
     { rel: "manifest", href: "/_copy/manifest.json" },
