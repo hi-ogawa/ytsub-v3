@@ -114,6 +114,7 @@ export default function DefaultComponent() {
         <ConfigPlaceholder />
       </head>
       <body className="h-full">
+        {/* TODO: default position="top" is fine? */}
         <Toaster position="bottom-left" />
         {/* escape hatch to close all toasts for e2e test (cf. forceDismissToast in helper.ts) */}
         <button

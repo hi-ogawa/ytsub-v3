@@ -60,51 +60,49 @@ export default function DefaultComponent() {
     <div className="w-full p-4 flex justify-center">
       <Form
         method="post"
-        className="card border w-full max-w-sm p-4 px-6 gap-2"
+        className="flex flex-col border w-full max-w-sm p-4 px-6 gap-3"
         data-test="signin-form"
         {...formProps}
       >
-        {actionData?.message ? (
-          <div className="alert alert-error text-white text-sm">
+        {actionData?.message && (
+          <div className="text-colorError">
             <div>Error: {actionData.message}</div>
           </div>
-        ) : null}
-        <div className="form-control">
-          <label className="label">
-            <span className="label-text">Username</span>
-          </label>
+        )}
+        <label className="flex flex-col gap-1">
+          <span>Username</span>
           <input
             type="text"
             name="username"
-            className="input input-bordered"
+            className="antd-input"
             required
             maxLength={USERNAME_MAX_LENGTH}
           />
-        </div>
-        <div className="form-control">
-          <label className="label">
-            <span className="label-text">Password</span>
-          </label>
+        </label>
+        <label className="flex flex-col gap-1">
+          <span>Password</span>
           <input
             type="password"
             name="password"
-            className="input input-bordered"
+            className="antd-input"
             required
             maxLength={PASSWORD_MAX_LENGTH}
           />
-        </div>
-        <div className="form-control mt-2">
-          <button type="submit" className="btn" disabled={!isValid}>
+        </label>
+        <div className="flex flex-col gap-1">
+          <button
+            type="submit"
+            className="antd-btn antd-btn-primary"
+            disabled={!isValid}
+          >
             Sign in
           </button>
-          <label className="label">
-            <div className="label-text text-xs text-gray-400">
-              Don't have an account yet?{" "}
-              <Link to={R["/users/register"]} className="link link-primary">
-                Register
-              </Link>
-            </div>
-          </label>
+          <div className="text-sm text-colorTextSecondary">
+            Don't have an account yet?{" "}
+            <Link to={R["/users/register"]} className="antd-link">
+              Register
+            </Link>
+          </div>
         </div>
       </Form>
     </div>
