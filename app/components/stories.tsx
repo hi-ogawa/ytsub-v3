@@ -1,9 +1,8 @@
 import { Transition } from "@headlessui/react";
 import React from "react";
 import { Bookmark, Save, Trash2 } from "react-feather";
-import { useToggle } from "react-use";
 import { cls } from "../utils/misc";
-import { Spinner, VideoComponent } from "./misc";
+import { VideoComponent } from "./misc";
 import { PopoverSimple } from "./popover";
 import { PracticeHistoryChart } from "./practice-history-chart";
 
