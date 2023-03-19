@@ -10,6 +10,7 @@ import {
 } from "react-feather";
 import type { PaginationMetadata, VideoTable } from "../db/models";
 import { R } from "../misc/routes";
+import { cls } from "../utils/misc";
 import { toNewPages } from "../utils/pagination";
 import { toQuery } from "../utils/url-data";
 import { parseVssId, toThumbnail } from "../utils/youtube";
@@ -123,11 +124,11 @@ export function VideoComponent({
   );
 }
 
-// TODO: might be nicer to implener .spinner class
+// TODO(upstream): use "w-10 antd-spin aspect-square"
 export function Spinner(props: { className: string }) {
   return (
     <div
-      className={`${props.className} rounded-full animate-spin border-2 border-gray-400 border-t-gray-200 border-r-gray-200`}
+      className={cls("antd-spin", props.className)}
     />
   );
 }

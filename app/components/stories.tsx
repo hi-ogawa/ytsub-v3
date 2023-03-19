@@ -172,9 +172,9 @@ export function TestSpinner() {
   return (
     <div className="w-full flex justify-center">
       <div className="w-full max-w-lg flex flex-col p-2 gap-2">
-        <Spinner className="w-10 h-10" />
-        <Spinner className="w-20 h-20" />
-        <Spinner className="w-40 h-40" />
+        <div className="antd-spin w-10 aspect-square" />
+        <div className="antd-spin w-20 aspect-square" />
+        <div className="antd-spin w-40 aspect-square" />
       </div>
     </div>
   );
