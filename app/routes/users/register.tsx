@@ -124,7 +124,7 @@ export default function DefaultComponent() {
     <div className="w-full p-4 flex justify-center">
       <Form
         method="post"
-        className="card border w-full max-w-sm p-4 px-6 gap-2"
+        className="flex flex-col border w-full max-w-sm p-4 px-6 gap-3"
         data-test="register-form"
         {...formProps}
         onSubmit={async (e) => {
@@ -141,75 +141,64 @@ export default function DefaultComponent() {
           form.submit();
         }}
       >
-        {actionData?.message ? (
-          <div className="alert alert-error text-white text-sm">
+        {actionData?.message && (
+          <div className="text-colorError">
             <div>Error: {actionData.message}</div>
           </div>
-        ) : null}
-        <div className="form-control">
-          <label className="label">
-            <span className="label-text">Username</span>
-          </label>
+        )}
+        <label className="flex flex-col gap-1">
+          <span>Username</span>
           <input
             type="text"
             name="username"
-            className={`input input-bordered ${
-              errors.includes("username") && "input-error"
-            }`}
+            className="antd-input"
+            aria-invalid={errors.includes("username")}
             required
             maxLength={USERNAME_MAX_LENGTH}
           />
-        </div>
-        <div className="form-control">
-          <label className="label">
-            <span className="label-text">Password</span>
-          </label>
+        </label>
+        <label className="flex flex-col gap-1">
+          <span>Password</span>
           <input
             type="password"
             name="password"
-            className={`input input-bordered ${
-              errors.includes("password") && "input-error"
-            }`}
+            className="antd-input"
+            aria-invalid={errors.includes("password")}
             required
             maxLength={PASSWORD_MAX_LENGTH}
           />
-        </div>
-        <div className="form-control">
-          <label className="label">
-            <span className="label-text">Password confirmation</span>
-          </label>
+        </label>
+        <label className="flex flex-col gap-1">
+          <span>Password confirmation</span>
           <input
             type="password"
             name="passwordConfirmation"
-            className={`input input-bordered ${
-              errors.includes("passwordConfirmation") && "input-error"
-            }`}
+            className="antd-input"
+            aria-invalid={errors.includes("passwordConfirmation")}
             required
             maxLength={PASSWORD_MAX_LENGTH}
           />
-        </div>
+        </label>
         <input
           ref={recaptchaTokenInputRef as any}
           type="hidden"
           name="recaptchaToken"
         />
         <input type="hidden" name="timezone" value={timezone} />
-        <div className="form-control mt-2">
+        <div className="flex flex-col gap-1">
           <button
             type="submit"
-            className="btn"
+            className="antd-btn antd-btn-primary p-1"
             disabled={!isValid || !recaptchaApi.isSuccess}
           >
             Register
           </button>
-          <label className="label">
-            <div className="label-text text-xs text-gray-400">
-              Already have an account?{" "}
-              <Link to={R["/users/signin"]} className="link link-primary">
-                Sign in
-              </Link>
-            </div>
-          </label>
+          <div className="text-sm text-colorTextSecondary">
+            Already have an account?{" "}
+            <Link to={R["/users/signin"]} className="antd-link">
+              Sign in
+            </Link>
+          </div>
         </div>
       </Form>
     </div>
