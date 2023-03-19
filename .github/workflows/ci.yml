@@ -51,7 +51,7 @@ jobs:
         id: cache-playwright
         with:
           path: ~/.cache/ms-playwright
-          key: cache-playwright-1.19.2
+          key: cache-playwright-1.31.2
       - if: steps.cache-playwright.outputs.cache-hit != 'true'
         run: npx playwright install --with-deps
       - run: make docker/up db/reset/test
