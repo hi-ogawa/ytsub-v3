@@ -1,4 +1,3 @@
-import { Transition } from "@headlessui/react";
 import { tinyassert } from "@hiogawa/utils";
 import {
   Link,
@@ -8,7 +7,7 @@ import {
 } from "@remix-run/react";
 import { Activity, Book, MoreVertical } from "react-feather";
 import { Spinner } from "../../../components/misc";
-import { Popover } from "../../../components/popover";
+import { PopoverSimple } from "../../../components/popover";
 import {
   BookmarkEntryTable,
   CaptionEntryTable,
@@ -250,52 +249,40 @@ function NavBarMenuComponent() {
   return (
     <>
       <div className="flex-none">
-        <Popover
+        <PopoverSimple
           placement="bottom-end"
-          reference={({ props }) => (
+          reference={
             <button
               className="btn btn-sm btn-ghost"
               data-test="deck-menu-practice-popover-reference"
-              {...props}
             >
               <MoreVertical />
             </button>
-          )}
-          floating={({ open, setOpen, props }) => (
-            <Transition
-              show={open}
-              unmount={false}
-              className="transition duration-200"
-              enterFrom="scale-90 opacity-0"
-              enterTo="scale-100 opacity-100"
-              leaveFrom="scale-100 opacity-100"
-              leaveTo="scale-90 opacity-0"
-              {...props}
+          }
+          floating={(context) => (
+            <ul
+              className="menu menu-compact rounded p-3 w-48 text-sm"
+              data-test="deck-menu-practice-popover-floating"
             >
-              <ul
-                className="menu menu-compact rounded p-3 shadow w-48 bg-base-100 text-base-content text-sm"
-                data-test="deck-menu-practice-popover-floating"
-              >
-                <li>
-                  <Link
-                    to={R["/decks/$id"](deck.id)}
-                    onClick={() => setOpen(false)}
-                  >
-                    <Book />
-                    Deck
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to={R["/decks/$id/history-graph"](deck.id)}
-                    onClick={() => setOpen(false)}
-                  >
-                    <Activity />
-                    History
-                  </Link>
-                </li>
-              </ul>
-            </Transition>
+              <li>
+                <Link
+                  to={R["/decks/$id"](deck.id)}
+                  onClick={() => context.onOpenChange(false)}
+                >
+                  <Book />
+                  Deck
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to={R["/decks/$id/history-graph"](deck.id)}
+                  onClick={() => context.onOpenChange(false)}
+                >
+                  <Activity />
+                  History
+                </Link>
+              </li>
+            </ul>
           )}
         />
       </div>

@@ -1,4 +1,3 @@
-import { Transition } from "@headlessui/react";
 import { Link } from "@remix-run/react";
 import type React from "react";
 import {
@@ -14,7 +13,7 @@ import { R } from "../misc/routes";
 import { toNewPages } from "../utils/pagination";
 import { toQuery } from "../utils/url-data";
 import { parseVssId, toThumbnail } from "../utils/youtube";
-import { Popover } from "./popover";
+import { PopoverSimple } from "./popover";
 
 export function VideoComponent({
   video,
@@ -100,34 +99,22 @@ export function VideoComponent({
         </a>
         {actions && (
           <div className="absolute right-1 bottom-1 z-10">
-            <Popover
+            <PopoverSimple
               placement="bottom-end"
-              reference={({ props }) => (
+              reference={
                 <button
                   className="btn btn-sm btn-ghost btn-circle"
-                  {...props}
                   data-test="video-component-popover-button"
                 >
                   <MoreVertical size={14} />
                 </button>
-              )}
-              floating={({ open, props }) => (
-                <Transition
-                  show={open}
-                  unmount={false}
-                  className="transition duration-200"
-                  enterFrom="scale-90 opacity-0"
-                  enterTo="scale-100 opacity-100"
-                  leaveFrom="scale-100 opacity-100"
-                  leaveTo="scale-90 opacity-0"
-                  {...props}
-                >
-                  <ul className="menu menu-compact rounded p-2 shadow w-48 bg-base-100 text-base-content text-sm">
-                    {/* TODO: how to let `actions` close the popover? */}
-                    {actions}
-                  </ul>
-                </Transition>
-              )}
+              }
+              floating={
+                <ul className="menu menu-compact rounded p-2 w-48 text-sm">
+                  {/* TODO: how to let `actions` close the popover? */}
+                  {actions}
+                </ul>
+              }
             />
           </div>
         )}

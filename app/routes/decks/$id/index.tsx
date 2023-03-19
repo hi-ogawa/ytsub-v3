@@ -1,4 +1,3 @@
-import { Transition } from "@headlessui/react";
 import { tinyassert } from "@hiogawa/utils";
 import { Form, Link, useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
@@ -18,7 +17,7 @@ import {
 } from "react-feather";
 import { z } from "zod";
 import { PaginationComponent } from "../../../components/misc";
-import { Popover } from "../../../components/popover";
+import { PopoverSimple } from "../../../components/popover";
 import {
   BookmarkEntryTable,
   CaptionEntryTable,
@@ -354,86 +353,74 @@ function NavBarMenuComponent() {
   return (
     <>
       <div className="flex-none">
-        <Popover
+        <PopoverSimple
           placement="bottom-end"
-          reference={({ props }) => (
+          reference={
             <button
               className="btn btn-sm btn-ghost"
               data-test="deck-menu-popover-reference"
-              {...props}
             >
               <MoreVertical />
             </button>
-          )}
-          floating={({ open, setOpen, props }) => (
-            <Transition
-              show={open}
-              unmount={false}
-              className="transition duration-200"
-              enterFrom="scale-90 opacity-0"
-              enterTo="scale-100 opacity-100"
-              leaveFrom="scale-100 opacity-100"
-              leaveTo="scale-90 opacity-0"
-              {...props}
+          }
+          floating={(context) => (
+            <ul
+              className="menu menu-compact rounded p-3 w-48 text-sm"
+              data-test="deck-menu-popover-floating"
             >
-              <ul
-                className="menu menu-compact rounded p-3 shadow w-48 bg-base-100 text-base-content text-sm"
-                data-test="deck-menu-popover-floating"
+              <li>
+                <Link
+                  to={R["/decks/$id/practice"](deck.id)}
+                  onClick={() => context.onOpenChange(false)}
+                >
+                  <Play />
+                  Practice
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to={R["/decks/$id/history-graph"](deck.id)}
+                  onClick={() => context.onOpenChange(false)}
+                >
+                  <Activity />
+                  History
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to={R["/bookmarks"] + `?deckId=${deck.id}`}
+                  onClick={() => context.onOpenChange(false)}
+                >
+                  <Bookmark />
+                  Bookmarks
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to={R["/decks/$id/edit"](deck.id)}
+                  onClick={() => context.onOpenChange(false)}
+                >
+                  <Edit />
+                  Edit
+                </Link>
+              </li>
+              <Form
+                action={R["/decks/$id?index"](deck.id)}
+                method="delete"
+                onSubmitCapture={(e) => {
+                  if (!window.confirm("Are you sure?")) {
+                    e.preventDefault();
+                  }
+                }}
               >
                 <li>
-                  <Link
-                    to={R["/decks/$id/practice"](deck.id)}
-                    onClick={() => setOpen(false)}
-                  >
-                    <Play />
-                    Practice
-                  </Link>
+                  <button type="submit">
+                    <Trash2 />
+                    Delete
+                  </button>
                 </li>
-                <li>
-                  <Link
-                    to={R["/decks/$id/history-graph"](deck.id)}
-                    onClick={() => setOpen(false)}
-                  >
-                    <Activity />
-                    History
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to={R["/bookmarks"] + `?deckId=${deck.id}`}
-                    onClick={() => setOpen(false)}
-                  >
-                    <Bookmark />
-                    Bookmarks
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to={R["/decks/$id/edit"](deck.id)}
-                    onClick={() => setOpen(false)}
-                  >
-                    <Edit />
-                    Edit
-                  </Link>
-                </li>
-                <Form
-                  action={R["/decks/$id?index"](deck.id)}
-                  method="delete"
-                  onSubmitCapture={(e) => {
-                    if (!window.confirm("Are you sure?")) {
-                      e.preventDefault();
-                    }
-                  }}
-                >
-                  <li>
-                    <button type="submit">
-                      <Trash2 />
-                      Delete
-                    </button>
-                  </li>
-                </Form>
-              </ul>
-            </Transition>
+              </Form>
+            </ul>
           )}
         />
       </div>
