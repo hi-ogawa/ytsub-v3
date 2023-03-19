@@ -57,11 +57,6 @@ export function VideoComponent({
       className="relative w-full flex border"
       style={{ aspectRatio: "36 / 9" }}
     >
-      {isLoading && (
-        <div className="absolute inset-0 flex justify-center items-center z-10 bg-black/[0.2]">
-          <Spinner className="w-16 h-16" />
-        </div>
-      )}
       <div className="flex-none w-[44%] relative aspect-video overflow-hidden">
         <Link to={to} className="w-full h-full">
           <img
@@ -102,16 +97,19 @@ export function VideoComponent({
           <div className="absolute right-1 bottom-1 z-10">
             <PopoverSimple
               placement="bottom-end"
-              reference={
+              reference={(context) => (
                 <button
-                  className="btn btn-sm btn-ghost btn-circle"
+                  className={cls(
+                    "antd-btn antd-btn-ghost",
+                    context.open && "antd-btn-ghost-active"
+                  )}
                   data-test="video-component-popover-button"
                 >
-                  <MoreVertical size={14} />
+                  <MoreVertical size={16} />
                 </button>
-              }
+              )}
               floating={
-                <ul className="menu menu-compact rounded p-2 w-48 text-sm">
+                <ul className="flex flex-col gap-2 p-2 w-48 text-sm">
                   {/* TODO: how to let `actions` close the popover? */}
                   {actions}
                 </ul>
@@ -120,17 +118,18 @@ export function VideoComponent({
           </div>
         )}
       </div>
+      {isLoading && (
+        <div className="absolute inset-0 flex justify-center items-center bg-black/[0.2]">
+          <div className="antd-spin2 w-16"></div>
+        </div>
+      )}
     </div>
   );
 }
 
-// TODO(upstream): use "w-10 antd-spin aspect-square"
+// TODO: use antd-spin
 export function Spinner(props: { className: string }) {
-  return (
-    <div
-      className={cls("antd-spin", props.className)}
-    />
-  );
+  return <div className={cls("antd-spin2", props.className)} />;
 }
 
 export function PaginationComponent({

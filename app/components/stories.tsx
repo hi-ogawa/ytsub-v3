@@ -43,8 +43,7 @@ export function TestPopover() {
               <button
                 className={cls(
                   "antd-btn antd-btn-ghost flex items-center",
-                  context.open &&
-                    "text-colorPrimaryActive border-colorPrimaryActive"
+                  context.open && "antd-btn-ghost-active"
                 )}
               >
                 <span className="i-ri-user-line w-6 h-6"></span>
@@ -74,19 +73,18 @@ export function TestPopover() {
 }
 
 export function TestVideoComponent() {
-  const [isLoading, toggle] = useToggle(true);
+  const [isLoading, setIsLoading] = React.useState(true);
 
   return (
     <div className="w-full flex justify-center">
       <div className="w-full max-w-lg flex flex-col p-2 gap-2">
-        <label className="label flex justify-start gap-4 items-center">
+        <label className="flex justify-start gap-2 items-center">
           <input
-            className="toggle"
             type="checkbox"
             checked={isLoading}
-            onChange={() => toggle()}
+            onChange={() => setIsLoading(!isLoading)}
           />
-          <span className="label-text">Toggle loading</span>
+          <span>Toggle loading</span>
         </label>
         <VideoComponent
           video={{
@@ -101,14 +99,14 @@ export function TestVideoComponent() {
           }}
           actions={
             <>
-              <li>
-                <button>
+              <li className="flex">
+                <button className="antd-menu-item flex-1 p-2 flex items-center gap-2">
                   <Save />
                   Save
                 </button>
               </li>
-              <li>
-                <button>
+              <li className="flex">
+                <button className="antd-menu-item flex-1 p-2 flex items-center gap-2">
                   <Trash2 />
                   Delete
                 </button>
@@ -172,9 +170,9 @@ export function TestSpinner() {
   return (
     <div className="w-full flex justify-center">
       <div className="w-full max-w-lg flex flex-col p-2 gap-2">
-        <div className="antd-spin w-10 aspect-square" />
-        <div className="antd-spin w-20 aspect-square" />
-        <div className="antd-spin w-40 aspect-square" />
+        <div className="antd-spin2 w-10" />
+        <div className="antd-spin2 w-20" />
+        <div className="antd-spin2 w-40" />
       </div>
     </div>
   );
