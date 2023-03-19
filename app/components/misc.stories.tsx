@@ -11,7 +11,7 @@ import {
 } from "react-feather";
 import { useToggle } from "react-use";
 import { Spinner, VideoComponent } from "./misc";
-import { Popover } from "./popover";
+import { Popover, PopoverSimple } from "./popover";
 import { PracticeHistoryChart } from "./practice-history-chart";
 
 export function TestDev() {
@@ -75,6 +75,30 @@ export function TestPopover() {
                 </ul>
               </Transition>
             )}
+          />
+          <PopoverSimple
+            placement="bottom-end"
+            reference={
+              <button className="btn btn-sm btn-ghost" data-test="user-menu">
+                <User />
+              </button>
+            }
+            floating={
+              <ul className="menu rounded p-3 w-48">
+                <li>
+                  <span>
+                    <Settings />
+                    Account
+                  </span>
+                </li>
+                <li>
+                  <span>
+                    <LogOut />
+                    Sign out
+                  </span>
+                </li>
+              </ul>
+            }
           />
         </div>
       </div>

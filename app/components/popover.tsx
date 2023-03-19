@@ -1,4 +1,5 @@
 import {
+  FloatingContext,
   FloatingPortal,
   Placement,
   arrow,
@@ -16,14 +17,14 @@ import { Transition } from "@headlessui/react";
 import React from "react";
 import { cls } from "../utils/misc";
 
-// copied from https://github.com/hi-ogawa/unocss-preset-antd/blob/95b2359ca2a7bcec3ccc36762fae4929937b628e/packages/app/src/components/popover.tsx
+// based on https://github.com/hi-ogawa/unocss-preset-antd/blob/95b2359ca2a7bcec3ccc36762fae4929937b628e/packages/app/src/components/popover.tsx
 
 interface PopoverRenderProps {
   open: boolean;
   setOpen: (open: boolean) => void;
   props: {};
   arrowProps?: {};
-  placement: Placement; // actual placement e.g. after `flip` middleware is applied
+  context: FloatingContext;
 }
 
 export function Popover(props: {
@@ -58,15 +59,16 @@ export function Popover(props: {
   return (
     <>
       {props.reference({
+        context,
         open,
         setOpen,
         props: getReferenceProps({
           ref: reference,
         }),
-        placement: context.placement,
       })}
       <FloatingPortal id={id}>
         {props.floating({
+          context,
           open,
           setOpen,
           props: getFloatingProps({
@@ -85,7 +87,6 @@ export function Popover(props: {
               position: "absolute",
             },
           },
-          placement: context.placement,
         })}
       </FloatingPortal>
     </>
@@ -110,18 +111,17 @@ export function PopoverSimple({
           ...props,
         })
       }
-      floating={({ props, open, arrowProps, placement }) => (
+      floating={({ props, open, arrowProps, context: { placement } }) => (
         <Transition
           show={open}
-          className="transition duration-150"
-          enterFrom="scale-80 opacity-0"
+          className="transition duration-200"
+          enterFrom="scale-90 opacity-0"
           enterTo="scale-100 opacity-100"
           leaveFrom="scale-100 opacity-100"
-          leaveTo="scale-80 opacity-0"
+          leaveTo="scale-90 opacity-0"
           {...props}
         >
-          <div className="bg-colorBgElevated shadow-[var(--antd-boxShadowSecondary)]">
-            {/* TODO: use FloatingArray from floating-ui? (currently not used since shadow didn't look right) */}
+          <div className="bg-base-100 text-base-content shadow">
             <div
               {...arrowProps}
               className={cls(
@@ -134,7 +134,7 @@ export function PopoverSimple({
               <div
                 // rotate 4x4 square with shadow
                 className={cls(
-                  "bg-colorBgElevated shadow-[var(--antd-boxShadowPopoverArrow)] relative w-4 h-4",
+                  "bg-base-100 shadow relative w-4 h-4",
                   placement.startsWith("bottom") && "-top-2 rotate-[225deg]",
                   placement.startsWith("top") && "-bottom-2 rotate-[45deg]",
                   placement.startsWith("left") && "-right-2 rotate-[315deg]",
