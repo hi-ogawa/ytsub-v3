@@ -103,76 +103,70 @@ export default function DefaultComponent() {
 
   return (
     <div className="w-full p-4 flex justify-center">
-      <div className="h-full w-full max-w-lg rounded-lg border border-base-300">
-        <div className="h-full p-6 flex flex-col">
-          <div className="text-xl font-bold mb-1">Select Languages</div>
+      <div className="h-full w-full max-w-lg border">
+        <div className="h-full p-6 flex flex-col gap-3">
+          <div className="text-xl">Select Languages</div>
           <Form
             method="post"
             action={R["/videos/new"]}
-            className="w-full flex flex-col gap-1"
+            className="w-full flex flex-col gap-3"
             // TODO: rename to new-video-form
             data-test="setup-form"
             {...formProps}
           >
-            <div className="form-control">
-              <label className="label">
-                <label className="label-text">Video ID</label>
-              </label>
+            <label className="flex flex-col gap-1">
+              Video ID
               <input
                 name="videoId"
                 type="text"
-                className="w-full input input-bordered bg-gray-100"
+                className="antd-input p-1 bg-colorBgContainerDisabled"
                 value={videoMetadata.videoDetails.videoId}
                 readOnly
               />
-            </div>
-            <div className="form-control">
-              <label className="label">
-                <label className="label-text">Author</label>
-              </label>
+            </label>
+            <label className="flex flex-col gap-1">
+              Author
               <input
                 type="text"
-                className="w-full input input-bordered bg-gray-100"
+                className="antd-input p-1 colorBgContainerDisabled"
                 value={videoMetadata.videoDetails.author}
                 readOnly
               />
-            </div>
-            <div className="form-control">
-              <label className="label">
-                <label className="label-text">Title</label>
-              </label>
+            </label>
+            <label className="flex flex-col gap-1">
+              Title
               <input
                 type="text"
-                className="w-full input input-bordered bg-gray-100"
+                className="antd-input p-1 colorBgContainerDisabled"
                 value={videoMetadata.videoDetails.title}
                 readOnly
               />
-            </div>
-            <div className="form-control">
-              <label className="label">
-                <label className="label-text">1st language</label>
-              </label>
+            </label>
+            <label className="flex flex-col gap-1">
+              1st language
               <LanguageSelectComponent
-                className="select select-bordered font-normal"
+                className="antd-input p-1"
                 required
                 defaultValue={defaultValues[0]}
                 videoMetadata={videoMetadata}
                 propertyName="language1"
               />
-            </div>
-            <div className="form-control">
-              <label className="label">
-                <label className="label-text">2nd language</label>
-              </label>
+            </label>
+            <label className="flex flex-col gap-1">
+              2nd language
               <LanguageSelectComponent
-                className="select select-bordered font-normal"
+                className="antd-input p-1"
                 required
                 defaultValue={defaultValues[1]}
                 videoMetadata={videoMetadata}
                 propertyName="language2"
               />
-            </div>
-            <button type="submit" className="btn mt-3" disabled={!isValid}>
+            </label>
+            <button
+              type="submit"
+              className="antd-btn antd-btn-primary p-1"
+              disabled={!isValid}
+            >
               {currentUser ? "Save and Play" : "Play"}
             </button>
           </Form>
