@@ -14,7 +14,11 @@ export default defineConfig({
       name: "chromium",
       use: {
         browserName: "chromium",
-        viewport: { width: 360, height: 560 },
+        // https://github.com/microsoft/playwright/issues/1086#issuecomment-592227413
+        viewport: null, // adopt to browser window size specified below
+        launchOptions: {
+          args: ["--window-size=600,800"],
+        },
       },
     },
   ],
