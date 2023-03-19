@@ -1,6 +1,6 @@
-import { PlaywrightTestConfig } from "@playwright/test";
+import { defineConfig } from "@playwright/test";
 
-const config: PlaywrightTestConfig = {
+export default defineConfig({
   testDir: "./app/__e2e__",
   globalSetup: "./app/misc/test-setup-global-e2e.ts",
   use: {
@@ -14,7 +14,11 @@ const config: PlaywrightTestConfig = {
       name: "chromium",
       use: {
         browserName: "chromium",
-        viewport: { width: 360, height: 560 },
+        // https://github.com/microsoft/playwright/issues/1086#issuecomment-592227413
+        viewport: null, // adopt to browser window size specified below
+        launchOptions: {
+          args: ["--window-size=600,800"],
+        },
       },
     },
   ],
@@ -25,6 +29,4 @@ const config: PlaywrightTestConfig = {
         port: 3001,
         reuseExistingServer: true,
       },
-};
-
-export default config;
+});

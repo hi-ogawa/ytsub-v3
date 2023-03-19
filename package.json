@@ -69,7 +69,7 @@
   },
   "devDependencies": {
     "@hiogawa/isort-ts": "1.0.0-pre.11",
-    "@playwright/test": "^1.19.2",
+    "@playwright/test": "^1.31.2",
     "@remix-run/dev": "1.4.1",
     "@remix-run/serve": "1.4.1",
     "@tailwindcss/line-clamp": "^0.3.1",
@@ -107,7 +107,8 @@
   "pnpm": {
     "patchedDependencies": {
       "@remix-run/dev@1.4.1": "patches/@remix-run__dev@1.4.1.patch",
-      "@remix-run/serve@1.4.1": "patches/@remix-run__serve@1.4.1.patch"
+      "@remix-run/serve@1.4.1": "patches/@remix-run__serve@1.4.1.patch",
+      "@remix-run/node@1.4.1": "patches/@remix-run__node@1.4.1.patch"
     }
   }
 }
