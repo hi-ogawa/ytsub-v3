@@ -40,12 +40,7 @@ export function Popover(props: {
       open,
       onOpenChange: setOpen,
       placement: props.placement,
-      middleware: [
-        offset(17),
-        flip(),
-        shift(),
-        arrow({ element: arrowRef, padding: 10 }),
-      ],
+      middleware: [offset(10), flip(), shift(), arrow({ element: arrowRef })],
       whileElementsMounted: autoUpdate,
     });
 
@@ -93,25 +88,29 @@ export function Popover(props: {
   );
 }
 
+type RenderElement =
+  | React.ReactElement
+  | ((context: FloatingContext) => React.ReactElement);
+
 export function PopoverSimple({
   placement,
   reference,
   floating,
 }: {
   placement: Placement;
-  reference: React.ReactElement;
-  floating: React.ReactElement;
+  reference: RenderElement;
+  floating: RenderElement;
 }) {
   return (
     <Popover
       placement={placement}
-      reference={({ props, open, setOpen }) =>
-        React.cloneElement(reference, {
-          onClick: () => setOpen(!open),
-          ...props,
-        })
+      reference={(args) =>
+        React.cloneElement(
+          typeof reference === "function" ? reference(args.context) : reference,
+          args.props
+        )
       }
-      floating={({ props, open, arrowProps, context: { placement } }) => (
+      floating={({ props, open, arrowProps, context }) => (
         <Transition
           show={open}
           className="transition duration-200"
@@ -125,20 +124,21 @@ export function PopoverSimple({
             <div
               {...arrowProps}
               className={cls(
-                placement.startsWith("bottom") && "top-0",
-                placement.startsWith("top") && "bottom-0",
-                placement.startsWith("left") && "right-0",
-                placement.startsWith("right") && "left-0"
+                context.placement.startsWith("bottom") && "top-0",
+                context.placement.startsWith("top") && "bottom-0",
+                context.placement.startsWith("left") && "right-0",
+                context.placement.startsWith("right") && "left-0"
               )}
             >
               <div
                 // rotate 4x4 square with shadow
+                // prettier-ignore
                 className={cls(
                   "bg-base-100 shadow relative w-4 h-4",
-                  placement.startsWith("bottom") && "-top-2 rotate-[225deg]",
-                  placement.startsWith("top") && "-bottom-2 rotate-[45deg]",
-                  placement.startsWith("left") && "-right-2 rotate-[315deg]",
-                  placement.startsWith("right") && "-left-2 rotate-[135deg]"
+                  context.placement.startsWith("bottom") && "-top-2 rotate-[225deg]",
+                  context.placement.startsWith("top") && "-bottom-2 rotate-[45deg]",
+                  context.placement.startsWith("left") && "-right-2 rotate-[315deg]",
+                  context.placement.startsWith("right") && "-left-2 rotate-[135deg]"
                 )}
                 // clip half
                 style={{
@@ -146,7 +146,7 @@ export function PopoverSimple({
                 }}
               />
             </div>
-            {floating}
+            {typeof floating === "function" ? floating(context) : floating}
           </div>
         </Transition>
       )}
