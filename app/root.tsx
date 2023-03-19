@@ -208,18 +208,18 @@ function Navbar({
       <div className="flex-1">{title}</div>
       {menu}
       {!user && (
-        <div className="flex-none">
+        <div className="flex-none flex items-center">
           <Link to={R["/users/signin"]} className="antd-btn antd-btn-ghost">
             <LogIn data-test="login-icon" />
           </Link>
         </div>
       )}
       {user && (
-        <div className="flex-none">
+        <div className="flex-none flex items-center">
           <PopoverSimple
             placement="bottom-end"
             reference={
-              <button className="btn btn-sm btn-ghost" data-test="user-menu">
+              <button className="antd-btn antd-btn-ghost" data-test="user-menu">
                 <User />
               </button>
             }

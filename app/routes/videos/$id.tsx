@@ -20,7 +20,6 @@ import { atomWithStorage } from "jotai/utils";
 import React from "react";
 import {
   Bookmark,
-  Check,
   MoreVertical,
   Play,
   Repeat,
@@ -45,7 +44,6 @@ import { Controller, makeLoader } from "../../utils/controller-utils";
 import { useDeserialize, useSelection } from "../../utils/hooks";
 import { useYoutubeIframeApi } from "../../utils/hooks";
 import { useLeafLoaderData, useRootLoaderData } from "../../utils/loader-utils";
-import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 import type { CaptionEntry } from "../../utils/types";
 import { toForm } from "../../utils/url-data";
@@ -730,18 +728,19 @@ function NavBarMenuComponentImpl({
           </button>
         </Form>
       )}
-      <div className="flex-none">
+      <div className="flex-none flex items-center">
         <PopoverSimple
           placement="bottom-end"
           reference={
-            <button className="btn btn-sm btn-ghost" data-test="user-menu">
+            <button className="antd-btn antd-btn-ghost" data-test="user-menu">
               <MoreVertical />
             </button>
           }
           floating={(context) => (
-            <ul className="menu rounded p-3 shadow w-48 bg-base-100 text-base-content text-sm">
+            <ul className="flex flex-col gap-2 p-2 w-[180px] text-sm">
               <li>
                 <Link
+                  className="block antd-menu-item p-2"
                   to={R["/videos/new"] + "?videoId=" + video.videoId}
                   onClick={() => context.onOpenChange(false)}
                 >
@@ -749,18 +748,20 @@ function NavBarMenuComponentImpl({
                 </Link>
               </li>
               <li>
-                <button onClick={() => toggleAutoScrollState(video.id)}>
+                <button
+                  className="w-full antd-menu-item p-2 flex gap-2"
+                  onClick={() => toggleAutoScrollState(video.id)}
+                >
                   Auto scroll
-                  {autoScrollState.includes(video.id) && <Check size={16} />}
+                  {autoScrollState.includes(video.id) && (
+                    <span className="i-ri-check-line w-5 h-5"></span>
+                  )}
                 </button>
               </li>
-              <li
-                className={cls(
-                  repeatingEntries.length === 0 &&
-                    "disabled pointer-events-none"
-                )}
-              >
+              <li>
                 <button
+                  className="w-full antd-menu-item p-2 flex"
+                  disabled={repeatingEntries.length === 0}
                   onClick={() => {
                     setRepeatingEntries([]);
                     context.onOpenChange(false);
