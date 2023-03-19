@@ -24,9 +24,8 @@ function Root() {
                     to={key}
                     className={({ isActive }) =>
                       cls(
-                        "flex-1 antd-btn antd-btn-text p-2",
-                        isActive &&
-                          "important:(text-colorPrimary bg-[var(--antd-controlItemBgActive)])"
+                        "flex-1 antd-menu-item p-2",
+                        isActive && "antd-menu-item-active"
                       )
                     }
                   >
