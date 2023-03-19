@@ -10,7 +10,6 @@ import {
   Scripts,
   ShouldReloadFunction,
   useMatches,
-  useTransition,
 } from "@remix-run/react";
 import type { LinksFunction, MetaFunction } from "@remix-run/server-runtime";
 import { atom, useAtom } from "jotai";
@@ -32,7 +31,7 @@ import { Toaster, toast } from "react-hot-toast";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { Drawer } from "./components/drawer";
 import { PopoverSimple } from "./components/popover";
-import { TopProgressBar, TopProgressBarRemix } from "./components/top-progress-bar";
+import { TopProgressBarRemix } from "./components/top-progress-bar";
 import type { UserTable } from "./db/models";
 import { R, R_RE } from "./misc/routes";
 import { publicConfig } from "./utils/config";
@@ -48,6 +47,7 @@ import type { Match } from "./utils/page-handle";
 export const links: LinksFunction = () => {
   // prettier-ignore
   return [
+    // TODO: combine css
     { rel: "stylesheet", href: require("@unocss/reset/tailwind.css") },
     { rel: "stylesheet", href: require("./styles/antd-reset.css") },
     { rel: "stylesheet", href: require("../build/tailwind/" + process.env.NODE_ENV + "/index.css") },
@@ -246,7 +246,7 @@ function Navbar({
         </div>
       )}
       <Drawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-        <ul className="flex flex-col gap-2 p-4 w-[280px]">
+        <ul className="flex flex-col gap-3 p-4 w-[280px]">
           <li>
             <SearchComponent />
           </li>
@@ -331,7 +331,7 @@ function SearchComponent() {
         <input
           type="text"
           name="videoId"
-          className="w-full antd-input p-2 pl-9"
+          className="w-full antd-input p-1 pl-9"
           placeholder="Enter Video ID or URL"
           required
         />
