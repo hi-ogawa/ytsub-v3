@@ -10,8 +10,9 @@ import {
   User,
 } from "react-feather";
 import { useToggle } from "react-use";
+import { cls } from "../utils/misc";
 import { Spinner, VideoComponent } from "./misc";
-import { Popover, PopoverSimple } from "./popover";
+import { PopoverSimple } from "./popover";
 import { PracticeHistoryChart } from "./practice-history-chart";
 
 export function TestDev() {
@@ -37,52 +38,18 @@ export function TestPopover() {
     <div className="p-4 flex flex-col items-center">
       <div className="border rounded w-full max-w-sm p-4 flex flex-col gap-2">
         <div>
-          <Popover
-            placement="bottom-end"
-            reference={({ props }) => (
-              <button
-                className="btn btn-sm btn-ghost"
-                data-test="user-menu"
-                {...props}
-              >
-                <User />
-              </button>
-            )}
-            floating={({ open, props }) => (
-              <Transition
-                show={open}
-                unmount={false}
-                className="transition duration-200"
-                enterFrom="scale-90 opacity-0"
-                enterTo="scale-100 opacity-100"
-                leaveFrom="scale-100 opacity-100"
-                leaveTo="scale-90 opacity-0"
-                {...props}
-              >
-                <ul className="menu rounded p-3 shadow w-48 bg-base-100 text-base-content">
-                  <li>
-                    <span>
-                      <Settings />
-                      Account
-                    </span>
-                  </li>
-                  <li>
-                    <span>
-                      <LogOut />
-                      Sign out
-                    </span>
-                  </li>
-                </ul>
-              </Transition>
-            )}
-          />
           <PopoverSimple
             placement="bottom-end"
-            reference={
-              <button className="btn btn-sm btn-ghost" data-test="user-menu">
+            reference={(context) => (
+              <button
+                className={cls(
+                  "btn btn-sm btn-ghost",
+                  context.open && "btn-active"
+                )}
+              >
                 <User />
               </button>
-            }
+            )}
             floating={
               <ul className="menu rounded p-3 w-48">
                 <li>

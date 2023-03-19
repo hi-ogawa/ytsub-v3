@@ -1,4 +1,3 @@
-import { Transition } from "@headlessui/react";
 import { typedBoolean } from "@hiogawa/utils";
 import {
   Form,
@@ -28,7 +27,7 @@ import {
 } from "react-feather";
 import { Toaster, toast } from "react-hot-toast";
 import { QueryClient, QueryClientProvider } from "react-query";
-import { Popover } from "./components/popover";
+import { PopoverSimple } from "./components/popover";
 import { TopProgressBar } from "./components/top-progress-bar";
 import type { UserTable } from "./db/models";
 import { R, R_RE } from "./misc/routes";
@@ -229,50 +228,38 @@ function Navbar({
       )}
       {user && (
         <div className="flex-none">
-          <Popover
+          <PopoverSimple
             placement="bottom-end"
-            reference={({ props }) => (
-              <button
-                className="btn btn-sm btn-ghost"
-                data-test="user-menu"
-                {...props}
-              >
+            reference={
+              <button className="btn btn-sm btn-ghost" data-test="user-menu">
                 <User />
               </button>
-            )}
-            floating={({ open, setOpen, props }) => (
-              <Transition
-                show={open}
-                unmount={false}
-                className="transition duration-200"
-                enterFrom="scale-90 opacity-0"
-                enterTo="scale-100 opacity-100"
-                leaveFrom="scale-100 opacity-100"
-                leaveTo="scale-90 opacity-0"
-                {...props}
-              >
-                <ul className="menu rounded p-3 shadow w-48 bg-base-100 text-base-content text-sm">
-                  <li>
-                    <Link to={R["/users/me"]} onClick={() => setOpen(false)}>
-                      <Settings />
-                      Account
-                    </Link>
-                  </li>
-                  <Form
-                    method="post"
-                    action={R["/users/signout"]}
-                    data-test="signout-form"
-                    onClick={() => setOpen(false)}
+            }
+            floating={(context) => (
+              <ul className="menu rounded p-3 shadow w-48 bg-base-100 text-base-content text-sm">
+                <li>
+                  <Link
+                    to={R["/users/me"]}
+                    onClick={() => context.onOpenChange(false)}
                   >
-                    <li>
-                      <button type="submit" className="flex gap-3">
-                        <LogOut />
-                        Sign out
-                      </button>
-                    </li>
-                  </Form>
-                </ul>
-              </Transition>
+                    <Settings />
+                    Account
+                  </Link>
+                </li>
+                <Form
+                  method="post"
+                  action={R["/users/signout"]}
+                  data-test="signout-form"
+                  onClick={() => context.onOpenChange(false)}
+                >
+                  <li>
+                    <button type="submit" className="flex gap-3">
+                      <LogOut />
+                      Sign out
+                    </button>
+                  </li>
+                </Form>
+              </ul>
             )}
           />
         </div>

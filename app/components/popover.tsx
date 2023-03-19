@@ -27,7 +27,7 @@ interface PopoverRenderProps {
   context: FloatingContext;
 }
 
-export function Popover(props: {
+function Popover(props: {
   placement: Placement;
   reference: (renderProps: PopoverRenderProps) => React.ReactNode;
   floating: (renderProps: PopoverRenderProps) => React.ReactNode;
@@ -40,7 +40,7 @@ export function Popover(props: {
       open,
       onOpenChange: setOpen,
       placement: props.placement,
-      middleware: [offset(10), flip(), shift(), arrow({ element: arrowRef })],
+      middleware: [offset(16), flip(), shift(), arrow({ element: arrowRef })],
       whileElementsMounted: autoUpdate,
     });
 

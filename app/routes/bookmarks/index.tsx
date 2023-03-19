@@ -1,4 +1,3 @@
-import { Transition } from "@headlessui/react";
 import { isNil } from "@hiogawa/utils";
 import { useRafLoop } from "@hiogawa/utils-react";
 import { Link, useLoaderData } from "@remix-run/react";
@@ -17,7 +16,7 @@ import {
 import { z } from "zod";
 import { PaginationComponent, Spinner } from "../../components/misc";
 import { useModal } from "../../components/modal";
-import { Popover } from "../../components/popover";
+import { PopoverSimple } from "../../components/popover";
 import {
   BookmarkEntryTable,
   CaptionEntryTable,
@@ -370,50 +369,41 @@ function NavBarMenuComponent() {
   return (
     <>
       <div className="flex-none">
-        <Popover
+        <PopoverSimple
           placement="bottom-end"
-          reference={({ props }) => (
+          reference={
             <button
               className={`btn btn-sm btn-ghost ${
                 isFilterActive && "btn-active"
               }`}
-              {...props}
             >
               <Filter />
             </button>
-          )}
-          floating={({ open, setOpen, props }) => (
-            <Transition
-              show={open}
-              unmount={false}
-              className="transition duration-200"
-              enterFrom="scale-90 opacity-0"
-              enterTo="scale-100 opacity-100"
-              leaveFrom="scale-100 opacity-100"
-              leaveTo="scale-90 opacity-0"
-              {...props}
-            >
-              <ul className="menu rounded p-3 shadow w-48 bg-base-100 text-base-content text-sm">
-                <li>
-                  <button onClick={() => videoSelectModal.setOpen(true)}>
-                    <Video />
-                    Select Video
-                  </button>
-                </li>
-                <li>
-                  <button onClick={() => deckSelectModal.setOpen(true)}>
-                    <Book />
-                    Select Deck
-                  </button>
-                </li>
-                <li>
-                  <Link to={R["/bookmarks"]} onClick={() => setOpen(false)}>
-                    <X />
-                    Clear
-                  </Link>
-                </li>
-              </ul>
-            </Transition>
+          }
+          floating={(context) => (
+            <ul className="menu rounded p-3 w-48 text-sm">
+              <li>
+                <button onClick={() => videoSelectModal.setOpen(true)}>
+                  <Video />
+                  Select Video
+                </button>
+              </li>
+              <li>
+                <button onClick={() => deckSelectModal.setOpen(true)}>
+                  <Book />
+                  Select Deck
+                </button>
+              </li>
+              <li>
+                <Link
+                  to={R["/bookmarks"]}
+                  onClick={() => context.onOpenChange(false)}
+                >
+                  <X />
+                  Clear
+                </Link>
+              </li>
+            </ul>
           )}
         />
       </div>

@@ -32,7 +32,7 @@ import toast from "react-hot-toast";
 import { useSearchParams } from "react-router-dom";
 import { z } from "zod";
 import { Spinner } from "../../components/misc";
-import { Popover } from "../../components/popover";
+import { PopoverSimple } from "../../components/popover";
 import {
   CaptionEntryTable,
   Q,
@@ -731,60 +731,45 @@ function NavBarMenuComponentImpl({
         </Form>
       )}
       <div className="flex-none">
-        <Popover
+        <PopoverSimple
           placement="bottom-end"
-          reference={({ props }) => (
-            <button
-              className="btn btn-sm btn-ghost"
-              data-test="user-menu"
-              {...props}
-            >
+          reference={
+            <button className="btn btn-sm btn-ghost" data-test="user-menu">
               <MoreVertical />
             </button>
-          )}
-          floating={({ open, setOpen, props }) => (
-            <Transition
-              show={open}
-              unmount={false}
-              className="transition duration-200"
-              enterFrom="scale-90 opacity-0"
-              enterTo="scale-100 opacity-100"
-              leaveFrom="scale-100 opacity-100"
-              leaveTo="scale-90 opacity-0"
-              {...props}
-            >
-              <ul className="menu rounded p-3 shadow w-48 bg-base-100 text-base-content text-sm">
-                <li>
-                  <Link
-                    to={R["/videos/new"] + "?videoId=" + video.videoId}
-                    onClick={() => setOpen(false)}
-                  >
-                    Change languages
-                  </Link>
-                </li>
-                <li>
-                  <button onClick={() => toggleAutoScrollState(video.id)}>
-                    Auto scroll
-                    {autoScrollState.includes(video.id) && <Check size={16} />}
-                  </button>
-                </li>
-                <li
-                  className={cls(
-                    repeatingEntries.length === 0 &&
-                      "disabled pointer-events-none"
-                  )}
+          }
+          floating={(context) => (
+            <ul className="menu rounded p-3 shadow w-48 bg-base-100 text-base-content text-sm">
+              <li>
+                <Link
+                  to={R["/videos/new"] + "?videoId=" + video.videoId}
+                  onClick={() => context.onOpenChange(false)}
                 >
-                  <button
-                    onClick={() => {
-                      setRepeatingEntries([]);
-                      setOpen(false);
-                    }}
-                  >
-                    Clear Repeat
-                  </button>
-                </li>
-              </ul>
-            </Transition>
+                  Change languages
+                </Link>
+              </li>
+              <li>
+                <button onClick={() => toggleAutoScrollState(video.id)}>
+                  Auto scroll
+                  {autoScrollState.includes(video.id) && <Check size={16} />}
+                </button>
+              </li>
+              <li
+                className={cls(
+                  repeatingEntries.length === 0 &&
+                    "disabled pointer-events-none"
+                )}
+              >
+                <button
+                  onClick={() => {
+                    setRepeatingEntries([]);
+                    context.onOpenChange(false);
+                  }}
+                >
+                  Clear Repeat
+                </button>
+              </li>
+            </ul>
           )}
         />
       </div>
