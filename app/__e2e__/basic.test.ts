@@ -6,10 +6,9 @@ test("/ => /videos/new", async ({ page }) => {
   await expect(page).toHaveTitle("ytsub-v3");
 
   // Input
-  await page
-    .locator("data-test=search-form >> input >> nth=0")
-    .fill("EnPYXckiUVg");
-  await page.locator("data-test=search-form >> input >> nth=0").press("Enter");
+  await page.getByRole("button").click();
+  await page.getByPlaceholder("Enter Video ID or URL").fill("EnPYXckiUVg");
+  await page.getByPlaceholder("Enter Video ID or URL").press("Enter");
 
   // Navigate to /vides/new
   await expect(page).toHaveURL("/videos/new?videoId=EnPYXckiUVg");
