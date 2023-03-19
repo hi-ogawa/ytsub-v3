@@ -105,8 +105,9 @@ export const unstable_shouldReload: ShouldReloadFunction = ({
 export default function DefaultComponent() {
   useHydrated(); // initialize global hydration state shared via this hook
 
+  // TODO: theme switch
   return (
-    <html lang="en" className="h-full">
+    <html lang="en" className="h-full dark">
       <head>
         <meta charSet="utf-8" />
         <Meta />
@@ -115,7 +116,12 @@ export default function DefaultComponent() {
       </head>
       <body className="h-full">
         {/* TODO: default position="top" is fine? */}
-        <Toaster position="bottom-left" />
+        <Toaster
+          position="bottom-left"
+          toastOptions={{
+            className: "!bg-colorBgElevated !text-colorText",
+          }}
+        />
         {/* escape hatch to close all toasts for e2e test (cf. forceDismissToast in helper.ts) */}
         <button
           data-test="forceDismissToast"
