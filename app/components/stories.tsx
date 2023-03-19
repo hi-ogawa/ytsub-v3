@@ -1,6 +1,6 @@
 import { Transition } from "@headlessui/react";
 import React from "react";
-import { Bookmark, Save, Trash2 } from "react-feather";
+import { Save, Trash2 } from "react-feather";
 import { cls } from "../utils/misc";
 import { VideoComponent } from "./misc";
 import { PopoverSimple } from "./popover";
@@ -137,26 +137,30 @@ export function TestFab() {
 
   return (
     <div className="w-full flex justify-center">
-      <div className="w-full max-w-lg flex flex-col p-2 gap-2">
-        <div>
+      <div className="w-full max-w-lg flex flex-col p-2 gap-2 border">
+        <label className="flex items-center gap-2">
           <input
-            className="toggle"
             type="checkbox"
             checked={checked}
             onChange={() => setChecked(!checked)}
           />
-        </div>
-        <div className="w-80 h-80 border relative">
+          <span>Show/Hide</span>
+        </label>
+        <div className="w-80 h-80 relative">
           <Transition
             show={checked}
-            className="absolute flex gap-3 p-3 transition-all duration-300"
-            enterFrom="scale-[0.3] opacity-0"
+            className="absolute flex gap-3 p-3 transition duration-300"
+            enterFrom="scale-30 opacity-0"
             enterTo="scale-100 opacity-100"
             leaveFrom="scale-100 opacity-100"
-            leaveTo="scale-[0.3] opacity-0"
+            leaveTo="scale-30 opacity-0"
           >
-            <button className="w-12 h-12 rounded-full bg-primary text-primary-content flex justify-center items-center shadow-lg hover:contrast-[0.8] transition-[filter] duration-300">
-              <Bookmark />
+            {/* TODO(upstream): antd-btn-float */}
+            <button className="w-12 h-12 rounded-full antd-btn antd-btn-primary flex justify-center items-center shadow-lg">
+              <span className="i-ri-bookmark-line w-6 h-6" />
+            </button>
+            <button className="w-12 h-12 rounded-full antd-btn antd-btn-ghost flex justify-center items-center shadow-lg">
+              <span className="i-ri-close-line w-6 h-6" />
             </button>
           </Transition>
         </div>
