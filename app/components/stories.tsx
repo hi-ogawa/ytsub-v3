@@ -156,10 +156,10 @@ export function TestFab() {
             leaveTo="scale-30 opacity-0"
           >
             {/* TODO(upstream): antd-btn-float */}
-            <button className="w-12 h-12 rounded-full antd-btn antd-btn-primary flex justify-center items-center shadow-lg">
+            <button className="w-12 h-12 rounded-full antd-btn antd-btn-primary flex justify-center items-center shadow-[var(--antd-boxShadowSecondary)]">
               <span className="i-ri-bookmark-line w-6 h-6" />
             </button>
-            <button className="w-12 h-12 rounded-full antd-btn antd-btn-ghost flex justify-center items-center shadow-lg">
+            <button className="w-12 h-12 rounded-full antd-btn antd-btn-ghost flex justify-center items-center shadow-[var(--antd-boxShadowSecondary)]">
               <span className="i-ri-close-line w-6 h-6" />
             </button>
           </Transition>
