@@ -74,7 +74,7 @@ export default function DefaultComponent() {
           <input
             type="text"
             name="username"
-            className="antd-input"
+            className="antd-input p-1"
             required
             maxLength={USERNAME_MAX_LENGTH}
           />
@@ -84,7 +84,7 @@ export default function DefaultComponent() {
           <input
             type="password"
             name="password"
-            className="antd-input"
+            className="antd-input p-1"
             required
             maxLength={PASSWORD_MAX_LENGTH}
           />
