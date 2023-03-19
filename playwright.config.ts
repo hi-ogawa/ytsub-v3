@@ -1,6 +1,6 @@
-import { PlaywrightTestConfig } from "@playwright/test";
+import { defineConfig } from "@playwright/test";
 
-const config: PlaywrightTestConfig = {
+export default defineConfig({
   testDir: "./app/__e2e__",
   globalSetup: "./app/misc/test-setup-global-e2e.ts",
   use: {
@@ -25,6 +25,4 @@ const config: PlaywrightTestConfig = {
         port: 3001,
         reuseExistingServer: true,
       },
-};
-
-export default config;
+})
