@@ -1,32 +1,31 @@
 import { Transition } from "@headlessui/react";
 import React from "react";
-import {
-  Bookmark,
-  Check,
-  LogOut,
-  Save,
-  Settings,
-  Trash2,
-  User,
-} from "react-feather";
+import { Bookmark, LogOut, Save, Settings, Trash2, User } from "react-feather";
 import { useToggle } from "react-use";
 import { cls } from "../utils/misc";
 import { Spinner, VideoComponent } from "./misc";
 import { PopoverSimple } from "./popover";
 import { PracticeHistoryChart } from "./practice-history-chart";
 
-export function TestDev() {
+export function TestMenu() {
+  const [state, setState] = React.useState(true);
+
   return (
     <div className="p-4 flex flex-col items-center">
-      <ul className="menu rounded p-3 shadow w-48 bg-base-100 text-base-content">
-        <li>
-          <span>Change languages</span>
+      <ul className="flex flex-col gap-2 p-3 w-[200px] bg-colorBgElevated shadow-[var(--antd-boxShadowSecondary)]">
+        <li className="flex">
+          <button className="antd-menu-item flex-1 p-2 flex">
+            Change languages
+          </button>
         </li>
-        <li>
-          <span>
-            Auto scroll
-            <Check />
-          </span>
+        <li className="flex">
+          <button
+            className="antd-menu-item flex-1 p-2 flex gap-2"
+            onClick={() => setState(!state)}
+          >
+            <span>Auto scroll</span>
+            {state && <span className="i-ri-check-line w-5 h-5"></span>}
+          </button>
         </li>
       </ul>
     </div>
@@ -67,43 +66,6 @@ export function TestPopover() {
               </ul>
             }
           />
-        </div>
-      </div>
-    </div>
-  );
-}
-
-export function TestPopoverDaisyUI() {
-  return (
-    <div className="p-4 flex flex-col items-center">
-      <div className="border rounded w-full max-w-sm p-4 flex gap-2">
-        <div>
-          <div className="dropdown dropdown-end">
-            <label
-              tabIndex={0}
-              className="btn btn-sm btn-ghost"
-              data-test="user-menu"
-            >
-              <User />
-            </label>
-            <ul
-              tabIndex={0}
-              className="dropdown-content menu rounded p-3 shadow w-48 bg-base-100 text-base-content"
-            >
-              <li>
-                <a href="">
-                  <Settings />
-                  Account
-                </a>
-              </li>
-              <li>
-                <a href="">
-                  <LogOut />
-                  Sign out
-                </a>
-              </li>
-            </ul>
-          </div>
         </div>
       </div>
     </div>
