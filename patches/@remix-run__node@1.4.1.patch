@@ -1,0 +1,13 @@
+diff --git a/index.js b/index.js
+index a207cbf21aef90a9b8dfaf371cf86e90a0a00b7a..b66f34fa89ba0d0743e250f25d6c25ddaa7faf60 100644
+--- a/index.js
++++ b/index.js
+@@ -29,7 +29,7 @@ function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'defau
+ 
+ var sourceMapSupport__default = /*#__PURE__*/_interopDefaultLegacy(sourceMapSupport);
+ 
+-sourceMapSupport__default["default"].install();
++// sourceMapSupport__default["default"].install();
+ 
+ Object.defineProperty(exports, 'AbortController', {
+   enumerable: true,

@@ -4,6 +4,9 @@ patchedDependencies:
   '@remix-run/dev@1.4.1':
     hash: stojxe6rvkuiyvdec5abatvvv4
     path: patches/@remix-run__dev@1.4.1.patch
+  '@remix-run/node@1.4.1':
+    hash: tutenudqr6qo3f7c7butytgm7m
+    path: patches/@remix-run__node@1.4.1.patch
   '@remix-run/serve@1.4.1':
     hash: yjdvfjiu2lmiptxkd6bjomzlcu
     path: patches/@remix-run__serve@1.4.1.patch
@@ -79,7 +82,7 @@ dependencies:
   '@headlessui/react': 1.7.13_sfoxds7t5ydpegc3knd667wn6m
   '@hiogawa/utils': 1.4.1
   '@hiogawa/utils-react': 1.2.0_react@17.0.2
-  '@remix-run/node': 1.4.1_sfoxds7t5ydpegc3knd667wn6m
+  '@remix-run/node': 1.4.1_tutenudqr6qo3f7c7butytgm7m_sfoxds7t5ydpegc3knd667wn6m
   '@remix-run/react': 1.4.1_sfoxds7t5ydpegc3knd667wn6m
   '@remix-run/server-runtime': 1.4.1_sfoxds7t5ydpegc3knd667wn6m
   '@remix-run/vercel': 1.5.1_k6hruc77s5hpaeubsncsxur3qu
@@ -1162,7 +1165,7 @@ packages:
     peerDependencies:
       express: ^4.17.1
     dependencies:
-      '@remix-run/node': 1.4.1_sfoxds7t5ydpegc3knd667wn6m
+      '@remix-run/node': 1.4.1_tutenudqr6qo3f7c7butytgm7m_sfoxds7t5ydpegc3knd667wn6m
       express: 4.17.3
     transitivePeerDependencies:
       - encoding
@@ -1170,7 +1173,7 @@ packages:
       - react-dom
     dev: true
 
-  /@remix-run/node/1.4.1_sfoxds7t5ydpegc3knd667wn6m:
+  /@remix-run/node/1.4.1_tutenudqr6qo3f7c7butytgm7m_sfoxds7t5ydpegc3knd667wn6m:
     resolution: {integrity: sha512-82nujfiZTt7DyceeTWtKRL0L6QtHZy6WnW0zGFnOW2mjCsG9dA166po8X7026VWTa254BxckJLY9GgF+5957Bw==}
     dependencies:
       '@remix-run/server-runtime': 1.4.1_sfoxds7t5ydpegc3knd667wn6m
@@ -1188,6 +1191,7 @@ packages:
       - encoding
       - react
       - react-dom
+    patched: true
 
   /@remix-run/node/1.5.1_sfoxds7t5ydpegc3knd667wn6m:
     resolution: {integrity: sha512-yl4bd1nl7MiJp4tI3+4ygObeMU3txM4Uo09IdHLRa4NMdBQnacUJ47kqCahny01MerC2JL2d9NPjdVPwRCRZvQ==}
@@ -4812,7 +4816,7 @@ packages:
   /jsonfile/4.0.0:
     resolution: {integrity: sha1-h3Gq4HmbZAdrdmQPygWPnBDjPss=}
     optionalDependencies:
-      graceful-fs: 4.2.9
+      graceful-fs: 4.2.11
     dev: true
 
   /jsonfile/6.1.0:
@@ -4820,7 +4824,7 @@ packages:
     dependencies:
       universalify: 2.0.0
     optionalDependencies:
-      graceful-fs: 4.2.9
+      graceful-fs: 4.2.11
     dev: true
 
   /keyv/4.5.2:
