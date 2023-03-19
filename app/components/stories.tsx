@@ -42,7 +42,7 @@ export function TestPopover() {
               <button
                 className={cls(
                   "antd-btn antd-btn-ghost flex items-center",
-                  context.open && "antd-btn-ghost-active"
+                  context.open && "text-colorPrimaryActive"
                 )}
               >
                 <span className="i-ri-user-line w-6 h-6"></span>
@@ -173,9 +173,9 @@ export function TestSpinner() {
   return (
     <div className="w-full flex justify-center">
       <div className="w-full max-w-lg flex flex-col p-2 gap-2">
-        <div className="antd-spin2 w-10" />
-        <div className="antd-spin2 w-20" />
-        <div className="antd-spin2 w-40" />
+        <div className="antd-spin w-10" />
+        <div className="antd-spin w-20" />
+        <div className="antd-spin w-40" />
       </div>
     </div>
   );

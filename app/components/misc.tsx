@@ -101,7 +101,7 @@ export function VideoComponent({
                 <button
                   className={cls(
                     "antd-btn antd-btn-ghost",
-                    context.open && "antd-btn-ghost-active"
+                    context.open && "text-colorPrimaryActive"
                   )}
                   data-test="video-component-popover-button"
                 >
@@ -120,7 +120,7 @@ export function VideoComponent({
       </div>
       {isLoading && (
         <div className="absolute inset-0 flex justify-center items-center bg-black/[0.2]">
-          <div className="antd-spin2 w-16"></div>
+          <div className="antd-spin w-16"></div>
         </div>
       )}
     </div>
@@ -129,7 +129,7 @@ export function VideoComponent({
 
 // TODO: use antd-spin
 export function Spinner(props: { className: string }) {
-  return <div className={cls("antd-spin2", props.className)} />;
+  return <div className={cls("antd-spin", props.className)} />;
 }
 
 export function PaginationComponent({
