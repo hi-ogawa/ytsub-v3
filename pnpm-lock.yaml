@@ -39,6 +39,7 @@ specifiers:
   '@types/react-dom': ^17.0.11
   '@types/react-transition-group': ^4.4.4
   '@unocss/cli': ^0.50.6
+  '@unocss/reset': ^0.50.6
   '@vercel/node': ^1.15.3
   '@vitejs/plugin-react': ^3.1.0
   '@vitest/coverage-c8': ^0.29.3
@@ -129,6 +130,7 @@ devDependencies:
   '@types/react-dom': 17.0.13
   '@types/react-transition-group': 4.4.4
   '@unocss/cli': 0.50.6
+  '@unocss/reset': 0.50.6
   '@vitejs/plugin-react': 3.1.0_vite@4.2.0
   '@vitest/coverage-c8': 0.29.3_vitest@0.29.3
   autoprefixer: 10.4.2_postcss@8.4.7
@@ -5171,7 +5173,7 @@ packages:
   /jsonfile/4.0.0:
     resolution: {integrity: sha1-h3Gq4HmbZAdrdmQPygWPnBDjPss=}
     optionalDependencies:
-      graceful-fs: 4.2.9
+      graceful-fs: 4.2.11
     dev: true
 
   /jsonfile/6.1.0:
@@ -5179,7 +5181,7 @@ packages:
     dependencies:
       universalify: 2.0.0
     optionalDependencies:
-      graceful-fs: 4.2.9
+      graceful-fs: 4.2.11
     dev: true
 
   /keyv/4.5.2:

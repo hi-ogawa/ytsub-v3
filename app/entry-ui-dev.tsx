@@ -2,7 +2,7 @@ import { tinyassert } from "@hiogawa/utils";
 import ReactDOM from "react-dom";
 import { BrowserRouter, NavLink, Route, Routes } from "react-router-dom";
 import * as stories from "./components/stories";
-import "./styles/main";
+import "./styles/main-vite";
 import { cls } from "./utils/misc";
 
 // based on https://github.com/hi-ogawa/unocss-preset-antd/blob/e2b9f18764cfb466ff9c91871cd1b65a9d006877/packages/app/src/app.tsx

@@ -5,6 +5,7 @@ import {
   Links,
   LiveReload,
   Meta,
+  NavLink,
   Outlet,
   Scripts,
   ShouldReloadFunction,
@@ -12,7 +13,9 @@ import {
   useTransition,
 } from "@remix-run/react";
 import type { LinksFunction, MetaFunction } from "@remix-run/server-runtime";
+import { atom, useAtom } from "jotai";
 import { last } from "lodash";
+import type React from "react";
 import {
   BookOpen,
   Bookmark,
@@ -27,8 +30,9 @@ import {
 } from "react-feather";
 import { Toaster, toast } from "react-hot-toast";
 import { QueryClient, QueryClientProvider } from "react-query";
+import { Drawer } from "./components/drawer";
 import { PopoverSimple } from "./components/popover";
-import { TopProgressBar } from "./components/top-progress-bar";
+import { TopProgressBar, TopProgressBarRemix } from "./components/top-progress-bar";
 import type { UserTable } from "./db/models";
 import { R, R_RE } from "./misc/routes";
 import { publicConfig } from "./utils/config";
@@ -38,19 +42,16 @@ import { getFlashMessages } from "./utils/flash-message";
 import { useFlashMessages } from "./utils/flash-message-hook";
 import { useHydrated } from "./utils/hooks";
 import { RootLoaderData, useRootLoaderData } from "./utils/loader-utils";
+import { cls } from "./utils/misc";
 import type { Match } from "./utils/page-handle";
 
-const ASSETS = {
-  "index.css": require("../build/tailwind/" +
-    process.env.NODE_ENV +
-    "/index.css"),
-  "icon-32.png": require("./assets/icon-32.png"),
-};
-
 export const links: LinksFunction = () => {
+  // prettier-ignore
   return [
-    { rel: "stylesheet", href: ASSETS["index.css"] },
-    { rel: "icon", href: ASSETS["icon-32.png"], sizes: "32x32" },
+    { rel: "stylesheet", href: require("@unocss/reset/tailwind.css") },
+    { rel: "stylesheet", href: require("./styles/antd-reset.css") },
+    { rel: "stylesheet", href: require("../build/tailwind/" + process.env.NODE_ENV + "/index.css") },
+    { rel: "icon", href: require("./assets/icon-32.png"), sizes: "32x32" },
     { rel: "manifest", href: "/_copy/manifest.json" },
   ];
 };
@@ -138,21 +139,19 @@ function Root() {
 
   return (
     <>
-      <GlobalProgress />
-      <SideMenuDrawerWrapper isSignedIn={!!data.currentUser}>
-        <div className="h-full flex flex-col">
-          <Navbar
-            title={navBarTitle?.()}
-            user={data.currentUser}
-            menu={navBarMenu?.()}
-          />
-          <div className="flex-[1_0_0] flex flex-col" data-test="main">
-            <div className="w-full flex-[1_0_0] h-full overflow-y-auto">
-              <Outlet />
-            </div>
+      <TopProgressBarRemix />
+      <div className="h-full flex flex-col">
+        <Navbar
+          title={navBarTitle?.()}
+          user={data.currentUser}
+          menu={navBarMenu?.()}
+        />
+        <div className="flex-[1_0_0] flex flex-col" data-test="main">
+          <div className="w-full flex-[1_0_0] h-full overflow-y-auto">
+            <Outlet />
           </div>
         </div>
-      </SideMenuDrawerWrapper>
+      </div>
       <Scripts />
       <LiveReload />
     </>
@@ -178,25 +177,6 @@ const queryClient = new QueryClient({
   },
 });
 
-function GlobalProgress() {
-  const transition = useTransition();
-  return <TopProgressBar loading={transition.state !== "idle"} />;
-}
-
-const DRAWER_TOGGLE_INPUT_ID = "--drawer-toggle-input--";
-
-function toggleDrawer(open?: boolean): void {
-  const element = document.querySelector<HTMLInputElement>(
-    "#" + DRAWER_TOGGLE_INPUT_ID
-  );
-  if (!element) return;
-  if (open === undefined) {
-    element.checked = !element.checked;
-  } else {
-    element.checked = open;
-  }
-}
-
 function Navbar({
   title,
   user,
@@ -206,21 +186,23 @@ function Navbar({
   user?: UserTable;
   menu?: React.ReactNode;
 }) {
+  const [drawerOpen, setDrawerOpen] = useAtom(drawerOpenAtom);
+
   return (
-    <header className="w-full h-12 flex-none bg-primary text-primary-content flex items-center px-2 md:px-4 py-2 gap-0 md:gap-2 shadow-lg z-10">
-      <div className="flex-none pr-2 md:pr-0">
-        <label
-          className="btn btn-sm btn-ghost"
-          htmlFor={DRAWER_TOGGLE_INPUT_ID}
+    <header className="w-full h-12 flex-none bg-primary text-primary-content flex items-center p-2 px-6 gap-4 shadow-md shadow-black/[0.05]">
+      <div className="flex-none">
+        <button
+          className="antd-btn antd-btn-ghost flex items-center"
+          onClick={() => setDrawerOpen(!drawerOpen)}
         >
           <Menu size={24} />
-        </label>
+        </button>
       </div>
       <div className="flex-1">{title}</div>
       {menu}
       {!user && (
         <div className="flex-none">
-          <Link to={R["/users/signin"]} className="btn btn-sm btn-ghost">
+          <Link to={R["/users/signin"]} className="antd-btn antd-btn-ghost">
             <LogIn data-test="login-icon" />
           </Link>
         </div>
@@ -263,6 +245,38 @@ function Navbar({
           />
         </div>
       )}
+      <Drawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
+        <ul className="flex flex-col gap-2 p-4 w-[280px]">
+          <li>
+            <SearchComponent />
+          </li>
+          {SIDE_MENU_ENTRIES.map((entry) => {
+            const disabled = entry.requireSignin && !user;
+            return (
+              <li
+                key={entry.to}
+                className="flex"
+                title={disabled ? "Signin required" : undefined}
+              >
+                <NavLink
+                  className={({ isActive }) =>
+                    cls(
+                      "antd-menu-item flex-1 p-2 flex items-center gap-4 aria-disabled:cursor-not-allowed aria-disabled:opacity-50",
+                      isActive && "antd-menu-item-active"
+                    )
+                  }
+                  to={entry.to}
+                  aria-disabled={disabled}
+                  onClick={() => setDrawerOpen(false)}
+                >
+                  <entry.icon size={24} />
+                  {entry.title}
+                </NavLink>
+              </li>
+            );
+          })}
+        </ul>
+      </Drawer>
     </header>
   );
 }
@@ -301,66 +315,23 @@ const SIDE_MENU_ENTRIES: SideMenuEntry[] = [
   },
 ];
 
-function SideMenuDrawerWrapper({
-  isSignedIn,
-  children,
-}: React.PropsWithChildren<{ isSignedIn: boolean }>) {
-  // TODO: initial render shows open drawer?
-  return (
-    <div className="drawer h-screen w-full">
-      <input
-        className="drawer-toggle"
-        type="checkbox"
-        id={DRAWER_TOGGLE_INPUT_ID}
-      />
-      <div className="drawer-content">{children}</div>
-      <div className="drawer-side">
-        <label className="drawer-overlay" htmlFor={DRAWER_TOGGLE_INPUT_ID} />
-        <ul className="menu p-4 w-64 bg-base-100 text-base-content">
-          <li className="disabled block">
-            <SearchComponent />
-          </li>
-          {SIDE_MENU_ENTRIES.map((entry) => {
-            const disabled = entry.requireSignin && !isSignedIn;
-            return (
-              <li
-                key={entry.to}
-                className={`${disabled && "disabled"}`}
-                title={disabled ? "Signin required" : undefined}
-              >
-                <Link
-                  to={entry.to}
-                  onClick={() => toggleDrawer(false)}
-                  // workaround to refresh root loader for flush message
-                  reloadDocument={disabled}
-                >
-                  <entry.icon size={28} className="pr-2" />
-                  {entry.title}
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
-      </div>
-    </div>
-  );
-}
-
 function SearchComponent() {
+  const [, setDrawerOpen] = useAtom(drawerOpenAtom);
+
   return (
     <Form
       className="w-full"
       action={R["/videos/new"]}
       method="get"
-      onSubmit={() => toggleDrawer(false)}
+      onSubmit={() => setDrawerOpen(false)}
       data-test="search-form"
     >
       <label className="w-full relative text-base-content flex items-center">
-        <Search size={26} className="absolute text-gray-400 pl-2" />
+        <Search size={26} className="absolute text-colorTextSecondary pl-3" />
         <input
           type="text"
           name="videoId"
-          className="w-full input input-sm input-bordered pl-8"
+          className="w-full antd-input p-2 pl-9"
           placeholder="Enter Video ID or URL"
           required
         />
@@ -368,3 +339,9 @@ function SearchComponent() {
     </Form>
   );
 }
+
+//
+// page local state
+//
+
+const drawerOpenAtom = atom(false);
