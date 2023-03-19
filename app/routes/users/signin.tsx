@@ -92,7 +92,7 @@ export default function DefaultComponent() {
         <div className="flex flex-col gap-1">
           <button
             type="submit"
-            className="antd-btn antd-btn-primary"
+            className="antd-btn antd-btn-primary p-1"
             disabled={!isValid}
           >
             Sign in

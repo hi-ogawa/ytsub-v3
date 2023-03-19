@@ -218,9 +218,10 @@ function Navbar({
               </button>
             }
             floating={(context) => (
-              <ul className="menu rounded p-3 shadow w-48 bg-base-100 text-base-content text-sm">
+              <ul className="flex flex-col items-stretch gap-2 p-2 w-[180px] text-sm">
                 <li>
                   <Link
+                    className="antd-menu-item flex items-center gap-2 p-2"
                     to={R["/users/me"]}
                     onClick={() => context.onOpenChange(false)}
                   >
@@ -228,19 +229,22 @@ function Navbar({
                     Account
                   </Link>
                 </li>
-                <Form
-                  method="post"
-                  action={R["/users/signout"]}
-                  data-test="signout-form"
-                  onClick={() => context.onOpenChange(false)}
-                >
-                  <li>
-                    <button type="submit" className="flex gap-3">
+                <li>
+                  <Form
+                    method="post"
+                    action={R["/users/signout"]}
+                    data-test="signout-form"
+                    onClick={() => context.onOpenChange(false)}
+                  >
+                    <button
+                      type="submit"
+                      className="w-full antd-menu-item flex items-center gap-2 p-2"
+                    >
                       <LogOut />
                       Sign out
                     </button>
-                  </li>
-                </Form>
+                  </Form>
+                </li>
               </ul>
             )}
           />
