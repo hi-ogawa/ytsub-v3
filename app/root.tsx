@@ -196,7 +196,7 @@ function Navbar({
   const [drawerOpen, setDrawerOpen] = useAtom(drawerOpenAtom);
 
   return (
-    <header className="w-full h-12 flex-none bg-primary text-primary-content flex items-center p-2 px-6 gap-4 shadow-md shadow-black/[0.05]">
+    <header className="w-full h-12 flex-none bg-primary text-primary-content flex items-center p-2 px-6 gap-4 shadow-md shadow-black/[0.05] dark:shadow-black/[0.7]">
       <div className="flex-none">
         <button
           className="antd-btn antd-btn-ghost flex items-center"
