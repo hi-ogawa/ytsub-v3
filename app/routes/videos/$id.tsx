@@ -710,7 +710,6 @@ function NavBarMenuComponentImpl({
   const [autoScrollState, toggleAutoScrollState] = useAutoScrollState();
   const [repeatingEntries, setRepeatingEntries] = useRepeatingEntries();
 
-  // TODO: refactor too much copy-paste of `Popover` from `NavBar` in `root.tsx`
   return (
     <>
       {user && user.id !== video.userId && (
