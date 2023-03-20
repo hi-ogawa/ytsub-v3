@@ -372,6 +372,7 @@ function PageComponent({
               </button>
             </div>
             <button
+              data-test="new-bookmark-button"
               className="antd-btn !antd-btn-primary antd-floating w-12 h-12 rounded-full flex justify-center items-center"
               onClick={onClickBookmark}
             >
