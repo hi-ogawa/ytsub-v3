@@ -5,7 +5,6 @@ import { redirect } from "@remix-run/server-runtime";
 import type { ECharts } from "echarts";
 import { range } from "lodash";
 import React from "react";
-import { ChevronsLeft, ChevronsRight } from "react-feather";
 import { z } from "zod";
 import {
   PracticeHistoryChart,
@@ -17,6 +16,7 @@ import { R } from "../../../misc/routes";
 import { Controller, makeLoader } from "../../../utils/controller-utils";
 import { useDeserialize, useHydrated } from "../../../utils/hooks";
 import { useLeafLoaderData } from "../../../utils/loader-utils";
+import { cls } from "../../../utils/misc";
 import type { PageHandle } from "../../../utils/page-handle";
 import { Timedelta } from "../../../utils/timedelta";
 import { formatYmd } from "../../../utils/timezone";
@@ -135,7 +135,7 @@ export default function DefaultComponent() {
 
   return (
     <div className="w-full flex justify-center">
-      <div className="w-full max-w-lg flex flex-col gap-2">
+      <div className="w-full max-w-lg flex flex-col gap-3 mt-2">
         <div className="relative w-full h-[300px]">
           <PracticeHistoryChart
             data={data}
@@ -144,7 +144,7 @@ export default function DefaultComponent() {
           />
           <Transition
             show={isLoading}
-            className="transition duration-100 z-50 absolute inset-0 flex justify-center items-center bg-white/[0.5]"
+            className="transition duration-500 absolute inset-0 flex justify-center items-center bg-colorBgContainer"
             enterFrom="opacity-0"
             enterTo="opacity-100"
             leaveFrom="opacity-100"
@@ -154,26 +154,21 @@ export default function DefaultComponent() {
           </Transition>
         </div>
         <div className="w-full flex justify-center">
-          <div className="btn-group shadow-xl" data-test="pagination">
+          <div className="flex items-center gap-2 px-2 py-1">
             <Link
               to={"?" + toQuery({ page: page + 1 })}
               onClick={onClickPage}
-              className="btn btn-xs no-animation"
-            >
-              <ChevronsLeft size={14} />
-            </Link>
-            <div className="bg-neutral text-neutral-content font-semibold text-xs flex justify-center items-center px-2">
-              {formatPage(page)}
-            </div>
+              className="antd-btn antd-btn-ghost i-ri-play-mini-fill w-4 h-4 rotate-[180deg]"
+            />
+            <div className="text-sm px-2">{formatPage(page)}</div>
             <Link
               to={"?" + toQuery({ page: page - 1 })}
               onClick={onClickPage}
-              className={`btn btn-xs no-animation ${
-                page === 0 && "btn-disabled"
-              }`}
-            >
-              <ChevronsRight size={14} />
-            </Link>
+              className={cls(
+                "antd-btn antd-btn-ghost i-ri-play-mini-fill w-4 h-4",
+                page === 0 && "text-colorTextDisabled pointer-events-none"
+              )}
+            />
           </div>
         </div>
       </div>
