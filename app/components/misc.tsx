@@ -94,7 +94,7 @@ export function VideoComponent({
           {author}
         </a>
         {actions && (
-          <div className="absolute right-1 bottom-1 z-10">
+          <div className="absolute right-1 bottom-1">
             <PopoverSimple
               placement="bottom-end"
               reference={(context) => (

@@ -258,22 +258,23 @@ function AddToDeckComponent({
     <div className="flex flex-col gap-2 p-4" data-test="add-to-deck-component">
       <div className="text-lg">Select a Deck</div>
       {data && !isLoading ? (
-        <ul className="menu">
+        <ul className="flex flex-col gap-2">
           {data.decks.map((deck) => (
             <li key={deck.id}>
               <button
-                className="flex rounded"
+                className="w-full antd-menu-item p-2 flex items-center"
                 onClick={() => onClickPlus(deck)}
               >
                 <div className="grow flex">{deck.name}</div>
-                <PlusSquare className="flex-none text-gray-700" size={18} />
+                <div className="flex-1"></div>
+                <PlusSquare size={18} />
               </button>
             </li>
           ))}
         </ul>
       ) : (
         <div className="flex justify-center p-2">
-          <Spinner className="w-20 h-20" />
+          <div className="antd-spin w-20"></div>
         </div>
       )}
     </div>
