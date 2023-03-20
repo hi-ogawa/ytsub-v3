@@ -67,7 +67,6 @@ specifiers:
   qs: ^6.10.3
   react: ^17.0.2
   react-dom: ^17.0.2
-  react-feather: ^2.0.9
   react-hot-toast: ^2.4.0
   react-query: ^3.34.18
   react-remove-scroll: ^2.5.5
@@ -104,7 +103,6 @@ dependencies:
   qs: 6.10.3
   react: 17.0.2
   react-dom: 17.0.2_react@17.0.2
-  react-feather: 2.0.9_react@17.0.2
   react-hot-toast: 2.4.0_sfoxds7t5ydpegc3knd667wn6m
   react-query: 3.34.18_sfoxds7t5ydpegc3knd667wn6m
   react-remove-scroll: 2.5.5_udcsdvdzjr5ns727jqoeu7kyda
@@ -6783,14 +6781,6 @@ packages:
         optional: true
     dev: true
 
-  /prop-types/15.8.1:
-    resolution: {integrity: sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg==}
-    dependencies:
-      loose-envify: 1.4.0
-      object-assign: 4.1.1
-      react-is: 16.13.1
-    dev: false
-
   /property-information/6.2.0:
     resolution: {integrity: sha512-kma4U7AFCTwpqq5twzC1YVIDXSqg6qQK6JN0smOw8fgRy1OkMi0CYSzFmsy6dnqSenamAtj0CyXMUJ1Mf6oROg==}
     dev: true
@@ -6885,15 +6875,6 @@ packages:
       react: 17.0.2
       scheduler: 0.20.2
 
-  /react-feather/2.0.9_react@17.0.2:
-    resolution: {integrity: sha512-yMfCGRkZdXwIs23Zw/zIWCJO3m3tlaUvtHiXlW+3FH7cIT6fiK1iJ7RJWugXq7Fso8ZaQyUm92/GOOHXvkiVUw==}
-    peerDependencies:
-      react: ^16.8.6 || ^17
-    dependencies:
-      prop-types: 15.8.1
-      react: 17.0.2
-    dev: false
-
   /react-hot-toast/2.4.0_sfoxds7t5ydpegc3knd667wn6m:
     resolution: {integrity: sha512-qnnVbXropKuwUpriVVosgo8QrB+IaPJCpL8oBI6Ov84uvHZ5QQcTp2qg6ku2wNfgJl6rlQXJIQU5q+5lmPOutA==}
     engines: {node: '>=10'}
@@ -6906,10 +6887,6 @@ packages:
       react-dom: 17.0.2_react@17.0.2
     transitivePeerDependencies:
       - csstype
-    dev: false
-
-  /react-is/16.13.1:
-    resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
     dev: false
 
   /react-is/17.0.2:
