@@ -6,7 +6,6 @@ import {
 } from "@remix-run/react";
 import { json, redirect } from "@remix-run/server-runtime";
 import React from "react";
-import { HelpCircle } from "react-feather";
 import toast from "react-hot-toast";
 import { z } from "zod";
 import { PopoverSimple } from "../../components/popover";
@@ -138,14 +137,15 @@ export default function DefaultComponent() {
               />
             </label>
             <div className="flex flex-col gap-1">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1">
                 <div>Timezone</div>
                 <PopoverSimple
                   placement="top"
                   reference={
-                    <button type="button" className="antd-btn antd-btn-ghost">
-                      <HelpCircle size={16} />
-                    </button>
+                    <button
+                      type="button"
+                      className="antd-btn antd-btn-ghost i-ri-question-line w-4 h-4"
+                    />
                   }
                   floating={
                     <div className="p-3 text-sm">

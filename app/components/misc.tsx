@@ -1,6 +1,5 @@
 import { Link } from "@remix-run/react";
 import type React from "react";
-import { Bookmark, MoreVertical } from "react-feather";
 import type { PaginationMetadata, VideoTable } from "../db/models";
 import { R } from "../misc/routes";
 import { cls } from "../utils/misc";
@@ -69,7 +68,7 @@ export function VideoComponent({
           >
             <div className="flex justify-center items-center gap-1">
               <div>{bookmarkEntriesCount}</div>
-              <Bookmark size={12} />
+              <span className="i-ri-bookmark-line w-3 h-3"></span>
             </div>
           </Link>
         )}
@@ -93,13 +92,11 @@ export function VideoComponent({
               reference={(context) => (
                 <button
                   className={cls(
-                    "antd-btn antd-btn-ghost",
+                    "antd-btn antd-btn-ghost i-ri-more-2-line w-5 h-5",
                     context.open && "text-colorPrimaryActive"
                   )}
                   data-test="video-component-popover-button"
-                >
-                  <MoreVertical size={20} />
-                </button>
+                />
               )}
               floating={
                 <ul className="flex flex-col gap-2 p-2 w-48 text-sm">

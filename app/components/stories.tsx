@@ -1,6 +1,5 @@
 import { Transition } from "@headlessui/react";
 import React from "react";
-import { Save, Trash2 } from "react-feather";
 import { cls } from "../utils/misc";
 import { VideoComponent } from "./misc";
 import { PopoverSimple } from "./popover";
@@ -128,15 +127,15 @@ export function TestVideoComponent() {
           }}
           actions={
             <>
-              <li className="flex">
-                <button className="antd-menu-item flex-1 p-2 flex items-center gap-2">
-                  <Save />
+              <li>
+                <button className="w-full antd-menu-item flex-1 p-2 flex items-center gap-2">
+                  <span className="i-ri-save-line w-5 h-5"></span>
                   Save
                 </button>
               </li>
-              <li className="flex">
-                <button className="antd-menu-item flex-1 p-2 flex items-center gap-2">
-                  <Trash2 />
+              <li>
+                <button className="w-full antd-menu-item flex-1 p-2 flex items-center gap-2">
+                  <span className="i-ri-delete-bin-line w-5 h-5"></span>
                   Delete
                 </button>
               </li>
