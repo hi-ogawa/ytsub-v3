@@ -18,7 +18,6 @@ import {
 import { atom, useAtom } from "jotai";
 import { atomWithStorage } from "jotai/utils";
 import React from "react";
-import { MoreVertical, Play, Repeat, Save, Video } from "react-feather";
 import toast from "react-hot-toast";
 import { useSearchParams } from "react-router-dom";
 import { z } from "zod";
@@ -603,33 +602,29 @@ export function CaptionEntryComponent({
       ref={virtualizer?.measureElement}
       data-index={virtualItem?.index}
     >
-      <div className="flex items-center justify-end text-colorTextSecondary">
+      <div className="flex items-center justify-end text-colorTextSecondary gap-2">
         <div>{timestamp}</div>
         {!isNil(videoId) && (
           <Link
             to={R["/videos/$id"](videoId) + `?index=${entry.index}`}
-            className={`ml-2 btn btn-xs btn-circle btn-ghost`}
+            className="antd-btn antd-btn-ghost i-ri-vidicon-line w-4 h-4"
             data-test="caption-entry-component__video-link"
-          >
-            <Video size={14} />
-          </Link>
+          />
         )}
-        <div
-          className={`ml-2 antd-btn antd-btn-ghost ${
+        <button
+          className={cls(
+            `antd-btn antd-btn-ghost i-ri-repeat-line w-3 h-3`,
             isRepeating && "text-colorPrimary"
-          }`}
+          )}
           onClick={() => onClickEntryRepeat(entry)}
-        >
-          <Repeat size={14} />
-        </div>
-        <div
-          className={`ml-2 antd-btn antd-btn-ghost ${
+        />
+        <button
+          className={cls(
+            `antd-btn antd-btn-ghost i-ri-play-line w-4 h-4`,
             isEntryPlaying && "text-colorPrimary"
-          }`}
+          )}
           onClick={() => onClickEntryPlay(entry, false)}
-        >
-          <Play size={14} />
-        </div>
+        />
       </div>
       <div
         className="flex cursor-pointer"
@@ -702,7 +697,11 @@ function NavBarMenuComponentImpl({
   return (
     <>
       {user && user.id !== video.userId && (
-        <Form method="post" action={R["/videos/new"]} className="flex-none">
+        <Form
+          method="post"
+          action={R["/videos/new"]}
+          className="flex items-center"
+        >
           {/* prettier-ignore */}
           <>
             <input readOnly hidden name="videoId" value={video.videoId} />
@@ -711,24 +710,26 @@ function NavBarMenuComponentImpl({
             <input readOnly hidden name="language2.id" value={video.language2_id} />
             <input readOnly hidden name="language2.translation" value={video.language2_translation ?? ""} />
           </>
-          <button type="submit" className="btn btn-sm btn-ghost">
-            <Save />
-          </button>
+          <button
+            type="submit"
+            className="antd-btn antd-btn-ghost i-ri-save-line w-6 h-6"
+          />
         </Form>
       )}
-      <div className="flex-none flex items-center">
+      <div className="flex items-center">
         <PopoverSimple
           placement="bottom-end"
           reference={
-            <button className="antd-btn antd-btn-ghost" data-test="user-menu">
-              <MoreVertical />
-            </button>
+            <button
+              className="antd-btn antd-btn-ghost i-ri-more-2-line w-6 h-6"
+              data-test="user-menu"
+            />
           }
           floating={(context) => (
             <ul className="flex flex-col gap-2 p-2 w-[180px] text-sm">
               <li>
                 <Link
-                  className="block antd-menu-item p-2"
+                  className="w-full antd-menu-item p-2 flex"
                   to={R["/videos/new"] + "?videoId=" + video.videoId}
                   onClick={() => context.onOpenChange(false)}
                 >

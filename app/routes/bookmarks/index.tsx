@@ -5,7 +5,6 @@ import { Link, useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import { omit } from "lodash";
 import React from "react";
-import { Book, Filter, Play, Video, X } from "react-feather";
 import { z } from "zod";
 import { PaginationComponent } from "../../components/misc";
 import { useModal } from "../../components/modal";
@@ -214,16 +213,16 @@ export function BookmarkEntryComponent({
           {bookmarkEntry.text}
         </div>
         {showAutoplay && (
-          <button className="antd-btn antd-btn-ghost" onClick={onClickAutoPlay}>
-            <Play size={16} />
-          </button>
+          <button
+            className="antd-btn antd-btn-ghost i-ri-play-line w-5 h-5"
+            onClick={onClickAutoPlay}
+          />
         )}
         {/* TODO: ability to delete */}
-        {false && (
-          <button className="antd-btn antd-btn-ghost" onClick={() => {}}>
-            <X size={16} />
-          </button>
-        )}
+        <button
+          className="antd-btn antd-btn-ghost i-ri-close-line w-5 h-5 hidden"
+          onClick={() => {}}
+        />
       </div>
       {open && (
         <MiniPlayer
@@ -359,18 +358,16 @@ function NavBarMenuComponent() {
 
   return (
     <>
-      <div className="flex-none">
+      <div className="flex items-center">
         <PopoverSimple
           placement="bottom-end"
           reference={
             <button
               className={cls(
-                "antd-btn antd-btn-ghost flex items-center",
+                "antd-btn antd-btn-ghost i-ri-filter-line w-6 h-6",
                 isFilterActive && "text-colorPrimary"
               )}
-            >
-              <Filter />
-            </button>
+            />
           }
           floating={(context) => (
             <ul className="flex flex-col gap-2 p-2 w-[160px] text-sm">
@@ -379,7 +376,7 @@ function NavBarMenuComponent() {
                   className="w-full antd-menu-item flex items-center gap-2 p-2"
                   onClick={() => videoSelectModal.setOpen(true)}
                 >
-                  <Video />
+                  <span className="i-ri-vidicon-line w-5 h-5"></span>
                   Select Video
                 </button>
               </li>
@@ -388,7 +385,7 @@ function NavBarMenuComponent() {
                   className="w-full antd-menu-item flex items-center gap-2 p-2"
                   onClick={() => deckSelectModal.setOpen(true)}
                 >
-                  <Book />
+                  <span className="i-ri-book-line w-5 h-5"></span>
                   Select Deck
                 </button>
               </li>
@@ -398,7 +395,7 @@ function NavBarMenuComponent() {
                   to={R["/bookmarks"]}
                   onClick={() => context.onOpenChange(false)}
                 >
-                  <X />
+                  <span className="i-ri-close-line w-5 h-5"></span>
                   Clear
                 </Link>
               </li>
