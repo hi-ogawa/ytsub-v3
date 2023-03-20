@@ -11,7 +11,7 @@ export function TestMenu() {
 
   return (
     <div className="p-4 flex flex-col items-center">
-      <ul className="flex flex-col gap-2 p-3 w-[200px] bg-colorBgElevated shadow-[var(--antd-boxShadowSecondary)]">
+      <ul className="flex flex-col gap-2 p-3 w-[200px] antd-floating">
         <li className="flex">
           <button className="antd-menu-item flex-1 p-2 flex">
             Change languages
@@ -185,11 +185,10 @@ export function TestFab() {
             leaveFrom="scale-100 opacity-100"
             leaveTo="scale-30 opacity-0"
           >
-            {/* TODO(upstream): antd-btn-float */}
-            <button className="w-12 h-12 rounded-full antd-btn antd-btn-primary flex justify-center items-center shadow-[var(--antd-boxShadowSecondary)]">
+            <button className="antd-btn !antd-btn-primary antd-floating w-12 h-12 rounded-full flex justify-center items-center">
               <span className="i-ri-bookmark-line w-6 h-6" />
             </button>
-            <button className="w-12 h-12 rounded-full antd-btn antd-btn-ghost flex justify-center items-center shadow-[var(--antd-boxShadowSecondary)]">
+            <button className="antd-btn antd-btn-text antd-floating w-12 h-12 rounded-full flex justify-center items-center">
               <span className="i-ri-close-line w-6 h-6" />
             </button>
           </Transition>

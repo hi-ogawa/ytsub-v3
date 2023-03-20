@@ -133,7 +133,7 @@ export function PaginationComponent({
   return (
     <div
       data-test="pagination"
-      className="flex items-center gap-2 bg-colorBgElevated shadow-[var(--antd-boxShadowSecondary)] px-2 py-1"
+      className="antd-floating flex items-center gap-2 px-2 py-1"
     >
       <Link
         className="antd-btn antd-btn-ghost flex items-center"

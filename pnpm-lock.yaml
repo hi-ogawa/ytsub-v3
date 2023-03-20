@@ -16,7 +16,7 @@ specifiers:
   '@floating-ui/react': ^0.21.1
   '@headlessui/react': ^1.7.13
   '@hiogawa/isort-ts': 1.0.0-pre.11
-  '@hiogawa/unocss-preset-antd': 2.1.0-pre.1
+  '@hiogawa/unocss-preset-antd': 2.1.0-pre.3
   '@hiogawa/utils': ^1.4.1
   '@hiogawa/utils-react': ^1.2.0
   '@iconify-json/ri': ^1.1.5
@@ -115,7 +115,7 @@ dependencies:
 
 devDependencies:
   '@hiogawa/isort-ts': 1.0.0-pre.11_silln3pw57har7jydmecgzoypa
-  '@hiogawa/unocss-preset-antd': 2.1.0-pre.1_unocss@0.50.6
+  '@hiogawa/unocss-preset-antd': 2.1.0-pre.3_unocss@0.50.6
   '@iconify-json/ri': 1.1.5
   '@playwright/test': 1.31.2
   '@remix-run/dev': 1.4.1_stojxe6rvkuiyvdec5abatvvv4_sfoxds7t5ydpegc3knd667wn6m
@@ -1016,8 +1016,8 @@ packages:
       typescript: 4.9.5
     dev: true
 
-  /@hiogawa/unocss-preset-antd/2.1.0-pre.1_unocss@0.50.6:
-    resolution: {integrity: sha512-i2iFRTAyZYFAgrRPNANFUaDklxD07aAJHHJrGlyH2Z8A22oKWqsKL5d3kOoV74z8Q8D+a/qzzDXoDrSTHlolgA==}
+  /@hiogawa/unocss-preset-antd/2.1.0-pre.3_unocss@0.50.6:
+    resolution: {integrity: sha512-41vgnONaEQeIcA1Kpx+CXJ9Y3H2wFQ1ojcsvgD25BfxZyA0aIVVhcB3vHp1vKxe9TA9LekMSKLdHbGO3rCiEpA==}
     peerDependencies:
       '@unocss/preset-uno': '*'
       unocss: '*'
