@@ -3,10 +3,10 @@ set -eux -o pipefail
 
 # cleanup
 rm -rf build/remix/production
-rm -rf build/tailwind/production
+rm -rf build/css/production
 
-# tailwind
-NODE_ENV=production pnpm tailwind
+# css
+NODE_ENV=production pnpm build:css
 
 # copy assets not managed by remix
 NODE_ENV=production bash scripts/copy-assets.sh
