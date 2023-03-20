@@ -7,6 +7,18 @@
       content="width=device-width, height=device-height, initial-scale=1"
     />
     <title>UI DEV</title>
+    <script>
+      // apply theme as early as possible
+      // prettier-ignore
+      (() => {
+        globalThis.__themeStorageKey = "ytsub:theme";
+        const theme = window.localStorage.getItem(__themeStorageKey) || "system";
+        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)");
+        const isDark = theme === "dark" || (theme === "system" && prefersDark.matches);
+        document.documentElement.classList.remove("dark", "light");
+        document.documentElement.classList.add(isDark ? "dark" : "light");
+      })();
+    </script>
   </head>
   <body class="h-full">
     <div id="root" class="h-full"></div>

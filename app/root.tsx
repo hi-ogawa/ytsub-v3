@@ -31,6 +31,7 @@ import { Toaster, toast } from "react-hot-toast";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { Drawer } from "./components/drawer";
 import { PopoverSimple } from "./components/popover";
+import { ThemeSelect } from "./components/theme-select";
 import { TopProgressBarRemix } from "./components/top-progress-bar";
 import type { UserTable } from "./db/models";
 import { R, R_RE } from "./misc/routes";
@@ -102,14 +103,14 @@ export const unstable_shouldReload: ShouldReloadFunction = ({
 export default function DefaultComponent() {
   useHydrated(); // initialize global hydration state shared via this hook
 
-  // TODO: theme switch
   return (
-    <html lang="en" className="h-full dark">
+    <html lang="en" className="h-full" suppressHydrationWarning>
       <head>
         <meta charSet="utf-8" />
         <Meta />
         <Links />
         <ConfigPlaceholder />
+        <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }}></script>
       </head>
       <body className="h-full">
         {/* TODO: default position="top" is fine? */}
@@ -132,6 +133,19 @@ export default function DefaultComponent() {
     </html>
   );
 }
+
+const THEME_SCRIPT = `
+// apply theme as early as possible
+// prettier-ignore
+(() => {
+  globalThis.__themeStorageKey = "ytsub:theme";
+  const theme = window.localStorage.getItem(__themeStorageKey) || "system";
+  const prefersDark = window.matchMedia("(prefers-color-scheme: dark)");
+  const isDark = theme === "dark" || (theme === "system" && prefersDark.matches);
+  document.documentElement.classList.remove("dark", "light");
+  document.documentElement.classList.add(isDark ? "dark" : "light");
+})();
+`;
 
 function Root() {
   const data = useRootLoaderData();
@@ -254,7 +268,7 @@ function Navbar({
         </div>
       )}
       <Drawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-        <ul className="flex flex-col gap-3 p-4 w-[280px]">
+        <ul className="flex flex-col gap-3 p-4 w-[280px] h-full">
           <li>
             <SearchComponent />
           </li>
@@ -283,6 +297,9 @@ function Navbar({
               </li>
             );
           })}
+          <li className="pt-2">
+            <ThemeSelect />
+          </li>
         </ul>
       </Drawer>
     </header>

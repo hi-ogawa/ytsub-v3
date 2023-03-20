@@ -3,6 +3,7 @@ import { tinyassert } from "@hiogawa/utils";
 import ReactDOM from "react-dom";
 import { BrowserRouter, NavLink, Route, Routes } from "react-router-dom";
 import * as stories from "./components/stories";
+import { ThemeSelect } from "./components/theme-select";
 import { cls } from "./utils/misc";
 
 // based on https://github.com/hi-ogawa/unocss-preset-antd/blob/e2b9f18764cfb466ff9c91871cd1b65a9d006877/packages/app/src/app.tsx
@@ -14,8 +15,10 @@ function Root() {
   return (
     <BrowserRouter>
       <div className="h-full w-full flex flex-col">
-        <header className="flex-none flex items-center p-2 px-4 shadow-md shadow-black/[0.05]">
+        <header className="flex-none flex items-center p-2 px-4 shadow-md shadow-black/[0.05] dark:shadow-black/[0.7]">
           <h1 className="text-xl">UI DEV</h1>
+          <div className="flex-1"></div>
+          <ThemeSelect />
         </header>
         <div className="flex-1 flex">
           <div className="flex-none p-2 overflow-y-auto mr-2 border-r">
