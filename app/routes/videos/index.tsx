@@ -4,10 +4,7 @@ import { redirect } from "@remix-run/server-runtime";
 import React from "react";
 import { PlusSquare, Trash2 } from "react-feather";
 import toast from "react-hot-toast";
-import {
-  PaginationComponent,
-  VideoComponent,
-} from "../../components/misc";
+import { PaginationComponent, VideoComponent } from "../../components/misc";
 import { useModal } from "../../components/modal";
 import {
   DeckTable,
