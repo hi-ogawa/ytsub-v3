@@ -1,18 +1,11 @@
+import { Transition } from "@headlessui/react";
 import { isNil } from "@hiogawa/utils";
 import { useRafLoop } from "@hiogawa/utils-react";
 import { Link, useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import { omit } from "lodash";
 import React from "react";
-import {
-  Book,
-  ChevronDown,
-  ChevronUp,
-  Filter,
-  Play,
-  Video,
-  X,
-} from "react-feather";
+import { Book, ChevronDown, Filter, Play, Video, X } from "react-feather";
 import { z } from "zod";
 import { PaginationComponent } from "../../components/misc";
 import { useModal } from "../../components/modal";
@@ -30,6 +23,7 @@ import { useToById } from "../../utils/by-id";
 import { Controller, makeLoader } from "../../utils/controller-utils";
 import { useDeserialize } from "../../utils/hooks";
 import { useLeafLoaderData } from "../../utils/loader-utils";
+import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 import { PAGINATION_PARAMS_SCHEMA } from "../../utils/pagination";
 import type { CaptionEntry } from "../../utils/types";
@@ -198,42 +192,34 @@ export function BookmarkEntryComponent({
   }
 
   return (
-    <div
-      className="border border-gray-200 flex flex-col"
-      data-test="bookmark-entry"
-    >
+    <div className="border flex flex-col" data-test="bookmark-entry">
       <div
-        className={`flex items-center p-2 gap-2 ${
-          open && "border-b border-gray-200 border-dashed"
-        }`}
+        className={cls(
+          "flex items-center p-2 gap-2",
+          open && "border-b border-dashed"
+        )}
       >
         <button
-          className="flex-none btn btn-xs btn-circle btn-ghost text-gray-500"
+          className={cls("antd-btn antd-btn-ghost", open && "rotate-180")}
           onClick={() => setOpen(!open)}
         >
-          {open ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+          <ChevronDown size={16} />
         </button>
         <div
-          className="grow text-sm cursor-pointer"
+          className="flex-1 text-sm cursor-pointer"
           onClick={() => setOpen(!open)}
           data-test="bookmark-entry-text"
         >
           {bookmarkEntry.text}
         </div>
         {showAutoplay && (
-          <button
-            className="flex-none btn btn-xs btn-circle btn-ghost text-gray-500"
-            onClick={onClickAutoPlay}
-          >
+          <button className="antd-btn antd-btn-ghost" onClick={onClickAutoPlay}>
             <Play size={16} />
           </button>
         )}
         {/* TODO: ability to delete */}
         {false && (
-          <button
-            className="flex-none btn btn-xs btn-circle btn-ghost text-gray-500"
-            onClick={() => {}}
-          >
+          <button className="antd-btn antd-btn-ghost" onClick={() => {}}>
             <X size={16} />
           </button>
         )}
@@ -329,7 +315,6 @@ export function MiniPlayer({
 
   return (
     <div className="w-full flex flex-col items-center p-2 pt-0 gap-2">
-      {/* TODO: highlight bookmark text? */}
       <CaptionEntryComponent
         entry={captionEntry}
         currentEntry={captionEntry}
@@ -341,15 +326,20 @@ export function MiniPlayer({
         border={false}
         highlight={highlight}
       />
-      <div className={`relative w-full ${playerLoading && "bg-gray-100"}`}>
+      <div className="relative w-full">
         <div className="relative pt-[56.2%]">
           <div className="absolute top-0 w-full h-full" ref={playerRef} />
         </div>
-        {playerLoading && (
+        <Transition
+          show={playerLoading}
+          className="duration-500 absolute inset-0 bg-black/[0.5]"
+          leaveFrom="opacity-100"
+          leaveTo="opacity-0"
+        >
           <div className="absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%]">
             <div className="antd-spin w-20" />
           </div>
-        )}
+        </Transition>
       </div>
     </div>
   );
@@ -373,29 +363,37 @@ function NavBarMenuComponent() {
           placement="bottom-end"
           reference={
             <button
-              className={`btn btn-sm btn-ghost ${
-                isFilterActive && "btn-active"
-              }`}
+              className={cls(
+                "antd-btn antd-btn-ghost flex items-center",
+                isFilterActive && "text-colorPrimary"
+              )}
             >
               <Filter />
             </button>
           }
           floating={(context) => (
-            <ul className="menu rounded p-3 w-48 text-sm">
+            <ul className="flex flex-col gap-2 p-2 w-[160px] text-sm">
               <li>
-                <button onClick={() => videoSelectModal.setOpen(true)}>
+                <button
+                  className="w-full antd-menu-item flex items-center gap-2 p-2"
+                  onClick={() => videoSelectModal.setOpen(true)}
+                >
                   <Video />
                   Select Video
                 </button>
               </li>
               <li>
-                <button onClick={() => deckSelectModal.setOpen(true)}>
+                <button
+                  className="w-full antd-menu-item flex items-center gap-2 p-2"
+                  onClick={() => deckSelectModal.setOpen(true)}
+                >
                   <Book />
                   Select Deck
                 </button>
               </li>
               <li>
                 <Link
+                  className="w-full antd-menu-item flex items-center gap-2 p-2"
                   to={R["/bookmarks"]}
                   onClick={() => context.onOpenChange(false)}
                 >
