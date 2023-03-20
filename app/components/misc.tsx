@@ -1,13 +1,6 @@
 import { Link } from "@remix-run/react";
 import type React from "react";
-import {
-  Bookmark,
-  ChevronLeft,
-  ChevronRight,
-  ChevronsLeft,
-  ChevronsRight,
-  MoreVertical,
-} from "react-feather";
+import { Bookmark, MoreVertical } from "react-feather";
 import type { PaginationMetadata, VideoTable } from "../db/models";
 import { R } from "../misc/routes";
 import { cls } from "../utils/misc";
@@ -133,46 +126,46 @@ export function Spinner(props: { className: string }) {
 }
 
 export function PaginationComponent({
-  className = "",
   query = "",
   pagination,
 }: {
-  className?: string;
   query?: string;
   pagination: PaginationMetadata;
 }) {
+  const { page, totalPage, total } = pagination;
   const { first, previous, next, last } = toNewPages(pagination);
   if (query) query += "&";
   return (
-    <div className={`${className} btn-group shadow-xl`} data-test="pagination">
+    <div
+      data-test="pagination"
+      className="flex items-center gap-2 bg-colorBgElevated shadow-[var(--antd-boxShadowSecondary)] px-2 py-1"
+    >
       <Link
+        className="antd-btn antd-btn-ghost flex items-center"
         to={"?" + query + toQuery(first)}
-        className="btn btn-xs no-animation"
       >
-        <ChevronsLeft size={14} />
+        <span className="i-ri-rewind-mini-fill w-5 h-5"></span>
       </Link>
       <Link
+        className="antd-btn antd-btn-ghost flex items-center"
         to={"?" + query + toQuery(previous)}
-        // TODO: think of better "disabled" state
-        // className={`btn btn-xs no-animation ${!previous && "btn-disabled"}`}
-        className="btn btn-xs no-animation"
       >
-        <ChevronLeft size={14} />
+        <span className="i-ri-play-mini-fill w-4 h-4 rotate-[180deg]"></span>
       </Link>
-      <div className="bg-neutral text-neutral-content font-semibold text-xs flex justify-center items-center px-2">
-        {pagination.page}/{pagination.totalPage} ({pagination.total})
-      </div>
+      <span className="text-sm">
+        {page} / {totalPage} ({total})
+      </span>
       <Link
+        className="antd-btn antd-btn-ghost flex items-center"
         to={"?" + query + toQuery(next)}
-        className="btn btn-xs no-animation"
       >
-        <ChevronRight size={14} />
+        <span className="i-ri-play-mini-fill w-4 h-4"></span>
       </Link>
       <Link
+        className="antd-btn antd-btn-ghost flex items-center"
         to={"?" + query + toQuery(last)}
-        className="btn btn-xs no-animation"
       >
-        <ChevronsRight size={14} />
+        <span className="i-ri-rewind-mini-fill w-5 h-5 rotate-[180deg]"></span>
       </Link>
     </div>
   );
