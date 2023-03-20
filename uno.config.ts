@@ -1,4 +1,3 @@
-import fs from "node:fs";
 import { antdPreset } from "@hiogawa/unocss-preset-antd";
 import {
   defineConfig,
