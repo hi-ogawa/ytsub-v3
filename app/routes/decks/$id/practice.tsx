@@ -104,7 +104,12 @@ export default function DefaultComponent() {
     <div className="h-full w-full flex justify-center">
       <div className="h-full w-full max-w-lg">
         <div className="h-full flex flex-col p-2 gap-2">
-          <DeckPracticeStatisticsComponent statistics={statistics} />
+          <DeckPracticeStatisticsComponent
+            statistics={statistics}
+            currentQueueType={
+              data.finished ? undefined : data.practiceEntry.queueType
+            }
+          />
           {data.finished ? (
             <div className="w-full text-center">Practice is completed!</div>
           ) : (
@@ -172,7 +177,7 @@ function PracticeComponent({
           />
         )}
       </div>
-      <div className="flex justify-center">
+      <div className="flex justify-center pb-4">
         <div className="flex gap-2">
           {PRACTICE_ACTION_TYPES.map((type) => (
             <button

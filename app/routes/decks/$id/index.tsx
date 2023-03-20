@@ -196,23 +196,26 @@ export default function DefaultComponent() {
 
 export function DeckPracticeStatisticsComponent({
   statistics,
+  currentQueueType,
 }: {
   statistics: DeckPracticeStatistics;
+  currentQueueType?: PracticeQueueType;
 }) {
   return (
     <div className="w-full flex items-center p-2 px-4">
       <div className="text-sm uppercase">Progress</div>
+      {/* prettier-ignore */}
       <div className="grow flex px-4">
         <div className="flex-1" />
-        <div className="text-colorInfoText">
+        <div className={cls("text-colorInfoText border-b border-transparent", currentQueueType === "NEW" && "!border-current")}>
           {statistics.NEW.daily} | {statistics.NEW.total}
         </div>
         <div className="flex-1 text-center text-colorTextSecondary">-</div>
-        <div className="text-colorWarningText">
+        <div className={cls("text-colorWarningText border-b border-transparent", currentQueueType === "LEARN" && "!border-current")}>
           {statistics.LEARN.daily} | {statistics.LEARN.total}
         </div>
         <div className="flex-1 text-center text-colorTextSecondary">-</div>
-        <div className="text-colorSuccessText">
+        <div className={cls("text-colorSuccessText border-b border-transparent", currentQueueType === "REVIEW" && "!border-current")}>
           {statistics.REVIEW.daily} | {statistics.REVIEW.total}
         </div>
         <div className="flex-1" />
