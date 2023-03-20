@@ -15,18 +15,6 @@ import type { LinksFunction, MetaFunction } from "@remix-run/server-runtime";
 import { atom, useAtom } from "jotai";
 import { last } from "lodash";
 import type React from "react";
-import {
-  BookOpen,
-  Bookmark,
-  Home,
-  LogIn,
-  LogOut,
-  Menu,
-  Search,
-  Settings,
-  User,
-  Video,
-} from "react-feather";
 import { Toaster, toast } from "react-hot-toast";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { Drawer } from "./components/drawer";
@@ -208,21 +196,18 @@ function Navbar({
 
   return (
     <header className="w-full h-12 flex-none bg-primary text-primary-content flex items-center p-2 px-6 gap-4 shadow-md shadow-black/[0.05] dark:shadow-black/[0.7]">
-      <div className="flex-none">
-        <button
-          className="antd-btn antd-btn-ghost flex items-center"
-          onClick={() => setDrawerOpen(!drawerOpen)}
-        >
-          <Menu size={24} />
-        </button>
-      </div>
+      <button
+        className="antd-btn antd-btn-ghost i-ri-menu-line w-6 h-6"
+        onClick={() => setDrawerOpen(!drawerOpen)}
+      />
       <div className="flex-1">{title}</div>
       {menu}
       {!user && (
         <div className="flex-none flex items-center">
-          <Link to={R["/users/signin"]} className="antd-btn antd-btn-ghost">
-            <LogIn data-test="login-icon" />
-          </Link>
+          <Link
+            to={R["/users/signin"]}
+            className="antd-btn antd-btn-ghost i-ri-login-box-line w-6 h-6"
+          />
         </div>
       )}
       {user && (
@@ -230,9 +215,10 @@ function Navbar({
           <PopoverSimple
             placement="bottom-end"
             reference={
-              <button className="antd-btn antd-btn-ghost" data-test="user-menu">
-                <User />
-              </button>
+              <button
+                className="antd-btn antd-btn-ghost i-ri-user-line w-6 h-6"
+                data-test="user-menu"
+              />
             }
             floating={(context) => (
               <ul className="flex flex-col items-stretch gap-2 p-2 w-[180px] text-sm">
@@ -242,7 +228,7 @@ function Navbar({
                     to={R["/users/me"]}
                     onClick={() => context.onOpenChange(false)}
                   >
-                    <Settings />
+                    <span className="i-ri-settings-line w-6 h-6"></span>
                     Account
                   </Link>
                 </li>
@@ -257,7 +243,7 @@ function Navbar({
                       type="submit"
                       className="w-full antd-menu-item flex items-center gap-2 p-2"
                     >
-                      <LogOut />
+                      <span className="i-ri-logout-box-line w-6 h-6"></span>
                       Sign out
                     </button>
                   </Form>
@@ -291,7 +277,8 @@ function Navbar({
                   aria-disabled={disabled}
                   onClick={() => setDrawerOpen(false)}
                 >
-                  <entry.icon size={24} />
+                  {entry.icon}
+                  {/* <entry.icon size={24} /> */}
                   {entry.title}
                 </NavLink>
               </li>
@@ -317,25 +304,25 @@ interface SideMenuEntry {
 const SIDE_MENU_ENTRIES: SideMenuEntry[] = [
   {
     to: R["/"],
-    icon: Home,
+    icon: <span className="i-ri-home-4-line w-6 h-6" />,
     title: "Examples",
     requireSignin: false,
   },
   {
     to: R["/videos"],
-    icon: Video,
+    icon: <span className="i-ri-vidicon-line w-6 h-6" />,
     title: "Your Videos",
     requireSignin: true,
   },
   {
     to: R["/bookmarks"],
-    icon: Bookmark,
+    icon: <span className="i-ri-bookmark-line w-6 h-6" />,
     title: "Bookmarks",
     requireSignin: true,
   },
   {
     to: R["/decks"],
-    icon: BookOpen,
+    icon: <span className="i-ri-book-open-line w-6 h-6" />,
     title: "Practice",
     requireSignin: true,
   },
@@ -353,7 +340,7 @@ function SearchComponent() {
       data-test="search-form"
     >
       <label className="w-full relative text-base-content flex items-center">
-        <Search size={26} className="absolute text-colorTextSecondary pl-3" />
+        <span className="absolute text-colorTextSecondary ml-2.5 i-ri-search-line w-4 h-4"></span>
         <input
           type="text"
           name="videoId"
