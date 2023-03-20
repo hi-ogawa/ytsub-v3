@@ -207,6 +207,7 @@ function Navbar({
           <Link
             to={R["/users/signin"]}
             className="antd-btn antd-btn-ghost i-ri-login-box-line w-6 h-6"
+            data-test="login-icon"
           />
         </div>
       )}
