@@ -2,7 +2,6 @@ import { mapOption } from "@hiogawa/utils";
 import { useFetcher, useFetchers, useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import React from "react";
-import { PlusSquare, Trash2 } from "react-feather";
 import toast from "react-hot-toast";
 import { PaginationComponent, VideoComponent } from "../../components/misc";
 import { useModal } from "../../components/modal";
@@ -162,7 +161,7 @@ function VideoComponentExtra({
                   }
                 }}
               >
-                <PlusSquare />
+                <span className="i-ri-add-box-line w-5 h-5"></span>
                 Add to Deck
               </button>
             </li>
@@ -181,7 +180,7 @@ function VideoComponentExtra({
                   type="submit"
                   className="w-full antd-menu-item p-2 flex items-center gap-2"
                 >
-                  <Trash2 />
+                  <span className="i-ri-delete-bin-line w-5 h-5"></span>
                   Delete
                 </button>
               </fetcher.Form>
@@ -263,7 +262,7 @@ function AddToDeckComponent({
               >
                 <div className="grow flex">{deck.name}</div>
                 <div className="flex-1"></div>
-                <PlusSquare size={18} />
+                <span className="i-ri-add-box-line w-5 h-5"></span>
               </button>
             </li>
           ))}
