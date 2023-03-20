@@ -688,11 +688,6 @@ function HighlightText({
   );
 }
 
-// @ts-ignore
-function toCaptionEntryId({ begin, end }: CaptionEntry): string {
-  return `${begin}--${end}`;
-}
-
 function NavBarMenuComponent() {
   const { currentUser } = useRootLoaderData();
   const { video }: LoaderData = useDeserialize(useLeafLoaderData());
