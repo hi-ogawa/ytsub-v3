@@ -594,10 +594,10 @@ export function CaptionEntryComponent({
       className={`
         w-full
         flex flex-col
-        ${border && "border border-solid border-gray-200"}
-        ${isEntryPlaying ? "border-blue-400" : "border-gray-200"}
-        ${border && isCurrentEntry && "bg-gray-100"}
-        ${isFocused && "border-l-2 border-l-blue-500"}
+        ${border && "border"}
+        ${isEntryPlaying && "border-colorPrimary"}
+        ${border && isCurrentEntry && "bg-colorBgTextActive"}
+        ${isFocused && "border-l-2 border-l-colorPrimary"}
         ${virtualItem?.index === 0 && "mt-1.5"}
         ${isActualLast && "mb-1.5"}
         p-1.5 gap-1
@@ -606,7 +606,7 @@ export function CaptionEntryComponent({
       ref={virtualizer?.measureElement}
       data-index={virtualItem?.index}
     >
-      <div className="flex items-center justify-end text-gray-500">
+      <div className="flex items-center justify-end text-colorTextSecondary">
         <div>{timestamp}</div>
         {!isNil(videoId) && (
           <Link
@@ -618,16 +618,16 @@ export function CaptionEntryComponent({
           </Link>
         )}
         <div
-          className={`ml-2 btn btn-xs btn-circle btn-ghost ${
-            isRepeating && "text-blue-700"
+          className={`ml-2 antd-btn antd-btn-ghost ${
+            isRepeating && "text-colorPrimary"
           }`}
           onClick={() => onClickEntryRepeat(entry)}
         >
           <Repeat size={14} />
         </div>
         <div
-          className={`ml-2 btn btn-xs btn-circle btn-ghost ${
-            isEntryPlaying && "text-blue-700"
+          className={`ml-2 antd-btn antd-btn-ghost ${
+            isEntryPlaying && "text-colorPrimary"
           }`}
           onClick={() => onClickEntryPlay(entry, false)}
         >
@@ -635,12 +635,10 @@ export function CaptionEntryComponent({
         </div>
       </div>
       <div
-        className="flex text-gray-700 cursor-pointer"
+        className="flex cursor-pointer"
         onClick={() => onClickEntryPlay(entry, true)}
       >
-        <div
-          className={`flex-auto w-1/2 pr-2 border-r border-solid border-gray-200 ${BOOKMARKABLE_CLASSNAME}`}
-        >
+        <div className={`flex-1 pr-2 border-r ${BOOKMARKABLE_CLASSNAME}`}>
           {highlight?.side === 0 ? (
             <HighlightText
               text={text1}
@@ -651,7 +649,7 @@ export function CaptionEntryComponent({
             text1
           )}
         </div>
-        <div className={`flex-auto w-1/2 pl-2 ${BOOKMARKABLE_CLASSNAME}`}>
+        <div className={`flex-1 pl-2 ${BOOKMARKABLE_CLASSNAME}`}>
           {highlight?.side === 1 ? (
             <HighlightText
               text={text2}
