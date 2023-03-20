@@ -19,7 +19,7 @@ import { useLeafLoaderData } from "../../../utils/loader-utils";
 import type { PageHandle } from "../../../utils/page-handle";
 import { PAGINATION_PARAMS_SCHEMA } from "../../../utils/pagination";
 import { zStringToInteger } from "../../../utils/zod-utils";
-import { NavBarMenuComponent } from "./history-graph";
+import { DeckHistoryNavBarMenuComponent } from "./history-graph";
 
 //
 // handle
@@ -27,7 +27,7 @@ import { NavBarMenuComponent } from "./history-graph";
 
 export const handle: PageHandle = {
   navBarTitle: () => <NavBarTitleComponent />,
-  navBarMenu: () => <NavBarMenuComponent />,
+  navBarMenu: () => <DeckHistoryNavBarMenuComponent />,
 };
 
 //
@@ -156,5 +156,10 @@ function PracticeActionComponent(props: {
 
 function NavBarTitleComponent() {
   const { deck }: LoaderData = useDeserialize(useLeafLoaderData());
-  return <>{deck.name} (history)</>;
+  return (
+    <span>
+      {deck.name}{" "}
+      <span className="text-colorTextSecondary text-sm">(history)</span>
+    </span>
+  );
 }

@@ -1,4 +1,4 @@
-import { requireUserAndDeck } from ".";
+import { DeckNavBarMenuComponent, requireUserAndDeck } from ".";
 import { Form, useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import { z } from "zod";
@@ -12,6 +12,7 @@ import { zStringToInteger } from "../../../utils/zod-utils";
 
 export const handle: PageHandle = {
   navBarTitle: () => "Edit Deck",
+  navBarMenu: () => <DeckNavBarMenuComponent />,
 };
 
 //

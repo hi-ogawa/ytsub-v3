@@ -1,20 +1,12 @@
-import { requireUserAndDeck } from ".";
+import { DeckNavBarMenuComponent, requireUserAndDeck } from ".";
 import { Transition } from "@headlessui/react";
-import { Link } from "@remix-run/react";
+import { Link, useMatches, useNavigate } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import type { ECharts } from "echarts";
 import { range } from "lodash";
 import React from "react";
-import {
-  BarChart2,
-  ChevronsLeft,
-  ChevronsRight,
-  List,
-  MoreVertical,
-  Play,
-} from "react-feather";
+import { ChevronsLeft, ChevronsRight } from "react-feather";
 import { z } from "zod";
-import { PopoverSimple } from "../../../components/popover";
 import {
   PracticeHistoryChart,
   PracticeHistoryChartData,
@@ -37,7 +29,7 @@ import { zStringToInteger } from "../../../utils/zod-utils";
 
 export const handle: PageHandle = {
   navBarTitle: () => <NavBarTitleComponent />,
-  navBarMenu: () => <NavBarMenuComponent />,
+  navBarMenu: () => <DeckHistoryNavBarMenuComponent />,
 };
 
 //
@@ -201,65 +193,57 @@ function formatPage(page: number): string {
 
 function NavBarTitleComponent() {
   const { deck }: LoaderData = useDeserialize(useLeafLoaderData());
-  return <>{deck.name} (history)</>;
+  return (
+    <span>
+      {deck.name}{" "}
+      <span className="text-colorTextSecondary text-sm">(history)</span>
+    </span>
+  );
 }
 
 //
 // NavBarMenuComponent
 //
 
-export function NavBarMenuComponent() {
+export function DeckHistoryNavBarMenuComponent() {
   const { deck }: LoaderData = useDeserialize(useLeafLoaderData());
 
   return (
     <>
-      <div className="flex-none">
-        <PopoverSimple
-          placement="bottom-end"
-          reference={
-            <button
-              className="btn btn-sm btn-ghost"
-              data-test="deck-menu-history-popover-reference"
-            >
-              <MoreVertical />
-            </button>
-          }
-          floating={(context) => (
-            <ul
-              className="menu menu-compact rounded p-3 w-48 text-sm"
-              data-test="deck-menu-history-popover-floating"
-            >
-              <li>
-                <Link
-                  to={R["/decks/$id/practice"](deck.id)}
-                  onClick={() => context.onOpenChange(false)}
-                >
-                  <Play />
-                  Practice
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to={R["/decks/$id/history-graph"](deck.id)}
-                  onClick={() => context.onOpenChange(false)}
-                >
-                  <BarChart2 />
-                  Graph
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to={R["/decks/$id/history"](deck.id)}
-                  onClick={() => context.onOpenChange(false)}
-                >
-                  <List />
-                  List
-                </Link>
-              </li>
-            </ul>
-          )}
-        />
-      </div>
+      <HistoryViewSelect deckId={deck.id} />
+      <DeckNavBarMenuComponent />
     </>
+  );
+}
+
+function HistoryViewSelect({ deckId }: { deckId: number }) {
+  const [{ pathname }] = useMatches().slice(-1);
+  const navigate = useNavigate();
+
+  const options = [
+    {
+      to: R["/decks/$id/history-graph"](deckId),
+      label: "Chart",
+    },
+    {
+      to: R["/decks/$id/history"](deckId),
+      label: "List",
+    },
+  ];
+
+  return (
+    <select
+      className="antd-input py-0.5 px-1 text-sm"
+      value={pathname}
+      onChange={(e) => {
+        navigate(e.target.value);
+      }}
+    >
+      {options.map((option) => (
+        <option key={option.to} value={option.to}>
+          {option.label}
+        </option>
+      ))}
+    </select>
   );
 }

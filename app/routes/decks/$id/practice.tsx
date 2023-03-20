@@ -1,12 +1,5 @@
 import { tinyassert } from "@hiogawa/utils";
-import {
-  Link,
-  useFetcher,
-  useLoaderData,
-  useTransition,
-} from "@remix-run/react";
-import { Activity, Book, MoreVertical } from "react-feather";
-import { PopoverSimple } from "../../../components/popover";
+import { useFetcher, useLoaderData, useTransition } from "@remix-run/react";
 import {
   BookmarkEntryTable,
   CaptionEntryTable,
@@ -29,12 +22,16 @@ import {
 } from "../../../utils/practice-system";
 import { toForm } from "../../../utils/url-data";
 import { BookmarkEntryComponent } from "../../bookmarks";
-import { DeckPracticeStatisticsComponent, requireUserAndDeck } from "./index";
+import {
+  DeckNavBarMenuComponent,
+  DeckPracticeStatisticsComponent,
+  requireUserAndDeck,
+} from "./index";
 import type { NewPracticeActionRequest } from "./new-practice-action";
 
 export const handle: PageHandle = {
   navBarTitle: () => <NavBarTitleComponent />,
-  navBarMenu: () => <NavBarMenuComponent />,
+  navBarMenu: () => <DeckNavBarMenuComponent />,
 };
 
 //
@@ -180,7 +177,7 @@ function PracticeComponent({
           {PRACTICE_ACTION_TYPES.map((type) => (
             <button
               key={type}
-              className="antd-btn antd-btn-default p-1 px-2"
+              className="antd-btn antd-btn-default px-3 py-0.5"
               disabled={isLoading}
               onClick={() => onClickAction(type)}
             >
@@ -199,57 +196,10 @@ function PracticeComponent({
 
 function NavBarTitleComponent() {
   const { deck }: LoaderData = useDeserialize(useLeafLoaderData());
-  return <>{deck.name} (practice)</>;
-}
-
-//
-// NavBarMenuComponent
-//
-
-// TODO
-function NavBarMenuComponent() {
-  const { deck }: LoaderData = useDeserialize(useLeafLoaderData());
-
   return (
-    <>
-      <div className="flex-none">
-        <PopoverSimple
-          placement="bottom-end"
-          reference={
-            <button
-              className="btn btn-sm btn-ghost"
-              data-test="deck-menu-practice-popover-reference"
-            >
-              <MoreVertical />
-            </button>
-          }
-          floating={(context) => (
-            <ul
-              className="menu menu-compact rounded p-3 w-48 text-sm"
-              data-test="deck-menu-practice-popover-floating"
-            >
-              <li>
-                <Link
-                  to={R["/decks/$id"](deck.id)}
-                  onClick={() => context.onOpenChange(false)}
-                >
-                  <Book />
-                  Deck
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to={R["/decks/$id/history-graph"](deck.id)}
-                  onClick={() => context.onOpenChange(false)}
-                >
-                  <Activity />
-                  History
-                </Link>
-              </li>
-            </ul>
-          )}
-        />
-      </div>
-    </>
+    <span>
+      {deck.name}{" "}
+      <span className="text-colorTextSecondary text-sm">(practice)</span>
+    </span>
   );
 }

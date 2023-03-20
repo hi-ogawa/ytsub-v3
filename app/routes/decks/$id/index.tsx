@@ -2,6 +2,7 @@ import { tinyassert } from "@hiogawa/utils";
 import { Form, Link, useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import React from "react";
+import { NavLink } from "react-router-dom";
 import { z } from "zod";
 import { PaginationComponent } from "../../../components/misc";
 import { PopoverSimple } from "../../../components/popover";
@@ -37,7 +38,7 @@ import { MiniPlayer } from "../../bookmarks";
 
 export const handle: PageHandle = {
   navBarTitle: () => <NavBarTitleComponent />,
-  navBarMenu: () => <NavBarMenuComponent />,
+  navBarMenu: () => <DeckNavBarMenuComponent />,
 };
 
 const PARAMS_SCHEMA = z.object({
@@ -341,9 +342,56 @@ function NavBarTitleComponent() {
 // NavBarMenuComponent
 //
 
-// TODO: reuse between /decks/$id/xxx pages
-function NavBarMenuComponent() {
+export function DeckNavBarMenuComponent() {
   const { deck }: LoaderData = useDeserialize(useLeafLoaderData());
+
+  const items = [
+    {
+      to: R["/decks/$id"](deck.id),
+      children: (
+        <>
+          <span className="i-ri-book-line w-6 h-6"></span>
+          Deck
+        </>
+      ),
+    },
+    {
+      to: R["/decks/$id/practice"](deck.id),
+      children: (
+        <>
+          <span className="i-ri-play-line w-6 h-6"></span>
+          Practice
+        </>
+      ),
+    },
+    {
+      to: R["/decks/$id/history-graph"](deck.id),
+      children: (
+        <>
+          <span className="i-ri-history-line w-6 h-6"></span>
+          History
+        </>
+      ),
+    },
+    {
+      to: R["/bookmarks"] + `?deckId=${deck.id}`,
+      children: (
+        <>
+          <span className="i-ri-bookmark-line w-6 h-6"></span>
+          Bookmarks{" "}
+        </>
+      ),
+    },
+    {
+      to: R["/decks/$id/edit"](deck.id),
+      children: (
+        <>
+          <span className="i-ri-edit-line w-6 h-6"></span>
+          Edit
+        </>
+      ),
+    },
+  ];
 
   return (
     <PopoverSimple
@@ -359,46 +407,21 @@ function NavBarMenuComponent() {
           className="flex flex-col gap-2 p-2 w-[180px] text-sm"
           data-test="deck-menu-popover-floating"
         >
-          <li>
-            <Link
-              className="w-full antd-menu-item flex items-center gap-2 p-2"
-              to={R["/decks/$id/practice"](deck.id)}
-              onClick={() => context.onOpenChange(false)}
-            >
-              <span className="i-ri-play-line w-6 h-6"></span>
-              Practice
-            </Link>
-          </li>
-          <li>
-            <Link
-              className="w-full antd-menu-item flex items-center gap-2 p-2"
-              to={R["/decks/$id/history-graph"](deck.id)}
-              onClick={() => context.onOpenChange(false)}
-            >
-              <span className="i-ri-history-line w-6 h-6"></span>
-              History
-            </Link>
-          </li>
-          <li>
-            <Link
-              className="w-full antd-menu-item flex items-center gap-2 p-2"
-              to={R["/bookmarks"] + `?deckId=${deck.id}`}
-              onClick={() => context.onOpenChange(false)}
-            >
-              <span className="i-ri-bookmark-line w-6 h-6"></span>
-              Bookmarks
-            </Link>
-          </li>
-          <li>
-            <Link
-              className="w-full antd-menu-item flex items-center gap-2 p-2"
-              to={R["/decks/$id/edit"](deck.id)}
-              onClick={() => context.onOpenChange(false)}
-            >
-              <span className="i-ri-edit-line w-6 h-6"></span>
-              Edit
-            </Link>
-          </li>
+          {items.map((item) => (
+            <li key={item.to}>
+              <NavLink
+                className={({ isActive }) =>
+                  cls(
+                    "w-full antd-menu-item flex items-center gap-2 p-2",
+                    isActive && "antd-menu-item-active"
+                  )
+                }
+                end
+                onClick={() => context.onOpenChange(false)}
+                {...item}
+              />
+            </li>
+          ))}
           <li>
             <Form
               action={R["/decks/$id?index"](deck.id)}
