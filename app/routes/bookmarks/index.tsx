@@ -14,7 +14,7 @@ import {
   X,
 } from "react-feather";
 import { z } from "zod";
-import { PaginationComponent, Spinner } from "../../components/misc";
+import { PaginationComponent } from "../../components/misc";
 import { useModal } from "../../components/modal";
 import { PopoverSimple } from "../../components/popover";
 import {
@@ -347,7 +347,7 @@ export function MiniPlayer({
         </div>
         {playerLoading && (
           <div className="absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%]">
-            <Spinner className="w-20 h-20" />
+            <div className="antd-spin w-20" />
           </div>
         )}
       </div>

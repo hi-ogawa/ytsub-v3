@@ -120,11 +120,6 @@ export function VideoComponent({
   );
 }
 
-// TODO: use antd-spin
-export function Spinner(props: { className: string }) {
-  return <div className={cls("antd-spin", props.className)} />;
-}
-
 export function PaginationComponent({
   query = "",
   pagination,

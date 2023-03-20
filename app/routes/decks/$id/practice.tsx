@@ -6,7 +6,6 @@ import {
   useTransition,
 } from "@remix-run/react";
 import { Activity, Book, MoreVertical } from "react-feather";
-import { Spinner } from "../../../components/misc";
 import { PopoverSimple } from "../../../components/popover";
 import {
   BookmarkEntryTable,
@@ -202,7 +201,7 @@ function PracticeComponent({
       <div className="grow w-full flex flex-col">
         {isLoading ? (
           <div className="w-full flex justify-center">
-            <Spinner className="w-16 h-16" />
+            <div className="antd-spin w-16" />
           </div>
         ) : (
           <BookmarkEntryComponent

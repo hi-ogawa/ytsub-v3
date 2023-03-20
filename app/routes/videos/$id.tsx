@@ -30,7 +30,6 @@ import {
 import toast from "react-hot-toast";
 import { useSearchParams } from "react-router-dom";
 import { z } from "zod";
-import { Spinner } from "../../components/misc";
 import { PopoverSimple } from "../../components/popover";
 import {
   CaptionEntryTable,
@@ -384,7 +383,7 @@ function PageComponent({
               {fetcher.state === "idle" ? (
                 <Bookmark />
               ) : (
-                <Spinner className="w-6 h-6" />
+                <div className="antd-spin w-6" />
               )}
             </button>
           </Transition>
@@ -494,7 +493,7 @@ function PlayerComponent({
         </div>
         {loading && (
           <div className="absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%]">
-            <Spinner className="w-20 h-20" />
+            <div className="antd-spin w-20" />
           </div>
         )}
       </div>

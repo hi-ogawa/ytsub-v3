@@ -14,7 +14,6 @@ import {
   Play,
 } from "react-feather";
 import { z } from "zod";
-import { Spinner } from "../../../components/misc";
 import { PopoverSimple } from "../../../components/popover";
 import {
   PracticeHistoryChart,
@@ -159,7 +158,7 @@ export default function DefaultComponent() {
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <Spinner className="w-20 h-20" />
+            <div className="antd-spin w-20" />
           </Transition>
         </div>
         <div className="w-full flex justify-center">
