@@ -1,5 +1,4 @@
 import { Link, useLoaderData } from "@remix-run/react";
-import { Book, Play, PlusSquare } from "react-feather";
 import { DeckTable, Q } from "../../db/models";
 import { R } from "../../misc/routes";
 import { Controller, makeLoader } from "../../utils/controller-utils";
@@ -51,22 +50,18 @@ export default function DefaultComponent() {
 
 function DeckComponent({ deck }: { deck: DeckTable }) {
   return (
-    <div className="relative border border-gray-200 flex items-center p-2 gap-2">
-      <Link to={R["/decks/$id"](deck.id)} className="grow pl-2">
+    <div className="relative border flex items-center py-1.5 p-3 gap-3">
+      <Link to={R["/decks/$id"](deck.id)} className="flex-1 pl-2">
         {deck.name}
       </Link>
       <Link
         to={R["/decks/$id"](deck.id)}
-        className="flex-none btn btn-circle btn-sm btn-ghost"
-      >
-        <Book size={16} />
-      </Link>
+        className="antd-btn antd-btn-ghost i-ri-book-line w-4 h-4"
+      />
       <Link
         to={R["/decks/$id/practice"](deck.id)}
-        className="flex-none btn btn-circle btn-sm btn-ghost"
-      >
-        <Play size={16} />
-      </Link>
+        className="antd-btn antd-btn-ghost i-ri-play-line w-5 h-5"
+      />
     </div>
   );
 }
@@ -77,16 +72,10 @@ function DeckComponent({ deck }: { deck: DeckTable }) {
 
 function NavBarMenuComponent() {
   return (
-    <>
-      <div className="flex-none">
-        <Link
-          to={R["/decks/new"]}
-          className="btn btn-sm btn-ghost"
-          data-test="new-deck-link"
-        >
-          <PlusSquare />
-        </Link>
-      </div>
-    </>
+    <Link
+      to={R["/decks/new"]}
+      className="antd-btn antd-btn-ghost i-ri-add-box-line w-6 h-6"
+      data-test="new-deck-link"
+    />
   );
 }
