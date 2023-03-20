@@ -66,8 +66,8 @@
     "zod": "^3.21.4"
   },
   "devDependencies": {
-    "@hiogawa/isort-ts": "1.0.0-pre.11",
-    "@hiogawa/unocss-preset-antd": "2.1.0-pre.3",
+    "@hiogawa/isort-ts": "1.0.1",
+    "@hiogawa/unocss-preset-antd": "^2.2.0",
     "@iconify-json/ri": "^1.1.5",
     "@playwright/test": "^1.31.2",
     "@remix-run/dev": "1.4.1",

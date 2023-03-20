@@ -15,8 +15,8 @@ specifiers:
   '@badrap/bar-of-progress': ^0.2.2
   '@floating-ui/react': ^0.21.1
   '@headlessui/react': ^1.7.13
-  '@hiogawa/isort-ts': 1.0.0-pre.11
-  '@hiogawa/unocss-preset-antd': 2.1.0-pre.3
+  '@hiogawa/isort-ts': 1.0.1
+  '@hiogawa/unocss-preset-antd': ^2.2.0
   '@hiogawa/utils': ^1.4.1
   '@hiogawa/utils-react': ^1.2.0
   '@iconify-json/ri': ^1.1.5
@@ -108,8 +108,8 @@ dependencies:
   zod: 3.21.4
 
 devDependencies:
-  '@hiogawa/isort-ts': 1.0.0-pre.11_silln3pw57har7jydmecgzoypa
-  '@hiogawa/unocss-preset-antd': 2.1.0-pre.3_unocss@0.50.6
+  '@hiogawa/isort-ts': 1.0.1_silln3pw57har7jydmecgzoypa
+  '@hiogawa/unocss-preset-antd': 2.2.0_unocss@0.50.6
   '@iconify-json/ri': 1.1.5
   '@playwright/test': 1.31.2
   '@remix-run/dev': 1.4.1_stojxe6rvkuiyvdec5abatvvv4_sfoxds7t5ydpegc3knd667wn6m
@@ -992,8 +992,8 @@ packages:
       react-dom: 17.0.2_react@17.0.2
     dev: false
 
-  /@hiogawa/isort-ts/1.0.0-pre.11_silln3pw57har7jydmecgzoypa:
-    resolution: {integrity: sha512-55Id9ENzKjWfm89wuiLMvAflKm+UggLjPHqk99kV/XYYQsPhM81ig1PN/1nCGym3BK811NLhlKbpdBFyPKU1NA==}
+  /@hiogawa/isort-ts/1.0.1_silln3pw57har7jydmecgzoypa:
+    resolution: {integrity: sha512-m2fNg8ovnI18XBQK/sTvYx7lZzq96CZjun8YEpV8obGOZhvyV6x9OEXZ/iJYgh2n5EQAdurqIXSrM8H8oKWSTA==}
     hasBin: true
     peerDependencies:
       prettier: '*'
@@ -1001,13 +1001,12 @@ packages:
     dependencies:
       cac: 6.7.14
       consola: 2.15.3
-      lodash: 4.17.21
       prettier: 2.8.4
       typescript: 4.9.5
     dev: true
 
-  /@hiogawa/unocss-preset-antd/2.1.0-pre.3_unocss@0.50.6:
-    resolution: {integrity: sha512-41vgnONaEQeIcA1Kpx+CXJ9Y3H2wFQ1ojcsvgD25BfxZyA0aIVVhcB3vHp1vKxe9TA9LekMSKLdHbGO3rCiEpA==}
+  /@hiogawa/unocss-preset-antd/2.2.0_unocss@0.50.6:
+    resolution: {integrity: sha512-hUxhhvoANq6WYK8vCDrFHhS1oF853yFguRgJgn6lglOmxBY0ngb/0lZ8BY28iTT+LQAFnj+GbywGKPccIvdpmQ==}
     peerDependencies:
       '@unocss/preset-uno': '*'
       unocss: '*'
@@ -5015,7 +5014,7 @@ packages:
   /jsonfile/4.0.0:
     resolution: {integrity: sha1-h3Gq4HmbZAdrdmQPygWPnBDjPss=}
     optionalDependencies:
-      graceful-fs: 4.2.11
+      graceful-fs: 4.2.9
     dev: true
 
   /jsonfile/6.1.0:
@@ -5023,7 +5022,7 @@ packages:
     dependencies:
       universalify: 2.0.0
     optionalDependencies:
-      graceful-fs: 4.2.11
+      graceful-fs: 4.2.9
     dev: true
 
   /keyv/4.5.2:
