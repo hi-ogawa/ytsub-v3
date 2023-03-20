@@ -12,6 +12,7 @@ import {
   DeckTable,
   PaginationMetadata,
   PracticeEntryTable,
+  PracticeQueueType,
   Q,
   UserTable,
   VideoTable,
@@ -251,19 +252,11 @@ export function PracticeBookmarkEntryComponent({
           className="flex gap-2 cursor-pointer"
           onClick={() => setOpen(!open)}
         >
-          <div className="flex-none h-[20px] flex items-center">
-            {/* prettier-ignore */}
-            <span
-              className={cls(
-                "w-5 h-5",
-                practiceEntry.queueType === "NEW" && "i-ri-checkbox-blank-circle-line text-colorInfoText",
-                practiceEntry.queueType === "LEARN" && "i-ri-record-circle-line text-colorWarningText",
-                practiceEntry.queueType === "REVIEW" && "i-ri-checkbox-circle-line text-colorSuccessText"
-              )}
-            />
+          <div className="h-[20px] flex items-center">
+            <QueueTypeIcon queueType={practiceEntry.queueType} />
           </div>
           <div
-            className="grow text-sm cursor-pointer"
+            className="flex-1 text-sm cursor-pointer"
             data-test="bookmark-entry-text"
           >
             {bookmarkEntry.text}
@@ -307,6 +300,20 @@ export function PracticeBookmarkEntryComponent({
         />
       )}
     </div>
+  );
+}
+
+export function QueueTypeIcon({ queueType }: { queueType: PracticeQueueType }) {
+  return (
+    <span
+      // prettier-ignore
+      className={cls(
+        "w-5 h-5",
+        queueType === "NEW" && "i-ri-checkbox-blank-circle-line text-colorInfoText",
+        queueType === "LEARN" && "i-ri-record-circle-line text-colorWarningText",
+        queueType === "REVIEW" && "i-ri-checkbox-circle-line text-colorSuccessText"
+      )}
+    />
   );
 }
 
