@@ -50,7 +50,7 @@ export default function DefaultComponent() {
 
 function DeckComponent({ deck }: { deck: DeckTable }) {
   return (
-    <div className="relative border flex items-center py-1.5 p-3 gap-3">
+    <div className="relative border flex items-center p-2 gap-3">
       <Link to={R["/decks/$id"](deck.id)} className="flex-1 pl-2">
         {deck.name}
       </Link>
