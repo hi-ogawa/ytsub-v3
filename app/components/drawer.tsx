@@ -39,7 +39,7 @@ export function Drawer(props: {
         {/* content */}
         <RemoveScroll className="fixed inset-0 overflow-hidden">
           <Transition.Child
-            className="transition duration-300 transform inline-block h-full bg-[var(--antd-colorBgContainer)] shadow-lg"
+            className="transition duration-300 transform inline-block h-full bg-colorBgContainer shadow-lg"
             enterFrom="translate-x-[-100%]"
             enterTo="translate-x-[0]"
             leaveFrom="translate-x-[0]"

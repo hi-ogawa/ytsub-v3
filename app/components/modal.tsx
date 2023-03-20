@@ -47,7 +47,8 @@ export function Modal(props: {
           <Transition.Child
             className={cls(
               props.className,
-              "transition duration-300 transform w-[90%] max-w-xl shadow-lg"
+              // TODO(upstream): antd-floating?
+              "transition duration-300 transform w-[90%] max-w-xl bg-colorBgElevated shadow-[var(--antd-boxShadowSecondary)]"
             )}
             enterFrom="opacity-0 scale-95"
             enterTo="opacity-100 scale-100"

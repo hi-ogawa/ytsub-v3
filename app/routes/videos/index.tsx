@@ -255,10 +255,7 @@ function AddToDeckComponent({
   const isLoading = fetcher1.state !== "idle" || fetcher2.state !== "idle";
 
   return (
-    <div
-      className="border shadow-xl rounded-xl bg-base-100 p-4 flex flex-col gap-2"
-      data-test="add-to-deck-component"
-    >
+    <div className="flex flex-col gap-2 p-4" data-test="add-to-deck-component">
       <div className="text-lg">Select a Deck</div>
       {data && !isLoading ? (
         <ul className="menu">
