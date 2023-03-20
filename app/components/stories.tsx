@@ -31,6 +31,36 @@ export function TestMenu() {
   );
 }
 
+export function StoryPagination() {
+  const page = 1;
+  const totalPage = 3;
+  const total = 25;
+
+  return (
+    <div className="p-4 flex flex-col items-center">
+      <div className="flex flex-col gap-2 p-3 border">
+        <div className="flex items-center gap-2">
+          <button className="antd-btn antd-btn-ghost flex items-center">
+            <span className="i-ri-rewind-mini-fill w-5 h-5"></span>
+          </button>
+          <button className="antd-btn antd-btn-ghost flex items-center">
+            <span className="i-ri-play-mini-fill w-4 h-4 rotate-[180deg]"></span>
+          </button>
+          <span className="text-sm">
+            {page} / {totalPage} ({total})
+          </span>
+          <button className="antd-btn antd-btn-ghost flex items-center">
+            <span className="i-ri-play-mini-fill w-4 h-4"></span>
+          </button>
+          <button className="antd-btn antd-btn-ghost flex items-center">
+            <span className="i-ri-rewind-mini-fill w-5 h-5 rotate-[180deg]"></span>
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function TestPopover() {
   return (
     <div className="p-4 flex flex-col items-center">
