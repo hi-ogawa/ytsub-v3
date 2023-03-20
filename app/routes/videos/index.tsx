@@ -6,7 +6,6 @@ import { PlusSquare, Trash2 } from "react-feather";
 import toast from "react-hot-toast";
 import {
   PaginationComponent,
-  Spinner,
   VideoComponent,
 } from "../../components/misc";
 import { useModal } from "../../components/modal";
