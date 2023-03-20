@@ -4,9 +4,9 @@ import React from "react";
 // based on https://github.com/hi-ogawa/unocss-preset-antd/blob/eb3a4cfe1474bc4236c5d4007c1e9f962eaa4df5/packages/app/src/components/theme-select-button.tsx
 
 const THEME_OPTIONS = [
-  ["system", "Use system theme"],
-  ["dark", "Dark theme"],
-  ["light", "Light theme"],
+  ["system", "System"],
+  ["dark", "Dark"],
+  ["light", "Light"],
 ] as const;
 
 export function ThemeSelect() {
@@ -15,15 +15,15 @@ export function ThemeSelect() {
     <label className="flex items-center gap-2">
       Theme
       <select
-        className="antd-input px-1"
+        className="antd-input px-1 py-0.5"
         value={theme}
         onChange={(e) => {
           setTheme(e.target.value);
         }}
       >
-        {THEME_OPTIONS.map(([t]) => (
+        {THEME_OPTIONS.map(([t, label]) => (
           <option key={t} value={t}>
-            {t}
+            {label}
           </option>
         ))}
       </select>
