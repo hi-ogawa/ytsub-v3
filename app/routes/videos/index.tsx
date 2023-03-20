@@ -155,36 +155,41 @@ function VideoComponentExtra({
         currentUser &&
         currentUser.id === video.userId && (
           <>
-            <li className={`${addToDeckDisabled && "disabled"}`}>
+            <li>
               <button
+                data-test="video-component-add-to-deck-button"
+                className="w-full antd-menu-item p-2 flex items-center gap-2"
+                disabled={addToDeckDisabled}
                 onClick={() => {
                   if (!addToDeckDisabled) {
                     modal.setOpen(true);
                   }
                 }}
-                data-test="video-component-add-to-deck-button"
               >
                 <PlusSquare />
                 Add to Deck
               </button>
             </li>
-            <fetcher.Form
-              method="delete"
-              action={R["/videos/$id"](video.id)}
-              data-test="video-delete-form"
-              onSubmitCapture={(e) => {
-                if (!window.confirm("Are you sure?")) {
-                  e.preventDefault();
-                }
-              }}
-            >
-              <li>
-                <button type="submit">
+            <li>
+              <fetcher.Form
+                method="delete"
+                action={R["/videos/$id"](video.id)}
+                data-test="video-delete-form"
+                onSubmitCapture={(e) => {
+                  if (!window.confirm("Are you sure?")) {
+                    e.preventDefault();
+                  }
+                }}
+              >
+                <button
+                  type="submit"
+                  className="w-full antd-menu-item p-2 flex items-center gap-2"
+                >
                   <Trash2 />
                   Delete
                 </button>
-              </li>
-            </fetcher.Form>
+              </fetcher.Form>
+            </li>
           </>
         )
       }

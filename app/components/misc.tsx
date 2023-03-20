@@ -105,7 +105,7 @@ export function VideoComponent({
                   )}
                   data-test="video-component-popover-button"
                 >
-                  <MoreVertical size={16} />
+                  <MoreVertical size={20} />
                 </button>
               )}
               floating={
@@ -119,7 +119,7 @@ export function VideoComponent({
         )}
       </div>
       {isLoading && (
-        <div className="absolute inset-0 flex justify-center items-center bg-black/[0.2]">
+        <div className="absolute inset-0 flex justify-center items-center bg-black/[0.2] dark:bg-black/[0.5]">
           <div className="antd-spin w-16"></div>
         </div>
       )}
