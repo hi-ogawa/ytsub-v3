@@ -5,7 +5,7 @@ import { Link, useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import { omit } from "lodash";
 import React from "react";
-import { Book, ChevronDown, Filter, Play, Video, X } from "react-feather";
+import { Book, Filter, Play, Video, X } from "react-feather";
 import { z } from "zod";
 import { PaginationComponent } from "../../components/misc";
 import { useModal } from "../../components/modal";
@@ -200,11 +200,12 @@ export function BookmarkEntryComponent({
         )}
       >
         <button
-          className={cls("antd-btn antd-btn-ghost", open && "rotate-180")}
+          className={cls(
+            "antd-btn antd-btn-ghost i-ri-arrow-down-s-line w-5 h-5",
+            open && "rotate-180"
+          )}
           onClick={() => setOpen(!open)}
-        >
-          <ChevronDown size={16} />
-        </button>
+        />
         <div
           className="flex-1 text-sm cursor-pointer"
           onClick={() => setOpen(!open)}

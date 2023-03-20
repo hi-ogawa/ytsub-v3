@@ -160,31 +160,7 @@ export default function DefaultComponent() {
     <div className="w-full flex justify-center">
       <div className="h-full w-full max-w-lg">
         <div className="h-full flex flex-col p-2 gap-2">
-          {/* TODO(refactor): copied from `practice.tsx` */}
-          <div className="w-full flex items-center p-2 px-4">
-            <div className="text-colorTextSecondary text-sm uppercase">
-              Progress
-            </div>
-            <div className="grow flex px-4">
-              <div className="flex-1" />
-              <div className="text-colorInfoText">
-                {statistics.NEW.daily} | {statistics.NEW.total}
-              </div>
-              <div className="flex-1 text-center text-colorTextSecondary">
-                -
-              </div>
-              <div className="text-colorWarningText">
-                {statistics.LEARN.daily} | {statistics.LEARN.total}
-              </div>
-              <div className="flex-1 text-center text-colorTextSecondary">
-                -
-              </div>
-              <div className="text-colorSuccessText">
-                {statistics.REVIEW.daily} | {statistics.REVIEW.total}
-              </div>
-              <div className="flex-1" />
-            </div>
-          </div>
+          <DeckPracticeStatisticsComponent statistics={statistics} />
           {practiceEntries.length === 0 && <div>Empty</div>}
           {practiceEntries.map((p) => {
             const b = bookmarkEntriesById.byId[p.bookmarkEntryId];
@@ -213,6 +189,33 @@ export default function DefaultComponent() {
         <PaginationComponent pagination={pagination} />
       </div>
     </>
+  );
+}
+
+export function DeckPracticeStatisticsComponent({
+  statistics,
+}: {
+  statistics: DeckPracticeStatistics;
+}) {
+  return (
+    <div className="w-full flex items-center p-2 px-4">
+      <div className="text-sm uppercase">Progress</div>
+      <div className="grow flex px-4">
+        <div className="flex-1" />
+        <div className="text-colorInfoText">
+          {statistics.NEW.daily} | {statistics.NEW.total}
+        </div>
+        <div className="flex-1 text-center text-colorTextSecondary">-</div>
+        <div className="text-colorWarningText">
+          {statistics.LEARN.daily} | {statistics.LEARN.total}
+        </div>
+        <div className="flex-1 text-center text-colorTextSecondary">-</div>
+        <div className="text-colorSuccessText">
+          {statistics.REVIEW.daily} | {statistics.REVIEW.total}
+        </div>
+        <div className="flex-1" />
+      </div>
+    </div>
   );
 }
 

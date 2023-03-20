@@ -29,7 +29,7 @@ import {
 } from "../../../utils/practice-system";
 import { toForm } from "../../../utils/url-data";
 import { BookmarkEntryComponent } from "../../bookmarks";
-import { requireUserAndDeck } from "./index";
+import { DeckPracticeStatisticsComponent, requireUserAndDeck } from "./index";
 import type { NewPracticeActionRequest } from "./new-practice-action";
 
 export const handle: PageHandle = {
@@ -107,44 +107,7 @@ export default function DefaultComponent() {
     <div className="h-full w-full flex justify-center">
       <div className="h-full w-full max-w-lg">
         <div className="h-full flex flex-col p-2 gap-2">
-          <div className="w-full flex items-center bg-white p-2 px-4">
-            <div className="flex-none text-sm text-gray-600 uppercase">
-              Progress
-            </div>
-            <div className="grow flex px-4">
-              <div className="grow" />
-              <div
-                className={`flex-none text-blue-500 ${
-                  !data.finished &&
-                  data.practiceEntry.queueType === "NEW" &&
-                  "underline"
-                }`}
-              >
-                {statistics.NEW.daily} / {statistics.NEW.total}
-              </div>
-              <div className="grow text-center text-gray-400">-</div>
-              <div
-                className={`flex-none text-red-500 ${
-                  !data.finished &&
-                  data.practiceEntry.queueType === "LEARN" &&
-                  "underline"
-                }`}
-              >
-                {statistics.LEARN.daily} / {statistics.LEARN.total}
-              </div>
-              <div className="grow text-center text-gray-400">-</div>
-              <div
-                className={`flex-none text-green-500 ${
-                  !data.finished &&
-                  data.practiceEntry.queueType === "REVIEW" &&
-                  "underline"
-                }`}
-              >
-                {statistics.REVIEW.daily} / {statistics.REVIEW.total}
-              </div>
-              <div className="grow" />
-            </div>
-          </div>
+          <DeckPracticeStatisticsComponent statistics={statistics} />
           {data.finished ? (
             <div className="w-full text-center">Practice is completed!</div>
           ) : (
@@ -212,12 +175,13 @@ function PracticeComponent({
           />
         )}
       </div>
-      <div className="flex justify-center pt-2 pb-4">
-        <div className="btn-group">
+      <div className="flex justify-center">
+        <div className="flex gap-2">
           {PRACTICE_ACTION_TYPES.map((type) => (
             <button
               key={type}
-              className={`btn ${isLoading && "btn-disabled"}`}
+              className="antd-btn antd-btn-default p-1 px-2"
+              disabled={isLoading}
               onClick={() => onClickAction(type)}
             >
               {type}
@@ -242,6 +206,7 @@ function NavBarTitleComponent() {
 // NavBarMenuComponent
 //
 
+// TODO
 function NavBarMenuComponent() {
   const { deck }: LoaderData = useDeserialize(useLeafLoaderData());
 
