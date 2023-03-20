@@ -297,7 +297,8 @@ function Navbar({
               </li>
             );
           })}
-          <li className="pt-2">
+          <li className="border-t py-2"></li>
+          <li>
             <ThemeSelect />
           </li>
         </ul>
