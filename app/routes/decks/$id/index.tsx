@@ -2,19 +2,6 @@ import { tinyassert } from "@hiogawa/utils";
 import { Form, Link, useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import React from "react";
-import {
-  Activity,
-  Bookmark,
-  CheckCircle,
-  ChevronDown,
-  ChevronUp,
-  Circle,
-  Disc,
-  Edit,
-  MoreVertical,
-  Play,
-  Trash2,
-} from "react-feather";
 import { z } from "zod";
 import { PaginationComponent } from "../../../components/misc";
 import { PopoverSimple } from "../../../components/popover";
@@ -36,6 +23,7 @@ import { Controller, makeLoader } from "../../../utils/controller-utils";
 import { useDeserialize } from "../../../utils/hooks";
 import { dtfDateOnly, rtf } from "../../../utils/intl";
 import { useLeafLoaderData } from "../../../utils/loader-utils";
+import { cls } from "../../../utils/misc";
 import type { PageHandle } from "../../../utils/page-handle";
 import { PAGINATION_PARAMS_SCHEMA } from "../../../utils/pagination";
 import {
@@ -173,24 +161,28 @@ export default function DefaultComponent() {
       <div className="h-full w-full max-w-lg">
         <div className="h-full flex flex-col p-2 gap-2">
           {/* TODO(refactor): copied from `practice.tsx` */}
-          <div className="w-full flex items-center bg-white p-2 px-4">
-            <div className="flex-none text-sm text-gray-600 uppercase">
+          <div className="w-full flex items-center p-2 px-4">
+            <div className="text-colorTextSecondary text-sm uppercase">
               Progress
             </div>
             <div className="grow flex px-4">
-              <div className="grow" />
-              <div className="flex-none text-blue-500">
-                {statistics.NEW.daily} / {statistics.NEW.total}
+              <div className="flex-1" />
+              <div className="text-colorInfoText">
+                {statistics.NEW.daily} | {statistics.NEW.total}
               </div>
-              <div className="grow text-center text-gray-400">-</div>
-              <div className="flex-none text-red-500">
-                {statistics.LEARN.daily} / {statistics.LEARN.total}
+              <div className="flex-1 text-center text-colorTextSecondary">
+                -
               </div>
-              <div className="grow text-center text-gray-400">-</div>
-              <div className="flex-none text-green-500">
-                {statistics.REVIEW.daily} / {statistics.REVIEW.total}
+              <div className="text-colorWarningText">
+                {statistics.LEARN.daily} | {statistics.LEARN.total}
               </div>
-              <div className="grow" />
+              <div className="flex-1 text-center text-colorTextSecondary">
+                -
+              </div>
+              <div className="text-colorSuccessText">
+                {statistics.REVIEW.daily} | {statistics.REVIEW.total}
+              </div>
+              <div className="flex-1" />
             </div>
           </div>
           {practiceEntries.length === 0 && <div>Empty</div>}
@@ -244,29 +236,27 @@ export function PracticeBookmarkEntryComponent({
   const practiceEntryId = practiceEntry.id;
 
   return (
-    <div
-      className="border border-gray-200 flex flex-col"
-      data-test="bookmark-entry"
-    >
+    <div className="border flex flex-col" data-test="bookmark-entry">
       <div
-        className={`flex flex-col p-2 gap-2 w-full items-stretch
-          ${open && "border-b border-gray-200 border-dashed"}
-        `}
+        className={cls(
+          "flex flex-col p-2 gap-2 w-full items-stretch",
+          open && "border-b border-dashed"
+        )}
       >
         <div
           className="flex gap-2 cursor-pointer"
           onClick={() => setOpen(!open)}
         >
           <div className="flex-none h-[20px] flex items-center">
-            {practiceEntry.queueType === "NEW" && (
-              <Circle size={16} className="text-blue-400" />
-            )}
-            {practiceEntry.queueType === "LEARN" && (
-              <Disc size={16} className="text-red-300" />
-            )}
-            {practiceEntry.queueType === "REVIEW" && (
-              <CheckCircle size={16} className="text-green-400" />
-            )}
+            {/* prettier-ignore */}
+            <span
+              className={cls(
+                "w-5 h-5",
+                practiceEntry.queueType === "NEW" && "i-ri-checkbox-blank-circle-line text-colorInfoText",
+                practiceEntry.queueType === "LEARN" && "i-ri-record-circle-line text-colorWarningText",
+                practiceEntry.queueType === "REVIEW" && "i-ri-checkbox-circle-line text-colorSuccessText"
+              )}
+            />
           </div>
           <div
             className="grow text-sm cursor-pointer"
@@ -275,26 +265,27 @@ export function PracticeBookmarkEntryComponent({
             {bookmarkEntry.text}
           </div>
         </div>
-        <div className="relative flex items-center gap-2 ml-6 text-xs text-gray-500">
+        <div className="relative flex items-center gap-2 ml-6 text-xs text-colorTextSecondary">
           <Link
             to={
               R["/decks/$id/history"](deck.id) +
               "?" +
               toQuery({ practiceEntryId })
             }
-            className="hover:underline hover:text-primary"
+            className="hover:underline"
           >
             Answered {formatCount(actionsCount)}
           </Link>
           {"⋅"}
           <div>Scheduled {scheduledAt}</div>
-          <div className="absolute right-0 bottom-0">
+          <div className="absolute right-0 bottom-0 flex">
             <button
-              className="flex-none btn btn-xs btn-circle btn-ghost text-gray-500"
+              className={cls(
+                "antd-btn antd-btn-ghost i-ri-arrow-down-s-line w-5 h-5",
+                open && "rotate-180"
+              )}
               onClick={() => setOpen(!open)}
-            >
-              {open ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-            </button>
+            ></button>
           </div>
         </div>
       </div>
@@ -347,83 +338,85 @@ function NavBarTitleComponent() {
 // NavBarMenuComponent
 //
 
+// TODO: reuse between /decks/$id/xxx pages
 function NavBarMenuComponent() {
   const { deck }: LoaderData = useDeserialize(useLeafLoaderData());
 
   return (
-    <>
-      <div className="flex-none">
-        <PopoverSimple
-          placement="bottom-end"
-          reference={
-            <button
-              className="btn btn-sm btn-ghost"
-              data-test="deck-menu-popover-reference"
-            >
-              <MoreVertical />
-            </button>
-          }
-          floating={(context) => (
-            <ul
-              className="menu menu-compact rounded p-3 w-48 text-sm"
-              data-test="deck-menu-popover-floating"
-            >
-              <li>
-                <Link
-                  to={R["/decks/$id/practice"](deck.id)}
-                  onClick={() => context.onOpenChange(false)}
-                >
-                  <Play />
-                  Practice
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to={R["/decks/$id/history-graph"](deck.id)}
-                  onClick={() => context.onOpenChange(false)}
-                >
-                  <Activity />
-                  History
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to={R["/bookmarks"] + `?deckId=${deck.id}`}
-                  onClick={() => context.onOpenChange(false)}
-                >
-                  <Bookmark />
-                  Bookmarks
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to={R["/decks/$id/edit"](deck.id)}
-                  onClick={() => context.onOpenChange(false)}
-                >
-                  <Edit />
-                  Edit
-                </Link>
-              </li>
-              <Form
-                action={R["/decks/$id?index"](deck.id)}
-                method="delete"
-                onSubmitCapture={(e) => {
-                  if (!window.confirm("Are you sure?")) {
-                    e.preventDefault();
-                  }
-                }}
-              >
-                <li>
-                  <button type="submit">
-                    <Trash2 />
-                    Delete
-                  </button>
-                </li>
-              </Form>
-            </ul>
-          )}
+    <PopoverSimple
+      placement="bottom-end"
+      reference={
+        <button
+          className="antd-btn antd-btn-ghost i-ri-more-2-line w-6 h-6"
+          data-test="deck-menu-popover-reference"
         />
-      </div>
-    </>
+      }
+      floating={(context) => (
+        <ul
+          className="flex flex-col gap-2 p-2 w-[180px] text-sm"
+          data-test="deck-menu-popover-floating"
+        >
+          <li>
+            <Link
+              className="w-full antd-menu-item flex items-center gap-2 p-2"
+              to={R["/decks/$id/practice"](deck.id)}
+              onClick={() => context.onOpenChange(false)}
+            >
+              <span className="i-ri-play-line w-6 h-6"></span>
+              Practice
+            </Link>
+          </li>
+          <li>
+            <Link
+              className="w-full antd-menu-item flex items-center gap-2 p-2"
+              to={R["/decks/$id/history-graph"](deck.id)}
+              onClick={() => context.onOpenChange(false)}
+            >
+              <span className="i-ri-history-line w-6 h-6"></span>
+              History
+            </Link>
+          </li>
+          <li>
+            <Link
+              className="w-full antd-menu-item flex items-center gap-2 p-2"
+              to={R["/bookmarks"] + `?deckId=${deck.id}`}
+              onClick={() => context.onOpenChange(false)}
+            >
+              <span className="i-ri-bookmark-line w-6 h-6"></span>
+              Bookmarks
+            </Link>
+          </li>
+          <li>
+            <Link
+              className="w-full antd-menu-item flex items-center gap-2 p-2"
+              to={R["/decks/$id/edit"](deck.id)}
+              onClick={() => context.onOpenChange(false)}
+            >
+              <span className="i-ri-edit-line w-6 h-6"></span>
+              Edit
+            </Link>
+          </li>
+          <li>
+            <Form
+              action={R["/decks/$id?index"](deck.id)}
+              method="delete"
+              onSubmitCapture={(e) => {
+                if (!window.confirm("Are you sure?")) {
+                  e.preventDefault();
+                }
+              }}
+            >
+              <button
+                className="w-full antd-menu-item flex items-center gap-2 p-2"
+                type="submit"
+              >
+                <span className="i-ri-delete-bin-line w-6 h-6"></span>
+                Delete
+              </button>
+            </Form>
+          </li>
+        </ul>
+      )}
+    />
   );
 }
