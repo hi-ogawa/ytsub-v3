@@ -89,7 +89,7 @@ export function VideoComponent({
         <a
           href={"https://www.youtube.com/channel/" + channelId}
           target="_blank"
-          className="line-clamp-1 text-gray-600 text-xs pr-8"
+          className="line-clamp-1 text-colorTextSecondary text-xs pr-8"
         >
           {author}
         </a>
