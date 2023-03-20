@@ -19,13 +19,4 @@ export default defineConfig({
     }),
   ],
   transformers: [transformerDirectives(), transformerVariantGroup()],
-  preflights: [
-    {
-      getCSS: () =>
-        fs.readFileSync(
-          require.resolve("@hiogawa/unocss-preset-antd/dist/reset.css"),
-          "utf-8"
-        ),
-    },
-  ],
 });
