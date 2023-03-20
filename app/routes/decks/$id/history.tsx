@@ -134,7 +134,7 @@ function PracticeActionComponent(props: {
         </div>
       </div>
       <div className="flex items-center ml-6 text-xs gap-3">
-        <div className="border rounded-full py-0.5 w-14 text-center">
+        <div className="border rounded-full px-2 py-0.5 w-14 text-center">
           {actionType}
         </div>
         <div className="flex-1 text-colorTextSecondary">
