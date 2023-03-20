@@ -18,15 +18,7 @@ import {
 import { atom, useAtom } from "jotai";
 import { atomWithStorage } from "jotai/utils";
 import React from "react";
-import {
-  Bookmark,
-  MoreVertical,
-  Play,
-  Repeat,
-  Save,
-  Video,
-  X,
-} from "react-feather";
+import { MoreVertical, Play, Repeat, Save, Video } from "react-feather";
 import toast from "react-hot-toast";
 import { useSearchParams } from "react-router-dom";
 import { z } from "zod";
@@ -43,6 +35,7 @@ import { Controller, makeLoader } from "../../utils/controller-utils";
 import { useDeserialize, useSelection } from "../../utils/hooks";
 import { useYoutubeIframeApi } from "../../utils/hooks";
 import { useLeafLoaderData, useRootLoaderData } from "../../utils/loader-utils";
+import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 import type { CaptionEntry } from "../../utils/types";
 import { toForm } from "../../utils/url-data";
@@ -363,28 +356,31 @@ function PageComponent({
         currentUser.id === video.userId && (
           <Transition
             show={!!bookmarkState || fetcher.state !== "idle"}
-            className="absolute bottom-0 right-0 flex gap-2 p-1.5 transition-all duration-300"
-            enterFrom="scale-[0.3] opacity-0"
+            className="absolute bottom-0 right-0 flex gap-2 p-1.5 transition duration-300 z-10"
+            enterFrom="scale-30 opacity-0"
             enterTo="scale-100 opacity-100"
             leaveFrom="scale-100 opacity-100"
-            leaveTo="scale-[0.3] opacity-0"
+            leaveTo="scale-30 opacity-0"
           >
+            {/* workaround transparent antd-btn-text by opaque wrapping */}
+            <div className="w-12 h-12 rounded-full antd-body">
+              <button
+                className="antd-btn antd-btn-text antd-floating w-12 h-12 rounded-full flex justify-center items-center"
+                onClick={onCancelBookmark}
+              >
+                <span className="i-ri-close-line w-6 h-6" />
+              </button>
+            </div>
             <button
-              onClick={onCancelBookmark}
-              className="w-12 h-12 rounded-full bg-secondary text-white flex justify-center items-center shadow-xl hover:contrast-75 transition-[filter] duration-300"
-            >
-              <X />
-            </button>
-            <button
+              className="antd-btn !antd-btn-primary antd-floating w-12 h-12 rounded-full flex justify-center items-center"
               onClick={onClickBookmark}
-              className="w-12 h-12 rounded-full bg-primary text-white flex justify-center items-center shadow-xl hover:contrast-75 transition-[filter] duration-300"
-              data-test="new-bookmark-button"
             >
-              {fetcher.state === "idle" ? (
-                <Bookmark />
-              ) : (
-                <div className="antd-spin w-6" />
-              )}
+              <span
+                className={cls(
+                  fetcher.state === "idle" ? "i-ri-bookmark-line" : "antd-spin",
+                  "w-6 h-6"
+                )}
+              />
             </button>
           </Transition>
         )
