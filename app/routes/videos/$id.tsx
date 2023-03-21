@@ -230,7 +230,7 @@ function PageComponent({
         nextEntry &&
         currentEntry &&
         nextEntry.index === currentEntry.index + 1 &&
-        repeatingEntries.at(-1) == currentEntry
+        repeatingEntries.at(-1) === currentEntry
       ) {
         nextEntry = repeatingEntries[0];
       }
