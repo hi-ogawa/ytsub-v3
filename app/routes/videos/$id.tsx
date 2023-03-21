@@ -614,15 +614,14 @@ export function CaptionEntryComponent({
         )}
         <button
           className={cls(
-            // workaround confusing "hover" state on touch device
-            `antd-btn media-mouse:antd-btn-ghost i-ri-repeat-line w-3 h-3`,
+            `antd-btn antd-btn-ghost i-ri-repeat-line w-3 h-3`,
             isRepeating && "text-colorPrimary"
           )}
           onClick={() => onClickEntryRepeat(entry)}
         />
         <button
           className={cls(
-            `antd-btn media-mouse:antd-btn-ghost i-ri-play-line w-4 h-4`,
+            `antd-btn antd-btn-ghost i-ri-play-line w-4 h-4`,
             isEntryPlaying && "text-colorPrimary"
           )}
           onClick={() => onClickEntryPlay(entry, false)}
