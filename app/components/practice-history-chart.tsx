@@ -6,48 +6,24 @@ import type { PracticeQueueType } from "../db/models";
 
 function EchartsComponent(props: {
   option: echarts.EChartsOption;
-  setInstance?: (instance: echarts.ECharts) => void;
-  onInit?: (instance?: echarts.ECharts) => void;
   className?: string;
+  setInstance?: (instance?: echarts.ECharts) => void;
 }) {
-  const ref = React.useRef(null);
-  const instance = React.useRef<echarts.ECharts>();
-
-  const onInitRef = useStableRef(props.onInit);
-
   const instanceRef = React.useRef<echarts.ECharts>();
+  const onInitRef = useStableRef(props.setInstance);
 
   const elRef: React.RefCallback<HTMLElement> = (el) => {
     instanceRef.current?.dispose();
-    if (el) {
-      instanceRef.current = echarts.init(el);
-      onInitRef.current?.(instanceRef.current);
-    } else {
-      instanceRef.current = undefined;
-    }
+    instanceRef.current = el ? echarts.init(el) : undefined;
+    onInitRef.current?.(instanceRef.current);
   };
 
   React.useEffect(() => {
-    tinyassert(!instance.current);
-    tinyassert(ref.current);
-    instance.current = echarts.init(ref.current);
-    if (props.setInstance) {
-      props.setInstance(instance.current);
-    }
-    return () => {
-      tinyassert(instance.current);
-      instance.current.dispose();
-    };
-  }, []);
-
-  React.useEffect(() => {
-    tinyassert(instance.current);
-    instance.current.setOption(props.option);
+    tinyassert(instanceRef.current);
+    instanceRef.current.setOption(props.option);
   }, [props.option]);
 
-  <div className={props.className} ref={React.useCallback(elRef, [])} />;
-
-  return <div ref={ref} className={props.className} />;
+  return <div className={props.className} ref={React.useCallback(elRef, [])} />;
 }
 
 const BASE_ECHARTS_OPTION: echarts.EChartsOption = {
@@ -71,6 +47,13 @@ const BASE_ECHARTS_OPTION: echarts.EChartsOption = {
   xAxis: {
     type: "category",
     boundaryGap: false,
+    axisLabel: {
+      formatter: (value, _index) => {
+        // 2022-05-14 => 05/14
+        const [, m, d] = value.split("-");
+        return m + "/" + d;
+      },
+    },
   },
   yAxis: {
     type: "value",
@@ -169,29 +152,20 @@ type PracticeHistoryChartDataEntry = {
 
 export type PracticeHistoryChartData = PracticeHistoryChartDataEntry[];
 
-// TODO: can we move this within echarts transform
-function formatDate(date: string): string {
-  // 2022-05-14 => 05/14
-  const [, m, d] = date.split("-");
-  return m + "/" + d;
-}
-
-export function PracticeHistoryChart({
-  data,
-  ...props
-}: {
-  data: PracticeHistoryChartData;
-  setInstance?: (instance: echarts.ECharts) => void;
-  className?: string;
-}) {
+export function PracticeHistoryChart(
+  props: {
+    data: PracticeHistoryChartData;
+  } & Omit<React.ComponentProps<typeof EchartsComponent>, "option">
+) {
+  const { data, ...rest } = props;
   const option = React.useMemo(() => {
     return {
       ...BASE_ECHARTS_OPTION,
       dataset: {
         dimensions: ["date", "total", "NEW", "LEARN", "REVIEW"],
-        source: data.map((e) => ({ ...e, date: formatDate(e.date) })),
+        source: data,
       },
     };
   }, [data]);
-  return <EchartsComponent option={option} {...props} />;
+  return <EchartsComponent option={option} {...rest} />;
 }

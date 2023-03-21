@@ -2,7 +2,7 @@ import { Link } from "@remix-run/react";
 import type React from "react";
 import type { PaginationMetadata, VideoTable } from "../db/models";
 import { R } from "../misc/routes";
-import { useHydrated } from "../utils/hooks";
+// import { useHydrated } from "../utils/hooks";
 import { cls } from "../utils/misc";
 import { toNewPages } from "../utils/pagination";
 import { toQuery } from "../utils/url-data";
@@ -164,7 +164,7 @@ export function PaginationComponent({
   );
 }
 
-export function NoSSR({ children }: { children: React.ReactNode }) {
-  const hydrated = useHydrated();
-  return <>{hydrated ? children : null}</>;
-}
+// export function NoSSR({ children }: { children: React.ReactNode }) {
+//   const hydrated = useHydrated();
+//   return <>{hydrated ? children : null}</>;
+// }

@@ -122,8 +122,10 @@ export default function DefaultComponent() {
 
   const [instance, setInstance] = React.useState<ECharts>();
 
-  function setInstanceWrapper(instance: ECharts) {
-    instance.on("rendered", () => setIsLoading(false));
+  function setInstanceWrapper(instance?: ECharts) {
+    if (instance) {
+      instance.on("rendered", () => setIsLoading(false));
+    }
     setInstance(instance);
   }
 
@@ -137,6 +139,7 @@ export default function DefaultComponent() {
     <div className="w-full flex justify-center">
       <div className="w-full max-w-lg flex flex-col gap-3 mt-2">
         <div className="relative w-full h-[300px]">
+          {/* TODO: NoSSR */}
           <PracticeHistoryChart
             data={data}
             setInstance={setInstanceWrapper}
