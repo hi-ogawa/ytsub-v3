@@ -1,4 +1,3 @@
-import { tinyassert } from "@hiogawa/utils";
 import React from "react";
 
 // based on https://github.com/hi-ogawa/unocss-preset-antd/blob/eb3a4cfe1474bc4236c5d4007c1e9f962eaa4df5/packages/app/src/components/theme-select-button.tsx
@@ -9,8 +8,9 @@ const THEME_OPTIONS = [
   ["light", "Light"],
 ] as const;
 
+// TODO: NoSSR
 export function ThemeSelect() {
-  const [theme, setTheme] = useThemeState();
+  const [theme, setTheme] = useTheme();
   return (
     <label className="flex items-center gap-2">
       Theme
@@ -31,73 +31,22 @@ export function ThemeSelect() {
   );
 }
 
-// defined in <head><script>
-declare let __themeStorageKey: string;
+//
+// defined in <head><script> (see index.html)
+//
 
-function useThemeState() {
-  const [theme, setTheme] = useLocalStorage(__themeStorageKey, "system");
-  const prefersDark = useMatchMedia("(prefers-color-scheme: dark)");
+declare let __theme: {
+  setTheme: (theme: string) => void;
+  getTheme: () => string;
+};
 
-  const isDark =
-    theme === "dark" || (theme === "system" && prefersDark.matches);
+function useTheme() {
+  const [theme, setTheme] = React.useState(() => __theme.getTheme());
 
-  React.useEffect(() => {
-    runWithoutTransition(() => {
-      document.documentElement.classList.remove("dark", "light");
-      document.documentElement.classList.add(isDark ? "dark" : "light");
-    });
-  }, [isDark]);
-
-  return [theme, setTheme] as const;
-}
-
-function useLocalStorage(key: string, defaultValue: string) {
-  const rerender = useRerender();
-
-  function get() {
-    return window.localStorage.getItem(key) || defaultValue;
+  function setThemeWrapper(config: string) {
+    __theme.setTheme(config);
+    setTheme(config);
   }
 
-  function set(theme: string) {
-    window.localStorage.setItem(key, theme);
-    rerender();
-  }
-
-  return [get(), set] as const;
-}
-
-// TODO: utils-browser?
-function runWithoutTransition(callback: () => void) {
-  const el = document.createElement("style");
-  el.innerHTML = `
-    * {
-      -webkit-transition: none !important;
-      -moz-transition: none !important;
-      -o-transition: none !important;
-      -ms-transition: none !important;
-      transition: none !important;
-    }
-  `;
-  document.head.appendChild(el);
-  callback();
-  // force paint
-  tinyassert(window.getComputedStyle(document.documentElement).transition);
-  document.head.removeChild(el);
-}
-
-// TODO: utils-react?
-function useMatchMedia(query: string) {
-  const result = React.useMemo(() => window.matchMedia(query), [query]);
-  const rerender = useRerender();
-
-  React.useEffect(() => {
-    result.addEventListener("change", rerender);
-    return () => result.removeEventListener("change", rerender);
-  }, [result]);
-
-  return result;
-}
-
-function useRerender() {
-  return React.useReducer((prev) => !prev, false)[1];
+  return [theme, setThemeWrapper] as const;
 }
