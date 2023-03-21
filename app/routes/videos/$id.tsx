@@ -177,7 +177,9 @@ function PageComponent({
   );
   const [autoScrollState] = useAutoScrollState();
   const autoScroll = autoScrollState.includes(video.id);
-  const [repeatingEntries, , toggleRepeatingEntries] = useRepeatingEntries();
+  const [repeatingEntries, setRepeatingEntries, toggleRepeatingEntries] =
+    useRepeatingEntries();
+  React.useEffect(() => () => setRepeatingEntries([]), []); // clear state on page navigation
 
   //
   // state
