@@ -213,33 +213,44 @@ function PageComponent({
 
     if (!isPlaying) return;
 
-    // TODO: try to predict when repeating back. currently `currentEntry` flickers by picking next non-repeating entry momentarily.
     const currentTime = player.getCurrentTime();
-    const currentEntry = findCurrentEntry(captionEntries, currentTime);
-    setCurrentEntry(currentEntry);
+    let nextEntry = findCurrentEntry(captionEntries, currentTime);
 
-    if (autoScroll && currentEntry && virtualizer.scrollElement) {
+    // repeat mode
+    if (repeatingEntries.length > 0) {
+      // update player
+      const begin = Math.min(...repeatingEntries.map((entry) => entry.begin));
+      const end = Math.max(...repeatingEntries.map((entry) => entry.end));
+      if (currentTime < begin || end < currentTime) {
+        player.seekTo(begin);
+      }
+
+      // predict `nextEntry`
+      if (
+        nextEntry &&
+        currentEntry &&
+        nextEntry.index === currentEntry.index + 1 &&
+        repeatingEntries.at(-1) === currentEntry
+      ) {
+        nextEntry = repeatingEntries[0];
+      }
+    }
+
+    // auto scroll subtitle list
+    if (autoScroll && nextEntry && virtualizer.scrollElement) {
       const { scrollTop, clientHeight } = virtualizer.scrollElement;
       const currentCenter = scrollTop + clientHeight / 2;
       const items = virtualizer.getVirtualItems();
-      const currentItem = items.find(
-        (item) => item.index === currentEntry.index
-      );
+      const currentItem = items.find((item) => item.index === nextEntry?.index);
       if (!currentItem || Math.abs(currentItem.start - currentCenter) > 150) {
-        virtualizer.scrollToIndex(currentEntry.index, {
+        virtualizer.scrollToIndex(nextEntry.index, {
           align: "center",
           behavior: "auto",
         });
       }
     }
 
-    if (repeatingEntries.length > 0) {
-      const begin = Math.min(...repeatingEntries.map((entry) => entry.begin));
-      const end = Math.max(...repeatingEntries.map((entry) => entry.end));
-      if (currentTime < begin || end < currentTime) {
-        player.seekTo(begin);
-      }
-    }
+    setCurrentEntry(nextEntry);
   });
 
   function onClickEntryPlay(entry: CaptionEntry, toggle: boolean) {
