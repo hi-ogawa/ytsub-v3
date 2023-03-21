@@ -364,7 +364,7 @@ function PageComponent({
             {/* workaround transparent antd-btn-text by opaque wrapping */}
             <div className="w-12 h-12 rounded-full antd-body">
               <button
-                className="antd-btn antd-btn-text antd-floating w-12 h-12 rounded-full flex justify-center items-center"
+                className="antd-btn antd-btn-text antd-floating bg-colorBgSpotlight w-12 h-12 rounded-full flex justify-center items-center"
                 onClick={onCancelBookmark}
               >
                 <span className="i-ri-close-line w-6 h-6" />

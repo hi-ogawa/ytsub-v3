@@ -187,7 +187,7 @@ export function TestFab() {
             <button className="antd-btn !antd-btn-primary antd-floating w-12 h-12 rounded-full flex justify-center items-center">
               <span className="i-ri-bookmark-line w-6 h-6" />
             </button>
-            <button className="antd-btn antd-btn-text antd-floating w-12 h-12 rounded-full flex justify-center items-center">
+            <button className="antd-btn antd-btn-text bg-colorBgSpotlight antd-floating w-12 h-12 rounded-full flex justify-center items-center">
               <span className="i-ri-close-line w-6 h-6" />
             </button>
           </Transition>
