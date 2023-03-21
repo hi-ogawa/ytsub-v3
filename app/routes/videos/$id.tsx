@@ -593,7 +593,7 @@ export function CaptionEntryComponent({
         ${border && "border"}
         ${isEntryPlaying && "ring-1.5 ring-colorPrimaryBorder"}
         ${border && isCurrentEntry && "border-colorPrimary"}
-        ${isFocused && "border-l-2 border-l-colorPrimary"}
+        ${isFocused && "!border-colorWarning"}
         ${virtualItem?.index === 0 && "mt-1.5"}
         ${isActualLast && "mb-1.5"}
         p-1.5 gap-1
