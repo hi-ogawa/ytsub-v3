@@ -82,7 +82,8 @@ jobs:
       - run: pnpm cli db:test-migrations --reversibility-test
 
   publish-coverage-report:
-    if: github.ref == 'refs/heads/master'
+    # TODO: disabled since this is broken after vitest update https://github.com/hi-ogawa/ytsub-v3/pull/192
+    if: github.ref == 'refs/heads/master-xxx'
     runs-on: ubuntu-20.04
     needs:
       - test
