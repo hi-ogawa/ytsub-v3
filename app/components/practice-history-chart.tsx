@@ -1,4 +1,5 @@
 import { tinyassert } from "@hiogawa/utils";
+import { useStableRef } from "@hiogawa/utils-react";
 import * as echarts from "echarts";
 import React from "react";
 import type { PracticeQueueType } from "../db/models";
@@ -6,10 +7,25 @@ import type { PracticeQueueType } from "../db/models";
 function EchartsComponent(props: {
   option: echarts.EChartsOption;
   setInstance?: (instance: echarts.ECharts) => void;
+  onInit?: (instance?: echarts.ECharts) => void;
   className?: string;
 }) {
   const ref = React.useRef(null);
   const instance = React.useRef<echarts.ECharts>();
+
+  const onInitRef = useStableRef(props.onInit);
+
+  const instanceRef = React.useRef<echarts.ECharts>();
+
+  const elRef: React.RefCallback<HTMLElement> = (el) => {
+    instanceRef.current?.dispose();
+    if (el) {
+      instanceRef.current = echarts.init(el);
+      onInitRef.current?.(instanceRef.current);
+    } else {
+      instanceRef.current = undefined;
+    }
+  };
 
   React.useEffect(() => {
     tinyassert(!instance.current);
@@ -28,6 +44,8 @@ function EchartsComponent(props: {
     tinyassert(instance.current);
     instance.current.setOption(props.option);
   }, [props.option]);
+
+  <div className={props.className} ref={React.useCallback(elRef, [])} />;
 
   return <div ref={ref} className={props.className} />;
 }
