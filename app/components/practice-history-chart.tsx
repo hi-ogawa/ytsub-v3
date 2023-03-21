@@ -157,7 +157,8 @@ export function PracticeHistoryChart(
     data: PracticeHistoryChartData;
   } & Omit<React.ComponentProps<typeof EchartsComponent>, "option">
 ) {
-  if (typeof window === "undefined") throw new Error("ClientOnly:PracticeHistoryChart");
+  if (typeof window === "undefined")
+    throw new Error("ClientOnly:PracticeHistoryChart");
 
   const { data, ...rest } = props;
   const option = React.useMemo(() => {

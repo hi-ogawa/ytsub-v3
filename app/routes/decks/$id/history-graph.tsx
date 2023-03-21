@@ -115,6 +115,7 @@ export const loader = makeLoader(Controller, async function () {
 //
 
 export default function DefaultComponent() {
+  // TODO: no need to fetch on server. use defer.
   const { data, page }: LoaderData = useDeserialize(useLeafLoaderData());
 
   // show loading between SSR and echarts "rendered" event
