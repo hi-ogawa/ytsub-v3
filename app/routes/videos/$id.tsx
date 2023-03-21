@@ -592,7 +592,7 @@ export function CaptionEntryComponent({
       className={cls(
         "w-full flex flex-col p-1 px-2 gap-1 text-xs",
         border && "border",
-        isEntryPlaying && "ring-2 ring-colorPrimaryBorder",
+        border && isEntryPlaying && "ring-2 ring-colorPrimaryBorder",
         border && isCurrentEntry && "border-colorPrimary",
         // quick virtualizer padding workaround
         virtualItem?.index === 0 && "mt-1.5",
