@@ -93,6 +93,8 @@ export function VideoListComponent({
     for (const fetcher of fetchers) {
       if (
         fetcher.type === "done" &&
+        // extra runtime check for remix (typing) issue? https://github.com/hi-ogawa/ytsub-v3/issues/179
+        fetcher.data &&
         fetcher.data.type === "DELETE /videos/$id"
       ) {
         if (fetcher.data.success) {
