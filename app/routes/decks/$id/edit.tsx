@@ -5,6 +5,7 @@ import { z } from "zod";
 import { DeckTable, Q } from "../../../db/models";
 import { R } from "../../../misc/routes";
 import { Controller, makeLoader } from "../../../utils/controller-utils";
+import { toastInfo } from "../../../utils/flash-message-hook";
 import { useDeserialize, useIsFormValid } from "../../../utils/hooks";
 import { dtf } from "../../../utils/intl";
 import type { PageHandle } from "../../../utils/page-handle";
@@ -67,13 +68,14 @@ export default function DefaultComponent() {
   const [isValid, formProps] = useIsFormValid();
 
   return (
-    <div className="w-full p-4 flex justify-center">
+    <div className="w-full p-4 flex flex-col items-center gap-4">
       <Form
         method="post"
         className="flex flex-col border w-full max-w-sm p-4 px-6 gap-3"
         data-test="edit-deck-form"
         {...formProps}
       >
+        <h1 className="text-lg">Edit Deck</h1>
         <label className="flex flex-col gap-1">
           <span className="text-colorTextLabel">Name</span>
           <input
@@ -129,6 +131,29 @@ export default function DefaultComponent() {
           Save
         </button>
       </Form>
+      <div className="flex flex-col border w-full max-w-sm p-4 px-6 gap-3 border-colorErrorBorder">
+        <h1 className="text-lg">Danger Zone</h1>
+        <Form
+          className="flex"
+          action={R["/decks/$id?index"](deck.id)}
+          method="delete"
+          onSubmitCapture={(e) => {
+            const message = `Are you sure? Please type '${deck.name}' to delete this deck.`;
+            const response = window.prompt(message);
+            if (response !== deck.name) {
+              e.preventDefault();
+              toastInfo("Deletion canceled");
+            }
+          }}
+        >
+          <button
+            type="submit"
+            className="w-full antd-btn antd-btn-default p-1"
+          >
+            Delete this deck
+          </button>
+        </Form>
+      </div>
     </div>
   );
 }

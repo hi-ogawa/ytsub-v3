@@ -1,5 +1,5 @@
 import { tinyassert } from "@hiogawa/utils";
-import { Form, Link, useLoaderData } from "@remix-run/react";
+import { Link, useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import React from "react";
 import { NavLink } from "react-router-dom";
@@ -432,25 +432,6 @@ export function DeckNavBarMenuComponent() {
               />
             </li>
           ))}
-          <li>
-            <Form
-              action={R["/decks/$id?index"](deck.id)}
-              method="delete"
-              onSubmitCapture={(e) => {
-                if (!window.confirm("Are you sure?")) {
-                  e.preventDefault();
-                }
-              }}
-            >
-              <button
-                className="w-full antd-menu-item flex items-center gap-2 p-2"
-                type="submit"
-              >
-                <span className="i-ri-delete-bin-line w-6 h-6"></span>
-                Delete
-              </button>
-            </Form>
-          </li>
         </ul>
       )}
     />
