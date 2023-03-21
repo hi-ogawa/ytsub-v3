@@ -587,22 +587,23 @@ export function CaptionEntryComponent({
 
   return (
     <div
-      className={`
-        w-full
-        flex flex-col
-        ${border && "border"}
-        ${isEntryPlaying && "ring-1.5 ring-colorPrimaryBorder"}
-        ${border && isCurrentEntry && "border-colorPrimary"}
-        ${isFocused && "!border-colorWarning"}
-        ${virtualItem?.index === 0 && "mt-1.5"}
-        ${isActualLast && "mb-1.5"}
-        p-1.5 gap-1
-        text-xs
-      `}
+      className={cls(
+        "w-full flex flex-col p-1 px-2 gap-1 text-xs",
+        border && "border",
+        isEntryPlaying && "ring-2 ring-colorPrimaryBorder",
+        border && isCurrentEntry && "border-colorPrimary",
+        // quick virtualizer padding workaround
+        virtualItem?.index === 0 && "mt-1.5",
+        isActualLast && "mb-1.5"
+      )}
       ref={virtualizer?.measureElement}
       data-index={virtualItem?.index}
     >
-      <div className="flex items-center justify-end text-colorTextSecondary gap-2">
+      <div className="flex items-center text-colorTextSecondary gap-2">
+        {isFocused && (
+          <span className="i-ri-bookmark-line w-3 h-3 text-colorPrimary" />
+        )}
+        <span className="flex-1" />
         <div>{timestamp}</div>
         {!isNil(videoId) && (
           <Link
