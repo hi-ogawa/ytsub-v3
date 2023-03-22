@@ -3,18 +3,13 @@ set -eux -o pipefail
 
 # cleanup
 rm -rf build/remix/production
-rm -rf build/tailwind/production
+rm -rf build/css/production
 
-# tailwind
-NODE_ENV=production pnpm tailwind
+# css
+NODE_ENV=production pnpm build:css
 
 # copy assets not managed by remix
 NODE_ENV=production bash scripts/copy-assets.sh
-
-# build "storybook" static app
-if [ -n "${BUILD_UI_DEV:-}" ]; then
-  npx vite build --outDir build/remix/production/public/ui-dev --base /ui-dev/
-fi
 
 # default "node-cjs" build with custom server main
 NODE_ENV=production BUILD_VERCEL=1 npx remix build

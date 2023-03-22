@@ -1,16 +1,61 @@
-<!DOCTYPE html>
 <html lang="en" class="h-full">
   <head>
     <meta charset="utf-8" />
     <meta
       name="viewport"
-      content="width=device-width, height=device-height, initial-scale=1, maximum-scale=1, user-scalable=no"
+      content="width=device-width, height=device-height, initial-scale=1"
     />
     <title>UI DEV</title>
-    <link rel="stylesheet" href="./build/tailwind/development/index.css" />
+    <script>
+      // copied from https://github.com/hi-ogawa/unocss-preset-antd/blob/cc90f8f0300a4209bae6d917a87368f73f6b0a21/packages/app/index.html#L10-L11
+
+      // apply theme as early as possible and expose `setTheme/getTheme` to appplication
+      // prettier-ignore
+      (() => {
+        const STORAGE_KEY = "ytsub:theme";
+        const DEFAULT_THEME = "system";
+        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)");
+
+        function getTheme() {
+          return window.localStorage.getItem(STORAGE_KEY) || DEFAULT_THEME;
+        }
+
+        function setTheme(config) {
+          window.localStorage.setItem(STORAGE_KEY, config);
+          applyTheme();
+        }
+
+        function applyTheme() {
+          const theme = getTheme();
+          const derived = theme === "system" ? (prefersDark.matches ? "dark" : "light") : theme;
+          disableTransitions(() => {
+            document.documentElement.classList.remove("dark", "light");
+            document.documentElement.classList.add(derived);
+          });
+        }
+
+        // https://paco.me/writing/disable-theme-transitions
+        function disableTransitions(callback) {
+          const el = document.createElement("style");
+          el.innerHTML = "* { transition: none !important; }";
+          document.head.appendChild(el);
+          callback();
+          window.getComputedStyle(document.documentElement).transition; // force repaint
+          document.head.removeChild(el);
+        }
+
+        function initTheme() {
+          applyTheme();
+          prefersDark.addEventListener("change", applyTheme);
+          Object.assign(globalThis, { __theme: { setTheme, getTheme } });
+        }
+
+        initTheme();
+      })();
+    </script>
   </head>
   <body class="h-full">
     <div id="root" class="h-full"></div>
-    <script type="module" src="./app/components/main-dev.tsx"></script>
+    <script type="module" src="./app/entry-ui-dev.tsx"></script>
   </body>
 </html>

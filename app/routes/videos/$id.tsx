@@ -18,20 +18,9 @@ import {
 import { atom, useAtom } from "jotai";
 import { atomWithStorage } from "jotai/utils";
 import React from "react";
-import {
-  Bookmark,
-  Check,
-  MoreVertical,
-  Play,
-  Repeat,
-  Save,
-  Video,
-  X,
-} from "react-feather";
 import toast from "react-hot-toast";
 import { useSearchParams } from "react-router-dom";
 import { z } from "zod";
-import { Spinner } from "../../components/misc";
 import { PopoverSimple } from "../../components/popover";
 import {
   CaptionEntryTable,
@@ -379,28 +368,32 @@ function PageComponent({
         currentUser.id === video.userId && (
           <Transition
             show={!!bookmarkState || fetcher.state !== "idle"}
-            className="absolute bottom-0 right-0 flex gap-2 p-1.5 transition-all duration-300"
-            enterFrom="scale-[0.3] opacity-0"
+            className="absolute bottom-0 right-0 flex gap-2 p-1.5 transition duration-300 z-10"
+            enterFrom="scale-30 opacity-0"
             enterTo="scale-100 opacity-100"
             leaveFrom="scale-100 opacity-100"
-            leaveTo="scale-[0.3] opacity-0"
+            leaveTo="scale-30 opacity-0"
           >
+            {/* workaround transparent antd-btn-text by opaque wrapping */}
+            <div className="w-12 h-12 rounded-full antd-body">
+              <button
+                className="antd-btn antd-btn-text antd-floating light:bg-colorBgContainerDisabled dark:bg-colorBgSpotlight w-12 h-12 rounded-full flex justify-center items-center"
+                onClick={onCancelBookmark}
+              >
+                <span className="i-ri-close-line w-6 h-6" />
+              </button>
+            </div>
             <button
-              onClick={onCancelBookmark}
-              className="w-12 h-12 rounded-full bg-secondary text-white flex justify-center items-center shadow-xl hover:contrast-75 transition-[filter] duration-300"
-            >
-              <X />
-            </button>
-            <button
-              onClick={onClickBookmark}
-              className="w-12 h-12 rounded-full bg-primary text-white flex justify-center items-center shadow-xl hover:contrast-75 transition-[filter] duration-300"
               data-test="new-bookmark-button"
+              className="antd-btn !antd-btn-primary antd-floating w-12 h-12 rounded-full flex justify-center items-center"
+              onClick={onClickBookmark}
             >
-              {fetcher.state === "idle" ? (
-                <Bookmark />
-              ) : (
-                <Spinner className="w-6 h-6" />
-              )}
+              <span
+                className={cls(
+                  fetcher.state === "idle" ? "i-ri-bookmark-line" : "antd-spin",
+                  "w-6 h-6"
+                )}
+              />
             </button>
           </Transition>
         )
@@ -509,7 +502,7 @@ function PlayerComponent({
         </div>
         {loading && (
           <div className="absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%]">
-            <Spinner className="w-20 h-20" />
+            <div className="antd-spin w-20" />
           </div>
         )}
       </div>
@@ -607,56 +600,51 @@ export function CaptionEntryComponent({
 
   return (
     <div
-      className={`
-        w-full
-        flex flex-col
-        ${border && "border border-solid border-gray-200"}
-        ${isEntryPlaying ? "border-blue-400" : "border-gray-200"}
-        ${border && isCurrentEntry && "bg-gray-100"}
-        ${isFocused && "border-l-2 border-l-blue-500"}
-        ${virtualItem?.index === 0 && "mt-1.5"}
-        ${isActualLast && "mb-1.5"}
-        p-1.5 gap-1
-        text-xs
-      `}
+      className={cls(
+        "w-full flex flex-col p-1 px-2 gap-1 text-xs",
+        border && "border",
+        border && isEntryPlaying && "ring-2 ring-colorPrimaryBorder",
+        border && isCurrentEntry && "border-colorPrimary",
+        // quick virtualizer padding workaround
+        virtualItem?.index === 0 && "mt-1.5",
+        isActualLast && "mb-1.5"
+      )}
       ref={virtualizer?.measureElement}
       data-index={virtualItem?.index}
     >
-      <div className="flex items-center justify-end text-gray-500">
+      <div className="flex items-center text-colorTextSecondary gap-2">
+        {isFocused && (
+          <span className="i-ri-bookmark-line w-3 h-3 text-colorPrimary" />
+        )}
+        <span className="flex-1" />
         <div>{timestamp}</div>
         {!isNil(videoId) && (
           <Link
             to={R["/videos/$id"](videoId) + `?index=${entry.index}`}
-            className={`ml-2 btn btn-xs btn-circle btn-ghost`}
+            className="antd-btn antd-btn-ghost i-ri-vidicon-line w-4 h-4"
             data-test="caption-entry-component__video-link"
-          >
-            <Video size={14} />
-          </Link>
+          />
         )}
-        <div
-          className={`ml-2 btn btn-xs btn-circle btn-ghost ${
-            isRepeating && "text-blue-700"
-          }`}
+        <button
+          className={cls(
+            `antd-btn antd-btn-ghost i-ri-repeat-line w-3 h-3`,
+            isRepeating && "text-colorPrimary"
+          )}
           onClick={() => onClickEntryRepeat(entry)}
-        >
-          <Repeat size={14} />
-        </div>
-        <div
-          className={`ml-2 btn btn-xs btn-circle btn-ghost ${
-            isEntryPlaying && "text-blue-700"
-          }`}
+        />
+        <button
+          className={cls(
+            `antd-btn antd-btn-ghost i-ri-play-line w-4 h-4`,
+            isEntryPlaying && "text-colorPrimary"
+          )}
           onClick={() => onClickEntryPlay(entry, false)}
-        >
-          <Play size={14} />
-        </div>
+        />
       </div>
       <div
-        className="flex text-gray-700 cursor-pointer"
+        className="flex cursor-pointer"
         onClick={() => onClickEntryPlay(entry, true)}
       >
-        <div
-          className={`flex-auto w-1/2 pr-2 border-r border-solid border-gray-200 ${BOOKMARKABLE_CLASSNAME}`}
-        >
+        <div className={`flex-1 pr-2 border-r ${BOOKMARKABLE_CLASSNAME}`}>
           {highlight?.side === 0 ? (
             <HighlightText
               text={text1}
@@ -667,7 +655,7 @@ export function CaptionEntryComponent({
             text1
           )}
         </div>
-        <div className={`flex-auto w-1/2 pl-2 ${BOOKMARKABLE_CLASSNAME}`}>
+        <div className={`flex-1 pl-2 ${BOOKMARKABLE_CLASSNAME}`}>
           {highlight?.side === 1 ? (
             <HighlightText
               text={text2}
@@ -704,11 +692,6 @@ function HighlightText({
   );
 }
 
-// @ts-ignore
-function toCaptionEntryId({ begin, end }: CaptionEntry): string {
-  return `${begin}--${end}`;
-}
-
 function NavBarMenuComponent() {
   const { currentUser } = useRootLoaderData();
   const { video }: LoaderData = useDeserialize(useLeafLoaderData());
@@ -725,11 +708,14 @@ function NavBarMenuComponentImpl({
   const [autoScrollState, toggleAutoScrollState] = useAutoScrollState();
   const [repeatingEntries, setRepeatingEntries] = useRepeatingEntries();
 
-  // TODO: refactor too much copy-paste of `Popover` from `NavBar` in `root.tsx`
   return (
     <>
       {user && user.id !== video.userId && (
-        <Form method="post" action={R["/videos/new"]} className="flex-none">
+        <Form
+          method="post"
+          action={R["/videos/new"]}
+          className="flex items-center"
+        >
           {/* prettier-ignore */}
           <>
             <input readOnly hidden name="videoId" value={video.videoId} />
@@ -738,23 +724,26 @@ function NavBarMenuComponentImpl({
             <input readOnly hidden name="language2.id" value={video.language2_id} />
             <input readOnly hidden name="language2.translation" value={video.language2_translation ?? ""} />
           </>
-          <button type="submit" className="btn btn-sm btn-ghost">
-            <Save />
-          </button>
+          <button
+            type="submit"
+            className="antd-btn antd-btn-ghost i-ri-save-line w-6 h-6"
+          />
         </Form>
       )}
-      <div className="flex-none">
+      <div className="flex items-center">
         <PopoverSimple
           placement="bottom-end"
           reference={
-            <button className="btn btn-sm btn-ghost" data-test="user-menu">
-              <MoreVertical />
-            </button>
+            <button
+              className="antd-btn antd-btn-ghost i-ri-more-2-line w-6 h-6"
+              data-test="user-menu"
+            />
           }
           floating={(context) => (
-            <ul className="menu rounded p-3 shadow w-48 bg-base-100 text-base-content text-sm">
+            <ul className="flex flex-col gap-2 p-2 w-[180px] text-sm">
               <li>
                 <Link
+                  className="w-full antd-menu-item p-2 flex"
                   to={R["/videos/new"] + "?videoId=" + video.videoId}
                   onClick={() => context.onOpenChange(false)}
                 >
@@ -762,18 +751,20 @@ function NavBarMenuComponentImpl({
                 </Link>
               </li>
               <li>
-                <button onClick={() => toggleAutoScrollState(video.id)}>
+                <button
+                  className="w-full antd-menu-item p-2 flex gap-2"
+                  onClick={() => toggleAutoScrollState(video.id)}
+                >
                   Auto scroll
-                  {autoScrollState.includes(video.id) && <Check size={16} />}
+                  {autoScrollState.includes(video.id) && (
+                    <span className="i-ri-check-line w-5 h-5"></span>
+                  )}
                 </button>
               </li>
-              <li
-                className={cls(
-                  repeatingEntries.length === 0 &&
-                    "disabled pointer-events-none"
-                )}
-              >
+              <li>
                 <button
+                  className="w-full antd-menu-item p-2 flex"
+                  disabled={repeatingEntries.length === 0}
                   onClick={() => {
                     setRepeatingEntries([]);
                     context.onOpenChange(false);

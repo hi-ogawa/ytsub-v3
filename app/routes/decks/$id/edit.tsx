@@ -1,10 +1,11 @@
-import { requireUserAndDeck } from ".";
+import { DeckNavBarMenuComponent, requireUserAndDeck } from ".";
 import { Form, useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import { z } from "zod";
 import { DeckTable, Q } from "../../../db/models";
 import { R } from "../../../misc/routes";
 import { Controller, makeLoader } from "../../../utils/controller-utils";
+import { toastInfo } from "../../../utils/flash-message-hook";
 import { useDeserialize, useIsFormValid } from "../../../utils/hooks";
 import { dtf } from "../../../utils/intl";
 import type { PageHandle } from "../../../utils/page-handle";
@@ -12,6 +13,7 @@ import { zStringToInteger } from "../../../utils/zod-utils";
 
 export const handle: PageHandle = {
   navBarTitle: () => "Edit Deck",
+  navBarMenu: () => <DeckNavBarMenuComponent />,
 };
 
 //
@@ -66,76 +68,92 @@ export default function DefaultComponent() {
   const [isValid, formProps] = useIsFormValid();
 
   return (
-    <div className="w-full p-4 flex justify-center">
+    <div className="w-full p-4 flex flex-col items-center gap-4">
       <Form
         method="post"
-        className="card border w-80 p-4 px-6 gap-2"
+        className="flex flex-col border w-full max-w-sm p-4 px-6 gap-3"
         data-test="edit-deck-form"
         {...formProps}
       >
-        <div className="form-control mb-2">
-          <label className="label">
-            <span className="label-text">Name</span>
-          </label>
+        <h1 className="text-lg">Edit Deck</h1>
+        <label className="flex flex-col gap-1">
+          <span className="text-colorTextLabel">Name</span>
           <input
             type="text"
             name="name"
-            className="input input-bordered"
+            className="antd-input p-1"
             defaultValue={deck.name}
             required
           />
-        </div>
-        <div className="form-control mb-2">
-          <label className="label">
-            <span className="label-text">New entries per day</span>
-          </label>
+        </label>
+        <label className="flex flex-col gap-1">
+          <span className="text-colorTextLabel">New entries per day</span>
           <input
             type="number"
             name="newEntriesPerDay"
-            className="input input-bordered"
+            className="antd-input p-1"
             defaultValue={deck.newEntriesPerDay}
             required
           />
-        </div>
-        <div className="form-control mb-2">
-          <label className="label">
-            <span className="label-text">Reviews per day</span>
-          </label>
+        </label>
+        <label className="flex flex-col gap-1">
+          <span className="text-colorTextLabel">Reviews per day</span>
           <input
             type="number"
             name="reviewsPerDay"
-            className="input input-bordered"
+            className="antd-input p-1"
             defaultValue={deck.reviewsPerDay}
             required
           />
-        </div>
-        <div className="form-control mb-1.5">
-          <label className="label cursor-pointer">
-            <span className="label-text">Randomize</span>
-            <input
-              type="checkbox"
-              name="randomMode"
-              className="toggle"
-              defaultChecked={deck.randomMode}
-            />
-          </label>
-        </div>
-        <div className="form-control mb-2">
-          <label className="label">
-            <span className="label-text">Created At</span>
-          </label>
+        </label>
+        <label className="flex gap-2">
+          <span className="text-colorTextLabel">Randomize</span>
           <input
-            className="input input-bordered bg-gray-100"
+            type="checkbox"
+            name="randomMode"
+            defaultChecked={deck.randomMode}
+          />
+        </label>
+        <label className="flex flex-col gap-1">
+          <span className="text-colorTextLabel">Created At</span>
+          <input
+            className="antd-input p-1"
             readOnly
+            disabled
             value={dtf.format(deck.createdAt)}
           />
-        </div>
-        <div className="form-control">
-          <button type="submit" className="btn" disabled={!isValid}>
-            Save
-          </button>
-        </div>
+        </label>
+        <button
+          type="submit"
+          className="antd-btn antd-btn-primary p-1"
+          disabled={!isValid}
+        >
+          Save
+        </button>
       </Form>
+      <div className="flex flex-col border w-full max-w-sm p-4 px-6 gap-3 border-colorErrorBorder">
+        <h1 className="text-lg">Danger Zone</h1>
+        <Form
+          className="flex"
+          action={R["/decks/$id?index"](deck.id)}
+          method="delete"
+          onSubmitCapture={(e) => {
+            const message = `Are you sure? Please type '${deck.name}' to delete this deck.`;
+            const response = window.prompt(message);
+            if (response !== deck.name) {
+              e.preventDefault();
+              toastInfo("Deletion canceled");
+            }
+          }}
+        >
+          <button
+            type="submit"
+            className="w-full antd-btn antd-btn-default p-1"
+          >
+            Delete this deck
+          </button>
+        </Form>
+      </div>
     </div>
   );
 }

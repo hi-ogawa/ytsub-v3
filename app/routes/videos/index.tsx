@@ -2,13 +2,8 @@ import { mapOption } from "@hiogawa/utils";
 import { useFetcher, useFetchers, useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import React from "react";
-import { PlusSquare, Trash2 } from "react-feather";
 import toast from "react-hot-toast";
-import {
-  PaginationComponent,
-  Spinner,
-  VideoComponent,
-} from "../../components/misc";
+import { PaginationComponent, VideoComponent } from "../../components/misc";
 import { useModal } from "../../components/modal";
 import {
   DeckTable,
@@ -157,36 +152,41 @@ function VideoComponentExtra({
         currentUser &&
         currentUser.id === video.userId && (
           <>
-            <li className={`${addToDeckDisabled && "disabled"}`}>
+            <li>
               <button
+                data-test="video-component-add-to-deck-button"
+                className="w-full antd-menu-item p-2 flex items-center gap-2"
+                disabled={addToDeckDisabled}
                 onClick={() => {
                   if (!addToDeckDisabled) {
                     modal.setOpen(true);
                   }
                 }}
-                data-test="video-component-add-to-deck-button"
               >
-                <PlusSquare />
+                <span className="i-ri-add-box-line w-5 h-5"></span>
                 Add to Deck
               </button>
             </li>
-            <fetcher.Form
-              method="delete"
-              action={R["/videos/$id"](video.id)}
-              data-test="video-delete-form"
-              onSubmitCapture={(e) => {
-                if (!window.confirm("Are you sure?")) {
-                  e.preventDefault();
-                }
-              }}
-            >
-              <li>
-                <button type="submit">
-                  <Trash2 />
+            <li>
+              <fetcher.Form
+                method="delete"
+                action={R["/videos/$id"](video.id)}
+                data-test="video-delete-form"
+                onSubmitCapture={(e) => {
+                  if (!window.confirm("Are you sure?")) {
+                    e.preventDefault();
+                  }
+                }}
+              >
+                <button
+                  type="submit"
+                  className="w-full antd-menu-item p-2 flex items-center gap-2"
+                >
+                  <span className="i-ri-delete-bin-line w-5 h-5"></span>
                   Delete
                 </button>
-              </li>
-            </fetcher.Form>
+              </fetcher.Form>
+            </li>
           </>
         )
       }
@@ -252,28 +252,26 @@ function AddToDeckComponent({
   const isLoading = fetcher1.state !== "idle" || fetcher2.state !== "idle";
 
   return (
-    <div
-      className="border shadow-xl rounded-xl bg-base-100 p-4 flex flex-col gap-2"
-      data-test="add-to-deck-component"
-    >
+    <div className="flex flex-col gap-2 p-4" data-test="add-to-deck-component">
       <div className="text-lg">Select a Deck</div>
       {data && !isLoading ? (
-        <ul className="menu">
+        <ul className="flex flex-col gap-2">
           {data.decks.map((deck) => (
             <li key={deck.id}>
               <button
-                className="flex rounded"
+                className="w-full antd-menu-item p-2 flex items-center"
                 onClick={() => onClickPlus(deck)}
               >
                 <div className="grow flex">{deck.name}</div>
-                <PlusSquare className="flex-none text-gray-700" size={18} />
+                <div className="flex-1"></div>
+                <span className="i-ri-add-box-line w-5 h-5"></span>
               </button>
             </li>
           ))}
         </ul>
       ) : (
         <div className="flex justify-center p-2">
-          <Spinner className="w-20 h-20" />
+          <div className="antd-spin w-20"></div>
         </div>
       )}
     </div>

@@ -1,22 +1,9 @@
 import react from "@vitejs/plugin-react";
+import unocss from "unocss/vite";
 import { defineConfig } from "vite";
 
-// Using vite for UI dev playground with HMR (see app/components/main-dev.tsx)
-
-export default defineConfig(({ command }) => ({
-  plugins: [react()],
-  server: {
-    port: 3030,
-  },
+export default defineConfig({
+  plugins: [unocss(), react()],
   clearScreen: false,
   publicDir: false,
-  resolve: {
-    alias:
-      command === "build"
-        ? {
-            "./build/tailwind/development/index.css":
-              "./build/tailwind/production/index.css",
-          }
-        : undefined,
-  },
-}));
+});

@@ -1,7 +1,6 @@
-import { requireUserAndDeck } from ".";
+import { QueueTypeIcon, requireUserAndDeck } from ".";
 import { useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
-import { CheckCircle, Circle, Disc } from "react-feather";
 import { z } from "zod";
 import { PaginationComponent } from "../../../components/misc";
 import {
@@ -19,7 +18,7 @@ import { useLeafLoaderData } from "../../../utils/loader-utils";
 import type { PageHandle } from "../../../utils/page-handle";
 import { PAGINATION_PARAMS_SCHEMA } from "../../../utils/pagination";
 import { zStringToInteger } from "../../../utils/zod-utils";
-import { NavBarMenuComponent } from "./history-graph";
+import { DeckHistoryNavBarMenuComponent } from "./history-graph";
 
 //
 // handle
@@ -27,7 +26,7 @@ import { NavBarMenuComponent } from "./history-graph";
 
 export const handle: PageHandle = {
   navBarTitle: () => <NavBarTitleComponent />,
-  navBarMenu: () => <NavBarMenuComponent />,
+  navBarMenu: () => <DeckHistoryNavBarMenuComponent />,
 };
 
 //
@@ -122,29 +121,25 @@ function PracticeActionComponent(props: {
   const { bookmarkEntryText, createdAt, actionType, queueType } =
     props.practiceAction;
   return (
-    <div className="flex flex-col p-2 gap-2 border border-gray-200">
+    <div className="flex flex-col p-2 gap-2 border">
       <div className="flex gap-2">
-        <div className="flex-none h-[20px] flex items-center">
-          {queueType === "NEW" && (
-            <Circle size={16} className="text-blue-400" />
-          )}
-          {queueType === "LEARN" && <Disc size={16} className="text-red-300" />}
-          {queueType === "REVIEW" && (
-            <CheckCircle size={16} className="text-green-400" />
-          )}
+        <div className="h-[20px] flex items-center">
+          <QueueTypeIcon queueType={queueType} />
         </div>
         <div
-          className="grow text-sm cursor-pointer"
+          className="flex-1 text-sm cursor-pointer"
           data-test="bookmark-entry-text"
         >
           {bookmarkEntryText}
         </div>
       </div>
       <div className="flex items-center ml-6 text-xs gap-3">
-        <div className="flex-none bg-neutral text-neutral-content rounded-full py-0.5 w-14 text-center">
+        <div className="border rounded-full px-2 py-0.5 w-14 text-center">
           {actionType}
         </div>
-        <div className="text-gray-600">{dtf.format(createdAt)}</div>
+        <div className="flex-1 text-colorTextSecondary">
+          {dtf.format(createdAt)}
+        </div>
       </div>
     </div>
   );
@@ -156,5 +151,10 @@ function PracticeActionComponent(props: {
 
 function NavBarTitleComponent() {
   const { deck }: LoaderData = useDeserialize(useLeafLoaderData());
-  return <>{deck.name} (history)</>;
+  return (
+    <span>
+      {deck.name}{" "}
+      <span className="text-colorTextSecondary text-sm">(history)</span>
+    </span>
+  );
 }
