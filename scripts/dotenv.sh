@@ -7,4 +7,6 @@
 
 dotenv_file="$1"
 shift
+
+# shellcheck disable=SC2046
 env $(grep -v '^#' "$dotenv_file") "${@}"
