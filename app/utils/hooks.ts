@@ -1,6 +1,6 @@
 import { useStableRef } from "@hiogawa/utils-react";
+import { UseQueryOptions, useQuery } from "@tanstack/react-query";
 import React from "react";
-import { UseQueryOptions, useQuery } from "react-query";
 import { deserialize } from "./controller-utils";
 import { loadYoutubeIframeApi } from "./youtube";
 

@@ -1,4 +1,5 @@
 import { typedBoolean } from "@hiogawa/utils";
+import { Compose } from "@hiogawa/utils-react";
 import {
   Form,
   Link,
@@ -16,8 +17,8 @@ import { atom, useAtom } from "jotai";
 import { last } from "lodash";
 import type React from "react";
 import { Toaster, toast } from "react-hot-toast";
-import { QueryClient, QueryClientProvider } from "react-query";
 import { Drawer } from "./components/drawer";
+import { QueryClientWrapper } from "./components/misc";
 import { PopoverSimple } from "./components/popover";
 import { ThemeSelect } from "./components/theme-select";
 import { TopProgressBarRemix } from "./components/top-progress-bar";
@@ -93,7 +94,7 @@ export default function DefaultComponent() {
 
   // TODO: hydration error for theme class (dark, light)
   return (
-    <html lang="en" className="h-full" suppressHydrationWarning>
+    <html lang="en" className="h-full">
       <head>
         <meta charSet="utf-8" />
         <Meta />
@@ -115,9 +116,7 @@ export default function DefaultComponent() {
           hidden
           onClick={() => toast.dismiss()}
         />
-        <RootProviders>
-          <Root />
-        </RootProviders>
+        <Compose elements={[<QueryClientWrapper />, <Root />]} />
       </body>
     </html>
   );
@@ -155,25 +154,6 @@ function Root() {
     </>
   );
 }
-
-function RootProviders({ children }: React.PropsWithChildren<{}>) {
-  return (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-  );
-}
-
-// Should be no-op on SSR
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      retry: false,
-      staleTime: 5 * 60 * 1000,
-      cacheTime: 5 * 60 * 1000,
-      refetchOnWindowFocus: false,
-      refetchOnReconnect: false,
-    },
-  },
-});
 
 function Navbar({
   title,
@@ -271,7 +251,6 @@ function Navbar({
                   onClick={() => setDrawerOpen(false)}
                 >
                   {entry.icon}
-                  {/* <entry.icon size={24} /> */}
                   {entry.title}
                 </NavLink>
               </li>
