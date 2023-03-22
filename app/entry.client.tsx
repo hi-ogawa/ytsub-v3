@@ -1,12 +1,12 @@
 import { RemixBrowser } from "@remix-run/react";
-import { hydrate } from "react-dom";
+import { hydrateRoot } from "react-dom/client";
 import { registerServiceWorker } from "./misc/register-service-worker.client";
 import { initializeConfigClient } from "./utils/config";
 
 function main() {
   registerServiceWorker();
   initializeConfigClient();
-  hydrate(<RemixBrowser />, window.document);
+  hydrateRoot(window.document, <RemixBrowser />);
 }
 
 main();

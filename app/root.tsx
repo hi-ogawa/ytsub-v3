@@ -94,7 +94,7 @@ export default function DefaultComponent() {
 
   // TODO: hydration error for theme class (dark, light)
   return (
-    <html lang="en" className="h-full" suppressHydrationWarning>
+    <html lang="en" className="h-full">
       <head>
         <meta charSet="utf-8" />
         <Meta />
@@ -251,7 +251,6 @@ function Navbar({
                   onClick={() => setDrawerOpen(false)}
                 >
                   {entry.icon}
-                  {/* <entry.icon size={24} /> */}
                   {entry.title}
                 </NavLink>
               </li>
