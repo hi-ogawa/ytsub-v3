@@ -10,8 +10,7 @@ import {
   LanguageCode,
   languageCodeToName,
 } from "./language";
-import { newPromiseWithResolvers, throwGetterProxy } from "./misc";
-import { loadScript } from "./script";
+import { loadScript, newPromiseWithResolvers, throwGetterProxy } from "./misc";
 import type {
   CaptionConfig,
   CaptionConfigOptions,
