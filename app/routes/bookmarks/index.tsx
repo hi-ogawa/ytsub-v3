@@ -27,9 +27,9 @@ import type { PageHandle } from "../../utils/page-handle";
 import { PAGINATION_PARAMS_SCHEMA } from "../../utils/pagination";
 import type { CaptionEntry } from "../../utils/types";
 import { toQuery } from "../../utils/url-data";
-import type { YoutubePlayer } from "../../utils/youtube";
+import { YoutubePlayer, usePlayerLoader } from "../../utils/youtube";
 import { zStringToInteger } from "../../utils/zod-utils";
-import { CaptionEntryComponent, usePlayerLoader } from "../videos/$id";
+import { CaptionEntryComponent } from "../videos/$id";
 
 export const handle: PageHandle = {
   navBarTitle: () => "Bookmarks",
@@ -330,11 +330,14 @@ export function MiniPlayer({
       />
       <div className="relative w-full">
         <div className="relative pt-[56.2%]">
-          <div className="absolute top-0 w-full h-full" ref={playerLoader.ref} />
+          <div
+            className="absolute top-0 w-full h-full"
+            ref={playerLoader.ref}
+          />
         </div>
         <Transition
           show={playerLoader.isLoading}
-          className="duration-500 absolute inset-0 bg-black/[0.5]"
+          className="duration-500 absolute inset-0 antd-body"
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >

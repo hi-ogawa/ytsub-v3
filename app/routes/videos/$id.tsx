@@ -11,10 +11,6 @@ import {
 } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import {
-  UseMutationOptions,
-  useMutation,
-} from "@tanstack/react-query";
-import {
   VirtualItem,
   Virtualizer,
   useVirtualizer,
@@ -44,8 +40,8 @@ import { toForm } from "../../utils/url-data";
 import {
   YoutubePlayer,
   YoutubePlayerOptions,
-  loadYoutubePlayer,
   stringifyTimestamp,
+  usePlayerLoader,
 } from "../../utils/youtube";
 import { zStringToInteger, zStringToMaybeInteger } from "../../utils/zod-utils";
 import type { NewBookmark } from "../bookmarks/new";
@@ -447,34 +443,6 @@ function LayoutComponent(props: {
   );
 }
 
-export function usePlayerLoader(
-  playerOptions: YoutubePlayerOptions,
-  mutationOptions: UseMutationOptions<
-    YoutubePlayer,
-    unknown,
-    HTMLElement,
-    unknown
-  >
-) {
-  // TODO: cleanup resource on unmount?
-
-  const ref: React.RefCallback<HTMLElement> = (el) => {
-    if (el) {
-      mutation.mutate(el);
-    }
-  };
-
-  const mutation = useMutation(
-    (el: HTMLElement) => loadYoutubePlayer(el, playerOptions),
-    mutationOptions
-  );
-
-  return {
-    ref: React.useCallback(ref, []),
-    isLoading: !mutation.isSuccess,
-  }
-}
-
 function PlayerComponent({
   defaultOptions,
   onLoad,
@@ -495,11 +463,16 @@ function PlayerComponent({
         <div className="relative pt-[56.2%]">
           <div className="absolute top-0 w-full h-full" ref={ref} />
         </div>
-        {isLoading && (
+        <Transition
+          show={isLoading}
+          className="duration-500 absolute inset-0 antd-body"
+          leaveFrom="opacity-100"
+          leaveTo="opacity-0"
+        >
           <div className="absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%]">
-            <div className="antd-spin w-20" />
+            <div className="antd-spin w-30" />
           </div>
-        )}
+        </Transition>
       </div>
     </div>
   );

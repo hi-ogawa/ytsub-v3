@@ -1,6 +1,8 @@
 import { tinyassert } from "@hiogawa/utils";
+import { UseMutationOptions, useMutation } from "@tanstack/react-query";
 import { XMLParser } from "fast-xml-parser";
 import { maxBy, once } from "lodash";
+import React from "react";
 import { z } from "zod";
 import { AppError } from "./errors";
 import {
@@ -347,4 +349,32 @@ export async function loadYoutubePlayer(
   await promise;
 
   return player;
+}
+
+export function usePlayerLoader(
+  playerOptions: YoutubePlayerOptions,
+  mutationOptions: UseMutationOptions<
+    YoutubePlayer,
+    unknown,
+    HTMLElement,
+    unknown
+  >
+) {
+  // TODO: cleanup resource on unmount?
+
+  const ref: React.RefCallback<HTMLElement> = (el) => {
+    if (el) {
+      mutation.mutate(el);
+    }
+  };
+
+  const mutation = useMutation(
+    (el: HTMLElement) => loadYoutubePlayer(el, playerOptions),
+    mutationOptions
+  );
+
+  return {
+    ref: React.useCallback(ref, []),
+    isLoading: !mutation.isSuccess,
+  };
 }
