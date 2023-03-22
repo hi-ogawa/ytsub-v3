@@ -165,7 +165,7 @@ export function PaginationComponent({
   );
 }
 
-export function QueryClientWrapper({ children }: React.PropsWithChildren<{}>) {
+export function QueryClientWrapper({ children }: React.PropsWithChildren) {
   const [queryClient] = React.useState(
     () =>
       new QueryClient({
