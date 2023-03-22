@@ -156,10 +156,9 @@ function Root() {
   );
 }
 
-function RootProviders({ children }: React.PropsWithChildren<{}>) {
-  return (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-  );
+function RootProviders(props: React.PropsWithChildren) {
+  // TODO: update react-query
+  return <QueryClientProvider client={queryClient} {...(props as any)} />;
 }
 
 // Should be no-op on SSR
