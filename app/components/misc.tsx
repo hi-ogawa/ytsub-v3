@@ -1,6 +1,7 @@
 import { Link } from "@remix-run/react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import React from "react";
-import { QueryClient, QueryClientProvider } from "react-query";
 import type { PaginationMetadata, VideoTable } from "../db/models";
 import { R } from "../misc/routes";
 import { cls } from "../utils/misc";
@@ -181,6 +182,9 @@ export function QueryClientWrapper({ children }: React.PropsWithChildren<{}>) {
   );
 
   return (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    <QueryClientProvider client={queryClient}>
+      {children}
+      {false && <ReactQueryDevtools />}
+    </QueryClientProvider>
   );
 }
