@@ -115,6 +115,7 @@ export const loader = makeLoader(Controller, async function () {
 //
 
 export default function DefaultComponent() {
+  // TODO: no need to fetch on server. use defer.
   const { data, page }: LoaderData = useDeserialize(useLeafLoaderData());
 
   // show loading between SSR and echarts "rendered" event
@@ -122,11 +123,14 @@ export default function DefaultComponent() {
 
   const [instance, setInstance] = React.useState<ECharts>();
 
-  function setInstanceWrapper(instance: ECharts) {
-    instance.on("rendered", () => setIsLoading(false));
+  function setInstanceWrapper(instance?: ECharts) {
+    if (instance) {
+      instance.on("rendered", () => setIsLoading(false));
+    }
     setInstance(instance);
   }
 
+  // TODO: keepPreviousData like in react-query?
   function onClickPage() {
     // TODO: "hideTip" also when click outside of chart (on mobile)
     instance?.dispatchAction({ type: "hideTip" });
