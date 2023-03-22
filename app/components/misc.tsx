@@ -1,5 +1,6 @@
 import { Link } from "@remix-run/react";
-import type React from "react";
+import React from "react";
+import { QueryClient, QueryClientProvider } from "react-query";
 import type { PaginationMetadata, VideoTable } from "../db/models";
 import { R } from "../misc/routes";
 import { cls } from "../utils/misc";
@@ -160,5 +161,26 @@ export function PaginationComponent({
         <span className="i-ri-rewind-mini-fill w-5 h-5 rotate-[180deg]"></span>
       </Link>
     </div>
+  );
+}
+
+export function QueryClientWrapper({ children }: React.PropsWithChildren<{}>) {
+  const [queryClient] = React.useState(
+    () =>
+      new QueryClient({
+        defaultOptions: {
+          queries: {
+            retry: false,
+            staleTime: 5 * 60 * 1000,
+            cacheTime: 5 * 60 * 1000,
+            refetchOnWindowFocus: false,
+            refetchOnReconnect: false,
+          },
+        },
+      })
+  );
+
+  return (
+    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
   );
 }
