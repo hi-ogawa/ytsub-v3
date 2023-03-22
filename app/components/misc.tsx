@@ -184,7 +184,7 @@ export function QueryClientWrapper({ children }: React.PropsWithChildren<{}>) {
   return (
     <QueryClientProvider client={queryClient}>
       {children}
-      {false && <ReactQueryDevtools />}
+      {true && <ReactQueryDevtools />}
     </QueryClientProvider>
   );
 }

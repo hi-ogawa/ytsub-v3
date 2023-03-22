@@ -297,7 +297,7 @@ export function MiniPlayer({
         autoplay: autoplay ? 1 : 0,
       },
     },
-    onLoad: setPlayer,
+    onSuccess: setPlayer,
   });
 
   useRafLoop(() => {

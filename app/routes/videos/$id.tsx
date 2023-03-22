@@ -10,6 +10,7 @@ import {
   useLoaderData,
 } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   VirtualItem,
   Virtualizer,
@@ -32,7 +33,6 @@ import {
 import { R } from "../../misc/routes";
 import { Controller, makeLoader } from "../../utils/controller-utils";
 import { useDeserialize, useSelection } from "../../utils/hooks";
-import { useYoutubeIframeApi } from "../../utils/hooks";
 import { useLeafLoaderData, useRootLoaderData } from "../../utils/loader-utils";
 import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
@@ -41,6 +41,8 @@ import { toForm } from "../../utils/url-data";
 import {
   YoutubePlayer,
   YoutubePlayerOptions,
+  loadYoutubeIframeApi,
+  loadYoutubePlayer,
   stringifyTimestamp,
 } from "../../utils/youtube";
 import { zStringToInteger, zStringToMaybeInteger } from "../../utils/zod-utils";
@@ -445,42 +447,36 @@ function LayoutComponent(props: {
 
 export function usePlayer({
   defaultOptions,
-  onLoad = () => {},
-  onError = () => {},
+  onSuccess,
+  onError,
 }: {
   defaultOptions: YoutubePlayerOptions; // only on mount effect
-  onLoad?: (player: YoutubePlayer) => void;
+  onSuccess?: (player: YoutubePlayer) => void;
   onError?: (e: Error) => void;
 }) {
-  const [loading, setLoading] = React.useState(true);
   const ref = React.useRef<HTMLDivElement>(null);
-  const api = useYoutubeIframeApi(undefined, { onError });
+
+  const apiQuery = useQuery({
+    queryKey: ["loadYoutubeIframeApi"],
+    queryFn: () => loadYoutubeIframeApi().then(() => null), // react-query cannot return undefiend
+    onError,
+  });
+
+  const playerMutation = useMutation(
+    (el: HTMLElement) => loadYoutubePlayer(el, defaultOptions),
+    {
+      onError,
+      onSuccess,
+    }
+  );
 
   React.useEffect(() => {
-    if (!api.isSuccess) return;
-    if (!ref.current) {
-      setLoading(false);
-      throw new Error(`"ref" element is not available`);
+    if (apiQuery.isSuccess && ref.current) {
+      playerMutation.mutate(ref.current);
     }
-    if (!api.data) {
-      setLoading(false);
-      throw new Error();
-    }
+  }, [apiQuery.isSuccess]);
 
-    let callback = () => {
-      setLoading(false);
-      onLoad(player);
-    };
-    const player = new api.data.Player(ref.current, {
-      ...defaultOptions,
-      events: { onReady: () => callback() },
-    });
-    // Avoid calling `onLoad` if unmounted before
-    return () => {
-      callback = () => {};
-    };
-  }, [api.isSuccess]);
-
+  const loading = !apiQuery.isSuccess || !playerMutation.isSuccess;
   return [ref, loading] as const;
 }
 
@@ -493,7 +489,11 @@ function PlayerComponent({
   onLoad?: (player: YoutubePlayer) => void;
   onError?: (e: Error) => void;
 }) {
-  const [ref, loading] = usePlayer({ defaultOptions, onLoad, onError });
+  const [ref, loading] = usePlayer({
+    defaultOptions,
+    onSuccess: onLoad,
+    onError,
+  });
   return (
     <div className="flex justify-center">
       <div className="relative w-full max-w-md md:max-w-none">

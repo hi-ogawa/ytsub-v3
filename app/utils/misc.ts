@@ -32,3 +32,13 @@ export const throwGetterProxy = new Proxy(
 export function cls(...args: unknown[]): string {
   return args.filter(Boolean).join(" ");
 }
+
+export function newPromiseWithResolvers<T>() {
+  let resolve!: (value: T) => void;
+  let reject!: (value: unknown) => void;
+  const promise = new Promise<T>((res, rej) => {
+    resolve = res;
+    reject = rej;
+  });
+  return { promise, resolve, reject };
+}
