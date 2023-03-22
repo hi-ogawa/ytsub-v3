@@ -85,50 +85,42 @@ export default function DefaultComponent() {
     <div className="w-full p-4 flex justify-center">
       <Form
         method="post"
-        className="card border w-80 p-4 px-6 gap-2"
+        className="flex flex-col border w-full max-w-sm p-4 px-6 gap-3"
         data-test="new-deck-form"
         {...formProps}
       >
-        <div className="form-control mb-2">
-          <label className="label">
-            <span className="label-text">Name</span>
-          </label>
-          <input
-            type="text"
-            name="name"
-            className="input input-bordered"
-            required
-          />
-        </div>
-        <div className="form-control mb-2">
-          <label className="label">
-            <span className="label-text">New entries per day</span>
-          </label>
+        <h1 className="text-lg">New Deck</h1>
+        <label className="flex flex-col gap-1">
+          <span className="text-colorTextLabel">Name</span>
+          <input type="text" name="name" className="antd-input p-1" required />
+        </label>
+        <label className="flex flex-col gap-1">
+          <span className="text-colorTextLabel">New entries per day</span>
           <input
             type="number"
             name="newEntriesPerDay"
-            className="input input-bordered"
+            className="antd-input p-1"
             defaultValue={String(DEFAULT_DECK_OPTIONS.newEntriesPerDay)}
             required
           />
-        </div>
-        <div className="form-control mb-2">
-          <label className="label">
-            <span className="label-text">Reviews per day</span>
-          </label>
+        </label>
+        <label className="flex flex-col gap-1">
+          <span className="text-colorTextLabel">Reviews per day</span>
           <input
             type="number"
             name="reviewsPerDay"
-            className="input input-bordered"
+            className="antd-input p-1"
             defaultValue={String(DEFAULT_DECK_OPTIONS.reviewsPerDay)}
             required
           />
-        </div>
-        <div className="form-control">
-          <button type="submit" className="btn" disabled={!isValid}>
-            Create
-          </button>
-        </div>
+        </label>
+        <button
+          type="submit"
+          className="antd-btn antd-btn-primary p-1"
+          disabled={!isValid}
+        >
+          Create
+        </button>
       </Form>
     </div>
   );

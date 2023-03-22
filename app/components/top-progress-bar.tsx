@@ -1,4 +1,5 @@
 import BarOfProgress from "@badrap/bar-of-progress";
+import { useTransition } from "@remix-run/react";
 import React from "react";
 
 export function TopProgressBar({ loading }: { loading: boolean }) {
@@ -7,7 +8,7 @@ export function TopProgressBar({ loading }: { loading: boolean }) {
       new BarOfProgress({
         size: 3,
         // daisy-ui secondary
-        color: "hsl(314 100% 47%)",
+        // color: "hsl(314 100% 47%)",
       })
   );
 
@@ -20,4 +21,9 @@ export function TopProgressBar({ loading }: { loading: boolean }) {
   }, [loading]);
 
   return null;
+}
+
+export function TopProgressBarRemix() {
+  const transition = useTransition();
+  return <TopProgressBar loading={transition.state !== "idle"} />;
 }

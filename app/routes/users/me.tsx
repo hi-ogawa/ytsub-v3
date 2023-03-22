@@ -6,9 +6,9 @@ import {
 } from "@remix-run/react";
 import { json, redirect } from "@remix-run/server-runtime";
 import React from "react";
-import { HelpCircle } from "react-feather";
 import toast from "react-hot-toast";
 import { z } from "zod";
+import { PopoverSimple } from "../../components/popover";
 import { Q } from "../../db/models";
 import type { UserTable } from "../../db/models";
 import { R } from "../../misc/routes";
@@ -87,94 +87,91 @@ export default function DefaultComponent() {
       <Form
         replace
         method="post"
-        className="h-full w-full max-w-md rounded-lg border border-base-300"
+        className="h-full w-full max-w-md border"
         {...formProps}
         onChange={() => {
           formProps.onChange();
           setChanged(true);
         }}
       >
-        <div className="h-full p-6 flex flex-col">
-          <div className="text-xl font-bold mb-2">Account</div>
-          <div className="w-full flex flex-col gap-2">
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text">Username</span>
-              </label>
+        <div className="h-full p-6 flex flex-col gap-3">
+          <h1 className="text-xl">Account</h1>
+          <div className="w-full flex flex-col gap-3">
+            <label className="flex flex-col gap-1">
+              Username
               <input
-                className="input input-bordered bg-gray-100"
+                className="antd-input p-1"
+                disabled
                 readOnly
                 value={currentUser.username}
                 data-test="me-username"
               />
-            </div>
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text">Created At</span>
-              </label>
+            </label>
+            <label className="flex flex-col gap-1">
+              Created At
               <input
-                className="input input-bordered bg-gray-100"
+                className="antd-input p-1"
+                disabled
                 readOnly
                 value={dtf.format(currentUser.createdAt)}
               />
-            </div>
-            <div className="form-control">
-              <label className="label">
-                <label className="label-text">1st language</label>
-              </label>
+            </label>
+            <label className="flex flex-col gap-1">
+              1st language
               <LanguageSelect
                 name={ACTION_SCHEMA_KEYS.language1}
-                className="select select-bordered font-normal"
+                className="antd-input p-1"
                 defaultValue={currentUser.language1 ?? ""}
                 languageCodes={FILTERED_LANGUAGE_CODES}
                 required
               />
-            </div>
-            <div className="form-control">
-              <label className="label">
-                <label className="label-text">2nd language</label>
-              </label>
+            </label>
+            <label className="flex flex-col gap-1">
+              2nd language
               <LanguageSelect
                 name={ACTION_SCHEMA_KEYS.language2}
-                className="select select-bordered font-normal"
+                className="antd-input p-1"
                 defaultValue={currentUser.language2 ?? ""}
                 languageCodes={FILTERED_LANGUAGE_CODES}
                 required
               />
-            </div>
-            <div className="form-control">
-              <label className="label">
-                <label className="label-text flex items-center gap-2">
-                  <div>Timezone</div>
-                  <div
-                    className="cursor-pointer text-gray-600"
-                    onClick={() => {
-                      // TODO: use Popover
-                      window.alert(
-                        "UTC offset e.g.\n+09:00 (Asia/Tokyo)\n-05:00 (EST)"
-                      );
-                    }}
-                  >
-                    <HelpCircle size={16} />
-                  </div>
-                </label>
-              </label>
+            </label>
+            <div className="flex flex-col gap-1">
+              <div className="flex items-center gap-1">
+                <div>Timezone</div>
+                <PopoverSimple
+                  placement="top"
+                  reference={
+                    <button
+                      type="button"
+                      className="antd-btn antd-btn-ghost i-ri-question-line w-4 h-4"
+                    />
+                  }
+                  floating={
+                    <div className="p-3 text-sm">
+                      UTC offset, e.g.
+                      <br />
+                      +09:00 (Asia/Tokyo) <br />
+                      -05:00 (EST)
+                    </div>
+                  }
+                />
+              </div>
               <input
                 name={ACTION_SCHEMA_KEYS.timezone}
-                className="input input-bordered"
+                className="antd-input p-1"
                 defaultValue={currentUser.timezone}
                 required
               />
             </div>
-            <div className="form-control pt-2">
-              <button
-                type="submit"
-                className={`btn ${isLoading && "loading"}`}
-                disabled={!isValid || !changed || isLoading}
-              >
-                {!isLoading && "Save"}
-              </button>
-            </div>
+            <button
+              type="submit"
+              className="antd-btn antd-btn-primary p-1 relative flex justify-center items-center"
+              disabled={!isValid || !changed || isLoading}
+            >
+              Save
+              {isLoading && <span className="absolute antd-spin w-4 right-2" />}
+            </button>
           </div>
         </div>
       </Form>

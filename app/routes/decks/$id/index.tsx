@@ -1,20 +1,8 @@
 import { tinyassert } from "@hiogawa/utils";
-import { Form, Link, useLoaderData } from "@remix-run/react";
+import { Link, useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import React from "react";
-import {
-  Activity,
-  Bookmark,
-  CheckCircle,
-  ChevronDown,
-  ChevronUp,
-  Circle,
-  Disc,
-  Edit,
-  MoreVertical,
-  Play,
-  Trash2,
-} from "react-feather";
+import { NavLink } from "react-router-dom";
 import { z } from "zod";
 import { PaginationComponent } from "../../../components/misc";
 import { PopoverSimple } from "../../../components/popover";
@@ -24,6 +12,7 @@ import {
   DeckTable,
   PaginationMetadata,
   PracticeEntryTable,
+  PracticeQueueType,
   Q,
   UserTable,
   VideoTable,
@@ -36,6 +25,7 @@ import { Controller, makeLoader } from "../../../utils/controller-utils";
 import { useDeserialize } from "../../../utils/hooks";
 import { dtfDateOnly, rtf } from "../../../utils/intl";
 import { useLeafLoaderData } from "../../../utils/loader-utils";
+import { cls } from "../../../utils/misc";
 import type { PageHandle } from "../../../utils/page-handle";
 import { PAGINATION_PARAMS_SCHEMA } from "../../../utils/pagination";
 import {
@@ -49,7 +39,7 @@ import { MiniPlayer } from "../../bookmarks";
 
 export const handle: PageHandle = {
   navBarTitle: () => <NavBarTitleComponent />,
-  navBarMenu: () => <NavBarMenuComponent />,
+  navBarMenu: () => <DeckNavBarMenuComponent />,
 };
 
 const PARAMS_SCHEMA = z.object({
@@ -172,27 +162,7 @@ export default function DefaultComponent() {
     <div className="w-full flex justify-center">
       <div className="h-full w-full max-w-lg">
         <div className="h-full flex flex-col p-2 gap-2">
-          {/* TODO(refactor): copied from `practice.tsx` */}
-          <div className="w-full flex items-center bg-white p-2 px-4">
-            <div className="flex-none text-sm text-gray-600 uppercase">
-              Progress
-            </div>
-            <div className="grow flex px-4">
-              <div className="grow" />
-              <div className="flex-none text-blue-500">
-                {statistics.NEW.daily} / {statistics.NEW.total}
-              </div>
-              <div className="grow text-center text-gray-400">-</div>
-              <div className="flex-none text-red-500">
-                {statistics.LEARN.daily} / {statistics.LEARN.total}
-              </div>
-              <div className="grow text-center text-gray-400">-</div>
-              <div className="flex-none text-green-500">
-                {statistics.REVIEW.daily} / {statistics.REVIEW.total}
-              </div>
-              <div className="grow" />
-            </div>
-          </div>
+          <DeckPracticeStatisticsComponent statistics={statistics} />
           {practiceEntries.length === 0 && <div>Empty</div>}
           {practiceEntries.map((p) => {
             const b = bookmarkEntriesById.byId[p.bookmarkEntryId];
@@ -224,6 +194,36 @@ export default function DefaultComponent() {
   );
 }
 
+export function DeckPracticeStatisticsComponent({
+  statistics,
+  currentQueueType,
+}: {
+  statistics: DeckPracticeStatistics;
+  currentQueueType?: PracticeQueueType;
+}) {
+  return (
+    <div className="w-full flex items-center p-2 px-4">
+      <div className="text-sm uppercase">Progress</div>
+      {/* prettier-ignore */}
+      <div className="grow flex px-4">
+        <div className="flex-1" />
+        <div className={cls("text-colorInfoText border-b border-transparent", currentQueueType === "NEW" && "!border-current")}>
+          {statistics.NEW.daily} | {statistics.NEW.total}
+        </div>
+        <div className="flex-1 text-center text-colorTextSecondary">-</div>
+        <div className={cls("text-colorWarningText border-b border-transparent", currentQueueType === "LEARN" && "!border-current")}>
+          {statistics.LEARN.daily} | {statistics.LEARN.total}
+        </div>
+        <div className="flex-1 text-center text-colorTextSecondary">-</div>
+        <div className={cls("text-colorSuccessText border-b border-transparent", currentQueueType === "REVIEW" && "!border-current")}>
+          {statistics.REVIEW.daily} | {statistics.REVIEW.total}
+        </div>
+        <div className="flex-1" />
+      </div>
+    </div>
+  );
+}
+
 export function PracticeBookmarkEntryComponent({
   video,
   captionEntry,
@@ -244,57 +244,48 @@ export function PracticeBookmarkEntryComponent({
   const practiceEntryId = practiceEntry.id;
 
   return (
-    <div
-      className="border border-gray-200 flex flex-col"
-      data-test="bookmark-entry"
-    >
+    <div className="border flex flex-col" data-test="bookmark-entry">
       <div
-        className={`flex flex-col p-2 gap-2 w-full items-stretch
-          ${open && "border-b border-gray-200 border-dashed"}
-        `}
+        className={cls(
+          "flex flex-col p-2 gap-2 w-full items-stretch",
+          open && "border-b border-dashed"
+        )}
       >
         <div
           className="flex gap-2 cursor-pointer"
           onClick={() => setOpen(!open)}
         >
-          <div className="flex-none h-[20px] flex items-center">
-            {practiceEntry.queueType === "NEW" && (
-              <Circle size={16} className="text-blue-400" />
-            )}
-            {practiceEntry.queueType === "LEARN" && (
-              <Disc size={16} className="text-red-300" />
-            )}
-            {practiceEntry.queueType === "REVIEW" && (
-              <CheckCircle size={16} className="text-green-400" />
-            )}
+          <div className="h-[20px] flex items-center">
+            <QueueTypeIcon queueType={practiceEntry.queueType} />
           </div>
           <div
-            className="grow text-sm cursor-pointer"
+            className="flex-1 text-sm cursor-pointer"
             data-test="bookmark-entry-text"
           >
             {bookmarkEntry.text}
           </div>
         </div>
-        <div className="relative flex items-center gap-2 ml-6 text-xs text-gray-500">
+        <div className="relative flex items-center gap-2 ml-6 text-xs text-colorTextSecondary">
           <Link
             to={
               R["/decks/$id/history"](deck.id) +
               "?" +
               toQuery({ practiceEntryId })
             }
-            className="hover:underline hover:text-primary"
+            className="hover:underline"
           >
             Answered {formatCount(actionsCount)}
           </Link>
           {"⋅"}
           <div>Scheduled {scheduledAt}</div>
-          <div className="absolute right-0 bottom-0">
+          <div className="absolute right-0 bottom-0 flex">
             <button
-              className="flex-none btn btn-xs btn-circle btn-ghost text-gray-500"
+              className={cls(
+                "antd-btn antd-btn-ghost i-ri-arrow-down-s-line w-5 h-5",
+                open && "rotate-180"
+              )}
               onClick={() => setOpen(!open)}
-            >
-              {open ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-            </button>
+            ></button>
           </div>
         </div>
       </div>
@@ -312,6 +303,20 @@ export function PracticeBookmarkEntryComponent({
         />
       )}
     </div>
+  );
+}
+
+export function QueueTypeIcon({ queueType }: { queueType: PracticeQueueType }) {
+  return (
+    <span
+      // prettier-ignore
+      className={cls(
+        "w-5 h-5",
+        queueType === "NEW" && "i-ri-checkbox-blank-circle-line text-colorInfoText",
+        queueType === "LEARN" && "i-ri-record-circle-line text-colorWarningText",
+        queueType === "REVIEW" && "i-ri-checkbox-circle-line text-colorSuccessText"
+      )}
+    />
   );
 }
 
@@ -347,83 +352,88 @@ function NavBarTitleComponent() {
 // NavBarMenuComponent
 //
 
-function NavBarMenuComponent() {
+export function DeckNavBarMenuComponent() {
   const { deck }: LoaderData = useDeserialize(useLeafLoaderData());
 
+  const items = [
+    {
+      to: R["/decks/$id"](deck.id),
+      children: (
+        <>
+          <span className="i-ri-book-line w-6 h-6"></span>
+          Deck
+        </>
+      ),
+    },
+    {
+      to: R["/decks/$id/practice"](deck.id),
+      children: (
+        <>
+          <span className="i-ri-play-line w-6 h-6"></span>
+          Practice
+        </>
+      ),
+    },
+    {
+      to: R["/decks/$id/history-graph"](deck.id),
+      children: (
+        <>
+          <span className="i-ri-history-line w-6 h-6"></span>
+          History
+        </>
+      ),
+    },
+    {
+      to: R["/bookmarks"] + `?deckId=${deck.id}`,
+      children: (
+        <>
+          <span className="i-ri-bookmark-line w-6 h-6"></span>
+          Bookmarks{" "}
+        </>
+      ),
+    },
+    {
+      to: R["/decks/$id/edit"](deck.id),
+      children: (
+        <>
+          <span className="i-ri-edit-line w-6 h-6"></span>
+          Edit
+        </>
+      ),
+    },
+  ];
+
   return (
-    <>
-      <div className="flex-none">
-        <PopoverSimple
-          placement="bottom-end"
-          reference={
-            <button
-              className="btn btn-sm btn-ghost"
-              data-test="deck-menu-popover-reference"
-            >
-              <MoreVertical />
-            </button>
-          }
-          floating={(context) => (
-            <ul
-              className="menu menu-compact rounded p-3 w-48 text-sm"
-              data-test="deck-menu-popover-floating"
-            >
-              <li>
-                <Link
-                  to={R["/decks/$id/practice"](deck.id)}
-                  onClick={() => context.onOpenChange(false)}
-                >
-                  <Play />
-                  Practice
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to={R["/decks/$id/history-graph"](deck.id)}
-                  onClick={() => context.onOpenChange(false)}
-                >
-                  <Activity />
-                  History
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to={R["/bookmarks"] + `?deckId=${deck.id}`}
-                  onClick={() => context.onOpenChange(false)}
-                >
-                  <Bookmark />
-                  Bookmarks
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to={R["/decks/$id/edit"](deck.id)}
-                  onClick={() => context.onOpenChange(false)}
-                >
-                  <Edit />
-                  Edit
-                </Link>
-              </li>
-              <Form
-                action={R["/decks/$id?index"](deck.id)}
-                method="delete"
-                onSubmitCapture={(e) => {
-                  if (!window.confirm("Are you sure?")) {
-                    e.preventDefault();
-                  }
-                }}
-              >
-                <li>
-                  <button type="submit">
-                    <Trash2 />
-                    Delete
-                  </button>
-                </li>
-              </Form>
-            </ul>
-          )}
+    <PopoverSimple
+      placement="bottom-end"
+      reference={
+        <button
+          className="antd-btn antd-btn-ghost i-ri-more-2-line w-6 h-6"
+          data-test="deck-menu-popover-reference"
         />
-      </div>
-    </>
+      }
+      floating={(context) => (
+        <ul
+          className="flex flex-col gap-2 p-2 w-[180px] text-sm"
+          data-test="deck-menu-popover-floating"
+        >
+          {items.map((item) => (
+            <li key={item.to}>
+              <NavLink
+                className={({ isActive }) =>
+                  cls(
+                    "w-full antd-menu-item flex items-center gap-2 p-2",
+                    isActive && "antd-menu-item-active"
+                  )
+                }
+                end
+                onClick={() => context.onOpenChange(false)}
+                {...item}
+              />
+            </li>
+          ))}
+        </ul>
+      )}
+    />
   );
 }

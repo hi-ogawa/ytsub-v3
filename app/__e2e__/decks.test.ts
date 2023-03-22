@@ -98,10 +98,7 @@ test.describe("decks", () => {
     await expect(page).toHaveURL(/\/decks\/\d+\/history-graph$/);
 
     // navigate to "/decks/$id/history"
-    await page.locator("data-test=deck-menu-history-popover-reference").click();
-    await page
-      .locator("data-test=deck-menu-history-popover-floating >> text=List")
-      .click();
+    await page.getByRole("combobox").selectOption({ label: "List" });
     await expect(page).toHaveURL(/\/decks\/\d+\/history$/);
     await expect(page.locator(`data-test=main >> "Empty"`)).toBeVisible();
   });

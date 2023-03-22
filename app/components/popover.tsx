@@ -40,7 +40,12 @@ function Popover(props: {
       open,
       onOpenChange: setOpen,
       placement: props.placement,
-      middleware: [offset(16), flip(), shift(), arrow({ element: arrowRef })],
+      middleware: [
+        offset(16),
+        flip(),
+        shift(),
+        arrow({ element: arrowRef, padding: 10 }),
+      ],
       whileElementsMounted: autoUpdate,
     });
 
@@ -120,7 +125,7 @@ export function PopoverSimple({
           leaveTo="scale-90 opacity-0"
           {...props}
         >
-          <div className="bg-base-100 text-base-content shadow">
+          <div className="antd-floating">
             <div
               {...arrowProps}
               className={cls(
@@ -134,7 +139,7 @@ export function PopoverSimple({
                 // rotate 4x4 square with shadow
                 // prettier-ignore
                 className={cls(
-                  "bg-base-100 shadow relative w-4 h-4",
+                  "antd-floating !shadow relative w-4 h-4",
                   context.placement.startsWith("bottom") && "-top-2 rotate-[225deg]",
                   context.placement.startsWith("top") && "-bottom-2 rotate-[45deg]",
                   context.placement.startsWith("left") && "-right-2 rotate-[315deg]",

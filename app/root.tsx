@@ -5,30 +5,22 @@ import {
   Links,
   LiveReload,
   Meta,
+  NavLink,
   Outlet,
   Scripts,
   ShouldReloadFunction,
   useMatches,
-  useTransition,
 } from "@remix-run/react";
 import type { LinksFunction, MetaFunction } from "@remix-run/server-runtime";
+import { atom, useAtom } from "jotai";
 import { last } from "lodash";
-import {
-  BookOpen,
-  Bookmark,
-  Home,
-  LogIn,
-  LogOut,
-  Menu,
-  Search,
-  Settings,
-  User,
-  Video,
-} from "react-feather";
+import type React from "react";
 import { Toaster, toast } from "react-hot-toast";
 import { QueryClient, QueryClientProvider } from "react-query";
+import { Drawer } from "./components/drawer";
 import { PopoverSimple } from "./components/popover";
-import { TopProgressBar } from "./components/top-progress-bar";
+import { ThemeSelect } from "./components/theme-select";
+import { TopProgressBarRemix } from "./components/top-progress-bar";
 import type { UserTable } from "./db/models";
 import { R, R_RE } from "./misc/routes";
 import { publicConfig } from "./utils/config";
@@ -38,19 +30,14 @@ import { getFlashMessages } from "./utils/flash-message";
 import { useFlashMessages } from "./utils/flash-message-hook";
 import { useHydrated } from "./utils/hooks";
 import { RootLoaderData, useRootLoaderData } from "./utils/loader-utils";
+import { cls } from "./utils/misc";
 import type { Match } from "./utils/page-handle";
 
-const ASSETS = {
-  "index.css": require("../build/tailwind/" +
-    process.env.NODE_ENV +
-    "/index.css"),
-  "icon-32.png": require("./assets/icon-32.png"),
-};
-
 export const links: LinksFunction = () => {
+  // prettier-ignore
   return [
-    { rel: "stylesheet", href: ASSETS["index.css"] },
-    { rel: "icon", href: ASSETS["icon-32.png"], sizes: "32x32" },
+    { rel: "stylesheet", href: require("../build/css/" + process.env.NODE_ENV + "/index.css") },
+    { rel: "icon", href: require("./assets/icon-32.png"), sizes: "32x32" },
     { rel: "manifest", href: "/_copy/manifest.json" },
   ];
 };
@@ -104,16 +91,24 @@ export const unstable_shouldReload: ShouldReloadFunction = ({
 export default function DefaultComponent() {
   useHydrated(); // initialize global hydration state shared via this hook
 
+  // TODO: hydration error for theme class (dark, light)
   return (
-    <html lang="en" className="h-full">
+    <html lang="en" className="h-full" suppressHydrationWarning>
       <head>
         <meta charSet="utf-8" />
         <Meta />
         <Links />
         <ConfigPlaceholder />
+        <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }}></script>
       </head>
       <body className="h-full">
-        <Toaster position="bottom-left" />
+        {/* TODO: default position="top" is fine? */}
+        <Toaster
+          position="bottom-left"
+          toastOptions={{
+            className: "!bg-colorBgElevated !text-colorText",
+          }}
+        />
         {/* escape hatch to close all toasts for e2e test (cf. forceDismissToast in helper.ts) */}
         <button
           data-test="forceDismissToast"
@@ -128,6 +123,10 @@ export default function DefaultComponent() {
   );
 }
 
+// copied from index.html via
+//   node -e 'console.log(fs.readFileSync("./index.html", "utf-8").match(/<script>(.*?)<\/script>/sm)[1].replaceAll(/\/\/.*/g, "").replaceAll("\n", " ").trim())'
+const THEME_SCRIPT = `(() => {         const STORAGE_KEY = "ytsub:theme";         const DEFAULT_THEME = "system";         const prefersDark = window.matchMedia("(prefers-color-scheme: dark)");          function getTheme() {           return window.localStorage.getItem(STORAGE_KEY) || DEFAULT_THEME;         }          function setTheme(config) {           window.localStorage.setItem(STORAGE_KEY, config);           applyTheme();         }          function applyTheme() {           const theme = getTheme();           const derived = theme === "system" ? (prefersDark.matches ? "dark" : "light") : theme;           disableTransitions(() => {             document.documentElement.classList.remove("dark", "light");             document.documentElement.classList.add(derived);           });         }                   function disableTransitions(callback) {           const el = document.createElement("style");           el.innerHTML = "* { transition: none !important; }";           document.head.appendChild(el);           callback();           window.getComputedStyle(document.documentElement).transition;            document.head.removeChild(el);         }          function initTheme() {           applyTheme();           prefersDark.addEventListener("change", applyTheme);           Object.assign(globalThis, { __theme: { setTheme, getTheme } });         }          initTheme();       })();`;
+
 function Root() {
   const data = useRootLoaderData();
   useFlashMessages(data.flashMessages);
@@ -138,21 +137,19 @@ function Root() {
 
   return (
     <>
-      <GlobalProgress />
-      <SideMenuDrawerWrapper isSignedIn={!!data.currentUser}>
-        <div className="h-full flex flex-col">
-          <Navbar
-            title={navBarTitle?.()}
-            user={data.currentUser}
-            menu={navBarMenu?.()}
-          />
-          <div className="flex-[1_0_0] flex flex-col" data-test="main">
-            <div className="w-full flex-[1_0_0] h-full overflow-y-auto">
-              <Outlet />
-            </div>
+      <TopProgressBarRemix />
+      <div className="h-full flex flex-col">
+        <Navbar
+          title={navBarTitle?.()}
+          user={data.currentUser}
+          menu={navBarMenu?.()}
+        />
+        <div className="flex-[1_0_0] flex flex-col" data-test="main">
+          <div className="w-full flex-[1_0_0] h-full overflow-y-auto">
+            <Outlet />
           </div>
         </div>
-      </SideMenuDrawerWrapper>
+      </div>
       <Scripts />
       <LiveReload />
     </>
@@ -178,25 +175,6 @@ const queryClient = new QueryClient({
   },
 });
 
-function GlobalProgress() {
-  const transition = useTransition();
-  return <TopProgressBar loading={transition.state !== "idle"} />;
-}
-
-const DRAWER_TOGGLE_INPUT_ID = "--drawer-toggle-input--";
-
-function toggleDrawer(open?: boolean): void {
-  const element = document.querySelector<HTMLInputElement>(
-    "#" + DRAWER_TOGGLE_INPUT_ID
-  );
-  if (!element) return;
-  if (open === undefined) {
-    element.checked = !element.checked;
-  } else {
-    element.checked = open;
-  }
-}
-
 function Navbar({
   title,
   user,
@@ -206,63 +184,105 @@ function Navbar({
   user?: UserTable;
   menu?: React.ReactNode;
 }) {
+  const [drawerOpen, setDrawerOpen] = useAtom(drawerOpenAtom);
+
   return (
-    <header className="w-full h-12 flex-none bg-primary text-primary-content flex items-center px-2 md:px-4 py-2 gap-0 md:gap-2 shadow-lg z-10">
-      <div className="flex-none pr-2 md:pr-0">
-        <label
-          className="btn btn-sm btn-ghost"
-          htmlFor={DRAWER_TOGGLE_INPUT_ID}
-        >
-          <Menu size={24} />
-        </label>
-      </div>
+    <header className="w-full h-12 flex-none bg-primary text-primary-content flex items-center p-2 px-6 gap-4 shadow-md shadow-black/[0.05] dark:shadow-black/[0.7]">
+      <button
+        className="antd-btn antd-btn-ghost i-ri-menu-line w-6 h-6"
+        onClick={() => setDrawerOpen(!drawerOpen)}
+      />
       <div className="flex-1">{title}</div>
       {menu}
       {!user && (
-        <div className="flex-none">
-          <Link to={R["/users/signin"]} className="btn btn-sm btn-ghost">
-            <LogIn data-test="login-icon" />
-          </Link>
+        <div className="flex-none flex items-center">
+          <Link
+            to={R["/users/signin"]}
+            className="antd-btn antd-btn-ghost i-ri-login-box-line w-6 h-6"
+            data-test="login-icon"
+          />
         </div>
       )}
       {user && (
-        <div className="flex-none">
+        <div className="flex-none flex items-center">
           <PopoverSimple
             placement="bottom-end"
             reference={
-              <button className="btn btn-sm btn-ghost" data-test="user-menu">
-                <User />
-              </button>
+              <button
+                className="antd-btn antd-btn-ghost i-ri-user-line w-6 h-6"
+                data-test="user-menu"
+              />
             }
             floating={(context) => (
-              <ul className="menu rounded p-3 shadow w-48 bg-base-100 text-base-content text-sm">
+              <ul className="flex flex-col items-stretch gap-2 p-2 w-[180px] text-sm">
                 <li>
                   <Link
+                    className="antd-menu-item flex items-center gap-2 p-2"
                     to={R["/users/me"]}
                     onClick={() => context.onOpenChange(false)}
                   >
-                    <Settings />
+                    <span className="i-ri-settings-line w-6 h-6"></span>
                     Account
                   </Link>
                 </li>
-                <Form
-                  method="post"
-                  action={R["/users/signout"]}
-                  data-test="signout-form"
-                  onClick={() => context.onOpenChange(false)}
-                >
-                  <li>
-                    <button type="submit" className="flex gap-3">
-                      <LogOut />
+                <li>
+                  <Form
+                    method="post"
+                    action={R["/users/signout"]}
+                    data-test="signout-form"
+                    onClick={() => context.onOpenChange(false)}
+                  >
+                    <button
+                      type="submit"
+                      className="w-full antd-menu-item flex items-center gap-2 p-2"
+                    >
+                      <span className="i-ri-logout-box-line w-6 h-6"></span>
                       Sign out
                     </button>
-                  </li>
-                </Form>
+                  </Form>
+                </li>
               </ul>
             )}
           />
         </div>
       )}
+      <Drawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
+        <ul className="flex flex-col gap-3 p-4 w-[280px] h-full">
+          <li>
+            <SearchComponent />
+          </li>
+          {SIDE_MENU_ENTRIES.map((entry) => {
+            const disabled = entry.requireSignin && !user;
+            return (
+              <li
+                key={entry.to}
+                className="flex"
+                title={disabled ? "Signin required" : undefined}
+              >
+                <NavLink
+                  className={({ isActive }) =>
+                    cls(
+                      "antd-menu-item flex-1 p-2 flex items-center gap-4 aria-disabled:cursor-not-allowed aria-disabled:opacity-50",
+                      isActive && "antd-menu-item-active"
+                    )
+                  }
+                  to={entry.to}
+                  aria-disabled={disabled}
+                  onClick={() => setDrawerOpen(false)}
+                >
+                  {entry.icon}
+                  {/* <entry.icon size={24} /> */}
+                  {entry.title}
+                </NavLink>
+              </li>
+            );
+          })}
+          <li className="border-t py-2"></li>
+          <li>
+            <ThemeSelect />
+          </li>
+        </ul>
+      </Drawer>
     </header>
   );
 }
@@ -277,90 +297,47 @@ interface SideMenuEntry {
 const SIDE_MENU_ENTRIES: SideMenuEntry[] = [
   {
     to: R["/"],
-    icon: Home,
+    icon: <span className="i-ri-home-4-line w-6 h-6" />,
     title: "Examples",
     requireSignin: false,
   },
   {
     to: R["/videos"],
-    icon: Video,
+    icon: <span className="i-ri-vidicon-line w-6 h-6" />,
     title: "Your Videos",
     requireSignin: true,
   },
   {
     to: R["/bookmarks"],
-    icon: Bookmark,
+    icon: <span className="i-ri-bookmark-line w-6 h-6" />,
     title: "Bookmarks",
     requireSignin: true,
   },
   {
     to: R["/decks"],
-    icon: BookOpen,
+    icon: <span className="i-ri-book-open-line w-6 h-6" />,
     title: "Practice",
     requireSignin: true,
   },
 ];
 
-function SideMenuDrawerWrapper({
-  isSignedIn,
-  children,
-}: React.PropsWithChildren<{ isSignedIn: boolean }>) {
-  // TODO: initial render shows open drawer?
-  return (
-    <div className="drawer h-screen w-full">
-      <input
-        className="drawer-toggle"
-        type="checkbox"
-        id={DRAWER_TOGGLE_INPUT_ID}
-      />
-      <div className="drawer-content">{children}</div>
-      <div className="drawer-side">
-        <label className="drawer-overlay" htmlFor={DRAWER_TOGGLE_INPUT_ID} />
-        <ul className="menu p-4 w-64 bg-base-100 text-base-content">
-          <li className="disabled block">
-            <SearchComponent />
-          </li>
-          {SIDE_MENU_ENTRIES.map((entry) => {
-            const disabled = entry.requireSignin && !isSignedIn;
-            return (
-              <li
-                key={entry.to}
-                className={`${disabled && "disabled"}`}
-                title={disabled ? "Signin required" : undefined}
-              >
-                <Link
-                  to={entry.to}
-                  onClick={() => toggleDrawer(false)}
-                  // workaround to refresh root loader for flush message
-                  reloadDocument={disabled}
-                >
-                  <entry.icon size={28} className="pr-2" />
-                  {entry.title}
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
-      </div>
-    </div>
-  );
-}
-
 function SearchComponent() {
+  const [, setDrawerOpen] = useAtom(drawerOpenAtom);
+
   return (
     <Form
       className="w-full"
       action={R["/videos/new"]}
       method="get"
-      onSubmit={() => toggleDrawer(false)}
+      onSubmit={() => setDrawerOpen(false)}
       data-test="search-form"
     >
       <label className="w-full relative text-base-content flex items-center">
-        <Search size={26} className="absolute text-gray-400 pl-2" />
+        <span className="absolute text-colorTextSecondary ml-2.5 i-ri-search-line w-4 h-4"></span>
         <input
           type="text"
           name="videoId"
-          className="w-full input input-sm input-bordered pl-8"
+          className="w-full antd-input p-1 pl-9"
           placeholder="Enter Video ID or URL"
           required
         />
@@ -368,3 +345,9 @@ function SearchComponent() {
     </Form>
   );
 }
+
+//
+// page local state
+//
+
+const drawerOpenAtom = atom(false);

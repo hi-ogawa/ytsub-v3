@@ -1,21 +1,11 @@
-import { requireUserAndDeck } from ".";
+import { DeckNavBarMenuComponent, requireUserAndDeck } from ".";
 import { Transition } from "@headlessui/react";
-import { Link } from "@remix-run/react";
+import { Link, useMatches, useNavigate } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import type { ECharts } from "echarts";
 import { range } from "lodash";
 import React from "react";
-import {
-  BarChart2,
-  ChevronsLeft,
-  ChevronsRight,
-  List,
-  MoreVertical,
-  Play,
-} from "react-feather";
 import { z } from "zod";
-import { Spinner } from "../../../components/misc";
-import { PopoverSimple } from "../../../components/popover";
 import {
   PracticeHistoryChart,
   PracticeHistoryChartData,
@@ -26,6 +16,7 @@ import { R } from "../../../misc/routes";
 import { Controller, makeLoader } from "../../../utils/controller-utils";
 import { useDeserialize, useHydrated } from "../../../utils/hooks";
 import { useLeafLoaderData } from "../../../utils/loader-utils";
+import { cls } from "../../../utils/misc";
 import type { PageHandle } from "../../../utils/page-handle";
 import { Timedelta } from "../../../utils/timedelta";
 import { formatYmd } from "../../../utils/timezone";
@@ -38,7 +29,7 @@ import { zStringToInteger } from "../../../utils/zod-utils";
 
 export const handle: PageHandle = {
   navBarTitle: () => <NavBarTitleComponent />,
-  navBarMenu: () => <NavBarMenuComponent />,
+  navBarMenu: () => <DeckHistoryNavBarMenuComponent />,
 };
 
 //
@@ -144,7 +135,7 @@ export default function DefaultComponent() {
 
   return (
     <div className="w-full flex justify-center">
-      <div className="w-full max-w-lg flex flex-col gap-2">
+      <div className="w-full max-w-lg flex flex-col gap-3 mt-2">
         <div className="relative w-full h-[300px]">
           <PracticeHistoryChart
             data={data}
@@ -153,36 +144,31 @@ export default function DefaultComponent() {
           />
           <Transition
             show={isLoading}
-            className="transition duration-100 z-50 absolute inset-0 flex justify-center items-center bg-white/[0.5]"
+            className="transition duration-500 absolute inset-0 flex justify-center items-center bg-colorBgContainer"
             enterFrom="opacity-0"
             enterTo="opacity-100"
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <Spinner className="w-20 h-20" />
+            <div className="antd-spin w-20" />
           </Transition>
         </div>
         <div className="w-full flex justify-center">
-          <div className="btn-group shadow-xl" data-test="pagination">
+          <div className="flex items-center gap-2 px-2 py-1">
             <Link
               to={"?" + toQuery({ page: page + 1 })}
               onClick={onClickPage}
-              className="btn btn-xs no-animation"
-            >
-              <ChevronsLeft size={14} />
-            </Link>
-            <div className="bg-neutral text-neutral-content font-semibold text-xs flex justify-center items-center px-2">
-              {formatPage(page)}
-            </div>
+              className="antd-btn antd-btn-ghost i-ri-play-mini-fill w-4 h-4 rotate-[180deg]"
+            />
+            <div className="text-sm px-2">{formatPage(page)}</div>
             <Link
               to={"?" + toQuery({ page: page - 1 })}
               onClick={onClickPage}
-              className={`btn btn-xs no-animation ${
-                page === 0 && "btn-disabled"
-              }`}
-            >
-              <ChevronsRight size={14} />
-            </Link>
+              className={cls(
+                "antd-btn antd-btn-ghost i-ri-play-mini-fill w-4 h-4",
+                page === 0 && "text-colorTextDisabled pointer-events-none"
+              )}
+            />
           </div>
         </div>
       </div>
@@ -202,65 +188,57 @@ function formatPage(page: number): string {
 
 function NavBarTitleComponent() {
   const { deck }: LoaderData = useDeserialize(useLeafLoaderData());
-  return <>{deck.name} (history)</>;
+  return (
+    <span>
+      {deck.name}{" "}
+      <span className="text-colorTextSecondary text-sm">(history)</span>
+    </span>
+  );
 }
 
 //
 // NavBarMenuComponent
 //
 
-export function NavBarMenuComponent() {
+export function DeckHistoryNavBarMenuComponent() {
   const { deck }: LoaderData = useDeserialize(useLeafLoaderData());
 
   return (
     <>
-      <div className="flex-none">
-        <PopoverSimple
-          placement="bottom-end"
-          reference={
-            <button
-              className="btn btn-sm btn-ghost"
-              data-test="deck-menu-history-popover-reference"
-            >
-              <MoreVertical />
-            </button>
-          }
-          floating={(context) => (
-            <ul
-              className="menu menu-compact rounded p-3 w-48 text-sm"
-              data-test="deck-menu-history-popover-floating"
-            >
-              <li>
-                <Link
-                  to={R["/decks/$id/practice"](deck.id)}
-                  onClick={() => context.onOpenChange(false)}
-                >
-                  <Play />
-                  Practice
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to={R["/decks/$id/history-graph"](deck.id)}
-                  onClick={() => context.onOpenChange(false)}
-                >
-                  <BarChart2 />
-                  Graph
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to={R["/decks/$id/history"](deck.id)}
-                  onClick={() => context.onOpenChange(false)}
-                >
-                  <List />
-                  List
-                </Link>
-              </li>
-            </ul>
-          )}
-        />
-      </div>
+      <HistoryViewSelect deckId={deck.id} />
+      <DeckNavBarMenuComponent />
     </>
+  );
+}
+
+function HistoryViewSelect({ deckId }: { deckId: number }) {
+  const [{ pathname }] = useMatches().slice(-1);
+  const navigate = useNavigate();
+
+  const options = [
+    {
+      to: R["/decks/$id/history-graph"](deckId),
+      label: "Chart",
+    },
+    {
+      to: R["/decks/$id/history"](deckId),
+      label: "List",
+    },
+  ];
+
+  return (
+    <select
+      className="antd-input py-0.5 px-1 text-sm"
+      value={pathname}
+      onChange={(e) => {
+        navigate(e.target.value);
+      }}
+    >
+      {options.map((option) => (
+        <option key={option.to} value={option.to}>
+          {option.label}
+        </option>
+      ))}
+    </select>
   );
 }

@@ -1,15 +1,8 @@
 import { Link } from "@remix-run/react";
 import type React from "react";
-import {
-  Bookmark,
-  ChevronLeft,
-  ChevronRight,
-  ChevronsLeft,
-  ChevronsRight,
-  MoreVertical,
-} from "react-feather";
 import type { PaginationMetadata, VideoTable } from "../db/models";
 import { R } from "../misc/routes";
+import { cls } from "../utils/misc";
 import { toNewPages } from "../utils/pagination";
 import { toQuery } from "../utils/url-data";
 import { parseVssId, toThumbnail } from "../utils/youtube";
@@ -56,11 +49,6 @@ export function VideoComponent({
       className="relative w-full flex border"
       style={{ aspectRatio: "36 / 9" }}
     >
-      {isLoading && (
-        <div className="absolute inset-0 flex justify-center items-center z-10 bg-black/[0.2]">
-          <Spinner className="w-16 h-16" />
-        </div>
-      )}
       <div className="flex-none w-[44%] relative aspect-video overflow-hidden">
         <Link to={to} className="w-full h-full">
           <img
@@ -68,7 +56,7 @@ export function VideoComponent({
             src={toThumbnail(videoId)}
           />
         </Link>
-        <div className="absolute right-1 bottom-1 px-1 py-0.5 rounded bg-black/75 text-white text-xs font-bold">
+        <div className="absolute right-1 bottom-1 px-1 py-0.5 bg-black/75 text-white text-xs font-bold">
           <div>
             {code1} - {code2}
           </div>
@@ -76,11 +64,11 @@ export function VideoComponent({
         {bookmarkEntriesCount !== undefined && (
           <Link
             to={R["/bookmarks"] + `?videoId=${video.id}&order=caption`}
-            className="absolute right-1 top-1 px-1 py-0.5 rounded bg-black/75 text-white text-xs font-bold"
+            className="absolute right-1 top-1 px-1 py-0.5 bg-black/75 text-white text-xs font-bold"
           >
             <div className="flex justify-center items-center gap-1">
               <div>{bookmarkEntriesCount}</div>
-              <Bookmark size={12} />
+              <span className="i-ri-bookmark-line w-3 h-3"></span>
             </div>
           </Link>
         )}
@@ -93,24 +81,25 @@ export function VideoComponent({
         <a
           href={"https://www.youtube.com/channel/" + channelId}
           target="_blank"
-          className="line-clamp-1 text-gray-600 text-xs pr-8"
+          className="line-clamp-1 text-colorTextSecondary text-xs pr-8"
         >
           {author}
         </a>
         {actions && (
-          <div className="absolute right-1 bottom-1 z-10">
+          <div className="absolute right-1 bottom-1">
             <PopoverSimple
               placement="bottom-end"
-              reference={
+              reference={(context) => (
                 <button
-                  className="btn btn-sm btn-ghost btn-circle"
+                  className={cls(
+                    "antd-btn antd-btn-ghost i-ri-more-2-line w-5 h-5",
+                    context.open && "text-colorPrimaryActive"
+                  )}
                   data-test="video-component-popover-button"
-                >
-                  <MoreVertical size={14} />
-                </button>
-              }
+                />
+              )}
               floating={
-                <ul className="menu menu-compact rounded p-2 w-48 text-sm">
+                <ul className="flex flex-col gap-2 p-2 w-48 text-sm">
                   {/* TODO: how to let `actions` close the popover? */}
                   {actions}
                 </ul>
@@ -119,60 +108,56 @@ export function VideoComponent({
           </div>
         )}
       </div>
+      {isLoading && (
+        <div className="absolute inset-0 flex justify-center items-center bg-black/[0.2] dark:bg-black/[0.5]">
+          <div className="antd-spin w-16"></div>
+        </div>
+      )}
     </div>
   );
 }
 
-// TODO: might be nicer to implener .spinner class
-export function Spinner(props: { className: string }) {
-  return (
-    <div
-      className={`${props.className} rounded-full animate-spin border-2 border-gray-400 border-t-gray-200 border-r-gray-200`}
-    />
-  );
-}
-
 export function PaginationComponent({
-  className = "",
   query = "",
   pagination,
 }: {
-  className?: string;
   query?: string;
   pagination: PaginationMetadata;
 }) {
+  const { page, totalPage, total } = pagination;
   const { first, previous, next, last } = toNewPages(pagination);
   if (query) query += "&";
   return (
-    <div className={`${className} btn-group shadow-xl`} data-test="pagination">
+    <div
+      data-test="pagination"
+      className="antd-floating flex items-center gap-2 px-2 py-1"
+    >
       <Link
+        className="antd-btn antd-btn-ghost flex items-center"
         to={"?" + query + toQuery(first)}
-        className="btn btn-xs no-animation"
       >
-        <ChevronsLeft size={14} />
+        <span className="i-ri-rewind-mini-fill w-5 h-5"></span>
       </Link>
       <Link
+        className="antd-btn antd-btn-ghost flex items-center"
         to={"?" + query + toQuery(previous)}
-        // TODO: think of better "disabled" state
-        // className={`btn btn-xs no-animation ${!previous && "btn-disabled"}`}
-        className="btn btn-xs no-animation"
       >
-        <ChevronLeft size={14} />
+        <span className="i-ri-play-mini-fill w-4 h-4 rotate-[180deg]"></span>
       </Link>
-      <div className="bg-neutral text-neutral-content font-semibold text-xs flex justify-center items-center px-2">
-        {pagination.page}/{pagination.totalPage} ({pagination.total})
-      </div>
+      <span className="text-sm">
+        {page} / {totalPage} ({total})
+      </span>
       <Link
+        className="antd-btn antd-btn-ghost flex items-center"
         to={"?" + query + toQuery(next)}
-        className="btn btn-xs no-animation"
       >
-        <ChevronRight size={14} />
+        <span className="i-ri-play-mini-fill w-4 h-4"></span>
       </Link>
       <Link
+        className="antd-btn antd-btn-ghost flex items-center"
         to={"?" + query + toQuery(last)}
-        className="btn btn-xs no-animation"
       >
-        <ChevronsRight size={14} />
+        <span className="i-ri-rewind-mini-fill w-5 h-5 rotate-[180deg]"></span>
       </Link>
     </div>
   );
