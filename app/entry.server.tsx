@@ -12,6 +12,7 @@ const handler: HandleDocumentRequestFunction = (
   responseHeaders,
   remixContext
 ) => {
+  // TODO: renderToPipeableStream https://github.com/remix-run/remix/blob/72c22b3deb9e84e97359b481f7f2af6cdc355877/packages/remix-dev/config/defaults/entry.server.node.tsx#L10-L11
   let markup = renderToString(
     <RemixServer context={remixContext} url={request.url} />
   );

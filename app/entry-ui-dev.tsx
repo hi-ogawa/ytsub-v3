@@ -1,6 +1,6 @@
 import "virtual:uno.css";
 import { tinyassert } from "@hiogawa/utils";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import { BrowserRouter, NavLink, Route, Routes } from "react-router-dom";
 import * as stories from "./components/stories";
 import { ThemeSelect } from "./components/theme-select";
@@ -66,7 +66,8 @@ function Root() {
 function main() {
   const el = document.getElementById("root");
   tinyassert(el);
-  ReactDOM.render(<Root />, el);
+  const root = createRoot(el);
+  root.render(<Root />);
 }
 
 main();
