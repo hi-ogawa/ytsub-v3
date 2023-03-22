@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# based on https://stackoverflow.com/questions/19331497/set-environment-variables-from-file-of-key-value-pairs
+
+# usage:
+#   bash scripts/dotenv.sh [dotenv-file] [command...]
+
+dotenv_file="$1"
+shift
+env $(grep -v '^#' "$dotenv_file") "${@}"
