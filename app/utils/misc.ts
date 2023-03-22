@@ -33,6 +33,7 @@ export function cls(...args: unknown[]): string {
   return args.filter(Boolean).join(" ");
 }
 
+// TODO: to js-utils
 export function newPromiseWithResolvers<T>() {
   let resolve!: (value: T) => void;
   let reject!: (value: unknown) => void;

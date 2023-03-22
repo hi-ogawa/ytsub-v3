@@ -2,7 +2,6 @@ import { useStableRef } from "@hiogawa/utils-react";
 import { UseQueryOptions, useQuery } from "@tanstack/react-query";
 import React from "react";
 import { deserialize } from "./controller-utils";
-import { loadYoutubeIframeApi } from "./youtube";
 
 export function useIsFormValid() {
   const ref = React.useRef<HTMLFormElement>(null);
@@ -48,12 +47,6 @@ export function createUseQuery<TQueryFnArg, TQueryFnData>(
     );
   };
 }
-
-export const useYoutubeIframeApi = createUseQuery(
-  "youtube-iframe-api",
-  loadYoutubeIframeApi,
-  { staleTime: Infinity, cacheTime: Infinity }
-);
 
 export function useMemoWrap<F extends (_: D) => any, D>(
   f: F,
