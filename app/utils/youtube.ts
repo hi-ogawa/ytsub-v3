@@ -317,12 +317,17 @@ export interface YoutubePlayer {
   getPlayerState: () => number;
 }
 
-export let youtubeIframeApi: YoutubeIframeApi = throwGetterProxy as any;
+// singleton
+let youtubeIframeApi: YoutubeIframeApi = throwGetterProxy as any;
 
-export const loadYoutubeIframeApi = once(async () => {
+const loadYoutubeIframeApi = once(async () => {
   tinyassert(typeof window !== "undefined");
+
+  // load external <script>
   await loadScript("https://www.youtube.com/iframe_api");
   youtubeIframeApi = (window as any).YT as YoutubeIframeApi;
+
+  // wait for api ready callback
   const { promise, resolve } = newPromiseWithResolvers<void>();
   youtubeIframeApi.ready(() => resolve());
   await promise;
@@ -332,11 +337,14 @@ export async function loadYoutubePlayer(
   el: HTMLElement,
   options: YoutubePlayerOptions
 ): Promise<YoutubePlayer> {
+  await loadYoutubeIframeApi();
+
   const { promise, resolve } = newPromiseWithResolvers<void>();
   const player = new youtubeIframeApi.Player(el, {
     ...options,
     events: { onReady: () => resolve() },
   });
   await promise;
+
   return player;
 }

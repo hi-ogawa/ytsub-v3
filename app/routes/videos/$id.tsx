@@ -10,7 +10,10 @@ import {
   useLoaderData,
 } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import {
+  UseMutationOptions,
+  useMutation,
+} from "@tanstack/react-query";
 import {
   VirtualItem,
   Virtualizer,
@@ -41,7 +44,6 @@ import { toForm } from "../../utils/url-data";
 import {
   YoutubePlayer,
   YoutubePlayerOptions,
-  loadYoutubeIframeApi,
   loadYoutubePlayer,
   stringifyTimestamp,
 } from "../../utils/youtube";
@@ -445,62 +447,55 @@ function LayoutComponent(props: {
   );
 }
 
-export function usePlayer({
-  defaultOptions,
-  onSuccess,
-  onError,
-}: {
-  defaultOptions: YoutubePlayerOptions; // only on mount effect
-  onSuccess?: (player: YoutubePlayer) => void;
-  onError?: (e: Error) => void;
-}) {
-  const ref = React.useRef<HTMLDivElement>(null);
+export function usePlayerLoader(
+  playerOptions: YoutubePlayerOptions,
+  mutationOptions: UseMutationOptions<
+    YoutubePlayer,
+    unknown,
+    HTMLElement,
+    unknown
+  >
+) {
+  // TODO: cleanup resource on unmount?
 
-  const apiQuery = useQuery({
-    queryKey: ["loadYoutubeIframeApi"],
-    queryFn: () => loadYoutubeIframeApi().then(() => null), // react-query cannot return undefiend
-    onError,
-  });
-
-  const playerMutation = useMutation(
-    (el: HTMLElement) => loadYoutubePlayer(el, defaultOptions),
-    {
-      onError,
-      onSuccess,
+  const ref: React.RefCallback<HTMLElement> = (el) => {
+    if (el) {
+      mutation.mutate(el);
     }
+  };
+
+  const mutation = useMutation(
+    (el: HTMLElement) => loadYoutubePlayer(el, playerOptions),
+    mutationOptions
   );
 
-  React.useEffect(() => {
-    if (apiQuery.isSuccess && ref.current) {
-      playerMutation.mutate(ref.current);
-    }
-  }, [apiQuery.isSuccess]);
-
-  const loading = !apiQuery.isSuccess || !playerMutation.isSuccess;
-  return [ref, loading] as const;
+  return {
+    ref: React.useCallback(ref, []),
+    isLoading: !mutation.isSuccess,
+  }
 }
 
 function PlayerComponent({
   defaultOptions,
-  onLoad = () => {},
-  onError = () => {},
+  onLoad,
+  onError,
 }: {
   defaultOptions: YoutubePlayerOptions;
-  onLoad?: (player: YoutubePlayer) => void;
-  onError?: (e: Error) => void;
+  onLoad: (player: YoutubePlayer) => void;
+  onError?: (e: unknown) => void;
 }) {
-  const [ref, loading] = usePlayer({
-    defaultOptions,
+  const { ref, isLoading } = usePlayerLoader(defaultOptions, {
     onSuccess: onLoad,
     onError,
   });
+
   return (
     <div className="flex justify-center">
       <div className="relative w-full max-w-md md:max-w-none">
         <div className="relative pt-[56.2%]">
           <div className="absolute top-0 w-full h-full" ref={ref} />
         </div>
-        {loading && (
+        {isLoading && (
           <div className="absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%]">
             <div className="antd-spin w-20" />
           </div>

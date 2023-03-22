@@ -29,7 +29,7 @@ import type { CaptionEntry } from "../../utils/types";
 import { toQuery } from "../../utils/url-data";
 import type { YoutubePlayer } from "../../utils/youtube";
 import { zStringToInteger } from "../../utils/zod-utils";
-import { CaptionEntryComponent, usePlayer } from "../videos/$id";
+import { CaptionEntryComponent, usePlayerLoader } from "../videos/$id";
 
 export const handle: PageHandle = {
   navBarTitle: () => "Bookmarks",
@@ -289,16 +289,18 @@ export function MiniPlayer({
   // effects
   //
 
-  const [playerRef, playerLoading] = usePlayer({
-    defaultOptions: {
+  const playerLoader = usePlayerLoader(
+    {
       videoId: video.videoId,
       playerVars: {
         start: Math.max(0, Math.floor(begin) - 1),
         autoplay: autoplay ? 1 : 0,
       },
     },
-    onSuccess: setPlayer,
-  });
+    {
+      onSuccess: setPlayer,
+    }
+  );
 
   useRafLoop(() => {
     if (!player) return;
@@ -328,10 +330,10 @@ export function MiniPlayer({
       />
       <div className="relative w-full">
         <div className="relative pt-[56.2%]">
-          <div className="absolute top-0 w-full h-full" ref={playerRef} />
+          <div className="absolute top-0 w-full h-full" ref={playerLoader.ref} />
         </div>
         <Transition
-          show={playerLoading}
+          show={playerLoader.isLoading}
           className="duration-500 absolute inset-0 bg-black/[0.5]"
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
