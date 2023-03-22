@@ -46,7 +46,7 @@ specifiers:
   bcryptjs: ^2.4.3
   c8: ^7.11.2
   cac: ^6.7.12
-  echarts: ^5.3.2
+  echarts: ^5.4.1
   esbuild: ^0.14.23
   esbuild-register: ^3.3.2
   express: ^4.17.3
@@ -89,7 +89,7 @@ dependencies:
   '@tanstack/react-virtual': 3.0.0-beta.54_react@18.2.0
   '@vercel/node': 1.15.3
   bcryptjs: 2.4.3
-  echarts: 5.3.2
+  echarts: 5.4.1
   fast-xml-parser: 4.0.7
   jotai: 2.0.3_react@18.2.0
   knex: 2.4.2_mysql2@2.3.3
@@ -2986,11 +2986,11 @@ packages:
     resolution: {integrity: sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==}
     dev: true
 
-  /echarts/5.3.2:
-    resolution: {integrity: sha512-LWCt7ohOKdJqyiBJ0OGBmE9szLdfA9sGcsMEi+GGoc6+Xo75C+BkcT/6NNGRHAWtnQl2fNow05AQjznpap28TQ==}
+  /echarts/5.4.1:
+    resolution: {integrity: sha512-9ltS3M2JB0w2EhcYjCdmtrJ+6haZcW6acBolMGIuf01Hql1yrIV01L1aRj7jsaaIULJslEP9Z3vKlEmnJaWJVQ==}
     dependencies:
       tslib: 2.3.0
-      zrender: 5.3.1
+      zrender: 5.4.1
     dev: false
 
   /ee-first/1.1.1:
@@ -4941,7 +4941,7 @@ packages:
   /jsonfile/4.0.0:
     resolution: {integrity: sha1-h3Gq4HmbZAdrdmQPygWPnBDjPss=}
     optionalDependencies:
-      graceful-fs: 4.2.11
+      graceful-fs: 4.2.9
     dev: true
 
   /jsonfile/6.1.0:
@@ -4949,7 +4949,7 @@ packages:
     dependencies:
       universalify: 2.0.0
     optionalDependencies:
-      graceful-fs: 4.2.11
+      graceful-fs: 4.2.9
     dev: true
 
   /keyv/4.5.2:
@@ -8275,8 +8275,8 @@ packages:
     resolution: {integrity: sha512-m46AKbrzKVzOzs/DZgVnG5H55N1sv1M8qZU3A8RIKbs3mrACDNeIOeilDymVb2HdmP8uwshOCF4uJ8uM9rCqJw==}
     dev: false
 
-  /zrender/5.3.1:
-    resolution: {integrity: sha512-7olqIjy0gWfznKr6vgfnGBk7y4UtdMvdwFmK92vVQsQeDPyzkHW1OlrLEKg6GHz1W5ePf0FeN1q2vkl/HFqhXw==}
+  /zrender/5.4.1:
+    resolution: {integrity: sha512-M4Z05BHWtajY2241EmMPHglDQAJ1UyHQcYsxDNzD9XLSkPDqMq4bB28v9Pb4mvHnVQ0GxyTklZ/69xCFP6RXBA==}
     dependencies:
       tslib: 2.3.0
     dev: false
