@@ -1,35 +1,39 @@
 import { tinyassert } from "@hiogawa/utils";
+import { useStableRef } from "@hiogawa/utils-react";
 import * as echarts from "echarts";
 import React from "react";
 import type { PracticeQueueType } from "../db/models";
 
-function EchartsComponent(props: {
-  option: echarts.EChartsOption;
-  setInstance?: (instance: echarts.ECharts) => void;
-  className?: string;
-}) {
-  const ref = React.useRef(null);
-  const instance = React.useRef<echarts.ECharts>();
+type PracticeHistoryChartDataEntry = {
+  date: string;
+  total: number;
+} & Record<PracticeQueueType, number>;
 
-  React.useEffect(() => {
-    tinyassert(!instance.current);
-    tinyassert(ref.current);
-    instance.current = echarts.init(ref.current);
-    if (props.setInstance) {
-      props.setInstance(instance.current);
-    }
-    return () => {
-      tinyassert(instance.current);
-      instance.current.dispose();
-    };
-  }, []);
+export type PracticeHistoryChartData = PracticeHistoryChartDataEntry[];
 
-  React.useEffect(() => {
-    tinyassert(instance.current);
-    instance.current.setOption(props.option);
-  }, [props.option]);
+export function PracticeHistoryChart(
+  props: {
+    data: PracticeHistoryChartData;
+  } & Omit<React.ComponentProps<typeof EchartsComponent>, "option">
+) {
+  const { data, ...rest } = props;
+  const option = React.useMemo(
+    () => practiceHistoryChartDataToEchartsOption(data),
+    [data]
+  );
+  return <EchartsComponent option={option} {...rest} />;
+}
 
-  return <div ref={ref} className={props.className} />;
+function practiceHistoryChartDataToEchartsOption(
+  data: PracticeHistoryChartData
+) {
+  return {
+    ...BASE_ECHARTS_OPTION,
+    dataset: {
+      dimensions: ["date", "total", "NEW", "LEARN", "REVIEW"],
+      source: data,
+    },
+  };
 }
 
 const BASE_ECHARTS_OPTION: echarts.EChartsOption = {
@@ -53,6 +57,13 @@ const BASE_ECHARTS_OPTION: echarts.EChartsOption = {
   xAxis: {
     type: "category",
     boundaryGap: false,
+    axisLabel: {
+      formatter: (value, _index) => {
+        // 2022-05-14 => 05/14
+        const [, m, d] = value.split("-");
+        return m + "/" + d;
+      },
+    },
   },
   yAxis: {
     type: "value",
@@ -144,36 +155,28 @@ const BASE_ECHARTS_OPTION: echarts.EChartsOption = {
   ],
 };
 
-type PracticeHistoryChartDataEntry = {
-  date: string;
-  total: number;
-} & Record<PracticeQueueType, number>;
+//
+// utils
+//
 
-export type PracticeHistoryChartData = PracticeHistoryChartDataEntry[];
-
-// TODO: can we move this within echarts transform
-function formatDate(date: string): string {
-  // 2022-05-14 => 05/14
-  const [, m, d] = date.split("-");
-  return m + "/" + d;
-}
-
-export function PracticeHistoryChart({
-  data,
-  ...props
-}: {
-  data: PracticeHistoryChartData;
-  setInstance?: (instance: echarts.ECharts) => void;
+function EchartsComponent(props: {
+  option: echarts.EChartsOption;
   className?: string;
+  setInstance?: (instance?: echarts.ECharts) => void;
 }) {
-  const option = React.useMemo(() => {
-    return {
-      ...BASE_ECHARTS_OPTION,
-      dataset: {
-        dimensions: ["date", "total", "NEW", "LEARN", "REVIEW"],
-        source: data.map((e) => ({ ...e, date: formatDate(e.date) })),
-      },
-    };
-  }, [data]);
-  return <EchartsComponent option={option} {...props} />;
+  const instanceRef = React.useRef<echarts.ECharts>();
+  const setInstanceRef = useStableRef(props.setInstance);
+
+  const elRef: React.RefCallback<HTMLElement> = (el) => {
+    instanceRef.current?.dispose();
+    instanceRef.current = el ? echarts.init(el) : undefined;
+    setInstanceRef.current?.(instanceRef.current);
+  };
+
+  React.useEffect(() => {
+    tinyassert(instanceRef.current);
+    instanceRef.current.setOption(props.option);
+  }, [props.option]);
+
+  return <div className={props.className} ref={React.useCallback(elRef, [])} />;
 }
