@@ -4,26 +4,36 @@ import * as echarts from "echarts";
 import React from "react";
 import type { PracticeQueueType } from "../db/models";
 
-function EchartsComponent(props: {
-  option: echarts.EChartsOption;
-  className?: string;
-  setInstance?: (instance?: echarts.ECharts) => void;
-}) {
-  const instanceRef = React.useRef<echarts.ECharts>();
-  const onInitRef = useStableRef(props.setInstance);
+type PracticeHistoryChartDataEntry = {
+  date: string;
+  total: number;
+} & Record<PracticeQueueType, number>;
 
-  const elRef: React.RefCallback<HTMLElement> = (el) => {
-    instanceRef.current?.dispose();
-    instanceRef.current = el ? echarts.init(el) : undefined;
-    onInitRef.current?.(instanceRef.current);
+export type PracticeHistoryChartData = PracticeHistoryChartDataEntry[];
+
+export function PracticeHistoryChart(
+  props: {
+    data: PracticeHistoryChartData;
+  } & Omit<React.ComponentProps<typeof EchartsComponent>, "option">
+) {
+  const { data, ...rest } = props;
+  const option = React.useMemo(
+    () => practiceHistoryChartDataToEchartsOption(data),
+    [data]
+  );
+  return <EchartsComponent option={option} {...rest} />;
+}
+
+function practiceHistoryChartDataToEchartsOption(
+  data: PracticeHistoryChartData
+) {
+  return {
+    ...BASE_ECHARTS_OPTION,
+    dataset: {
+      dimensions: ["date", "total", "NEW", "LEARN", "REVIEW"],
+      source: data,
+    },
   };
-
-  React.useEffect(() => {
-    tinyassert(instanceRef.current);
-    instanceRef.current.setOption(props.option);
-  }, [props.option]);
-
-  return <div className={props.className} ref={React.useCallback(elRef, [])} />;
 }
 
 const BASE_ECHARTS_OPTION: echarts.EChartsOption = {
@@ -145,30 +155,28 @@ const BASE_ECHARTS_OPTION: echarts.EChartsOption = {
   ],
 };
 
-type PracticeHistoryChartDataEntry = {
-  date: string;
-  total: number;
-} & Record<PracticeQueueType, number>;
+//
+// utils
+//
 
-export type PracticeHistoryChartData = PracticeHistoryChartDataEntry[];
+function EchartsComponent(props: {
+  option: echarts.EChartsOption;
+  className?: string;
+  setInstance?: (instance?: echarts.ECharts) => void;
+}) {
+  const instanceRef = React.useRef<echarts.ECharts>();
+  const setInstanceRef = useStableRef(props.setInstance);
 
-export function PracticeHistoryChart(
-  props: {
-    data: PracticeHistoryChartData;
-  } & Omit<React.ComponentProps<typeof EchartsComponent>, "option">
-) {
-  if (typeof window === "undefined")
-    throw new Error("ClientOnly:PracticeHistoryChart");
+  const elRef: React.RefCallback<HTMLElement> = (el) => {
+    instanceRef.current?.dispose();
+    instanceRef.current = el ? echarts.init(el) : undefined;
+    setInstanceRef.current?.(instanceRef.current);
+  };
 
-  const { data, ...rest } = props;
-  const option = React.useMemo(() => {
-    return {
-      ...BASE_ECHARTS_OPTION,
-      dataset: {
-        dimensions: ["date", "total", "NEW", "LEARN", "REVIEW"],
-        source: data,
-      },
-    };
-  }, [data]);
-  return <EchartsComponent option={option} {...rest} />;
+  React.useEffect(() => {
+    tinyassert(instanceRef.current);
+    instanceRef.current.setOption(props.option);
+  }, [props.option]);
+
+  return <div className={props.className} ref={React.useCallback(elRef, [])} />;
 }

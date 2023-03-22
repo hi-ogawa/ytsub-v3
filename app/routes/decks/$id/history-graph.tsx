@@ -141,13 +141,11 @@ export default function DefaultComponent() {
     <div className="w-full flex justify-center">
       <div className="w-full max-w-lg flex flex-col gap-3 mt-2">
         <div className="relative w-full h-[300px]">
-          <React.Suspense>
-            <PracticeHistoryChart
-              data={data}
-              setInstance={setInstanceWrapper}
-              className="w-full h-full"
-            />
-          </React.Suspense>
+          <PracticeHistoryChart
+            data={data}
+            setInstance={setInstanceWrapper}
+            className="w-full h-full"
+          />
           <Transition
             show={isLoading}
             className="transition duration-500 absolute inset-0 flex justify-center items-center bg-colorBgContainer"
