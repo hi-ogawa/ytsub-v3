@@ -44,6 +44,7 @@ export function toThumbnail(videoId: string): string {
 export async function fetchVideoMetadata(
   videoId: string
 ): Promise<VideoMetadata> {
+  // TODO: use unofficial json api (cf. https://github.com/hi-ogawa/youtube-dl-web-v2/blob/ca7c08ca6b144c235bdc4c7e307a0468052aa6fa/packages/app/src/utils/youtube-utils.ts#L103)
   const url = `https://www.youtube.com/watch?v=${videoId}`;
   const res = await fetch(url, { headers: { "accept-language": "en" } });
   if (res.ok) {
