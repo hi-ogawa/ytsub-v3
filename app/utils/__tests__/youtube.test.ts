@@ -12,7 +12,7 @@ describe("fetchVideoMetadata", () => {
     expect(res.videoDetails.title).toMatchInlineSnapshot(
       '"Are French People Really That Mean?! // French Girls React to Emily In Paris (in FR w/ FR & EN subs)"'
     );
-  }, 10000);
+  });
 });
 
 describe("fetchCaptionEntries", () => {
@@ -48,7 +48,7 @@ describe("fetchCaptionEntries", () => {
         },
       ]
     `);
-  }, 10000);
+  });
 });
 
 function wrapTtml(content: string): string {
