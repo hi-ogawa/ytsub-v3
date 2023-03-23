@@ -1,5 +1,6 @@
 import { Transition } from "@headlessui/react";
 import React from "react";
+import { useForm } from "react-hook-form";
 import { cls } from "../utils/misc";
 import { VideoComponent } from "./misc";
 import { PopoverSimple } from "./popover";
@@ -198,12 +199,38 @@ export function TestFab() {
 }
 
 export function TestSpinner() {
+  const form = useForm({ defaultValues: { overlay: true } });
+
   return (
     <div className="w-full flex justify-center">
-      <div className="w-full max-w-lg flex flex-col p-2 gap-2">
-        <div className="antd-spin w-10" />
-        <div className="antd-spin w-20" />
-        <div className="antd-spin w-40" />
+      <div className="w-full max-w-lg flex flex-col p-4 gap-4 border">
+        <div className="flex flex-col gap-2">
+          Simple
+          <div className="flex justify-center gap-4">
+            <div className="antd-spin h-4" />
+            <div className="antd-spin h-8" />
+            <div className="antd-spin w-12" />
+          </div>
+        </div>
+        <div className="flex flex-col gap-2">
+          <div className="flex gap-2">
+            Overlay
+            <input type="checkbox" {...form.register("overlay")} />
+          </div>
+          <div className="relative border h-[100px] grid place-content-center">
+            <div>Hello World</div>
+            <Transition
+              show={form.watch("overlay")}
+              className="duration-1000 absolute inset-0 antd-body grid place-content-center"
+              enterFrom="opacity-0"
+              enterTo="opacity-100"
+              leaveFrom="opacity-100"
+              leaveTo="opacity-0"
+            >
+              <div className="antd-spin h-12"></div>
+            </Transition>
+          </div>
+        </div>
       </div>
     </div>
   );
