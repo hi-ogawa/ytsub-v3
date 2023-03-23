@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  fetchCaptionEntries,
   fetchVideoMetadata,
   ttmlToEntries,
   ttmlsToCaptionEntries,
@@ -8,8 +9,46 @@ import {
 describe("fetchVideoMetadata", () => {
   it("basic", async () => {
     const res = await fetchVideoMetadata("EnPYXckiUVg");
-    expect(res.videoDetails.author).toBe("Piece of French");
-  });
+    expect(res.videoDetails.title).toMatchInlineSnapshot(
+      '"Are French People Really That Mean?! // French Girls React to Emily In Paris (in FR w/ FR & EN subs)"'
+    );
+  }, 10000);
+});
+
+describe("fetchCaptionEntries", () => {
+  it("basic", async () => {
+    // https://www.youtube.com/watch?v=4gXmClk8rKI
+    const entries = await fetchCaptionEntries({
+      videoId: "4gXmClk8rKI",
+      language1: { id: ".ko" },
+      language2: { id: ".en" },
+    });
+    expect(entries.captionEntries.slice(0, 3)).toMatchInlineSnapshot(`
+      [
+        {
+          "begin": 8.008,
+          "end": 11.011,
+          "index": 0,
+          "text1": "Hey you 지금 뭐 해",
+          "text2": "Hey you what you doin’",
+        },
+        {
+          "begin": 11.545,
+          "end": 13.51,
+          "index": 1,
+          "text1": "잠깐 밖으로 나올래",
+          "text2": "Wanna come out for a sec",
+        },
+        {
+          "begin": 13.646,
+          "end": 15.549,
+          "index": 2,
+          "text1": "네가 보고 싶다고",
+          "text2": "I wanna see you",
+        },
+      ]
+    `);
+  }, 10000);
 });
 
 function wrapTtml(content: string): string {
