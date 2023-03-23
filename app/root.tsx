@@ -33,6 +33,7 @@ import { useHydrated } from "./utils/hooks";
 import { RootLoaderData, useRootLoaderData } from "./utils/loader-utils";
 import { cls } from "./utils/misc";
 import type { Match } from "./utils/page-handle";
+import { HideRecaptchaBadge } from "./routes/users/register";
 
 export const links: LinksFunction = () => {
   // prettier-ignore
@@ -100,6 +101,7 @@ export default function DefaultComponent() {
         <Meta />
         <Links />
         <ConfigPlaceholder />
+        <HideRecaptchaBadge />
         <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }}></script>
       </head>
       <body className="h-full">

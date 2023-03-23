@@ -208,9 +208,26 @@ export default function DefaultComponent() {
             </Link>
           </div>
         </div>
+        <div className="border-t"></div>
+        {/* https://developers.google.com/recaptcha/docs/faq#id-like-to-hide-the-recaptcha-badge.-what-is-allowed */}
+        <div className="text-colorTextSecondary text-xs">
+          This site is protected by reCAPTCHA and the Google{" "}
+          <a className="antd-link" href="https://policies.google.com/privacy">
+            Privacy Policy
+          </a>{" "}
+          and{" "}
+          <a className="antd-link" href="https://policies.google.com/terms">
+            Terms of Service
+          </a>{" "}
+          apply.
+        </div>
       </Form>
     </div>
   );
+}
+
+export function HideRecaptchaBadge() {
+  return <style>{".grecaptcha-badge { visibility: hidden; }"}</style>;
 }
 
 //
