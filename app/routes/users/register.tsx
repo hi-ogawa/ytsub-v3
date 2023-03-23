@@ -2,7 +2,6 @@ import { tinyassert } from "@hiogawa/utils";
 import { mapOption } from "@hiogawa/utils";
 import { Form, Link, useActionData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
-import { UseQueryOptions, useQuery } from "@tanstack/react-query";
 import { once } from "lodash";
 import React from "react";
 import { toast } from "react-hot-toast";
@@ -22,6 +21,7 @@ import {
   loadScript,
   newPromiseWithResolvers,
   throwGetterProxy,
+  usePromise,
 } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 import { TIMEZONE_RE, getTimezone } from "../../utils/timezone";
@@ -242,19 +242,5 @@ function useRecaptchaApi() {
     onError: () => {
       toast.error("failed to load recaptcha");
     },
-  });
-}
-
-// query for singleton promise
-function usePromise<T>(
-  queryFn: () => Promise<T>,
-  options?: UseQueryOptions<T, unknown, T, string[]>
-) {
-  return useQuery({
-    queryKey: ["usePromise", String(queryFn)],
-    queryFn,
-    staleTime: Infinity,
-    cacheTime: Infinity,
-    ...options,
   });
 }

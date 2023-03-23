@@ -1,3 +1,5 @@
+import { UseQueryOptions, useQuery } from "@tanstack/react-query";
+
 // E.g.
 //  fetch("...").then(getCall("json"))
 //  fetch("...").then(getCall("text"))
@@ -54,4 +56,18 @@ export async function loadScript(src: string): Promise<void> {
   el.addEventListener("error", reject);
   document.body.appendChild(el);
   await promise;
+}
+
+// query for singleton promise
+export function usePromise<T>(
+  queryFn: () => Promise<T>,
+  options?: UseQueryOptions<T, unknown, T, string[]>
+) {
+  return useQuery({
+    queryKey: ["usePromise", String(queryFn)],
+    queryFn,
+    staleTime: Infinity,
+    cacheTime: Infinity,
+    ...options,
+  });
 }
