@@ -24,6 +24,7 @@ import { ThemeSelect } from "./components/theme-select";
 import { TopProgressBarRemix } from "./components/top-progress-bar";
 import type { UserTable } from "./db/models";
 import { R, R_RE } from "./misc/routes";
+import { HideRecaptchaBadge } from "./routes/users/register";
 import { publicConfig } from "./utils/config";
 import { ConfigPlaceholder } from "./utils/config-placeholder";
 import { Controller, makeLoader } from "./utils/controller-utils";
@@ -33,7 +34,6 @@ import { useHydrated } from "./utils/hooks";
 import { RootLoaderData, useRootLoaderData } from "./utils/loader-utils";
 import { cls } from "./utils/misc";
 import type { Match } from "./utils/page-handle";
-import { HideRecaptchaBadge } from "./routes/users/register";
 
 export const links: LinksFunction = () => {
   // prettier-ignore
