@@ -337,13 +337,11 @@ export function MiniPlayer({
         </div>
         <Transition
           show={playerLoader.isLoading}
-          className="duration-500 absolute inset-0 antd-body"
+          className="duration-500 absolute inset-0 antd-body grid place-content-center"
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%]">
-            <div className="antd-spin w-20" />
-          </div>
+          <div className="antd-spin w-20" />
         </Transition>
       </div>
     </div>
