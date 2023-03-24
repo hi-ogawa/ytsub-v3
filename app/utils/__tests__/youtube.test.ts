@@ -49,6 +49,40 @@ describe("fetchCaptionEntries", () => {
       ]
     `);
   });
+
+  it("translation", async () => {
+    // https://www.youtube.com/watch?v=4gXmClk8rKI
+    const entries = await fetchCaptionEntries({
+      videoId: "4gXmClk8rKI",
+      language1: { id: ".ko" },
+      language2: { id: ".ko", translation: "en" },
+    });
+    expect(entries.captionEntries.slice(0, 3)).toMatchInlineSnapshot(`
+      [
+        {
+          "begin": 8.008,
+          "end": 11.011,
+          "index": 0,
+          "text1": "Hey you 지금 뭐 해",
+          "text2": "Hey you, what are you doing right now? I want to",
+        },
+        {
+          "begin": 11.545,
+          "end": 13.51,
+          "index": 1,
+          "text1": "잠깐 밖으로 나올래",
+          "text2": "go outside for a bit I miss you",
+        },
+        {
+          "begin": 13.646,
+          "end": 15.549,
+          "index": 2,
+          "text1": "네가 보고 싶다고",
+          "text2": "",
+        },
+      ]
+    `);
+  });
 });
 
 function wrapTtml(content: string): string {
