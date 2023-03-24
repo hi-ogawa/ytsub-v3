@@ -7,16 +7,15 @@
 
 name: release
 on:
-  push:
-  # workflow_dispatch:
-  #   inputs:
-  #     environment:
-  #       required: true
-  #       type: choice
-  #       options:
-  #         - staging
-  #         - production
-  #       default: production
+  workflow_dispatch:
+    inputs:
+      environment:
+        required: true
+        type: choice
+        options:
+          - staging
+          - production
+        default: production
 jobs:
   release:
     runs-on: ubuntu-22.04
@@ -39,6 +38,6 @@ jobs:
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
       - run: pnpm release
-      #   if: inputs.environment == 'staging'
-      # - run: pnpm release-production
-      #   if: inputs.environment == 'production'
+        if: inputs.environment == 'staging'
+      - run: pnpm release-production
+        if: inputs.environment == 'production'
