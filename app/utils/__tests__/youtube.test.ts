@@ -13,6 +13,55 @@ describe("fetchVideoMetadata", () => {
       '"Are French People Really That Mean?! // French Girls React to Emily In Paris (in FR w/ FR & EN subs)"'
     );
   });
+
+  it("captions", async () => {
+    const res = await fetchVideoMetadata("4gXmClk8rKI");
+    expect(
+      res.captions.playerCaptionsTracklistRenderer.captionTracks
+    ).toMatchObject([
+      {
+        // "baseUrl": "https://www.youtube.com/api/timedtext?v=4gXmClk8rKI&caps=asr&xoaf=5&hl=en&ip=0.0.0.0&ipbits=0&expire=1679687719&sparams=ip,ipbits,expire,v,caps,xoaf&signature=54FC86AAA65D79EF429026AA65B885D9166FE566.319072C96961D7B18E271AF8C55D1FB479C4FF55&key=yt8&lang=zh",
+        languageCode: "zh",
+        vssId: ".zh",
+      },
+      {
+        // "baseUrl": "https://www.youtube.com/api/timedtext?v=4gXmClk8rKI&caps=asr&xoaf=5&hl=en&ip=0.0.0.0&ipbits=0&expire=1679687719&sparams=ip,ipbits,expire,v,caps,xoaf&signature=54FC86AAA65D79EF429026AA65B885D9166FE566.319072C96961D7B18E271AF8C55D1FB479C4FF55&key=yt8&lang=en",
+        languageCode: "en",
+        vssId: ".en",
+      },
+      {
+        // "baseUrl": "https://www.youtube.com/api/timedtext?v=4gXmClk8rKI&caps=asr&xoaf=5&hl=en&ip=0.0.0.0&ipbits=0&expire=1679687719&sparams=ip,ipbits,expire,v,caps,xoaf&signature=54FC86AAA65D79EF429026AA65B885D9166FE566.319072C96961D7B18E271AF8C55D1FB479C4FF55&key=yt8&lang=id",
+        languageCode: "id",
+        vssId: ".id",
+      },
+      {
+        // "baseUrl": "https://www.youtube.com/api/timedtext?v=4gXmClk8rKI&caps=asr&xoaf=5&hl=en&ip=0.0.0.0&ipbits=0&expire=1679687719&sparams=ip,ipbits,expire,v,caps,xoaf&signature=54FC86AAA65D79EF429026AA65B885D9166FE566.319072C96961D7B18E271AF8C55D1FB479C4FF55&key=yt8&lang=ja",
+        languageCode: "ja",
+        vssId: ".ja",
+      },
+      {
+        // "baseUrl": "https://www.youtube.com/api/timedtext?v=4gXmClk8rKI&caps=asr&xoaf=5&hl=en&ip=0.0.0.0&ipbits=0&expire=1679687719&sparams=ip,ipbits,expire,v,caps,xoaf&signature=54FC86AAA65D79EF429026AA65B885D9166FE566.319072C96961D7B18E271AF8C55D1FB479C4FF55&key=yt8&lang=ko",
+        languageCode: "ko",
+        vssId: ".ko",
+      },
+      {
+        // "baseUrl": "https://www.youtube.com/api/timedtext?v=4gXmClk8rKI&caps=asr&xoaf=5&hl=en&ip=0.0.0.0&ipbits=0&expire=1679687719&sparams=ip,ipbits,expire,v,caps,xoaf&signature=54FC86AAA65D79EF429026AA65B885D9166FE566.319072C96961D7B18E271AF8C55D1FB479C4FF55&key=yt8&kind=asr&lang=ko",
+        kind: "asr",
+        languageCode: "ko",
+        vssId: "a.ko",
+      },
+      {
+        // "baseUrl": "https://www.youtube.com/api/timedtext?v=4gXmClk8rKI&caps=asr&xoaf=5&hl=en&ip=0.0.0.0&ipbits=0&expire=1679687719&sparams=ip,ipbits,expire,v,caps,xoaf&signature=54FC86AAA65D79EF429026AA65B885D9166FE566.319072C96961D7B18E271AF8C55D1FB479C4FF55&key=yt8&lang=es",
+        languageCode: "es",
+        vssId: ".es",
+      },
+      {
+        // "baseUrl": "https://www.youtube.com/api/timedtext?v=4gXmClk8rKI&caps=asr&xoaf=5&hl=en&ip=0.0.0.0&ipbits=0&expire=1679687719&sparams=ip,ipbits,expire,v,caps,xoaf&signature=54FC86AAA65D79EF429026AA65B885D9166FE566.319072C96961D7B18E271AF8C55D1FB479C4FF55&key=yt8&lang=th",
+        languageCode: "th",
+        vssId: ".th",
+      },
+    ]);
+  });
 });
 
 describe("fetchCaptionEntries", () => {
