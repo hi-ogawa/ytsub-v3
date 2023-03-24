@@ -1,5 +1,8 @@
+import { tinyassert } from "@hiogawa/utils";
+import { UseMutationOptions, useMutation } from "@tanstack/react-query";
 import { XMLParser } from "fast-xml-parser";
-import { maxBy } from "lodash";
+import { maxBy, once } from "lodash";
+import React from "react";
 import { z } from "zod";
 import { AppError } from "./errors";
 import {
@@ -7,7 +10,7 @@ import {
   LanguageCode,
   languageCodeToName,
 } from "./language";
-import { loadScriptMemoized } from "./script";
+import { loadScript, newPromiseWithResolvers, throwGetterProxy } from "./misc";
 import type {
   CaptionConfig,
   CaptionConfigOptions,
@@ -42,6 +45,7 @@ export function toThumbnail(videoId: string): string {
 export async function fetchVideoMetadata(
   videoId: string
 ): Promise<VideoMetadata> {
+  // TODO: use unofficial json api (cf. https://github.com/hi-ogawa/youtube-dl-web-v2/blob/ca7c08ca6b144c235bdc4c7e307a0468052aa6fa/packages/app/src/utils/youtube-utils.ts#L103)
   const url = `https://www.youtube.com/watch?v=${videoId}`;
   const res = await fetch(url, { headers: { "accept-language": "en" } });
   if (res.ok) {
@@ -314,12 +318,62 @@ export interface YoutubePlayer {
   getPlayerState: () => number;
 }
 
-// The script https://www.youtube.com/iframe_api is self-modifying,
-// so it would cause hydration mismatch if it's simply rendered via `<script src="https://www.youtube.com/iframe_api" />`
-// since the modified `script` appears after SSR and before HYDRATE.
-export async function loadYoutubeIframeApi(): Promise<YoutubeIframeApi> {
-  await loadScriptMemoized("https://www.youtube.com/iframe_api");
-  const api = (window as any).YT as YoutubeIframeApi;
-  await new Promise((resolve) => api.ready(() => resolve(undefined)));
-  return api;
+// singleton
+let youtubeIframeApi: YoutubeIframeApi = throwGetterProxy as any;
+
+const loadYoutubeIframeApi = once(async () => {
+  tinyassert(typeof window !== "undefined");
+
+  // load external <script>
+  await loadScript("https://www.youtube.com/iframe_api");
+  youtubeIframeApi = (window as any).YT as YoutubeIframeApi;
+
+  // wait for api ready callback
+  const { promise, resolve } = newPromiseWithResolvers<void>();
+  youtubeIframeApi.ready(() => resolve());
+  await promise;
+});
+
+export async function loadYoutubePlayer(
+  el: HTMLElement,
+  options: YoutubePlayerOptions
+): Promise<YoutubePlayer> {
+  await loadYoutubeIframeApi();
+
+  const { promise, resolve } = newPromiseWithResolvers<void>();
+  const player = new youtubeIframeApi.Player(el, {
+    ...options,
+    events: { onReady: () => resolve() },
+  });
+  await promise;
+
+  return player;
+}
+
+export function usePlayerLoader(
+  playerOptions: YoutubePlayerOptions,
+  mutationOptions: UseMutationOptions<
+    YoutubePlayer,
+    unknown,
+    HTMLElement,
+    unknown
+  >
+) {
+  // TODO: cleanup resource on unmount?
+
+  const ref: React.RefCallback<HTMLElement> = (el) => {
+    if (el) {
+      mutation.mutate(el);
+    }
+  };
+
+  const mutation = useMutation(
+    (el: HTMLElement) => loadYoutubePlayer(el, playerOptions),
+    mutationOptions
+  );
+
+  return {
+    ref: React.useCallback(ref, []),
+    isLoading: !mutation.isSuccess,
+  };
 }

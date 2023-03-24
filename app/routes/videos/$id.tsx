@@ -32,7 +32,6 @@ import {
 import { R } from "../../misc/routes";
 import { Controller, makeLoader } from "../../utils/controller-utils";
 import { useDeserialize, useSelection } from "../../utils/hooks";
-import { useYoutubeIframeApi } from "../../utils/hooks";
 import { useLeafLoaderData, useRootLoaderData } from "../../utils/loader-utils";
 import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
@@ -42,6 +41,7 @@ import {
   YoutubePlayer,
   YoutubePlayerOptions,
   stringifyTimestamp,
+  usePlayerLoader,
 } from "../../utils/youtube";
 import { zStringToInteger, zStringToMaybeInteger } from "../../utils/zod-utils";
 import type { NewBookmark } from "../bookmarks/new";
@@ -443,68 +443,34 @@ function LayoutComponent(props: {
   );
 }
 
-export function usePlayer({
-  defaultOptions,
-  onLoad = () => {},
-  onError = () => {},
-}: {
-  defaultOptions: YoutubePlayerOptions; // only on mount effect
-  onLoad?: (player: YoutubePlayer) => void;
-  onError?: (e: Error) => void;
-}) {
-  const [loading, setLoading] = React.useState(true);
-  const ref = React.useRef<HTMLDivElement>(null);
-  const api = useYoutubeIframeApi(undefined, { onError });
-
-  React.useEffect(() => {
-    if (!api.isSuccess) return;
-    if (!ref.current) {
-      setLoading(false);
-      throw new Error(`"ref" element is not available`);
-    }
-    if (!api.data) {
-      setLoading(false);
-      throw new Error();
-    }
-
-    let callback = () => {
-      setLoading(false);
-      onLoad(player);
-    };
-    const player = new api.data.Player(ref.current, {
-      ...defaultOptions,
-      events: { onReady: () => callback() },
-    });
-    // Avoid calling `onLoad` if unmounted before
-    return () => {
-      callback = () => {};
-    };
-  }, [api.isSuccess]);
-
-  return [ref, loading] as const;
-}
-
 function PlayerComponent({
   defaultOptions,
-  onLoad = () => {},
-  onError = () => {},
+  onLoad,
+  onError,
 }: {
   defaultOptions: YoutubePlayerOptions;
-  onLoad?: (player: YoutubePlayer) => void;
-  onError?: (e: Error) => void;
+  onLoad: (player: YoutubePlayer) => void;
+  onError?: (e: unknown) => void;
 }) {
-  const [ref, loading] = usePlayer({ defaultOptions, onLoad, onError });
+  const { ref, isLoading } = usePlayerLoader(defaultOptions, {
+    onSuccess: onLoad,
+    onError,
+  });
+
   return (
     <div className="flex justify-center">
       <div className="relative w-full max-w-md md:max-w-none">
         <div className="relative pt-[56.2%]">
           <div className="absolute top-0 w-full h-full" ref={ref} />
         </div>
-        {loading && (
-          <div className="absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%]">
-            <div className="antd-spin w-20" />
-          </div>
-        )}
+        <Transition
+          show={isLoading}
+          className="duration-500 absolute inset-0 antd-body grid place-content-center"
+          leaveFrom="opacity-100"
+          leaveTo="opacity-0"
+        >
+          <div className="antd-spin w-30" />
+        </Transition>
       </div>
     </div>
   );

@@ -1,3 +1,5 @@
+import { UseQueryOptions, useQuery } from "@tanstack/react-query";
+
 // E.g.
 //  fetch("...").then(getCall("json"))
 //  fetch("...").then(getCall("text"))
@@ -31,4 +33,41 @@ export const throwGetterProxy = new Proxy(
 
 export function cls(...args: unknown[]): string {
   return args.filter(Boolean).join(" ");
+}
+
+// TODO: to js-utils
+export function newPromiseWithResolvers<T>() {
+  let resolve!: (value: T) => void;
+  let reject!: (value: unknown) => void;
+  const promise = new Promise<T>((res, rej) => {
+    resolve = res;
+    reject = rej;
+  });
+  return { promise, resolve, reject };
+}
+
+// TODO: to js-utils
+export async function loadScript(src: string): Promise<void> {
+  const { promise, resolve, reject } = newPromiseWithResolvers<void>();
+  const el = document.createElement("script");
+  el.src = src;
+  el.async = true;
+  el.addEventListener("load", () => resolve());
+  el.addEventListener("error", reject);
+  document.body.appendChild(el);
+  await promise;
+}
+
+// query for singleton promise
+export function usePromise<T>(
+  queryFn: () => Promise<T>,
+  options?: UseQueryOptions<T, unknown, T, string[]>
+) {
+  return useQuery({
+    queryKey: ["usePromise", String(queryFn)],
+    queryFn,
+    staleTime: Infinity,
+    cacheTime: Infinity,
+    ...options,
+  });
 }
