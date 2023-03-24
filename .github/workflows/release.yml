@@ -18,6 +18,8 @@ on:
         default: production
 jobs:
   release:
+    environment:
+      name: release
     runs-on: ubuntu-22.04
     env:
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
