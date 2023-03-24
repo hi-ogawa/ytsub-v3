@@ -3,7 +3,7 @@ export interface CaptionConfig {
   translation?: string;
 }
 
-export interface VideoDetails {
+interface VideoDetails {
   videoId: string;
   title: string;
   author: string;

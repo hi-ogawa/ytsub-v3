@@ -9,7 +9,7 @@ export async function fromRequestForm(request: Request): Promise<any> {
   return fromQuery(await request.text());
 }
 
-export function fromQuery(query: string): any {
+function fromQuery(query: string): any {
   return qs.parse(query, { allowDots: true, ignoreQueryPrefix: true });
 }
 
@@ -17,7 +17,7 @@ export function toQuery(obj: any): string {
   return qs.stringify(obj, { allowDots: true });
 }
 
-export function toURLSearchParams(obj: any): URLSearchParams {
+function toURLSearchParams(obj: any): URLSearchParams {
   return new URLSearchParams(toQuery(obj));
 }
 

@@ -2,7 +2,7 @@ import BarOfProgress from "@badrap/bar-of-progress";
 import { useTransition } from "@remix-run/react";
 import React from "react";
 
-export function TopProgressBar({ loading }: { loading: boolean }) {
+function TopProgressBar({ loading }: { loading: boolean }) {
   const [barOfProgress] = React.useState(
     () =>
       new BarOfProgress({

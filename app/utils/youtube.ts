@@ -54,7 +54,7 @@ export async function fetchVideoMetadata(
   throw new Error();
 }
 
-export function parseVideoMetadata(html: string): VideoMetadata {
+function parseVideoMetadata(html: string): VideoMetadata {
   // https://github.com/ytdl-org/youtube-dl/blob/a7f61feab2dbfc50a7ebe8b0ea390bd0e5edf77a/youtube_dl/extractor/youtube.py#L282-L284
   const match = html.match(
     /ytInitialPlayerResponse\s*=\s*({.+?})\s*;\s*(?:var\s+meta|<\/script|\n)/
@@ -93,7 +93,7 @@ export function toCaptionConfigOptions(
   return { captions, translationGroups };
 }
 
-export function captionConfigToUrl(
+function captionConfigToUrl(
   captionConfig: CaptionConfig,
   videoMetadata: VideoMetadata
 ): string | undefined {
@@ -230,7 +230,7 @@ function computeIntersection(e1: TtmlEntry, e2: TtmlEntry): number {
   return Math.max(right - left, 0);
 }
 
-export function parseTimestamp(text: string): number {
+function parseTimestamp(text: string): number {
   const [h, m, s] = text.split(":").map(Number);
   return (h * 60 + m) * 60 + s;
 }
@@ -305,7 +305,7 @@ export type YoutubePlayerOptions = {
   };
 };
 
-export type YoutubeIframeApi = {
+type YoutubeIframeApi = {
   ready: (callback: () => void) => void;
   Player: new (...args: any[]) => YoutubePlayer;
 };
@@ -334,7 +334,7 @@ const loadYoutubeIframeApi = once(async () => {
   await promise;
 });
 
-export async function loadYoutubePlayer(
+async function loadYoutubePlayer(
   el: HTMLElement,
   options: YoutubePlayerOptions
 ): Promise<YoutubePlayer> {

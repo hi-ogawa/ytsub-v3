@@ -262,7 +262,7 @@ export async function toCount(query: Knex.QueryBuilder): Promise<number> {
 //
 
 // TODO: auto generate
-export interface Schema {
+interface Schema {
   users: UserTable;
   videos: VideoTable;
   captionEntries: CaptionEntryTable;

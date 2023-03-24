@@ -224,7 +224,7 @@ export function DeckPracticeStatisticsComponent({
   );
 }
 
-export function PracticeBookmarkEntryComponent({
+function PracticeBookmarkEntryComponent({
   video,
   captionEntry,
   bookmarkEntry,

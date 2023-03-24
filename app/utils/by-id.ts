@@ -1,12 +1,12 @@
 import { zip } from "lodash";
 import { useMemoWrap } from "./hooks";
 
-export interface ById<T> {
+interface ById<T> {
   ids: number[];
   byId: Record<number, T>;
 }
 
-export function toById<T extends { id: number }>(data: T[]): ById<T> {
+function toById<T extends { id: number }>(data: T[]): ById<T> {
   const ids = data.map((e) => e.id);
   const byId: Record<number, T> = Object.fromEntries(zip(ids, data));
   return { ids, byId };
