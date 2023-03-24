@@ -166,7 +166,7 @@ function PracticeComponent({
       <div className="grow w-full flex flex-col">
         {isLoading ? (
           <div className="w-full flex justify-center">
-            <div className="antd-spin w-16" />
+            <div className="antd-spin h-16" />
           </div>
         ) : (
           <BookmarkEntryComponent

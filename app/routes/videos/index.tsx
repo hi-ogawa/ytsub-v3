@@ -271,7 +271,7 @@ function AddToDeckComponent({
         </ul>
       ) : (
         <div className="flex justify-center p-2">
-          <div className="antd-spin w-20"></div>
+          <div className="antd-spin h-20"></div>
         </div>
       )}
     </div>

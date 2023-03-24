@@ -469,7 +469,7 @@ function PlayerComponent({
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="antd-spin w-30" />
+          <div className="antd-spin h-30" />
         </Transition>
       </div>
     </div>

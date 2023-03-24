@@ -170,7 +170,7 @@ export default function DefaultComponent() {
               disabled={!isValid || !changed || isLoading}
             >
               Save
-              {isLoading && <span className="absolute antd-spin w-4 right-2" />}
+              {isLoading && <span className="absolute antd-spin h-4 right-2" />}
             </button>
           </div>
         </div>

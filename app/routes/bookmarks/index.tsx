@@ -341,7 +341,7 @@ export function MiniPlayer({
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="antd-spin w-20" />
+          <div className="antd-spin h-20" />
         </Transition>
       </div>
     </div>

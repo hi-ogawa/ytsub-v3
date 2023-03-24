@@ -112,7 +112,7 @@ export function VideoComponent({
       </div>
       {isLoading && (
         <div className="absolute inset-0 flex justify-center items-center bg-black/[0.2] dark:bg-black/[0.5]">
-          <div className="antd-spin w-16"></div>
+          <div className="antd-spin h-16"></div>
         </div>
       )}
     </div>

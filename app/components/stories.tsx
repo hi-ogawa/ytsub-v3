@@ -209,7 +209,7 @@ export function TestSpinner() {
           <div className="flex justify-center gap-4">
             <div className="antd-spin h-4" />
             <div className="antd-spin h-8" />
-            <div className="antd-spin w-12" />
+            <div className="antd-spin h-12" />
           </div>
         </div>
         <div className="flex flex-col gap-2">
