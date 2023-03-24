@@ -1,0 +1,43 @@
+# based on https://github.com/hi-ogawa/unocss-preset-antd/blob/1e096a1e2b8bbf6193bb6f0fb33e225ca355fb6e/.github/workflows/release.yml#L28-L36
+
+# required secrets
+#   VERCEL_ORG_ID
+#   VERCEL_PROJECT_ID
+#   VERCEL_TOKEN
+
+name: release
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        required: true
+        type: choice
+        options:
+          - staging
+          - production
+        default: production
+jobs:
+  release:
+    runs-on: ubuntu-22.04
+    env:
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 7
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: pnpm
+      - run: pnpm i
+      - run: pnpm build
+      - run: npm i -g vercel@25.2.3
+      - run: bash scripts/vercel-ci-auth.sh
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      - run: pnpm release
+        if: inputs.environment == 'staging'
+      - run: pnpm release-production
+        if: inputs.environment == 'production'
