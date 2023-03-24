@@ -2,7 +2,9 @@ import { tinyassert } from "@hiogawa/utils";
 import { mapOption } from "@hiogawa/utils";
 import { Form, Link, useActionData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
+import { once } from "lodash";
 import React from "react";
+import { toast } from "react-hot-toast";
 import { R } from "../../misc/routes";
 import {
   PASSWORD_MAX_LENGTH,
@@ -14,9 +16,14 @@ import {
 import { publicConfig, serverConfig } from "../../utils/config";
 import { Controller, makeLoader } from "../../utils/controller-utils";
 import { AppError } from "../../utils/errors";
-import { createUseQuery, useIsFormValid } from "../../utils/hooks";
+import { useIsFormValid } from "../../utils/hooks";
+import {
+  loadScript,
+  newPromiseWithResolvers,
+  throwGetterProxy,
+  usePromise,
+} from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
-import { loadScriptMemoized } from "../../utils/script";
 import { TIMEZONE_RE, getTimezone } from "../../utils/timezone";
 import { toForm } from "../../utils/url-data";
 
@@ -115,10 +122,12 @@ export default function DefaultComponent() {
   const { APP_RECAPTCHA_CLIENT_KEY, APP_RECAPTCHA_DISABLED } = publicConfig;
   const actionData: ActionData | undefined = useActionData();
   const [isValid, formProps] = useIsFormValid();
-  const recaptchaApi = useRecaptchaApi(APP_RECAPTCHA_CLIENT_KEY);
   const recaptchaTokenInputRef = React.createRef<HTMLInputElement>();
   const errors = mapOption(actionData?.errors?.fieldErrors, Object.keys) ?? [];
   const timezone = React.useMemo(getTimezone, []);
+
+  // TODO: teardown on unmount?
+  const recaptchaApiQuery = useRecaptchaApi();
 
   return (
     <div className="w-full p-4 flex justify-center">
@@ -131,9 +140,8 @@ export default function DefaultComponent() {
           e.preventDefault();
           const form = e.currentTarget;
           if (!APP_RECAPTCHA_DISABLED) {
-            tinyassert(recaptchaApi.data);
             tinyassert(recaptchaTokenInputRef.current);
-            const recaptchaToken = await recaptchaApi.data.execute(
+            const recaptchaToken = await recaptchaApi.execute(
               APP_RECAPTCHA_CLIENT_KEY
             );
             recaptchaTokenInputRef.current.value = recaptchaToken;
@@ -189,7 +197,7 @@ export default function DefaultComponent() {
           <button
             type="submit"
             className="antd-btn antd-btn-primary p-1"
-            disabled={!isValid || !recaptchaApi.isSuccess}
+            disabled={!isValid || !recaptchaApiQuery.isSuccess}
           >
             Register
           </button>
@@ -200,28 +208,56 @@ export default function DefaultComponent() {
             </Link>
           </div>
         </div>
+        <div className="border-t"></div>
+        {/* https://developers.google.com/recaptcha/docs/faq#id-like-to-hide-the-recaptcha-badge.-what-is-allowed */}
+        <div className="text-colorTextSecondary text-xs">
+          This site is protected by reCAPTCHA and the Google{" "}
+          <a className="antd-link" href="https://policies.google.com/privacy">
+            Privacy Policy
+          </a>{" "}
+          and{" "}
+          <a className="antd-link" href="https://policies.google.com/terms">
+            Terms of Service
+          </a>{" "}
+          apply.
+        </div>
       </Form>
     </div>
   );
 }
+
+export function HideRecaptchaBadge() {
+  return <style>{".grecaptcha-badge { visibility: hidden; }"}</style>;
+}
+
+//
+// recaptcha api
+//
 
 interface RecaptchaApi {
   ready: (callback: () => void) => void;
   execute: (key: string) => Promise<string>;
 }
 
-async function loadRecaptchaApi(siteKey: string): Promise<RecaptchaApi> {
-  await loadScriptMemoized(
-    `https://www.google.com/recaptcha/api.js?render=${siteKey}`
-  );
-  const api = (window as any).grecaptcha as RecaptchaApi;
-  tinyassert(api);
-  await new Promise((resolve) => api.ready(() => resolve(undefined)));
-  return api;
-}
+// singleton
+let recaptchaApi: RecaptchaApi = throwGetterProxy as any;
 
-export const useRecaptchaApi = createUseQuery(
-  "recaptcha-api",
-  loadRecaptchaApi,
-  { staleTime: Infinity, cacheTime: Infinity }
-);
+const loadRecaptchaApi = once(async () => {
+  const key = publicConfig.APP_RECAPTCHA_CLIENT_KEY;
+  await loadScript(`https://www.google.com/recaptcha/api.js?render=${key}`);
+
+  recaptchaApi = (window as any).grecaptcha as RecaptchaApi;
+  tinyassert(recaptchaApi);
+
+  const { promise, resolve } = newPromiseWithResolvers<void>();
+  recaptchaApi.ready(() => resolve());
+  await promise;
+});
+
+function useRecaptchaApi() {
+  return usePromise(() => loadRecaptchaApi().then(() => null), {
+    onError: () => {
+      toast.error("failed to load recaptcha");
+    },
+  });
+}

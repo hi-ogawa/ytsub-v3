@@ -148,7 +148,7 @@ export default function DefaultComponent() {
           />
           <Transition
             show={isLoading}
-            className="transition duration-500 absolute inset-0 flex justify-center items-center bg-colorBgContainer"
+            className="transition duration-500 absolute inset-0 antd-body grid place-content-center"
             enterFrom="opacity-0"
             enterTo="opacity-100"
             leaveFrom="opacity-100"

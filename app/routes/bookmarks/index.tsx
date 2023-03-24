@@ -27,9 +27,9 @@ import type { PageHandle } from "../../utils/page-handle";
 import { PAGINATION_PARAMS_SCHEMA } from "../../utils/pagination";
 import type { CaptionEntry } from "../../utils/types";
 import { toQuery } from "../../utils/url-data";
-import type { YoutubePlayer } from "../../utils/youtube";
+import { YoutubePlayer, usePlayerLoader } from "../../utils/youtube";
 import { zStringToInteger } from "../../utils/zod-utils";
-import { CaptionEntryComponent, usePlayer } from "../videos/$id";
+import { CaptionEntryComponent } from "../videos/$id";
 
 export const handle: PageHandle = {
   navBarTitle: () => "Bookmarks",
@@ -289,16 +289,18 @@ export function MiniPlayer({
   // effects
   //
 
-  const [playerRef, playerLoading] = usePlayer({
-    defaultOptions: {
+  const playerLoader = usePlayerLoader(
+    {
       videoId: video.videoId,
       playerVars: {
         start: Math.max(0, Math.floor(begin) - 1),
         autoplay: autoplay ? 1 : 0,
       },
     },
-    onLoad: setPlayer,
-  });
+    {
+      onSuccess: setPlayer,
+    }
+  );
 
   useRafLoop(() => {
     if (!player) return;
@@ -328,17 +330,18 @@ export function MiniPlayer({
       />
       <div className="relative w-full">
         <div className="relative pt-[56.2%]">
-          <div className="absolute top-0 w-full h-full" ref={playerRef} />
+          <div
+            className="absolute top-0 w-full h-full"
+            ref={playerLoader.ref}
+          />
         </div>
         <Transition
-          show={playerLoading}
-          className="duration-500 absolute inset-0 bg-black/[0.5]"
+          show={playerLoader.isLoading}
+          className="duration-500 absolute inset-0 antd-body grid place-content-center"
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%]">
-            <div className="antd-spin w-20" />
-          </div>
+          <div className="antd-spin w-20" />
         </Transition>
       </div>
     </div>

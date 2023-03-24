@@ -24,6 +24,7 @@ import { ThemeSelect } from "./components/theme-select";
 import { TopProgressBarRemix } from "./components/top-progress-bar";
 import type { UserTable } from "./db/models";
 import { R, R_RE } from "./misc/routes";
+import { HideRecaptchaBadge } from "./routes/users/register";
 import { publicConfig } from "./utils/config";
 import { ConfigPlaceholder } from "./utils/config-placeholder";
 import { Controller, makeLoader } from "./utils/controller-utils";
@@ -100,6 +101,7 @@ export default function DefaultComponent() {
         <Meta />
         <Links />
         <ConfigPlaceholder />
+        <HideRecaptchaBadge />
         <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }}></script>
       </head>
       <body className="h-full">
