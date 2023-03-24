@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  fetchCaptionEntries,
   fetchVideoMetadata,
   ttmlToEntries,
   ttmlsToCaptionEntries,
@@ -8,7 +9,160 @@ import {
 describe("fetchVideoMetadata", () => {
   it("basic", async () => {
     const res = await fetchVideoMetadata("EnPYXckiUVg");
-    expect(res.videoDetails.author).toBe("Piece of French");
+    expect(res.videoDetails.title).toMatchInlineSnapshot(
+      '"Are French People Really That Mean?! // French Girls React to Emily In Paris (in FR w/ FR & EN subs)"'
+    );
+  });
+
+  it("captions", async () => {
+    const res = await fetchVideoMetadata("4gXmClk8rKI");
+    expect(
+      res.captions.playerCaptionsTracklistRenderer.captionTracks
+    ).toMatchObject([
+      {
+        // "baseUrl": "https://www.youtube.com/api/timedtext?v=4gXmClk8rKI&caps=asr&xoaf=5&hl=en&ip=0.0.0.0&ipbits=0&expire=1679687719&sparams=ip,ipbits,expire,v,caps,xoaf&signature=54FC86AAA65D79EF429026AA65B885D9166FE566.319072C96961D7B18E271AF8C55D1FB479C4FF55&key=yt8&lang=zh",
+        isTranslatable: true,
+        languageCode: "zh",
+        name: {
+          simpleText: "Chinese",
+        },
+        vssId: ".zh",
+      },
+      {
+        // "baseUrl": "https://www.youtube.com/api/timedtext?v=4gXmClk8rKI&caps=asr&xoaf=5&hl=en&ip=0.0.0.0&ipbits=0&expire=1679687719&sparams=ip,ipbits,expire,v,caps,xoaf&signature=54FC86AAA65D79EF429026AA65B885D9166FE566.319072C96961D7B18E271AF8C55D1FB479C4FF55&key=yt8&lang=en",
+        isTranslatable: true,
+        languageCode: "en",
+        name: {
+          simpleText: "English",
+        },
+        vssId: ".en",
+      },
+      {
+        // "baseUrl": "https://www.youtube.com/api/timedtext?v=4gXmClk8rKI&caps=asr&xoaf=5&hl=en&ip=0.0.0.0&ipbits=0&expire=1679687719&sparams=ip,ipbits,expire,v,caps,xoaf&signature=54FC86AAA65D79EF429026AA65B885D9166FE566.319072C96961D7B18E271AF8C55D1FB479C4FF55&key=yt8&lang=id",
+        isTranslatable: true,
+        languageCode: "id",
+        name: {
+          simpleText: "Indonesian",
+        },
+        vssId: ".id",
+      },
+      {
+        // "baseUrl": "https://www.youtube.com/api/timedtext?v=4gXmClk8rKI&caps=asr&xoaf=5&hl=en&ip=0.0.0.0&ipbits=0&expire=1679687719&sparams=ip,ipbits,expire,v,caps,xoaf&signature=54FC86AAA65D79EF429026AA65B885D9166FE566.319072C96961D7B18E271AF8C55D1FB479C4FF55&key=yt8&lang=ja",
+        isTranslatable: true,
+        languageCode: "ja",
+        name: {
+          simpleText: "Japanese",
+        },
+        vssId: ".ja",
+      },
+      {
+        // "baseUrl": "https://www.youtube.com/api/timedtext?v=4gXmClk8rKI&caps=asr&xoaf=5&hl=en&ip=0.0.0.0&ipbits=0&expire=1679687719&sparams=ip,ipbits,expire,v,caps,xoaf&signature=54FC86AAA65D79EF429026AA65B885D9166FE566.319072C96961D7B18E271AF8C55D1FB479C4FF55&key=yt8&lang=ko",
+        isTranslatable: true,
+        languageCode: "ko",
+        name: {
+          simpleText: "Korean",
+        },
+        vssId: ".ko",
+      },
+      {
+        // "baseUrl": "https://www.youtube.com/api/timedtext?v=4gXmClk8rKI&caps=asr&xoaf=5&hl=en&ip=0.0.0.0&ipbits=0&expire=1679687719&sparams=ip,ipbits,expire,v,caps,xoaf&signature=54FC86AAA65D79EF429026AA65B885D9166FE566.319072C96961D7B18E271AF8C55D1FB479C4FF55&key=yt8&kind=asr&lang=ko",
+        isTranslatable: true,
+        kind: "asr",
+        languageCode: "ko",
+        name: {
+          simpleText: "Korean (auto-generated)",
+        },
+        vssId: "a.ko",
+      },
+      {
+        // "baseUrl": "https://www.youtube.com/api/timedtext?v=4gXmClk8rKI&caps=asr&xoaf=5&hl=en&ip=0.0.0.0&ipbits=0&expire=1679687719&sparams=ip,ipbits,expire,v,caps,xoaf&signature=54FC86AAA65D79EF429026AA65B885D9166FE566.319072C96961D7B18E271AF8C55D1FB479C4FF55&key=yt8&lang=es",
+        isTranslatable: true,
+        languageCode: "es",
+        name: {
+          simpleText: "Spanish",
+        },
+        vssId: ".es",
+      },
+      {
+        // "baseUrl": "https://www.youtube.com/api/timedtext?v=4gXmClk8rKI&caps=asr&xoaf=5&hl=en&ip=0.0.0.0&ipbits=0&expire=1679687719&sparams=ip,ipbits,expire,v,caps,xoaf&signature=54FC86AAA65D79EF429026AA65B885D9166FE566.319072C96961D7B18E271AF8C55D1FB479C4FF55&key=yt8&lang=th",
+        isTranslatable: true,
+        languageCode: "th",
+        name: {
+          simpleText: "Thai",
+        },
+        vssId: ".th",
+      },
+    ]);
+  });
+});
+
+describe("fetchCaptionEntries", () => {
+  it("basic", async () => {
+    // https://www.youtube.com/watch?v=4gXmClk8rKI
+    const entries = await fetchCaptionEntries({
+      videoId: "4gXmClk8rKI",
+      language1: { id: ".ko" },
+      language2: { id: ".en" },
+    });
+    expect(entries.captionEntries.slice(0, 3)).toMatchInlineSnapshot(`
+      [
+        {
+          "begin": 8.008,
+          "end": 11.011,
+          "index": 0,
+          "text1": "Hey you 지금 뭐 해",
+          "text2": "Hey you what you doin’",
+        },
+        {
+          "begin": 11.545,
+          "end": 13.51,
+          "index": 1,
+          "text1": "잠깐 밖으로 나올래",
+          "text2": "Wanna come out for a sec",
+        },
+        {
+          "begin": 13.646,
+          "end": 15.549,
+          "index": 2,
+          "text1": "네가 보고 싶다고",
+          "text2": "I wanna see you",
+        },
+      ]
+    `);
+  });
+
+  it("translation", async () => {
+    // https://www.youtube.com/watch?v=4gXmClk8rKI
+    const entries = await fetchCaptionEntries({
+      videoId: "4gXmClk8rKI",
+      language1: { id: ".ko" },
+      language2: { id: ".ko", translation: "en" },
+    });
+    expect(entries.captionEntries.slice(0, 3)).toMatchInlineSnapshot(`
+      [
+        {
+          "begin": 8.008,
+          "end": 11.011,
+          "index": 0,
+          "text1": "Hey you 지금 뭐 해",
+          "text2": "Hey you, what are you doing right now? I want to",
+        },
+        {
+          "begin": 11.545,
+          "end": 13.51,
+          "index": 1,
+          "text1": "잠깐 밖으로 나올래",
+          "text2": "go outside for a bit I miss you",
+        },
+        {
+          "begin": 13.646,
+          "end": 15.549,
+          "index": 2,
+          "text1": "네가 보고 싶다고",
+          "text2": "",
+        },
+      ]
+    `);
   });
 });
 
