@@ -1,3 +1,4 @@
+import { Transition } from "@headlessui/react";
 import { Link } from "@remix-run/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
@@ -14,7 +15,7 @@ export function VideoComponent({
   video,
   bookmarkEntriesCount,
   actions,
-  isLoading = false,
+  isLoading,
 }: {
   video: Pick<
     VideoTable,
@@ -110,11 +111,14 @@ export function VideoComponent({
           </div>
         )}
       </div>
-      {isLoading && (
-        <div className="absolute inset-0 flex justify-center items-center bg-black/[0.2] dark:bg-black/[0.5]">
-          <div className="antd-spin h-16"></div>
-        </div>
-      )}
+      <Transition
+        show={Boolean(isLoading)}
+        className="duration-500 opacity-60 antd-body antd-spin-overlay-16"
+        enterFrom="opacity-0"
+        enterTo="opacity-60"
+        leaveFrom="opacity-60"
+        leaveTo="opacity-0"
+      />
     </div>
   );
 }

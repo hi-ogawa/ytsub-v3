@@ -221,14 +221,12 @@ export function TestSpinner() {
             <div>Hello World</div>
             <Transition
               show={form.watch("overlay")}
-              className="duration-1000 absolute inset-0 antd-body grid place-content-center"
+              className="duration-1000 antd-body antd-spin-overlay-12"
               enterFrom="opacity-0"
               enterTo="opacity-100"
               leaveFrom="opacity-100"
               leaveTo="opacity-0"
-            >
-              <div className="antd-spin h-12"></div>
-            </Transition>
+            />
           </div>
         </div>
       </div>

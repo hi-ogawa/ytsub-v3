@@ -17,5 +17,15 @@ export default defineConfig({
       },
     }),
   ],
+  shortcuts: [
+    // TODO: it doesn't feel like right abstraction.
+    [
+      /^antd-spin-overlay-(\d+)$/,
+      ([, size]) => `
+        absolute inset-0 grid place-content-center
+        after:(content-none antd-spin h-${size})
+      `,
+    ],
+  ],
   transformers: [transformerDirectives(), transformerVariantGroup()],
 });
