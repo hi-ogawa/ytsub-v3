@@ -21,7 +21,7 @@ export default defineConfig({
     // cf. https://github.com/unocss/unocss/blob/339f2b2c9be41a5505e7f4509eea1cf00a87a8d1/packages/preset-wind/src/theme.ts#L19
     animation: {
       keyframes: {
-        // make `spin` composable so that `translate-xxx` utility can be used at the same time
+        // make `spin` in a sense that `translate-xxx` utility can be used at the same time
         "spin-composable": `{
           from { transform: translateX(var(--un-translate-x)) translateY(var(--un-translate-y)) rotate(0deg); }
           to   { transform: translateX(var(--un-translate-x)) translateY(var(--un-translate-y)) rotate(360deg); }
