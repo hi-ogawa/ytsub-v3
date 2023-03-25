@@ -6,6 +6,7 @@ import { redirect } from "@remix-run/server-runtime";
 import { omit } from "lodash";
 import React from "react";
 import { z } from "zod";
+import { CollapseTransition } from "../../components/collapse";
 import { PaginationComponent, transitionProps } from "../../components/misc";
 import { useModal } from "../../components/modal";
 import { PopoverSimple } from "../../components/popover";
@@ -229,8 +230,10 @@ export function BookmarkEntryComponent({
           onClick={() => {}}
         />
       </div>
-      {/* TODO: collapse transition */}
-      {open && (
+      <CollapseTransition
+        show={open}
+        className="duration-300 h-0 overflow-hidden"
+      >
         <MiniPlayer
           video={video}
           captionEntry={captionEntry}
@@ -242,7 +245,7 @@ export function BookmarkEntryComponent({
             length: bookmarkEntry.text.length,
           }}
         />
-      )}
+      </CollapseTransition>
     </div>
   );
 }
