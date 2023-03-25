@@ -11,11 +11,12 @@ import {
   languageCodeToName,
 } from "./language";
 import { loadScript, newPromiseWithResolvers, throwGetterProxy } from "./misc";
-import type {
+import {
   CaptionConfig,
   CaptionConfigOptions,
   CaptionEntry,
   VideoMetadata,
+  Z_VIDEO_METADATA,
 } from "./types";
 
 //
@@ -24,7 +25,7 @@ import type {
 
 export async function fetchVideoMetadata(videoId: string) {
   const response = await fetchVideoMetadataRaw(videoId);
-  return METADATA_SCHEMA.parse(response);
+  return Z_VIDEO_METADATA.parse(response);
 }
 
 // cf. https://gist.github.com/hi-ogawa/23f6d0b212f51c2b1b255339c642e9b9
@@ -51,30 +52,6 @@ export async function fetchVideoMetadataRaw(videoId: string): Promise<any> {
   tinyassert(res.headers.get("content-type")?.startsWith("application/json"));
   return JSON.parse(await res.text());
 }
-
-const METADATA_SCHEMA = z.object({
-  playabilityStatus: z.object({
-    status: z.union([z.literal("OK"), z.literal("ERROR")]),
-  }),
-  videoDetails: z.object({
-    videoId: z.string(),
-    title: z.string(),
-    author: z.string(),
-    channelId: z.string(),
-  }),
-  captions: z.object({
-    playerCaptionsTracklistRenderer: z.object({
-      captionTracks: z
-        .object({
-          baseUrl: z.string(),
-          vssId: z.string(),
-          languageCode: z.string(),
-          kind: z.string().optional(),
-        })
-        .array(),
-    }),
-  }),
-});
 
 //
 // utils

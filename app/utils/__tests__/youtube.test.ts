@@ -1,3 +1,4 @@
+import { objectOmit, tinyassert, wrapPromise } from "@hiogawa/utils";
 import { describe, expect, it } from "vitest";
 import {
   fetchCaptionEntries,
@@ -14,53 +15,82 @@ describe("fetchVideoMetadata", () => {
     );
   });
 
-  it("captions", async () => {
+  it("no-caption", async () => {
+    // https://www.youtube.com/watch?v=s1FGPvIwrnY
+    const res = await wrapPromise(fetchVideoMetadata("s1FGPvIwrnY"));
+    tinyassert(res.ok);
+    expect(res.value.captions).toMatchInlineSnapshot(`
+      {
+        "playerCaptionsTracklistRenderer": {
+          "captionTracks": [],
+        },
+      }
+    `);
+  });
+
+  it("invalid-video-id", async () => {
+    const res = await wrapPromise(fetchVideoMetadata("XXXXXXXXXXX"));
+    expect(res).toMatchInlineSnapshot(`
+      {
+        "ok": false,
+        "value": [ZodError: [
+        {
+          "code": "invalid_type",
+          "expected": "object",
+          "received": "undefined",
+          "path": [
+            "videoDetails"
+          ],
+          "message": "Required"
+        }
+      ]],
+      }
+    `);
+  });
+
+  it("captionTracks", async () => {
     const res = await fetchVideoMetadata("4gXmClk8rKI");
-    expect(
-      res.captions.playerCaptionsTracklistRenderer.captionTracks
-    ).toMatchObject([
-      {
-        // "baseUrl": "https://www.youtube.com/api/timedtext?v=4gXmClk8rKI&caps=asr&xoaf=5&hl=en&ip=0.0.0.0&ipbits=0&expire=1679687719&sparams=ip,ipbits,expire,v,caps,xoaf&signature=54FC86AAA65D79EF429026AA65B885D9166FE566.319072C96961D7B18E271AF8C55D1FB479C4FF55&key=yt8&lang=zh",
-        languageCode: "zh",
-        vssId: ".zh",
-      },
-      {
-        // "baseUrl": "https://www.youtube.com/api/timedtext?v=4gXmClk8rKI&caps=asr&xoaf=5&hl=en&ip=0.0.0.0&ipbits=0&expire=1679687719&sparams=ip,ipbits,expire,v,caps,xoaf&signature=54FC86AAA65D79EF429026AA65B885D9166FE566.319072C96961D7B18E271AF8C55D1FB479C4FF55&key=yt8&lang=en",
-        languageCode: "en",
-        vssId: ".en",
-      },
-      {
-        // "baseUrl": "https://www.youtube.com/api/timedtext?v=4gXmClk8rKI&caps=asr&xoaf=5&hl=en&ip=0.0.0.0&ipbits=0&expire=1679687719&sparams=ip,ipbits,expire,v,caps,xoaf&signature=54FC86AAA65D79EF429026AA65B885D9166FE566.319072C96961D7B18E271AF8C55D1FB479C4FF55&key=yt8&lang=id",
-        languageCode: "id",
-        vssId: ".id",
-      },
-      {
-        // "baseUrl": "https://www.youtube.com/api/timedtext?v=4gXmClk8rKI&caps=asr&xoaf=5&hl=en&ip=0.0.0.0&ipbits=0&expire=1679687719&sparams=ip,ipbits,expire,v,caps,xoaf&signature=54FC86AAA65D79EF429026AA65B885D9166FE566.319072C96961D7B18E271AF8C55D1FB479C4FF55&key=yt8&lang=ja",
-        languageCode: "ja",
-        vssId: ".ja",
-      },
-      {
-        // "baseUrl": "https://www.youtube.com/api/timedtext?v=4gXmClk8rKI&caps=asr&xoaf=5&hl=en&ip=0.0.0.0&ipbits=0&expire=1679687719&sparams=ip,ipbits,expire,v,caps,xoaf&signature=54FC86AAA65D79EF429026AA65B885D9166FE566.319072C96961D7B18E271AF8C55D1FB479C4FF55&key=yt8&lang=ko",
-        languageCode: "ko",
-        vssId: ".ko",
-      },
-      {
-        // "baseUrl": "https://www.youtube.com/api/timedtext?v=4gXmClk8rKI&caps=asr&xoaf=5&hl=en&ip=0.0.0.0&ipbits=0&expire=1679687719&sparams=ip,ipbits,expire,v,caps,xoaf&signature=54FC86AAA65D79EF429026AA65B885D9166FE566.319072C96961D7B18E271AF8C55D1FB479C4FF55&key=yt8&kind=asr&lang=ko",
-        kind: "asr",
-        languageCode: "ko",
-        vssId: "a.ko",
-      },
-      {
-        // "baseUrl": "https://www.youtube.com/api/timedtext?v=4gXmClk8rKI&caps=asr&xoaf=5&hl=en&ip=0.0.0.0&ipbits=0&expire=1679687719&sparams=ip,ipbits,expire,v,caps,xoaf&signature=54FC86AAA65D79EF429026AA65B885D9166FE566.319072C96961D7B18E271AF8C55D1FB479C4FF55&key=yt8&lang=es",
-        languageCode: "es",
-        vssId: ".es",
-      },
-      {
-        // "baseUrl": "https://www.youtube.com/api/timedtext?v=4gXmClk8rKI&caps=asr&xoaf=5&hl=en&ip=0.0.0.0&ipbits=0&expire=1679687719&sparams=ip,ipbits,expire,v,caps,xoaf&signature=54FC86AAA65D79EF429026AA65B885D9166FE566.319072C96961D7B18E271AF8C55D1FB479C4FF55&key=yt8&lang=th",
-        languageCode: "th",
-        vssId: ".th",
-      },
-    ]);
+    const captionTracks =
+      res.captions.playerCaptionsTracklistRenderer.captionTracks.map((c) =>
+        objectOmit(c, ["baseUrl"])
+      );
+    expect(captionTracks).toMatchInlineSnapshot(`
+      [
+        {
+          "languageCode": "zh",
+          "vssId": ".zh",
+        },
+        {
+          "languageCode": "en",
+          "vssId": ".en",
+        },
+        {
+          "languageCode": "id",
+          "vssId": ".id",
+        },
+        {
+          "languageCode": "ja",
+          "vssId": ".ja",
+        },
+        {
+          "languageCode": "ko",
+          "vssId": ".ko",
+        },
+        {
+          "kind": "asr",
+          "languageCode": "ko",
+          "vssId": "a.ko",
+        },
+        {
+          "languageCode": "es",
+          "vssId": ".es",
+        },
+        {
+          "languageCode": "th",
+          "vssId": ".th",
+        },
+      ]
+    `);
   });
 });
 
