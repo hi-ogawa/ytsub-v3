@@ -17,7 +17,27 @@ export default defineConfig({
       },
     }),
   ],
+  theme: {
+    // cf. https://github.com/unocss/unocss/blob/339f2b2c9be41a5505e7f4509eea1cf00a87a8d1/packages/preset-wind/src/theme.ts#L19
+    animation: {
+      keyframes: {
+        // make `spin` composable so that `translate-xxx` utility can be used at the same time
+        "spin-composable": `{
+          from { transform: translateX(var(--un-translate-x)) translateY(var(--un-translate-y)) rotate(0deg); }
+          to   { transform: translateX(var(--un-translate-x)) translateY(var(--un-translate-y)) rotate(360deg); }
+        }`,
+      },
+      counts: {
+        "spin-composable": "infinite",
+      },
+    },
+  },
+  // TODO: upstream?
   shortcuts: [
+    {
+      "antd-btn-loading":
+        "relative after:(content-none absolute antd-spin animate-spin-composable h-4 top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%])",
+    },
     // TODO: it doesn't feel like right abstraction.
     [
       /^antd-spin-overlay-(\d+)$/,

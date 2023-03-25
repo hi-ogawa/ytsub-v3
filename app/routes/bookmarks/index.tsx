@@ -231,6 +231,7 @@ export function BookmarkEntryComponent({
           onClick={() => {}}
         />
       </div>
+      {/* TODO: collapse transition */}
       {open && (
         <MiniPlayer
           video={video}

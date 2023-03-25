@@ -199,7 +199,7 @@ export function TestFab() {
 }
 
 export function TestSpinner() {
-  const form = useForm({ defaultValues: { overlay: true } });
+  const form = useForm({ defaultValues: { overlay: true, button: true } });
 
   return (
     <div className="w-full flex justify-center">
@@ -228,6 +228,21 @@ export function TestSpinner() {
               leaveTo="opacity-0"
             />
           </div>
+        </div>
+        <div className="flex flex-col gap-2">
+          <div className="flex gap-2">
+            Button
+            <input type="checkbox" {...form.register("button")} />
+          </div>
+          <button
+            className={cls(
+              "antd-btn antd-btn-primary p-1",
+              form.watch("button") && "antd-btn-loading"
+            )}
+            disabled={form.watch("button")}
+          >
+            Save
+          </button>
         </div>
       </div>
     </div>
