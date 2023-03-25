@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const Z_VIDEO_METADATA = z.object({
   playabilityStatus: z.object({
-    status: z.string(), // OK, ERROR
+    status: z.literal("OK"), // ERROR for invalid/non-existing video id?
   }),
   videoDetails: z.object({
     videoId: z.string(),

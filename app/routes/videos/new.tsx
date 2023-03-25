@@ -31,16 +31,22 @@ export const loader = makeLoader(Controller, async function () {
   if (parsed.success) {
     const videoId = parseVideoId(parsed.data.videoId);
     if (videoId) {
-      const videoMetadata = await fetchVideoMetadata(videoId);
-      if (videoMetadata.playabilityStatus.status === "OK") {
-        return videoMetadata;
+      try {
+        return await fetchVideoMetadata(videoId);
+      } catch (e) {
+        // TODO: improve error message
+        // - invalid videoId
+        // - failed to fetch (e.g. video not found)
+        // - no subtitle
+        let message = e instanceof Error ? e.message : "(unknown error)";
+        this.flash({
+          content: `Failed to load a video:\n${message}`,
+          variant: "error",
+        });
+        return redirect(R["/"]);
       }
     }
   }
-  // TODO: improve error message
-  // - invalid videoId
-  // - failed to fetch (e.g. video not found)
-  // - no subtitle
   this.flash({
     content: "Invalid input",
     variant: "error",
