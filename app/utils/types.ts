@@ -1,27 +1,28 @@
 import { z } from "zod";
 
 export const Z_VIDEO_METADATA = z.object({
-  playabilityStatus: z.object({
-    status: z.literal("OK"), // ERROR for invalid/non-existing video id?
-  }),
+  // invalid video id returns empty `videoDetails`
   videoDetails: z.object({
     videoId: z.string(),
     title: z.string(),
     author: z.string(),
     channelId: z.string(),
   }),
-  captions: z.object({
-    playerCaptionsTracklistRenderer: z.object({
-      captionTracks: z
-        .object({
-          baseUrl: z.string(),
-          vssId: z.string(),
-          languageCode: z.string(),
-          kind: z.string().optional(),
-        })
-        .array(),
-    }),
-  }),
+  captions: z
+    .object({
+      playerCaptionsTracklistRenderer: z.object({
+        captionTracks: z
+          .object({
+            baseUrl: z.string(),
+            vssId: z.string(),
+            languageCode: z.string(),
+            kind: z.string().optional(),
+          })
+          .array(),
+      }),
+    })
+    // allow loading a video without captions, but show a special error message in /vides/new page
+    .default({ playerCaptionsTracklistRenderer: { captionTracks: [] } }),
 });
 
 export type VideoMetadata = z.infer<typeof Z_VIDEO_METADATA>;

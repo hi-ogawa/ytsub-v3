@@ -1,4 +1,4 @@
-import { objectOmit, wrapPromise } from "@hiogawa/utils";
+import { objectOmit, tinyassert, wrapPromise } from "@hiogawa/utils";
 import { describe, expect, it } from "vitest";
 import {
   fetchCaptionEntries,
@@ -18,6 +18,18 @@ describe("fetchVideoMetadata", () => {
   it("no-caption", async () => {
     // https://www.youtube.com/watch?v=s1FGPvIwrnY
     const res = await wrapPromise(fetchVideoMetadata("s1FGPvIwrnY"));
+    tinyassert(res.ok);
+    expect(res.value.captions).toMatchInlineSnapshot(`
+      {
+        "playerCaptionsTracklistRenderer": {
+          "captionTracks": [],
+        },
+      }
+    `);
+  });
+
+  it("invalid-video-id", async () => {
+    const res = await wrapPromise(fetchVideoMetadata("XXXXXXXXXXX"));
     expect(res).toMatchInlineSnapshot(`
       {
         "ok": false,
@@ -27,7 +39,7 @@ describe("fetchVideoMetadata", () => {
           "expected": "object",
           "received": "undefined",
           "path": [
-            "captions"
+            "videoDetails"
           ],
           "message": "Required"
         }
