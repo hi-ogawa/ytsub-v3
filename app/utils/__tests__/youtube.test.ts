@@ -1,3 +1,4 @@
+import { wrapPromise } from "@hiogawa/utils";
 import { describe, expect, it } from "vitest";
 import {
   fetchCaptionEntries,
@@ -14,7 +15,28 @@ describe("fetchVideoMetadata", () => {
     );
   });
 
-  it("captions", async () => {
+  it("no-caption", async () => {
+    // https://www.youtube.com/watch?v=s1FGPvIwrnY
+    const res = await wrapPromise(fetchVideoMetadata("s1FGPvIwrnY"));
+    expect(res).toMatchInlineSnapshot(`
+      {
+        "ok": false,
+        "value": [ZodError: [
+        {
+          "code": "invalid_type",
+          "expected": "object",
+          "received": "undefined",
+          "path": [
+            "captions"
+          ],
+          "message": "Required"
+        }
+      ]],
+      }
+    `);
+  });
+
+  it("captionTracks", async () => {
     const res = await fetchVideoMetadata("4gXmClk8rKI");
     expect(
       res.captions.playerCaptionsTracklistRenderer.captionTracks
