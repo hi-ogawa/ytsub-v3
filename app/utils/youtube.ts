@@ -19,6 +19,50 @@ import {
   Z_VIDEO_METADATA,
 } from "./types";
 
+//
+// youtube video detail scraping (based on https://github.com/hi-ogawa/youtube-dl-web-v2/blob/ca7c08ca6b144c235bdc4c7e307a0468052aa6fa/packages/app/src/utils/youtube-utils.ts#L46-L53)
+//
+
+export async function fetchVideoMetadata(videoId: string) {
+  const response = await fetchVideoMetadataRaw(videoId);
+  return Z_VIDEO_METADATA.parse(response);
+}
+
+// cf. https://gist.github.com/hi-ogawa/23f6d0b212f51c2b1b255339c642e9b9
+export async function fetchVideoMetadataRaw(videoId: string): Promise<any> {
+  // prettier-ignore
+  const res = await fetch("https://www.youtube.com/youtubei/v1/player", {
+    method: "POST",
+    body: JSON.stringify({
+      videoId,
+      context: {
+        client: {
+          clientName: "ANDROID",
+          clientVersion: "17.31.35",
+          androidSdkVersion: 30,
+          hl: "en",
+          timeZone: "UTC",
+          utcOffsetMinutes: 0,
+        },
+      },
+    }),
+    headers: {
+      "X-YouTube-Client-Name": "3",
+      "X-YouTube-Client-Version": "17.31.35",
+      "Origin": "https://www.youtube.com",
+      "User-Agent": "com.google.android.youtube/17.31.35 (Linux; U; Android 11) gzip",
+      "content-type": "application/json",
+    }
+  });
+  tinyassert(res.ok);
+  tinyassert(res.headers.get("content-type")?.startsWith("application/json"));
+  return JSON.parse(await res.text());
+}
+
+//
+// utils
+//
+
 export function parseVideoId(value: string): string | undefined {
   if (value.length === 11) {
     return value;
@@ -41,30 +85,6 @@ export function parseVideoId(value: string): string | undefined {
 
 export function toThumbnail(videoId: string): string {
   return `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
-}
-
-export async function fetchVideoMetadata(
-  videoId: string
-): Promise<VideoMetadata> {
-  const raw = await fetchVideoMetadataRaw(videoId);
-  return Z_VIDEO_METADATA.parse(raw);
-}
-
-export async function fetchVideoMetadataRaw(videoId: string): Promise<unknown> {
-  // TODO: use unofficial json api (cf. https://github.com/hi-ogawa/youtube-dl-web-v2/blob/ca7c08ca6b144c235bdc4c7e307a0468052aa6fa/packages/app/src/utils/youtube-utils.ts#L103)
-  const url = `https://www.youtube.com/watch?v=${videoId}`;
-  const res = await fetch(url, { headers: { "accept-language": "en" } });
-  tinyassert(res.ok);
-  return parseVideoMetadata(await res.text());
-}
-
-function parseVideoMetadata(html: string): unknown {
-  // https://github.com/ytdl-org/youtube-dl/blob/a7f61feab2dbfc50a7ebe8b0ea390bd0e5edf77a/youtube_dl/extractor/youtube.py#L282-L284
-  const match = html.match(
-    /ytInitialPlayerResponse\s*=\s*({.+?})\s*;\s*(?:var\s+meta|<\/script|\n)/
-  );
-  tinyassert(match && match[1]);
-  return JSON.parse(match[1]);
 }
 
 export function parseVssId(vssId: string): LanguageCode {
@@ -104,11 +124,12 @@ export function captionConfigToUrl(
     videoMetadata.captions.playerCaptionsTracklistRenderer;
   const track = captionTracks.find((track) => track.vssId === vssId);
   if (track) {
-    let url = track.baseUrl + "&fmt=ttml";
+    const url = new URL(track.baseUrl);
+    url.searchParams.set("fmt", "ttml");
     if (translation) {
-      url += "&tlang=" + translation;
+      url.searchParams.set("tlang", translation);
     }
-    return url;
+    return String(url);
   }
   return;
 }
