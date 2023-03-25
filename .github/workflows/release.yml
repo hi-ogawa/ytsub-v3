@@ -20,6 +20,7 @@ jobs:
   release:
     environment:
       name: release
+      url: ${{ steps.release_log.outputs.RELEASE_URL }}
     runs-on: ubuntu-22.04
     env:
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
@@ -39,7 +40,10 @@ jobs:
       - run: bash scripts/vercel-ci-auth.sh
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-      - run: pnpm release
+      - run: pnpm release | tee release.log
         if: inputs.environment == 'staging'
-      - run: pnpm release-production
+      - run: pnpm release-production | tee release.log
         if: inputs.environment == 'production'
+      # https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#setting-an-output-parameter
+      - run: tail -n 1 release.log >> "$GITHUB_OUTPUT"
+        id: release_log
