@@ -6,6 +6,7 @@ import type { ECharts } from "echarts";
 import { range } from "lodash";
 import React from "react";
 import { z } from "zod";
+import { transitionProps } from "../../../components/misc";
 import {
   PracticeHistoryChart,
   PracticeHistoryChartData,
@@ -148,14 +149,9 @@ export default function DefaultComponent() {
           />
           <Transition
             show={isLoading}
-            className="transition duration-500 absolute inset-0 antd-body grid place-content-center"
-            enterFrom="opacity-0"
-            enterTo="opacity-100"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0"
-          >
-            <div className="antd-spin h-20" />
-          </Transition>
+            className="duration-500 antd-body antd-spin-overlay-20"
+            {...transitionProps("opacity-0", "opacity-100")}
+          />
         </div>
         <div className="w-full flex justify-center">
           <div className="flex items-center gap-2 px-2 py-1">

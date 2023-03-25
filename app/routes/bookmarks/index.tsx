@@ -6,7 +6,7 @@ import { redirect } from "@remix-run/server-runtime";
 import { omit } from "lodash";
 import React from "react";
 import { z } from "zod";
-import { PaginationComponent } from "../../components/misc";
+import { PaginationComponent, transitionProps } from "../../components/misc";
 import { useModal } from "../../components/modal";
 import { PopoverSimple } from "../../components/popover";
 import {
@@ -343,12 +343,9 @@ export function MiniPlayer({
         </div>
         <Transition
           show={playerLoader.isLoading}
-          className="duration-500 absolute inset-0 antd-body grid place-content-center"
-          leaveFrom="opacity-100"
-          leaveTo="opacity-0"
-        >
-          <div className="antd-spin h-20" />
-        </Transition>
+          className="duration-500 antd-body antd-spin-overlay-20"
+          {...transitionProps("opacity-0", "opacity-100")}
+        />
       </div>
     </div>
   );

@@ -113,14 +113,21 @@ export function VideoComponent({
       </div>
       <Transition
         show={Boolean(isLoading)}
-        className="duration-500 opacity-60 antd-body antd-spin-overlay-16"
-        enterFrom="opacity-0"
-        enterTo="opacity-60"
-        leaveFrom="opacity-60"
-        leaveTo="opacity-0"
+        className="duration-500 antd-body antd-spin-overlay-16"
+        {...transitionProps("opacity-0", "opacity-60")}
       />
     </div>
   );
+}
+
+// simpler wrapper for common transition props
+export function transitionProps(from: string, to: string) {
+  return {
+    enterFrom: from,
+    enterTo: to,
+    leaveFrom: to,
+    leaveTo: from,
+  };
 }
 
 export function PaginationComponent({

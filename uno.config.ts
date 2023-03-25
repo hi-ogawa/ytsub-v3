@@ -18,7 +18,6 @@ export default defineConfig({
     }),
   ],
   shortcuts: [
-    // TODO: it doesn't feel like right abstraction.
     [
       /^antd-spin-overlay-(\d+)$/,
       ([, size]) => `

@@ -2,7 +2,7 @@ import { Transition } from "@headlessui/react";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { cls } from "../utils/misc";
-import { VideoComponent } from "./misc";
+import { VideoComponent, transitionProps } from "./misc";
 import { PopoverSimple } from "./popover";
 import { PracticeHistoryChart } from "./practice-history-chart";
 
@@ -102,7 +102,8 @@ export function TestPopover() {
 }
 
 export function TestVideoComponent() {
-  const [isLoading, setIsLoading] = React.useState(true);
+  const [isLoading, setIsLoading] = React.useState(false);
+  React.useEffect(() => setIsLoading(true), []);
 
   return (
     <div className="w-full flex justify-center">
@@ -221,11 +222,8 @@ export function TestSpinner() {
             <div>Hello World</div>
             <Transition
               show={form.watch("overlay")}
-              className="duration-1000 antd-body antd-spin-overlay-12"
-              enterFrom="opacity-0"
-              enterTo="opacity-100"
-              leaveFrom="opacity-100"
-              leaveTo="opacity-0"
+              className="duration-500 antd-body antd-spin-overlay-12"
+              {...transitionProps("opacity-0", "opacity-100")}
             />
           </div>
         </div>

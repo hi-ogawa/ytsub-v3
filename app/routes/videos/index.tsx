@@ -1,9 +1,14 @@
+import { Transition } from "@headlessui/react";
 import { mapOption } from "@hiogawa/utils";
 import { useFetcher, useFetchers, useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import React from "react";
 import toast from "react-hot-toast";
-import { PaginationComponent, VideoComponent } from "../../components/misc";
+import {
+  PaginationComponent,
+  VideoComponent,
+  transitionProps,
+} from "../../components/misc";
 import { useModal } from "../../components/modal";
 import {
   DeckTable,
@@ -252,9 +257,12 @@ function AddToDeckComponent({
   const isLoading = fetcher1.state !== "idle" || fetcher2.state !== "idle";
 
   return (
-    <div className="flex flex-col gap-2 p-4" data-test="add-to-deck-component">
+    <div
+      className="flex flex-col gap-2 p-4 relative"
+      data-test="add-to-deck-component"
+    >
       <div className="text-lg">Select a Deck</div>
-      {data && !isLoading ? (
+      {data && (
         <ul className="flex flex-col gap-2">
           {data.decks.map((deck) => (
             <li key={deck.id}>
@@ -269,11 +277,12 @@ function AddToDeckComponent({
             </li>
           ))}
         </ul>
-      ) : (
-        <div className="flex justify-center p-2">
-          <div className="antd-spin h-20"></div>
-        </div>
       )}
+      <Transition
+        show={isLoading}
+        className="duration-500 antd-body antd-spin-overlay-20"
+        {...transitionProps("opacity-0", "opacity-100")}
+      />
     </div>
   );
 }
