@@ -1,5 +1,7 @@
+import { objectOmit, tinyassert, wrapPromise } from "@hiogawa/utils";
 import { describe, expect, it } from "vitest";
 import {
+  fetchCaptionEntries,
   fetchVideoMetadata,
   ttmlToEntries,
   ttmlsToCaptionEntries,
@@ -8,7 +10,157 @@ import {
 describe("fetchVideoMetadata", () => {
   it("basic", async () => {
     const res = await fetchVideoMetadata("EnPYXckiUVg");
-    expect(res.videoDetails.author).toBe("Piece of French");
+    expect(res.videoDetails.title).toMatchInlineSnapshot(
+      '"Are French People Really That Mean?! // French Girls React to Emily In Paris (in FR w/ FR & EN subs)"'
+    );
+  });
+
+  it("no-caption", async () => {
+    // https://www.youtube.com/watch?v=s1FGPvIwrnY
+    const res = await wrapPromise(fetchVideoMetadata("s1FGPvIwrnY"));
+    tinyassert(res.ok);
+    expect(res.value.captions).toMatchInlineSnapshot(`
+      {
+        "playerCaptionsTracklistRenderer": {
+          "captionTracks": [],
+        },
+      }
+    `);
+  });
+
+  it("invalid-video-id", async () => {
+    const res = await wrapPromise(fetchVideoMetadata("XXXXXXXXXXX"));
+    expect(res).toMatchInlineSnapshot(`
+      {
+        "ok": false,
+        "value": [ZodError: [
+        {
+          "code": "invalid_type",
+          "expected": "object",
+          "received": "undefined",
+          "path": [
+            "videoDetails"
+          ],
+          "message": "Required"
+        }
+      ]],
+      }
+    `);
+  });
+
+  it("captionTracks", async () => {
+    const res = await fetchVideoMetadata("4gXmClk8rKI");
+    const captionTracks =
+      res.captions.playerCaptionsTracklistRenderer.captionTracks.map((c) =>
+        objectOmit(c, ["baseUrl"])
+      );
+    expect(captionTracks).toMatchInlineSnapshot(`
+      [
+        {
+          "languageCode": "zh",
+          "vssId": ".zh",
+        },
+        {
+          "languageCode": "en",
+          "vssId": ".en",
+        },
+        {
+          "languageCode": "id",
+          "vssId": ".id",
+        },
+        {
+          "languageCode": "ja",
+          "vssId": ".ja",
+        },
+        {
+          "languageCode": "ko",
+          "vssId": ".ko",
+        },
+        {
+          "kind": "asr",
+          "languageCode": "ko",
+          "vssId": "a.ko",
+        },
+        {
+          "languageCode": "es",
+          "vssId": ".es",
+        },
+        {
+          "languageCode": "th",
+          "vssId": ".th",
+        },
+      ]
+    `);
+  });
+});
+
+describe("fetchCaptionEntries", () => {
+  it("basic", async () => {
+    // https://www.youtube.com/watch?v=4gXmClk8rKI
+    const entries = await fetchCaptionEntries({
+      videoId: "4gXmClk8rKI",
+      language1: { id: ".ko" },
+      language2: { id: ".en" },
+    });
+    expect(entries.captionEntries.slice(0, 3)).toMatchInlineSnapshot(`
+      [
+        {
+          "begin": 8.008,
+          "end": 11.011,
+          "index": 0,
+          "text1": "Hey you 지금 뭐 해",
+          "text2": "Hey you what you doin’",
+        },
+        {
+          "begin": 11.545,
+          "end": 13.51,
+          "index": 1,
+          "text1": "잠깐 밖으로 나올래",
+          "text2": "Wanna come out for a sec",
+        },
+        {
+          "begin": 13.646,
+          "end": 15.549,
+          "index": 2,
+          "text1": "네가 보고 싶다고",
+          "text2": "I wanna see you",
+        },
+      ]
+    `);
+  });
+
+  it("translation", async () => {
+    // https://www.youtube.com/watch?v=4gXmClk8rKI
+    const entries = await fetchCaptionEntries({
+      videoId: "4gXmClk8rKI",
+      language1: { id: ".ko" },
+      language2: { id: ".ko", translation: "en" },
+    });
+    expect(entries.captionEntries.slice(0, 3)).toMatchInlineSnapshot(`
+      [
+        {
+          "begin": 8.008,
+          "end": 11.011,
+          "index": 0,
+          "text1": "Hey you 지금 뭐 해",
+          "text2": "Hey you, what are you doing right now? I want to",
+        },
+        {
+          "begin": 11.545,
+          "end": 13.51,
+          "index": 1,
+          "text1": "잠깐 밖으로 나올래",
+          "text2": "go outside for a bit I miss you",
+        },
+        {
+          "begin": 13.646,
+          "end": 15.549,
+          "index": 2,
+          "text1": "네가 보고 싶다고",
+          "text2": "",
+        },
+      ]
+    `);
   });
 });
 
