@@ -175,12 +175,14 @@ export function BookmarkEntryComponent({
   video,
   captionEntry,
   bookmarkEntry,
-  showAutoplay = false,
+  showAutoplay,
+  isLoading,
 }: {
   video: VideoTable;
   captionEntry: CaptionEntryTable;
   bookmarkEntry: BookmarkEntryTable;
   showAutoplay?: boolean;
+  isLoading?: boolean;
 }) {
   let [open, setOpen] = React.useState(false);
   let [autoplay, setAutoplay] = React.useState(false);
@@ -190,8 +192,13 @@ export function BookmarkEntryComponent({
     setOpen(!open);
   }
 
+  // close when practice entry changed (/decks/$id/practice.tsx)
+  React.useEffect(() => {
+    setOpen(false);
+  }, [bookmarkEntry]);
+
   return (
-    <div className="border flex flex-col" data-test="bookmark-entry">
+    <div className="border flex flex-col relative" data-test="bookmark-entry">
       <div
         className={cls(
           "flex items-center p-2 gap-2",
@@ -237,6 +244,15 @@ export function BookmarkEntryComponent({
           }}
         />
       )}
+      <Transition
+        show={Boolean(isLoading)}
+        className="duration-500 antd-body antd-spin-overlay-6"
+        enterFrom="opacity-0"
+        enterTo="opacity-50"
+        entered="opacity-50"
+        leaveFrom="opacity-50"
+        leaveTo="opacity-50"
+      />
     </div>
   );
 }

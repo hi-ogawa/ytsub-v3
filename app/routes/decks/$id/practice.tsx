@@ -164,18 +164,14 @@ function PracticeComponent({
   return (
     <>
       <div className="grow w-full flex flex-col">
-        {isLoading ? (
-          <div className="w-full flex justify-center">
-            <div className="antd-spin h-16" />
-          </div>
-        ) : (
-          <BookmarkEntryComponent
-            video={video}
-            captionEntry={captionEntry}
-            bookmarkEntry={bookmarkEntry}
-            showAutoplay
-          />
-        )}
+        <BookmarkEntryComponent
+          video={video}
+          captionEntry={captionEntry}
+          bookmarkEntry={bookmarkEntry}
+          showAutoplay
+          // TODO: better to show spinner at the action buttons below?
+          isLoading={isLoading}
+        />
       </div>
       <div className="flex justify-center pb-4">
         <div className="flex gap-2">
