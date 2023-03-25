@@ -11,11 +11,12 @@ import {
   languageCodeToName,
 } from "./language";
 import { loadScript, newPromiseWithResolvers, throwGetterProxy } from "./misc";
-import type {
+import {
   CaptionConfig,
   CaptionConfigOptions,
   CaptionEntry,
   VideoMetadata,
+  Z_VIDEO_METADATA,
 } from "./types";
 
 export function parseVideoId(value: string): string | undefined {
@@ -49,7 +50,7 @@ export async function fetchVideoMetadata(
   const url = `https://www.youtube.com/watch?v=${videoId}`;
   const res = await fetch(url, { headers: { "accept-language": "en" } });
   if (res.ok) {
-    return parseVideoMetadata(await res.text());
+    return Z_VIDEO_METADATA.parse(parseVideoMetadata(await res.text()));
   }
   throw new Error();
 }

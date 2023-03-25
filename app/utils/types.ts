@@ -1,32 +1,37 @@
+import { z } from "zod";
+
+export const Z_VIDEO_METADATA = z.object({
+  playabilityStatus: z.object({
+    status: z.string(), // OK, ERROR
+  }),
+  videoDetails: z.object({
+    videoId: z.string(),
+    title: z.string(),
+    author: z.string(),
+    channelId: z.string(),
+  }),
+  captions: z.object({
+    playerCaptionsTracklistRenderer: z.object({
+      captionTracks: z
+        .object({
+          baseUrl: z.string(),
+          vssId: z.string(),
+          languageCode: z.string(),
+          kind: z.string().optional(),
+        })
+        .array(),
+    }),
+  }),
+});
+
+export type VideoMetadata = z.infer<typeof Z_VIDEO_METADATA>;
+
+export type VideoDetails = VideoMetadata["videoDetails"];
+
 export interface CaptionConfig {
   id: string;
   translation?: string;
 }
-
-export interface VideoDetails {
-  videoId: string;
-  title: string;
-  author: string;
-  channelId: string;
-}
-
-// aka. youtube player response
-export type VideoMetadata = {
-  playabilityStatus: {
-    status: "OK" | "ERROR";
-  };
-  videoDetails: VideoDetails;
-  captions: {
-    playerCaptionsTracklistRenderer: {
-      captionTracks: {
-        baseUrl: string;
-        vssId: string;
-        languageCode: string;
-        kind?: string;
-      }[];
-    };
-  };
-};
 
 export interface CaptionConfigOptions {
   captions: {

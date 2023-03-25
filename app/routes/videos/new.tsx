@@ -37,6 +37,10 @@ export const loader = makeLoader(Controller, async function () {
       }
     }
   }
+  // TODO: improve error message
+  // - invalid videoId
+  // - failed to fetch (e.g. video not found)
+  // - no subtitle
   this.flash({
     content: "Invalid input",
     variant: "error",
