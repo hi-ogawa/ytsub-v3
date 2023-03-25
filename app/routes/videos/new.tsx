@@ -113,7 +113,7 @@ export default function DefaultComponent() {
           {videoMetadata.captions.playerCaptionsTracklistRenderer.captionTracks
             .length === 0 && (
             <div className="p-2 text-sm text-colorErrorText bg-colorErrorBg border border-colorErrorBorder">
-              You cannot load this video since there is no caption available.
+              No caption is available for this video.
             </div>
           )}
           <div className="text-xl">Select Languages</div>
