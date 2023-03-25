@@ -196,7 +196,7 @@ export function BookmarkEntryComponent({
   }, [bookmarkEntry]);
 
   return (
-    <div className="border flex flex-col relative" data-test="bookmark-entry">
+    <div className="border flex flex-col" data-test="bookmark-entry">
       <div
         className={cls(
           "flex items-center p-2 gap-2",
