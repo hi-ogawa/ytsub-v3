@@ -11,11 +11,12 @@ import {
   languageCodeToName,
 } from "./language";
 import { loadScript, newPromiseWithResolvers, throwGetterProxy } from "./misc";
-import type {
+import {
   CaptionConfig,
   CaptionConfigOptions,
   CaptionEntry,
   VideoMetadata,
+  Z_VIDEO_METADATA,
 } from "./types";
 
 export function parseVideoId(value: string): string | undefined {
@@ -45,24 +46,25 @@ export function toThumbnail(videoId: string): string {
 export async function fetchVideoMetadata(
   videoId: string
 ): Promise<VideoMetadata> {
+  const raw = await fetchVideoMetadataRaw(videoId);
+  return Z_VIDEO_METADATA.parse(raw);
+}
+
+export async function fetchVideoMetadataRaw(videoId: string): Promise<unknown> {
   // TODO: use unofficial json api (cf. https://github.com/hi-ogawa/youtube-dl-web-v2/blob/ca7c08ca6b144c235bdc4c7e307a0468052aa6fa/packages/app/src/utils/youtube-utils.ts#L103)
   const url = `https://www.youtube.com/watch?v=${videoId}`;
   const res = await fetch(url, { headers: { "accept-language": "en" } });
-  if (res.ok) {
-    return parseVideoMetadata(await res.text());
-  }
-  throw new Error();
+  tinyassert(res.ok);
+  return parseVideoMetadata(await res.text());
 }
 
-export function parseVideoMetadata(html: string): VideoMetadata {
+function parseVideoMetadata(html: string): unknown {
   // https://github.com/ytdl-org/youtube-dl/blob/a7f61feab2dbfc50a7ebe8b0ea390bd0e5edf77a/youtube_dl/extractor/youtube.py#L282-L284
   const match = html.match(
     /ytInitialPlayerResponse\s*=\s*({.+?})\s*;\s*(?:var\s+meta|<\/script|\n)/
   );
-  if (match && match[1]) {
-    return JSON.parse(match[1]);
-  }
-  throw new Error();
+  tinyassert(match && match[1]);
+  return JSON.parse(match[1]);
 }
 
 export function parseVssId(vssId: string): LanguageCode {

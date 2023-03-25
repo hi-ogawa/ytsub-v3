@@ -31,9 +31,14 @@ export const loader = makeLoader(Controller, async function () {
   if (parsed.success) {
     const videoId = parseVideoId(parsed.data.videoId);
     if (videoId) {
-      const videoMetadata = await fetchVideoMetadata(videoId);
-      if (videoMetadata.playabilityStatus.status === "OK") {
-        return videoMetadata;
+      try {
+        return await fetchVideoMetadata(videoId);
+      } catch (e) {
+        this.flash({
+          content: `Failed to load a video`,
+          variant: "error",
+        });
+        return redirect(R["/"]);
       }
     }
   }
@@ -105,6 +110,12 @@ export default function DefaultComponent() {
     <div className="w-full p-4 flex justify-center">
       <div className="h-full w-full max-w-lg border">
         <div className="h-full p-6 flex flex-col gap-3">
+          {videoMetadata.captions.playerCaptionsTracklistRenderer.captionTracks
+            .length === 0 && (
+            <div className="p-2 text-sm text-colorErrorText bg-colorErrorBg border border-colorErrorBorder">
+              No caption is available for this video.
+            </div>
+          )}
           <div className="text-xl">Select Languages</div>
           <Form
             method="post"
