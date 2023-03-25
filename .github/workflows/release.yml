@@ -45,5 +45,5 @@ jobs:
       - run: pnpm release-production | tee release.log
         if: inputs.environment == 'production'
       # https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#setting-an-output-parameter
-      - run: tail -n 1 release.log >> "$GITHUB_OUTPUT"
+      - run: echo "RELEASE_URL=$(tail -n 1 release.log)" >> "$GITHUB_OUTPUT"
         id: release_log
