@@ -174,8 +174,6 @@ function PracticeComponent({
           captionEntry={captionEntry}
           bookmarkEntry={bookmarkEntry}
           showAutoplay
-          // TODO: better to show spinner at the action buttons below?
-          isLoading={isLoading}
         />
       </div>
       <div className="flex justify-center pb-4">

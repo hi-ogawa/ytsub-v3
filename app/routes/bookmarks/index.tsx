@@ -176,13 +176,11 @@ export function BookmarkEntryComponent({
   captionEntry,
   bookmarkEntry,
   showAutoplay,
-  isLoading,
 }: {
   video: VideoTable;
   captionEntry: CaptionEntryTable;
   bookmarkEntry: BookmarkEntryTable;
   showAutoplay?: boolean;
-  isLoading?: boolean;
 }) {
   let [open, setOpen] = React.useState(false);
   let [autoplay, setAutoplay] = React.useState(false);
@@ -245,15 +243,6 @@ export function BookmarkEntryComponent({
           }}
         />
       )}
-      <Transition
-        show={Boolean(isLoading)}
-        className="duration-500 antd-body antd-spin-overlay-6"
-        enterFrom="opacity-0"
-        enterTo="opacity-50"
-        entered="opacity-50"
-        leaveFrom="opacity-50"
-        leaveTo="opacity-50"
-      />
     </div>
   );
 }
