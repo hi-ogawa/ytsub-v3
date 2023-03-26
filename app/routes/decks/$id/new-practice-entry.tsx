@@ -6,7 +6,7 @@ import { z } from "zod";
 import { Q } from "../../../db/models";
 import { Controller, makeLoader } from "../../../utils/controller-utils";
 import { PracticeSystem } from "../../../utils/practice-system";
-import { zStringToDate, zStringToInteger } from "../../../utils/zod-utils";
+import { zStringToInteger } from "../../../utils/zod-utils";
 
 //
 // action
@@ -17,7 +17,7 @@ const ACTION_REQUEST_SCHEMA = z
   .object({
     videoId: zStringToInteger.optional(),
     bookmarkEntryId: zStringToInteger.optional(),
-    now: zStringToDate,
+    now: z.coerce.date(),
   })
   .refine(
     (data) =>

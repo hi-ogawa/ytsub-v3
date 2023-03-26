@@ -27,7 +27,6 @@ import {
 import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 import { TIMEZONE_RE } from "../../utils/timezone";
-import { zKeys } from "../../utils/zod-utils";
 
 export const handle: PageHandle = {
   navBarTitle: () => "Account",
@@ -48,7 +47,7 @@ const ACTION_SCHEMA = z.object({
   timezone: z.string().regex(TIMEZONE_RE),
 });
 
-const ACTION_SCHEMA_KEYS = zKeys(ACTION_SCHEMA);
+const ACTION_SCHEMA_KEYS = ACTION_SCHEMA.keyof().enum;
 
 export const action = makeLoader(Controller, async function () {
   const user = await this.requireUser();
