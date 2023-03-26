@@ -170,6 +170,8 @@ function PracticeComponent({
     <>
       <div className="grow w-full flex flex-col">
         <BookmarkEntryComponent
+          // force remount when going next practice
+          key={practiceEntry.id}
           video={video}
           captionEntry={captionEntry}
           bookmarkEntry={bookmarkEntry}
