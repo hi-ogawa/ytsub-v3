@@ -1,9 +1,8 @@
 import { z } from "zod";
-import { zStringToInteger } from "./zod-utils";
 
 export const PAGINATION_PARAMS_SCHEMA = z.object({
-  page: zStringToInteger.default(1),
-  perPage: zStringToInteger.default(20),
+  page: z.coerce.number().int().default(1),
+  perPage: z.coerce.number().int().default(20),
 });
 
 export type PaginationParams = z.infer<typeof PAGINATION_PARAMS_SCHEMA>;

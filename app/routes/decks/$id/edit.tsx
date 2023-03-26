@@ -9,7 +9,6 @@ import { toastInfo } from "../../../utils/flash-message-hook";
 import { useDeserialize, useIsFormValid } from "../../../utils/hooks";
 import { dtf } from "../../../utils/intl";
 import type { PageHandle } from "../../../utils/page-handle";
-import { zStringToInteger } from "../../../utils/zod-utils";
 
 export const handle: PageHandle = {
   navBarTitle: () => "Edit Deck",
@@ -36,8 +35,8 @@ export const loader = makeLoader(Controller, async function () {
 
 const EDIT_DECK_REQUEST_SCHEMA = z.object({
   name: z.string().nonempty(),
-  newEntriesPerDay: zStringToInteger,
-  reviewsPerDay: zStringToInteger,
+  newEntriesPerDay: z.coerce.number().int(),
+  reviewsPerDay: z.coerce.number().int(),
   // TODO: support same option on "/decks/new" page
   randomMode: z
     .string()

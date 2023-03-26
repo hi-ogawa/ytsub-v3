@@ -44,7 +44,6 @@ import {
   stringifyTimestamp,
   usePlayerLoader,
 } from "../../utils/youtube";
-import { zStringToInteger } from "../../utils/zod-utils";
 import type { NewBookmark } from "../bookmarks/new";
 
 export const handle: PageHandle = {
@@ -57,7 +56,7 @@ export const handle: PageHandle = {
 //
 
 const SCHEMA = z.object({
-  id: zStringToInteger,
+  id: z.coerce.number().int(),
 });
 
 type LoaderData = { video: VideoTable; captionEntries: CaptionEntryTable[] };

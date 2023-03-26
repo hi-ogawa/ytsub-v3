@@ -8,7 +8,6 @@ import { R } from "../../misc/routes";
 import { Controller, makeLoader } from "../../utils/controller-utils";
 import { useIsFormValid } from "../../utils/hooks";
 import type { PageHandle } from "../../utils/page-handle";
-import { zStringToInteger } from "../../utils/zod-utils";
 
 export const handle: PageHandle = {
   navBarTitle: () => "New Deck",
@@ -39,8 +38,8 @@ const DEFAULT_DECK_OPTIONS: Pick<
 
 const NEW_DECK_REQUEST_SCHEMA = z.object({
   name: z.string().nonempty(),
-  newEntriesPerDay: zStringToInteger,
-  reviewsPerDay: zStringToInteger,
+  newEntriesPerDay: z.coerce.number().int(),
+  reviewsPerDay: z.coerce.number().int(),
   easeMultiplier: z.coerce
     .number()
     .default(DEFAULT_DECK_OPTIONS.easeMultiplier),
