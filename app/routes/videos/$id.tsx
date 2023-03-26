@@ -1,5 +1,5 @@
 import { Transition } from "@headlessui/react";
-import { tinyassert } from "@hiogawa/utils";
+import { okToOption, tinyassert, wrapError } from "@hiogawa/utils";
 import { isNil } from "@hiogawa/utils";
 import { toArraySetState, useRafLoop } from "@hiogawa/utils-react";
 import {
@@ -44,7 +44,7 @@ import {
   stringifyTimestamp,
   usePlayerLoader,
 } from "../../utils/youtube";
-import { zStringToInteger, zStringToMaybeInteger } from "../../utils/zod-utils";
+import { zStringToInteger } from "../../utils/zod-utils";
 import type { NewBookmark } from "../bookmarks/new";
 
 export const handle: PageHandle = {
@@ -174,7 +174,7 @@ function PageComponent({
   const fetcher = useFetcher();
   const [searchParams] = useSearchParams();
   const [focusedIndex] = React.useState(() =>
-    zStringToMaybeInteger.parse(searchParams.get("index") ?? undefined)
+    wrapError(() => z.coerce.number().int().parse(searchParams.get("index")))
   );
   const [autoScrollState] = useAutoScrollState();
   const autoScroll = autoScrollState.includes(video.id);
@@ -299,9 +299,9 @@ function PageComponent({
   }, [fetcher.type]);
 
   React.useEffect(() => {
-    if (!isNil(focusedIndex)) {
+    if (focusedIndex.ok) {
       // smooth scroll ends up wrong positions due to over-estimation by `estimateSize`.
-      virtualizer.scrollToIndex(focusedIndex, {
+      virtualizer.scrollToIndex(focusedIndex.value, {
         align: "center",
         behavior: "auto",
       });
@@ -361,7 +361,7 @@ function PageComponent({
           onClickEntryPlay={onClickEntryPlay}
           onClickEntryRepeat={(entry) => toggleRepeatingEntries(entry)}
           isPlaying={isPlaying}
-          focusedIndex={focusedIndex}
+          focusedIndex={okToOption(focusedIndex)}
         />
       }
       bookmarkActions={
