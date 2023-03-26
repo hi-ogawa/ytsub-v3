@@ -41,7 +41,7 @@ export const handle: PageHandle = {
 // - group by PracticeActionType
 // - different date range (e.g. month, year)
 const REQUEST_SCHEMA = z.object({
-  page: zStringToInteger.optional().default("0"), // 0 => this week, 1 => last week, ...
+  page: zStringToInteger.optional().default(0), // 0 => this week, 1 => last week, ...
   now: z.string().optional(), // currently only for testing
 });
 
