@@ -46,6 +46,7 @@ specifiers:
   bcryptjs: ^2.4.3
   c8: ^7.11.2
   cac: ^6.7.12
+  drizzle-orm: ^0.22.0
   echarts: ^5.4.1
   esbuild: ^0.14.23
   esbuild-register: ^3.3.2
@@ -90,6 +91,7 @@ dependencies:
   '@tanstack/react-virtual': 3.0.0-beta.54_react@18.2.0
   '@vercel/node': 1.15.3
   bcryptjs: 2.4.3
+  drizzle-orm: 0.22.0_mysql2@2.3.3
   echarts: 5.4.1
   fast-xml-parser: 4.0.7
   jotai: 2.0.3_react@18.2.0
@@ -2970,6 +2972,56 @@ packages:
     resolution: {integrity: sha512-7GO6HghkA5fYG9TYnNxi14/7K9f5occMlp3zXAuSxn7CKCxt9xbNWG7yF8hTCSUchlfWSe3uLmlPfigevRItzQ==}
     engines: {node: '>=12'}
     dev: true
+
+  /drizzle-orm/0.22.0_mysql2@2.3.3:
+    resolution: {integrity: sha512-oZ/CNbv3NXoCxmBWTPNAZHZkuzhacT+eXM0ywemkHSTiqEJe79VQ1jvGVd0fQthfOt1UHRMuAW0CeIizhQpb2Q==}
+    peerDependencies:
+      '@aws-sdk/client-rds-data': '>=3 <4'
+      '@cloudflare/workers-types': '>=3'
+      '@neondatabase/serverless': '>=0.1 <0.2'
+      '@planetscale/database': '>=1 <2'
+      '@types/better-sqlite3': '*'
+      '@types/pg': '*'
+      '@types/sql.js': '*'
+      better-sqlite3: '>=7 <9'
+      bun-types: '*'
+      mysql2: '>=2 <3'
+      pg: '>=8 <9'
+      postgres: '>=3 <4'
+      sql.js: '>=1 <2'
+      sqlite3: '>=5 <6'
+    peerDependenciesMeta:
+      '@aws-sdk/client-rds-data':
+        optional: true
+      '@cloudflare/workers-types':
+        optional: true
+      '@neondatabase/serverless':
+        optional: true
+      '@planetscale/database':
+        optional: true
+      '@types/better-sqlite3':
+        optional: true
+      '@types/pg':
+        optional: true
+      '@types/sql.js':
+        optional: true
+      better-sqlite3:
+        optional: true
+      bun-types:
+        optional: true
+      mysql2:
+        optional: true
+      pg:
+        optional: true
+      postgres:
+        optional: true
+      sql.js:
+        optional: true
+      sqlite3:
+        optional: true
+    dependencies:
+      mysql2: 2.3.3
+    dev: false
 
   /duplexer/0.1.2:
     resolution: {integrity: sha512-jtD6YG370ZCIi/9GTaJKQxWTZD045+4R4hTk/x1UyoqadyJ9x9CgSi1RlVDQF8U2sxLLSnFkCaMihqljHIWgMg==}

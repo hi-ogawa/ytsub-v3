@@ -5,11 +5,12 @@ import {
   useTransition,
 } from "@remix-run/react";
 import { json, redirect } from "@remix-run/server-runtime";
+import { sql } from "drizzle-orm";
 import React from "react";
 import toast from "react-hot-toast";
 import { z } from "zod";
 import { PopoverSimple } from "../../components/popover";
-import { Q } from "../../db/models";
+import { T, db } from "../../db/drizzle-client.server";
 import type { UserTable } from "../../db/models";
 import { R } from "../../misc/routes";
 import {
@@ -27,7 +28,6 @@ import {
 import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 import { TIMEZONE_RE } from "../../utils/timezone";
-import { zKeys } from "../../utils/zod-utils";
 
 export const handle: PageHandle = {
   navBarTitle: () => "Account",
@@ -48,7 +48,7 @@ const ACTION_SCHEMA = z.object({
   timezone: z.string().regex(TIMEZONE_RE),
 });
 
-const ACTION_SCHEMA_KEYS = zKeys(ACTION_SCHEMA);
+const ACTION_SCHEMA_KEYS = ACTION_SCHEMA.keyof().enum;
 
 export const action = makeLoader(Controller, async function () {
   const user = await this.requireUser();
@@ -56,7 +56,10 @@ export const action = makeLoader(Controller, async function () {
   if (!parsed.success) {
     return json({ success: false, message: "Fail to update settings" });
   }
-  await Q.users().update(parsed.data).where("id", user.id);
+  await db
+    .update(T.users)
+    .set(parsed.data)
+    .where(sql`${T.users.id} = ${user.id}`);
   return json({ success: true, message: "Settings updated successfuly" });
 });
 

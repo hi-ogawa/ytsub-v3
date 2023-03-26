@@ -1,10 +1,12 @@
 import { RemixServer } from "@remix-run/react";
 import type { HandleDocumentRequestFunction } from "@remix-run/server-runtime";
 import { renderToString } from "react-dom/server";
+import { initializeDrizzleClient } from "./db/drizzle-client.server";
 import { initializeConfigServer, injectConfigScript } from "./utils/config";
 
 // TODO: avoid side-effect
 initializeConfigServer();
+initializeDrizzleClient();
 
 const handler: HandleDocumentRequestFunction = (
   request,
