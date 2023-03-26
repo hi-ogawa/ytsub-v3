@@ -27,11 +27,3 @@ export const zStringToDate = z
   .string()
   .regex(ISO_STRING_RE)
   .transform((s) => new Date(s));
-
-export function zKeys<T extends z.ZodRawShape>(
-  zObject: z.ZodObject<T>
-): Record<keyof T, string> {
-  return Object.fromEntries(
-    Object.keys(zObject.shape).map((k) => [k, k])
-  ) as any;
-}
