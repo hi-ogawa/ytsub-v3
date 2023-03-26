@@ -1,5 +1,6 @@
 import { tinyassert } from "@hiogawa/utils";
 import { useFetcher, useLoaderData, useTransition } from "@remix-run/react";
+import React from "react";
 import {
   BookmarkEntryTable,
   CaptionEntryTable,
@@ -15,6 +16,7 @@ import { R } from "../../../misc/routes";
 import { Controller, makeLoader } from "../../../utils/controller-utils";
 import { useDeserialize } from "../../../utils/hooks";
 import { useLeafLoaderData } from "../../../utils/loader-utils";
+import { cls } from "../../../utils/misc";
 import type { PageHandle } from "../../../utils/page-handle";
 import {
   DeckPracticeStatistics,
@@ -148,8 +150,11 @@ function PracticeComponent({
       transition.location?.pathname.startsWith(
         R["/decks/$id/practice"](deck.id)
       ));
+  const [loadingActionType, setLoadingActionType] =
+    React.useState<PracticeActionType>();
 
   function onClickAction(actionType: PracticeActionType) {
+    setLoadingActionType(actionType);
     const data: NewPracticeActionRequest = {
       practiceEntryId: practiceEntry.id,
       now: new Date(),
@@ -164,25 +169,24 @@ function PracticeComponent({
   return (
     <>
       <div className="grow w-full flex flex-col">
-        {isLoading ? (
-          <div className="w-full flex justify-center">
-            <div className="antd-spin w-16" />
-          </div>
-        ) : (
-          <BookmarkEntryComponent
-            video={video}
-            captionEntry={captionEntry}
-            bookmarkEntry={bookmarkEntry}
-            showAutoplay
-          />
-        )}
+        <BookmarkEntryComponent
+          // force remount when going next practice
+          key={practiceEntry.id}
+          video={video}
+          captionEntry={captionEntry}
+          bookmarkEntry={bookmarkEntry}
+          showAutoplay
+        />
       </div>
       <div className="flex justify-center pb-4">
         <div className="flex gap-2">
           {PRACTICE_ACTION_TYPES.map((type) => (
             <button
               key={type}
-              className="antd-btn antd-btn-default px-3 py-0.5"
+              className={cls(
+                "antd-btn antd-btn-default px-3 py-0.5",
+                isLoading && loadingActionType === type && "antd-btn-loading"
+              )}
               disabled={isLoading}
               onClick={() => onClickAction(type)}
             >
