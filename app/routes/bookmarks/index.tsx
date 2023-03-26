@@ -6,7 +6,8 @@ import { redirect } from "@remix-run/server-runtime";
 import { omit } from "lodash";
 import React from "react";
 import { z } from "zod";
-import { PaginationComponent } from "../../components/misc";
+import { CollapseTransition } from "../../components/collapse";
+import { PaginationComponent, transitionProps } from "../../components/misc";
 import { useModal } from "../../components/modal";
 import { PopoverSimple } from "../../components/popover";
 import {
@@ -175,7 +176,7 @@ export function BookmarkEntryComponent({
   video,
   captionEntry,
   bookmarkEntry,
-  showAutoplay = false,
+  showAutoplay,
 }: {
   video: VideoTable;
   captionEntry: CaptionEntryTable;
@@ -189,6 +190,11 @@ export function BookmarkEntryComponent({
     setAutoplay(true);
     setOpen(!open);
   }
+
+  // close when practice entry changed (/decks/$id/practice.tsx)
+  React.useEffect(() => {
+    setOpen(false);
+  }, [bookmarkEntry]);
 
   return (
     <div className="border flex flex-col" data-test="bookmark-entry">
@@ -224,7 +230,10 @@ export function BookmarkEntryComponent({
           onClick={() => {}}
         />
       </div>
-      {open && (
+      <CollapseTransition
+        show={open}
+        className="duration-300 h-0 overflow-hidden"
+      >
         <MiniPlayer
           video={video}
           captionEntry={captionEntry}
@@ -236,7 +245,7 @@ export function BookmarkEntryComponent({
             length: bookmarkEntry.text.length,
           }}
         />
-      )}
+      </CollapseTransition>
     </div>
   );
 }
@@ -337,12 +346,9 @@ export function MiniPlayer({
         </div>
         <Transition
           show={playerLoader.isLoading}
-          className="duration-500 absolute inset-0 antd-body grid place-content-center"
-          leaveFrom="opacity-100"
-          leaveTo="opacity-0"
-        >
-          <div className="antd-spin w-20" />
-        </Transition>
+          className="duration-500 antd-body antd-spin-overlay-20"
+          {...transitionProps("opacity-0", "opacity-100")}
+        />
       </div>
     </div>
   );

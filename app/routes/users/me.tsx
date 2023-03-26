@@ -24,6 +24,7 @@ import {
   LanguageCode,
   languageCodeToName,
 } from "../../utils/language";
+import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 import { TIMEZONE_RE } from "../../utils/timezone";
 import { zKeys } from "../../utils/zod-utils";
@@ -166,11 +167,13 @@ export default function DefaultComponent() {
             </div>
             <button
               type="submit"
-              className="antd-btn antd-btn-primary p-1 relative flex justify-center items-center"
+              className={cls(
+                "antd-btn antd-btn-primary p-1 flex justify-center items-center",
+                isLoading && "antd-btn-loading"
+              )}
               disabled={!isValid || !changed || isLoading}
             >
               Save
-              {isLoading && <span className="absolute antd-spin w-4 right-2" />}
             </button>
           </div>
         </div>

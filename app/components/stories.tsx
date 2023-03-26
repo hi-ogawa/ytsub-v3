@@ -2,7 +2,7 @@ import { Transition } from "@headlessui/react";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { cls } from "../utils/misc";
-import { VideoComponent } from "./misc";
+import { VideoComponent, transitionProps } from "./misc";
 import { PopoverSimple } from "./popover";
 import { PracticeHistoryChart } from "./practice-history-chart";
 
@@ -102,7 +102,8 @@ export function TestPopover() {
 }
 
 export function TestVideoComponent() {
-  const [isLoading, setIsLoading] = React.useState(true);
+  const [isLoading, setIsLoading] = React.useState(false);
+  React.useEffect(() => setIsLoading(true), []);
 
   return (
     <div className="w-full flex justify-center">
@@ -199,7 +200,7 @@ export function TestFab() {
 }
 
 export function TestSpinner() {
-  const form = useForm({ defaultValues: { overlay: true } });
+  const form = useForm({ defaultValues: { overlay: true, button: true } });
 
   return (
     <div className="w-full flex justify-center">
@@ -209,7 +210,7 @@ export function TestSpinner() {
           <div className="flex justify-center gap-4">
             <div className="antd-spin h-4" />
             <div className="antd-spin h-8" />
-            <div className="antd-spin w-12" />
+            <div className="antd-spin h-12" />
           </div>
         </div>
         <div className="flex flex-col gap-2">
@@ -221,15 +222,25 @@ export function TestSpinner() {
             <div>Hello World</div>
             <Transition
               show={form.watch("overlay")}
-              className="duration-1000 absolute inset-0 antd-body grid place-content-center"
-              enterFrom="opacity-0"
-              enterTo="opacity-100"
-              leaveFrom="opacity-100"
-              leaveTo="opacity-0"
-            >
-              <div className="antd-spin h-12"></div>
-            </Transition>
+              className="duration-500 antd-body antd-spin-overlay-12"
+              {...transitionProps("opacity-0", "opacity-100")}
+            />
           </div>
+        </div>
+        <div className="flex flex-col gap-2">
+          <div className="flex gap-2">
+            Button
+            <input type="checkbox" {...form.register("button")} />
+          </div>
+          <button
+            className={cls(
+              "antd-btn antd-btn-primary p-1",
+              form.watch("button") && "antd-btn-loading"
+            )}
+            disabled={form.watch("button")}
+          >
+            Save
+          </button>
         </div>
       </div>
     </div>

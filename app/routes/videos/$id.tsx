@@ -21,6 +21,7 @@ import React from "react";
 import toast from "react-hot-toast";
 import { useSearchParams } from "react-router-dom";
 import { z } from "zod";
+import { transitionProps } from "../../components/misc";
 import { PopoverSimple } from "../../components/popover";
 import {
   CaptionEntryTable,
@@ -465,12 +466,9 @@ function PlayerComponent({
         </div>
         <Transition
           show={isLoading}
-          className="duration-500 absolute inset-0 antd-body grid place-content-center"
-          leaveFrom="opacity-100"
-          leaveTo="opacity-0"
-        >
-          <div className="antd-spin w-30" />
-        </Transition>
+          className="duration-500 antd-body antd-spin-overlay-30"
+          {...transitionProps("opacity-0", "opacity-100")}
+        />
       </div>
     </div>
   );
