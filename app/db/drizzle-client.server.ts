@@ -15,7 +15,7 @@ import knexfile from "./knexfile.server";
 
 const users = mysqlTable("users", {
   id: serial("id").primaryKey(),
-  username: text("username").notNull(),
+  username: text("username").notNull(), // TODO: case insensitive
   passwordHash: text("passwordHash").notNull(),
   createdAt: timestamp("createdAt").notNull().defaultNow(),
   updatedAt: timestamp("updatedAt").notNull().defaultNow().onUpdateNow(),
