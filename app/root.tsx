@@ -258,9 +258,20 @@ function Navbar({
               </li>
             );
           })}
-          <li className="border-t py-2"></li>
-          <li>
+          <li className="border-t my-2"></li>
+          <li className="self-start">
             <ThemeSelect />
+          </li>
+          <li></li>
+          <li className="self-start">
+            <a
+              className="antd-btn antd-btn-ghost flex items-center gap-2"
+              href="https://github.com/hi-ogawa/ytsub-v3"
+              target="_blank"
+            >
+              Source code
+              <span className="i-ri-github-line w-6 h-6"></span>
+            </a>
           </li>
         </ul>
       </Drawer>
