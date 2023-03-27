@@ -76,6 +76,7 @@ export class Controller {
     throw caught;
   }
 
+  // TODO(typing): unknown
   query(): any {
     return fromRequestQuery(this.request);
   }

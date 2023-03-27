@@ -1,5 +1,5 @@
 import { Transition } from "@headlessui/react";
-import { okToOption, tinyassert, wrapError } from "@hiogawa/utils";
+import { tinyassert } from "@hiogawa/utils";
 import { isNil } from "@hiogawa/utils";
 import { toArraySetState, useRafLoop } from "@hiogawa/utils-react";
 import {
@@ -19,7 +19,6 @@ import { atom, useAtom } from "jotai";
 import { atomWithStorage } from "jotai/utils";
 import React from "react";
 import toast from "react-hot-toast";
-import { useSearchParams } from "react-router-dom";
 import { z } from "zod";
 import { transitionProps } from "../../components/misc";
 import { PopoverSimple } from "../../components/popover";
@@ -55,23 +54,32 @@ export const handle: PageHandle = {
 // loader
 //
 
-const SCHEMA = z.object({
+const Z_PARAMS = z.object({
   id: z.coerce.number().int(),
+  index: z.coerce.number().int().optional(),
 });
 
-type LoaderData = { video: VideoTable; captionEntries: CaptionEntryTable[] };
+type LoaderData = {
+  video: VideoTable;
+  captionEntries: CaptionEntryTable[];
+  params: z.infer<typeof Z_PARAMS>;
+};
 
 export const loader = makeLoader(Controller, async function () {
-  const parsed = SCHEMA.safeParse(this.args.params);
+  const parsed = Z_PARAMS.safeParse({ ...this.args.params, ...this.query() });
   if (parsed.success) {
     const { id } = parsed.data;
-    const data: LoaderData | undefined = await getVideoAndCaptionEntries(id);
+    const data = await getVideoAndCaptionEntries(id);
     if (data) {
-      return this.serialize(data);
+      const loaderData: LoaderData = {
+        ...data,
+        params: parsed.data,
+      };
+      return this.serialize(loaderData);
     }
   }
   this.flash({
-    content: "Invalid Video ID",
+    content: "Invalid Request",
     variant: "error",
   });
   return redirect(R["/"]);
@@ -90,7 +98,7 @@ export const unstable_shouldReload: ShouldReloadFunction = ({ submission }) => {
 
 export const action = makeLoader(Controller, async function () {
   if (this.request.method === "DELETE") {
-    const parsed = SCHEMA.safeParse(this.args.params);
+    const parsed = Z_PARAMS.safeParse(this.args.params);
     if (parsed.success) {
       const { id } = parsed.data;
       const user = await this.currentUser();
@@ -169,12 +177,9 @@ function PageComponent({
   video,
   captionEntries,
   currentUser,
+  params,
 }: LoaderData & { currentUser?: UserTable }) {
   const fetcher = useFetcher();
-  const [searchParams] = useSearchParams();
-  const [focusedIndex] = React.useState(() =>
-    wrapError(() => z.coerce.number().int().parse(searchParams.get("index")))
-  );
   const [autoScrollState] = useAutoScrollState();
   const autoScroll = autoScrollState.includes(video.id);
   const [repeatingEntries, setRepeatingEntries, toggleRepeatingEntries] =
@@ -298,14 +303,14 @@ function PageComponent({
   }, [fetcher.type]);
 
   React.useEffect(() => {
-    if (focusedIndex.ok) {
+    if (!isNil(params.index)) {
       // smooth scroll ends up wrong positions due to over-estimation by `estimateSize`.
-      virtualizer.scrollToIndex(focusedIndex.value, {
+      virtualizer.scrollToIndex(params.index, {
         align: "center",
         behavior: "auto",
       });
     }
-  }, [focusedIndex]);
+  }, [params.index]);
 
   useSelection((selection?: Selection): void => {
     let newBookmarkState: BookmarkState | undefined = undefined;
@@ -360,7 +365,7 @@ function PageComponent({
           onClickEntryPlay={onClickEntryPlay}
           onClickEntryRepeat={(entry) => toggleRepeatingEntries(entry)}
           isPlaying={isPlaying}
-          focusedIndex={okToOption(focusedIndex)}
+          focusedIndex={params.index}
         />
       }
       bookmarkActions={
