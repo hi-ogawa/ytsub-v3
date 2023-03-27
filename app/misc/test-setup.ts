@@ -3,9 +3,9 @@ import { beforeAll } from "vitest";
 import { initializeDrizzleClient } from "../db/drizzle-client.server";
 import { initializeConfigServer, publicConfig } from "../utils/config";
 
-beforeAll(() => {
+beforeAll(async () => {
   installGlobals();
   initializeConfigServer();
-  initializeDrizzleClient();
   publicConfig.APP_RECAPTCHA_DISABLED = true;
+  await initializeDrizzleClient();
 });

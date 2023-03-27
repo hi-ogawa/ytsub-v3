@@ -24,7 +24,7 @@ import {
   usePromise,
 } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
-import { TIMEZONE_RE, getTimezone } from "../../utils/timezone";
+import { getTimezone } from "../../utils/timezone";
 import { toForm } from "../../utils/url-data";
 
 export const handle: PageHandle = {
@@ -97,12 +97,6 @@ export const action = makeLoader(Controller, async function () {
   const recaptchaOk = await verifyRecaptchaToken(parsed.data.recaptchaToken);
   if (!recaptchaOk) {
     return { message: "Invalid reCAPTCHA" };
-  }
-
-  // double check just in case
-  if (parsed.data.timezone && !parsed.data.timezone.match(TIMEZONE_RE)) {
-    console.error("invalid timezone", parsed.data.timezone);
-    parsed.data.timezone = undefined;
   }
 
   try {
