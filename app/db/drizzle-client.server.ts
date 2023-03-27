@@ -2,6 +2,7 @@ import * as E from "drizzle-orm/expressions";
 import {
   InferModel,
   customType,
+  int,
   mysqlTable,
   serial,
   text,
@@ -47,8 +48,16 @@ const users = mysqlTable("users", {
 
 export type User = InferModel<typeof users>;
 
+const decks = mysqlTable("decks", {
+  id: serial("id").primaryKey(),
+  userId: int("userId").notNull(),
+  // TODO
+});
+
+export type Deck = InferModel<typeof decks>;
+
 // short accessor for tables
-export const T = { users };
+export const T = { users, decks };
 
 //
 // utils
