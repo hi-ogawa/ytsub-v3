@@ -85,10 +85,12 @@ declare let globalThis: {
 export let db: MySql2Database = globalThis.__db;
 
 export async function initializeDrizzleClient() {
+  console.log("== initializeDrizzleClient:before", db);
   if (db) {
     return;
   }
   const config = knexfile();
   const connection = await createConnection(config.connection as any);
   db = globalThis.__db = drizzle(connection);
+  console.log("== initializeDrizzleClient:after", db);
 }

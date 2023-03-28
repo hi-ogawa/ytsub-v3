@@ -1,13 +1,15 @@
 import { tinyassert } from "@hiogawa/utils";
 import type { Page, test as testDefault } from "@playwright/test";
-import { installGlobals } from "@remix-run/node";
+// import { installGlobals } from "@remix-run/node";
 import { Q, UserTable } from "../db/models";
 import { useUserImpl } from "../misc/helper";
+import { testSetupCommon } from "../misc/test-setup-common";
+// import { db } from "../db/drizzle-client.server";
 import { createUserCookie } from "../utils/auth";
 
 // Remix's cookie manipulation requires atob, sign, etc...
 // This is here because playwright cannot inject global in `globalSetup`
-installGlobals();
+// installGlobals();
 
 // cf. `useUser` in routes/__tests__/helper.ts
 export function useUserE2E(
@@ -20,6 +22,9 @@ export function useUserE2E(
   let cookie: any;
 
   test.beforeAll(async () => {
+    await testSetupCommon();
+    // console.log("== useUserE2E:beforeAll");
+    // console.log(db);
     user = await before();
     const rawCookie = await createUserCookie(user);
     const [name, value] = rawCookie.split(";")[0].split("=");
