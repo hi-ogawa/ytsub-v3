@@ -17,7 +17,6 @@ import { dtf } from "../../../utils/intl";
 import { useLeafLoaderData } from "../../../utils/loader-utils";
 import type { PageHandle } from "../../../utils/page-handle";
 import { PAGINATION_PARAMS_SCHEMA } from "../../../utils/pagination";
-import { zStringToInteger } from "../../../utils/zod-utils";
 import { DeckHistoryNavBarMenuComponent } from "./history-graph";
 
 //
@@ -35,7 +34,7 @@ export const handle: PageHandle = {
 
 const REQUEST_SCHEMA = z
   .object({
-    practiceEntryId: zStringToInteger.optional(),
+    practiceEntryId: z.coerce.number().int().optional(),
   })
   .merge(PAGINATION_PARAMS_SCHEMA);
 
