@@ -1,5 +1,4 @@
-import { tinyassert } from "@hiogawa/utils";
-import { mapOption } from "@hiogawa/utils";
+import { mapOption, newPromiseWithResolvers, tinyassert } from "@hiogawa/utils";
 import { Form, Link, useActionData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import { once } from "lodash";
@@ -17,12 +16,7 @@ import { publicConfig, serverConfig } from "../../utils/config";
 import { Controller, makeLoader } from "../../utils/controller-utils";
 import { AppError } from "../../utils/errors";
 import { useIsFormValid } from "../../utils/hooks";
-import {
-  loadScript,
-  newPromiseWithResolvers,
-  throwGetterProxy,
-  usePromise,
-} from "../../utils/misc";
+import { loadScript, throwGetterProxy, usePromise } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 import { getTimezone } from "../../utils/timezone";
 import { toForm } from "../../utils/url-data";

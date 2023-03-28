@@ -29,7 +29,6 @@ import { PAGINATION_PARAMS_SCHEMA } from "../../utils/pagination";
 import type { CaptionEntry } from "../../utils/types";
 import { toQuery } from "../../utils/url-data";
 import { YoutubePlayer, usePlayerLoader } from "../../utils/youtube";
-import { zStringToInteger } from "../../utils/zod-utils";
 import { CaptionEntryComponent } from "../videos/$id";
 
 export const handle: PageHandle = {
@@ -39,8 +38,8 @@ export const handle: PageHandle = {
 
 const BOOKMARKS_REQUEST = z
   .object({
-    videoId: zStringToInteger.optional(),
-    deckId: zStringToInteger.optional(),
+    videoId: z.coerce.number().int().optional(),
+    deckId: z.coerce.number().int().optional(),
     order: z.enum(["createdAt", "caption"]).default("createdAt"),
   })
   .merge(PAGINATION_PARAMS_SCHEMA);

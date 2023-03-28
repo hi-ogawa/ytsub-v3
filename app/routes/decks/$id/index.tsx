@@ -34,7 +34,6 @@ import {
 } from "../../../utils/practice-system";
 import { Timedelta } from "../../../utils/timedelta";
 import { toQuery } from "../../../utils/url-data";
-import { zStringToInteger } from "../../../utils/zod-utils";
 import { MiniPlayer } from "../../bookmarks";
 
 export const handle: PageHandle = {
@@ -43,7 +42,7 @@ export const handle: PageHandle = {
 };
 
 const PARAMS_SCHEMA = z.object({
-  id: zStringToInteger,
+  id: z.coerce.number().int(),
 });
 
 export async function requireUserAndDeck(

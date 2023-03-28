@@ -22,7 +22,6 @@ import type { PageHandle } from "../../../utils/page-handle";
 import { Timedelta } from "../../../utils/timedelta";
 import { formatYmd } from "../../../utils/timezone";
 import { toQuery } from "../../../utils/url-data";
-import { zStringToInteger } from "../../../utils/zod-utils";
 
 //
 // handle
@@ -41,7 +40,7 @@ export const handle: PageHandle = {
 // - group by PracticeActionType
 // - different date range (e.g. month, year)
 const REQUEST_SCHEMA = z.object({
-  page: zStringToInteger.optional().default("0"), // 0 => this week, 1 => last week, ...
+  page: z.coerce.number().int().optional().default(0), // 0 => this week, 1 => last week, ...
   now: z.string().optional(), // currently only for testing
 });
 
