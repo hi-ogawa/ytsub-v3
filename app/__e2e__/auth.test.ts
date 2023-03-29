@@ -88,7 +88,6 @@ test.describe("/users/signout", () => {
   test("basic", async ({ page }) => {
     await signin(page);
     await page.goto("/");
-    await page.pause();
 
     // Signout from top menu
     await page.locator("header >> data-test=user-menu").click();
