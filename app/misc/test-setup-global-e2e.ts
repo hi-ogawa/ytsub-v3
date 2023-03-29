@@ -16,7 +16,7 @@ export default async () => {
   // setup base data for ease of testing (the dump includes "dev" user)
   await truncateAll();
   await restoreDump();
-  // await testSetupCommon();
+  await testSetupCommon();
   // initializeConfigServer();
   // console.log("== initializeDrizzleClient:before");
   // await initializeDrizzleClient();

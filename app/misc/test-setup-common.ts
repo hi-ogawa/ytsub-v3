@@ -1,10 +1,7 @@
-import { installGlobals } from "@remix-run/node";
-import { initializeDrizzleClient } from "../db/drizzle-client.server";
-import { initializeConfigServer, publicConfig } from "../utils/config";
+import { publicConfig } from "../utils/config";
+import { initializeServer } from "./initialize-server";
 
 export async function testSetupCommon() {
-  installGlobals();
-  initializeConfigServer();
+  await initializeServer();
   publicConfig.APP_RECAPTCHA_DISABLED = true;
-  await initializeDrizzleClient();
 }

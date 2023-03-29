@@ -110,7 +110,8 @@
     "patchedDependencies": {
       "@remix-run/dev@1.4.1": "patches/@remix-run__dev@1.4.1.patch",
       "@remix-run/serve@1.4.1": "patches/@remix-run__serve@1.4.1.patch",
-      "@remix-run/node@1.4.1": "patches/@remix-run__node@1.4.1.patch"
+      "@remix-run/node@1.4.1": "patches/@remix-run__node@1.4.1.patch",
+      "@remix-run/server-runtime@1.4.1": "patches/@remix-run__server-runtime@1.4.1.patch"
     }
   }
 }

@@ -10,6 +10,9 @@ patchedDependencies:
   '@remix-run/serve@1.4.1':
     hash: yjdvfjiu2lmiptxkd6bjomzlcu
     path: patches/@remix-run__serve@1.4.1.patch
+  '@remix-run/server-runtime@1.4.1':
+    hash: wpwhenlchb2zoxxbk7yaxttpi4
+    path: patches/@remix-run__server-runtime@1.4.1.patch
 
 specifiers:
   '@badrap/bar-of-progress': ^0.2.2
@@ -84,7 +87,7 @@ dependencies:
   '@hiogawa/utils-react': 1.2.0_react@18.2.0
   '@remix-run/node': 1.4.1_tutenudqr6qo3f7c7butytgm7m_biqbaboplfbrettd7655fr4n2y
   '@remix-run/react': 1.4.1_biqbaboplfbrettd7655fr4n2y
-  '@remix-run/server-runtime': 1.4.1_biqbaboplfbrettd7655fr4n2y
+  '@remix-run/server-runtime': 1.4.1_wpwhenlchb2zoxxbk7yaxttpi4_biqbaboplfbrettd7655fr4n2y
   '@remix-run/vercel': 1.5.1_nlvckgd7vzoqbhl6z765ykvw2e
   '@tanstack/react-query': 4.28.0_biqbaboplfbrettd7655fr4n2y
   '@tanstack/react-query-devtools': 4.28.0_q4teel2yjbizrm4naiaqcdpjum
@@ -1178,7 +1181,7 @@ packages:
       '@babel/preset-typescript': 7.16.7_@babel+core@7.17.8
       '@esbuild-plugins/node-modules-polyfill': 0.1.4_esbuild@0.14.22
       '@npmcli/package-json': 2.0.0
-      '@remix-run/server-runtime': 1.4.1_biqbaboplfbrettd7655fr4n2y
+      '@remix-run/server-runtime': 1.4.1_wpwhenlchb2zoxxbk7yaxttpi4_biqbaboplfbrettd7655fr4n2y
       cacache: 15.3.0
       chalk: 4.1.2
       chokidar: 3.5.3
@@ -1241,7 +1244,7 @@ packages:
   /@remix-run/node/1.4.1_tutenudqr6qo3f7c7butytgm7m_biqbaboplfbrettd7655fr4n2y:
     resolution: {integrity: sha512-82nujfiZTt7DyceeTWtKRL0L6QtHZy6WnW0zGFnOW2mjCsG9dA166po8X7026VWTa254BxckJLY9GgF+5957Bw==}
     dependencies:
-      '@remix-run/server-runtime': 1.4.1_biqbaboplfbrettd7655fr4n2y
+      '@remix-run/server-runtime': 1.4.1_wpwhenlchb2zoxxbk7yaxttpi4_biqbaboplfbrettd7655fr4n2y
       '@types/busboy': 0.3.2
       '@types/node-fetch': 2.6.1
       '@web-std/file': 3.0.2
@@ -1303,7 +1306,7 @@ packages:
     dev: true
     patched: true
 
-  /@remix-run/server-runtime/1.4.1_biqbaboplfbrettd7655fr4n2y:
+  /@remix-run/server-runtime/1.4.1_wpwhenlchb2zoxxbk7yaxttpi4_biqbaboplfbrettd7655fr4n2y:
     resolution: {integrity: sha512-vC5+7IZSNbAQEHC0436O3bYl6DpPAguJT0sSoemHE1jwJ1x+hUej3/k1QjIy1T/bioa6/7eHPggnm0hUlIFX1g==}
     peerDependencies:
       react: '>=16.8'
@@ -1317,6 +1320,7 @@ packages:
       react-router-dom: 6.3.0_biqbaboplfbrettd7655fr4n2y
       set-cookie-parser: 2.4.8
       source-map: 0.7.3
+    patched: true
 
   /@remix-run/server-runtime/1.5.1_biqbaboplfbrettd7655fr4n2y:
     resolution: {integrity: sha512-FQbCCdW+qzE3wpoCwUKdwcL8yZVYNPiyHS9JS/6r6qmd/yvZfbj44E48wEQ6trbWE2TUiEh/EQqNMyrZWEs4bw==}
@@ -4995,7 +4999,7 @@ packages:
   /jsonfile/4.0.0:
     resolution: {integrity: sha1-h3Gq4HmbZAdrdmQPygWPnBDjPss=}
     optionalDependencies:
-      graceful-fs: 4.2.9
+      graceful-fs: 4.2.11
     dev: true
 
   /jsonfile/6.1.0:
@@ -5003,7 +5007,7 @@ packages:
     dependencies:
       universalify: 2.0.0
     optionalDependencies:
-      graceful-fs: 4.2.9
+      graceful-fs: 4.2.11
     dev: true
 
   /keyv/4.5.2:
