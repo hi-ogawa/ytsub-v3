@@ -128,7 +128,6 @@ export function getSessionUserId(session: Session): number | undefined {
 export async function getSessionUser(
   session: Session
 ): Promise<UserTable | undefined> {
-  console.log("== getSessionUser", db);
   const id = getSessionUserId(session);
   if (!isNil(id)) {
     return limitOne(db.select().from(T.users).where(E.eq(T.users.id, id)));
