@@ -539,6 +539,7 @@ export function CaptionEntryComponent({
   videoId,
   border = true,
   highlight,
+  showTypingPractice,
   // virtualized list
   virtualizer,
   virtualItem,
@@ -554,6 +555,7 @@ export function CaptionEntryComponent({
   videoId?: number;
   border?: boolean;
   highlight?: { side: number; offset: number; length: number };
+  showTypingPractice?: boolean;
   // virtualized list
   virtualizer?: Virtualizer<HTMLDivElement, Element>;
   virtualItem?: VirtualItem;
@@ -591,6 +593,14 @@ export function CaptionEntryComponent({
             to={R["/videos/$id"](videoId) + `?index=${entry.index}`}
             className="antd-btn antd-btn-ghost i-ri-vidicon-line w-4 h-4"
             data-test="caption-entry-component__video-link"
+          />
+        )}
+        {showTypingPractice && (
+          <a
+            // prettier-ignore
+            href={`https://10fastfingers.com/widget/typingtest?dur=600&rand=0&words=${encodeURIComponent(entry.text1)}`}
+            className="antd-btn antd-btn-ghost i-ri-keyboard-box-line w-4 h-4"
+            target="_blank"
           />
         )}
         <button

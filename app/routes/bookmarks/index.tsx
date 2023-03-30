@@ -335,6 +335,7 @@ export function MiniPlayer({
         videoId={video.id}
         border={false}
         highlight={highlight}
+        showTypingPractice
       />
       <div className="relative w-full">
         <div className="relative pt-[56.2%]">
