@@ -2,7 +2,7 @@ import path from "node:path";
 import type { Knex } from "knex";
 import { initializeConfigServer, serverConfig } from "../utils/config";
 
-export default function knexConfig(): Knex.Config {
+export default function knexfile(): Knex.Config {
   initializeConfigServer();
 
   return {
