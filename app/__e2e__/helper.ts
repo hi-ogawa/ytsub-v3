@@ -1,9 +1,11 @@
 import { tinyassert } from "@hiogawa/utils";
-import { Page, test, test as testDefault } from "@playwright/test";
+import { Page, test } from "@playwright/test";
 import { Q, UserTable } from "../db/models";
 import { useUserImpl } from "../misc/helper";
 import { testSetupCommon } from "../misc/test-setup-common";
 import { createUserCookie } from "../utils/auth";
+
+type Test = typeof test;
 
 // need to setup for each test since playwright cannot inject global in `globalSetup`
 test.beforeAll(async () => {
@@ -12,7 +14,7 @@ test.beforeAll(async () => {
 
 // cf. `useUser` in routes/__tests__/helper.ts
 export function useUserE2E(
-  test: typeof testDefault,
+  test: Test,
   ...args: Parameters<typeof useUserImpl>
 ) {
   const { before, after } = useUserImpl(...args);
@@ -39,7 +41,7 @@ export function useUserE2E(
 }
 
 // cf. app/misc/test-setup-global-e2e.ts
-export function useDevUserE2e(test: typeof testDefault) {
+export function useDevUserE2e(test: Test) {
   let user: UserTable;
   let cookie: any;
 
