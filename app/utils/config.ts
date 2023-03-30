@@ -1,5 +1,6 @@
 import * as process from "process";
 import { tinyassert } from "@hiogawa/utils";
+import { once } from "lodash";
 import { z } from "zod";
 import { throwGetterProxy } from "./misc";
 
@@ -42,13 +43,10 @@ export const CONFIG_SCRIPT_PLACEHOLDER = "@@__configScriptPlaceholder@@";
 // server
 //
 
-export function initializeConfigServer() {
-  if (serverConfig !== throwGetterProxy) {
-    return;
-  }
+export const initializeConfigServer = once(() => {
   serverConfig = Z_SERVER_CONFIG.parse(process.env);
   publicConfig = Z_PUBLIC_CONFIG.parse(process.env);
-}
+});
 
 export function injectConfigScript(markup: string): string {
   return markup.replace(
@@ -61,11 +59,11 @@ export function injectConfigScript(markup: string): string {
 // client
 //
 
-export function initializeConfigClient() {
+export const initializeConfigClient = once(() => {
   if (publicConfig !== throwGetterProxy) {
     return;
   }
   const el = document.querySelector("#" + CONFIG_SCRIPT_ID);
   tinyassert(el);
   publicConfig = JSON.parse(el.innerHTML);
-}
+});

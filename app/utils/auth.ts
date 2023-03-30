@@ -109,7 +109,6 @@ export async function verifySignin(data: {
   throw new AppError("Invalid username or password");
 }
 
-// TODO: server config
 const SESSION_USER_KEY = "session-user-v1";
 
 export function signinSession(session: Session, user: UserTable): void {
