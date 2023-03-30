@@ -6,7 +6,7 @@ import { injectConfigScript } from "./utils/config";
 
 injectInitializeServer();
 
-const handler: HandleDocumentRequestFunction = async (
+const handler: HandleDocumentRequestFunction = (
   request,
   responseStatusCode,
   responseHeaders,
