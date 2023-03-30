@@ -10,8 +10,8 @@ export interface UserTable {
   passwordHash: string; // TODO: hide this field from the client
   createdAt: Date;
   updatedAt: Date;
-  language1: string | null;
-  language2: string | null;
+  language1?: string; // TODO: database returns `null`
+  language2?: string;
   timezone: string; // e.g. +09:00 (see app/utils/timezone.ts)
 }
 

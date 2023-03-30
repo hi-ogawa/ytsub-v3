@@ -1,13 +1,12 @@
 import { RemixServer } from "@remix-run/react";
 import type { HandleDocumentRequestFunction } from "@remix-run/server-runtime";
 import { renderToString } from "react-dom/server";
-import { initializeServer } from "./misc/initialize-server";
+import { injectInitializeServer } from "./misc/initialize-server";
 import { injectConfigScript } from "./utils/config";
 
-// to workaround async initialization on the server (see @remix-run/server-runtime patch)
-Object.assign(globalThis, { __onRequestHandler: initializeServer });
+injectInitializeServer();
 
-const handler: HandleDocumentRequestFunction = async (
+const handler: HandleDocumentRequestFunction = (
   request,
   responseStatusCode,
   responseHeaders,

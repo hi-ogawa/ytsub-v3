@@ -51,7 +51,6 @@
     "@tanstack/react-virtual": "3.0.0-beta.54",
     "@vercel/node": "^1.15.3",
     "bcryptjs": "^2.4.3",
-    "drizzle-orm": "^0.22.0",
     "echarts": "^5.4.1",
     "fast-xml-parser": "^4.0.7",
     "jotai": "^2.0.3",

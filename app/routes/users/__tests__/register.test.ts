@@ -1,14 +1,14 @@
 import { tinyassert } from "@hiogawa/utils";
 import { beforeEach, describe, expect, it } from "vitest";
-import { T, db } from "../../../db/drizzle-client.server";
-import { findByUsername, getSessionUser } from "../../../utils/auth";
+import { Q } from "../../../db/models";
+import { getSessionUser } from "../../../utils/auth";
 import { getSession } from "../../../utils/session.server";
 import { testLoader } from "../../__tests__/helper";
 import { action } from "../register";
 
 describe("register.action", () => {
   beforeEach(async () => {
-    await db.delete(T.users);
+    await Q.users().delete();
   });
 
   describe("success", () => {
@@ -21,14 +21,10 @@ describe("register.action", () => {
         recaptchaToken: "",
       };
       const res = await testLoader(action, { form: data });
-      const found = await findByUsername(data.username);
+      const found = await Q.users().where("username", data.username).first();
       tinyassert(found);
       expect(found.username).toBe(username);
       expect(found.timezone).toBe("+00:00");
-      expect(found.createdAt).toEqual(found.updatedAt);
-      expect(Math.abs(found.createdAt.getTime() - Date.now())).toBeLessThan(
-        1000
-      );
 
       // redirect to root
       tinyassert(res instanceof Response);

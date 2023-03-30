@@ -5,12 +5,11 @@ import {
   useTransition,
 } from "@remix-run/react";
 import { json, redirect } from "@remix-run/server-runtime";
-import { sql } from "drizzle-orm";
 import React from "react";
 import toast from "react-hot-toast";
 import { z } from "zod";
 import { PopoverSimple } from "../../components/popover";
-import { T, db } from "../../db/drizzle-client.server";
+import { Q } from "../../db/models";
 import type { UserTable } from "../../db/models";
 import { R } from "../../misc/routes";
 import {
@@ -56,10 +55,7 @@ export const action = makeLoader(Controller, async function () {
   if (!parsed.success) {
     return json({ success: false, message: "Fail to update settings" });
   }
-  await db
-    .update(T.users)
-    .set(parsed.data)
-    .where(sql`${T.users.id} = ${user.id}`);
+  await Q.users().update(parsed.data).where("id", user.id);
   return json({ success: true, message: "Settings updated successfuly" });
 });
 

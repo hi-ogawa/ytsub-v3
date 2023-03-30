@@ -1,8 +1,6 @@
 import { tinyassert } from "@hiogawa/utils";
 import { Timedelta } from "./timedelta";
 
-export const DEFAULT_TIMEZONE = "+00:00";
-
 export const TIMEZONE_RE = /^[+-]\d{2}:\d{2}$/;
 
 export function getTimezone(): string {

@@ -1,7 +1,6 @@
 import { tinyassert } from "@hiogawa/utils";
 import { beforeAll, describe, expect, it } from "vitest";
-import { T, db } from "../../../db/drizzle-client.server";
-import type { UserTable } from "../../../db/models";
+import { Q, UserTable } from "../../../db/models";
 import { getSessionUser, register } from "../../../utils/auth";
 import { getSession } from "../../../utils/session.server";
 import { testLoader } from "../../__tests__/helper";
@@ -12,7 +11,7 @@ describe("signin.action", () => {
   const credentials = { username: "root", password: "pass" };
 
   beforeAll(async () => {
-    await db.delete(T.users);
+    await Q.users().delete();
     user = await register(credentials);
   });
 
