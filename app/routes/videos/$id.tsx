@@ -595,6 +595,13 @@ export function CaptionEntryComponent({
             data-test="caption-entry-component__video-link"
           />
         )}
+        <a
+          // prettier-ignore
+          href={`https://10fastfingers.com/widget/typingtest?dur=600&rand=0&words=${encodeURIComponent(entry.text1)}`}
+          // use "media-mouse" as keyboard detection heuristics https://github.com/w3c/csswg-drafts/issues/3871
+          className="antd-btn antd-btn-ghost i-ri-keyboard-line w-4 h-4 hidden media-mouse:inline"
+          target="_blank"
+        />
         <button
           className={cls(
             `antd-btn antd-btn-ghost i-ri-repeat-line w-3 h-3`,
