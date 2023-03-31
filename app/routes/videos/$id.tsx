@@ -21,6 +21,7 @@ import React from "react";
 import toast from "react-hot-toast";
 import { z } from "zod";
 import { transitionProps } from "../../components/misc";
+import { useModal } from "../../components/modal";
 import { PopoverSimple } from "../../components/popover";
 import {
   CaptionEntryTable,
@@ -32,6 +33,7 @@ import {
 import { R } from "../../misc/routes";
 import { Controller, makeLoader } from "../../utils/controller-utils";
 import { useDeserialize, useSelection } from "../../utils/hooks";
+import { dtf } from "../../utils/intl";
 import { useLeafLoaderData, useRootLoaderData } from "../../utils/loader-utils";
 import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
@@ -675,6 +677,7 @@ function NavBarMenuComponentImpl({
 }) {
   const [autoScrollState, toggleAutoScrollState] = useAutoScrollState();
   const [repeatingEntries, setRepeatingEntries] = useRepeatingEntries();
+  const modal = useModal();
 
   return (
     <>
@@ -709,6 +712,14 @@ function NavBarMenuComponentImpl({
           }
           floating={(context) => (
             <ul className="flex flex-col gap-2 p-2 w-[180px] text-sm">
+              <li>
+                <button
+                  className="w-full antd-menu-item p-2 flex"
+                  onClick={() => modal.setOpen(true)}
+                >
+                  Video Info
+                </button>
+              </li>
               <li>
                 <Link
                   className="w-full antd-menu-item p-2 flex"
@@ -745,6 +756,47 @@ function NavBarMenuComponentImpl({
           )}
         />
       </div>
+      <modal.Wrapper>
+        <div className="flex flex-col gap-2 p-4 relative">
+          <div className="text-lg">Video Info</div>
+          <label className="flex flex-col gap-1">
+            <span className="text-colorTextLabel">Title</span>
+            <input
+              type="text"
+              className="antd-input p-1 bg-colorBgContainerDisabled"
+              readOnly
+              value={video.title}
+            />
+          </label>
+          <label className="flex flex-col gap-1">
+            <span className="text-colorTextLabel">Author</span>
+            <input
+              type="text"
+              className="antd-input p-1 bg-colorBgContainerDisabled"
+              readOnly
+              value={video.author}
+            />
+          </label>
+          <label className="flex flex-col gap-1">
+            <span className="text-colorTextLabel">Imported at</span>
+            <input
+              type="text"
+              className="antd-input p-1 bg-colorBgContainerDisabled"
+              readOnly
+              value={dtf.format(video.createdAt)}
+            />
+          </label>
+          <label className="flex flex-col gap-1">
+            <span className="text-colorTextLabel">Bookmark count</span>
+            <input
+              type="text"
+              className="antd-input p-1 bg-colorBgContainerDisabled"
+              readOnly
+              value={video.bookmarkEntriesCount}
+            />
+          </label>
+        </div>
+      </modal.Wrapper>
     </>
   );
 }
