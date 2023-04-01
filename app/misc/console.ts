@@ -1,21 +1,25 @@
-import repl from "node:repl";
 import { client } from "../db/client.server";
 import { E, T, db } from "../db/drizzle-client.server";
 import { Q } from "../db/models";
 import { initializeServer } from "./initialize-server";
 
+/*
+
+usage:
+
+$ pnpm console
+> await db.select().from(T.users)
+
+*/
+
 async function main() {
   await initializeServer();
-  const replServer = repl.start();
-  Object.assign(replServer.context, {
+  Object.assign(globalThis, {
     client,
     Q,
     T,
     E,
     db,
-  });
-  replServer.on("exit", () => {
-    process.exit(1);
   });
 }
 
