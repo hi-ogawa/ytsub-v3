@@ -20,7 +20,7 @@ specifiers:
   '@headlessui/react': ^1.7.13
   '@hiogawa/isort-ts': 1.0.1
   '@hiogawa/unocss-preset-antd': 2.2.1-pre.2
-  '@hiogawa/utils': 1.4.2-pre.1
+  '@hiogawa/utils': 1.4.2-pre.2
   '@hiogawa/utils-react': ^1.2.0
   '@iconify-json/ri': ^1.1.5
   '@playwright/test': ^1.31.2
@@ -83,7 +83,7 @@ dependencies:
   '@badrap/bar-of-progress': 0.2.2
   '@floating-ui/react': 0.21.1_biqbaboplfbrettd7655fr4n2y
   '@headlessui/react': 1.7.13_biqbaboplfbrettd7655fr4n2y
-  '@hiogawa/utils': 1.4.2-pre.1
+  '@hiogawa/utils': 1.4.2-pre.2
   '@hiogawa/utils-react': 1.2.0_react@18.2.0
   '@remix-run/node': 1.4.1_tutenudqr6qo3f7c7butytgm7m_biqbaboplfbrettd7655fr4n2y
   '@remix-run/react': 1.4.1_biqbaboplfbrettd7655fr4n2y
@@ -1027,8 +1027,8 @@ packages:
       react: 18.2.0
     dev: false
 
-  /@hiogawa/utils/1.4.2-pre.1:
-    resolution: {integrity: sha512-JzlXO2eUoIy0jDiFEX9Vs2iezQD6a4UI8nqg5vLrWJjQqqWineckrE8MuhfyE7kwM6cWCQBnLbV3VVEig1EXcA==}
+  /@hiogawa/utils/1.4.2-pre.2:
+    resolution: {integrity: sha512-w8o++HYLjsXKnHq6RZZ60Pk5loVJNTm9NkKy4oIwHbwYl++2pwyNKHEUM8qbKVkvpfT6l5O2W+LtbRaK+eZZkA==}
     dev: false
 
   /@iconify-json/ri/1.1.5:
@@ -4999,7 +4999,7 @@ packages:
   /jsonfile/4.0.0:
     resolution: {integrity: sha1-h3Gq4HmbZAdrdmQPygWPnBDjPss=}
     optionalDependencies:
-      graceful-fs: 4.2.11
+      graceful-fs: 4.2.9
     dev: true
 
   /jsonfile/6.1.0:
@@ -5007,7 +5007,7 @@ packages:
     dependencies:
       universalify: 2.0.0
     optionalDependencies:
-      graceful-fs: 4.2.11
+      graceful-fs: 4.2.9
     dev: true
 
   /keyv/4.5.2:

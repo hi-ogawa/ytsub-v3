@@ -1,3 +1,4 @@
+import { once } from "@hiogawa/utils";
 import * as E from "drizzle-orm/expressions";
 import {
   InferModel,
@@ -9,6 +10,7 @@ import {
 } from "drizzle-orm/mysql-core";
 import { MySql2Database, drizzle } from "drizzle-orm/mysql2";
 import { createConnection } from "mysql2/promise";
+import { throwGetterProxy } from "../utils/misc";
 import knexfile from "./knexfile.server";
 
 //
@@ -82,13 +84,10 @@ declare let globalThis: {
   __db: any;
 };
 
-export let db: MySql2Database = globalThis.__db;
+export let db: MySql2Database = globalThis.__db ?? throwGetterProxy;
 
-export async function initializeDrizzleClient() {
-  if (db) {
-    return;
-  }
+export const initializeDrizzleClient = once(async () => {
   const config = knexfile();
   const connection = await createConnection(config.connection as any);
   db = globalThis.__db = drizzle(connection);
-}
+});

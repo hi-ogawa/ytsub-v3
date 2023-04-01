@@ -40,7 +40,7 @@
     "@badrap/bar-of-progress": "^0.2.2",
     "@floating-ui/react": "^0.21.1",
     "@headlessui/react": "^1.7.13",
-    "@hiogawa/utils": "1.4.2-pre.1",
+    "@hiogawa/utils": "1.4.2-pre.2",
     "@hiogawa/utils-react": "^1.2.0",
     "@remix-run/node": "^1.4.0",
     "@remix-run/react": "^1.4.0",
