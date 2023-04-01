@@ -27,7 +27,7 @@
     "cli": "node --require esbuild-register app/misc/cli.ts",
     "cli-staging": "pnpm dotenv-staging node --require esbuild-register app/misc/cli.ts",
     "cli-production": "pnpm dotenv-production node --require esbuild-register app/misc/cli.ts",
-    "console": "node --experimental-repl-await -r esbuild-register -r ./app/misc/console.ts",
+    "console": "node -r esbuild-register ./app/misc/console.ts",
     "console-staging": "pnpm dotenv-staging npm run console",
     "knex": "NODE_OPTIONS='-r esbuild-register' knex --knexfile app/db/knexfile.server.ts",
     "knex-staging": "pnpm dotenv-staging pnpm knex",
