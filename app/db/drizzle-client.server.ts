@@ -87,7 +87,7 @@ const captionEntries = mysqlTable("captionEntries", {
 
 const bookmarkEntries = mysqlTable("bookmarkEntries", {
   id: serial("id").primaryKey(),
-  userId: int("userId"), // `null` indicates the video is created by/for "anonymous" users
+  userId: int("userId").notNull(),
   videoId: text("videoId").notNull(),
   ...timestampColumns,
   //
