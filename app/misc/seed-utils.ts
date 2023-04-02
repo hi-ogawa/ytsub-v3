@@ -136,7 +136,7 @@ export async function importDeck(userId: number, data: ExportDeckData) {
 }
 
 //
-// import as a seed for testing
+// import default seed for testing
 //
 
 const SEED_FILE = "misc/db/dev.json";

@@ -1,6 +1,6 @@
-import { tinyassert } from "@hiogawa/utils";
+import { newPromiseWithResolvers } from "@hiogawa/utils";
 import { Page, test } from "@playwright/test";
-import { Q, UserTable } from "../db/models";
+import type { UserTable } from "../db/models";
 import { useUserImpl } from "../misc/helper";
 import { testSetupCommon } from "../misc/test-setup-common";
 import { createUserCookie } from "../utils/auth";
@@ -21,12 +21,14 @@ export function useUserE2E(
 
   let user: UserTable;
   let cookie: any;
+  let isReady = newPromiseWithResolvers<void>();
 
   test.beforeAll(async () => {
     user = await before();
     const rawCookie = await createUserCookie(user);
     const [name, value] = rawCookie.split(";")[0].split("=");
     cookie = { name, value, domain: "localhost", path: "/" };
+    isReady.resolve();
   });
 
   test.afterAll(async () => {
@@ -37,29 +39,15 @@ export function useUserE2E(
     await page.context().addCookies([cookie]);
   }
 
-  return { user: () => user, signin };
-}
-
-// cf. app/misc/test-setup-global-e2e.ts
-export function useDevUserE2e(test: Test) {
-  let user: UserTable;
-  let cookie: any;
-
-  test.beforeAll(async () => {
-    const maybeUser = await Q.users().where("username", "dev").first();
-    tinyassert(maybeUser);
-    user = maybeUser;
-
-    const rawCookie = await createUserCookie(user);
-    const [name, value] = rawCookie.split(";")[0].split("=");
-    cookie = { name, value, domain: "localhost", path: "/" };
-  });
-
-  async function signin(page: Page) {
-    await page.context().addCookies([cookie]);
-  }
-
-  return { user: () => user, signin };
+  return {
+    /** @deprecated use `data` */
+    user: () => user,
+    signin,
+    isReady: isReady.promise,
+    get data() {
+      return user;
+    },
+  };
 }
 
 // force dismissing toasts since they can interfere with interactions.
