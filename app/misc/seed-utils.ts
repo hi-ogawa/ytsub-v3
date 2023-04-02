@@ -1,4 +1,6 @@
+import fs from "node:fs";
 import { UncheckedMap, objectOmit, tinyassert, uniq } from "@hiogawa/utils";
+import superjson from "superjson";
 import { E, T, db, findOne } from "../db/drizzle-client.server";
 
 //
@@ -131,6 +133,18 @@ export async function importDeck(userId: number, data: ExportDeckData) {
     practiceActionsInsert.insertId,
     practiceActions.map((e) => e.id)
   );
+}
+
+//
+// import as a seed for testing
+//
+
+const SEED_FILE = "misc/db/dev.json";
+
+export async function importSeed(userId: number) {
+  const fileDataRaw = await fs.promises.readFile(SEED_FILE, "utf-8");
+  const fileData: any = superjson.deserialize(JSON.parse(fileDataRaw));
+  await importDeck(userId, fileData);
 }
 
 //
