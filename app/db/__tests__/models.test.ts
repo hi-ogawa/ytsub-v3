@@ -79,7 +79,7 @@ describe("models-basic", () => {
 });
 
 describe("models-with-dump", () => {
-  const user = useUser({ seed: __filename });
+  const user = useUser({ username: "username-models-with-dump" });
 
   beforeAll(async () => {
     await user.isReady;
@@ -237,7 +237,7 @@ describe("models-with-dump", () => {
             "practiceActionsCount": 3,
             "timezone": "+00:00",
             "updatedAt": "(id)",
-            "username": "root-44409541",
+            "username": "username-models-with-dump",
           },
           {
             "createdAt": "(id)",
@@ -248,7 +248,7 @@ describe("models-with-dump", () => {
             "practiceActionsCount": 3,
             "timezone": "+00:00",
             "updatedAt": "(id)",
-            "username": "root-44409541",
+            "username": "username-models-with-dump",
           },
         ],
       }
