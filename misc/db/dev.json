@@ -4,7 +4,7 @@
       "id": 1,
       "userId": 1,
       "createdAt": "2022-04-23T08:07:33.000Z",
-      "updatedAt": "2023-03-26T02:56:59.000Z",
+      "updatedAt": "2022-07-09T08:04:59.000Z",
       "name": "test-main",
       "newEntriesPerDay": 50,
       "reviewsPerDay": 200,
@@ -12,9 +12,9 @@
       "easeBonus": 1.5,
       "randomMode": true,
       "practiceEntriesCountByQueueType": {
-        "NEW": 57,
-        "LEARN": 82,
-        "REVIEW": 25
+        "NEW": 77,
+        "LEARN": 65,
+        "REVIEW": 22
       }
     },
     "practiceEntries": [
@@ -56,22 +56,22 @@
         "deckId": 1,
         "bookmarkEntryId": 317,
         "createdAt": "2022-04-23T08:07:50.000Z",
-        "updatedAt": "2023-03-20T14:25:08.000Z",
+        "updatedAt": "2022-05-03T04:08:54.000Z",
         "queueType": "LEARN",
         "easeFactor": 1,
-        "scheduledAt": "2023-03-20T14:30:09.000Z",
-        "practiceActionsCount": 2
+        "scheduledAt": "2022-05-04T13:08:54.000Z",
+        "practiceActionsCount": 1
       },
       {
         "id": 5,
         "deckId": 1,
         "bookmarkEntryId": 318,
         "createdAt": "2022-04-23T08:07:50.000Z",
-        "updatedAt": "2023-03-21T05:27:43.000Z",
+        "updatedAt": "2022-05-04T05:56:01.000Z",
         "queueType": "LEARN",
         "easeFactor": 1,
-        "scheduledAt": "2023-03-21T05:32:43.000Z",
-        "practiceActionsCount": 2
+        "scheduledAt": "2022-05-05T14:56:01.000Z",
+        "practiceActionsCount": 1
       },
       {
         "id": 6,
@@ -309,11 +309,11 @@
         "deckId": 1,
         "bookmarkEntryId": 380,
         "createdAt": "2022-05-03T04:08:15.000Z",
-        "updatedAt": "2023-03-26T02:56:59.000Z",
-        "queueType": "LEARN",
+        "updatedAt": "2022-05-03T04:08:15.000Z",
+        "queueType": "NEW",
         "easeFactor": 1,
-        "scheduledAt": "2023-03-27T02:57:00.000Z",
-        "practiceActionsCount": 1
+        "scheduledAt": "2022-05-03T13:08:15.000Z",
+        "practiceActionsCount": 0
       },
       {
         "id": 28,
@@ -364,11 +364,11 @@
         "deckId": 1,
         "bookmarkEntryId": 385,
         "createdAt": "2022-05-03T04:08:15.000Z",
-        "updatedAt": "2023-03-21T05:50:48.000Z",
-        "queueType": "LEARN",
+        "updatedAt": "2022-05-03T04:08:15.000Z",
+        "queueType": "NEW",
         "easeFactor": 1,
-        "scheduledAt": "2023-03-21T05:55:48.000Z",
-        "practiceActionsCount": 1
+        "scheduledAt": "2022-05-03T13:08:15.000Z",
+        "practiceActionsCount": 0
       },
       {
         "id": 33,
@@ -386,22 +386,22 @@
         "deckId": 1,
         "bookmarkEntryId": 387,
         "createdAt": "2022-05-03T04:08:15.000Z",
-        "updatedAt": "2023-03-25T08:53:03.000Z",
-        "queueType": "LEARN",
+        "updatedAt": "2022-05-03T04:08:15.000Z",
+        "queueType": "NEW",
         "easeFactor": 1,
-        "scheduledAt": "2023-03-25T08:54:04.000Z",
-        "practiceActionsCount": 1
+        "scheduledAt": "2022-05-03T13:08:15.000Z",
+        "practiceActionsCount": 0
       },
       {
         "id": 35,
         "deckId": 1,
         "bookmarkEntryId": 388,
         "createdAt": "2022-05-03T04:08:15.000Z",
-        "updatedAt": "2023-03-25T10:22:23.000Z",
-        "queueType": "LEARN",
+        "updatedAt": "2022-05-03T04:08:15.000Z",
+        "queueType": "NEW",
         "easeFactor": 1,
-        "scheduledAt": "2023-03-25T10:27:24.000Z",
-        "practiceActionsCount": 1
+        "scheduledAt": "2022-05-03T13:08:15.000Z",
+        "practiceActionsCount": 0
       },
       {
         "id": 36,
@@ -419,22 +419,22 @@
         "deckId": 1,
         "bookmarkEntryId": 390,
         "createdAt": "2022-05-03T04:08:15.000Z",
-        "updatedAt": "2023-03-25T10:32:15.000Z",
-        "queueType": "LEARN",
+        "updatedAt": "2022-05-03T04:08:15.000Z",
+        "queueType": "NEW",
         "easeFactor": 1,
-        "scheduledAt": "2023-03-25T10:37:16.000Z",
-        "practiceActionsCount": 1
+        "scheduledAt": "2022-05-03T13:08:15.000Z",
+        "practiceActionsCount": 0
       },
       {
         "id": 38,
         "deckId": 1,
         "bookmarkEntryId": 391,
         "createdAt": "2022-05-03T04:08:15.000Z",
-        "updatedAt": "2023-03-25T10:28:21.000Z",
-        "queueType": "LEARN",
+        "updatedAt": "2022-05-03T04:08:15.000Z",
+        "queueType": "NEW",
         "easeFactor": 1,
-        "scheduledAt": "2023-03-25T10:33:22.000Z",
-        "practiceActionsCount": 1
+        "scheduledAt": "2022-05-03T13:08:15.000Z",
+        "practiceActionsCount": 0
       },
       {
         "id": 39,
@@ -463,11 +463,11 @@
         "deckId": 1,
         "bookmarkEntryId": 394,
         "createdAt": "2022-05-03T04:08:15.000Z",
-        "updatedAt": "2023-03-25T08:56:46.000Z",
-        "queueType": "LEARN",
+        "updatedAt": "2022-05-03T04:08:15.000Z",
+        "queueType": "NEW",
         "easeFactor": 1,
-        "scheduledAt": "2023-03-26T08:56:47.000Z",
-        "practiceActionsCount": 1
+        "scheduledAt": "2022-05-03T13:08:15.000Z",
+        "practiceActionsCount": 0
       },
       {
         "id": 42,
@@ -529,11 +529,11 @@
         "deckId": 1,
         "bookmarkEntryId": 400,
         "createdAt": "2022-05-03T04:08:15.000Z",
-        "updatedAt": "2023-03-25T08:46:05.000Z",
-        "queueType": "LEARN",
+        "updatedAt": "2022-05-03T04:08:15.000Z",
+        "queueType": "NEW",
         "easeFactor": 1,
-        "scheduledAt": "2023-03-25T08:51:05.000Z",
-        "practiceActionsCount": 1
+        "scheduledAt": "2022-05-03T13:08:15.000Z",
+        "practiceActionsCount": 0
       },
       {
         "id": 48,
@@ -551,11 +551,11 @@
         "deckId": 1,
         "bookmarkEntryId": 402,
         "createdAt": "2022-05-03T04:08:15.000Z",
-        "updatedAt": "2023-03-25T08:54:56.000Z",
-        "queueType": "LEARN",
+        "updatedAt": "2022-05-03T04:08:15.000Z",
+        "queueType": "NEW",
         "easeFactor": 1,
-        "scheduledAt": "2023-03-26T08:54:56.000Z",
-        "practiceActionsCount": 1
+        "scheduledAt": "2022-05-03T13:08:15.000Z",
+        "practiceActionsCount": 0
       },
       {
         "id": 50,
@@ -595,11 +595,11 @@
         "deckId": 1,
         "bookmarkEntryId": 358,
         "createdAt": "2022-05-03T04:08:25.000Z",
-        "updatedAt": "2023-03-20T17:32:15.000Z",
-        "queueType": "LEARN",
+        "updatedAt": "2022-05-03T04:08:25.000Z",
+        "queueType": "NEW",
         "easeFactor": 1,
-        "scheduledAt": "2023-03-21T17:32:15.000Z",
-        "practiceActionsCount": 1
+        "scheduledAt": "2022-05-03T13:08:25.000Z",
+        "practiceActionsCount": 0
       },
       {
         "id": 54,
@@ -639,11 +639,11 @@
         "deckId": 1,
         "bookmarkEntryId": 353,
         "createdAt": "2022-05-03T04:08:25.000Z",
-        "updatedAt": "2023-03-25T08:54:36.000Z",
-        "queueType": "LEARN",
+        "updatedAt": "2022-05-03T04:08:25.000Z",
+        "queueType": "NEW",
         "easeFactor": 1,
-        "scheduledAt": "2023-03-25T08:59:36.000Z",
-        "practiceActionsCount": 1
+        "scheduledAt": "2022-05-03T13:08:25.000Z",
+        "practiceActionsCount": 0
       },
       {
         "id": 58,
@@ -694,11 +694,11 @@
         "deckId": 1,
         "bookmarkEntryId": 359,
         "createdAt": "2022-05-03T04:08:25.000Z",
-        "updatedAt": "2023-03-25T10:37:47.000Z",
-        "queueType": "LEARN",
+        "updatedAt": "2022-05-03T04:08:25.000Z",
+        "queueType": "NEW",
         "easeFactor": 1,
-        "scheduledAt": "2023-03-25T10:38:47.000Z",
-        "practiceActionsCount": 1
+        "scheduledAt": "2022-05-03T13:08:25.000Z",
+        "practiceActionsCount": 0
       },
       {
         "id": 63,
@@ -738,11 +738,11 @@
         "deckId": 1,
         "bookmarkEntryId": 363,
         "createdAt": "2022-05-03T04:08:25.000Z",
-        "updatedAt": "2023-03-25T08:52:52.000Z",
-        "queueType": "LEARN",
+        "updatedAt": "2022-05-03T04:08:25.000Z",
+        "queueType": "NEW",
         "easeFactor": 1,
-        "scheduledAt": "2023-03-26T08:52:52.000Z",
-        "practiceActionsCount": 1
+        "scheduledAt": "2022-05-03T13:08:25.000Z",
+        "practiceActionsCount": 0
       },
       {
         "id": 67,
@@ -903,11 +903,11 @@
         "deckId": 1,
         "bookmarkEntryId": 123,
         "createdAt": "2022-05-08T10:21:23.000Z",
-        "updatedAt": "2023-03-25T14:38:27.000Z",
-        "queueType": "REVIEW",
-        "easeFactor": 4,
-        "scheduledAt": "2023-03-27T14:38:27.000Z",
-        "practiceActionsCount": 3
+        "updatedAt": "2022-05-08T15:38:44.000Z",
+        "queueType": "LEARN",
+        "easeFactor": 1,
+        "scheduledAt": "2022-05-08T15:39:45.000Z",
+        "practiceActionsCount": 1
       },
       {
         "id": 82,
@@ -925,11 +925,11 @@
         "deckId": 1,
         "bookmarkEntryId": 121,
         "createdAt": "2022-05-08T10:21:23.000Z",
-        "updatedAt": "2023-03-25T08:57:39.000Z",
-        "queueType": "LEARN",
+        "updatedAt": "2022-05-08T10:21:23.000Z",
+        "queueType": "NEW",
         "easeFactor": 1,
-        "scheduledAt": "2023-03-26T08:57:39.000Z",
-        "practiceActionsCount": 1
+        "scheduledAt": "2022-05-08T10:21:23.000Z",
+        "practiceActionsCount": 0
       },
       {
         "id": 84,
@@ -980,11 +980,11 @@
         "deckId": 1,
         "bookmarkEntryId": 116,
         "createdAt": "2022-05-08T10:21:23.000Z",
-        "updatedAt": "2023-03-25T10:32:26.000Z",
-        "queueType": "LEARN",
+        "updatedAt": "2022-05-08T10:21:23.000Z",
+        "queueType": "NEW",
         "easeFactor": 1,
-        "scheduledAt": "2023-03-26T10:32:26.000Z",
-        "practiceActionsCount": 1
+        "scheduledAt": "2022-05-08T10:21:23.000Z",
+        "practiceActionsCount": 0
       },
       {
         "id": 89,
@@ -1024,11 +1024,11 @@
         "deckId": 1,
         "bookmarkEntryId": 112,
         "createdAt": "2022-05-08T10:21:23.000Z",
-        "updatedAt": "2023-03-25T14:35:05.000Z",
-        "queueType": "LEARN",
+        "updatedAt": "2022-05-08T10:21:23.000Z",
+        "queueType": "NEW",
         "easeFactor": 1,
-        "scheduledAt": "2023-03-25T14:40:05.000Z",
-        "practiceActionsCount": 1
+        "scheduledAt": "2022-05-08T10:21:23.000Z",
+        "practiceActionsCount": 0
       },
       {
         "id": 93,
@@ -1068,11 +1068,11 @@
         "deckId": 1,
         "bookmarkEntryId": 108,
         "createdAt": "2022-05-08T10:21:23.000Z",
-        "updatedAt": "2023-03-25T10:32:02.000Z",
-        "queueType": "REVIEW",
-        "easeFactor": 2,
-        "scheduledAt": "2023-03-26T10:32:02.000Z",
-        "practiceActionsCount": 2
+        "updatedAt": "2022-05-08T10:51:08.000Z",
+        "queueType": "LEARN",
+        "easeFactor": 1,
+        "scheduledAt": "2022-05-08T10:56:09.000Z",
+        "practiceActionsCount": 1
       },
       {
         "id": 97,
@@ -1189,11 +1189,11 @@
         "deckId": 1,
         "bookmarkEntryId": 217,
         "createdAt": "2022-05-08T10:21:31.000Z",
-        "updatedAt": "2023-03-25T08:52:45.000Z",
-        "queueType": "LEARN",
+        "updatedAt": "2022-05-08T10:21:31.000Z",
+        "queueType": "NEW",
         "easeFactor": 1,
-        "scheduledAt": "2023-03-25T08:57:45.000Z",
-        "practiceActionsCount": 1
+        "scheduledAt": "2022-05-08T10:21:32.000Z",
+        "practiceActionsCount": 0
       },
       {
         "id": 108,
@@ -1475,11 +1475,11 @@
         "deckId": 1,
         "bookmarkEntryId": 191,
         "createdAt": "2022-05-08T10:21:31.000Z",
-        "updatedAt": "2023-03-25T10:22:35.000Z",
-        "queueType": "LEARN",
+        "updatedAt": "2022-05-08T10:21:31.000Z",
+        "queueType": "NEW",
         "easeFactor": 1,
-        "scheduledAt": "2023-03-26T10:22:35.000Z",
-        "practiceActionsCount": 1
+        "scheduledAt": "2022-05-08T10:21:32.000Z",
+        "practiceActionsCount": 0
       },
       {
         "id": 134,
@@ -1508,11 +1508,11 @@
         "deckId": 1,
         "bookmarkEntryId": 188,
         "createdAt": "2022-05-08T10:21:31.000Z",
-        "updatedAt": "2023-03-25T08:53:11.000Z",
-        "queueType": "LEARN",
+        "updatedAt": "2022-05-08T10:21:31.000Z",
+        "queueType": "NEW",
         "easeFactor": 1,
-        "scheduledAt": "2023-03-25T08:58:11.000Z",
-        "practiceActionsCount": 1
+        "scheduledAt": "2022-05-08T10:21:32.000Z",
+        "practiceActionsCount": 0
       },
       {
         "id": 137,
@@ -1596,11 +1596,11 @@
         "deckId": 1,
         "bookmarkEntryId": 169,
         "createdAt": "2022-05-08T10:21:31.000Z",
-        "updatedAt": "2023-03-25T08:53:13.000Z",
-        "queueType": "LEARN",
+        "updatedAt": "2022-05-08T10:21:31.000Z",
+        "queueType": "NEW",
         "easeFactor": 1,
-        "scheduledAt": "2023-03-25T08:58:14.000Z",
-        "practiceActionsCount": 1
+        "scheduledAt": "2022-05-08T10:21:32.000Z",
+        "practiceActionsCount": 0
       },
       {
         "id": 145,
@@ -1728,11 +1728,11 @@
         "deckId": 1,
         "bookmarkEntryId": 148,
         "createdAt": "2022-05-08T10:21:31.000Z",
-        "updatedAt": "2023-03-25T10:28:01.000Z",
-        "queueType": "REVIEW",
-        "easeFactor": 2,
-        "scheduledAt": "2023-03-26T10:28:01.000Z",
-        "practiceActionsCount": 2
+        "updatedAt": "2022-05-08T15:22:17.000Z",
+        "queueType": "LEARN",
+        "easeFactor": 1,
+        "scheduledAt": "2022-05-08T15:27:17.000Z",
+        "practiceActionsCount": 1
       },
       {
         "id": 157,
@@ -2831,266 +2831,6 @@
         "userId": 1,
         "createdAt": "2022-07-09T08:04:59.000Z",
         "updatedAt": "2022-07-09T08:04:59.000Z",
-        "queueType": "NEW",
-        "actionType": "GOOD"
-      },
-      {
-        "id": 102,
-        "deckId": 1,
-        "practiceEntryId": 4,
-        "userId": 1,
-        "createdAt": "2023-03-20T14:25:08.000Z",
-        "updatedAt": "2023-03-20T14:25:08.000Z",
-        "queueType": "LEARN",
-        "actionType": "HARD"
-      },
-      {
-        "id": 103,
-        "deckId": 1,
-        "practiceEntryId": 53,
-        "userId": 1,
-        "createdAt": "2023-03-20T17:32:15.000Z",
-        "updatedAt": "2023-03-20T17:32:15.000Z",
-        "queueType": "NEW",
-        "actionType": "GOOD"
-      },
-      {
-        "id": 104,
-        "deckId": 1,
-        "practiceEntryId": 5,
-        "userId": 1,
-        "createdAt": "2023-03-21T05:27:43.000Z",
-        "updatedAt": "2023-03-21T05:27:43.000Z",
-        "queueType": "LEARN",
-        "actionType": "HARD"
-      },
-      {
-        "id": 105,
-        "deckId": 1,
-        "practiceEntryId": 32,
-        "userId": 1,
-        "createdAt": "2023-03-21T05:50:48.000Z",
-        "updatedAt": "2023-03-21T05:50:48.000Z",
-        "queueType": "NEW",
-        "actionType": "HARD"
-      },
-      {
-        "id": 106,
-        "deckId": 1,
-        "practiceEntryId": 47,
-        "userId": 1,
-        "createdAt": "2023-03-25T08:46:05.000Z",
-        "updatedAt": "2023-03-25T08:46:05.000Z",
-        "queueType": "NEW",
-        "actionType": "HARD"
-      },
-      {
-        "id": 107,
-        "deckId": 1,
-        "practiceEntryId": 107,
-        "userId": 1,
-        "createdAt": "2023-03-25T08:52:45.000Z",
-        "updatedAt": "2023-03-25T08:52:45.000Z",
-        "queueType": "NEW",
-        "actionType": "HARD"
-      },
-      {
-        "id": 108,
-        "deckId": 1,
-        "practiceEntryId": 66,
-        "userId": 1,
-        "createdAt": "2023-03-25T08:52:52.000Z",
-        "updatedAt": "2023-03-25T08:52:52.000Z",
-        "queueType": "NEW",
-        "actionType": "GOOD"
-      },
-      {
-        "id": 109,
-        "deckId": 1,
-        "practiceEntryId": 34,
-        "userId": 1,
-        "createdAt": "2023-03-25T08:53:03.000Z",
-        "updatedAt": "2023-03-25T08:53:03.000Z",
-        "queueType": "NEW",
-        "actionType": "AGAIN"
-      },
-      {
-        "id": 110,
-        "deckId": 1,
-        "practiceEntryId": 136,
-        "userId": 1,
-        "createdAt": "2023-03-25T08:53:11.000Z",
-        "updatedAt": "2023-03-25T08:53:11.000Z",
-        "queueType": "NEW",
-        "actionType": "HARD"
-      },
-      {
-        "id": 111,
-        "deckId": 1,
-        "practiceEntryId": 144,
-        "userId": 1,
-        "createdAt": "2023-03-25T08:53:13.000Z",
-        "updatedAt": "2023-03-25T08:53:13.000Z",
-        "queueType": "NEW",
-        "actionType": "HARD"
-      },
-      {
-        "id": 112,
-        "deckId": 1,
-        "practiceEntryId": 57,
-        "userId": 1,
-        "createdAt": "2023-03-25T08:54:36.000Z",
-        "updatedAt": "2023-03-25T08:54:36.000Z",
-        "queueType": "NEW",
-        "actionType": "HARD"
-      },
-      {
-        "id": 113,
-        "deckId": 1,
-        "practiceEntryId": 49,
-        "userId": 1,
-        "createdAt": "2023-03-25T08:54:56.000Z",
-        "updatedAt": "2023-03-25T08:54:56.000Z",
-        "queueType": "NEW",
-        "actionType": "GOOD"
-      },
-      {
-        "id": 114,
-        "deckId": 1,
-        "practiceEntryId": 41,
-        "userId": 1,
-        "createdAt": "2023-03-25T08:56:46.000Z",
-        "updatedAt": "2023-03-25T08:56:46.000Z",
-        "queueType": "NEW",
-        "actionType": "GOOD"
-      },
-      {
-        "id": 115,
-        "deckId": 1,
-        "practiceEntryId": 83,
-        "userId": 1,
-        "createdAt": "2023-03-25T08:57:39.000Z",
-        "updatedAt": "2023-03-25T08:57:39.000Z",
-        "queueType": "NEW",
-        "actionType": "GOOD"
-      },
-      {
-        "id": 116,
-        "deckId": 1,
-        "practiceEntryId": 35,
-        "userId": 1,
-        "createdAt": "2023-03-25T10:22:23.000Z",
-        "updatedAt": "2023-03-25T10:22:23.000Z",
-        "queueType": "NEW",
-        "actionType": "HARD"
-      },
-      {
-        "id": 117,
-        "deckId": 1,
-        "practiceEntryId": 133,
-        "userId": 1,
-        "createdAt": "2023-03-25T10:22:35.000Z",
-        "updatedAt": "2023-03-25T10:22:35.000Z",
-        "queueType": "NEW",
-        "actionType": "GOOD"
-      },
-      {
-        "id": 118,
-        "deckId": 1,
-        "practiceEntryId": 156,
-        "userId": 1,
-        "createdAt": "2023-03-25T10:28:01.000Z",
-        "updatedAt": "2023-03-25T10:28:01.000Z",
-        "queueType": "LEARN",
-        "actionType": "GOOD"
-      },
-      {
-        "id": 119,
-        "deckId": 1,
-        "practiceEntryId": 38,
-        "userId": 1,
-        "createdAt": "2023-03-25T10:28:21.000Z",
-        "updatedAt": "2023-03-25T10:28:21.000Z",
-        "queueType": "NEW",
-        "actionType": "HARD"
-      },
-      {
-        "id": 120,
-        "deckId": 1,
-        "practiceEntryId": 96,
-        "userId": 1,
-        "createdAt": "2023-03-25T10:32:02.000Z",
-        "updatedAt": "2023-03-25T10:32:02.000Z",
-        "queueType": "LEARN",
-        "actionType": "GOOD"
-      },
-      {
-        "id": 121,
-        "deckId": 1,
-        "practiceEntryId": 37,
-        "userId": 1,
-        "createdAt": "2023-03-25T10:32:15.000Z",
-        "updatedAt": "2023-03-25T10:32:15.000Z",
-        "queueType": "NEW",
-        "actionType": "HARD"
-      },
-      {
-        "id": 122,
-        "deckId": 1,
-        "practiceEntryId": 88,
-        "userId": 1,
-        "createdAt": "2023-03-25T10:32:26.000Z",
-        "updatedAt": "2023-03-25T10:32:26.000Z",
-        "queueType": "NEW",
-        "actionType": "GOOD"
-      },
-      {
-        "id": 123,
-        "deckId": 1,
-        "practiceEntryId": 62,
-        "userId": 1,
-        "createdAt": "2023-03-25T10:37:47.000Z",
-        "updatedAt": "2023-03-25T10:37:47.000Z",
-        "queueType": "NEW",
-        "actionType": "AGAIN"
-      },
-      {
-        "id": 124,
-        "deckId": 1,
-        "practiceEntryId": 92,
-        "userId": 1,
-        "createdAt": "2023-03-25T14:35:05.000Z",
-        "updatedAt": "2023-03-25T14:35:05.000Z",
-        "queueType": "NEW",
-        "actionType": "HARD"
-      },
-      {
-        "id": 125,
-        "deckId": 1,
-        "practiceEntryId": 81,
-        "userId": 1,
-        "createdAt": "2023-03-25T14:35:47.000Z",
-        "updatedAt": "2023-03-25T14:35:47.000Z",
-        "queueType": "LEARN",
-        "actionType": "GOOD"
-      },
-      {
-        "id": 126,
-        "deckId": 1,
-        "practiceEntryId": 81,
-        "userId": 1,
-        "createdAt": "2023-03-25T14:38:27.000Z",
-        "updatedAt": "2023-03-25T14:38:27.000Z",
-        "queueType": "REVIEW",
-        "actionType": "GOOD"
-      },
-      {
-        "id": 127,
-        "deckId": 1,
-        "practiceEntryId": 27,
-        "userId": 1,
-        "createdAt": "2023-03-26T02:56:59.000Z",
-        "updatedAt": "2023-03-26T02:56:59.000Z",
         "queueType": "NEW",
         "actionType": "GOOD"
       }
@@ -4980,6 +4720,17 @@
     ],
     "captionEntries": [
       {
+        "id": 4094,
+        "videoId": 41,
+        "createdAt": "2022-04-14T14:54:49.000Z",
+        "updatedAt": "2022-04-14T14:54:49.000Z",
+        "index": 0,
+        "begin": 0,
+        "end": 7.14,
+        "text1": "Hier c'était le 14 février. Qui dit 14 février,  dit Saint Valentin et qui dit Saint Valentin,",
+        "text2": "Yesterday was February 14. February 14, means Valentine's Day and Valentine's"
+      },
+      {
         "id": 4095,
         "videoId": 41,
         "createdAt": "2022-04-14T14:54:49.000Z",
@@ -5013,6 +4764,61 @@
         "text2": "love with a capital A. And when it comes to love, we can say that the French"
       },
       {
+        "id": 4098,
+        "videoId": 41,
+        "createdAt": "2022-04-14T14:54:49.000Z",
+        "updatedAt": "2022-04-14T14:54:49.000Z",
+        "index": 4,
+        "begin": 25.53,
+        "end": 31.23,
+        "text1": "connaissent un peu. Dans cette vidéo on va voir  8 expressions qui parlent d'amour et de romance.",
+        "text2": "know a little about it. In this video we will see 8 expressions about love and romance."
+      },
+      {
+        "id": 4099,
+        "videoId": 41,
+        "createdAt": "2022-04-14T14:54:49.000Z",
+        "updatedAt": "2022-04-14T14:54:49.000Z",
+        "index": 5,
+        "begin": 31.23,
+        "end": 37.05,
+        "text1": "Salut ! Salut ! Salut ! Bienvenue dans un  nouvel épisode de French mornings. Si vous",
+        "text2": "Hi ! Hi ! Hi ! Welcome to a new episode of French mornings. If you are"
+      },
+      {
+        "id": 4100,
+        "videoId": 41,
+        "createdAt": "2022-04-14T14:54:49.000Z",
+        "updatedAt": "2022-04-14T14:54:49.000Z",
+        "index": 6,
+        "begin": 37.05,
+        "end": 42.33,
+        "text1": "apprenez le français vous êtes au bon endroit.  Je suis Elisa et sur cette chaîne je vous aide à",
+        "text2": "learning French you have come to the right place. I'm Elisa and on this channel I help you"
+      },
+      {
+        "id": 4101,
+        "videoId": 41,
+        "createdAt": "2022-04-14T14:54:49.000Z",
+        "updatedAt": "2022-04-14T14:54:49.000Z",
+        "index": 7,
+        "begin": 42.33,
+        "end": 48.24,
+        "text1": "améliorer votre français et à parler d'une façon  plus naturelle. N'hésitez pas à vous abonner à",
+        "text2": "improve your French and speak in a more natural way. Feel free to subscribe to"
+      },
+      {
+        "id": 4102,
+        "videoId": 41,
+        "createdAt": "2022-04-14T14:54:49.000Z",
+        "updatedAt": "2022-04-14T14:54:49.000Z",
+        "index": 8,
+        "begin": 48.24,
+        "end": 52.56,
+        "text1": "la chaîne de French mornings et à activer  la cloche pour être au courant des futures",
+        "text2": "the French mornings channel and activate the bell to be informed of future"
+      },
+      {
         "id": 4103,
         "videoId": 41,
         "createdAt": "2022-04-14T14:54:49.000Z",
@@ -5024,6 +4830,17 @@
         "text2": "videos. Take something to take notes today. We are going to talk about love so it is"
       },
       {
+        "id": 4104,
+        "videoId": 41,
+        "createdAt": "2022-04-14T14:54:49.000Z",
+        "updatedAt": "2022-04-14T14:54:49.000Z",
+        "index": 10,
+        "begin": 57.63,
+        "end": 63.4,
+        "text1": "important. Pensez à activer les sous-titres  si vous en avez besoin et c'est parti !",
+        "text2": "important. Remember to turn on the subtitles if you need to and let's go!"
+      },
+      {
         "id": 4105,
         "videoId": 41,
         "createdAt": "2022-04-14T14:54:49.000Z",
@@ -5033,6 +4850,17 @@
         "end": 71.91,
         "text1": "À ce qu'il paraît les français sont romantiques.  Chacun pourra se faire son opinion là dessus mais",
         "text2": "They say that the French are romantic. Everyone can make up their own mind on this but"
+      },
+      {
+        "id": 4106,
+        "videoId": 41,
+        "createdAt": "2022-04-14T14:54:49.000Z",
+        "updatedAt": "2022-04-14T14:54:49.000Z",
+        "index": 12,
+        "begin": 71.91,
+        "end": 77.18,
+        "text1": "ce qui est vrai c'est qu'en français il existe  beaucoup d'expressions pour parler d'amour. Et",
+        "text2": "what is true is that in French there are many expressions to talk about love. And"
       },
       {
         "id": 4107,
@@ -5057,6 +4885,149 @@
         "text2": "fresh water. To live on love and fresh water is an expression that I really like."
       },
       {
+        "id": 4109,
+        "videoId": 41,
+        "createdAt": "2022-04-14T14:54:49.000Z",
+        "updatedAt": "2022-04-14T14:54:49.000Z",
+        "index": 15,
+        "begin": 87.17,
+        "end": 92.6,
+        "text1": "Je la trouve assez poétique. On peut l'utiliser  pour parler de quelqu'un qui est très amoureux,",
+        "text2": "I find it quite poetic. You can use it to talk about someone who is very much in love,"
+      },
+      {
+        "id": 4110,
+        "videoId": 41,
+        "createdAt": "2022-04-14T14:54:49.000Z",
+        "updatedAt": "2022-04-14T14:54:49.000Z",
+        "index": 16,
+        "begin": 92.6,
+        "end": 97.31,
+        "text1": "quelqu'un qui est dans un état d'esprit ,très  romantique et qui n'a besoin de rien d'autre.",
+        "text2": "someone who is in a very romantic mood and doesn't need anything else. No"
+      },
+      {
+        "id": 4111,
+        "videoId": 41,
+        "createdAt": "2022-04-14T14:54:49.000Z",
+        "updatedAt": "2022-04-14T14:54:49.000Z",
+        "index": 17,
+        "begin": 97.31,
+        "end": 103.61,
+        "text1": "Pas de nourriture, pas d'argent simplement  d'amour et bon, quand même un peu d'eau fraîche.",
+        "text2": "food, no money just love and well, still some fresh water."
+      },
+      {
+        "id": 4112,
+        "videoId": 41,
+        "createdAt": "2022-04-14T14:54:49.000Z",
+        "updatedAt": "2022-04-14T14:54:49.000Z",
+        "index": 18,
+        "begin": 103.61,
+        "end": 107.72,
+        "text1": "J'adore l'eau, dans vingt,  trente ans, y'en aura plus.",
+        "text2": "I love water, in twenty, thirty years, there won't be any left."
+      },
+      {
+        "id": 4113,
+        "videoId": 41,
+        "createdAt": "2022-04-14T14:54:49.000Z",
+        "updatedAt": "2022-04-14T14:54:49.000Z",
+        "index": 19,
+        "begin": 107.72,
+        "end": 112.64,
+        "text1": "Vous pourrez par exemple entendre des  phrases comme \"C'est un artiste il ne",
+        "text2": "For example, you will be able to hear sentences like \"He's an artist, he only"
+      },
+      {
+        "id": 4114,
+        "videoId": 41,
+        "createdAt": "2022-04-14T14:54:49.000Z",
+        "updatedAt": "2022-04-14T14:54:49.000Z",
+        "index": 20,
+        "begin": 112.64,
+        "end": 117.17,
+        "text1": "vit que d'amour et d'eau fraîche.\" ou bien  \"Tu devrais trouver un travail maintenant.",
+        "text2": "lives on love and fresh water.\" or \"You should get a job now."
+      },
+      {
+        "id": 4115,
+        "videoId": 41,
+        "createdAt": "2022-04-14T14:54:49.000Z",
+        "updatedAt": "2022-04-14T14:54:49.000Z",
+        "index": 21,
+        "begin": 117.17,
+        "end": 122.84,
+        "text1": "Tu ne peux pas vivre d'amour et d'eau fraîche.\" Expression numéro 2 : un bourreau des coeurs.",
+        "text2": "You can't live on love and fresh water.\" Expression number 2: a heartbreaker (litt : heart executioner)."
+      },
+      {
+        "id": 4116,
+        "videoId": 41,
+        "createdAt": "2022-04-14T14:54:49.000Z",
+        "updatedAt": "2022-04-14T14:54:49.000Z",
+        "index": 22,
+        "begin": 122.84,
+        "end": 131.21,
+        "text1": "Un bourreau c'est la personne qui au Moyen-Âge,  devait exécuter les condamnés à mort sur la place",
+        "text2": "An executioner is the person who in the Middle Ages had to execute those condemned to death in the"
+      },
+      {
+        "id": 4117,
+        "videoId": 41,
+        "createdAt": "2022-04-14T14:54:49.000Z",
+        "updatedAt": "2022-04-14T14:54:49.000Z",
+        "index": 23,
+        "begin": 131.21,
+        "end": 138.02,
+        "text1": "publique. À partir de ça, on a créé l'expression  bourreau des coeurs. Un bourreau des coeurs,",
+        "text2": "public square. From that, we created the expression heartbreaker. A"
+      },
+      {
+        "id": 4118,
+        "videoId": 41,
+        "createdAt": "2022-04-14T14:54:49.000Z",
+        "updatedAt": "2022-04-14T14:54:49.000Z",
+        "index": 24,
+        "begin": 138.02,
+        "end": 143.09,
+        "text1": "c'est quelqu'un qui fait mal au coeur des  gens et qu'ils les brise les uns après",
+        "text2": "heartbreaker is someone who hurts people's hearts and breaks them one after"
+      },
+      {
+        "id": 4119,
+        "videoId": 41,
+        "createdAt": "2022-04-14T14:54:49.000Z",
+        "updatedAt": "2022-04-14T14:54:49.000Z",
+        "index": 25,
+        "begin": 143.09,
+        "end": 148.1,
+        "text1": "les autres. Et donc quand quelqu'un a une  réputation de séducteur ou de séductrice on",
+        "text2": "another. And so when someone has a reputation of being a seducer or seductress, we"
+      },
+      {
+        "id": 4120,
+        "videoId": 41,
+        "createdAt": "2022-04-14T14:54:49.000Z",
+        "updatedAt": "2022-04-14T14:54:49.000Z",
+        "index": 26,
+        "begin": 148.1,
+        "end": 153.62,
+        "text1": "dira que c'est un bourreau des coeurs. Expression numéro 3 : avoir un coup",
+        "text2": "will say that he is a heartbreaker. Expression number 3: Struck by lightning"
+      },
+      {
+        "id": 4121,
+        "videoId": 41,
+        "createdAt": "2022-04-14T14:54:49.000Z",
+        "updatedAt": "2022-04-14T14:54:49.000Z",
+        "index": 27,
+        "begin": 153.62,
+        "end": 159.95,
+        "text1": "de foudre. Avoir un coup de foudre ça veut  dire tomber amoureux dès le premier regard.",
+        "text2": "Struck by lightning means falling in love at first sight."
+      },
+      {
         "id": 4122,
         "videoId": 41,
         "createdAt": "2022-04-14T14:54:49.000Z",
@@ -5066,6 +5037,116 @@
         "end": 171.42,
         "text1": "La foudre c'est comme un éclair, une décharge  électrique qui tombe du ciel pendant un orage.",
         "text2": "Lightning is like lightning, an electric discharge that falls from the sky during a thunderstorm."
+      },
+      {
+        "id": 4123,
+        "videoId": 41,
+        "createdAt": "2022-04-14T14:54:49.000Z",
+        "updatedAt": "2022-04-14T14:54:49.000Z",
+        "index": 29,
+        "begin": 171.42,
+        "end": 177.21,
+        "text1": "Donc quand on dit avoir un coup de foudre c'est  comme si la foudre était tombée sur la personne",
+        "text2": "So when we say struck by lightning it is as if the lightning had fallen on the person"
+      },
+      {
+        "id": 4124,
+        "videoId": 41,
+        "createdAt": "2022-04-14T14:54:49.000Z",
+        "updatedAt": "2022-04-14T14:54:49.000Z",
+        "index": 30,
+        "begin": 177.21,
+        "end": 183.69,
+        "text1": "et l'avait fait tomber amoureux instantanément. Et j'imagine que si vous regardez cette vidéo",
+        "text2": "and had made them fall in love instantly. And I imagine that if you're watching this video,"
+      },
+      {
+        "id": 4125,
+        "videoId": 41,
+        "createdAt": "2022-04-14T14:54:49.000Z",
+        "updatedAt": "2022-04-14T14:54:49.000Z",
+        "index": 31,
+        "begin": 183.69,
+        "end": 189.27,
+        "text1": "c'est que vous aussi vous avez peut-être un petit  coup de foudre pour la langue française. Et si",
+        "text2": "it's because you too may have fallen in love with the French language. And if"
+      },
+      {
+        "id": 4126,
+        "videoId": 41,
+        "createdAt": "2022-04-14T14:54:49.000Z",
+        "updatedAt": "2022-04-14T14:54:49.000Z",
+        "index": 32,
+        "begin": 189.27,
+        "end": 194.7,
+        "text1": "vous souhaitez améliorer votre français avec des  professeurs natifs alors je vous recommande la",
+        "text2": "you want to improve your French with native teachers then I recommend the"
+      },
+      {
+        "id": 4127,
+        "videoId": 41,
+        "createdAt": "2022-04-14T14:54:49.000Z",
+        "updatedAt": "2022-04-14T14:54:49.000Z",
+        "index": 33,
+        "begin": 194.7,
+        "end": 200.13,
+        "text1": "plateforme italki. C'est sur cette plateforme que  j'ai commencé à donner des cours de français mais",
+        "text2": "italki platform. It is on this platform that I started giving French lessons but"
+      },
+      {
+        "id": 4128,
+        "videoId": 41,
+        "createdAt": "2022-04-14T14:54:49.000Z",
+        "updatedAt": "2022-04-14T14:54:49.000Z",
+        "index": 34,
+        "begin": 200.13,
+        "end": 205.62,
+        "text1": "où j'ai aussi suivi beaucoup de cours d'italien  et maintenant d'arabe. C'est une plateforme que",
+        "text2": "where I also took a lot of Italian lessons and now Arabic. It's a platform that I"
+      },
+      {
+        "id": 4129,
+        "videoId": 41,
+        "createdAt": "2022-04-14T14:54:49.000Z",
+        "updatedAt": "2022-04-14T14:54:49.000Z",
+        "index": 35,
+        "begin": 205.62,
+        "end": 210.39,
+        "text1": "je connais bien et que j'apprécie donc je suis  très contente qu'italki sponsorise cette vidéo.",
+        "text2": "know well and that I appreciate so I'm very happy that italki is the sponsor of this video. On"
+      },
+      {
+        "id": 4130,
+        "videoId": 41,
+        "createdAt": "2022-04-14T14:54:49.000Z",
+        "updatedAt": "2022-04-14T14:54:49.000Z",
+        "index": 36,
+        "begin": 210.39,
+        "end": 216.03,
+        "text1": "Sur italki vous pouvez apprendre absolument  toutes les langues et vous y trouverez aussi un",
+        "text2": "italki you can learn absolutely all languages ​​and you will also find a very large"
+      },
+      {
+        "id": 4131,
+        "videoId": 41,
+        "createdAt": "2022-04-14T14:54:49.000Z",
+        "updatedAt": "2022-04-14T14:54:49.000Z",
+        "index": 37,
+        "begin": 216.03,
+        "end": 221.4,
+        "text1": "très grand choix de professeurs qui parlent votre  langue et avec lesquels vous pouvez prendre des",
+        "text2": "choice of teachers who speak your language and with whom you can take private lessons."
+      },
+      {
+        "id": 4132,
+        "videoId": 41,
+        "createdAt": "2022-04-14T14:54:49.000Z",
+        "updatedAt": "2022-04-14T14:54:49.000Z",
+        "index": 38,
+        "begin": 221.4,
+        "end": 227.58,
+        "text1": "cours particuliers. Italki c'est une plateforme  qui convient vraiment à tout le monde peu importe",
+        "text2": "Italki it is a platform that really suits everyone regardless"
       },
       {
         "id": 4133,
@@ -5090,6 +5171,50 @@
         "text2": "allows you to take lessons from anywhere in the world, at any time."
       },
       {
+        "id": 4135,
+        "videoId": 41,
+        "createdAt": "2022-04-14T14:54:49.000Z",
+        "updatedAt": "2022-04-14T14:54:49.000Z",
+        "index": 41,
+        "begin": 239.31,
+        "end": 247.14,
+        "text1": "Cette année italki vous propose d'améliorer votre  français grâce au italki language challenge. Le",
+        "text2": "This year italki offers you to improve your French thanks to the italki language challenge. The"
+      },
+      {
+        "id": 4136,
+        "videoId": 41,
+        "createdAt": "2022-04-14T14:54:49.000Z",
+        "updatedAt": "2022-04-14T14:54:49.000Z",
+        "index": 42,
+        "begin": 247.14,
+        "end": 253.35,
+        "text1": "italki language challenge c'est un défi de 45  jours pour améliorer votre français. Vous pouvez",
+        "text2": "italki language challenge is a 45-day challenge to improve your French. You can"
+      },
+      {
+        "id": 4137,
+        "videoId": 41,
+        "createdAt": "2022-04-14T14:54:49.000Z",
+        "updatedAt": "2022-04-14T14:54:49.000Z",
+        "index": 43,
+        "begin": 253.35,
+        "end": 262.5,
+        "text1": "vous inscrire gratuitement et ensuite définir un  objectif par exemple 5, 12, 19 ou 24 heures de",
+        "text2": "register for free and then set a goal for example 5, 12, 19 or 24 hours of"
+      },
+      {
+        "id": 4138,
+        "videoId": 41,
+        "createdAt": "2022-04-14T14:54:49.000Z",
+        "updatedAt": "2022-04-14T14:54:49.000Z",
+        "index": 44,
+        "begin": 262.5,
+        "end": 269.49,
+        "text1": "leçons et si vous atteignez vos objectifs pendant  les 45 jours que dure le challenge vous pouvez",
+        "text2": "lessons and if you reach your goals during the 45 days that the challenge lasts you can"
+      },
+      {
         "id": 4139,
         "videoId": 41,
         "createdAt": "2022-04-14T14:54:49.000Z",
@@ -5099,6 +5224,50 @@
         "end": 275.22,
         "text1": "gagner des prix par exemple des bons de réduction  pour d'autres cours. Et je pense que quand on",
         "text2": "win prizes for example discount vouchers for other courses. And I think that when you"
+      },
+      {
+        "id": 4140,
+        "videoId": 41,
+        "createdAt": "2022-04-14T14:54:49.000Z",
+        "updatedAt": "2022-04-14T14:54:49.000Z",
+        "index": 46,
+        "begin": 275.22,
+        "end": 281.34,
+        "text1": "stagne un peu avec une langue c'est une très bonne  chose de pratiquer de façon intensive pendant une",
+        "text2": "stagnate a bit with a language it's a very good thing to practice intensively for a"
+      },
+      {
+        "id": 4141,
+        "videoId": 41,
+        "createdAt": "2022-04-14T14:54:49.000Z",
+        "updatedAt": "2022-04-14T14:54:49.000Z",
+        "index": 47,
+        "begin": 281.34,
+        "end": 287.16,
+        "text1": "certaine période. Ça aide vraiment à progresser  et à dépasser le plateau où on était bloqué",
+        "text2": "certain period of time. It really helps to progress and get past the plateau where you were stuck"
+      },
+      {
+        "id": 4142,
+        "videoId": 41,
+        "createdAt": "2022-04-14T14:54:49.000Z",
+        "updatedAt": "2022-04-14T14:54:49.000Z",
+        "index": 48,
+        "begin": 287.16,
+        "end": 292.68,
+        "text1": "pour participer au italki language challenge,  vous pouvez cliquer sur le lien en description.",
+        "text2": "to participate in the italki language challenge, you can click on the link in the description."
+      },
+      {
+        "id": 4143,
+        "videoId": 41,
+        "createdAt": "2022-04-14T14:54:49.000Z",
+        "updatedAt": "2022-04-14T14:54:49.000Z",
+        "index": 49,
+        "begin": 292.68,
+        "end": 300.64,
+        "text1": "Expression numéro 4: avoir un Jules. Quand on  dit que quelqu'un a un Jules, c'est un prénom,",
+        "text2": "Expression number 4: have a Jules. When we say that someone has a Jules, it's a first name,"
       },
       {
         "id": 4144,
@@ -5112,6 +5281,17 @@
         "text2": "it's that someone has a boyfriend, a boyfriend. For example: \"Do you know if she is coming"
       },
       {
+        "id": 4145,
+        "videoId": 41,
+        "createdAt": "2022-04-14T14:54:49.000Z",
+        "updatedAt": "2022-04-14T14:54:49.000Z",
+        "index": 51,
+        "begin": 306.91,
+        "end": 313.15,
+        "text1": "avec son Jules à la soirée ?\" ça veut dire  \"Tu sais si elle vient avec son copain à la",
+        "text2": "with her Jules to the party?\" it means \"Do you know if she is coming with her boyfriend to the"
+      },
+      {
         "id": 4146,
         "videoId": 41,
         "createdAt": "2022-04-14T14:54:49.000Z",
@@ -5121,6 +5301,28 @@
         "end": 317.38,
         "text1": "soirée ?\". C'est une expression qui est de  moins en moins utilisée mais c'est dommage",
         "text2": "party?\". It's an expression that is less and less used but it's a shame"
+      },
+      {
+        "id": 4147,
+        "videoId": 41,
+        "createdAt": "2022-04-14T14:54:49.000Z",
+        "updatedAt": "2022-04-14T14:54:49.000Z",
+        "index": 53,
+        "begin": 317.38,
+        "end": 322.51,
+        "text1": "parce qu'elle a une histoire assez intéressante.  Si on parle ici du prénom Jules, c'est parce que",
+        "text2": "because it has a rather interesting history. If we are talking about the first name Jules here, it is because it"
+      },
+      {
+        "id": 4148,
+        "videoId": 41,
+        "createdAt": "2022-04-14T14:54:49.000Z",
+        "updatedAt": "2022-04-14T14:54:49.000Z",
+        "index": 54,
+        "begin": 322.51,
+        "end": 327.49,
+        "text1": "c'est quelqu'un qui a vraiment existé. Et je  vais vous raconter l'histoire. La reine de",
+        "text2": "is someone who really existed. Let me tell you the story. The Queen of"
       },
       {
         "id": 4149,
@@ -5189,6 +5391,28 @@
         "text2": "lovers. And to avoid publicly accusing the queen of homosexuality, people started"
       },
       {
+        "id": 4155,
+        "videoId": 41,
+        "createdAt": "2022-04-14T14:54:49.000Z",
+        "updatedAt": "2022-04-14T14:54:49.000Z",
+        "index": 61,
+        "begin": 368.71,
+        "end": 376.63,
+        "text1": "parler de Yolande comme le Jules de la reine parce  que Jules, c'était le prénom du mari de Yolande.",
+        "text2": "talking about Yolande as the queen's Jules because Jules was Yolande's husband's first name."
+      },
+      {
+        "id": 4156,
+        "videoId": 41,
+        "createdAt": "2022-04-14T14:54:49.000Z",
+        "updatedAt": "2022-04-14T14:54:49.000Z",
+        "index": 62,
+        "begin": 376.63,
+        "end": 384.55,
+        "text1": "Expression numéro 5 : déclarer sa flamme. Dans  cette expression la flamme ce n'est pas vraiment",
+        "text2": "Expression number 5: declare your flame. In this expression the flame is not really"
+      },
+      {
         "id": 4157,
         "videoId": 41,
         "createdAt": "2022-04-14T14:54:49.000Z",
@@ -5211,6 +5435,17 @@
         "text2": "your love means telling someone that you are in love with him or her. For"
       },
       {
+        "id": 4159,
+        "videoId": 41,
+        "createdAt": "2022-04-14T14:54:49.000Z",
+        "updatedAt": "2022-04-14T14:54:49.000Z",
+        "index": 65,
+        "begin": 398.11,
+        "end": 404.74,
+        "text1": "exemple il était amoureux d'elle depuis des  années et il lui a enfin déclaré sa flamme.",
+        "text2": "example, he had been in love with her for years and he finally declared his love for her."
+      },
+      {
         "id": 4160,
         "videoId": 41,
         "createdAt": "2022-04-14T14:54:49.000Z",
@@ -5220,6 +5455,28 @@
         "end": 412.33,
         "text1": "Expression numéro 6 : tenir la chandelle. Si  vous avez regardé la vidéo où je fais deviner",
         "text2": "Expression number 6: hold the candle. If you watched the video where I make"
+      },
+      {
+        "id": 4161,
+        "videoId": 41,
+        "createdAt": "2022-04-14T14:54:49.000Z",
+        "updatedAt": "2022-04-14T14:54:49.000Z",
+        "index": 67,
+        "begin": 412.33,
+        "end": 418.12,
+        "text1": "des expressions françaises à une québécoise vous  connaissez peut être déjà cette expression. Une",
+        "text2": "a Quebecer guess French expressions, you may already know this expression. A"
+      },
+      {
+        "id": 4162,
+        "videoId": 41,
+        "createdAt": "2022-04-14T14:54:49.000Z",
+        "updatedAt": "2022-04-14T14:54:49.000Z",
+        "index": 68,
+        "begin": 418.12,
+        "end": 423.52,
+        "text1": "chandelle c'est une bougie. On parle encore  de feu ici mais ça n'a pas du tout le même",
+        "text2": "candle is a candle. We still talk about fire here but it doesn't have the same"
       },
       {
         "id": 4163,
@@ -5244,6 +5501,17 @@
         "text2": "in a somewhat awkward situation. For example, I don't want to go to the restaurant with Antoine"
       },
       {
+        "id": 4165,
+        "videoId": 41,
+        "createdAt": "2022-04-14T14:54:49.000Z",
+        "updatedAt": "2022-04-14T14:54:49.000Z",
+        "index": 71,
+        "begin": 436.03,
+        "end": 441.37,
+        "text1": "et Marion parce que je vais tenir la chandelle. Et  tenir la chandelle c'est une expression qui a une",
+        "text2": "and Marion because I'm going to hold the candle. And hold the candle is an expression that has a"
+      },
+      {
         "id": 4166,
         "videoId": 41,
         "createdAt": "2022-04-14T14:54:49.000Z",
@@ -5253,6 +5521,17 @@
         "end": 447.34,
         "text1": "origine assez drôle. À l'époque où l'électricité  n'existait pas, les couples mariés qui voulaient",
         "text2": "pretty funny origin. Back in the days where electricity did not exist, married couples who wanted"
+      },
+      {
+        "id": 4167,
+        "videoId": 41,
+        "createdAt": "2022-04-14T14:54:49.000Z",
+        "updatedAt": "2022-04-14T14:54:49.000Z",
+        "index": 73,
+        "begin": 447.34,
+        "end": 452.83,
+        "text1": "faire des bébés appelaient leur servant  (serviteur) pour qu'il tienne une chandelle et",
+        "text2": "to make babies would call their servant  to hold a candle and"
       },
       {
         "id": 4168,
@@ -5277,6 +5556,17 @@
         "text2": "Expression number seven: take a rake. A rake is a garden tool. It is"
       },
       {
+        "id": 4170,
+        "videoId": 41,
+        "createdAt": "2022-04-14T14:54:49.000Z",
+        "updatedAt": "2022-04-14T14:54:49.000Z",
+        "index": 76,
+        "begin": 465.85,
+        "end": 471.52,
+        "text1": "essentiellement pour ramasser les feuilles  mortes mais si on marche dessus par accident,",
+        "text2": "mainly used to pick up dead leaves but if you step on it by accident,"
+      },
+      {
         "id": 4171,
         "videoId": 41,
         "createdAt": "2022-04-14T14:54:49.000Z",
@@ -5299,6 +5589,17 @@
         "text2": "a rake, when we talk about a love story, it's a bit the same idea."
       },
       {
+        "id": 4173,
+        "videoId": 41,
+        "createdAt": "2022-04-14T14:54:49.000Z",
+        "updatedAt": "2022-04-14T14:54:49.000Z",
+        "index": 79,
+        "begin": 480.46,
+        "end": 489.97,
+        "text1": "Quelqu'un qui se prend un râteau, c'est quelqu'un  à qui on a dit non quand la personne espérait un",
+        "text2": "Someone who takes a rake is someone to whom we said no when the person was hoping for a"
+      },
+      {
         "id": 4174,
         "videoId": 41,
         "createdAt": "2022-04-14T14:54:49.000Z",
@@ -5310,6 +5611,17 @@
         "text2": "yes. For example, I invited him for a drink but he said no. I took a rake."
       },
       {
+        "id": 4175,
+        "videoId": 41,
+        "createdAt": "2022-04-14T14:54:49.000Z",
+        "updatedAt": "2022-04-14T14:54:49.000Z",
+        "index": 81,
+        "begin": 496.78,
+        "end": 503.77,
+        "text1": "Expression numéro 8 : avoir une aventure.  Dans cette expression on ne parle pas vraiment",
+        "text2": "Phrase number 8: have an adventure. In this expression we are not really talking about"
+      },
+      {
         "id": 4176,
         "videoId": 41,
         "createdAt": "2022-04-14T14:54:49.000Z",
@@ -5319,6 +5631,17 @@
         "end": 510.43,
         "text1": "d'enfiler un chapeau et une veste en cuir pour  aller traquer des nazis en Égypte. Avoir une",
         "text2": "putting on a hat and a leather jacket to hunt down Nazis in Egypt. Having an"
+      },
+      {
+        "id": 4177,
+        "videoId": 41,
+        "createdAt": "2022-04-14T14:54:49.000Z",
+        "updatedAt": "2022-04-14T14:54:49.000Z",
+        "index": 83,
+        "begin": 510.43,
+        "end": 516.46,
+        "text1": "aventure en France ça signifie autre chose.  Quand on dit ils ont eu une aventure ça veut",
+        "text2": "adventure in France means something else. When we say they had an affair, it means"
       },
       {
         "id": 4178,
@@ -5343,6 +5666,17 @@
         "text2": "years he had an affair with the wife of his boss.\" Thank you all for watching this video"
       },
       {
+        "id": 4180,
+        "videoId": 41,
+        "createdAt": "2022-04-14T14:54:49.000Z",
+        "updatedAt": "2022-04-14T14:54:49.000Z",
+        "index": 86,
+        "begin": 529.39,
+        "end": 533.56,
+        "text1": "dites-moi dans les commentaires quelle est  votre expression préférée ou celle que vous",
+        "text2": "tell me in the comments what is your favorite expression or the one you"
+      },
+      {
         "id": 4181,
         "videoId": 41,
         "createdAt": "2022-04-14T14:54:49.000Z",
@@ -5354,6 +5688,94 @@
         "text2": "find the funniest. And I remind you that you can download my"
       },
       {
+        "id": 4182,
+        "videoId": 41,
+        "createdAt": "2022-04-14T14:54:49.000Z",
+        "updatedAt": "2022-04-14T14:54:49.000Z",
+        "index": 88,
+        "begin": 537.43,
+        "end": 542.112,
+        "text1": "prononciation en français dans la barre de  description et je vous dis à très bientôt !",
+        "text2": "French pronunciation guide in the description bar and I'll see you very soon!"
+      },
+      {
+        "id": 4218,
+        "videoId": 43,
+        "createdAt": "2022-04-14T14:54:51.000Z",
+        "updatedAt": "2022-04-14T14:54:51.000Z",
+        "index": 0,
+        "begin": 0,
+        "end": 4.59,
+        "text1": "Ces vacances au ski ont été organisées  complètement à la dernière minute, je n'étais pas",
+        "text2": "This ski holiday was organized completely at the last minute, I was not"
+      },
+      {
+        "id": 4219,
+        "videoId": 43,
+        "createdAt": "2022-04-14T14:54:51.000Z",
+        "updatedAt": "2022-04-14T14:54:51.000Z",
+        "index": 1,
+        "begin": 4.59,
+        "end": 12.469,
+        "text1": "du tout censée partir au ski cette  semaine. Putain, je pète un câble.",
+        "text2": "supposed to go skiing at all this week. Damn, I'm going nuts."
+      },
+      {
+        "id": 4220,
+        "videoId": 43,
+        "createdAt": "2022-04-14T14:54:51.000Z",
+        "updatedAt": "2022-04-14T14:54:51.000Z",
+        "index": 2,
+        "begin": 12.69,
+        "end": 20.095,
+        "text1": "Franchement, je m'en fous, je veux juste  avoir chaud. C'est du français vulgaire hein.",
+        "text2": "Frankly, I don't care, I just want to be warm. It's vulgar French huh."
+      },
+      {
+        "id": 4221,
+        "videoId": 43,
+        "createdAt": "2022-04-14T14:54:51.000Z",
+        "updatedAt": "2022-04-14T14:54:51.000Z",
+        "index": 3,
+        "begin": 20.095,
+        "end": 25.36,
+        "text1": "Coucou, comment ça va ? J'espère que vous  allez bien. Est-ce que vous reconnaissez où",
+        "text2": "Hi how are you doing ? I hope you're doing well. Do you recognize where"
+      },
+      {
+        "id": 4222,
+        "videoId": 43,
+        "createdAt": "2022-04-14T14:54:51.000Z",
+        "updatedAt": "2022-04-14T14:54:51.000Z",
+        "index": 4,
+        "begin": 25.36,
+        "end": 32.11,
+        "text1": "je suis actuellement ? Et oui, je suis dans ma  chambre chez mes parents donc je suis arrivée",
+        "text2": "I am now? Yes, I'm in my room at my parents' house so I arrived"
+      },
+      {
+        "id": 4223,
+        "videoId": 43,
+        "createdAt": "2022-04-14T14:54:51.000Z",
+        "updatedAt": "2022-04-14T14:54:51.000Z",
+        "index": 5,
+        "begin": 32.11,
+        "end": 40.36,
+        "text1": "hier et demain matin, je pars au ski et je suis  super contente de vous emmener avec moi au ski",
+        "text2": "yesterday and tomorrow morning I'm going skiing and I'm super happy to take you skiing with me"
+      },
+      {
+        "id": 4224,
+        "videoId": 43,
+        "createdAt": "2022-04-14T14:54:51.000Z",
+        "updatedAt": "2022-04-14T14:54:51.000Z",
+        "index": 6,
+        "begin": 40.36,
+        "end": 45.61,
+        "text1": "parce que je pense que les vacances au ski,  c'est quelque chose de très français. Je sais",
+        "text2": "because I think that skiing holidays are something very French. I know"
+      },
+      {
         "id": 4225,
         "videoId": 43,
         "createdAt": "2022-04-14T14:54:51.000Z",
@@ -5363,6 +5785,61 @@
         "end": 51.087,
         "text1": "qu'il y a des pistes de ski et des stations  de ski dans le monde entier mais en France,",
         "text2": "there are ski slopes and ski resorts all over the world but in France"
+      },
+      {
+        "id": 4226,
+        "videoId": 43,
+        "createdAt": "2022-04-14T14:54:51.000Z",
+        "updatedAt": "2022-04-14T14:54:51.000Z",
+        "index": 8,
+        "begin": 51.087,
+        "end": 56.02,
+        "text1": "on a de très belles stations de ski, la  France est très connue pour ses stations",
+        "text2": "we have very beautiful ski resorts, France is very well known for its ski"
+      },
+      {
+        "id": 4227,
+        "videoId": 43,
+        "createdAt": "2022-04-14T14:54:51.000Z",
+        "updatedAt": "2022-04-14T14:54:51.000Z",
+        "index": 9,
+        "begin": 56.02,
+        "end": 61.96,
+        "text1": "de ski et je pense qu'il y a une ambiance  assez particulière au ski en France,",
+        "text2": "resorts and I think there has quite a special vibe to skiing in France,"
+      },
+      {
+        "id": 4228,
+        "videoId": 43,
+        "createdAt": "2022-04-14T14:54:51.000Z",
+        "updatedAt": "2022-04-14T14:54:51.000Z",
+        "index": 10,
+        "begin": 61.96,
+        "end": 65.29,
+        "text1": "je ne suis jamais allée au ski dans un autre  endroit, mais je pense qu'il y a une ambiance",
+        "text2": "I've never been skiing anywhere else, but I think there's"
+      },
+      {
+        "id": 4229,
+        "videoId": 43,
+        "createdAt": "2022-04-14T14:54:51.000Z",
+        "updatedAt": "2022-04-14T14:54:51.000Z",
+        "index": 11,
+        "begin": 65.29,
+        "end": 72.727,
+        "text1": "assez française et donc j'avais envie de  vous emmener avec moi et de vous montrer ça.",
+        "text2": "quite a French vibe and so I wanted to take you with me and show you that."
+      },
+      {
+        "id": 4230,
+        "videoId": 43,
+        "createdAt": "2022-04-14T14:54:51.000Z",
+        "updatedAt": "2022-04-14T14:54:51.000Z",
+        "index": 12,
+        "begin": 72.727,
+        "end": 76.93,
+        "text1": "Ces vacances au ski ont été organisées  complètement à la dernière minute, je n'étais",
+        "text2": "This ski holiday was organized completely at the last minute, I was"
       },
       {
         "id": 4231,
@@ -5387,6 +5864,50 @@
         "text2": "originally, basically, I had planned to come to France next weekend so at the time I'm shooting"
       },
       {
+        "id": 4233,
+        "videoId": 43,
+        "createdAt": "2022-04-14T14:54:51.000Z",
+        "updatedAt": "2022-04-14T14:54:51.000Z",
+        "index": 15,
+        "begin": 90.13,
+        "end": 98.23,
+        "text1": "cette vidéo, là on est le 22 janvier, j'avais prévu  de venir en France le 26, le mercredi 26 parce qu'en",
+        "text2": "this video, here we are on January 22, I had planned to come in France on the 26th, on Wednesday the 26th because in"
+      },
+      {
+        "id": 4234,
+        "videoId": 43,
+        "createdAt": "2022-04-14T14:54:51.000Z",
+        "updatedAt": "2022-04-14T14:54:51.000Z",
+        "index": 16,
+        "begin": 98.23,
+        "end": 104.32,
+        "text1": "fait le week-end prochain, le week-end du 30  janvier, c'est l'anniversaire de ma grande sœur",
+        "text2": "fact next weekend, the weekend of January 30, it's my big sister's birthday"
+      },
+      {
+        "id": 4235,
+        "videoId": 43,
+        "createdAt": "2022-04-14T14:54:51.000Z",
+        "updatedAt": "2022-04-14T14:54:51.000Z",
+        "index": 17,
+        "begin": 104.32,
+        "end": 109.87,
+        "text1": "qui va avoir 30 ans et donc on lui organise une  fête surprise et donc je lui fait une surprise,",
+        "text2": "who is going to turn 30 and so we're throwing a surprise party for her and so I surprise her,"
+      },
+      {
+        "id": 4236,
+        "videoId": 43,
+        "createdAt": "2022-04-14T14:54:51.000Z",
+        "updatedAt": "2022-04-14T14:54:51.000Z",
+        "index": 18,
+        "begin": 109.87,
+        "end": 114.73,
+        "text1": "elle ne sait pas que je suis en France. Donc voilà  j'étais censée venir le week-end prochain pour les",
+        "text2": "she doesn't know I'm in France. So yeah I was supposed to come next weekend for the"
+      },
+      {
         "id": 4237,
         "videoId": 43,
         "createdAt": "2022-04-14T14:54:51.000Z",
@@ -5407,6 +5928,17 @@
         "end": 128.59,
         "text1": "des potes partaient aussi en France et qu'ils  allaient au ski. Des potes, c'est des amis en",
         "text2": "some friends were also leaving for France and that they were going skiing. \"Des potes\" is friends in"
+      },
+      {
+        "id": 4239,
+        "videoId": 43,
+        "createdAt": "2022-04-14T14:54:51.000Z",
+        "updatedAt": "2022-04-14T14:54:51.000Z",
+        "index": 21,
+        "begin": 128.59,
+        "end": 134.71,
+        "text1": "français familier, des potes, donc j'ai appris  que des potes partaient au ski en France et",
+        "text2": "colloquial French, des potes, so I learned that friends were going skiing in France and"
       },
       {
         "id": 4240,
@@ -5431,6 +5963,39 @@
         "text2": "motivated me. They said to me: \"come on, come with us, it's going to be so cool\" so they warmed me up"
       },
       {
+        "id": 4242,
+        "videoId": 43,
+        "createdAt": "2022-04-14T14:54:51.000Z",
+        "updatedAt": "2022-04-14T14:54:51.000Z",
+        "index": 24,
+        "begin": 146.44,
+        "end": 151.27,
+        "text1": "pour que je vienne avec eux, ça aussi c'est du  français familier. Ils m'ont chauffée pour que",
+        "text2": "to come with them, that's colloquial French too. They warmed me up to"
+      },
+      {
+        "id": 4243,
+        "videoId": 43,
+        "createdAt": "2022-04-14T14:54:51.000Z",
+        "updatedAt": "2022-04-14T14:54:51.000Z",
+        "index": 25,
+        "begin": 151.27,
+        "end": 158.789,
+        "text1": "je vienne avec eux au ski et donc à la dernière  minute j'ai dit, vas-y je change mes billets,",
+        "text2": "come with them skiing and so at the last minute I said, let's go I'm changing my tickets,"
+      },
+      {
+        "id": 4244,
+        "videoId": 43,
+        "createdAt": "2022-04-14T14:54:51.000Z",
+        "updatedAt": "2022-04-14T14:54:51.000Z",
+        "index": 26,
+        "begin": 158.789,
+        "end": 163.42,
+        "text1": "je viens quatre jours plus tôt et je vais passer  le début de la semaine avec eux au ski et ensuite",
+        "text2": "I'm coming four days early and I'm going to spend the beginning of the week with them skiing and then"
+      },
+      {
         "id": 4245,
         "videoId": 43,
         "createdAt": "2022-04-14T14:54:51.000Z",
@@ -5453,6 +6018,17 @@
         "text2": "It's been forever since I've been skiing, I think it's been at least seven years since"
       },
       {
+        "id": 4247,
+        "videoId": 43,
+        "createdAt": "2022-04-14T14:54:51.000Z",
+        "updatedAt": "2022-04-14T14:54:51.000Z",
+        "index": 29,
+        "begin": 173.83,
+        "end": 177.88,
+        "text1": "je ne suis pas allée au ski donc j'espère que  c'est comme le vélo et que ça ne s'oublie pas,",
+        "text2": "I've been skiing so I hope it's like cycling and you don't forget it,"
+      },
+      {
         "id": 4248,
         "videoId": 43,
         "createdAt": "2022-04-14T14:54:51.000Z",
@@ -5473,6 +6049,28 @@
         "end": 188.53,
         "text1": "plusieurs fois dans ma vie mais j'ai jamais été  une grande skieuse. Je ne suis pas une casse-cou",
         "text2": "several times in my life but I've never been a great skier. I'm not reckless"
+      },
+      {
+        "id": 4250,
+        "videoId": 43,
+        "createdAt": "2022-04-14T14:54:51.000Z",
+        "updatedAt": "2022-04-14T14:54:51.000Z",
+        "index": 32,
+        "begin": 188.53,
+        "end": 193.69,
+        "text1": "de manière générale. Une casse-cou, c'est  quelqu'un qui aime prendre des risques, qui",
+        "text2": "in general. A casse-cou is someone who likes to take risks, who"
+      },
+      {
+        "id": 4251,
+        "videoId": 43,
+        "createdAt": "2022-04-14T14:54:51.000Z",
+        "updatedAt": "2022-04-14T14:54:51.000Z",
+        "index": 33,
+        "begin": 193.69,
+        "end": 198.07,
+        "text1": "aime aller vite, qui aime faire des choses un peu  extrêmes, je ne suis pas du tout une casse-cou,",
+        "text2": "likes to go fast, who likes to do things a bit extreme, I'm not reckless at all,"
       },
       {
         "id": 4252,
@@ -5519,6 +6117,17 @@
         "text2": "ski stuff, I think they're in the cellar. The cellar is a room under the house."
       },
       {
+        "id": 4256,
+        "videoId": 43,
+        "createdAt": "2022-04-14T14:54:51.000Z",
+        "updatedAt": "2022-04-14T14:54:51.000Z",
+        "index": 38,
+        "begin": 223.144,
+        "end": 228.91,
+        "text1": "Par exemple dans un immeuble, il y a les caves qui  sont au sous-sol c'est à dire en dessous du sol,",
+        "text2": "For example in a building, there are cellars which are in the basement, that is to say below the ground,"
+      },
+      {
         "id": 4257,
         "videoId": 43,
         "createdAt": "2022-04-14T14:54:51.000Z",
@@ -5541,6 +6150,28 @@
         "text2": "old furniture that you don't use every day, for example, it's where you"
       },
       {
+        "id": 4259,
+        "videoId": 43,
+        "createdAt": "2022-04-14T14:54:51.000Z",
+        "updatedAt": "2022-04-14T14:54:51.000Z",
+        "index": 41,
+        "begin": 240.49,
+        "end": 245.83,
+        "text1": "souvent parce qu'on n'en a pas besoin tous les  jours. Je pense que les affaires de ski sont au",
+        "text2": "often put your suitcases because you don't need them every day. I think my ski stuff is in the"
+      },
+      {
+        "id": 4260,
+        "videoId": 43,
+        "createdAt": "2022-04-14T14:54:51.000Z",
+        "updatedAt": "2022-04-14T14:54:51.000Z",
+        "index": 42,
+        "begin": 245.83,
+        "end": 253.979,
+        "text1": "sous-sol, à la cave. Bref, donc je vais descendre à  la cave, venez on va chercher les affaires de ski.",
+        "text2": "basement, in the cellar. Anyway, so I'm going down to the cellar, come on, let's get my ski stuff."
+      },
+      {
         "id": 4261,
         "videoId": 43,
         "createdAt": "2022-04-14T14:54:51.000Z",
@@ -5552,6 +6183,28 @@
         "text2": "Damn, I'm going nuts"
       },
       {
+        "id": 4262,
+        "videoId": 43,
+        "createdAt": "2022-04-14T14:54:51.000Z",
+        "updatedAt": "2022-04-14T14:54:51.000Z",
+        "index": 44,
+        "begin": 274.637,
+        "end": 278.22,
+        "text1": "Alors je suis pas encore allée à la cave  chercher mes affaires parce qu'avant je me",
+        "text2": "So I haven't gone to the basement to get the stuff yet because before I"
+      },
+      {
+        "id": 4263,
+        "videoId": 43,
+        "createdAt": "2022-04-14T14:54:51.000Z",
+        "updatedAt": "2022-04-14T14:54:51.000Z",
+        "index": 45,
+        "begin": 278.22,
+        "end": 282.75,
+        "text1": "suis dit qu'il fallait en fait que je... Un truc  que je devais faire absolument c'était de",
+        "text2": "said to myself that I actually had to... One thing that I absolutely had to do was"
+      },
+      {
         "id": 4264,
         "videoId": 43,
         "createdAt": "2022-04-14T14:54:51.000Z",
@@ -5561,6 +6214,17 @@
         "end": 289.635,
         "text1": "convertir mon passe sanitaire israélien en passe  sanitaire français, c'est censé être très simple,",
         "text2": "convert my Israeli health pass into a French health pass, it's supposed to be very simple,"
+      },
+      {
+        "id": 4265,
+        "videoId": 43,
+        "createdAt": "2022-04-14T14:54:51.000Z",
+        "updatedAt": "2022-04-14T14:54:51.000Z",
+        "index": 47,
+        "begin": 289.635,
+        "end": 293.76,
+        "text1": "il faut juste scanner le QR code dans  l'application #TousAntiCovid qui est",
+        "text2": "you just have to scan the QR code in the #TousAntiCovid application which is"
       },
       {
         "id": 4266,
@@ -5585,6 +6249,17 @@
         "text2": "that well, of course it doesn't work, I don't know why it worked for my friends but"
       },
       {
+        "id": 4268,
+        "videoId": 43,
+        "createdAt": "2022-04-14T14:54:51.000Z",
+        "updatedAt": "2022-04-14T14:54:51.000Z",
+        "index": 50,
+        "begin": 305.07,
+        "end": 308.85,
+        "text1": "ça marche pas. On me dit que le format du  document n'est pas valide alors que c'est",
+        "text2": "it doesn't work for me. I am told that the document format is not valid when it is"
+      },
+      {
         "id": 4269,
         "videoId": 43,
         "createdAt": "2022-04-14T14:54:51.000Z",
@@ -5596,6 +6271,17 @@
         "text2": "exactly the same document so I have been trying to solve the problem for an hour."
       },
       {
+        "id": 4270,
+        "videoId": 43,
+        "createdAt": "2022-04-14T14:54:51.000Z",
+        "updatedAt": "2022-04-14T14:54:51.000Z",
+        "index": 52,
+        "begin": 312.716,
+        "end": 319.14,
+        "text1": "J'essaye d'appeler l'assistance téléphonique. Y'a  un service d'assistance téléphonique qui est censé",
+        "text2": "I'm trying to call the hotline. There's a hotline that's supposed to"
+      },
+      {
         "id": 4271,
         "videoId": 43,
         "createdAt": "2022-04-14T14:54:51.000Z",
@@ -5605,6 +6291,17 @@
         "end": 325.71,
         "text1": "être ouvert 7 jours sur 7, 24 heures sur 24. Ça  fait un quart d'heure que j'attends au téléphone,",
         "text2": "be open 7 days a week, 24 hours a day. I've been on the phone for"
+      },
+      {
+        "id": 4272,
+        "videoId": 43,
+        "createdAt": "2022-04-14T14:54:51.000Z",
+        "updatedAt": "2022-04-14T14:54:51.000Z",
+        "index": 54,
+        "begin": 325.71,
+        "end": 330.9,
+        "text1": "ça fait quinze minutes que j'attends au téléphone,  il me dit que le temps d'attente est de 16 minutes",
+        "text2": "fifteen minutes, I've been on the phone for fifteen minutes, they tell me the wait time is 16 minutes"
       },
       {
         "id": 4273,
@@ -5649,6 +6346,17 @@
         "end": 356.85,
         "text1": "suis en train de péter un câble. Je sais pas  quoi faire parce que pour prendre le train",
         "text2": "I'm freaking out. I don't know what to do because to take the train"
+      },
+      {
+        "id": 4277,
+        "videoId": 43,
+        "createdAt": "2022-04-14T14:54:51.000Z",
+        "updatedAt": "2022-04-14T14:54:51.000Z",
+        "index": 59,
+        "begin": 356.85,
+        "end": 363.78,
+        "text1": "demain j'ai besoin du passe sanitaire français  enfin c'est pas très clair si je peux utiliser",
+        "text2": "tomorrow I need the French health pass, actually it's not very clear if I can use"
       },
       {
         "id": 4278,
@@ -5717,6 +6425,17 @@
         "text2": "don't have the right document. Ahhh. I need to take a deep breath. Besides, now, I'm going to have to go soon"
       },
       {
+        "id": 4284,
+        "videoId": 43,
+        "createdAt": "2022-04-14T14:54:51.000Z",
+        "updatedAt": "2022-04-14T14:54:51.000Z",
+        "index": 66,
+        "begin": 406.51,
+        "end": 411.22,
+        "text1": "j'y aille parce que je vais déjeuner chez mes  grands-parents donc je vais quand même aller",
+        "text2": "because I'm going to have lunch with my grandparents so I'm still going to go"
+      },
+      {
         "id": 4285,
         "videoId": 43,
         "createdAt": "2022-04-14T14:54:51.000Z",
@@ -5750,6 +6469,28 @@
         "text2": "Mom, where are the ski things? They're in the basement,"
       },
       {
+        "id": 4288,
+        "videoId": 43,
+        "createdAt": "2022-04-14T14:54:51.000Z",
+        "updatedAt": "2022-04-14T14:54:51.000Z",
+        "index": 70,
+        "begin": 429.4,
+        "end": 434.02,
+        "text1": "y'a la valise rouge qu'il faut monter.  Attends, je vais lui montrer. C'est dans",
+        "text2": "there's the red suitcase that needs to be taken up. Wait, I'll show her. Is it in"
+      },
+      {
+        "id": 4289,
+        "videoId": 43,
+        "createdAt": "2022-04-14T14:54:51.000Z",
+        "updatedAt": "2022-04-14T14:54:51.000Z",
+        "index": 71,
+        "begin": 434.02,
+        "end": 441.705,
+        "text1": "la valise rouge ? Ça va intéresser  quelqu'un ça ? Bah ouais, je pars au ski.",
+        "text2": "the red suitcase? Will this interest anyone? Well yeah, I'm going skiing."
+      },
+      {
         "id": 4290,
         "videoId": 43,
         "createdAt": "2022-04-14T14:54:51.000Z",
@@ -5761,6 +6502,50 @@
         "text2": "Ok so I found some stuff, let's see what we have. First,"
       },
       {
+        "id": 4291,
+        "videoId": 43,
+        "createdAt": "2022-04-14T14:54:51.000Z",
+        "updatedAt": "2022-04-14T14:54:51.000Z",
+        "index": 73,
+        "begin": 461.2,
+        "end": 465.1,
+        "text1": "j'ai trouvé des chaussures, ce  genre de chaussures on appelle",
+        "text2": "I found some shoes, this kind of shoes, we call"
+      },
+      {
+        "id": 4292,
+        "videoId": 43,
+        "createdAt": "2022-04-14T14:54:51.000Z",
+        "updatedAt": "2022-04-14T14:54:51.000Z",
+        "index": 74,
+        "begin": 465.1,
+        "end": 469.915,
+        "text1": "ça des après-ski puisque c'est les  chaussures qu'on met après le ski.",
+        "text2": "them après-ski since they're the shoes you put on after skiing."
+      },
+      {
+        "id": 4293,
+        "videoId": 43,
+        "createdAt": "2022-04-14T14:54:51.000Z",
+        "updatedAt": "2022-04-14T14:54:51.000Z",
+        "index": 75,
+        "begin": 469.915,
+        "end": 476.255,
+        "text1": "Il y a des chaussures spéciales pour le ski  et ça c'est ce qu'on appelle des après-ski.",
+        "text2": "There are special boots for skiing and that's what we call après-ski."
+      },
+      {
+        "id": 4294,
+        "videoId": 43,
+        "createdAt": "2022-04-14T14:54:51.000Z",
+        "updatedAt": "2022-04-14T14:54:51.000Z",
+        "index": 76,
+        "begin": 476.255,
+        "end": 481.48,
+        "text1": "Alors là, on a plein de chaussettes  et d'affaires. Donc je vais",
+        "text2": "So here, we have plenty of socks and stuff. So I'll"
+      },
+      {
         "id": 4295,
         "videoId": 43,
         "createdAt": "2022-04-14T14:54:51.000Z",
@@ -5770,6 +6555,17 @@
         "end": 485.341,
         "text1": "prendre, ouais, des... deux grosses paires de chaussettes.",
         "text2": "take, yeah, some... two big pairs of socks."
+      },
+      {
+        "id": 4296,
+        "videoId": 43,
+        "createdAt": "2022-04-14T14:54:51.000Z",
+        "updatedAt": "2022-04-14T14:54:51.000Z",
+        "index": 78,
+        "begin": 487.569,
+        "end": 494.71,
+        "text1": "Alors je vais prendre les paires de chaussettes.  Alors là j'ai un masque de ski. Ça aussi,",
+        "text2": "So I'll take the pairs of socks. So here I have a ski mask. That too"
       },
       {
         "id": 4297,
@@ -5849,6 +6645,17 @@
         "text2": "mittens, when in fact there's just the thumb which is separated from the other fingers, they"
       },
       {
+        "id": 4304,
+        "videoId": 43,
+        "createdAt": "2022-04-14T14:54:51.000Z",
+        "updatedAt": "2022-04-14T14:54:51.000Z",
+        "index": 86,
+        "begin": 536.11,
+        "end": 543.07,
+        "text1": "ça des moufles ou sinon j'ai ici des gants, les  gants, c'est avec... quand on a tous les doigts",
+        "text2": "'re called mittens or else I have gloves here, the gloves, it's with .. . when you have all your fingers"
+      },
+      {
         "id": 4305,
         "videoId": 43,
         "createdAt": "2022-04-14T14:54:51.000Z",
@@ -5871,6 +6678,28 @@
         "text2": "but the most important thing is the ski suit, knowing what I'm going to wear, that's"
       },
       {
+        "id": 4307,
+        "videoId": 43,
+        "createdAt": "2022-04-14T14:54:51.000Z",
+        "updatedAt": "2022-04-14T14:54:51.000Z",
+        "index": 89,
+        "begin": 555.61,
+        "end": 562.46,
+        "text1": "plus les accessoires pour se réchauffer même  si c'est très important de mettre des gants",
+        "text2": "more the accessories to warm up even if it's very important to put on gloves"
+      },
+      {
+        "id": 4308,
+        "videoId": 43,
+        "createdAt": "2022-04-14T14:54:51.000Z",
+        "updatedAt": "2022-04-14T14:54:51.000Z",
+        "index": 90,
+        "begin": 562.46,
+        "end": 570.862,
+        "text1": "bien sûr hein. Je pense que les combinaisons  de ski sont là-dedans, dans cette valise.",
+        "text2": "of course huh. I think the ski suits are in there, in that suitcase."
+      },
+      {
         "id": 4309,
         "videoId": 43,
         "createdAt": "2022-04-14T14:54:51.000Z",
@@ -5880,6 +6709,17 @@
         "end": 583.451,
         "text1": "Pas du tout. Alors là, ce n'est pas du tout  là. C'est dans l'autre valise rouge.",
         "text2": "Not at all. So there, it's not there at all. It's in the other red suitcase."
+      },
+      {
+        "id": 4310,
+        "videoId": 43,
+        "createdAt": "2022-04-14T14:54:51.000Z",
+        "updatedAt": "2022-04-14T14:54:51.000Z",
+        "index": 92,
+        "begin": 584.89,
+        "end": 589.12,
+        "text1": "Ok, c'était dans l'autre valise rouge. Ma mère  m'a dit que c'était dans une valise rouge",
+        "text2": "Ok, it was in the other red suitcase. My mother told me it was in a red suitcase"
       },
       {
         "id": 4311,
@@ -5937,6 +6777,17 @@
         "text2": "to take the suit and then I have to find undershirts, that's all I'm going to put"
       },
       {
+        "id": 4316,
+        "videoId": 43,
+        "createdAt": "2022-04-14T14:54:51.000Z",
+        "updatedAt": "2022-04-14T14:54:51.000Z",
+        "index": 98,
+        "begin": 632.515,
+        "end": 639.52,
+        "text1": "en dessous de la combi. On appelle  ça des sous-pulls et un legging, des leggings et",
+        "text2": "under the jumpsuit. We call it undershirts and leggings, leggings and"
+      },
+      {
         "id": 4317,
         "videoId": 43,
         "createdAt": "2022-04-14T14:54:51.000Z",
@@ -5948,6 +6799,83 @@
         "text2": "undershirts. I also need a fleece but I'll show you all that after, come on, see you later!"
       },
       {
+        "id": 4318,
+        "videoId": 43,
+        "createdAt": "2022-04-14T14:54:51.000Z",
+        "updatedAt": "2022-04-14T14:54:51.000Z",
+        "index": 100,
+        "begin": 651.195,
+        "end": 658.4,
+        "text1": "Je vais finir le vlog ici, j'espère que ça vous  a plu. On se retrouve la semaine prochaine pour",
+        "text2": "I'll end the vlog here, hope you enjoyed it. See you next week for"
+      },
+      {
+        "id": 4319,
+        "videoId": 43,
+        "createdAt": "2022-04-14T14:54:51.000Z",
+        "updatedAt": "2022-04-14T14:54:51.000Z",
+        "index": 101,
+        "begin": 658.4,
+        "end": 665.21,
+        "text1": "la suite de mes vacances au ski donc si vous  voulez savoir si j'ai réussi à partir au ski,",
+        "text2": "the rest of my ski vacation so if you want to know if I managed to go skiing,"
+      },
+      {
+        "id": 4320,
+        "videoId": 43,
+        "createdAt": "2022-04-14T14:54:51.000Z",
+        "updatedAt": "2022-04-14T14:54:51.000Z",
+        "index": 102,
+        "begin": 665.21,
+        "end": 671.27,
+        "text1": "je vous conseille de vous abonner à la chaîne pour  ne pas rater la vidéo de la semaine prochaine. Je",
+        "text2": "I advise you to subscribe to the channel so you don't miss next week's video. I"
+      },
+      {
+        "id": 4321,
+        "videoId": 43,
+        "createdAt": "2022-04-14T14:54:51.000Z",
+        "updatedAt": "2022-04-14T14:54:51.000Z",
+        "index": 103,
+        "begin": 671.27,
+        "end": 676.28,
+        "text1": "vous rappelle que vous avez accès à la liste de  vocabulaire de cette vidéo avec tout le nouveau",
+        "text2": "remind you that you have access to the vocabulary list of this video with all the new"
+      },
+      {
+        "id": 4322,
+        "videoId": 43,
+        "createdAt": "2022-04-14T14:54:51.000Z",
+        "updatedAt": "2022-04-14T14:54:51.000Z",
+        "index": 104,
+        "begin": 676.28,
+        "end": 681.5,
+        "text1": "vocabulaire, à la transcription, à l'audio  téléchargeable si vous voulez l'écouter",
+        "text2": "vocabulary, the transcription, the downloadable audio if you want to listen to"
+      },
+      {
+        "id": 4323,
+        "videoId": 43,
+        "createdAt": "2022-04-14T14:54:51.000Z",
+        "updatedAt": "2022-04-14T14:54:51.000Z",
+        "index": 105,
+        "begin": 681.5,
+        "end": 687.65,
+        "text1": "comme un podcast ainsi qu'à des flashcards  interactives pour travailler sur le nouveau",
+        "text2": "it like a podcast as well as interactive flashcards to work on the new"
+      },
+      {
+        "id": 4324,
+        "videoId": 43,
+        "createdAt": "2022-04-14T14:54:51.000Z",
+        "updatedAt": "2022-04-14T14:54:51.000Z",
+        "index": 106,
+        "begin": 687.65,
+        "end": 692.15,
+        "text1": "vocabulaire. Vous avez accès à tout ça sur mon  site internet, tous les détails sont dans la",
+        "text2": "vocabulary. You have access to all this on my website, all the details are in the"
+      },
+      {
         "id": 4325,
         "videoId": 43,
         "createdAt": "2022-04-14T14:54:51.000Z",
@@ -5957,6 +6885,116 @@
         "end": 697.888,
         "text1": "barre d'infos. J'espère que cette vidéo vous a  plu et on se voit la semaine prochaine bisous.",
         "text2": "info bar. I hope you enjoyed this video and see you next week, kisses."
+      },
+      {
+        "id": 6117,
+        "videoId": 58,
+        "createdAt": "2022-04-17T22:06:31.000Z",
+        "updatedAt": "2022-04-17T22:06:31.000Z",
+        "index": 0,
+        "begin": 0.12,
+        "end": 4.24,
+        "text1": "Salut tout le monde, j'espère que vous allez bien, je vous retrouve aujourd'hui",
+        "text2": "Hi everyone, I hope you're well, I'm back today for a new very short video where we"
+      },
+      {
+        "id": 6118,
+        "videoId": 58,
+        "createdAt": "2022-04-17T22:06:31.000Z",
+        "updatedAt": "2022-04-17T22:06:31.000Z",
+        "index": 1,
+        "begin": 4.27,
+        "end": 8.46,
+        "text1": "pour une nouvelle vidéo très courte où nous allons voir ensemble",
+        "text2": "will see together a French expression in a few minutes."
+      },
+      {
+        "id": 6119,
+        "videoId": 58,
+        "createdAt": "2022-04-17T22:06:31.000Z",
+        "updatedAt": "2022-04-17T22:06:31.000Z",
+        "index": 2,
+        "begin": 8.49,
+        "end": 12.82,
+        "text1": "une expression française en quelques minutes.",
+        "text2": "will see together a French expression in a few minutes."
+      },
+      {
+        "id": 6120,
+        "videoId": 58,
+        "createdAt": "2022-04-17T22:06:31.000Z",
+        "updatedAt": "2022-04-17T22:06:31.000Z",
+        "index": 3,
+        "begin": 12.85,
+        "end": 18.02,
+        "text1": "Aujourd'hui, nous allons voir l'expression toucher du bois.",
+        "text2": "Today we are going to look at the expression \"toucher du bois\"."
+      },
+      {
+        "id": 6121,
+        "videoId": 58,
+        "createdAt": "2022-04-17T22:06:31.000Z",
+        "updatedAt": "2022-04-17T22:06:31.000Z",
+        "index": 4,
+        "begin": 18.04,
+        "end": 22.02,
+        "text1": "C'est une expression que j'aime beaucoup et que j'utilise très souvent.",
+        "text2": "It's an expression that I really like and that I use very often."
+      },
+      {
+        "id": 6122,
+        "videoId": 58,
+        "createdAt": "2022-04-17T22:06:31.000Z",
+        "updatedAt": "2022-04-17T22:06:31.000Z",
+        "index": 5,
+        "begin": 22.05,
+        "end": 29.12,
+        "text1": "Toucher du bois, cette expression est surtout utilisée par",
+        "text2": "Knock on wood, this expression is mostly used by superstitious people who have"
+      },
+      {
+        "id": 6123,
+        "videoId": 58,
+        "createdAt": "2022-04-17T22:06:31.000Z",
+        "updatedAt": "2022-04-17T22:06:31.000Z",
+        "index": 6,
+        "begin": 29.15,
+        "end": 35.92,
+        "text1": "les gens superstitieux qui ont certaines croyances, qui voient des signes favorable",
+        "text2": "certain beliefs, who see favorable or unfavorable signs everywhere around them."
+      },
+      {
+        "id": 6124,
+        "videoId": 58,
+        "createdAt": "2022-04-17T22:06:31.000Z",
+        "updatedAt": "2022-04-17T22:06:31.000Z",
+        "index": 7,
+        "begin": 35.95,
+        "end": 39.38,
+        "text1": "ou défavorables un peu partout autour d'eux.",
+        "text2": "I don't know if you are superstitious, but I am a little superstitious."
+      },
+      {
+        "id": 6125,
+        "videoId": 58,
+        "createdAt": "2022-04-17T22:06:31.000Z",
+        "updatedAt": "2022-04-17T22:06:31.000Z",
+        "index": 8,
+        "begin": 39.4,
+        "end": 40.88,
+        "text1": "Je ne sais pas si vous vous êtes",
+        "text2": "I don't know if you are superstitious, but I am a little superstitious."
+      },
+      {
+        "id": 6126,
+        "videoId": 58,
+        "createdAt": "2022-04-17T22:06:31.000Z",
+        "updatedAt": "2022-04-17T22:06:31.000Z",
+        "index": 9,
+        "begin": 40.91,
+        "end": 44.82,
+        "text1": "superstitieux, mais moi, je suis un peu superstitieuse.",
+        "text2": "I don't know if you are superstitious, but I am a little superstitious."
       },
       {
         "id": 6127,
@@ -5981,6 +7019,61 @@
         "text2": "because they say you'll have 7 years of bad luck."
       },
       {
+        "id": 6129,
+        "videoId": 58,
+        "createdAt": "2022-04-17T22:06:31.000Z",
+        "updatedAt": "2022-04-17T22:06:31.000Z",
+        "index": 12,
+        "begin": 54.73,
+        "end": 57.14,
+        "text1": "Je n'aime pas, par exemple, si j'ai",
+        "text2": "I don't like, for example, if I have"
+      },
+      {
+        "id": 6130,
+        "videoId": 58,
+        "createdAt": "2022-04-17T22:06:31.000Z",
+        "updatedAt": "2022-04-17T22:06:31.000Z",
+        "index": 13,
+        "begin": 57.17,
+        "end": 61.94,
+        "text1": "des amis qui vont avoir un bébé, acheter le cadeau avant la naissance.",
+        "text2": "friends who are having a baby, to buy the gift before the birth."
+      },
+      {
+        "id": 6131,
+        "videoId": 58,
+        "createdAt": "2022-04-17T22:06:31.000Z",
+        "updatedAt": "2022-04-17T22:06:31.000Z",
+        "index": 14,
+        "begin": 61.97,
+        "end": 64.34,
+        "text1": "Je suis superstitieuse.",
+        "text2": "I am superstitious."
+      },
+      {
+        "id": 6132,
+        "videoId": 58,
+        "createdAt": "2022-04-17T22:06:31.000Z",
+        "updatedAt": "2022-04-17T22:06:31.000Z",
+        "index": 15,
+        "begin": 64.36,
+        "end": 66.04,
+        "text1": "Quand on est superstitieux, on peut",
+        "text2": "When you are superstitious, you can touch wood so that something bad doesn't happen."
+      },
+      {
+        "id": 6133,
+        "videoId": 58,
+        "createdAt": "2022-04-17T22:06:31.000Z",
+        "updatedAt": "2022-04-17T22:06:31.000Z",
+        "index": 16,
+        "begin": 66.07,
+        "end": 70.49,
+        "text1": "toucher du bois pour qu'un malheur n'arrive pas.",
+        "text2": "When you are superstitious, you can touch wood so that something bad doesn't happen."
+      },
+      {
         "id": 6134,
         "videoId": 58,
         "createdAt": "2022-04-17T22:06:31.000Z",
@@ -5990,6 +7083,28 @@
         "end": 73.34,
         "text1": "On conjure le mauvais sort.",
         "text2": "You ward off bad luck."
+      },
+      {
+        "id": 6135,
+        "videoId": 58,
+        "createdAt": "2022-04-17T22:06:31.000Z",
+        "updatedAt": "2022-04-17T22:06:31.000Z",
+        "index": 18,
+        "begin": 73.37,
+        "end": 75.96,
+        "text1": "Toucher du bois, ça permet de se protéger",
+        "text2": "Touching wood protects you from bad things that might happen."
+      },
+      {
+        "id": 6136,
+        "videoId": 58,
+        "createdAt": "2022-04-17T22:06:31.000Z",
+        "updatedAt": "2022-04-17T22:06:31.000Z",
+        "index": 19,
+        "begin": 75.99,
+        "end": 78.98,
+        "text1": "de mauvaises choses qui pourraient arriver.",
+        "text2": "Touching wood protects you from bad things that might happen."
       },
       {
         "id": 6137,
@@ -6014,6 +7129,28 @@
         "text2": "For example, if I'm pregnant and I'm talking to a friend about a baby who has"
       },
       {
+        "id": 6139,
+        "videoId": 58,
+        "createdAt": "2022-04-17T22:06:31.000Z",
+        "updatedAt": "2022-04-17T22:06:31.000Z",
+        "index": 22,
+        "begin": 87.77,
+        "end": 92.14,
+        "text1": "bébé qui a eu des gros problèmes, qui a par exemple eu une maladie ou",
+        "text2": "had big problems, such as having an illness or a disability, I'm going to say"
+      },
+      {
+        "id": 6140,
+        "videoId": 58,
+        "createdAt": "2022-04-17T22:06:31.000Z",
+        "updatedAt": "2022-04-17T22:06:31.000Z",
+        "index": 23,
+        "begin": 92.17,
+        "end": 98.46,
+        "text1": "un handicap, je vais dire je touche du bois pour que ça n'arrive pas à mon bébé.",
+        "text2": "knock on wood so that this doesn't happen to my baby."
+      },
+      {
         "id": 6141,
         "videoId": 58,
         "createdAt": "2022-04-17T22:06:31.000Z",
@@ -6023,6 +7160,17 @@
         "end": 103.38,
         "text1": "Une planche pour découper du pain, mais souvent, on va toucher une table.",
         "text2": "A board to cut bread, but often, we will touch a table."
+      },
+      {
+        "id": 6142,
+        "videoId": 58,
+        "createdAt": "2022-04-17T22:06:31.000Z",
+        "updatedAt": "2022-04-17T22:06:31.000Z",
+        "index": 25,
+        "begin": 103.4,
+        "end": 106.06,
+        "text1": "Oui, parce que j'ai oublié de vous dire, ça c'est essentiel.",
+        "text2": "Yes, because I forgot to tell you, this is essential."
       },
       {
         "id": 6143,
@@ -6047,6 +7195,28 @@
         "text2": "So, you have to find a piece of wood to touch."
       },
       {
+        "id": 6145,
+        "videoId": 58,
+        "createdAt": "2022-04-17T22:06:31.000Z",
+        "updatedAt": "2022-04-17T22:06:31.000Z",
+        "index": 28,
+        "begin": 114.96,
+        "end": 116.93,
+        "text1": "Voici une autre mise en contexte.",
+        "text2": "Here's another context."
+      },
+      {
+        "id": 6146,
+        "videoId": 58,
+        "createdAt": "2022-04-17T22:06:31.000Z",
+        "updatedAt": "2022-04-17T22:06:31.000Z",
+        "index": 29,
+        "begin": 116.96,
+        "end": 119.36,
+        "text1": "Par exemple, je peux dire Caroline a déjà",
+        "text2": "For example, I can say Caroline has"
+      },
+      {
         "id": 6147,
         "videoId": 58,
         "createdAt": "2022-04-17T22:06:31.000Z",
@@ -6067,6 +7237,149 @@
         "end": 126.32,
         "text1": "Elle va être licenciée si elle n'arrive",
         "text2": "She's going to get laid off if she doesn't get her driver's license soon."
+      },
+      {
+        "id": 6149,
+        "videoId": 58,
+        "createdAt": "2022-04-17T22:06:31.000Z",
+        "updatedAt": "2022-04-17T22:06:31.000Z",
+        "index": 32,
+        "begin": 126.35,
+        "end": 130.3,
+        "text1": "pas à avoir son permis de conduire rapidement.",
+        "text2": "She's going to get laid off if she doesn't get her driver's license soon."
+      },
+      {
+        "id": 6150,
+        "videoId": 58,
+        "createdAt": "2022-04-17T22:06:31.000Z",
+        "updatedAt": "2022-04-17T22:06:31.000Z",
+        "index": 33,
+        "begin": 130.33,
+        "end": 132.42,
+        "text1": "Et donc, je vais toucher du bois",
+        "text2": "And so, I'm going to knock on wood to hope that she passes her driver's test."
+      },
+      {
+        "id": 6151,
+        "videoId": 58,
+        "createdAt": "2022-04-17T22:06:31.000Z",
+        "updatedAt": "2022-04-17T22:06:31.000Z",
+        "index": 34,
+        "begin": 132.45,
+        "end": 136.22,
+        "text1": "pour espérer qu'elle réussisse son permis de conduire.",
+        "text2": "And so, I'm going to knock on wood to hope that she passes her driver's test."
+      },
+      {
+        "id": 6152,
+        "videoId": 58,
+        "createdAt": "2022-04-17T22:06:31.000Z",
+        "updatedAt": "2022-04-17T22:06:31.000Z",
+        "index": 35,
+        "begin": 136.25,
+        "end": 138.02,
+        "text1": "Je vais contre un mauvais sort.",
+        "text2": "I'm going against a bad spell."
+      },
+      {
+        "id": 6153,
+        "videoId": 58,
+        "createdAt": "2022-04-17T22:06:31.000Z",
+        "updatedAt": "2022-04-17T22:06:31.000Z",
+        "index": 36,
+        "begin": 138.05,
+        "end": 139.6,
+        "text1": "Voilà, c'était très court.",
+        "text2": "That was very short."
+      },
+      {
+        "id": 6154,
+        "videoId": 58,
+        "createdAt": "2022-04-17T22:06:31.000Z",
+        "updatedAt": "2022-04-17T22:06:31.000Z",
+        "index": 37,
+        "begin": 139.63,
+        "end": 141.26,
+        "text1": "C'est fini pour aujourd'hui.",
+        "text2": "That's it for today."
+      },
+      {
+        "id": 6155,
+        "videoId": 58,
+        "createdAt": "2022-04-17T22:06:31.000Z",
+        "updatedAt": "2022-04-17T22:06:31.000Z",
+        "index": 38,
+        "begin": 141.29,
+        "end": 143.22,
+        "text1": "J'espère que cette vidéo vous a plu.",
+        "text2": "I hope you enjoyed this video."
+      },
+      {
+        "id": 6156,
+        "videoId": 58,
+        "createdAt": "2022-04-17T22:06:31.000Z",
+        "updatedAt": "2022-04-17T22:06:31.000Z",
+        "index": 39,
+        "begin": 143.25,
+        "end": 145.96,
+        "text1": "Dites-moi en commentaire si dans votre",
+        "text2": "Tell me in comments if in your language or in your country, there are other little"
+      },
+      {
+        "id": 6157,
+        "videoId": 58,
+        "createdAt": "2022-04-17T22:06:31.000Z",
+        "updatedAt": "2022-04-17T22:06:31.000Z",
+        "index": 40,
+        "begin": 145.99,
+        "end": 151.1,
+        "text1": "langue ou dans votre pays, il y a d'autres petites expressions ou petites",
+        "text2": "Tell me in comments if in your language or in your country, there are other little"
+      },
+      {
+        "id": 6158,
+        "videoId": 58,
+        "createdAt": "2022-04-17T22:06:31.000Z",
+        "updatedAt": "2022-04-17T22:06:31.000Z",
+        "index": 41,
+        "begin": 151.13,
+        "end": 155.82,
+        "text1": "manies qu'utilisent les gens pour aller contre un mauvais sort.",
+        "text2": "expressions or little quirks that people use to go against a bad spell."
+      },
+      {
+        "id": 6159,
+        "videoId": 58,
+        "createdAt": "2022-04-17T22:06:31.000Z",
+        "updatedAt": "2022-04-17T22:06:31.000Z",
+        "index": 42,
+        "begin": 155.85,
+        "end": 161.32,
+        "text1": "Si vous avez aimé cette vidéo, bien sûr, mettez un like et surtout, abonnez-vous",
+        "text2": "If you liked this video, of course, put a like and above all, subscribe to the"
+      },
+      {
+        "id": 6160,
+        "videoId": 58,
+        "createdAt": "2022-04-17T22:06:31.000Z",
+        "updatedAt": "2022-04-17T22:06:31.000Z",
+        "index": 43,
+        "begin": 161.35,
+        "end": 164.1,
+        "text1": "à la chaîne pour ne manquer aucune de mes vidéos.",
+        "text2": "channel so you don't miss any of my videos."
+      },
+      {
+        "id": 6161,
+        "videoId": 58,
+        "createdAt": "2022-04-17T22:06:31.000Z",
+        "updatedAt": "2022-04-17T22:06:31.000Z",
+        "index": 44,
+        "begin": 164.13,
+        "end": 166.12,
+        "text1": "Je vous dis à très très vite.",
+        "text2": "I'll see you soon."
       },
       {
         "id": 6427,
@@ -6102,6 +7415,17 @@
         "text2": "reminds me of an ad for Pitch. Pitch are snacks that we ate when"
       },
       {
+        "id": 6430,
+        "videoId": 62,
+        "createdAt": "2022-04-21T22:15:29.000Z",
+        "updatedAt": "2022-04-21T22:15:29.000Z",
+        "index": 3,
+        "begin": 18.6,
+        "end": 23.85,
+        "text1": "on était enfants. Il y avait une pub dans les  années 2000 et il y avait une chanson comme ça:",
+        "text2": "we were children. There was an ad in the 2000s and there was a song like this:"
+      },
+      {
         "id": 6431,
         "videoId": 62,
         "createdAt": "2022-04-21T22:15:29.000Z",
@@ -6111,6 +7435,50 @@
         "end": 30.21,
         "text1": "pitch oh mon pitch, quand t'as un petit  creux, prends dans ta poche un pitch ou deux",
         "text2": "pitch oh my pitch, when you're peckish, take a pitch or two in your pocket"
+      },
+      {
+        "id": 6432,
+        "videoId": 62,
+        "createdAt": "2022-04-21T22:15:29.000Z",
+        "updatedAt": "2022-04-21T22:15:29.000Z",
+        "index": 5,
+        "begin": 37.094,
+        "end": 42.09,
+        "text1": "Bref donc j'ai un petit creux et j'ai  envie d'un petit truc sucré. Idéalement,",
+        "text2": "So I'm a little peckish and I want something sweet. Ideally,"
+      },
+      {
+        "id": 6433,
+        "videoId": 62,
+        "createdAt": "2022-04-21T22:15:29.000Z",
+        "updatedAt": "2022-04-21T22:15:29.000Z",
+        "index": 6,
+        "begin": 42.09,
+        "end": 47.346,
+        "text1": "là ce que j'aimerais manger c'est un gâteau à  la banane parce que si vous avez vu cette vidéo",
+        "text2": "what I would like to eat is a banana cake because if you have seen this video"
+      },
+      {
+        "id": 6434,
+        "videoId": 62,
+        "createdAt": "2022-04-21T22:15:29.000Z",
+        "updatedAt": "2022-04-21T22:15:29.000Z",
+        "index": 7,
+        "begin": 47.639,
+        "end": 53.85,
+        "text1": "vous savez que c'est mon gâteau préféré. Sauf  que si vous avez vu la vidéo, vous savez que",
+        "text2": "you know that it is my favorite cake. Except if you've seen the video, you know that"
+      },
+      {
+        "id": 6435,
+        "videoId": 62,
+        "createdAt": "2022-04-21T22:15:29.000Z",
+        "updatedAt": "2022-04-21T22:15:29.000Z",
+        "index": 8,
+        "begin": 53.85,
+        "end": 58.74,
+        "text1": "ça prend presque deux heures pour faire ce gâteau  parce que faut préparer le gâteau, ensuite y'a",
+        "text2": "it takes almost two hours to make this cake because you have to prepare the cake, then there's"
       },
       {
         "id": 6436,
@@ -6135,6 +7503,61 @@
         "text2": "and I don't want to wait two hours for the cake to be ready because I'm hungry now,"
       },
       {
+        "id": 6438,
+        "videoId": 62,
+        "createdAt": "2022-04-21T22:15:29.000Z",
+        "updatedAt": "2022-04-21T22:15:29.000Z",
+        "index": 11,
+        "begin": 72.472,
+        "end": 78.78,
+        "text1": "pas dans deux heures. Quand je dis flemme, ça veut  dire j'ai la flemme, parfois on dit juste flemme",
+        "text2": "not in two hours. When I say \"flemme\", it means \"j'ai la flemme\", sometimes we just say \"flemme\""
+      },
+      {
+        "id": 6439,
+        "videoId": 62,
+        "createdAt": "2022-04-21T22:15:29.000Z",
+        "updatedAt": "2022-04-21T22:15:29.000Z",
+        "index": 12,
+        "begin": 78.78,
+        "end": 84.3,
+        "text1": "tout seul, flemme d'attendre que le gâteau soit  prêt ça veut dire que je n'ai pas la patience,",
+        "text2": "alone, I don't want to wait for the cake to be ready, that means I don't have the patience,"
+      },
+      {
+        "id": 6440,
+        "videoId": 62,
+        "createdAt": "2022-04-21T22:15:29.000Z",
+        "updatedAt": "2022-04-21T22:15:29.000Z",
+        "index": 13,
+        "begin": 84.3,
+        "end": 90.87,
+        "text1": "je n'ai pas la force d'attendre, c'est du français  familier donc flemme d'attendre que le gâteau soit",
+        "text2": "I don't have the strength to wait, it is colloquial French so I don't want to wait for the cake to be"
+      },
+      {
+        "id": 6441,
+        "videoId": 62,
+        "createdAt": "2022-04-21T22:15:29.000Z",
+        "updatedAt": "2022-04-21T22:15:29.000Z",
+        "index": 14,
+        "begin": 90.87,
+        "end": 99.089,
+        "text1": "prêt dans deux heures mais j'ai trouvé la  solution à mon problème, c'est de préparer",
+        "text2": "ready in two hours but I found the solution to my problem, it is to prepare"
+      },
+      {
+        "id": 6442,
+        "videoId": 62,
+        "createdAt": "2022-04-21T22:15:29.000Z",
+        "updatedAt": "2022-04-21T22:15:29.000Z",
+        "index": 15,
+        "begin": 99.089,
+        "end": 106.68,
+        "text1": "un mug cake. Un mug cake, c'est un gâteau qu'on  prépare dans une tasse... Attendez je vais vous",
+        "text2": "a mug cake. A mug cake is a cake that is prepared in a mug... Wait, I'll"
+      },
+      {
         "id": 6443,
         "videoId": 62,
         "createdAt": "2022-04-21T22:15:29.000Z",
@@ -6155,6 +7578,28 @@
         "end": 117.06,
         "text1": "'fin qu'on prépare dans une tasse et qu'on fait  cuire au micro-ondes et c'est censé prendre",
         "text2": "well that you make in a mug and microwave and it's supposed to take"
+      },
+      {
+        "id": 6445,
+        "videoId": 62,
+        "createdAt": "2022-04-21T22:15:29.000Z",
+        "updatedAt": "2022-04-21T22:15:29.000Z",
+        "index": 18,
+        "begin": 117.06,
+        "end": 123.66,
+        "text1": "5 minutes en tout. Je vais me préparer un mug  cake à la banane, j'ai trouvé une recette sur",
+        "text2": "5 minutes in total. I'm going to make myself a banana mug cake, I found a recipe on"
+      },
+      {
+        "id": 6446,
+        "videoId": 62,
+        "createdAt": "2022-04-21T22:15:29.000Z",
+        "updatedAt": "2022-04-21T22:15:29.000Z",
+        "index": 19,
+        "begin": 123.66,
+        "end": 127.6,
+        "text1": "la chaîne YouTube de Pick Up Limes qui  est une chaîne YouTube que j'aime beaucoup,",
+        "text2": "the Pick Up Limes YouTube channel which is a YouTube channel that I really like,"
       },
       {
         "id": 6447,
@@ -6179,6 +7624,39 @@
         "text2": "call. \"Il faut que je me grouille\", that means I have to hurry, it's"
       },
       {
+        "id": 6449,
+        "videoId": 62,
+        "createdAt": "2022-04-21T22:15:29.000Z",
+        "updatedAt": "2022-04-21T22:15:29.000Z",
+        "index": 22,
+        "begin": 139.39,
+        "end": 143.902,
+        "text1": "très familier. Faut que je me grouille.  Grouille-toi, ça veut dire dépêche-toi",
+        "text2": "very colloquial French. I have to hurry up. \"Grouille-toi\", that means hurry up"
+      },
+      {
+        "id": 6450,
+        "videoId": 62,
+        "createdAt": "2022-04-21T22:15:29.000Z",
+        "updatedAt": "2022-04-21T22:15:29.000Z",
+        "index": 23,
+        "begin": 143.902,
+        "end": 146.56,
+        "text1": "donc il faut que je me grouille parce que  j'ai pas beaucoup de temps pour préparer le",
+        "text2": "so I have to hurry up because I don't have much time to prepare the"
+      },
+      {
+        "id": 6451,
+        "videoId": 62,
+        "createdAt": "2022-04-21T22:15:29.000Z",
+        "updatedAt": "2022-04-21T22:15:29.000Z",
+        "index": 24,
+        "begin": 146.56,
+        "end": 151.708,
+        "text1": "gâteau donc je vais aller chercher tous les  ingrédients et on va préparer ça ensemble.",
+        "text2": "cake so I'm going to get all the ingredients and we'll prepare it together."
+      },
+      {
         "id": 6452,
         "videoId": 62,
         "createdAt": "2022-04-21T22:15:29.000Z",
@@ -6201,6 +7679,28 @@
         "text2": "ripe banana so I only have bananas that are not very ripe but I had frozen bananas in the"
       },
       {
+        "id": 6454,
+        "videoId": 62,
+        "createdAt": "2022-04-21T22:15:29.000Z",
+        "updatedAt": "2022-04-21T22:15:29.000Z",
+        "index": 27,
+        "begin": 185.9,
+        "end": 190.52,
+        "text1": "congélateur, j'ai toujours des bananes dans  le congélateur, des bananes bien mûres, donc",
+        "text2": "freezer, I always have bananas in the freezer, well ripe bananas, so"
+      },
+      {
+        "id": 6455,
+        "videoId": 62,
+        "createdAt": "2022-04-21T22:15:29.000Z",
+        "updatedAt": "2022-04-21T22:15:29.000Z",
+        "index": 28,
+        "begin": 190.52,
+        "end": 196.04,
+        "text1": "j'ai pris une demi-banane congelée et la première  chose que je vais faire c'est mettre la banane au",
+        "text2": "I took half a frozen banana and the first thing I'm going to do is put the banana in the"
+      },
+      {
         "id": 6456,
         "videoId": 62,
         "createdAt": "2022-04-21T22:15:29.000Z",
@@ -6210,6 +7710,28 @@
         "end": 203.833,
         "text1": "micro-ondes pour qu'elle décongèle donc je mets de la  banane dans une tasse qui va au micro-ondes.",
         "text2": "microwave to thaw it out so I'm putting some banana in a microwaveable mug."
+      },
+      {
+        "id": 6457,
+        "videoId": 62,
+        "createdAt": "2022-04-21T22:15:29.000Z",
+        "updatedAt": "2022-04-21T22:15:29.000Z",
+        "index": 30,
+        "begin": 203.833,
+        "end": 210.366,
+        "text1": "Hop ! C'est peut-être un peu trop de banane. Donc j'ai mis  ma banane dans une tasse qui va au micro-ondes.",
+        "text2": "Hop! Maybe that's a little too much banana. So I put my banana in a microwaveable mug."
+      },
+      {
+        "id": 6458,
+        "videoId": 62,
+        "createdAt": "2022-04-21T22:15:29.000Z",
+        "updatedAt": "2022-04-21T22:15:29.000Z",
+        "index": 31,
+        "begin": 216.167,
+        "end": 218.97,
+        "text1": "pitch oh mon pitch quand t'as un petit creux",
+        "text2": "pitch oh my pitch when you're feeling peckish"
       },
       {
         "id": 6459,
@@ -6232,6 +7754,72 @@
         "end": 236.956,
         "text1": "avec une fourchette et ensuite j'ajoute  une cuillère à soupe de lait végétal.",
         "text2": "with a fork and then I add a tablespoon of vegetable milk."
+      },
+      {
+        "id": 6461,
+        "videoId": 62,
+        "createdAt": "2022-04-21T22:15:29.000Z",
+        "updatedAt": "2022-04-21T22:15:29.000Z",
+        "index": 34,
+        "begin": 239.636,
+        "end": 244.315,
+        "text1": "Une cuillère à soupe d'huile végétale",
+        "text2": "A tablespoon of vegetable oil"
+      },
+      {
+        "id": 6462,
+        "videoId": 62,
+        "createdAt": "2022-04-21T22:15:29.000Z",
+        "updatedAt": "2022-04-21T22:15:29.000Z",
+        "index": 35,
+        "begin": 246.042,
+        "end": 257.567,
+        "text1": "Ajouter une cuillère à café d'extrait  de vanille et une pincée de sel",
+        "text2": "Add a teaspoon of vanilla extract and a pinch of salt"
+      },
+      {
+        "id": 6463,
+        "videoId": 62,
+        "createdAt": "2022-04-21T22:15:29.000Z",
+        "updatedAt": "2022-04-21T22:15:29.000Z",
+        "index": 36,
+        "begin": 259.256,
+        "end": 264.125,
+        "text1": "Et mélanger le tout. Je mélange",
+        "text2": "And mix everything. I mix"
+      },
+      {
+        "id": 6464,
+        "videoId": 62,
+        "createdAt": "2022-04-21T22:15:29.000Z",
+        "updatedAt": "2022-04-21T22:15:29.000Z",
+        "index": 37,
+        "begin": 267.72,
+        "end": 272.766,
+        "text1": "Ajouter trois cuillères à soupe de farine",
+        "text2": "Add three tablespoons of flour"
+      },
+      {
+        "id": 6465,
+        "videoId": 62,
+        "createdAt": "2022-04-21T22:15:29.000Z",
+        "updatedAt": "2022-04-21T22:15:29.000Z",
+        "index": 38,
+        "begin": 274.253,
+        "end": 278.86,
+        "text1": "Deux et trois",
+        "text2": "Two and three"
+      },
+      {
+        "id": 6466,
+        "videoId": 62,
+        "createdAt": "2022-04-21T22:15:29.000Z",
+        "updatedAt": "2022-04-21T22:15:29.000Z",
+        "index": 39,
+        "begin": 279.126,
+        "end": 285,
+        "text1": "Une cuillère à soupe de graines  de lin alors les graines de lin,",
+        "text2": "One tablespoon of flax seeds so flax seeds,"
       },
       {
         "id": 6467,
@@ -6278,6 +7866,17 @@
         "text2": "I add 1/4 of a teaspoon baking powder. The recipe uses sugar. Me,"
       },
       {
+        "id": 6471,
+        "videoId": 62,
+        "createdAt": "2022-04-21T22:15:29.000Z",
+        "updatedAt": "2022-04-21T22:15:29.000Z",
+        "index": 44,
+        "begin": 313.32,
+        "end": 317.485,
+        "text1": "personnellement je vais pas mettre de sucre parce  qu'en fait le lait que j'utilise c'est du lait de",
+        "text2": "personally, I'm not going to add sugar because in fact the milk I use is rice milk"
+      },
+      {
         "id": 6472,
         "videoId": 62,
         "createdAt": "2022-04-21T22:15:29.000Z",
@@ -6300,6 +7899,17 @@
         "text2": "finally I will add about 2 squares of chocolate that I will cut into pieces."
       },
       {
+        "id": 6474,
+        "videoId": 62,
+        "createdAt": "2022-04-21T22:15:29.000Z",
+        "updatedAt": "2022-04-21T22:15:29.000Z",
+        "index": 47,
+        "begin": 337.78,
+        "end": 344.83,
+        "text1": "Et ensuite elle dit de mélanger jusqu'à ce  que tout soit bien incorporé. On mélange mais",
+        "text2": "And then she says to mix until everything is well incorporated. Mix but be"
+      },
+      {
         "id": 6475,
         "videoId": 62,
         "createdAt": "2022-04-21T22:15:29.000Z",
@@ -6309,6 +7919,39 @@
         "end": 354.67,
         "text1": "attention à ne pas trop mélanger. Elle prévient  de bien faire attention à ne pas trop mélanger.",
         "text2": "careful not to overmix. She warns to be careful not to overmix."
+      },
+      {
+        "id": 6476,
+        "videoId": 62,
+        "createdAt": "2022-04-21T22:15:29.000Z",
+        "updatedAt": "2022-04-21T22:15:29.000Z",
+        "index": 49,
+        "begin": 354.67,
+        "end": 359.83,
+        "text1": "Je suis en train de me rappeler en fait que j'ai déjà  vu une vidéo comme ça sur la chaîne de Laura de",
+        "text2": "I'm actually remembering that I've seen a video like this before on Laura's channel from"
+      },
+      {
+        "id": 6477,
+        "videoId": 62,
+        "createdAt": "2022-04-21T22:15:29.000Z",
+        "updatedAt": "2022-04-21T22:15:29.000Z",
+        "index": 50,
+        "begin": 359.83,
+        "end": 365.59,
+        "text1": "Spanish After Hours qui est une chaîne que j'aime  beaucoup pour apprendre l'espagnol donc Laura si",
+        "text2": "Spanish After Hours which is a channel I really like for learning Spanish so Laura if"
+      },
+      {
+        "id": 6478,
+        "videoId": 62,
+        "createdAt": "2022-04-21T22:15:29.000Z",
+        "updatedAt": "2022-04-21T22:15:29.000Z",
+        "index": 51,
+        "begin": 365.59,
+        "end": 375.52,
+        "text1": "tu passes par là, coucou. Ok alors je crois que  c'est bon, j'ai bien mis tous les ingrédients donc",
+        "text2": "you pass by, hi. Ok so I think it's good, I did put all the ingredients in so"
       },
       {
         "id": 6479,
@@ -6355,6 +7998,17 @@
         "text2": "a toothpick or a knife and if the knife comes out clean, it means that the cake is"
       },
       {
+        "id": 6483,
+        "videoId": 62,
+        "createdAt": "2022-04-21T22:15:29.000Z",
+        "updatedAt": "2022-04-21T22:15:29.000Z",
+        "index": 56,
+        "begin": 422.64,
+        "end": 427.83,
+        "text1": "cuit. Et elle prévient bien que le temps  de cuisson peut varier en fonction de",
+        "text2": "cooked. And she does warn that the cooking time may vary depending on"
+      },
+      {
         "id": 6484,
         "videoId": 62,
         "createdAt": "2022-04-21T22:15:29.000Z",
@@ -6364,6 +8018,17 @@
         "end": 434.755,
         "text1": "votre micro-ondes et des réglages de votre  micro-ondes et si le gâteau n'est pas cuit,",
         "text2": "your microwave and your microwave settings and if the cake is not cooked,"
+      },
+      {
+        "id": 6485,
+        "videoId": 62,
+        "createdAt": "2022-04-21T22:15:29.000Z",
+        "updatedAt": "2022-04-21T22:15:29.000Z",
+        "index": 58,
+        "begin": 434.755,
+        "end": 440.01,
+        "text1": "remettez-le simplement au micro-ondes  par intervalle de 15 secondes. J'hésite,",
+        "text2": "just put it back in the microwave in 15 second intervals. I hesitate,"
       },
       {
         "id": 6486,
@@ -6399,6 +8064,39 @@
         "text2": "slices of bananas. I'm going to put some banana slices on it."
       },
       {
+        "id": 6489,
+        "videoId": 62,
+        "createdAt": "2022-04-21T22:15:29.000Z",
+        "updatedAt": "2022-04-21T22:15:29.000Z",
+        "index": 62,
+        "begin": 479.198,
+        "end": 485.454,
+        "text1": "Elle conseille aussi d'ajouter  un petit peu de chocolat,",
+        "text2": "She also advises adding a little bit of chocolate,"
+      },
+      {
+        "id": 6490,
+        "videoId": 62,
+        "createdAt": "2022-04-21T22:15:29.000Z",
+        "updatedAt": "2022-04-21T22:15:29.000Z",
+        "index": 63,
+        "begin": 485.454,
+        "end": 491.9,
+        "text1": "ça fait pas de mal et le dernier  truc qu'elle conseille de mettre, c'est des",
+        "text2": "it doesn't hurt and the last thing she advises is to put some"
+      },
+      {
+        "id": 6491,
+        "videoId": 62,
+        "createdAt": "2022-04-21T22:15:29.000Z",
+        "updatedAt": "2022-04-21T22:15:29.000Z",
+        "index": 64,
+        "begin": 491.9,
+        "end": 497.83,
+        "text1": "noix de pécan grillées donc je vais  aller faire griller des noix de pécan",
+        "text2": "toasted pecans so I'm going to toast some pecans"
+      },
+      {
         "id": 6492,
         "videoId": 62,
         "createdAt": "2022-04-21T22:15:29.000Z",
@@ -6421,6 +8119,17 @@
         "text2": "see what it's like in any case it smells good. I'm going to go and enjoy it in the garden in the sun."
       },
       {
+        "id": 6494,
+        "videoId": 62,
+        "createdAt": "2022-04-21T22:15:29.000Z",
+        "updatedAt": "2022-04-21T22:15:29.000Z",
+        "index": 67,
+        "begin": 531.121,
+        "end": 532.501,
+        "text1": "C'est bon",
+        "text2": "It's good"
+      },
+      {
         "id": 6495,
         "videoId": 62,
         "createdAt": "2022-04-21T22:15:29.000Z",
@@ -6430,6 +8139,17 @@
         "end": 548.62,
         "text1": "Trop bon, c'est un grand kiff comme ça au soleil. Je  vous conseille vraiment d'essayer à la maison. Je",
         "text2": "Very good, it's a big pleasure like that in the sun. I really advise you to try at home."
+      },
+      {
+        "id": 6496,
+        "videoId": 62,
+        "createdAt": "2022-04-21T22:15:29.000Z",
+        "updatedAt": "2022-04-21T22:15:29.000Z",
+        "index": 69,
+        "begin": 548.62,
+        "end": 554.29,
+        "text1": "vous laisserai la recette de Pick Up Limes dans la  barre d'infos, c'est en anglais. Je vous rappelle",
+        "text2": "I'll leave you the recipe from Pick Up Limes in the info bar, it's in English. I remind you"
       },
       {
         "id": 6497,
@@ -6443,6 +8163,28 @@
         "text2": "that if you want to work in depth on this video, you have access on my website"
       },
       {
+        "id": 6498,
+        "videoId": 62,
+        "createdAt": "2022-04-21T22:15:29.000Z",
+        "updatedAt": "2022-04-21T22:15:29.000Z",
+        "index": 71,
+        "begin": 559.84,
+        "end": 565.6,
+        "text1": "internet à du contenu exclusif pour travailler  sur la vidéo comme la transcription, l'audio",
+        "text2": "to exclusive content to work on the video such as the transcription,  the downloadable audio"
+      },
+      {
+        "id": 6499,
+        "videoId": 62,
+        "createdAt": "2022-04-21T22:15:29.000Z",
+        "updatedAt": "2022-04-21T22:15:29.000Z",
+        "index": 72,
+        "begin": 565.6,
+        "end": 571.24,
+        "text1": "téléchargeable si vous voulez écouter cette vidéo  comme un podcast, à la liste de vocabulaire avec",
+        "text2": "if you want to listen to this video as a podcast, the vocabulary list with"
+      },
+      {
         "id": 6500,
         "videoId": 62,
         "createdAt": "2022-04-21T22:15:29.000Z",
@@ -6452,6 +8194,149 @@
         "end": 575.92,
         "text1": "des phrases d'exemple ainsi qu'à des flashscards  pour travailler sur ces phrases avec l'audio",
         "text2": "example sentences as well as flashcards to work on these sentences with the audio"
+      },
+      {
+        "id": 6501,
+        "videoId": 62,
+        "createdAt": "2022-04-21T22:15:29.000Z",
+        "updatedAt": "2022-04-21T22:15:29.000Z",
+        "index": 74,
+        "begin": 575.92,
+        "end": 582.04,
+        "text1": "enregistré par moi-même donc ça va vraiment vous  permettre d'approfondir avec les vidéos donc si",
+        "text2": "recorded by myself so it will really allow you to deepen with the videos so if"
+      },
+      {
+        "id": 6502,
+        "videoId": 62,
+        "createdAt": "2022-04-21T22:15:29.000Z",
+        "updatedAt": "2022-04-21T22:15:29.000Z",
+        "index": 75,
+        "begin": 582.04,
+        "end": 587.23,
+        "text1": "vous aimez mes vidéos et qu'elles vous aident à  apprendre le français, je vous conseille vraiment",
+        "text2": "you like my videos and they help you learn French, I really advise you"
+      },
+      {
+        "id": 6503,
+        "videoId": 62,
+        "createdAt": "2022-04-21T22:15:29.000Z",
+        "updatedAt": "2022-04-21T22:15:29.000Z",
+        "index": 76,
+        "begin": 587.23,
+        "end": 593.47,
+        "text1": "d'aller voir le contenu parce que ça va vraiment  vous permettre... Ma chienne... Ça va vraiment",
+        "text2": "to go see the content because it will really allow you... My dog... It will really"
+      },
+      {
+        "id": 6504,
+        "videoId": 62,
+        "createdAt": "2022-04-21T22:15:29.000Z",
+        "updatedAt": "2022-04-21T22:15:29.000Z",
+        "index": 77,
+        "begin": 593.47,
+        "end": 598.66,
+        "text1": "vous permettre d'approfondir avec les vidéos.  Je vous laisserai tous les détails dans la barre",
+        "text2": "allow you to go deeper with the videos. I'll leave you all the details in the info bar."
+      },
+      {
+        "id": 6505,
+        "videoId": 62,
+        "createdAt": "2022-04-21T22:15:29.000Z",
+        "updatedAt": "2022-04-21T22:15:29.000Z",
+        "index": 78,
+        "begin": 598.66,
+        "end": 602.74,
+        "text1": "d'infos. J'espère que cette vidéo vous a plu.  Dites-moi dans les commentaires quels nouveaux",
+        "text2": "I hope you enjoyed this video. Tell me in the comments what new"
+      },
+      {
+        "id": 6506,
+        "videoId": 62,
+        "createdAt": "2022-04-21T22:15:29.000Z",
+        "updatedAt": "2022-04-21T22:15:29.000Z",
+        "index": 79,
+        "begin": 602.74,
+        "end": 608.56,
+        "text1": "mots vous avez appris avec cette vidéo, n'hésitez  pas à liker la vidéo et à vous abonner à la",
+        "text2": "words you learned with this video, don't hesitate to like the video and subscribe to the"
+      },
+      {
+        "id": 6507,
+        "videoId": 62,
+        "createdAt": "2022-04-21T22:15:29.000Z",
+        "updatedAt": "2022-04-21T22:15:29.000Z",
+        "index": 80,
+        "begin": 608.56,
+        "end": 614.168,
+        "text1": "chaîne si ce n'est pas déjà fait et je vous dis à  mercredi prochain pour une nouvelle vidéo bisous !",
+        "text2": "channel if you haven't already and I'll see you next Wednesday for a new video bye!"
+      },
+      {
+        "id": 6508,
+        "videoId": 63,
+        "createdAt": "2022-04-24T22:27:24.000Z",
+        "updatedAt": "2022-04-24T22:27:24.000Z",
+        "index": 0,
+        "begin": 0.08,
+        "end": 3.42,
+        "text1": "Salut tout le monde, j'espère que vous allez bien.",
+        "text2": "Hi everyone, hope you are doing well."
+      },
+      {
+        "id": 6509,
+        "videoId": 63,
+        "createdAt": "2022-04-24T22:27:24.000Z",
+        "updatedAt": "2022-04-24T22:27:24.000Z",
+        "index": 1,
+        "begin": 3.45,
+        "end": 5.64,
+        "text1": "Bienvenue dans cette nouvelle vidéo où",
+        "text2": "Welcome to this new video where we will see a French expression in a few minutes."
+      },
+      {
+        "id": 6510,
+        "videoId": 63,
+        "createdAt": "2022-04-24T22:27:24.000Z",
+        "updatedAt": "2022-04-24T22:27:24.000Z",
+        "index": 2,
+        "begin": 5.67,
+        "end": 11.18,
+        "text1": "nous allons voir une expression française en quelques minutes.",
+        "text2": "Welcome to this new video where we will see a French expression in a few minutes."
+      },
+      {
+        "id": 6511,
+        "videoId": 63,
+        "createdAt": "2022-04-24T22:27:24.000Z",
+        "updatedAt": "2022-04-24T22:27:24.000Z",
+        "index": 3,
+        "begin": 11.21,
+        "end": 16.14,
+        "text1": "Aujourd'hui, nous allons voir l'expression prendre du recul.",
+        "text2": "Today, we are going to see the expression \"prendre du recul\"."
+      },
+      {
+        "id": 6512,
+        "videoId": 63,
+        "createdAt": "2022-04-24T22:27:24.000Z",
+        "updatedAt": "2022-04-24T22:27:24.000Z",
+        "index": 4,
+        "begin": 16.17,
+        "end": 18.24,
+        "text1": "Cette expression a été demandée par un",
+        "text2": "This expression was requested by a subscriber a few weeks ago, but it can be"
+      },
+      {
+        "id": 6513,
+        "videoId": 63,
+        "createdAt": "2022-04-24T22:27:24.000Z",
+        "updatedAt": "2022-04-24T22:27:24.000Z",
+        "index": 5,
+        "begin": 18.26,
+        "end": 22.62,
+        "text1": "abonné il y a quelques semaines, mais elle peut être utile pour",
+        "text2": "This expression was requested by a subscriber a few weeks ago, but it can be"
       },
       {
         "id": 6514,
@@ -6465,6 +8350,50 @@
         "text2": "useful for everyone, because it is an expression that is used a lot in France."
       },
       {
+        "id": 6515,
+        "videoId": 63,
+        "createdAt": "2022-04-24T22:27:24.000Z",
+        "updatedAt": "2022-04-24T22:27:24.000Z",
+        "index": 7,
+        "begin": 27.28,
+        "end": 29.12,
+        "text1": "Avant de commencer, n'oubliez pas de liker",
+        "text2": "Before you start, don't forget to like the"
+      },
+      {
+        "id": 6516,
+        "videoId": 63,
+        "createdAt": "2022-04-24T22:27:24.000Z",
+        "updatedAt": "2022-04-24T22:27:24.000Z",
+        "index": 8,
+        "begin": 29.15,
+        "end": 33.8,
+        "text1": "la vidéo et surtout de vous abonner à la chaîne et d'activer la cloche pour ne",
+        "text2": "video and especially to subscribe to the channel and activate the bell so you don't"
+      },
+      {
+        "id": 6517,
+        "videoId": 63,
+        "createdAt": "2022-04-24T22:27:24.000Z",
+        "updatedAt": "2022-04-24T22:27:24.000Z",
+        "index": 9,
+        "begin": 33.82,
+        "end": 37.14,
+        "text1": "manquer aucune de mes vidéos, si ce n'est pas encore fait.",
+        "text2": "miss any of my videos, if you haven't already done so."
+      },
+      {
+        "id": 6518,
+        "videoId": 63,
+        "createdAt": "2022-04-24T22:27:24.000Z",
+        "updatedAt": "2022-04-24T22:27:24.000Z",
+        "index": 10,
+        "begin": 37.17,
+        "end": 39.56,
+        "text1": "Cette expression prendre du recul, on peut",
+        "text2": "This expression to take a step back can be"
+      },
+      {
         "id": 6519,
         "videoId": 63,
         "createdAt": "2022-04-24T22:27:24.000Z",
@@ -6474,6 +8403,17 @@
         "end": 47.7,
         "text1": "l'utiliser au sens propre, exactement comme on l'entend ou au sens figuré.",
         "text2": "used literally, exactly as it is intended, or figuratively."
+      },
+      {
+        "id": 6520,
+        "videoId": 63,
+        "createdAt": "2022-04-24T22:27:24.000Z",
+        "updatedAt": "2022-04-24T22:27:24.000Z",
+        "index": 12,
+        "begin": 47.73,
+        "end": 50.64,
+        "text1": "Quand on l'utilise au sens propre, prendre",
+        "text2": "When we use it literally, to take a step back means to go backwards."
       },
       {
         "id": 6521,
@@ -6495,6 +8435,17 @@
         "begin": 55.81,
         "end": 58.28,
         "text1": "Par exemple, si je suis devant la tour",
+        "text2": "For example, if I'm in front of the Eiffel Tower and I want to take a picture, but I"
+      },
+      {
+        "id": 6523,
+        "videoId": 63,
+        "createdAt": "2022-04-24T22:27:24.000Z",
+        "updatedAt": "2022-04-24T22:27:24.000Z",
+        "index": 15,
+        "begin": 58.31,
+        "end": 62.98,
+        "text1": "Eiffel et que je veux faire une photo, mais que je ne la vois pas",
         "text2": "For example, if I'm in front of the Eiffel Tower and I want to take a picture, but I"
       },
       {
@@ -6520,6 +8471,17 @@
         "text2": "step back to see the Eiffel Tower in its entirety."
       },
       {
+        "id": 6526,
+        "videoId": 63,
+        "createdAt": "2022-04-24T22:27:24.000Z",
+        "updatedAt": "2022-04-24T22:27:24.000Z",
+        "index": 18,
+        "begin": 75.6,
+        "end": 81.13,
+        "text1": "Là, on fait vraiment l'action de reculer, de prendre du recul.",
+        "text2": "Here, we are really doing the action of stepping back, of taking a step back."
+      },
+      {
         "id": 6527,
         "videoId": 63,
         "createdAt": "2022-04-24T22:27:24.000Z",
@@ -6529,6 +8491,17 @@
         "end": 86.52,
         "text1": "Mais la plupart du temps, on utilise cette expression au sens figuré.",
         "text2": "But most of the time, we use this expression figuratively."
+      },
+      {
+        "id": 6528,
+        "videoId": 63,
+        "createdAt": "2022-04-24T22:27:24.000Z",
+        "updatedAt": "2022-04-24T22:27:24.000Z",
+        "index": 20,
+        "begin": 86.55,
+        "end": 91.62,
+        "text1": "Prendre du recul, ça signifie regarder les choses,",
+        "text2": "Taking a step back means looking at"
       },
       {
         "id": 6529,
@@ -6542,6 +8515,116 @@
         "text2": "things, looking at a situation differently, from another angle, taking"
       },
       {
+        "id": 6530,
+        "videoId": 63,
+        "createdAt": "2022-04-24T22:27:24.000Z",
+        "updatedAt": "2022-04-24T22:27:24.000Z",
+        "index": 22,
+        "begin": 96.6,
+        "end": 101.93,
+        "text1": "prendre un peu de temps pour soi pour mieux analyser une situation.",
+        "text2": "some time for yourself to better analyze a situation."
+      },
+      {
+        "id": 6531,
+        "videoId": 63,
+        "createdAt": "2022-04-24T22:27:24.000Z",
+        "updatedAt": "2022-04-24T22:27:24.000Z",
+        "index": 23,
+        "begin": 101.96,
+        "end": 104.34,
+        "text1": "Prendre du recul, ça permet en général de",
+        "text2": "Taking a step back usually allows you to put a situation into perspective or to"
+      },
+      {
+        "id": 6532,
+        "videoId": 63,
+        "createdAt": "2022-04-24T22:27:24.000Z",
+        "updatedAt": "2022-04-24T22:27:24.000Z",
+        "index": 24,
+        "begin": 104.37,
+        "end": 109.38,
+        "text1": "relativiser une situation ou de se rendre compte qu'elle est moins grave que prévu.",
+        "text2": "Taking a step back usually allows you to put a situation into perspective or to"
+      },
+      {
+        "id": 6533,
+        "videoId": 63,
+        "createdAt": "2022-04-24T22:27:24.000Z",
+        "updatedAt": "2022-04-24T22:27:24.000Z",
+        "index": 25,
+        "begin": 109.41,
+        "end": 112.08,
+        "text1": "Ou alors de pouvoir prendre une grande",
+        "text2": "Or to be able to make a big decision, to change things in your life."
+      },
+      {
+        "id": 6534,
+        "videoId": 63,
+        "createdAt": "2022-04-24T22:27:24.000Z",
+        "updatedAt": "2022-04-24T22:27:24.000Z",
+        "index": 26,
+        "begin": 112.11,
+        "end": 115.78,
+        "text1": "décision, de changer des choses dans sa vie.",
+        "text2": "Or to be able to make a big decision, to change things in your life."
+      },
+      {
+        "id": 6535,
+        "videoId": 63,
+        "createdAt": "2022-04-24T22:27:24.000Z",
+        "updatedAt": "2022-04-24T22:27:24.000Z",
+        "index": 27,
+        "begin": 115.81,
+        "end": 119.9,
+        "text1": "Par exemple, quand on est dans une relation avec quelqu'un",
+        "text2": "For example, when you are in a"
+      },
+      {
+        "id": 6536,
+        "videoId": 63,
+        "createdAt": "2022-04-24T22:27:24.000Z",
+        "updatedAt": "2022-04-24T22:27:24.000Z",
+        "index": 28,
+        "begin": 119.93,
+        "end": 123.66,
+        "text1": "et que ça ne se passe plus très bien, on peut dire à la personne",
+        "text2": "relationship with someone and it is not going well anymore, you can tell the"
+      },
+      {
+        "id": 6537,
+        "videoId": 63,
+        "createdAt": "2022-04-24T22:27:24.000Z",
+        "updatedAt": "2022-04-24T22:27:24.000Z",
+        "index": 29,
+        "begin": 123.69,
+        "end": 128.73,
+        "text1": "j'ai besoin de prendre un peu de recul par rapport à notre relation.",
+        "text2": "person I need to take a step back from our relationship."
+      },
+      {
+        "id": 6538,
+        "videoId": 63,
+        "createdAt": "2022-04-24T22:27:24.000Z",
+        "updatedAt": "2022-04-24T22:27:24.000Z",
+        "index": 30,
+        "begin": 128.76,
+        "end": 134.06,
+        "text1": "Donc on a besoin de réfléchir, on a besoin de réfléchir,",
+        "text2": "So we need to think, we need to reflect,"
+      },
+      {
+        "id": 6539,
+        "videoId": 63,
+        "createdAt": "2022-04-24T22:27:24.000Z",
+        "updatedAt": "2022-04-24T22:27:24.000Z",
+        "index": 31,
+        "begin": 134.09,
+        "end": 139.24,
+        "text1": "d'analyser ce qui se passe pour pouvoir prendre la bonne décision, pour pouvoir",
+        "text2": "we need to analyze what is happening to be able to make the right decision, to be"
+      },
+      {
         "id": 6540,
         "videoId": 63,
         "createdAt": "2022-04-24T22:27:24.000Z",
@@ -6551,6 +8634,39 @@
         "end": 142.3,
         "text1": "évaluer si la situation nous convient ou pas.",
         "text2": "able to evaluate if the situation suits us or not."
+      },
+      {
+        "id": 6541,
+        "videoId": 63,
+        "createdAt": "2022-04-24T22:27:24.000Z",
+        "updatedAt": "2022-04-24T22:27:24.000Z",
+        "index": 33,
+        "begin": 142.33,
+        "end": 148.88,
+        "text1": "Ou par exemple, au travail, si vous êtes extrêmement stressé tous les jours de",
+        "text2": "Or for example, at work, if you are extremely stressed every day from your"
+      },
+      {
+        "id": 6542,
+        "videoId": 63,
+        "createdAt": "2022-04-24T22:27:24.000Z",
+        "updatedAt": "2022-04-24T22:27:24.000Z",
+        "index": 34,
+        "begin": 148.91,
+        "end": 154.98,
+        "text1": "votre travail, ça peut être bon de prendre du recul pour relativiser.",
+        "text2": "job, it can be good to take a step back and put things in perspective."
+      },
+      {
+        "id": 6543,
+        "videoId": 63,
+        "createdAt": "2022-04-24T22:27:24.000Z",
+        "updatedAt": "2022-04-24T22:27:24.000Z",
+        "index": 35,
+        "begin": 155,
+        "end": 156.76,
+        "text1": "Par exemple, si vous travaillez pour un",
+        "text2": "For example, if you work for a site that sells sneakers and you don't meet your"
       },
       {
         "id": 6544,
@@ -6564,6 +8680,17 @@
         "text2": "For example, if you work for a site that sells sneakers and you don't meet your"
       },
       {
+        "id": 6545,
+        "videoId": 63,
+        "createdAt": "2022-04-24T22:27:24.000Z",
+        "updatedAt": "2022-04-24T22:27:24.000Z",
+        "index": 37,
+        "begin": 161.2,
+        "end": 166.88,
+        "text1": "de vente, vous pouvez prendre du recul et vous dire ce n'est pas grave, je ne fais",
+        "text2": "sales goals, you can step back and say it's okay, I'm not in the business of"
+      },
+      {
         "id": 6546,
         "videoId": 63,
         "createdAt": "2022-04-24T22:27:24.000Z",
@@ -6573,6 +8700,28 @@
         "end": 170.44,
         "text1": "pas un métier où je sauve des vies, donc ce n'est pas si grave.",
         "text2": "saving lives, so it's not that big of a deal."
+      },
+      {
+        "id": 6547,
+        "videoId": 63,
+        "createdAt": "2022-04-24T22:27:24.000Z",
+        "updatedAt": "2022-04-24T22:27:24.000Z",
+        "index": 39,
+        "begin": 170.47,
+        "end": 172.3,
+        "text1": "Je prends un peu de recul,",
+        "text2": "I take a step back and realize that the situation is not that bad."
+      },
+      {
+        "id": 6548,
+        "videoId": 63,
+        "createdAt": "2022-04-24T22:27:24.000Z",
+        "updatedAt": "2022-04-24T22:27:24.000Z",
+        "index": 40,
+        "begin": 172.33,
+        "end": 176.46,
+        "text1": "je me rends compte que la situation n'est pas si grave que ça.",
+        "text2": "I take a step back and realize that the situation is not that bad."
       },
       {
         "id": 6549,
@@ -6586,6 +8735,72 @@
         "text2": "It's not a big deal if I can't meet my sales targets."
       },
       {
+        "id": 6550,
+        "videoId": 63,
+        "createdAt": "2022-04-24T22:27:24.000Z",
+        "updatedAt": "2022-04-24T22:27:24.000Z",
+        "index": 42,
+        "begin": 181.17,
+        "end": 186.16,
+        "text1": "Et terminons cette vidéo juste par une petite citation d'un rappeur français qui",
+        "text2": "And let's end this video just with a"
+      },
+      {
+        "id": 6551,
+        "videoId": 63,
+        "createdAt": "2022-04-24T22:27:24.000Z",
+        "updatedAt": "2022-04-24T22:27:24.000Z",
+        "index": 43,
+        "begin": 186.19,
+        "end": 189.3,
+        "text1": "s'appelle MC Solaar, peut- être que vous le connaissez.",
+        "text2": "little quote from a French rapper named MC Solaar, maybe you know him."
+      },
+      {
+        "id": 6552,
+        "videoId": 63,
+        "createdAt": "2022-04-24T22:27:24.000Z",
+        "updatedAt": "2022-04-24T22:27:24.000Z",
+        "index": 44,
+        "begin": 189.32,
+        "end": 191.24,
+        "text1": "Dans une de ses chansons, je vais vous la",
+        "text2": "In one of his songs, I'll put it in the video description, he says \"so I get ahead"
+      },
+      {
+        "id": 6553,
+        "videoId": 63,
+        "createdAt": "2022-04-24T22:27:24.000Z",
+        "updatedAt": "2022-04-24T22:27:24.000Z",
+        "index": 45,
+        "begin": 191.27,
+        "end": 195.72,
+        "text1": "mettre dans la description de la vidéo, il dit \"alors je prends de l'avance en",
+        "text2": "In one of his songs, I'll put it in the video description, he says \"so I get ahead"
+      },
+      {
+        "id": 6554,
+        "videoId": 63,
+        "createdAt": "2022-04-24T22:27:24.000Z",
+        "updatedAt": "2022-04-24T22:27:24.000Z",
+        "index": 46,
+        "begin": 195.75,
+        "end": 199.26,
+        "text1": "prenant du recul, car prendre du recul, c'est prendre de l'élan\"",
+        "text2": "by stepping back, because stepping back is gaining momentum.\""
+      },
+      {
+        "id": 6555,
+        "videoId": 63,
+        "createdAt": "2022-04-24T22:27:24.000Z",
+        "updatedAt": "2022-04-24T22:27:24.000Z",
+        "index": 47,
+        "begin": 199.28,
+        "end": 201.28,
+        "text1": "Pour aller de l'avant, il faut prendre du",
+        "text2": "In order to move forward, you have to step"
+      },
+      {
         "id": 6556,
         "videoId": 63,
         "createdAt": "2022-04-24T22:27:24.000Z",
@@ -6595,6 +8810,61 @@
         "end": 205.38,
         "text1": "recul, car prendre du recul, c'est prendre de l'élan.",
         "text2": "back, because stepping back means gaining momentum."
+      },
+      {
+        "id": 6557,
+        "videoId": 63,
+        "createdAt": "2022-04-24T22:27:24.000Z",
+        "updatedAt": "2022-04-24T22:27:24.000Z",
+        "index": 49,
+        "begin": 205.4,
+        "end": 207.06,
+        "text1": "Voilà, c'est fini pour aujourd'hui,",
+        "text2": "That's it for today, I hope you enjoyed this video, I hope you understood in what"
+      },
+      {
+        "id": 6558,
+        "videoId": 63,
+        "createdAt": "2022-04-24T22:27:24.000Z",
+        "updatedAt": "2022-04-24T22:27:24.000Z",
+        "index": 50,
+        "begin": 207.09,
+        "end": 210.98,
+        "text1": "j'espère que cette vidéo vous a plu, que vous avez bien compris",
+        "text2": "That's it for today, I hope you enjoyed this video, I hope you understood in what"
+      },
+      {
+        "id": 6559,
+        "videoId": 63,
+        "createdAt": "2022-04-24T22:27:24.000Z",
+        "updatedAt": "2022-04-24T22:27:24.000Z",
+        "index": 51,
+        "begin": 211.01,
+        "end": 216.1,
+        "text1": "dans quel contexte il fallait utiliser cette expression prendre du recul.",
+        "text2": "context you should use this expression step back."
+      },
+      {
+        "id": 6560,
+        "videoId": 63,
+        "createdAt": "2022-04-24T22:27:24.000Z",
+        "updatedAt": "2022-04-24T22:27:24.000Z",
+        "index": 52,
+        "begin": 216.13,
+        "end": 218.1,
+        "text1": "Si vous avez aimé la vidéo,",
+        "text2": "If you liked the video, like it and I'll see you soon for a next video."
+      },
+      {
+        "id": 6561,
+        "videoId": 63,
+        "createdAt": "2022-04-24T22:27:24.000Z",
+        "updatedAt": "2022-04-24T22:27:24.000Z",
+        "index": 53,
+        "begin": 218.13,
+        "end": 222.44,
+        "text1": "likez et je vous dis à très vite pour une prochaine vidéo.",
+        "text2": "If you liked the video, like it and I'll see you soon for a next video."
       }
     ]
   },
@@ -7296,58 +9566,6 @@
       "practiceActions.99.updatedAt": ["Date"],
       "practiceActions.100.createdAt": ["Date"],
       "practiceActions.100.updatedAt": ["Date"],
-      "practiceActions.101.createdAt": ["Date"],
-      "practiceActions.101.updatedAt": ["Date"],
-      "practiceActions.102.createdAt": ["Date"],
-      "practiceActions.102.updatedAt": ["Date"],
-      "practiceActions.103.createdAt": ["Date"],
-      "practiceActions.103.updatedAt": ["Date"],
-      "practiceActions.104.createdAt": ["Date"],
-      "practiceActions.104.updatedAt": ["Date"],
-      "practiceActions.105.createdAt": ["Date"],
-      "practiceActions.105.updatedAt": ["Date"],
-      "practiceActions.106.createdAt": ["Date"],
-      "practiceActions.106.updatedAt": ["Date"],
-      "practiceActions.107.createdAt": ["Date"],
-      "practiceActions.107.updatedAt": ["Date"],
-      "practiceActions.108.createdAt": ["Date"],
-      "practiceActions.108.updatedAt": ["Date"],
-      "practiceActions.109.createdAt": ["Date"],
-      "practiceActions.109.updatedAt": ["Date"],
-      "practiceActions.110.createdAt": ["Date"],
-      "practiceActions.110.updatedAt": ["Date"],
-      "practiceActions.111.createdAt": ["Date"],
-      "practiceActions.111.updatedAt": ["Date"],
-      "practiceActions.112.createdAt": ["Date"],
-      "practiceActions.112.updatedAt": ["Date"],
-      "practiceActions.113.createdAt": ["Date"],
-      "practiceActions.113.updatedAt": ["Date"],
-      "practiceActions.114.createdAt": ["Date"],
-      "practiceActions.114.updatedAt": ["Date"],
-      "practiceActions.115.createdAt": ["Date"],
-      "practiceActions.115.updatedAt": ["Date"],
-      "practiceActions.116.createdAt": ["Date"],
-      "practiceActions.116.updatedAt": ["Date"],
-      "practiceActions.117.createdAt": ["Date"],
-      "practiceActions.117.updatedAt": ["Date"],
-      "practiceActions.118.createdAt": ["Date"],
-      "practiceActions.118.updatedAt": ["Date"],
-      "practiceActions.119.createdAt": ["Date"],
-      "practiceActions.119.updatedAt": ["Date"],
-      "practiceActions.120.createdAt": ["Date"],
-      "practiceActions.120.updatedAt": ["Date"],
-      "practiceActions.121.createdAt": ["Date"],
-      "practiceActions.121.updatedAt": ["Date"],
-      "practiceActions.122.createdAt": ["Date"],
-      "practiceActions.122.updatedAt": ["Date"],
-      "practiceActions.123.createdAt": ["Date"],
-      "practiceActions.123.updatedAt": ["Date"],
-      "practiceActions.124.createdAt": ["Date"],
-      "practiceActions.124.updatedAt": ["Date"],
-      "practiceActions.125.createdAt": ["Date"],
-      "practiceActions.125.updatedAt": ["Date"],
-      "practiceActions.126.createdAt": ["Date"],
-      "practiceActions.126.updatedAt": ["Date"],
       "bookmarkEntries.0.createdAt": ["Date"],
       "bookmarkEntries.0.updatedAt": ["Date"],
       "bookmarkEntries.1.createdAt": ["Date"],
@@ -7979,7 +10197,467 @@
       "captionEntries.145.createdAt": ["Date"],
       "captionEntries.145.updatedAt": ["Date"],
       "captionEntries.146.createdAt": ["Date"],
-      "captionEntries.146.updatedAt": ["Date"]
+      "captionEntries.146.updatedAt": ["Date"],
+      "captionEntries.147.createdAt": ["Date"],
+      "captionEntries.147.updatedAt": ["Date"],
+      "captionEntries.148.createdAt": ["Date"],
+      "captionEntries.148.updatedAt": ["Date"],
+      "captionEntries.149.createdAt": ["Date"],
+      "captionEntries.149.updatedAt": ["Date"],
+      "captionEntries.150.createdAt": ["Date"],
+      "captionEntries.150.updatedAt": ["Date"],
+      "captionEntries.151.createdAt": ["Date"],
+      "captionEntries.151.updatedAt": ["Date"],
+      "captionEntries.152.createdAt": ["Date"],
+      "captionEntries.152.updatedAt": ["Date"],
+      "captionEntries.153.createdAt": ["Date"],
+      "captionEntries.153.updatedAt": ["Date"],
+      "captionEntries.154.createdAt": ["Date"],
+      "captionEntries.154.updatedAt": ["Date"],
+      "captionEntries.155.createdAt": ["Date"],
+      "captionEntries.155.updatedAt": ["Date"],
+      "captionEntries.156.createdAt": ["Date"],
+      "captionEntries.156.updatedAt": ["Date"],
+      "captionEntries.157.createdAt": ["Date"],
+      "captionEntries.157.updatedAt": ["Date"],
+      "captionEntries.158.createdAt": ["Date"],
+      "captionEntries.158.updatedAt": ["Date"],
+      "captionEntries.159.createdAt": ["Date"],
+      "captionEntries.159.updatedAt": ["Date"],
+      "captionEntries.160.createdAt": ["Date"],
+      "captionEntries.160.updatedAt": ["Date"],
+      "captionEntries.161.createdAt": ["Date"],
+      "captionEntries.161.updatedAt": ["Date"],
+      "captionEntries.162.createdAt": ["Date"],
+      "captionEntries.162.updatedAt": ["Date"],
+      "captionEntries.163.createdAt": ["Date"],
+      "captionEntries.163.updatedAt": ["Date"],
+      "captionEntries.164.createdAt": ["Date"],
+      "captionEntries.164.updatedAt": ["Date"],
+      "captionEntries.165.createdAt": ["Date"],
+      "captionEntries.165.updatedAt": ["Date"],
+      "captionEntries.166.createdAt": ["Date"],
+      "captionEntries.166.updatedAt": ["Date"],
+      "captionEntries.167.createdAt": ["Date"],
+      "captionEntries.167.updatedAt": ["Date"],
+      "captionEntries.168.createdAt": ["Date"],
+      "captionEntries.168.updatedAt": ["Date"],
+      "captionEntries.169.createdAt": ["Date"],
+      "captionEntries.169.updatedAt": ["Date"],
+      "captionEntries.170.createdAt": ["Date"],
+      "captionEntries.170.updatedAt": ["Date"],
+      "captionEntries.171.createdAt": ["Date"],
+      "captionEntries.171.updatedAt": ["Date"],
+      "captionEntries.172.createdAt": ["Date"],
+      "captionEntries.172.updatedAt": ["Date"],
+      "captionEntries.173.createdAt": ["Date"],
+      "captionEntries.173.updatedAt": ["Date"],
+      "captionEntries.174.createdAt": ["Date"],
+      "captionEntries.174.updatedAt": ["Date"],
+      "captionEntries.175.createdAt": ["Date"],
+      "captionEntries.175.updatedAt": ["Date"],
+      "captionEntries.176.createdAt": ["Date"],
+      "captionEntries.176.updatedAt": ["Date"],
+      "captionEntries.177.createdAt": ["Date"],
+      "captionEntries.177.updatedAt": ["Date"],
+      "captionEntries.178.createdAt": ["Date"],
+      "captionEntries.178.updatedAt": ["Date"],
+      "captionEntries.179.createdAt": ["Date"],
+      "captionEntries.179.updatedAt": ["Date"],
+      "captionEntries.180.createdAt": ["Date"],
+      "captionEntries.180.updatedAt": ["Date"],
+      "captionEntries.181.createdAt": ["Date"],
+      "captionEntries.181.updatedAt": ["Date"],
+      "captionEntries.182.createdAt": ["Date"],
+      "captionEntries.182.updatedAt": ["Date"],
+      "captionEntries.183.createdAt": ["Date"],
+      "captionEntries.183.updatedAt": ["Date"],
+      "captionEntries.184.createdAt": ["Date"],
+      "captionEntries.184.updatedAt": ["Date"],
+      "captionEntries.185.createdAt": ["Date"],
+      "captionEntries.185.updatedAt": ["Date"],
+      "captionEntries.186.createdAt": ["Date"],
+      "captionEntries.186.updatedAt": ["Date"],
+      "captionEntries.187.createdAt": ["Date"],
+      "captionEntries.187.updatedAt": ["Date"],
+      "captionEntries.188.createdAt": ["Date"],
+      "captionEntries.188.updatedAt": ["Date"],
+      "captionEntries.189.createdAt": ["Date"],
+      "captionEntries.189.updatedAt": ["Date"],
+      "captionEntries.190.createdAt": ["Date"],
+      "captionEntries.190.updatedAt": ["Date"],
+      "captionEntries.191.createdAt": ["Date"],
+      "captionEntries.191.updatedAt": ["Date"],
+      "captionEntries.192.createdAt": ["Date"],
+      "captionEntries.192.updatedAt": ["Date"],
+      "captionEntries.193.createdAt": ["Date"],
+      "captionEntries.193.updatedAt": ["Date"],
+      "captionEntries.194.createdAt": ["Date"],
+      "captionEntries.194.updatedAt": ["Date"],
+      "captionEntries.195.createdAt": ["Date"],
+      "captionEntries.195.updatedAt": ["Date"],
+      "captionEntries.196.createdAt": ["Date"],
+      "captionEntries.196.updatedAt": ["Date"],
+      "captionEntries.197.createdAt": ["Date"],
+      "captionEntries.197.updatedAt": ["Date"],
+      "captionEntries.198.createdAt": ["Date"],
+      "captionEntries.198.updatedAt": ["Date"],
+      "captionEntries.199.createdAt": ["Date"],
+      "captionEntries.199.updatedAt": ["Date"],
+      "captionEntries.200.createdAt": ["Date"],
+      "captionEntries.200.updatedAt": ["Date"],
+      "captionEntries.201.createdAt": ["Date"],
+      "captionEntries.201.updatedAt": ["Date"],
+      "captionEntries.202.createdAt": ["Date"],
+      "captionEntries.202.updatedAt": ["Date"],
+      "captionEntries.203.createdAt": ["Date"],
+      "captionEntries.203.updatedAt": ["Date"],
+      "captionEntries.204.createdAt": ["Date"],
+      "captionEntries.204.updatedAt": ["Date"],
+      "captionEntries.205.createdAt": ["Date"],
+      "captionEntries.205.updatedAt": ["Date"],
+      "captionEntries.206.createdAt": ["Date"],
+      "captionEntries.206.updatedAt": ["Date"],
+      "captionEntries.207.createdAt": ["Date"],
+      "captionEntries.207.updatedAt": ["Date"],
+      "captionEntries.208.createdAt": ["Date"],
+      "captionEntries.208.updatedAt": ["Date"],
+      "captionEntries.209.createdAt": ["Date"],
+      "captionEntries.209.updatedAt": ["Date"],
+      "captionEntries.210.createdAt": ["Date"],
+      "captionEntries.210.updatedAt": ["Date"],
+      "captionEntries.211.createdAt": ["Date"],
+      "captionEntries.211.updatedAt": ["Date"],
+      "captionEntries.212.createdAt": ["Date"],
+      "captionEntries.212.updatedAt": ["Date"],
+      "captionEntries.213.createdAt": ["Date"],
+      "captionEntries.213.updatedAt": ["Date"],
+      "captionEntries.214.createdAt": ["Date"],
+      "captionEntries.214.updatedAt": ["Date"],
+      "captionEntries.215.createdAt": ["Date"],
+      "captionEntries.215.updatedAt": ["Date"],
+      "captionEntries.216.createdAt": ["Date"],
+      "captionEntries.216.updatedAt": ["Date"],
+      "captionEntries.217.createdAt": ["Date"],
+      "captionEntries.217.updatedAt": ["Date"],
+      "captionEntries.218.createdAt": ["Date"],
+      "captionEntries.218.updatedAt": ["Date"],
+      "captionEntries.219.createdAt": ["Date"],
+      "captionEntries.219.updatedAt": ["Date"],
+      "captionEntries.220.createdAt": ["Date"],
+      "captionEntries.220.updatedAt": ["Date"],
+      "captionEntries.221.createdAt": ["Date"],
+      "captionEntries.221.updatedAt": ["Date"],
+      "captionEntries.222.createdAt": ["Date"],
+      "captionEntries.222.updatedAt": ["Date"],
+      "captionEntries.223.createdAt": ["Date"],
+      "captionEntries.223.updatedAt": ["Date"],
+      "captionEntries.224.createdAt": ["Date"],
+      "captionEntries.224.updatedAt": ["Date"],
+      "captionEntries.225.createdAt": ["Date"],
+      "captionEntries.225.updatedAt": ["Date"],
+      "captionEntries.226.createdAt": ["Date"],
+      "captionEntries.226.updatedAt": ["Date"],
+      "captionEntries.227.createdAt": ["Date"],
+      "captionEntries.227.updatedAt": ["Date"],
+      "captionEntries.228.createdAt": ["Date"],
+      "captionEntries.228.updatedAt": ["Date"],
+      "captionEntries.229.createdAt": ["Date"],
+      "captionEntries.229.updatedAt": ["Date"],
+      "captionEntries.230.createdAt": ["Date"],
+      "captionEntries.230.updatedAt": ["Date"],
+      "captionEntries.231.createdAt": ["Date"],
+      "captionEntries.231.updatedAt": ["Date"],
+      "captionEntries.232.createdAt": ["Date"],
+      "captionEntries.232.updatedAt": ["Date"],
+      "captionEntries.233.createdAt": ["Date"],
+      "captionEntries.233.updatedAt": ["Date"],
+      "captionEntries.234.createdAt": ["Date"],
+      "captionEntries.234.updatedAt": ["Date"],
+      "captionEntries.235.createdAt": ["Date"],
+      "captionEntries.235.updatedAt": ["Date"],
+      "captionEntries.236.createdAt": ["Date"],
+      "captionEntries.236.updatedAt": ["Date"],
+      "captionEntries.237.createdAt": ["Date"],
+      "captionEntries.237.updatedAt": ["Date"],
+      "captionEntries.238.createdAt": ["Date"],
+      "captionEntries.238.updatedAt": ["Date"],
+      "captionEntries.239.createdAt": ["Date"],
+      "captionEntries.239.updatedAt": ["Date"],
+      "captionEntries.240.createdAt": ["Date"],
+      "captionEntries.240.updatedAt": ["Date"],
+      "captionEntries.241.createdAt": ["Date"],
+      "captionEntries.241.updatedAt": ["Date"],
+      "captionEntries.242.createdAt": ["Date"],
+      "captionEntries.242.updatedAt": ["Date"],
+      "captionEntries.243.createdAt": ["Date"],
+      "captionEntries.243.updatedAt": ["Date"],
+      "captionEntries.244.createdAt": ["Date"],
+      "captionEntries.244.updatedAt": ["Date"],
+      "captionEntries.245.createdAt": ["Date"],
+      "captionEntries.245.updatedAt": ["Date"],
+      "captionEntries.246.createdAt": ["Date"],
+      "captionEntries.246.updatedAt": ["Date"],
+      "captionEntries.247.createdAt": ["Date"],
+      "captionEntries.247.updatedAt": ["Date"],
+      "captionEntries.248.createdAt": ["Date"],
+      "captionEntries.248.updatedAt": ["Date"],
+      "captionEntries.249.createdAt": ["Date"],
+      "captionEntries.249.updatedAt": ["Date"],
+      "captionEntries.250.createdAt": ["Date"],
+      "captionEntries.250.updatedAt": ["Date"],
+      "captionEntries.251.createdAt": ["Date"],
+      "captionEntries.251.updatedAt": ["Date"],
+      "captionEntries.252.createdAt": ["Date"],
+      "captionEntries.252.updatedAt": ["Date"],
+      "captionEntries.253.createdAt": ["Date"],
+      "captionEntries.253.updatedAt": ["Date"],
+      "captionEntries.254.createdAt": ["Date"],
+      "captionEntries.254.updatedAt": ["Date"],
+      "captionEntries.255.createdAt": ["Date"],
+      "captionEntries.255.updatedAt": ["Date"],
+      "captionEntries.256.createdAt": ["Date"],
+      "captionEntries.256.updatedAt": ["Date"],
+      "captionEntries.257.createdAt": ["Date"],
+      "captionEntries.257.updatedAt": ["Date"],
+      "captionEntries.258.createdAt": ["Date"],
+      "captionEntries.258.updatedAt": ["Date"],
+      "captionEntries.259.createdAt": ["Date"],
+      "captionEntries.259.updatedAt": ["Date"],
+      "captionEntries.260.createdAt": ["Date"],
+      "captionEntries.260.updatedAt": ["Date"],
+      "captionEntries.261.createdAt": ["Date"],
+      "captionEntries.261.updatedAt": ["Date"],
+      "captionEntries.262.createdAt": ["Date"],
+      "captionEntries.262.updatedAt": ["Date"],
+      "captionEntries.263.createdAt": ["Date"],
+      "captionEntries.263.updatedAt": ["Date"],
+      "captionEntries.264.createdAt": ["Date"],
+      "captionEntries.264.updatedAt": ["Date"],
+      "captionEntries.265.createdAt": ["Date"],
+      "captionEntries.265.updatedAt": ["Date"],
+      "captionEntries.266.createdAt": ["Date"],
+      "captionEntries.266.updatedAt": ["Date"],
+      "captionEntries.267.createdAt": ["Date"],
+      "captionEntries.267.updatedAt": ["Date"],
+      "captionEntries.268.createdAt": ["Date"],
+      "captionEntries.268.updatedAt": ["Date"],
+      "captionEntries.269.createdAt": ["Date"],
+      "captionEntries.269.updatedAt": ["Date"],
+      "captionEntries.270.createdAt": ["Date"],
+      "captionEntries.270.updatedAt": ["Date"],
+      "captionEntries.271.createdAt": ["Date"],
+      "captionEntries.271.updatedAt": ["Date"],
+      "captionEntries.272.createdAt": ["Date"],
+      "captionEntries.272.updatedAt": ["Date"],
+      "captionEntries.273.createdAt": ["Date"],
+      "captionEntries.273.updatedAt": ["Date"],
+      "captionEntries.274.createdAt": ["Date"],
+      "captionEntries.274.updatedAt": ["Date"],
+      "captionEntries.275.createdAt": ["Date"],
+      "captionEntries.275.updatedAt": ["Date"],
+      "captionEntries.276.createdAt": ["Date"],
+      "captionEntries.276.updatedAt": ["Date"],
+      "captionEntries.277.createdAt": ["Date"],
+      "captionEntries.277.updatedAt": ["Date"],
+      "captionEntries.278.createdAt": ["Date"],
+      "captionEntries.278.updatedAt": ["Date"],
+      "captionEntries.279.createdAt": ["Date"],
+      "captionEntries.279.updatedAt": ["Date"],
+      "captionEntries.280.createdAt": ["Date"],
+      "captionEntries.280.updatedAt": ["Date"],
+      "captionEntries.281.createdAt": ["Date"],
+      "captionEntries.281.updatedAt": ["Date"],
+      "captionEntries.282.createdAt": ["Date"],
+      "captionEntries.282.updatedAt": ["Date"],
+      "captionEntries.283.createdAt": ["Date"],
+      "captionEntries.283.updatedAt": ["Date"],
+      "captionEntries.284.createdAt": ["Date"],
+      "captionEntries.284.updatedAt": ["Date"],
+      "captionEntries.285.createdAt": ["Date"],
+      "captionEntries.285.updatedAt": ["Date"],
+      "captionEntries.286.createdAt": ["Date"],
+      "captionEntries.286.updatedAt": ["Date"],
+      "captionEntries.287.createdAt": ["Date"],
+      "captionEntries.287.updatedAt": ["Date"],
+      "captionEntries.288.createdAt": ["Date"],
+      "captionEntries.288.updatedAt": ["Date"],
+      "captionEntries.289.createdAt": ["Date"],
+      "captionEntries.289.updatedAt": ["Date"],
+      "captionEntries.290.createdAt": ["Date"],
+      "captionEntries.290.updatedAt": ["Date"],
+      "captionEntries.291.createdAt": ["Date"],
+      "captionEntries.291.updatedAt": ["Date"],
+      "captionEntries.292.createdAt": ["Date"],
+      "captionEntries.292.updatedAt": ["Date"],
+      "captionEntries.293.createdAt": ["Date"],
+      "captionEntries.293.updatedAt": ["Date"],
+      "captionEntries.294.createdAt": ["Date"],
+      "captionEntries.294.updatedAt": ["Date"],
+      "captionEntries.295.createdAt": ["Date"],
+      "captionEntries.295.updatedAt": ["Date"],
+      "captionEntries.296.createdAt": ["Date"],
+      "captionEntries.296.updatedAt": ["Date"],
+      "captionEntries.297.createdAt": ["Date"],
+      "captionEntries.297.updatedAt": ["Date"],
+      "captionEntries.298.createdAt": ["Date"],
+      "captionEntries.298.updatedAt": ["Date"],
+      "captionEntries.299.createdAt": ["Date"],
+      "captionEntries.299.updatedAt": ["Date"],
+      "captionEntries.300.createdAt": ["Date"],
+      "captionEntries.300.updatedAt": ["Date"],
+      "captionEntries.301.createdAt": ["Date"],
+      "captionEntries.301.updatedAt": ["Date"],
+      "captionEntries.302.createdAt": ["Date"],
+      "captionEntries.302.updatedAt": ["Date"],
+      "captionEntries.303.createdAt": ["Date"],
+      "captionEntries.303.updatedAt": ["Date"],
+      "captionEntries.304.createdAt": ["Date"],
+      "captionEntries.304.updatedAt": ["Date"],
+      "captionEntries.305.createdAt": ["Date"],
+      "captionEntries.305.updatedAt": ["Date"],
+      "captionEntries.306.createdAt": ["Date"],
+      "captionEntries.306.updatedAt": ["Date"],
+      "captionEntries.307.createdAt": ["Date"],
+      "captionEntries.307.updatedAt": ["Date"],
+      "captionEntries.308.createdAt": ["Date"],
+      "captionEntries.308.updatedAt": ["Date"],
+      "captionEntries.309.createdAt": ["Date"],
+      "captionEntries.309.updatedAt": ["Date"],
+      "captionEntries.310.createdAt": ["Date"],
+      "captionEntries.310.updatedAt": ["Date"],
+      "captionEntries.311.createdAt": ["Date"],
+      "captionEntries.311.updatedAt": ["Date"],
+      "captionEntries.312.createdAt": ["Date"],
+      "captionEntries.312.updatedAt": ["Date"],
+      "captionEntries.313.createdAt": ["Date"],
+      "captionEntries.313.updatedAt": ["Date"],
+      "captionEntries.314.createdAt": ["Date"],
+      "captionEntries.314.updatedAt": ["Date"],
+      "captionEntries.315.createdAt": ["Date"],
+      "captionEntries.315.updatedAt": ["Date"],
+      "captionEntries.316.createdAt": ["Date"],
+      "captionEntries.316.updatedAt": ["Date"],
+      "captionEntries.317.createdAt": ["Date"],
+      "captionEntries.317.updatedAt": ["Date"],
+      "captionEntries.318.createdAt": ["Date"],
+      "captionEntries.318.updatedAt": ["Date"],
+      "captionEntries.319.createdAt": ["Date"],
+      "captionEntries.319.updatedAt": ["Date"],
+      "captionEntries.320.createdAt": ["Date"],
+      "captionEntries.320.updatedAt": ["Date"],
+      "captionEntries.321.createdAt": ["Date"],
+      "captionEntries.321.updatedAt": ["Date"],
+      "captionEntries.322.createdAt": ["Date"],
+      "captionEntries.322.updatedAt": ["Date"],
+      "captionEntries.323.createdAt": ["Date"],
+      "captionEntries.323.updatedAt": ["Date"],
+      "captionEntries.324.createdAt": ["Date"],
+      "captionEntries.324.updatedAt": ["Date"],
+      "captionEntries.325.createdAt": ["Date"],
+      "captionEntries.325.updatedAt": ["Date"],
+      "captionEntries.326.createdAt": ["Date"],
+      "captionEntries.326.updatedAt": ["Date"],
+      "captionEntries.327.createdAt": ["Date"],
+      "captionEntries.327.updatedAt": ["Date"],
+      "captionEntries.328.createdAt": ["Date"],
+      "captionEntries.328.updatedAt": ["Date"],
+      "captionEntries.329.createdAt": ["Date"],
+      "captionEntries.329.updatedAt": ["Date"],
+      "captionEntries.330.createdAt": ["Date"],
+      "captionEntries.330.updatedAt": ["Date"],
+      "captionEntries.331.createdAt": ["Date"],
+      "captionEntries.331.updatedAt": ["Date"],
+      "captionEntries.332.createdAt": ["Date"],
+      "captionEntries.332.updatedAt": ["Date"],
+      "captionEntries.333.createdAt": ["Date"],
+      "captionEntries.333.updatedAt": ["Date"],
+      "captionEntries.334.createdAt": ["Date"],
+      "captionEntries.334.updatedAt": ["Date"],
+      "captionEntries.335.createdAt": ["Date"],
+      "captionEntries.335.updatedAt": ["Date"],
+      "captionEntries.336.createdAt": ["Date"],
+      "captionEntries.336.updatedAt": ["Date"],
+      "captionEntries.337.createdAt": ["Date"],
+      "captionEntries.337.updatedAt": ["Date"],
+      "captionEntries.338.createdAt": ["Date"],
+      "captionEntries.338.updatedAt": ["Date"],
+      "captionEntries.339.createdAt": ["Date"],
+      "captionEntries.339.updatedAt": ["Date"],
+      "captionEntries.340.createdAt": ["Date"],
+      "captionEntries.340.updatedAt": ["Date"],
+      "captionEntries.341.createdAt": ["Date"],
+      "captionEntries.341.updatedAt": ["Date"],
+      "captionEntries.342.createdAt": ["Date"],
+      "captionEntries.342.updatedAt": ["Date"],
+      "captionEntries.343.createdAt": ["Date"],
+      "captionEntries.343.updatedAt": ["Date"],
+      "captionEntries.344.createdAt": ["Date"],
+      "captionEntries.344.updatedAt": ["Date"],
+      "captionEntries.345.createdAt": ["Date"],
+      "captionEntries.345.updatedAt": ["Date"],
+      "captionEntries.346.createdAt": ["Date"],
+      "captionEntries.346.updatedAt": ["Date"],
+      "captionEntries.347.createdAt": ["Date"],
+      "captionEntries.347.updatedAt": ["Date"],
+      "captionEntries.348.createdAt": ["Date"],
+      "captionEntries.348.updatedAt": ["Date"],
+      "captionEntries.349.createdAt": ["Date"],
+      "captionEntries.349.updatedAt": ["Date"],
+      "captionEntries.350.createdAt": ["Date"],
+      "captionEntries.350.updatedAt": ["Date"],
+      "captionEntries.351.createdAt": ["Date"],
+      "captionEntries.351.updatedAt": ["Date"],
+      "captionEntries.352.createdAt": ["Date"],
+      "captionEntries.352.updatedAt": ["Date"],
+      "captionEntries.353.createdAt": ["Date"],
+      "captionEntries.353.updatedAt": ["Date"],
+      "captionEntries.354.createdAt": ["Date"],
+      "captionEntries.354.updatedAt": ["Date"],
+      "captionEntries.355.createdAt": ["Date"],
+      "captionEntries.355.updatedAt": ["Date"],
+      "captionEntries.356.createdAt": ["Date"],
+      "captionEntries.356.updatedAt": ["Date"],
+      "captionEntries.357.createdAt": ["Date"],
+      "captionEntries.357.updatedAt": ["Date"],
+      "captionEntries.358.createdAt": ["Date"],
+      "captionEntries.358.updatedAt": ["Date"],
+      "captionEntries.359.createdAt": ["Date"],
+      "captionEntries.359.updatedAt": ["Date"],
+      "captionEntries.360.createdAt": ["Date"],
+      "captionEntries.360.updatedAt": ["Date"],
+      "captionEntries.361.createdAt": ["Date"],
+      "captionEntries.361.updatedAt": ["Date"],
+      "captionEntries.362.createdAt": ["Date"],
+      "captionEntries.362.updatedAt": ["Date"],
+      "captionEntries.363.createdAt": ["Date"],
+      "captionEntries.363.updatedAt": ["Date"],
+      "captionEntries.364.createdAt": ["Date"],
+      "captionEntries.364.updatedAt": ["Date"],
+      "captionEntries.365.createdAt": ["Date"],
+      "captionEntries.365.updatedAt": ["Date"],
+      "captionEntries.366.createdAt": ["Date"],
+      "captionEntries.366.updatedAt": ["Date"],
+      "captionEntries.367.createdAt": ["Date"],
+      "captionEntries.367.updatedAt": ["Date"],
+      "captionEntries.368.createdAt": ["Date"],
+      "captionEntries.368.updatedAt": ["Date"],
+      "captionEntries.369.createdAt": ["Date"],
+      "captionEntries.369.updatedAt": ["Date"],
+      "captionEntries.370.createdAt": ["Date"],
+      "captionEntries.370.updatedAt": ["Date"],
+      "captionEntries.371.createdAt": ["Date"],
+      "captionEntries.371.updatedAt": ["Date"],
+      "captionEntries.372.createdAt": ["Date"],
+      "captionEntries.372.updatedAt": ["Date"],
+      "captionEntries.373.createdAt": ["Date"],
+      "captionEntries.373.updatedAt": ["Date"],
+      "captionEntries.374.createdAt": ["Date"],
+      "captionEntries.374.updatedAt": ["Date"],
+      "captionEntries.375.createdAt": ["Date"],
+      "captionEntries.375.updatedAt": ["Date"],
+      "captionEntries.376.createdAt": ["Date"],
+      "captionEntries.376.updatedAt": ["Date"]
     }
   }
 }

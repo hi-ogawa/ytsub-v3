@@ -42,16 +42,21 @@ async function exportDeck(id: number) {
     .where(E.inArray(T.bookmarkEntries.id, bookmarkEntryIds));
 
   const captionEntryIds = uniq(bookmarkEntries.map((e) => e.captionEntryId));
-  const captionEntries = await db
+  const captionEntriesWithBookmark = await db
     .select()
     .from(T.captionEntries)
     .where(E.inArray(T.captionEntries.id, captionEntryIds));
 
-  const videoIds = uniq(captionEntries.map((e) => e.videoId));
+  const videoIds = uniq(captionEntriesWithBookmark.map((e) => e.videoId));
   const videos = await db
     .select()
     .from(T.videos)
     .where(E.inArray(T.videos.id, videoIds));
+
+  const captionEntries = await db
+    .select()
+    .from(T.captionEntries)
+    .where(E.inArray(T.captionEntries.videoId, videoIds));
 
   return {
     deck,
