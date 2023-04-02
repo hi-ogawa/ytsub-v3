@@ -85,7 +85,7 @@ test.describe("decks", () => {
     await page.goto("/decks");
 
     // nagivate to "/decks/$id"
-    await page.locator("text=test-main").click();
+    await page.locator("text=Korean").click();
     await expect(page).toHaveURL(/\/decks\/\d+$/);
 
     // navigate pagination
