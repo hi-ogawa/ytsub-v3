@@ -3,7 +3,7 @@
 ```sh
 # development
 pnpm i
-make docker/up db/reset db/restore/dev  # username/password is dev/dev
+make docker/up db/reset db/seed  # username and password are both "dev"
 pnpm dev
 
 # lint

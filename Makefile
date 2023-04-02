@@ -28,7 +28,8 @@ lint/github-workflow:
 #
 
 db/seed:
-	npm run cli -- create-user root pass
+	pnpm cli create-user dev dev
+	pnpm cli db-seed-import --username dev --inFile misc/db/dev.json
 
 db/dump:
 	docker-compose exec -T mysql mysqldump -uroot -ppassword ytsub_development | gzip -c > "misc/db/dump/$$(date '+%Y_%m_%d_%H_%M_%S').sql.gz"
