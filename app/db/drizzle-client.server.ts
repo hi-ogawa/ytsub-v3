@@ -88,17 +88,13 @@ const captionEntries = mysqlTable("captionEntries", {
 const bookmarkEntries = mysqlTable("bookmarkEntries", {
   id: serial("id").primaryKey(),
   userId: int("userId").notNull(),
-  videoId: text("videoId").notNull(),
+  videoId: int("videoId").notNull(),
+  captionEntryId: int("captionEntryId").notNull(),
   ...timestampColumns,
   //
-  language1_id: text("language1_id").notNull(),
-  language2_id: text("language2_id").notNull(),
-  language1_translation: text("language1_translation"),
-  language2_translation: text("language2_translation"),
-  title: text("title").notNull(),
-  author: text("author").notNull(),
-  channelId: text("channelId").notNull(),
-  bookmarkEntriesCount: int("bookmarkEntriesCount").notNull(),
+  text: text("text").notNull(),
+  side: int("side").notNull(), // 0 | 1
+  offset: int("offset").notNull(),
 });
 
 // prettier-ignore
@@ -107,6 +103,7 @@ const decks = mysqlTable("decks", {
   userId: int("userId").notNull(),
   ...timestampColumns,
   //
+  name: text("name").notNull(),
   newEntriesPerDay: int("newEntriesPerDay").notNull(),
   reviewsPerDay: int("reviewsPerDay").notNull(),
   easeMultiplier: float("easeMultiplier").notNull(),
@@ -158,10 +155,9 @@ export type TT = { [K in keyof typeof T]: InferModel<(typeof T)[K]> };
 // re-export expressions since eq, isNull etc.. sounds too general
 export { E };
 
-export async function limitOne<
-  T,
-  Query extends { limit: (i: number) => Promise<T[]> }
->(query: Query): Promise<T | undefined> {
+export async function findOne<
+  Q extends { limit: (i: number) => Promise<any[]> }
+>(query: Q): Promise<Awaited<ReturnType<Q["limit"]>>[0] | undefined> {
   return (await query.limit(1)).at(0);
 }
 
@@ -175,9 +171,16 @@ declare let globalThis: {
 };
 
 export let db: MySql2Database = globalThis.__db ?? throwGetterProxy;
+let dbConnection: Awaited<ReturnType<typeof createConnection>>;
 
 export const initializeDrizzleClient = once(async () => {
+  if (globalThis.__db) return;
   const config = knexfile();
   const connection = await createConnection(config.connection as any);
   db = globalThis.__db = drizzle(connection);
+  dbConnection = connection;
 });
+
+export async function finalizeDrizzleClient() {
+  dbConnection.destroy();
+}
