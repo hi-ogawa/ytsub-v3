@@ -43,8 +43,6 @@ test.describe(() => {
     await page.locator("header >> data-test=login-icon").click();
     await expect(page).toHaveURL("/users/signin");
 
-    user.data.username;
-
     // submit form
     await page.locator('input[name="username"]').fill(user.data.username);
     await page.locator('input[name="password"]').fill(password);
