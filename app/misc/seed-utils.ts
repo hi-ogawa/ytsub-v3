@@ -1,4 +1,4 @@
-import fs from "node:fs";
+import fs from "fs";
 import { UncheckedMap, objectOmit, tinyassert, uniq } from "@hiogawa/utils";
 import superjson from "superjson";
 import { E, T, db, findOne } from "../db/drizzle-client.server";

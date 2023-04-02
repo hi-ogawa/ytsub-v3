@@ -20,6 +20,7 @@ export const R = {
   "/decks": "/decks",
   "/decks?index": "/decks?index",
   "/decks/new": "/decks/new",
+  "/decks/import": "/decks/import",
   "/decks/$id": (id: number) => `/decks/${id}`,
   "/decks/$id?index": (id: number) => `/decks/${id}?index`,
   "/decks/$id/edit": (id: number) => `/decks/${id}/edit`,

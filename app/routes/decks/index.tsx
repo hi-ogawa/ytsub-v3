@@ -72,10 +72,16 @@ function DeckComponent({ deck }: { deck: DeckTable }) {
 
 function NavBarMenuComponent() {
   return (
-    <Link
-      to={R["/decks/new"]}
-      className="antd-btn antd-btn-ghost i-ri-add-box-line w-6 h-6"
-      data-test="new-deck-link"
-    />
+    <>
+      <Link
+        to={R["/decks/new"]}
+        className="antd-btn antd-btn-ghost i-ri-add-box-line w-6 h-6"
+        data-test="new-deck-link"
+      />
+      <Link
+        to={R["/decks/import"]}
+        className="antd-btn antd-btn-ghost i-ri-file-upload-line w-6 h-6"
+      />
+    </>
   );
 }
