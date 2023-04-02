@@ -4,7 +4,6 @@ import { tinyassert } from "@hiogawa/utils";
 import { cac } from "cac";
 import consola from "consola";
 import { range, zip } from "lodash";
-import superjson from "superjson";
 import { z } from "zod";
 import { client } from "../db/client.server";
 import {
@@ -24,7 +23,7 @@ import { exec, streamToString } from "../utils/node.server";
 import { queryDeckPracticeEntriesCountByQueueType } from "../utils/practice-system";
 import { NewVideo, fetchCaptionEntries } from "../utils/youtube";
 import { finalizeServer, initializeServer } from "./initialize-server";
-import { exportDeck, importDeck } from "./seed-utils";
+import { exportDeckJson, importDeckJson } from "./seed-utils";
 
 const cli = cac("cli").help();
 
@@ -189,10 +188,9 @@ cli
   });
 
 //
-// seed export/import (TODO: allow from web directly? (for dev convenience at least))
-//
-// pnpm cli db-seed-export --deckId 1 --outFile misc/db/dev.json
-// pnpm cli db-seed-import --username dev-import --inFile misc/db/dev.json
+// seed export/import e.g.
+//   pnpm cli db-seed-export --deckId 1 --outFile misc/db/dev.json
+//   pnpm cli db-seed-import --username dev-import --inFile misc/db/dev.json
 //
 
 //
@@ -212,9 +210,8 @@ cli
 
 async function commandDbSeedExport(rawArgs: unknown) {
   const args = commandDbSeedExportArgs.parse(rawArgs);
-  const data = await exportDeck(args.deckId);
-  const dataRaw = JSON.stringify(superjson.serialize(data), null, 2);
-  await fs.promises.writeFile(args.outFile, dataRaw);
+  const data = await exportDeckJson(args.deckId);
+  await fs.promises.writeFile(args.outFile, JSON.stringify(data, null, 2));
 }
 
 //
@@ -235,10 +232,9 @@ cli
 async function commandDbSeedImport(argsRaw: unknown) {
   const args = commandDbSeedImportArgs.parse(argsRaw);
   const user = await findByUsername(args.username);
-  const fileDataRaw = await fs.promises.readFile(args.inFile, "utf-8");
-  const fileData: any = superjson.deserialize(JSON.parse(fileDataRaw));
   tinyassert(user);
-  await importDeck(user.id, fileData);
+  const fileDataRaw = await fs.promises.readFile(args.inFile, "utf-8");
+  await importDeckJson(user.id, JSON.parse(fileDataRaw));
 }
 
 //

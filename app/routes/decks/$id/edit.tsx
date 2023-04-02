@@ -63,14 +63,22 @@ export const action = makeLoader(Controller, async function () {
 //
 
 export default function DefaultComponent() {
+  return (
+    <div className="w-full flex justify-center p-4">
+      <DefaultComponentInner />
+    </div>
+  );
+}
+
+function DefaultComponentInner() {
   const { deck }: LoaderData = useDeserialize(useLoaderData());
   const [isValid, formProps] = useIsFormValid();
 
   return (
-    <div className="w-full p-4 flex flex-col items-center gap-4">
+    <div className="w-full max-w-md flex flex-col items-center gap-4">
       <Form
         method="post"
-        className="flex flex-col border w-full max-w-sm p-4 px-6 gap-3"
+        className="flex flex-col border w-full p-6 gap-3"
         data-test="edit-deck-form"
         {...formProps}
       >
@@ -130,7 +138,17 @@ export default function DefaultComponent() {
           Save
         </button>
       </Form>
-      <div className="flex flex-col border w-full max-w-sm p-4 px-6 gap-3 border-colorErrorBorder">
+      <div className="flex flex-col border w-full p-6 gap-3">
+        <h1 className="text-lg">Others</h1>
+        <a
+          className="antd-btn antd-btn-default p-1 grid place-content-center"
+          href={R["/decks/$id/export"](deck.id)}
+          download={`ytsub-deck-export--${deck.name}.json`}
+        >
+          Export JSON
+        </a>
+      </div>
+      <div className="flex flex-col border w-full p-6 gap-3 border-colorErrorBorder">
         <h1 className="text-lg">Danger Zone</h1>
         <Form
           className="flex"

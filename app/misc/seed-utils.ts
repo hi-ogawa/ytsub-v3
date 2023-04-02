@@ -9,7 +9,17 @@ import { E, T, db, findOne } from "../db/drizzle-client.server";
 
 type ExportDeckData = Awaited<ReturnType<typeof exportDeck>>;
 
-export async function exportDeck(id: number) {
+export async function exportDeckJson(id: number) {
+  const data = await exportDeck(id);
+  return superjson.serialize(data);
+}
+
+export async function importDeckJson(userId: number, dataJson: any) {
+  const data: any = superjson.deserialize(dataJson);
+  await importDeck(userId, data);
+}
+
+async function exportDeck(id: number) {
   const deck = await findOne(
     db.select().from(T.decks).where(E.eq(T.decks.id, id))
   );
@@ -53,7 +63,7 @@ export async function exportDeck(id: number) {
   };
 }
 
-export async function importDeck(userId: number, data: ExportDeckData) {
+async function importDeck(userId: number, data: ExportDeckData) {
   const user = await findOne(
     db.select().from(T.users).where(E.eq(T.users.id, userId))
   );
@@ -143,8 +153,7 @@ const SEED_FILE = "misc/db/dev.json";
 
 export async function importSeed(userId: number) {
   const fileDataRaw = await fs.promises.readFile(SEED_FILE, "utf-8");
-  const fileData: any = superjson.deserialize(JSON.parse(fileDataRaw));
-  await importDeck(userId, fileData);
+  await importDeckJson(userId, JSON.parse(fileDataRaw));
 }
 
 //
