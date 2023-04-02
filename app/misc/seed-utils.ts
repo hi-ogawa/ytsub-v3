@@ -70,7 +70,6 @@ export async function importDeck(userId: number, data: ExportDeckData) {
     ...objectOmit(deck, ["id"]),
     userId: user.id,
   });
-  deckInsert.insertId;
 
   const [videoInsert] = await db.insert(T.videos).values(
     ...videos.map((e) => ({
@@ -127,11 +126,11 @@ export async function importDeck(userId: number, data: ExportDeckData) {
       practiceEntryId: practiceEntriesIdMap.get(e.practiceEntryId),
     }))
   );
+  // @ts-expect-error unused
   const practiceActionsIdMap = remapInsertId(
     practiceActionsInsert.insertId,
     practiceActions.map((e) => e.id)
   );
-  practiceActionsIdMap;
 }
 
 //
