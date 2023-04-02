@@ -58,6 +58,9 @@ function FormComponent() {
         toast.success("Deck imported successfully!");
         navigate(R["/decks"]);
       },
+      onError: () => {
+        toast.error("Failed to import a deck");
+      },
     }
   );
 
