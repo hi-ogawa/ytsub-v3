@@ -143,7 +143,8 @@ function DefaultComponentInner() {
         <a
           className="antd-btn antd-btn-default p-1 grid place-content-center"
           href={R["/decks/$id/export"](deck.id)}
-          download={`ytsub-deck-export--${deck.name}.json`}
+          // avoid `json` since it cannot be attached on github editor https://github.com/isaacs/github/issues/1130
+          download={`ytsub-deck-export--${deck.name}.txt`}
         >
           Export JSON
         </a>

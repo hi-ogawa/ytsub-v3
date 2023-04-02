@@ -29,7 +29,7 @@ jobs:
         with:
           node-version: 16
       - run: pnpm i
-      - run: make docker/up db/reset/test
+      - run: make docker/up db/reset/test db/seed-download
       - run: pnpm test-coverage
       - uses: actions/upload-artifact@v3
         with:
@@ -54,7 +54,7 @@ jobs:
           key: cache-playwright-1.31.2
       - if: steps.cache-playwright.outputs.cache-hit != 'true'
         run: npx playwright install --with-deps
-      - run: make docker/up db/reset/test
+      - run: make docker/up db/reset/test db/seed-download
       - run: APP_RECAPTCHA_DISABLED=1 E2E_CLIENT_TRACE=1 pnpm test-e2e-coverage
       - uses: actions/upload-artifact@v3
         with:
