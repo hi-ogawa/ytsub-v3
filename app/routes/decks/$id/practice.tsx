@@ -1,7 +1,6 @@
 import { tinyassert } from "@hiogawa/utils";
 import { useFetcher, useLoaderData, useTransition } from "@remix-run/react";
 import React from "react";
-import { E, T, db, findOne } from "../../../db/drizzle-client.server";
 import {
   BookmarkEntryTable,
   CaptionEntryTable,
@@ -9,7 +8,9 @@ import {
   PRACTICE_ACTION_TYPES,
   PracticeActionType,
   PracticeEntryTable,
+  Q,
   VideoTable,
+  normalizeRelation,
 } from "../../../db/models";
 import { R } from "../../../misc/routes";
 import { Controller, makeLoader } from "../../../utils/controller-utils";
@@ -60,32 +61,32 @@ export const loader = makeLoader(Controller, async function () {
   const [user, deck] = await requireUserAndDeck.apply(this);
   const system = new PracticeSystem(user, deck);
   const now = new Date();
-  const statistics = system.getStatistics(now); // defer await
+  const statistics = system.getStatistics(now); // delay await
   const practiceEntry = await system.getNextPracticeEntry(now);
   let data: LoaderData["data"];
   if (!practiceEntry) {
     data = { finished: true };
   } else {
-    const row = await findOne(
-      db
-        .select()
-        .from(T.bookmarkEntries)
-        .innerJoin(
-          T.captionEntries,
-          E.eq(T.captionEntries.id, T.bookmarkEntries.captionEntryId)
+    const { bookmarkEntries, captionEntries, videos } = await normalizeRelation(
+      Q.bookmarkEntries()
+        .leftJoin(
+          "captionEntries",
+          "captionEntries.id",
+          "bookmarkEntries.captionEntryId"
         )
-        .innerJoin(T.videos, E.eq(T.videos.id, T.captionEntries.videoId))
-        .where(E.eq(T.bookmarkEntries.id, practiceEntry.bookmarkEntryId))
+        .leftJoin("videos", "videos.id", "captionEntries.videoId")
+        .where("bookmarkEntries.id", practiceEntry.bookmarkEntryId),
+      ["bookmarkEntries", "captionEntries", "videos"]
     );
-    tinyassert(row);
+    tinyassert(bookmarkEntries[0]);
+    tinyassert(captionEntries[0]);
+    tinyassert(videos[0]);
     data = {
       finished: false,
       practiceEntry,
-      bookmarkEntry: row.bookmarkEntries,
-      // @ts-expect-error null to undefined
-      captionEntry: row.captionEntries,
-      // @ts-expect-error null to undefined
-      video: row.videos,
+      bookmarkEntry: bookmarkEntries[0],
+      captionEntry: captionEntries[0],
+      video: videos[0],
     };
   }
   const res: LoaderData = { deck, statistics: await statistics, data };
