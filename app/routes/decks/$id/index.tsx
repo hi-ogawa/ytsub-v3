@@ -6,7 +6,6 @@ import { NavLink } from "react-router-dom";
 import { z } from "zod";
 import { PaginationComponent } from "../../../components/misc";
 import { PopoverSimple } from "../../../components/popover";
-import { E, T, db, findOne } from "../../../db/drizzle-client.server";
 import {
   BookmarkEntryTable,
   CaptionEntryTable,
@@ -17,6 +16,7 @@ import {
   Q,
   UserTable,
   VideoTable,
+  normalizeRelation,
   normalizeRelationWithPagination,
 } from "../../../db/models";
 import { R } from "../../../misc/routes";
@@ -53,15 +53,15 @@ export async function requireUserAndDeck(
     const parsed = PARAMS_SCHEMA.safeParse(this.args.params);
     if (parsed.success) {
       const { id } = parsed.data;
-      const found = await findOne(
-        db
-          .select()
-          .from(T.users)
-          .innerJoin(T.decks, E.eq(T.decks.userId, T.users.id))
-          .where(E.and(E.eq(T.users.id, userId), E.eq(T.decks.id, id)))
+      const { users, decks } = await normalizeRelation(
+        Q.users().leftJoin("decks", "decks.userId", "users.id").where({
+          "users.id": userId,
+          "decks.id": id,
+        }),
+        ["decks", "users"]
       );
-      if (found) {
-        return [found.users, found.decks];
+      if (users.length > 0 && decks.length > 0) {
+        return [users[0], decks[0]];
       }
     }
   }
