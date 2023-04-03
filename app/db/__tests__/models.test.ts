@@ -1,11 +1,14 @@
 import { tinyassert } from "@hiogawa/utils";
-import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
+import { mapValues } from "lodash";
+import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { getSchema } from "../../misc/cli";
-import { restoreDump } from "../../misc/test-setup-global-e2e";
+import { importSeed } from "../../misc/seed-utils";
+import { useUser } from "../../routes/__tests__/helper";
 import { client } from "../client.server";
 import { Q, deleteOrphans, normalizeRelation } from "../models";
 import RAW_SCHEMA from "../schema";
 
+// TODO: remove
 describe("models-basic", () => {
   beforeEach(async () => {
     await Q.users().delete();
@@ -76,13 +79,11 @@ describe("models-basic", () => {
 });
 
 describe("models-with-dump", () => {
-  beforeAll(async () => {
-    await restoreDump();
-  });
+  const user = useUser({ username: "username-models-with-dump" });
 
-  afterAll(async () => {
-    await Q.users().delete().where("username", "dev");
-    await deleteOrphans();
+  beforeAll(async () => {
+    await user.isReady;
+    await importSeed(user.data.id);
   });
 
   it("normalizeRelation", async () => {
@@ -99,7 +100,7 @@ describe("models-with-dump", () => {
         "practiceActions.practiceEntryId",
         "practiceEntries.id"
       )
-      .where("users.username", "dev")
+      .where("users.username", user.data.username)
       .groupBy("practiceEntries.id")
       .orderBy([
         {
@@ -121,118 +122,133 @@ describe("models-with-dump", () => {
         },
       }
     );
-    expect(data).toMatchInlineSnapshot(`
+    // remove "non-deterministic" properties
+    const keys = [
+      "id",
+      "userId",
+      "videoId",
+      "captionEntryId",
+      "deckId",
+      "bookmarkEntryId",
+      "createdAt",
+      "updatedAt",
+      "passwordHash",
+    ];
+    const data2 = mapValues(data, (v) =>
+      v.map((v) => mapValues(v, (v, k) => (keys.includes(k) ? "(id)" : v)))
+    );
+    expect(data2).toMatchInlineSnapshot(`
       {
         "bookmarkEntries": [
           {
-            "captionEntryId": 6127,
-            "createdAt": 2022-04-17T22:10:42.000Z,
-            "id": 314,
-            "offset": 28,
-            "practiceActionsCount": 3,
+            "captionEntryId": "(id)",
+            "createdAt": "(id)",
+            "id": "(id)",
+            "offset": 0,
+            "practiceActionsCount": 7,
             "side": 0,
-            "text": "passer sous une échelle",
-            "updatedAt": 2022-04-17T22:10:42.000Z,
-            "userId": 1,
-            "videoId": 58,
+            "text": "저희 인사드리겠습니다 둘 셋!",
+            "updatedAt": "(id)",
+            "userId": "(id)",
+            "videoId": "(id)",
           },
           {
-            "captionEntryId": 6128,
-            "createdAt": 2022-04-17T22:11:43.000Z,
-            "id": 315,
-            "offset": 2,
-            "practiceActionsCount": 2,
+            "captionEntryId": "(id)",
+            "createdAt": "(id)",
+            "id": "(id)",
+            "offset": 13,
+            "practiceActionsCount": 4,
             "side": 0,
-            "text": " j'ai peur de casser un miroir parce qu'on dit qu'on aura 7 ans de malheur.",
-            "updatedAt": 2022-04-17T22:11:43.000Z,
-            "userId": 1,
-            "videoId": 58,
+            "text": "막내",
+            "updatedAt": "(id)",
+            "userId": "(id)",
+            "videoId": "(id)",
           },
         ],
         "decks": [
           {
-            "createdAt": 2022-04-23T08:07:33.000Z,
+            "createdAt": "(id)",
             "easeBonus": 1.5,
             "easeMultiplier": 2,
-            "id": 1,
-            "name": "test-main",
+            "id": "(id)",
+            "name": "Korean",
             "newEntriesPerDay": 50,
-            "practiceActionsCount": 3,
+            "practiceActionsCount": 7,
             "practiceEntriesCountByQueueType": {
-              "LEARN": 65,
-              "NEW": 77,
-              "REVIEW": 22,
+              "LEARN": 187,
+              "NEW": 140,
+              "REVIEW": 13,
             },
             "randomMode": 1,
             "reviewsPerDay": 200,
-            "updatedAt": 2022-07-09T08:04:59.000Z,
-            "userId": 1,
+            "updatedAt": "(id)",
+            "userId": "(id)",
           },
           {
-            "createdAt": 2022-04-23T08:07:33.000Z,
+            "createdAt": "(id)",
             "easeBonus": 1.5,
             "easeMultiplier": 2,
-            "id": 1,
-            "name": "test-main",
+            "id": "(id)",
+            "name": "Korean",
             "newEntriesPerDay": 50,
-            "practiceActionsCount": 2,
+            "practiceActionsCount": 4,
             "practiceEntriesCountByQueueType": {
-              "LEARN": 65,
-              "NEW": 77,
-              "REVIEW": 22,
+              "LEARN": 187,
+              "NEW": 140,
+              "REVIEW": 13,
             },
             "randomMode": 1,
             "reviewsPerDay": 200,
-            "updatedAt": 2022-07-09T08:04:59.000Z,
-            "userId": 1,
+            "updatedAt": "(id)",
+            "userId": "(id)",
           },
         ],
         "practiceEntries": [
           {
-            "bookmarkEntryId": 314,
-            "createdAt": 2022-04-23T08:07:50.000Z,
-            "deckId": 1,
-            "easeFactor": 2,
-            "id": 1,
-            "practiceActionsCount": 3,
+            "bookmarkEntryId": "(id)",
+            "createdAt": "(id)",
+            "deckId": "(id)",
+            "easeFactor": 32,
+            "id": "(id)",
+            "practiceActionsCount": 7,
             "queueType": "REVIEW",
-            "scheduledAt": 2022-05-19T12:55:49.000Z,
-            "updatedAt": 2022-05-18T12:55:49.000Z,
+            "scheduledAt": 2023-04-17T03:30:41.000Z,
+            "updatedAt": "(id)",
           },
           {
-            "bookmarkEntryId": 315,
-            "createdAt": 2022-04-23T08:07:50.000Z,
-            "deckId": 1,
-            "easeFactor": 2,
-            "id": 2,
-            "practiceActionsCount": 2,
+            "bookmarkEntryId": "(id)",
+            "createdAt": "(id)",
+            "deckId": "(id)",
+            "easeFactor": 8,
+            "id": "(id)",
+            "practiceActionsCount": 4,
             "queueType": "REVIEW",
-            "scheduledAt": 2022-05-11T14:23:25.000Z,
-            "updatedAt": 2022-05-10T14:23:25.000Z,
+            "scheduledAt": 2023-03-24T09:44:32.000Z,
+            "updatedAt": "(id)",
           },
         ],
         "users": [
           {
-            "createdAt": 2022-04-02T09:14:47.000Z,
-            "id": 1,
-            "language1": "fr",
-            "language2": "en",
-            "passwordHash": "\$2a\$10\$WPTRk4ui.NI6RE9OnbN/u.a6mhVfn3hkMSSQ0k86UXf/uw.PNRv6K",
-            "practiceActionsCount": 3,
-            "timezone": "+09:00",
-            "updatedAt": 2022-05-28T06:44:50.000Z,
-            "username": "dev",
+            "createdAt": "(id)",
+            "id": "(id)",
+            "language1": null,
+            "language2": null,
+            "passwordHash": "(id)",
+            "practiceActionsCount": 7,
+            "timezone": "+00:00",
+            "updatedAt": "(id)",
+            "username": "username-models-with-dump",
           },
           {
-            "createdAt": 2022-04-02T09:14:47.000Z,
-            "id": 1,
-            "language1": "fr",
-            "language2": "en",
-            "passwordHash": "\$2a\$10\$WPTRk4ui.NI6RE9OnbN/u.a6mhVfn3hkMSSQ0k86UXf/uw.PNRv6K",
-            "practiceActionsCount": 2,
-            "timezone": "+09:00",
-            "updatedAt": 2022-05-28T06:44:50.000Z,
-            "username": "dev",
+            "createdAt": "(id)",
+            "id": "(id)",
+            "language1": null,
+            "language2": null,
+            "passwordHash": "(id)",
+            "practiceActionsCount": 4,
+            "timezone": "+00:00",
+            "updatedAt": "(id)",
+            "username": "username-models-with-dump",
           },
         ],
       }

@@ -1,4 +1,4 @@
-import { tinyassert } from "@hiogawa/utils";
+import { newPromiseWithResolvers, tinyassert } from "@hiogawa/utils";
 import type { LoaderFunction } from "@remix-run/server-runtime";
 import { afterAll, beforeAll } from "vitest";
 import {
@@ -61,10 +61,12 @@ export function useUser(...args: Parameters<typeof useUserImpl>) {
 
   let user: UserTable;
   let cookie: string;
+  let isReady = newPromiseWithResolvers<void>();
 
   beforeAll(async () => {
     user = await before();
     cookie = await createUserCookie(user);
+    isReady.resolve();
   });
 
   afterAll(async () => {
@@ -76,7 +78,15 @@ export function useUser(...args: Parameters<typeof useUserImpl>) {
     return request;
   }
 
-  return { user: () => user, signin };
+  return {
+    /** @deprecated use `data` */
+    user: () => user,
+    signin,
+    isReady: isReady.promise,
+    get data() {
+      return user;
+    },
+  };
 }
 
 // TODO: use pre-downloaded fixture

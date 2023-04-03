@@ -1,7 +1,8 @@
 import { deepEqual } from "assert/strict";
+import fs from "node:fs";
 import { tinyassert } from "@hiogawa/utils";
-import { installGlobals } from "@remix-run/node";
 import { cac } from "cac";
+import consola from "consola";
 import { range, zip } from "lodash";
 import { z } from "zod";
 import { client } from "../db/client.server";
@@ -13,6 +14,7 @@ import {
 } from "../db/models";
 import {
   createUserCookie,
+  findByUsername,
   register,
   toPasswordHash,
   verifySignin,
@@ -20,6 +22,8 @@ import {
 import { exec, streamToString } from "../utils/node.server";
 import { queryDeckPracticeEntriesCountByQueueType } from "../utils/practice-system";
 import { NewVideo, fetchCaptionEntries } from "../utils/youtube";
+import { finalizeServer, initializeServer } from "./initialize-server";
+import { exportDeckJson, importDeckJson } from "./seed-utils";
 
 const cli = cac("cli").help();
 
@@ -37,7 +41,6 @@ cli
       const schema = await getSchema(options);
       const result = options.json ? JSON.stringify(schema, null, 2) : schema;
       console.log(result);
-      await client.destroy();
     }
   );
 
@@ -125,7 +128,6 @@ async function clieDbTestMigrations(options: {
   if (options.showSchema) {
     console.log(JSON.stringify(zip(ups, downs), null, 2));
   }
-  await client.destroy();
 
   if (options.reversibilityTest) {
     deepEqual(ups, downs);
@@ -146,7 +148,6 @@ cli
       const user = await register({ username, password });
       await Q.users().update({ language1, language2 }).where("id", user.id);
       await printSession(username, password);
-      await client.destroy();
     }
   );
 
@@ -154,7 +155,6 @@ cli
   .command("print-session <username> <password>")
   .action(async (username: string, password: string) => {
     await printSession(username, password);
-    await client.destroy();
   });
 
 cli
@@ -185,8 +185,61 @@ cli
       const data = await fetchCaptionEntries(newVideo);
       await insertVideoAndCaptionEntries(newVideo, data, userId);
     }
-    await client.destroy();
   });
+
+//
+// seed export/import e.g.
+//   pnpm cli db-seed-export --deckId 1 --outFile misc/db/dev.json
+//   pnpm cli db-seed-import --username dev-import --inFile misc/db/dev.json
+//
+
+//
+// db-seed-export
+//
+
+const commandDbSeedExportArgs = z.object({
+  deckId: z.coerce.number().int(),
+  outFile: z.string(),
+});
+
+cli
+  .command("db-seed-export")
+  .option(`--${commandDbSeedExportArgs.keyof().enum.deckId} [number]`, "")
+  .option(`--${commandDbSeedExportArgs.keyof().enum.outFile} [string]`, "")
+  .action(commandDbSeedExport);
+
+async function commandDbSeedExport(rawArgs: unknown) {
+  const args = commandDbSeedExportArgs.parse(rawArgs);
+  const data = await exportDeckJson(args.deckId);
+  await fs.promises.writeFile(args.outFile, JSON.stringify(data, null, 2));
+}
+
+//
+// db-seed-import
+//
+
+const commandDbSeedImportArgs = z.object({
+  username: z.string(),
+  inFile: z.string(),
+});
+
+cli
+  .command("db-seed-import")
+  .option(`--${commandDbSeedImportArgs.keyof().enum.username} [string]`, "")
+  .option(`--${commandDbSeedImportArgs.keyof().enum.inFile} [string]`, "")
+  .action(commandDbSeedImport);
+
+async function commandDbSeedImport(argsRaw: unknown) {
+  const args = commandDbSeedImportArgs.parse(argsRaw);
+  const user = await findByUsername(args.username);
+  tinyassert(user);
+  const fileDataRaw = await fs.promises.readFile(args.inFile, "utf-8");
+  await importDeckJson(user.id, JSON.parse(fileDataRaw));
+}
+
+//
+// import-bookmark-entries
+//
 
 const OLD_BOOKMARK_ENTRY_SCHEMA = z.object({
   watchParameters: z.object({
@@ -294,7 +347,6 @@ cli
       const [ok, message] = await importBookmarkEntry(old, user.id);
       console.error(ok ? "✔" : "✘", message, ok ? "" : JSON.stringify(old));
     }
-    await client.destroy();
   });
 
 cli
@@ -316,7 +368,6 @@ cli
       await Q.users()
         .update({ username: "dev", passwordHash: await toPasswordHash("dev") })
         .where("username", onlyUsername);
-      await client.destroy();
     }
   );
 
@@ -346,7 +397,6 @@ cli
         .onConflict("id")
         .merge(["id", "bookmarkEntriesCount", "updatedAt"]);
     });
-    await client.destroy();
   });
 
 cli
@@ -378,7 +428,6 @@ cli
         .onConflict("id")
         .merge(["id", "practiceActionsCount", "updatedAt"]);
     });
-    await client.destroy();
   });
 
 cli
@@ -391,7 +440,6 @@ cli
         .where("id", id)
         .update("practiceEntriesCountByQueueType", JSON.stringify(result));
     }
-    await client.destroy();
   });
 
 async function printSession(username: string, password: string) {
@@ -400,7 +448,25 @@ async function printSession(username: string, password: string) {
   console.log(cookie);
 }
 
+//
+// main
+//
+
+async function main() {
+  try {
+    await initializeServer();
+    cli.parse(undefined, { run: false });
+    await cli.runMatchedCommand();
+  } catch (e) {
+    consola.error(e);
+    process.exit(1);
+  } finally {
+    // TODO: fix mysql driver warning?
+    //   Warning: got packets out of order. Expected 22 but received 0
+    await finalizeServer();
+  }
+}
+
 if (require.main === module) {
-  installGlobals();
-  cli.parse();
+  main();
 }

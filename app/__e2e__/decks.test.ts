@@ -1,12 +1,18 @@
 import { expect } from "@playwright/test";
+import { importSeed } from "../misc/seed-utils";
 import { test } from "./coverage";
-import { forceDismissToast, useDevUserE2e } from "./helper";
+import { forceDismissToast, useUserE2E } from "./helper";
 
 test.describe("decks", () => {
-  const { signin } = useDevUserE2e(test);
+  const user = useUserE2E(test, { seed: __filename });
+
+  test.beforeAll(async () => {
+    await user.isReady;
+    await importSeed(user.data.id);
+  });
 
   test("decks => new-deck => edit-deck", async ({ page }) => {
-    await signin(page);
+    await user.signin(page);
 
     await page.goto("/decks");
 
@@ -41,10 +47,22 @@ test.describe("decks", () => {
       .click();
     await page.waitForSelector(`"Deck updated successfully"`);
     await expect(page).toHaveURL(/\/decks\/\d+$/);
+
+    // navigate to "/decks/$id/history-graph"
+    await page.locator("data-test=deck-menu-popover-reference").click();
+    await page
+      .locator("data-test=deck-menu-popover-floating >> text=History")
+      .click();
+    await expect(page).toHaveURL(/\/decks\/\d+\/history-graph$/);
+
+    // navigate to "/decks/$id/history"
+    await page.getByRole("combobox").selectOption({ label: "List" });
+    await expect(page).toHaveURL(/\/decks\/\d+\/history$/);
+    await expect(page.locator(`data-test=main >> "Empty"`)).toBeVisible();
   });
 
   test("videos => add-to-deck", async ({ page }) => {
-    await signin(page);
+    await user.signin(page);
 
     await page.goto("/videos");
 
@@ -63,11 +81,11 @@ test.describe("decks", () => {
   });
 
   test("show-deck => pagination => deck-history", async ({ page }) => {
-    await signin(page);
+    await user.signin(page);
     await page.goto("/decks");
 
     // nagivate to "/decks/$id"
-    await page.locator("text=test-main").click();
+    await page.locator("text=Korean").click();
     await expect(page).toHaveURL(/\/decks\/\d+$/);
 
     // navigate pagination
@@ -81,25 +99,7 @@ test.describe("decks", () => {
       .click();
     await expect(page).toHaveURL(/\/decks\/\d+\/history-graph$/);
   });
-
-  test("show-deck-empty", async ({ page }) => {
-    await signin(page);
-    await page.goto("/decks");
-
-    // navigate to "test-empty"
-    await page.locator("text=test-empty").click();
-    await expect(page).toHaveURL(/\/decks\/\d+$/);
-
-    // navigate to "/decks/$id/history-graph"
-    await page.locator("data-test=deck-menu-popover-reference").click();
-    await page
-      .locator("data-test=deck-menu-popover-floating >> text=History")
-      .click();
-    await expect(page).toHaveURL(/\/decks\/\d+\/history-graph$/);
-
-    // navigate to "/decks/$id/history"
-    await page.getByRole("combobox").selectOption({ label: "List" });
-    await expect(page).toHaveURL(/\/decks\/\d+\/history$/);
-    await expect(page.locator(`data-test=main >> "Empty"`)).toBeVisible();
-  });
 });
+
+// TODO
+test.describe.skip("decks-import-export", () => {});

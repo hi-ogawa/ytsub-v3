@@ -20,6 +20,7 @@ export const R = {
   "/decks": "/decks",
   "/decks?index": "/decks?index",
   "/decks/new": "/decks/new",
+  "/decks/import": "/decks/import",
   "/decks/$id": (id: number) => `/decks/${id}`,
   "/decks/$id?index": (id: number) => `/decks/${id}?index`,
   "/decks/$id/edit": (id: number) => `/decks/${id}/edit`,
@@ -28,6 +29,7 @@ export const R = {
   "/decks/$id/history-graph": (id: number) => `/decks/${id}/history-graph`,
   "/decks/$id/new-practice-entry": (id: number) => `/decks/${id}/new-practice-entry`,
   "/decks/$id/new-practice-action": (id: number) => `/decks/${id}/new-practice-action`,
+  "/decks/$id/export": (id: number) => `/decks/${id}/export`,
 };
 
 export const R_RE = {
