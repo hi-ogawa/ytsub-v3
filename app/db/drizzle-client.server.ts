@@ -177,7 +177,10 @@ export const initializeDrizzleClient = once(async () => {
   if (globalThis.__db) return;
   const config = knexfile();
   const connection = await createConnection(config.connection as any);
-  db = globalThis.__db = drizzle(connection);
+  db = globalThis.__db = drizzle(connection, {
+    // enable query logging by DEBUG=drizzle
+    logger: process.env["DEBUG"]?.includes("drizzle"),
+  });
   dbConnection = connection;
 });
 
