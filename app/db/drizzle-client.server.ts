@@ -79,10 +79,10 @@ const captionEntries = mysqlTable("captionEntries", {
   ...timestampColumns,
   //
   index: int("index").notNull(), // zero-based index within video's caption entries
-  begin: int("begin"),
-  end: int("end"),
-  text1: text("text1"),
-  text2: text("text2"),
+  begin: int("begin").notNull(),
+  end: int("end").notNull(),
+  text1: text("text1").notNull(),
+  text2: text("text2").notNull(),
 });
 
 const bookmarkEntries = mysqlTable("bookmarkEntries", {

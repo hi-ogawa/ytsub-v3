@@ -1,11 +1,13 @@
-import { tinyassert } from "@hiogawa/utils";
+import { isNil, tinyassert } from "@hiogawa/utils";
 import { Link, useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
+import { sql } from "drizzle-orm";
 import React from "react";
 import { NavLink } from "react-router-dom";
 import { z } from "zod";
 import { PaginationComponent } from "../../../components/misc";
 import { PopoverSimple } from "../../../components/popover";
+import { E, T, TT, db, findOne } from "../../../db/drizzle-client.server";
 import {
   BookmarkEntryTable,
   CaptionEntryTable,
@@ -16,11 +18,8 @@ import {
   Q,
   UserTable,
   VideoTable,
-  normalizeRelation,
-  normalizeRelationWithPagination,
 } from "../../../db/models";
 import { R } from "../../../misc/routes";
-import { useToById } from "../../../utils/by-id";
 import { Controller, makeLoader } from "../../../utils/controller-utils";
 import { useDeserialize } from "../../../utils/hooks";
 import { dtfDateOnly, rtf } from "../../../utils/intl";
@@ -53,15 +52,15 @@ export async function requireUserAndDeck(
     const parsed = PARAMS_SCHEMA.safeParse(this.args.params);
     if (parsed.success) {
       const { id } = parsed.data;
-      const { users, decks } = await normalizeRelation(
-        Q.users().leftJoin("decks", "decks.userId", "users.id").where({
-          "users.id": userId,
-          "decks.id": id,
-        }),
-        ["decks", "users"]
+      const found = await findOne(
+        db
+          .select()
+          .from(T.users)
+          .innerJoin(T.decks, E.eq(T.decks.userId, T.users.id))
+          .where(E.and(E.eq(T.users.id, userId), E.eq(T.decks.id, id)))
       );
-      if (users.length > 0 && decks.length > 0) {
-        return [users[0], decks[0]];
+      if (found) {
+        return [found.users, found.decks];
       }
     }
   }
@@ -80,11 +79,11 @@ type PracticeEntryTableExtra = PracticeEntryTable & {
 interface LoaderData {
   deck: DeckTable;
   statistics: DeckPracticeStatistics;
-  practiceEntries: PracticeEntryTableExtra[];
-  bookmarkEntries: BookmarkEntryTable[];
-  captionEntries: CaptionEntryTable[];
-  videos: VideoTable[];
   pagination: PaginationMetadata;
+  rows: Pick<
+    TT,
+    "practiceEntries" | "bookmarkEntries" | "captionEntries" | "videos"
+  >[];
 }
 
 export const loader = makeLoader(Controller, async function () {
@@ -99,30 +98,45 @@ export const loader = makeLoader(Controller, async function () {
     return redirect(R["/decks/$id"](deck.id));
   }
 
-  const data = await normalizeRelationWithPagination(
-    Q.practiceEntries()
-      .leftJoin(
-        "bookmarkEntries",
-        "bookmarkEntries.id",
-        "practiceEntries.bookmarkEntryId"
-      )
-      .leftJoin(
-        "captionEntries",
-        "captionEntries.id",
-        "bookmarkEntries.captionEntryId"
-      )
-      .leftJoin("videos", "videos.id", "captionEntries.videoId")
-      .where("practiceEntries.deckId", deck.id)
-      .orderBy("practiceEntries.createdAt", "asc"),
-    ["practiceEntries", "bookmarkEntries", "captionEntries", "videos"],
-    paginationParams.data
-  );
+  const { page, perPage } = paginationParams.data;
+
+  const rows = await db
+    .select()
+    .from(T.practiceEntries)
+    .innerJoin(
+      T.bookmarkEntries,
+      E.eq(T.bookmarkEntries.id, T.practiceEntries.bookmarkEntryId)
+    )
+    .innerJoin(
+      T.captionEntries,
+      E.eq(T.captionEntries.id, T.bookmarkEntries.captionEntryId)
+    )
+    .innerJoin(T.videos, E.eq(T.videos.id, T.captionEntries.videoId))
+    .where(E.eq(T.practiceEntries.deckId, deck.id))
+    .orderBy(E.asc(T.practiceEntries.createdAt))
+    .limit(perPage)
+    .offset((page - 1) * perPage);
+
+  const countRows = await db
+    .select({ count: sql<number>`COUNT(0)` })
+    .from(T.practiceEntries)
+    .where(E.eq(T.practiceEntries.deckId, deck.id));
+
+  const total = countRows.at(0)?.count;
+  tinyassert(!isNil(total));
+
+  const pagination = {
+    total,
+    page,
+    perPage,
+    totalPage: Math.ceil(total / perPage),
+  };
 
   const res: LoaderData = {
     deck,
     statistics,
-    ...data,
-    practiceEntries: data.practiceEntries as PracticeEntryTableExtra[],
+    pagination,
+    rows,
   };
   return this.serialize(res);
 });
@@ -144,40 +158,27 @@ export const action = makeLoader(Controller, async function () {
 //
 
 export default function DefaultComponent() {
-  const {
-    deck,
-    statistics,
-    pagination,
-    practiceEntries,
-    bookmarkEntries,
-    captionEntries,
-    videos,
-  }: LoaderData = useDeserialize(useLoaderData());
-  const bookmarkEntriesById = useToById(bookmarkEntries);
-  const captionEntriesById = useToById(captionEntries);
-  const videosById = useToById(videos);
+  const { deck, statistics, pagination, rows }: LoaderData = useDeserialize(
+    useLoaderData()
+  );
 
   const content = (
     <div className="w-full flex justify-center">
       <div className="h-full w-full max-w-lg">
         <div className="h-full flex flex-col p-2 gap-2">
           <DeckPracticeStatisticsComponent statistics={statistics} />
-          {practiceEntries.length === 0 && <div>Empty</div>}
-          {practiceEntries.map((p) => {
-            const b = bookmarkEntriesById.byId[p.bookmarkEntryId];
-            const c = captionEntriesById.byId[b.captionEntryId];
-            const v = videosById.byId[c.videoId];
-            return (
-              <PracticeBookmarkEntryComponent
-                key={p.id}
-                practiceEntry={p}
-                bookmarkEntry={b}
-                captionEntry={c}
-                video={v}
-                deck={deck}
-              />
-            );
-          })}
+          {rows.length === 0 && <div>Empty</div>}
+          {rows.map((row) => (
+            <PracticeBookmarkEntryComponent
+              key={row.practiceEntries.id}
+              practiceEntry={row.practiceEntries}
+              bookmarkEntry={row.bookmarkEntries}
+              captionEntry={row.captionEntries}
+              // @ts-expect-error null to undefined
+              video={row.videos}
+              deck={deck}
+            />
+          ))}
         </div>
       </div>
     </div>
