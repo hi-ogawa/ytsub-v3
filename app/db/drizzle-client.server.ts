@@ -70,7 +70,7 @@ const videos = mysqlTable("videos", {
   title: text("title").notNull(),
   author: text("author").notNull(),
   channelId: text("channelId").notNull(),
-  bookmarkEntriesCount: int("bookmarkEntriesCount").notNull(),
+  bookmarkEntriesCount: int("bookmarkEntriesCount").notNull().default(0),
 });
 
 const captionEntries = mysqlTable("captionEntries", {

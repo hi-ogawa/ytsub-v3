@@ -119,24 +119,24 @@ export async function insertVideoAndCaptionEntries(
     captionEntries,
   } = data;
 
-  const videoRow = {
+  const [{ insertId: videoId }] = await db.insert(T.videos).values({
     videoId: videoDetails.videoId,
     title: videoDetails.title,
     author: videoDetails.author,
     channelId: videoDetails.channelId,
     language1_id: language1.id,
-    language1_translation: language1.translation,
+    language1_translation: language1.translation ?? null,
     language2_id: language2.id,
-    language2_translation: language2.translation,
-    userId,
-  };
-  const [videoId] = await Q.videos().insert(videoRow);
+    language2_translation: language2.translation ?? null,
+    userId: userId ?? null,
+  });
 
-  const captionEntryRows = captionEntries.map((entry) => ({
-    ...entry,
-    videoId,
-  }));
-  await Q.captionEntries().insert(captionEntryRows);
+  await Q.captionEntries().insert(
+    captionEntries.map((entry) => ({
+      ...entry,
+      videoId,
+    }))
+  );
 
   return videoId;
 }
