@@ -187,14 +187,7 @@ export async function toPaginationResultV2<
   // aggregate count
   delete q.config.limit;
   delete q.config.offset;
-  q.config.fieldsList = [
-    {
-      path: ["count"],
-      field: sql`COUNT(0)`,
-    },
-  ];
-  const total = (await q.execute())[0].count;
-  tinyassert(typeof total === "number");
+  const total = await toCountQuery(q);
 
   const pagination = {
     total,
@@ -203,6 +196,21 @@ export async function toPaginationResultV2<
     totalPage: Math.ceil(total / perPage),
   };
   return [rows, pagination];
+}
+
+export async function toCountQuery<
+  Q extends { execute: () => Promise<unknown> }
+>(query: Q): Promise<number> {
+  const q = query as any;
+  q.config.fieldsList = [
+    {
+      path: ["count"],
+      field: sql`COUNT(0)`,
+    },
+  ];
+  const [{ count }] = await q.execute();
+  tinyassert(typeof count === "number");
+  return count;
 }
 
 //
