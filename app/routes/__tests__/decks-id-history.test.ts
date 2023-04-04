@@ -22,31 +22,51 @@ describe("decks/id/history.loader", () => {
       params: { id: String(deckId) },
       transform: signin,
     });
-    expect(await res.json()).toMatchObject({
-      json: {
-        deck: {
-          easeBonus: 2,
-          easeMultiplier: 1.5,
-          id: deckId,
-          name: "test",
-          newEntriesPerDay: 20,
-          reviewsPerDay: 200,
-          userId: userId,
+    const resJson = await res.json();
+    resJson.json.deck.createdAt =
+      resJson.json.deck.updatedAt =
+      resJson.json.deck.userId =
+      resJson.json.deck.id =
+        "...";
+    expect(resJson).toMatchInlineSnapshot(`
+      {
+        "json": {
+          "deck": {
+            "createdAt": "...",
+            "easeBonus": 2,
+            "easeMultiplier": 1.5,
+            "id": "...",
+            "name": "test",
+            "newEntriesPerDay": 20,
+            "practiceEntriesCountByQueueType": {
+              "LEARN": 0,
+              "NEW": 0,
+              "REVIEW": 0,
+            },
+            "randomMode": false,
+            "reviewsPerDay": 200,
+            "updatedAt": "...",
+            "userId": "...",
+          },
+          "pagination": {
+            "page": 1,
+            "perPage": 20,
+            "total": 0,
+            "totalPage": 0,
+          },
+          "rows": [],
         },
-        pagination: {
-          page: 1,
-          perPage: 20,
-          total: 0,
-          totalPage: 0,
+        "meta": {
+          "values": {
+            "deck.createdAt": [
+              "Date",
+            ],
+            "deck.updatedAt": [
+              "Date",
+            ],
+          },
         },
-        practiceActions: [],
-      },
-      meta: {
-        values: {
-          "deck.createdAt": ["Date"],
-          "deck.updatedAt": ["Date"],
-        },
-      },
-    });
+      }
+    `);
   });
 });
