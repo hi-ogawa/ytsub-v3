@@ -164,7 +164,3 @@ export interface PaginationMetadata {
   page: number;
   perPage: number;
 }
-
-export interface PaginationResult<T> extends PaginationMetadata {
-  data: T[];
-}
