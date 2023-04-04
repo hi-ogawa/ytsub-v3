@@ -1,4 +1,5 @@
 import type { Knex } from "knex";
+import { z } from "zod";
 import type { CaptionEntry, VideoMetadata } from "../utils/types";
 import type { NewVideo } from "../utils/youtube";
 import { client } from "./client.server";
@@ -16,10 +17,12 @@ export type PracticeActionTable = TT["practiceActions"];
 // cf. Anki's practice system
 // - https://docs.ankiweb.net/studying.html
 // - https://docs.ankiweb.net/deck-options.html
-export const PRACTICE_ACTION_TYPES = ["AGAIN", "HARD", "GOOD", "EASY"] as const;
-export const PRACTICE_QUEUE_TYPES = ["NEW", "LEARN", "REVIEW"] as const;
-export type PracticeActionType = (typeof PRACTICE_ACTION_TYPES)[number];
-export type PracticeQueueType = (typeof PRACTICE_QUEUE_TYPES)[number];
+const Z_PRACTICE_ACTION_TYPES = z.enum(["AGAIN", "HARD", "GOOD", "EASY"]);
+const Z_PRACTICE_QUEUE_TYPES = z.enum(["NEW", "LEARN", "REVIEW"]);
+export const PRACTICE_ACTION_TYPES = Z_PRACTICE_ACTION_TYPES.options;
+export const PRACTICE_QUEUE_TYPES = Z_PRACTICE_QUEUE_TYPES.options;
+export type PracticeActionType = z.infer<typeof Z_PRACTICE_ACTION_TYPES>;
+export type PracticeQueueType = z.infer<typeof Z_PRACTICE_QUEUE_TYPES>;
 
 export const Q = {
   users: () => client<UserTable>("users"),
