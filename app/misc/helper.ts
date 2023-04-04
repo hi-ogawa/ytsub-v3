@@ -1,4 +1,5 @@
-import { Q, UserTable } from "../db/models";
+import { E, T, db } from "../db/drizzle-client.server";
+import type { UserTable } from "../db/models";
 import { register, sha256 } from "../utils/auth";
 
 export function useUserImpl({
@@ -10,19 +11,19 @@ export function useUserImpl({
   password?: string;
   seed?: string;
 }) {
-  // Generating random-ish username to avoid db uniqueness constraint
+  // generate pseudo random username to avoid db uniqueness constraint
   if (seed !== undefined) {
     username += "-" + sha256(seed, "hex").slice(0, 8);
   }
 
   async function before(): Promise<UserTable> {
-    await Q.users().delete().where("username", username);
+    await db.delete(T.users).where(E.eq(T.users.username, username));
     const user = await register({ username, password });
     return user;
   }
 
   async function after(): Promise<void> {
-    await Q.users().delete().where("username", username);
+    await db.delete(T.users).where(E.eq(T.users.username, username));
   }
 
   return { before, after };

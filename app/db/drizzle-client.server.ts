@@ -13,6 +13,7 @@ import {
   text,
 } from "drizzle-orm/mysql-core";
 import { MySql2Database, drizzle } from "drizzle-orm/mysql2";
+import { SQL, noopDecoder } from "drizzle-orm/sql";
 import { createConnection } from "mysql2/promise";
 import { throwGetterProxy } from "../utils/misc";
 import type { PaginationParams } from "../utils/pagination";
@@ -211,6 +212,28 @@ export async function toCountQuery<
   const [{ count }] = await q.execute();
   tinyassert(typeof count === "number");
   return count;
+}
+
+export function toDeleteQueryInner(sql: SQL, tableName: string): SQL {
+  // replace
+  //   select ... from
+  // with
+  //   delete from
+  const [, c1, c2, c3] = sql.queryChunks;
+  tinyassert(c1 === "select ");
+  tinyassert(c2 instanceof SQL);
+  tinyassert(c3 === " from ");
+  sql.queryChunks.splice(1, 2, " delete `", tableName, "`.* ");
+  sql.mapWith(noopDecoder);
+  return sql;
+}
+
+export async function toDeleteQuery<Q extends { getSQL: () => SQL }>(
+  select: Q
+) {
+  const tableName = (select as any).tableName;
+  tinyassert(typeof tableName === "string");
+  await db.execute(toDeleteQueryInner(select.getSQL(), tableName));
 }
 
 //

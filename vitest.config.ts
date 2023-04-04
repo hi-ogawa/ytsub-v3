@@ -2,8 +2,9 @@ import { defineConfig } from "vitest/config";
 
 export default defineConfig({
   test: {
-    dir: "app",
-    include: ["**/__tests__/**/*.test.{ts,tsx}"],
+    dir: "./app",
+    include: ["**/*.test.{ts,tsx}"],
+    exclude: ["**/__e2e__/**"],
     environment: "happy-dom",
     globalSetup: ["./app/misc/test-setup-global.ts"],
     setupFiles: ["./app/misc/test-setup.ts"],
