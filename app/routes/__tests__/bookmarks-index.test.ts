@@ -15,9 +15,7 @@ describe("bookmarks/index.loader", () => {
     expect(await res.json()).toMatchInlineSnapshot(`
       {
         "json": {
-          "captionEntries": [],
           "pagination": {
-            "data": [],
             "page": 1,
             "perPage": 20,
             "total": 0,
@@ -28,7 +26,7 @@ describe("bookmarks/index.loader", () => {
             "page": 1,
             "perPage": 20,
           },
-          "videos": [],
+          "rows": [],
         },
       }
     `);
