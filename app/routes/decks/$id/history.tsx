@@ -132,10 +132,7 @@ function PracticeActionComponent(props: {
         <div className="h-[20px] flex items-center">
           <QueueTypeIcon queueType={queueType} />
         </div>
-        <div
-          className="flex-1 text-sm"
-          data-test="bookmark-entry-text"
-        >
+        <div className="flex-1 text-sm" data-test="bookmark-entry-text">
           {props.bookmarkEntry.text}
         </div>
       </div>
