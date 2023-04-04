@@ -2,106 +2,24 @@ import type { Knex } from "knex";
 import type { CaptionEntry, VideoMetadata } from "../utils/types";
 import type { NewVideo } from "../utils/youtube";
 import { client } from "./client.server";
+import type { TT } from "./drizzle-client.server";
 
-export interface UserTable {
-  id: number;
-  username: string;
-  passwordHash: string; // TODO: hide this field from the client
-  createdAt: Date;
-  updatedAt: Date;
-  language1: string | null;
-  language2: string | null;
-  timezone: string; // e.g. +09:00 (see app/utils/timezone.ts)
-}
+// TODO: move everything to drizzle-client?
+export type UserTable = TT["users"];
+export type VideoTable = TT["videos"];
+export type CaptionEntryTable = TT["captionEntries"];
+export type BookmarkEntryTable = TT["bookmarkEntries"];
+export type DeckTable = TT["decks"];
+export type PracticeEntryTable = TT["practiceEntries"];
+export type PracticeActionTable = TT["practiceActions"];
 
-// TODO: manage "view count" and "last watched timestamp" etc...
-export interface VideoTable {
-  id: number;
-  videoId: string; // video's id on youtube
-  language1_id: string;
-  language1_translation?: string;
-  language2_id: string;
-  language2_translation?: string;
-  title: string;
-  author: string;
-  channelId: string;
-  createdAt: Date;
-  updatedAt: Date;
-  userId?: number; // associated to anonymous users when `null`
-  bookmarkEntriesCount: number;
-}
-
-export interface CaptionEntryTable {
-  id: number;
-  index: number; // zero-based index within video's caption entries
-  begin: number;
-  end: number;
-  text1: string;
-  text2: string;
-  createdAt: Date;
-  updatedAt: Date;
-  videoId: number; // not `VideoTable.videoId` but `VideoTable.id`
-}
-
-export interface BookmarkEntryTable {
-  id: number;
-  text: string;
-  side: number; // 0 | 1
-  offset: number;
-  createdAt: Date;
-  updatedAt: Date;
-  userId: number;
-  videoId: number;
-  captionEntryId: number;
-}
-
-//
-// Cf. Anki's practice system
+// cf. Anki's practice system
 // - https://docs.ankiweb.net/studying.html
 // - https://docs.ankiweb.net/deck-options.html
-//
-
 export const PRACTICE_ACTION_TYPES = ["AGAIN", "HARD", "GOOD", "EASY"] as const;
 export const PRACTICE_QUEUE_TYPES = ["NEW", "LEARN", "REVIEW"] as const;
 export type PracticeActionType = (typeof PRACTICE_ACTION_TYPES)[number];
 export type PracticeQueueType = (typeof PRACTICE_QUEUE_TYPES)[number];
-
-export interface DeckTable {
-  id: number;
-  name: string;
-  newEntriesPerDay: number;
-  reviewsPerDay: number;
-  easeMultiplier: number;
-  easeBonus: number;
-  randomMode: boolean; // TODO: 0 | 1
-  createdAt: Date;
-  updatedAt: Date;
-  userId: number;
-  practiceEntriesCountByQueueType: Record<PracticeQueueType, number>;
-}
-
-export interface PracticeEntryTable {
-  id: number;
-  queueType: PracticeQueueType;
-  easeFactor: number;
-  scheduledAt: Date;
-  createdAt: Date;
-  updatedAt: Date;
-  deckId: number;
-  bookmarkEntryId: number;
-  practiceActionsCount: number;
-}
-
-export interface PracticeActionTable {
-  id: number;
-  queueType: PracticeQueueType;
-  actionType: PracticeActionType;
-  createdAt: Date;
-  updatedAt: Date;
-  userId: number;
-  deckId: number;
-  practiceEntryId: number;
-}
 
 export const Q = {
   users: () => client<UserTable>("users"),

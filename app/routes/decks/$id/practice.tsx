@@ -83,7 +83,6 @@ export const loader = makeLoader(Controller, async function () {
       practiceEntry,
       bookmarkEntry: row.bookmarkEntries,
       captionEntry: row.captionEntries,
-      // @ts-expect-error null to undefined
       video: row.videos,
     };
   }

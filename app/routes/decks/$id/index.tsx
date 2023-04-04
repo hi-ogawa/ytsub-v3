@@ -174,7 +174,6 @@ export default function DefaultComponent() {
               practiceEntry={row.practiceEntries}
               bookmarkEntry={row.bookmarkEntries}
               captionEntry={row.captionEntries}
-              // @ts-expect-error null to undefined
               video={row.videos}
               deck={deck}
             />

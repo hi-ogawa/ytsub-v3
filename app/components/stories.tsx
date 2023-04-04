@@ -126,6 +126,8 @@ export function TestVideoComponent() {
             videoId: "MoH8Fk2K9bc",
             language1_id: ".fr-FR",
             language2_id: ".en",
+            language1_translation: null,
+            language2_translation: null,
           }}
           actions={
             <>
@@ -154,6 +156,8 @@ export function TestVideoComponent() {
             videoId: "FSYe9GQc9Ow",
             language1_id: ".ru",
             language2_id: ".en",
+            language1_translation: null,
+            language2_translation: null,
           }}
           bookmarkEntriesCount={17}
           isLoading={isLoading}
