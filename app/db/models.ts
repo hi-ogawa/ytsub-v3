@@ -3,7 +3,7 @@ import { z } from "zod";
 import type { CaptionEntry, VideoMetadata } from "../utils/types";
 import type { NewVideo } from "../utils/youtube";
 import { client } from "./client.server";
-import { E, T, TT, db } from "./drizzle-client.server";
+import { E, T, TT, db, findOne } from "./drizzle-client.server";
 
 // TODO: organize code (move everything to drizzle-client?)
 
@@ -146,9 +146,14 @@ export async function getVideoAndCaptionEntries(
 ): Promise<
   { video: VideoTable; captionEntries: CaptionEntryTable[] } | undefined
 > {
-  const video = await Q.videos().where("id", id).first();
+  const video = await findOne(
+    db.select().from(T.videos).where(E.eq(T.videos.id, id))
+  );
   if (video) {
-    const captionEntries = await Q.captionEntries().where("videoId", id);
+    const captionEntries = await db
+      .select()
+      .from(T.captionEntries)
+      .where(E.eq(T.captionEntries.videoId, id));
     return { video, captionEntries };
   }
   return;
