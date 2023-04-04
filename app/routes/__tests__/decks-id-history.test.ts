@@ -1,26 +1,34 @@
-import { describe, expect, it } from "vitest";
-import { Q } from "../../db/models";
+import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { E, T, db } from "../../db/drizzle-client.server";
 import { loader } from "../decks/$id/history";
 import { testLoader, useUser } from "./helper";
 
 describe("decks/id/history.loader", () => {
-  const { user, signin } = useUser({
+  const user = useUser({
     seed: __filename,
   });
+  let deckId: number;
 
-  it("basic", async () => {
-    const userId = user().id;
-    const [deckId] = await Q.decks().insert({
+  beforeAll(async () => {
+    await user.isReady;
+    [{ insertId: deckId }] = await db.insert(T.decks).values({
       name: "test",
       newEntriesPerDay: 20,
       reviewsPerDay: 200,
       easeMultiplier: 1.5,
       easeBonus: 2,
-      userId,
+      userId: user.data.id,
     });
+  });
+
+  afterAll(async () => {
+    await db.delete(T.decks).where(E.eq(T.decks.id, deckId));
+  });
+
+  it("basic", async () => {
     const res = await testLoader(loader, {
       params: { id: String(deckId) },
-      transform: signin,
+      transform: user.signin,
     });
     const resJson = await res.json();
     resJson.json.deck.createdAt =

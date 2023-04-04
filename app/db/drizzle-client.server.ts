@@ -76,7 +76,9 @@ const videos = mysqlTable("videos", {
   title: text("title").notNull(),
   author: text("author").notNull(),
   channelId: text("channelId").notNull(),
-  bookmarkEntriesCount: int("bookmarkEntriesCount").notNull().default(0),
+  bookmarkEntriesCount: int("bookmarkEntriesCount")
+    .notNull()
+    .default(DUMMY_DEFAULT),
 });
 
 const captionEntries = mysqlTable("captionEntries", {
@@ -114,8 +116,8 @@ const decks = mysqlTable("decks", {
   reviewsPerDay: int("reviewsPerDay").notNull(),
   easeMultiplier: float("easeMultiplier").notNull(),
   easeBonus: float("easeBonus").notNull(),
-  randomMode: boolean("randomMode").notNull(),
-  practiceEntriesCountByQueueType: json<Record<PracticeQueueType, number>>("practiceEntriesCountByQueueType").notNull(),
+  randomMode: boolean("randomMode").notNull().default(DUMMY_DEFAULT),
+  practiceEntriesCountByQueueType: json<Record<PracticeQueueType, number>>("practiceEntriesCountByQueueType").notNull().default(DUMMY_DEFAULT),
 });
 
 const practiceEntries = mysqlTable("practiceEntries", {
