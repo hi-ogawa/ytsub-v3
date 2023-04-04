@@ -1,4 +1,5 @@
-import { once } from "@hiogawa/utils";
+import { once, tinyassert } from "@hiogawa/utils";
+import { sql } from "drizzle-orm";
 import * as E from "drizzle-orm/expressions";
 import {
   InferModel,
@@ -14,8 +15,13 @@ import {
 import { MySql2Database, drizzle } from "drizzle-orm/mysql2";
 import { createConnection } from "mysql2/promise";
 import { throwGetterProxy } from "../utils/misc";
+import type { PaginationParams } from "../utils/pagination";
 import knexfile from "./knexfile.server";
-import type { PracticeActionType, PracticeQueueType } from "./models";
+import type {
+  PaginationMetadata,
+  PracticeActionType,
+  PracticeQueueType,
+} from "./models";
 
 //
 // schema utils
@@ -159,6 +165,42 @@ export async function findOne<
   Q extends { limit: (i: number) => Promise<any[]> }
 >(query: Q): Promise<Awaited<ReturnType<Q["limit"]>>[0] | undefined> {
   return (await query.limit(1)).at(0);
+}
+
+export async function toPaginationResultV2<
+  Q extends { execute: () => Promise<unknown> }
+>(
+  query: Q,
+  { page, perPage }: PaginationParams
+): Promise<[Awaited<ReturnType<Q["execute"]>>, PaginationMetadata]> {
+  // hack "select config" directly
+  // https://github.com/drizzle-team/drizzle-orm/blob/ffdf7d06a02afbd724eadfb61fe5b6996345d5be/drizzle-orm/src/mysql-core/dialect.ts#L186
+  const q = query as any;
+
+  // select rows
+  q.config.limit = perPage;
+  q.config.offset = (page - 1) * perPage;
+  const rows = await q.execute();
+
+  // aggregate count
+  delete q.config.limit;
+  delete q.config.offset;
+  q.config.fieldsList = [
+    {
+      path: ["count"],
+      field: sql`COUNT(0)`,
+    },
+  ];
+  const total = (await q.execute())[0].count;
+  tinyassert(typeof total === "number");
+
+  const pagination = {
+    total,
+    page,
+    perPage,
+    totalPage: Math.ceil(total / perPage),
+  };
+  return [rows, pagination];
 }
 
 //

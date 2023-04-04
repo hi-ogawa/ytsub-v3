@@ -1,13 +1,19 @@
-import { isNil, tinyassert } from "@hiogawa/utils";
+import { tinyassert } from "@hiogawa/utils";
 import { Link, useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
-import { sql } from "drizzle-orm";
 import React from "react";
 import { NavLink } from "react-router-dom";
 import { z } from "zod";
 import { PaginationComponent } from "../../../components/misc";
 import { PopoverSimple } from "../../../components/popover";
-import { E, T, TT, db, findOne } from "../../../db/drizzle-client.server";
+import {
+  E,
+  T,
+  TT,
+  db,
+  findOne,
+  toPaginationResultV2,
+} from "../../../db/drizzle-client.server";
 import {
   BookmarkEntryTable,
   CaptionEntryTable,
@@ -98,9 +104,7 @@ export const loader = makeLoader(Controller, async function () {
     return redirect(R["/decks/$id"](deck.id));
   }
 
-  const { page, perPage } = paginationParams.data;
-
-  const rows = await db
+  const baseQuery = db
     .select()
     .from(T.practiceEntries)
     .innerJoin(
@@ -113,24 +117,12 @@ export const loader = makeLoader(Controller, async function () {
     )
     .innerJoin(T.videos, E.eq(T.videos.id, T.captionEntries.videoId))
     .where(E.eq(T.practiceEntries.deckId, deck.id))
-    .orderBy(E.asc(T.practiceEntries.createdAt))
-    .limit(perPage)
-    .offset((page - 1) * perPage);
+    .orderBy(E.asc(T.practiceEntries.createdAt));
 
-  const countRows = await db
-    .select({ count: sql<number>`COUNT(0)` })
-    .from(T.practiceEntries)
-    .where(E.eq(T.practiceEntries.deckId, deck.id));
-
-  const total = countRows.at(0)?.count;
-  tinyassert(!isNil(total));
-
-  const pagination = {
-    total,
-    page,
-    perPage,
-    totalPage: Math.ceil(total / perPage),
-  };
+  const [rows, pagination] = await toPaginationResultV2(
+    baseQuery,
+    paginationParams.data
+  );
 
   const res: LoaderData = {
     deck,
