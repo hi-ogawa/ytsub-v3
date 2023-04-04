@@ -10,7 +10,7 @@ import {
   transitionProps,
 } from "../../components/misc";
 import { useModal } from "../../components/modal";
-import { E, T, db, toPaginationResultV2 } from "../../db/drizzle-client.server";
+import { E, T, db, toPaginationResult } from "../../db/drizzle-client.server";
 import type {
   DeckTable,
   PaginationMetadata,
@@ -58,7 +58,7 @@ export async function getVideosLoaderData(
   paginationParams: PaginationParams,
   userId?: number
 ): Promise<VideosLoaderData> {
-  const [videos, pagination] = await toPaginationResultV2(
+  const [videos, pagination] = await toPaginationResult(
     db
       .select()
       .from(T.videos)

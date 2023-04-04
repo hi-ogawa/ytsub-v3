@@ -12,7 +12,7 @@ import {
   TT,
   db,
   findOne,
-  toPaginationResultV2,
+  toPaginationResult,
 } from "../../../db/drizzle-client.server";
 import {
   BookmarkEntryTable,
@@ -119,7 +119,7 @@ export const loader = makeLoader(Controller, async function () {
     .where(E.eq(T.practiceEntries.deckId, deck.id))
     .orderBy(E.asc(T.practiceEntries.createdAt));
 
-  const [rows, pagination] = await toPaginationResultV2(
+  const [rows, pagination] = await toPaginationResult(
     baseQuery,
     paginationParams.data
   );

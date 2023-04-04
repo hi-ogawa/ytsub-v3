@@ -169,7 +169,7 @@ export async function findOne<
   return (await query.limit(1)).at(0);
 }
 
-export async function toPaginationResultV2<
+export async function toPaginationResult<
   Q extends { execute: () => Promise<unknown> }
 >(
   query: Q,

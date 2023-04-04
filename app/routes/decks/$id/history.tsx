@@ -8,7 +8,7 @@ import {
   T,
   TT,
   db,
-  toPaginationResultV2,
+  toPaginationResult,
 } from "../../../db/drizzle-client.server";
 import type {
   BookmarkEntryTable,
@@ -59,7 +59,7 @@ export const loader = makeLoader(Controller, async function () {
     return redirect(R["/decks/$id/history"](deck.id));
   }
 
-  const [rows, pagination] = await toPaginationResultV2(
+  const [rows, pagination] = await toPaginationResult(
     db
       .select()
       .from(T.practiceActions)

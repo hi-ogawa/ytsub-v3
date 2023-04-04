@@ -15,7 +15,7 @@ import {
   T,
   TT,
   db,
-  toPaginationResultV2,
+  toPaginationResult,
 } from "../../db/drizzle-client.server";
 import type {
   BookmarkEntryTable,
@@ -92,7 +92,7 @@ export const loader = makeLoader(Controller, async function () {
       .innerJoin(T.decks, E.eq(T.decks.id, T.practiceEntries.deckId));
   }
 
-  const [rows, pagination] = await toPaginationResultV2(
+  const [rows, pagination] = await toPaginationResult(
     query
       .where(
         E.and(
