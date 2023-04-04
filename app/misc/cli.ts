@@ -6,6 +6,7 @@ import consola from "consola";
 import { range, zip } from "lodash";
 import { z } from "zod";
 import { client } from "../db/client.server";
+import { findOne } from "../db/drizzle-client.server";
 import {
   Q,
   deleteOrphans,
@@ -177,8 +178,8 @@ cli
       console.error(
         `(${Number(i) + 1}/${total}) processing - ${JSON.stringify(newVideo)}`
       );
-      const row = await filterNewVideo(newVideo, userId).select("id").first();
-      if (row) {
+      const rows = await filterNewVideo(newVideo, userId);
+      if (rows.length > 0) {
         console.error("skipped");
         continue;
       }
@@ -275,10 +276,9 @@ async function importBookmarkEntry(
     bookmarkText,
   } = old;
 
-  const video = await filterNewVideo(
-    { videoId, language1, language2 },
-    userId
-  ).first();
+  const video = await findOne(
+    filterNewVideo({ videoId, language1, language2 }, userId)
+  );
   if (!video) return [false, "Video not found"];
 
   const captionEntry = await Q.captionEntries()

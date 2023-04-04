@@ -58,8 +58,8 @@ export const action = makeLoader(Controller, async function () {
   if (!parsed.success) throw new AppError("Invalid parameters");
 
   const user = await this.currentUser();
-  const row = await filterNewVideo(parsed.data, user?.id).select("id").first();
-  let id = row?.id;
+  const rows = await filterNewVideo(parsed.data, user?.id);
+  let id = rows[0]?.id;
   if (id) {
     this.flash({
       content: "Loaded existing video",

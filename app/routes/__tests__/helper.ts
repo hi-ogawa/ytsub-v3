@@ -1,11 +1,11 @@
 import { newPromiseWithResolvers, tinyassert } from "@hiogawa/utils";
 import type { LoaderFunction } from "@remix-run/server-runtime";
 import { afterAll, beforeAll } from "vitest";
+import { E, T, db } from "../../db/drizzle-client.server";
 import {
   CaptionEntryTable,
   UserTable,
   VideoTable,
-  filterNewVideo,
   getVideoAndCaptionEntries,
   insertVideoAndCaptionEntries,
 } from "../../db/models";
@@ -114,8 +114,6 @@ export function useVideo(type: 0 | 1 | 2 = 2, userId?: () => number) {
 
   beforeAll(async () => {
     const id = userId?.();
-    await filterNewVideo(newVideo, id).delete();
-
     const data = await fetchCaptionEntries(newVideo);
     const videoId = await insertVideoAndCaptionEntries(newVideo, data, id);
     const resultOption = await getVideoAndCaptionEntries(videoId);
@@ -124,7 +122,7 @@ export function useVideo(type: 0 | 1 | 2 = 2, userId?: () => number) {
   });
 
   afterAll(async () => {
-    await filterNewVideo(newVideo, userId?.()).delete();
+    await db.delete(T.videos).where(E.eq(T.videos.id, result.video.id));
   });
 
   return {
@@ -160,7 +158,7 @@ export function useUserVideo(
 
   afterAll(async () => {
     await after();
-    await filterNewVideo(newVideo, user.id).delete();
+    await db.delete(T.videos).where(E.eq(T.videos.id, video.id));
   });
 
   function signin(request: Request): Request {

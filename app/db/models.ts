@@ -3,9 +3,10 @@ import { z } from "zod";
 import type { CaptionEntry, VideoMetadata } from "../utils/types";
 import type { NewVideo } from "../utils/youtube";
 import { client } from "./client.server";
-import type { TT } from "./drizzle-client.server";
+import { E, T, TT, db } from "./drizzle-client.server";
 
-// TODO: move everything to drizzle-client?
+// TODO: organize code (move everything to drizzle-client?)
+
 export type UserTable = TT["users"];
 export type VideoTable = TT["videos"];
 export type CaptionEntryTable = TT["captionEntries"];
@@ -39,10 +40,12 @@ export const Q = {
 //
 
 export async function truncateAll(): Promise<void> {
-  await Promise.all(Object.values(Q).map((table) => table().truncate()));
+  for (const table of Object.values(T)) {
+    await db.delete(table);
+  }
 }
 
-// no "FOREIGN KEY" constraint principle https://docs.planetscale.com/learn/operating-without-foreign-key-constraints#cleaning-up-orphaned-rows
+// no "FOREIGN KEY" constraint https://docs.planetscale.com/learn/operating-without-foreign-key-constraints#cleaning-up-orphaned-rows
 export async function deleteOrphans(): Promise<void> {
   await Q.videos()
     .delete()
@@ -83,13 +86,23 @@ export function filterNewVideo(
   { videoId, language1, language2 }: NewVideo,
   userId?: number
 ) {
-  return Q.videos()
-    .where("videoId", videoId)
-    .where("language1_id", language1.id)
-    .where("language1_translation", language1.translation ?? null)
-    .where("language2_id", language2.id)
-    .where("language2_translation", language2.translation ?? null)
-    .where("userId", userId ?? null);
+  return db
+    .select()
+    .from(T.videos)
+    .where(
+      E.and(
+        E.eq(T.videos.videoId, videoId),
+        E.eq(T.videos.language1_id, language1.id),
+        E.eq(T.videos.language2_id, language2.id),
+        language1.translation
+          ? E.eq(T.videos.language1_translation, language1.translation)
+          : E.isNull(T.videos.language1_translation),
+        language2.translation
+          ? E.eq(T.videos.language2_translation, language2.translation)
+          : E.isNull(T.videos.language2_translation),
+        userId ? E.eq(T.videos.userId, userId) : E.isNull(T.videos.userId)
+      )
+    );
 }
 
 export async function insertVideoAndCaptionEntries(
