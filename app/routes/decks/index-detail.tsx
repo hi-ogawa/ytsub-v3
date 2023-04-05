@@ -65,13 +65,17 @@ export const action = makeLoader(Controller, async function () {
   return this.serialize(loaderData);
 });
 
-export async function fetchDecksIndexDetail(
-  req: DecksIndexDetailRequest
-): Promise<DecksIndexDetailResponse> {
-  const res = await fetch(R["/decks/index-detail"], {
-    method: "POST",
-    body: JSON.stringify(req),
-  });
-  tinyassert(res.ok);
-  return deserialize(await res.json());
+export function createDecksIndexDetailQuery(req: DecksIndexDetailRequest) {
+  const url = R["/decks/index-detail"];
+  return {
+    queryKey: [url, req],
+    queryFn: async () => {
+      const res = await fetch(url, {
+        method: "POST",
+        body: JSON.stringify(req),
+      });
+      tinyassert(res.ok);
+      return deserialize(await res.json()) as DecksIndexDetailResponse;
+    },
+  };
 }

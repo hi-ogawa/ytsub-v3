@@ -32,7 +32,7 @@ import type {
   NewPracticeEntryRequest,
   NewPracticeEntryResponse,
 } from "../decks/$id/new-practice-entry";
-import { fetchDecksIndexDetail } from "../decks/index-detail";
+import { createDecksIndexDetailQuery } from "../decks/index-detail";
 
 export const handle: PageHandle = {
   navBarTitle: () => "Your Videos",
@@ -237,10 +237,7 @@ function AddToDeckComponent({
   onSuccess: () => void;
 }) {
   // get decks
-  const decksQuery = useQuery({
-    queryKey: [R["/decks/index-detail"], videoId],
-    queryFn: async () => fetchDecksIndexDetail({ videoId }),
-  });
+  const decksQuery = useQuery(createDecksIndexDetailQuery({ videoId }));
 
   // create new practice entries
   const fetcher = useFetcher();
