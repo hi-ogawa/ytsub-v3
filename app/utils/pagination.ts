@@ -5,7 +5,7 @@ export const PAGINATION_PARAMS_SCHEMA = z.object({
   perPage: z.coerce.number().int().default(20),
 });
 
-type PaginationParams = z.infer<typeof PAGINATION_PARAMS_SCHEMA>;
+export type PaginationParams = z.infer<typeof PAGINATION_PARAMS_SCHEMA>;
 
 export function toNewPages({
   page,
