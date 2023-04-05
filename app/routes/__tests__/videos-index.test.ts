@@ -16,12 +16,12 @@ describe("videos/index.loader", () => {
       {
         "json": {
           "pagination": {
-            "data": [],
             "page": 1,
             "perPage": 20,
             "total": 0,
             "totalPage": 0,
           },
+          "videos": [],
         },
       }
     `);

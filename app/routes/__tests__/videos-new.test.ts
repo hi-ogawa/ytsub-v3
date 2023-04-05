@@ -1,6 +1,7 @@
 import { tinyassert } from "@hiogawa/utils";
 import { last, omit } from "lodash";
 import { beforeAll, describe, expect, it } from "vitest";
+import { E, T, db } from "../../db/drizzle-client.server";
 import { Q } from "../../db/models";
 import { getResponseSession } from "../../utils/session-utils";
 import { action, loader } from "../videos/new";
@@ -50,11 +51,11 @@ describe("videos/new.loader", () => {
 });
 
 describe("videos/new.action", () => {
-  const { user, signin } = useUser({ seed: __filename });
+  const user = useUser({ seed: __filename });
 
   beforeAll(async () => {
     // cleanup anonymous data
-    await Q.videos().delete().where("userId", null);
+    await db.delete(T.videos).where(E.isNull(T.videos.userId));
   });
 
   it("basic", async () => {
@@ -69,10 +70,13 @@ describe("videos/new.action", () => {
         translation: "",
       },
     };
-    const res = await testLoader(action, { form: data, transform: signin });
+    const res = await testLoader(action, {
+      form: data,
+      transform: user.signin,
+    });
 
     // persist video and caption entries
-    const video = await Q.videos().where("userId", user().id).first();
+    const video = await Q.videos().where("userId", user.data.id).first();
     tinyassert(video);
 
     const captionEntries = await Q.captionEntries().where("videoId", video.id);
@@ -127,7 +131,10 @@ describe("videos/new.action", () => {
     expect(res.headers.get("location")).toBe(`/videos/${video.id}`);
 
     // calling with the same parameters doesn't create new video
-    const res2 = await testLoader(action, { form: data, transform: signin });
+    const res2 = await testLoader(action, {
+      form: data,
+      transform: user.signin,
+    });
     tinyassert(res2 instanceof Response);
     expect(res2.headers.get("location")).toBe(`/videos/${video.id}`);
   });

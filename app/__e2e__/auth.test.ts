@@ -29,35 +29,45 @@ test("/users/register", async ({ page }) => {
   await page.waitForSelector(`"Successfully registered"`);
 });
 
-test("/users/signin", async ({ page }) => {
-  await page.goto("/");
+test.describe(() => {
+  const password = "password";
+  const user = useUserE2E(test, {
+    password,
+    seed: __filename + "/users/signin",
+  });
 
-  // navigate to signin
-  await page.locator("header >> data-test=login-icon").click();
-  await expect(page).toHaveURL("/users/signin");
+  test("/users/signin", async ({ page }) => {
+    await page.goto("/");
 
-  // submit form
-  await page.locator('input[name="username"]').fill("dev");
-  await page.locator('input[name="password"]').fill("dev");
-  await page.locator('[data-test="signin-form"] >> text="Sign in"').click();
+    // navigate to signin
+    await page.locator("header >> data-test=login-icon").click();
+    await expect(page).toHaveURL("/users/signin");
 
-  // navigate to root
-  await expect(page).toHaveURL("/");
-  await page.waitForSelector(`"Successfully signed in as 'dev'"`);
+    // submit form
+    await page.locator('input[name="username"]').fill(user.data.username);
+    await page.locator('input[name="password"]').fill(password);
+    await page.locator('[data-test="signin-form"] >> text="Sign in"').click();
+
+    // navigate to root
+    await expect(page).toHaveURL("/");
+    await page.waitForSelector(
+      `"Successfully signed in as '${user.data.username}'"`
+    );
+  });
 });
 
 test.describe("/users/me", () => {
-  const { user, signin } = useUserE2E(test, {
+  const user = useUserE2E(test, {
     seed: __filename + "/users/me",
   });
 
   test("with-session", async ({ page }) => {
-    await signin(page);
+    await user.signin(page);
     await page.goto("/users/me");
 
     // check user data is loaded
     await expect(page.locator("data-test=me-username")).toHaveValue(
-      user().username
+      user.data.username
     );
 
     // update settings

@@ -6,16 +6,15 @@ import { PRACTICE_ACTION_TYPES, Q } from "../../../db/models";
 import { R } from "../../../misc/routes";
 import { Controller, makeLoader } from "../../../utils/controller-utils";
 import { PracticeSystem } from "../../../utils/practice-system";
-import { zStringToDate, zStringToInteger } from "../../../utils/zod-utils";
 
 //
 // action
 //
 
 const ACTION_REQUEST_SCHEMA = z.object({
-  practiceEntryId: zStringToInteger,
+  practiceEntryId: z.coerce.number().int(),
   actionType: z.enum(PRACTICE_ACTION_TYPES),
-  now: zStringToDate,
+  now: z.coerce.date(),
 });
 
 export type NewPracticeActionRequest = z.infer<typeof ACTION_REQUEST_SCHEMA>;

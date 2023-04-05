@@ -1,5 +1,6 @@
 import { Link, useLoaderData } from "@remix-run/react";
-import { DeckTable, Q } from "../../db/models";
+import { E, T, db } from "../../db/drizzle-client.server";
+import type { DeckTable } from "../../db/models";
 import { R } from "../../misc/routes";
 import { Controller, makeLoader } from "../../utils/controller-utils";
 import { useDeserialize } from "../../utils/hooks";
@@ -21,10 +22,13 @@ export interface DecksLoaderData {
 
 export const loader = makeLoader(Controller, async function () {
   const user = await this.requireUser();
-  const decks = await Q.decks()
-    .where({ userId: user.id })
-    .orderBy("createdAt", "desc");
-  return this.serialize({ decks } as DecksLoaderData);
+  const decks = await db
+    .select()
+    .from(T.decks)
+    .where(E.eq(T.decks.userId, user.id))
+    .orderBy(E.desc(T.decks.createdAt));
+  const loaderData: DecksLoaderData = { decks };
+  return this.serialize(loaderData);
 });
 
 //
@@ -72,10 +76,16 @@ function DeckComponent({ deck }: { deck: DeckTable }) {
 
 function NavBarMenuComponent() {
   return (
-    <Link
-      to={R["/decks/new"]}
-      className="antd-btn antd-btn-ghost i-ri-add-box-line w-6 h-6"
-      data-test="new-deck-link"
-    />
+    <>
+      <Link
+        to={R["/decks/new"]}
+        className="antd-btn antd-btn-ghost i-ri-add-box-line w-6 h-6"
+        data-test="new-deck-link"
+      />
+      <Link
+        to={R["/decks/import"]}
+        className="antd-btn antd-btn-ghost i-ri-file-upload-line w-6 h-6"
+      />
+    </>
   );
 }

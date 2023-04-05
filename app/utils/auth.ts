@@ -1,10 +1,13 @@
+import { isNil, tinyassert } from "@hiogawa/utils";
 import type { Session } from "@remix-run/server-runtime";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
-import { Q, UserTable } from "../db/models";
+import { E, T, db, findOne } from "../db/drizzle-client.server";
+import type { UserTable } from "../db/models";
 import { AppError } from "./errors";
 import { crypto } from "./node.server";
 import { commitSession, getSession } from "./session.server";
+import { DEFAULT_TIMEZONE, TIMEZONE_RE } from "./timezone";
 
 export const USERNAME_MAX_LENGTH = 32;
 export const PASSWORD_MAX_LENGTH = 128;
@@ -19,7 +22,7 @@ export const REGISTER_SCHEMA = z
     password: z.string().nonempty().max(PASSWORD_MAX_LENGTH),
     passwordConfirmation: z.string().nonempty().max(PASSWORD_MAX_LENGTH),
     recaptchaToken: z.string(),
-    timezone: z.string().optional(),
+    timezone: z.string().regex(TIMEZONE_RE).default(DEFAULT_TIMEZONE),
   })
   .refine((obj) => obj.password === obj.passwordConfirmation, {
     message: "Invalid",
@@ -59,28 +62,39 @@ export async function verifyPassword(
   return bcrypt.compare(sha256(password), passwordHash);
 }
 
-export async function register(data: {
+export async function register({
+  username,
+  password,
+  timezone = DEFAULT_TIMEZONE,
+}: {
   username: string;
   password: string;
   timezone?: string;
 }): Promise<UserTable> {
   // Check uniqueness
-  if (await Q.users().select().where("username", data.username).first()) {
-    throw new AppError(`Username '${data.username}' is already taken`);
+  if (await findByUsername(username)) {
+    throw new AppError(`Username '${username}' is already taken`);
   }
 
   // Save
-  const passwordHash = await toPasswordHash(data.password);
-  const [id] = await Q.users().insert({
-    username: data.username,
+  const passwordHash = await toPasswordHash(password);
+  await db.insert(T.users).values({
+    username,
     passwordHash,
-    timezone: data.timezone,
+    timezone,
   });
-  const user = await Q.users().where("id", id).first();
-  if (!user) {
-    throw new AppError("Unknown registration error");
-  }
+
+  const user = await findByUsername(username);
+  tinyassert(user);
   return user;
+}
+
+export async function findByUsername(
+  username: string
+): Promise<UserTable | undefined> {
+  return findOne(
+    db.select().from(T.users).where(E.eq(T.users.username, username))
+  );
 }
 
 export async function verifySignin(data: {
@@ -88,10 +102,7 @@ export async function verifySignin(data: {
   password: string;
 }): Promise<UserTable> {
   // Find user
-  const user = await Q.users()
-    .select()
-    .where("username", data.username)
-    .first();
+  const user = await findByUsername(data.username);
   if (user && (await verifyPassword(data.password, user.passwordHash))) {
     return user;
   }
@@ -109,17 +120,18 @@ export function signoutSession(session: Session): void {
 }
 
 export function getSessionUserId(session: Session): number | undefined {
-  const id = session.get(SESSION_USER_KEY);
-  if (id === undefined) return;
-  return id;
+  const id: unknown = session.get(SESSION_USER_KEY);
+  return typeof id === "number" ? id : undefined;
 }
 
 export async function getSessionUser(
   session: Session
 ): Promise<UserTable | undefined> {
   const id = getSessionUserId(session);
-  if (id === undefined) return;
-  return await Q.users().where("id", id).first();
+  if (!isNil(id)) {
+    return findOne(db.select().from(T.users).where(E.eq(T.users.id, id)));
+  }
+  return;
 }
 
 export async function createUserCookie(user: UserTable) {

@@ -3,18 +3,20 @@ import { client } from "../../db/client.server";
 import { Q } from "../../db/models";
 import { Controller, makeLoader } from "../../utils/controller-utils";
 import { AppError } from "../../utils/errors";
-import { zStringToInteger } from "../../utils/zod-utils";
 
 //
 // action
 //
 
 const NEW_BOOKMARK_SCHEMA = z.object({
-  videoId: zStringToInteger,
-  captionEntryId: zStringToInteger,
+  videoId: z.coerce.number().int(),
+  captionEntryId: z.coerce.number().int(),
   text: z.string().nonempty(),
-  side: zStringToInteger.refine((x) => x === 0 || x === 1),
-  offset: zStringToInteger,
+  side: z.coerce
+    .number()
+    .int()
+    .refine((x) => x === 0 || x === 1),
+  offset: z.coerce.number().int(),
 });
 
 export type NewBookmark = z.infer<typeof NEW_BOOKMARK_SCHEMA>;

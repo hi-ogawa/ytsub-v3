@@ -4,11 +4,17 @@ import { redirect } from "@remix-run/server-runtime";
 import { z } from "zod";
 import { PaginationComponent } from "../../../components/misc";
 import {
+  E,
+  T,
+  TT,
+  db,
+  toPaginationResult,
+} from "../../../db/drizzle-client.server";
+import type {
+  BookmarkEntryTable,
   DeckTable,
   PaginationMetadata,
   PracticeActionTable,
-  Q,
-  toPaginationResult,
 } from "../../../db/models";
 import { R } from "../../../misc/routes";
 import { Controller, makeLoader } from "../../../utils/controller-utils";
@@ -17,7 +23,6 @@ import { dtf } from "../../../utils/intl";
 import { useLeafLoaderData } from "../../../utils/loader-utils";
 import type { PageHandle } from "../../../utils/page-handle";
 import { PAGINATION_PARAMS_SCHEMA } from "../../../utils/pagination";
-import { zStringToInteger } from "../../../utils/zod-utils";
 import { DeckHistoryNavBarMenuComponent } from "./history-graph";
 
 //
@@ -35,17 +40,13 @@ export const handle: PageHandle = {
 
 const REQUEST_SCHEMA = z
   .object({
-    practiceEntryId: zStringToInteger.optional(),
+    practiceEntryId: z.coerce.number().int().optional(),
   })
   .merge(PAGINATION_PARAMS_SCHEMA);
 
-type PracticeActionTableExtra = PracticeActionTable & {
-  bookmarkEntryText: string;
-};
-
 interface LoaderData {
   deck: DeckTable;
-  practiceActions: PracticeActionTableExtra[];
+  rows: Pick<TT, "practiceActions" | "bookmarkEntries">[];
   pagination: PaginationMetadata;
 }
 
@@ -58,31 +59,34 @@ export const loader = makeLoader(Controller, async function () {
     return redirect(R["/decks/$id/history"](deck.id));
   }
 
-  const qb = Q.practiceActions()
-    .select("practiceActions.*", { bookmarkEntryText: "bookmarkEntries.text" })
-    .join(
-      "practiceEntries",
-      "practiceEntries.id",
-      "practiceActions.practiceEntryId"
-    )
-    .join(
-      "bookmarkEntries",
-      "bookmarkEntries.id",
-      "practiceEntries.bookmarkEntryId"
-    )
-    .where("practiceActions.deckId", deck.id)
-    .orderBy("practiceActions.createdAt", "desc");
-
-  if (parsed.data.practiceEntryId) {
-    qb.where("practiceEntryId", parsed.data.practiceEntryId);
-  }
-
-  const { data: practiceActions, ...pagination } = await toPaginationResult(
-    qb,
+  const [rows, pagination] = await toPaginationResult(
+    db
+      .select()
+      .from(T.practiceActions)
+      .innerJoin(
+        T.practiceEntries,
+        E.eq(T.practiceEntries.id, T.practiceActions.practiceEntryId)
+      )
+      .innerJoin(
+        T.bookmarkEntries,
+        E.eq(T.bookmarkEntries.id, T.practiceEntries.bookmarkEntryId)
+      )
+      .where(
+        E.and(
+          E.eq(T.practiceActions.deckId, deck.id),
+          parsed.data.practiceEntryId
+            ? E.eq(
+                T.practiceActions.practiceEntryId,
+                parsed.data.practiceEntryId
+              )
+            : undefined
+        )
+      )
+      .orderBy(E.desc(T.practiceActions.createdAt)),
     parsed.data
   );
 
-  const res: LoaderData = { deck, practiceActions, pagination };
+  const res: LoaderData = { deck, rows, pagination };
   return this.serialize(res);
 });
 
@@ -91,18 +95,20 @@ export const loader = makeLoader(Controller, async function () {
 //
 
 export default function DefaultComponent() {
-  const { practiceActions, pagination }: LoaderData = useDeserialize(
-    useLoaderData()
-  );
+  const { rows, pagination }: LoaderData = useDeserialize(useLoaderData());
 
   return (
     <>
       <div className="w-full flex justify-center">
         <div className="h-full w-full max-w-lg">
           <div className="h-full flex flex-col p-2 gap-2">
-            {practiceActions.length === 0 && <div>Empty</div>}
-            {practiceActions.map((e) => (
-              <PracticeActionComponent key={e.id} practiceAction={e} />
+            {rows.length === 0 && <div>Empty</div>}
+            {rows.map((row) => (
+              <PracticeActionComponent
+                key={row.practiceActions.id}
+                practiceAction={row.practiceActions}
+                bookmarkEntry={row.bookmarkEntries}
+              />
             ))}
           </div>
         </div>
@@ -116,21 +122,18 @@ export default function DefaultComponent() {
 }
 
 function PracticeActionComponent(props: {
-  practiceAction: PracticeActionTableExtra;
+  practiceAction: PracticeActionTable;
+  bookmarkEntry: BookmarkEntryTable;
 }) {
-  const { bookmarkEntryText, createdAt, actionType, queueType } =
-    props.practiceAction;
+  const { createdAt, actionType, queueType } = props.practiceAction;
   return (
     <div className="flex flex-col p-2 gap-2 border">
       <div className="flex gap-2">
         <div className="h-[20px] flex items-center">
           <QueueTypeIcon queueType={queueType} />
         </div>
-        <div
-          className="flex-1 text-sm cursor-pointer"
-          data-test="bookmark-entry-text"
-        >
-          {bookmarkEntryText}
+        <div className="flex-1 text-sm" data-test="bookmark-entry-text">
+          {props.bookmarkEntry.text}
         </div>
       </div>
       <div className="flex items-center ml-6 text-xs gap-3">

@@ -1,4 +1,4 @@
-import { tinyassert } from "@hiogawa/utils";
+import { newPromiseWithResolvers, tinyassert } from "@hiogawa/utils";
 import { UseMutationOptions, useMutation } from "@tanstack/react-query";
 import { XMLParser } from "fast-xml-parser";
 import { maxBy, once } from "lodash";
@@ -10,7 +10,7 @@ import {
   LanguageCode,
   languageCodeToName,
 } from "./language";
-import { loadScript, newPromiseWithResolvers, throwGetterProxy } from "./misc";
+import { loadScript, throwGetterProxy } from "./misc";
 import {
   CaptionConfig,
   CaptionConfigOptions,

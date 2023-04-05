@@ -1,10 +1,10 @@
 import { RemixServer } from "@remix-run/react";
 import type { HandleDocumentRequestFunction } from "@remix-run/server-runtime";
 import { renderToString } from "react-dom/server";
-import { initializeConfigServer, injectConfigScript } from "./utils/config";
+import { injectInitializeServer } from "./misc/initialize-server";
+import { injectConfigScript } from "./utils/config";
 
-// TODO: avoid side-effect
-initializeConfigServer();
+injectInitializeServer();
 
 const handler: HandleDocumentRequestFunction = (
   request,

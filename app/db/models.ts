@@ -1,108 +1,28 @@
-import type { Knex } from "knex";
+import { z } from "zod";
 import type { CaptionEntry, VideoMetadata } from "../utils/types";
 import type { NewVideo } from "../utils/youtube";
 import { client } from "./client.server";
-import RAW_SCHEMA from "./schema";
+import { E, T, TT, db, findOne } from "./drizzle-client.server";
 
-export interface UserTable {
-  id: number;
-  username: string;
-  passwordHash: string; // TODO: hide this field from the client
-  createdAt: Date;
-  updatedAt: Date;
-  language1?: string; // TODO: database returns `null`
-  language2?: string;
-  timezone: string; // e.g. +09:00 (see app/utils/timezone.ts)
-}
+// TODO: organize code (move everything to drizzle-client?)
 
-// TODO: manage "view count" and "last watched timestamp" etc...
-export interface VideoTable {
-  id: number;
-  videoId: string; // video's id on youtube
-  language1_id: string;
-  language1_translation?: string;
-  language2_id: string;
-  language2_translation?: string;
-  title: string;
-  author: string;
-  channelId: string;
-  createdAt: Date;
-  updatedAt: Date;
-  userId?: number; // associated to anonymous users when `null`
-  bookmarkEntriesCount: number;
-}
+export type UserTable = TT["users"];
+export type VideoTable = TT["videos"];
+export type CaptionEntryTable = TT["captionEntries"];
+export type BookmarkEntryTable = TT["bookmarkEntries"];
+export type DeckTable = TT["decks"];
+export type PracticeEntryTable = TT["practiceEntries"];
+export type PracticeActionTable = TT["practiceActions"];
 
-export interface CaptionEntryTable {
-  id: number;
-  index: number; // zero-based index within video's caption entries
-  begin: number;
-  end: number;
-  text1: string;
-  text2: string;
-  createdAt: Date;
-  updatedAt: Date;
-  videoId: number; // not `VideoTable.videoId` but `VideoTable.id`
-}
-
-export interface BookmarkEntryTable {
-  id: number;
-  text: string;
-  side: number; // 0 | 1
-  offset: number;
-  createdAt: Date;
-  updatedAt: Date;
-  userId: number;
-  videoId: number;
-  captionEntryId: number;
-}
-
-//
-// Cf. Anki's practice system
+// cf. Anki's practice system
 // - https://docs.ankiweb.net/studying.html
 // - https://docs.ankiweb.net/deck-options.html
-//
-
-export const PRACTICE_ACTION_TYPES = ["AGAIN", "HARD", "GOOD", "EASY"] as const;
-export const PRACTICE_QUEUE_TYPES = ["NEW", "LEARN", "REVIEW"] as const;
-export type PracticeActionType = (typeof PRACTICE_ACTION_TYPES)[number];
-export type PracticeQueueType = (typeof PRACTICE_QUEUE_TYPES)[number];
-
-export interface DeckTable {
-  id: number;
-  name: string;
-  newEntriesPerDay: number;
-  reviewsPerDay: number;
-  easeMultiplier: number;
-  easeBonus: number;
-  randomMode: boolean; // TODO: 0 | 1
-  createdAt: Date;
-  updatedAt: Date;
-  userId: number;
-  practiceEntriesCountByQueueType: Record<PracticeQueueType, number>;
-}
-
-export interface PracticeEntryTable {
-  id: number;
-  queueType: PracticeQueueType;
-  easeFactor: number;
-  scheduledAt: Date;
-  createdAt: Date;
-  updatedAt: Date;
-  deckId: number;
-  bookmarkEntryId: number;
-  practiceActionsCount: number;
-}
-
-export interface PracticeActionTable {
-  id: number;
-  queueType: PracticeQueueType;
-  actionType: PracticeActionType;
-  createdAt: Date;
-  updatedAt: Date;
-  userId: number;
-  deckId: number;
-  practiceEntryId: number;
-}
+const Z_PRACTICE_ACTION_TYPES = z.enum(["AGAIN", "HARD", "GOOD", "EASY"]);
+const Z_PRACTICE_QUEUE_TYPES = z.enum(["NEW", "LEARN", "REVIEW"]);
+export const PRACTICE_ACTION_TYPES = Z_PRACTICE_ACTION_TYPES.options;
+export const PRACTICE_QUEUE_TYPES = Z_PRACTICE_QUEUE_TYPES.options;
+export type PracticeActionType = z.infer<typeof Z_PRACTICE_ACTION_TYPES>;
+export type PracticeQueueType = z.infer<typeof Z_PRACTICE_QUEUE_TYPES>;
 
 export const Q = {
   users: () => client<UserTable>("users"),
@@ -119,10 +39,12 @@ export const Q = {
 //
 
 export async function truncateAll(): Promise<void> {
-  await Promise.all(Object.values(Q).map((table) => table().truncate()));
+  for (const table of Object.values(T)) {
+    await db.delete(table);
+  }
 }
 
-// no "FOREIGN KEY" constraint principle https://docs.planetscale.com/learn/operating-without-foreign-key-constraints#cleaning-up-orphaned-rows
+// no "FOREIGN KEY" constraint https://docs.planetscale.com/learn/operating-without-foreign-key-constraints#cleaning-up-orphaned-rows
 export async function deleteOrphans(): Promise<void> {
   await Q.videos()
     .delete()
@@ -163,13 +85,23 @@ export function filterNewVideo(
   { videoId, language1, language2 }: NewVideo,
   userId?: number
 ) {
-  return Q.videos()
-    .where("videoId", videoId)
-    .where("language1_id", language1.id)
-    .where("language1_translation", language1.translation ?? null)
-    .where("language2_id", language2.id)
-    .where("language2_translation", language2.translation ?? null)
-    .where("userId", userId ?? null);
+  return db
+    .select()
+    .from(T.videos)
+    .where(
+      E.and(
+        E.eq(T.videos.videoId, videoId),
+        E.eq(T.videos.language1_id, language1.id),
+        E.eq(T.videos.language2_id, language2.id),
+        language1.translation
+          ? E.eq(T.videos.language1_translation, language1.translation)
+          : E.isNull(T.videos.language1_translation),
+        language2.translation
+          ? E.eq(T.videos.language2_translation, language2.translation)
+          : E.isNull(T.videos.language2_translation),
+        userId ? E.eq(T.videos.userId, userId) : E.isNull(T.videos.userId)
+      )
+    );
 }
 
 export async function insertVideoAndCaptionEntries(
@@ -186,24 +118,24 @@ export async function insertVideoAndCaptionEntries(
     captionEntries,
   } = data;
 
-  const videoRow = {
+  const [{ insertId: videoId }] = await db.insert(T.videos).values({
     videoId: videoDetails.videoId,
     title: videoDetails.title,
     author: videoDetails.author,
     channelId: videoDetails.channelId,
     language1_id: language1.id,
-    language1_translation: language1.translation,
+    language1_translation: language1.translation ?? null,
     language2_id: language2.id,
-    language2_translation: language2.translation,
-    userId,
-  };
-  const [videoId] = await Q.videos().insert(videoRow);
+    language2_translation: language2.translation ?? null,
+    userId: userId ?? null,
+  });
 
-  const captionEntryRows = captionEntries.map((entry) => ({
-    ...entry,
-    videoId,
-  }));
-  await Q.captionEntries().insert(captionEntryRows);
+  await Q.captionEntries().insert(
+    captionEntries.map((entry) => ({
+      ...entry,
+      videoId,
+    }))
+  );
 
   return videoId;
 }
@@ -213,9 +145,14 @@ export async function getVideoAndCaptionEntries(
 ): Promise<
   { video: VideoTable; captionEntries: CaptionEntryTable[] } | undefined
 > {
-  const video = await Q.videos().where("id", id).first();
+  const video = await findOne(
+    db.select().from(T.videos).where(E.eq(T.videos.id, id))
+  );
   if (video) {
-    const captionEntries = await Q.captionEntries().where("videoId", id);
+    const captionEntries = await db
+      .select()
+      .from(T.captionEntries)
+      .where(E.eq(T.captionEntries.videoId, id));
     return { video, captionEntries };
   }
   return;
@@ -226,148 +163,4 @@ export interface PaginationMetadata {
   totalPage: number;
   page: number;
   perPage: number;
-}
-
-export interface PaginationResult<T> extends PaginationMetadata {
-  data: T[];
-}
-
-// desperate typing hacks...
-export async function toPaginationResult<QB extends Knex.QueryBuilder>(
-  query: QB,
-  { page, perPage }: { page: number; perPage: number },
-  { clearJoin = false }: { clearJoin?: boolean } = {}
-): Promise<PaginationResult<QB extends Promise<(infer T)[]> ? T : never>> {
-  const queryData = query
-    .clone()
-    .offset((page - 1) * perPage)
-    .limit(perPage);
-  // https://github.com/knex/knex/blob/939d8a219c432a7d7dcb1ed1a79d1e5a4686eafd/lib/query/querybuilder.js#L1210
-  let queryTotal = query.clone().clear("select").clear("order");
-  if (clearJoin) {
-    // this will break when `where` depends on joined columns
-    queryTotal = queryTotal.clear("join").clear("group");
-  }
-  const [data, total] = await Promise.all([queryData, toCount(queryTotal)]);
-  return { data, total, page, perPage, totalPage: Math.ceil(total / perPage) };
-}
-
-export async function toCount(query: Knex.QueryBuilder): Promise<number> {
-  const { total } = await query.count({ total: 0 }).first();
-  return total;
-}
-
-//
-// schema.json
-//
-
-// TODO: auto generate
-interface Schema {
-  users: UserTable;
-  videos: VideoTable;
-  captionEntries: CaptionEntryTable;
-  bookmarkEntries: BookmarkEntryTable;
-  decks: DeckTable;
-  practiceEntries: PracticeEntryTable;
-  practiceActions: PracticeActionTable;
-}
-
-type TableName = keyof Schema;
-type TableSelectAliases = Record<TableName, Record<string, string>>;
-const TABLE_NAMES = Object.keys(RAW_SCHEMA) as TableName[];
-const TABLE_SELECT_ALIASES = {} as TableSelectAliases;
-
-initializeSelectAliases();
-
-function initializeSelectAliases(): void {
-  /*
-    TABLE_SELECT_ALIASES = {
-      users: {
-        "users#id": "users.id",
-        "users#username": "users.username",
-        ...
-      },
-      videos: {
-        "videos#id": "videos.id",
-        ...
-      },
-      ...
-    }
-   */
-  for (const t of TABLE_NAMES) {
-    TABLE_SELECT_ALIASES[t] = {};
-    for (const c of Object.keys(RAW_SCHEMA[t])) {
-      const actual = `${t}.${c}`;
-      const alias = `${t}#${c}`;
-      TABLE_SELECT_ALIASES[t][alias] = actual;
-    }
-  }
-}
-
-// TODO
-// - optional relation
-// - remove duplicates
-export async function normalizeRelation<Ts extends TableName>(
-  qb: Knex.QueryBuilder,
-  tableNames: Ts[],
-  { selectExtra = {} }: { selectExtra?: Record<string, any> } = {}
-): Promise<{ [T in Ts]: Schema[T][] }> {
-  const aliases = tableNames.map((t) => TABLE_SELECT_ALIASES[t]);
-  const select = Object.assign({}, selectExtra, ...aliases);
-  const rows = await qb.clone().select(select);
-  const result = {} as Record<Ts, any[]>;
-  for (const t of tableNames) {
-    result[t] = [];
-  }
-  for (const row of rows) {
-    const tmp = {} as Record<Ts, any>;
-    for (const t of tableNames) {
-      tmp[t] = {};
-    }
-    for (const [k, v] of Object.entries(row)) {
-      if (k in selectExtra) {
-        for (const t of tableNames) {
-          tmp[t][k] = v;
-        }
-        continue;
-      }
-      const [t, c] = k.split("#") as [Ts, string];
-      tmp[t][c] = v;
-    }
-    for (const t of tableNames) {
-      result[t].push(tmp[t]);
-    }
-  }
-  return result;
-}
-
-export async function normalizeRelationWithPagination<Ts extends TableName>(
-  qb: Knex.QueryBuilder,
-  tableNames: Ts[],
-  { page, perPage }: { page: number; perPage: number },
-  {
-    clearJoinForTotal = false,
-    selectExtra = {},
-  }: { clearJoinForTotal?: boolean; selectExtra?: Record<string, any> } = {}
-): Promise<{ [T in Ts]: Schema[T][] } & { pagination: PaginationMetadata }> {
-  const qbLimitOffset = qb
-    .clone()
-    .offset((page - 1) * perPage)
-    .limit(perPage);
-  let qbTotal = qb.clone().clear("select").clear("order");
-  if (clearJoinForTotal) {
-    // this will break when `where` depends on joined columns
-    qbTotal = qbTotal.clear("join").clear("group");
-  }
-  const [data, total] = await Promise.all([
-    normalizeRelation(qbLimitOffset, tableNames, { selectExtra }),
-    toCount(qbTotal),
-  ]);
-  const pagination = {
-    total,
-    page,
-    perPage,
-    totalPage: Math.ceil(total / perPage),
-  };
-  return { ...data, pagination };
 }

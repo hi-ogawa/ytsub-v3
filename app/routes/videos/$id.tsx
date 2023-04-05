@@ -19,9 +19,9 @@ import { atom, useAtom } from "jotai";
 import { atomWithStorage } from "jotai/utils";
 import React from "react";
 import toast from "react-hot-toast";
-import { useSearchParams } from "react-router-dom";
 import { z } from "zod";
 import { transitionProps } from "../../components/misc";
+import { useModal } from "../../components/modal";
 import { PopoverSimple } from "../../components/popover";
 import {
   CaptionEntryTable,
@@ -33,6 +33,7 @@ import {
 import { R } from "../../misc/routes";
 import { Controller, makeLoader } from "../../utils/controller-utils";
 import { useDeserialize, useSelection } from "../../utils/hooks";
+import { dtf } from "../../utils/intl";
 import { useLeafLoaderData, useRootLoaderData } from "../../utils/loader-utils";
 import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
@@ -44,7 +45,6 @@ import {
   stringifyTimestamp,
   usePlayerLoader,
 } from "../../utils/youtube";
-import { zStringToInteger, zStringToMaybeInteger } from "../../utils/zod-utils";
 import type { NewBookmark } from "../bookmarks/new";
 
 export const handle: PageHandle = {
@@ -56,23 +56,32 @@ export const handle: PageHandle = {
 // loader
 //
 
-const SCHEMA = z.object({
-  id: zStringToInteger,
+const Z_PARAMS = z.object({
+  id: z.coerce.number().int(),
+  index: z.coerce.number().int().optional(),
 });
 
-type LoaderData = { video: VideoTable; captionEntries: CaptionEntryTable[] };
+type LoaderData = {
+  video: VideoTable;
+  captionEntries: CaptionEntryTable[];
+  params: z.infer<typeof Z_PARAMS>;
+};
 
 export const loader = makeLoader(Controller, async function () {
-  const parsed = SCHEMA.safeParse(this.args.params);
+  const parsed = Z_PARAMS.safeParse({ ...this.args.params, ...this.query() });
   if (parsed.success) {
     const { id } = parsed.data;
-    const data: LoaderData | undefined = await getVideoAndCaptionEntries(id);
+    const data = await getVideoAndCaptionEntries(id);
     if (data) {
-      return this.serialize(data);
+      const loaderData: LoaderData = {
+        ...data,
+        params: parsed.data,
+      };
+      return this.serialize(loaderData);
     }
   }
   this.flash({
-    content: "Invalid Video ID",
+    content: "Invalid Request",
     variant: "error",
   });
   return redirect(R["/"]);
@@ -91,7 +100,7 @@ export const unstable_shouldReload: ShouldReloadFunction = ({ submission }) => {
 
 export const action = makeLoader(Controller, async function () {
   if (this.request.method === "DELETE") {
-    const parsed = SCHEMA.safeParse(this.args.params);
+    const parsed = Z_PARAMS.safeParse(this.args.params);
     if (parsed.success) {
       const { id } = parsed.data;
       const user = await this.currentUser();
@@ -170,12 +179,9 @@ function PageComponent({
   video,
   captionEntries,
   currentUser,
+  params,
 }: LoaderData & { currentUser?: UserTable }) {
   const fetcher = useFetcher();
-  const [searchParams] = useSearchParams();
-  const [focusedIndex] = React.useState(() =>
-    zStringToMaybeInteger.parse(searchParams.get("index") ?? undefined)
-  );
   const [autoScrollState] = useAutoScrollState();
   const autoScroll = autoScrollState.includes(video.id);
   const [repeatingEntries, setRepeatingEntries, toggleRepeatingEntries] =
@@ -299,14 +305,14 @@ function PageComponent({
   }, [fetcher.type]);
 
   React.useEffect(() => {
-    if (!isNil(focusedIndex)) {
+    if (!isNil(params.index)) {
       // smooth scroll ends up wrong positions due to over-estimation by `estimateSize`.
-      virtualizer.scrollToIndex(focusedIndex, {
+      virtualizer.scrollToIndex(params.index, {
         align: "center",
         behavior: "auto",
       });
     }
-  }, [focusedIndex]);
+  }, [params.index]);
 
   useSelection((selection?: Selection): void => {
     let newBookmarkState: BookmarkState | undefined = undefined;
@@ -361,7 +367,7 @@ function PageComponent({
           onClickEntryPlay={onClickEntryPlay}
           onClickEntryRepeat={(entry) => toggleRepeatingEntries(entry)}
           isPlaying={isPlaying}
-          focusedIndex={focusedIndex}
+          focusedIndex={params.index}
         />
       }
       bookmarkActions={
@@ -589,6 +595,13 @@ export function CaptionEntryComponent({
             data-test="caption-entry-component__video-link"
           />
         )}
+        <a
+          // prettier-ignore
+          href={`https://10fastfingers.com/widget/typingtest?dur=600&rand=0&words=${encodeURIComponent(entry.text1)}`}
+          // use "media-mouse" as keyboard detection heuristics https://github.com/w3c/csswg-drafts/issues/3871
+          className="antd-btn antd-btn-ghost i-ri-keyboard-line w-4 h-4 hidden media-mouse:inline"
+          target="_blank"
+        />
         <button
           className={cls(
             `antd-btn antd-btn-ghost i-ri-repeat-line w-3 h-3`,
@@ -671,6 +684,7 @@ function NavBarMenuComponentImpl({
 }) {
   const [autoScrollState, toggleAutoScrollState] = useAutoScrollState();
   const [repeatingEntries, setRepeatingEntries] = useRepeatingEntries();
+  const modal = useModal();
 
   return (
     <>
@@ -705,6 +719,14 @@ function NavBarMenuComponentImpl({
           }
           floating={(context) => (
             <ul className="flex flex-col gap-2 p-2 w-[180px] text-sm">
+              <li>
+                <button
+                  className="w-full antd-menu-item p-2 flex"
+                  onClick={() => modal.setOpen(true)}
+                >
+                  Video Info
+                </button>
+              </li>
               <li>
                 <Link
                   className="w-full antd-menu-item p-2 flex"
@@ -741,6 +763,47 @@ function NavBarMenuComponentImpl({
           )}
         />
       </div>
+      <modal.Wrapper>
+        <div className="flex flex-col gap-2 p-4 relative">
+          <div className="text-lg">Video Info</div>
+          <label className="flex flex-col gap-1">
+            <span className="text-colorTextLabel">Title</span>
+            <input
+              type="text"
+              className="antd-input p-1 bg-colorBgContainerDisabled"
+              readOnly
+              value={video.title}
+            />
+          </label>
+          <label className="flex flex-col gap-1">
+            <span className="text-colorTextLabel">Author</span>
+            <input
+              type="text"
+              className="antd-input p-1 bg-colorBgContainerDisabled"
+              readOnly
+              value={video.author}
+            />
+          </label>
+          <label className="flex flex-col gap-1">
+            <span className="text-colorTextLabel">Imported at</span>
+            <input
+              type="text"
+              className="antd-input p-1 bg-colorBgContainerDisabled"
+              readOnly
+              value={dtf.format(video.createdAt)}
+            />
+          </label>
+          <label className="flex flex-col gap-1">
+            <span className="text-colorTextLabel">Bookmark count</span>
+            <input
+              type="text"
+              className="antd-input p-1 bg-colorBgContainerDisabled"
+              readOnly
+              value={video.bookmarkEntriesCount}
+            />
+          </label>
+        </div>
+      </modal.Wrapper>
     </>
   );
 }

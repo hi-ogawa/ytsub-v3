@@ -2,6 +2,7 @@ import { Transition } from "@headlessui/react";
 import { mapOption } from "@hiogawa/utils";
 import { useFetcher, useFetchers, useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
+import { useQuery } from "@tanstack/react-query";
 import React from "react";
 import toast from "react-hot-toast";
 import {
@@ -10,30 +11,28 @@ import {
   transitionProps,
 } from "../../components/misc";
 import { useModal } from "../../components/modal";
-import {
+import { E, T, db, toPaginationResult } from "../../db/drizzle-client.server";
+import type {
   DeckTable,
-  PaginationResult,
-  Q,
+  PaginationMetadata,
   UserTable,
   VideoTable,
-  toPaginationResult,
 } from "../../db/models";
 import { R } from "../../misc/routes";
-import {
-  Controller,
-  deserialize,
-  makeLoader,
-} from "../../utils/controller-utils";
+import { Controller, makeLoader } from "../../utils/controller-utils";
 import { useDeserialize } from "../../utils/hooks";
 import { useRootLoaderData } from "../../utils/loader-utils";
 import type { PageHandle } from "../../utils/page-handle";
-import { PAGINATION_PARAMS_SCHEMA } from "../../utils/pagination";
+import {
+  PAGINATION_PARAMS_SCHEMA,
+  PaginationParams,
+} from "../../utils/pagination";
 import { toForm } from "../../utils/url-data";
-import type { DecksLoaderData } from "../decks";
 import type {
   NewPracticeEntryRequest,
   NewPracticeEntryResponse,
 } from "../decks/$id/new-practice-entry";
+import { createDecksIndexDetailQuery } from "../decks/index-detail";
 
 export const handle: PageHandle = {
   navBarTitle: () => "Your Videos",
@@ -47,8 +46,24 @@ export const handle: PageHandle = {
 //   - by "lastWatchedAt"
 // - better layout for desktop
 
-interface LoaderData {
-  pagination: PaginationResult<VideoTable>;
+export interface VideosLoaderData {
+  videos: VideoTable[];
+  pagination: PaginationMetadata;
+}
+
+export async function getVideosLoaderData(
+  paginationParams: PaginationParams,
+  userId?: number
+): Promise<VideosLoaderData> {
+  const [videos, pagination] = await toPaginationResult(
+    db
+      .select()
+      .from(T.videos)
+      .where(userId ? E.eq(T.videos.userId, userId) : E.isNull(T.videos.userId))
+      .orderBy(E.desc(T.videos.updatedAt)),
+    paginationParams
+  );
+  return { videos, pagination };
 }
 
 export const loader = makeLoader(Controller, async function () {
@@ -67,28 +82,28 @@ export const loader = makeLoader(Controller, async function () {
     return redirect(R["/bookmarks"]);
   }
 
-  const pagination = await toPaginationResult(
-    Q.videos()
-      .where("videos.userId", user.id)
-      .orderBy("videos.updatedAt", "desc"),
+  const data: VideosLoaderData = await getVideosLoaderData(
     parsed.data,
-    { clearJoin: true }
+    user.id
   );
-
-  const data: LoaderData = { pagination };
   return this.serialize(data);
 });
 
+//
+// component
+//
+
 export default function DefaultComponent() {
   const { currentUser } = useRootLoaderData();
-  const data: LoaderData = useDeserialize(useLoaderData());
+  const data: VideosLoaderData = useDeserialize(useLoaderData());
   return <VideoListComponent {...data} currentUser={currentUser} />;
 }
 
 export function VideoListComponent({
+  videos,
   pagination,
   currentUser,
-}: LoaderData & {
+}: VideosLoaderData & {
   currentUser?: UserTable;
 }) {
   // cannot run this effect in `VideoComponentExtra` because the component is already gone when action returns response
@@ -117,8 +132,8 @@ export function VideoListComponent({
         <div className="h-full w-full max-w-lg">
           <div className="h-full flex flex-col p-2 gap-2">
             {/* TODO: CTA when empty */}
-            {pagination.data.length === 0 && <div>Empty</div>}
-            {pagination.data.map((video) => (
+            {videos.length === 0 && <div>Empty</div>}
+            {videos.map((video) => (
               <VideoComponentExtra
                 key={video.id}
                 video={video}
@@ -204,6 +219,7 @@ function VideoComponentExtra({
       <modal.Wrapper>
         <AddToDeckComponent
           videoId={video.id}
+          bookmarkEntriesCount={video.bookmarkEntriesCount}
           onSuccess={() => modal.setOpen(false)}
         />
       </modal.Wrapper>
@@ -213,71 +229,84 @@ function VideoComponentExtra({
 
 function AddToDeckComponent({
   videoId,
+  bookmarkEntriesCount,
   onSuccess,
 }: {
   videoId: number;
+  bookmarkEntriesCount: number;
   onSuccess: () => void;
 }) {
   // get decks
-  const fetcher1 = useFetcher();
-  const data: DecksLoaderData | undefined = React.useMemo(
-    () => mapOption(fetcher1.data, deserialize),
-    [fetcher1.data]
-  );
-  React.useEffect(() => fetcher1.load(R["/decks?index"]), []);
+  const decksQuery = useQuery(createDecksIndexDetailQuery({ videoId }));
 
-  // create practice entries
-  const fetcher2 = useFetcher();
+  // create new practice entries
+  const fetcher = useFetcher();
 
   React.useEffect(() => {
     // It doesn't have to wait until "done" since action response is ready on "actionReload"
     // (actionSubmission => actionReload => done)
-    if (fetcher2.data) {
-      const data: NewPracticeEntryResponse = fetcher2.data;
+    if (fetcher.data) {
+      const data: NewPracticeEntryResponse = fetcher.data;
       if (data.ok) {
         toast.success(`Added ${data.value.ids.length} to a deck`);
+        decksQuery.refetch();
         onSuccess();
       } else {
         toast.error("Failed to add to a deck");
       }
     }
-  }, [fetcher2.data]);
+  }, [fetcher.data]);
 
   function onClickPlus(deck: DeckTable) {
+    if (!window.confirm(`Please confirm to add bookmarks to '${deck.name}'.`)) {
+      toast.error("Cancelled to add to a deck");
+      return;
+    }
+
     const data: NewPracticeEntryRequest = {
       videoId,
       now: new Date(),
     };
-    fetcher2.submit(toForm(data), {
+    fetcher.submit(toForm(data), {
       action: R["/decks/$id/new-practice-entry"](deck.id),
       method: "post",
     });
   }
 
-  const isLoading = fetcher1.state !== "idle" || fetcher2.state !== "idle";
+  const isLoading = decksQuery.isLoading || fetcher.state !== "idle";
 
   return (
     <div
       className="flex flex-col gap-2 p-4 relative"
       data-test="add-to-deck-component"
     >
-      <div className="text-lg">Select a Deck</div>
-      {data && (
-        <ul className="flex flex-col gap-2">
-          {data.decks.map((deck) => (
+      <div className="text-lg flex items-center gap-2">
+        Select a Deck
+        <span className="text-colorTextLabel">({bookmarkEntriesCount})</span>
+      </div>
+      <ul className="flex flex-col gap-2">
+        {decksQuery.isSuccess &&
+          decksQuery.data.decks.map((deck) => (
             <li key={deck.id}>
               <button
                 className="w-full antd-menu-item p-2 flex items-center"
                 onClick={() => onClickPlus(deck)}
               >
-                <div className="grow flex">{deck.name}</div>
-                <div className="flex-1"></div>
+                <div className="flex-1 flex items-center gap-1">
+                  <span>{deck.name}</span>
+                  {mapOption(
+                    decksQuery.data.counts.find((row) => row.deckId === deck.id)
+                      ?.count,
+                    (c) => (
+                      <span className="text-colorTextLabel">({c})</span>
+                    )
+                  )}
+                </div>
                 <span className="i-ri-add-box-line w-5 h-5"></span>
               </button>
             </li>
           ))}
-        </ul>
-      )}
+      </ul>
       <Transition
         show={isLoading}
         className="duration-500 antd-body antd-spin-overlay-20"

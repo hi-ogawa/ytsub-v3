@@ -1,18 +1,17 @@
 import { expect } from "@playwright/test";
-import { Q } from "../db/models";
+import { E, T, db } from "../db/drizzle-client.server";
 import { test } from "./coverage";
 import { useUserE2E } from "./helper";
 
-// TODO: maybe sourcemap is broken in playwright
 test.describe("videos-signed-in", () => {
-  const { user, signin } = useUserE2E(test, {
+  const user = useUserE2E(test, {
     seed: __filename + "/users/me",
   });
 
   test("new-video => show-video => new-bookmark => list-bookmarks", async ({
     page,
   }) => {
-    await signin(page);
+    await user.signin(page);
 
     //
     // navigate to /videos/new to create https://www.youtube.com/watch?v=EnPYXckiUVg with fr/en
@@ -54,10 +53,11 @@ test.describe("videos-signed-in", () => {
     await page.waitForSelector(`"Bookmark success"`);
 
     // verify database
-    const entry = await Q.bookmarkEntries()
-      .where({ userId: user().id })
-      .first();
-    expect(entry).toMatchObject({
+    const rows = await db
+      .select()
+      .from(T.bookmarkEntries)
+      .where(E.eq(T.bookmarkEntries.userId, user.data.id));
+    expect(rows[0]).toMatchObject({
       text: "qu'est-ce qu'on va faire ?",
       offset: 13,
       side: 0,

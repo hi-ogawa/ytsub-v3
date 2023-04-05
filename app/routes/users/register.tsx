@@ -1,5 +1,4 @@
-import { tinyassert } from "@hiogawa/utils";
-import { mapOption } from "@hiogawa/utils";
+import { mapOption, newPromiseWithResolvers, tinyassert } from "@hiogawa/utils";
 import { Form, Link, useActionData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import { once } from "lodash";
@@ -17,14 +16,9 @@ import { publicConfig, serverConfig } from "../../utils/config";
 import { Controller, makeLoader } from "../../utils/controller-utils";
 import { AppError } from "../../utils/errors";
 import { useIsFormValid } from "../../utils/hooks";
-import {
-  loadScript,
-  newPromiseWithResolvers,
-  throwGetterProxy,
-  usePromise,
-} from "../../utils/misc";
+import { loadScript, throwGetterProxy, usePromise } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
-import { TIMEZONE_RE, getTimezone } from "../../utils/timezone";
+import { getTimezone } from "../../utils/timezone";
 import { toForm } from "../../utils/url-data";
 
 export const handle: PageHandle = {
@@ -97,12 +91,6 @@ export const action = makeLoader(Controller, async function () {
   const recaptchaOk = await verifyRecaptchaToken(parsed.data.recaptchaToken);
   if (!recaptchaOk) {
     return { message: "Invalid reCAPTCHA" };
-  }
-
-  // double check just in case
-  if (parsed.data.timezone && !parsed.data.timezone.match(TIMEZONE_RE)) {
-    console.error("invalid timezone", parsed.data.timezone);
-    parsed.data.timezone = undefined;
   }
 
   try {
