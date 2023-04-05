@@ -17,11 +17,9 @@ const Z_DECKS_INDEX_DETAIL_REQUEST = z.object({
   videoId: z.number().int(),
 });
 
-export type DecksIndexDetailRequest = z.infer<
-  typeof Z_DECKS_INDEX_DETAIL_REQUEST
->;
+type DecksIndexDetailRequest = z.infer<typeof Z_DECKS_INDEX_DETAIL_REQUEST>;
 
-export interface DecksIndexDetailResponse {
+interface DecksIndexDetailResponse {
   decks: TT["decks"][];
   counts: {
     deckId: number;
