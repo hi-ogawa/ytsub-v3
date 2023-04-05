@@ -1,4 +1,5 @@
-import { once } from "@hiogawa/utils";
+import { once, tinyassert } from "@hiogawa/utils";
+import { sql } from "drizzle-orm";
 import * as E from "drizzle-orm/expressions";
 import {
   InferModel,
@@ -12,10 +13,16 @@ import {
   text,
 } from "drizzle-orm/mysql-core";
 import { MySql2Database, drizzle } from "drizzle-orm/mysql2";
+import { SQL, noopDecoder } from "drizzle-orm/sql";
 import { createConnection } from "mysql2/promise";
 import { throwGetterProxy } from "../utils/misc";
+import type { PaginationParams } from "../utils/pagination";
 import knexfile from "./knexfile.server";
-import type { PracticeActionType, PracticeQueueType } from "./models";
+import type {
+  PaginationMetadata,
+  PracticeActionType,
+  PracticeQueueType,
+} from "./models";
 
 //
 // schema utils
@@ -70,7 +77,9 @@ const videos = mysqlTable("videos", {
   title: text("title").notNull(),
   author: text("author").notNull(),
   channelId: text("channelId").notNull(),
-  bookmarkEntriesCount: int("bookmarkEntriesCount").notNull(),
+  bookmarkEntriesCount: int("bookmarkEntriesCount")
+    .notNull()
+    .default(DUMMY_DEFAULT),
 });
 
 const captionEntries = mysqlTable("captionEntries", {
@@ -79,10 +88,10 @@ const captionEntries = mysqlTable("captionEntries", {
   ...timestampColumns,
   //
   index: int("index").notNull(), // zero-based index within video's caption entries
-  begin: int("begin"),
-  end: int("end"),
-  text1: text("text1"),
-  text2: text("text2"),
+  begin: int("begin").notNull(),
+  end: int("end").notNull(),
+  text1: text("text1").notNull(),
+  text2: text("text2").notNull(),
 });
 
 const bookmarkEntries = mysqlTable("bookmarkEntries", {
@@ -108,8 +117,8 @@ const decks = mysqlTable("decks", {
   reviewsPerDay: int("reviewsPerDay").notNull(),
   easeMultiplier: float("easeMultiplier").notNull(),
   easeBonus: float("easeBonus").notNull(),
-  randomMode: boolean("randomMode").notNull(),
-  practiceEntriesCountByQueueType: json<Record<PracticeQueueType, number>>("practiceEntriesCountByQueueType").notNull(),
+  randomMode: boolean("randomMode").notNull().default(DUMMY_DEFAULT),
+  practiceEntriesCountByQueueType: json<Record<PracticeQueueType, number>>("practiceEntriesCountByQueueType").notNull().default(DUMMY_DEFAULT),
 });
 
 const practiceEntries = mysqlTable("practiceEntries", {
@@ -159,6 +168,72 @@ export async function findOne<
   Q extends { limit: (i: number) => Promise<any[]> }
 >(query: Q): Promise<Awaited<ReturnType<Q["limit"]>>[0] | undefined> {
   return (await query.limit(1)).at(0);
+}
+
+export async function toPaginationResult<
+  Q extends { execute: () => Promise<unknown> }
+>(
+  query: Q,
+  { page, perPage }: PaginationParams
+): Promise<[Awaited<ReturnType<Q["execute"]>>, PaginationMetadata]> {
+  // hack "select config" directly
+  // https://github.com/drizzle-team/drizzle-orm/blob/ffdf7d06a02afbd724eadfb61fe5b6996345d5be/drizzle-orm/src/mysql-core/dialect.ts#L186
+  const q = query as any;
+
+  // select rows
+  q.config.limit = perPage;
+  q.config.offset = (page - 1) * perPage;
+  const rows = await q.execute();
+
+  // aggregate count
+  delete q.config.limit;
+  delete q.config.offset;
+  const total = await toCountQuery(q);
+
+  const pagination = {
+    total,
+    page,
+    perPage,
+    totalPage: Math.ceil(total / perPage),
+  };
+  return [rows, pagination];
+}
+
+export async function toCountQuery<
+  Q extends { execute: () => Promise<unknown> }
+>(query: Q): Promise<number> {
+  const q = query as any;
+  q.config.fieldsList = [
+    {
+      path: ["count"],
+      field: sql`COUNT(0)`,
+    },
+  ];
+  const [{ count }] = await q.execute();
+  tinyassert(typeof count === "number");
+  return count;
+}
+
+export function toDeleteQueryInner(sql: SQL, tableName: string): SQL {
+  // replace
+  //   select ... from
+  // with
+  //   delete from
+  const [, c1, c2, c3] = sql.queryChunks;
+  tinyassert(c1 === "select ");
+  tinyassert(c2 instanceof SQL);
+  tinyassert(c3 === " from ");
+  sql.queryChunks.splice(1, 2, " delete `", tableName, "`.* ");
+  sql.mapWith(noopDecoder);
+  return sql;
+}
+
+export async function toDeleteQuery<Q extends { getSQL: () => SQL }>(
+  select: Q
+) {
+  const tableName = (select as any).tableName;
+  tinyassert(typeof tableName === "string");
+  await db.execute(toDeleteQueryInner(select.getSQL(), tableName));
 }
 
 //

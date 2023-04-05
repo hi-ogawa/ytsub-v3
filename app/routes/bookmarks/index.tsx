@@ -11,15 +11,19 @@ import { PaginationComponent, transitionProps } from "../../components/misc";
 import { useModal } from "../../components/modal";
 import { PopoverSimple } from "../../components/popover";
 import {
+  E,
+  T,
+  TT,
+  db,
+  toPaginationResult,
+} from "../../db/drizzle-client.server";
+import type {
   BookmarkEntryTable,
   CaptionEntryTable,
-  PaginationResult,
-  Q,
+  PaginationMetadata,
   VideoTable,
-  toPaginationResult,
 } from "../../db/models";
 import { R } from "../../misc/routes";
-import { useToById } from "../../utils/by-id";
 import { Controller, makeLoader } from "../../utils/controller-utils";
 import { useDeserialize } from "../../utils/hooks";
 import { useLeafLoaderData } from "../../utils/loader-utils";
@@ -47,9 +51,8 @@ const BOOKMARKS_REQUEST = z
 type BookmarksRequest = z.infer<typeof BOOKMARKS_REQUEST>;
 
 interface LoaderData {
-  pagination: PaginationResult<BookmarkEntryTable>;
-  videos: VideoTable[];
-  captionEntries: CaptionEntryTable[];
+  rows: Pick<TT, "bookmarkEntries" | "videos" | "captionEntries">[];
+  pagination: PaginationMetadata;
   request: BookmarksRequest;
 }
 
@@ -70,66 +73,49 @@ export const loader = makeLoader(Controller, async function () {
   }
 
   const request = parsed.data;
-  const userId = user.id;
-  let sql = Q.bookmarkEntries()
-    .select("bookmarkEntries.*")
-    .where("bookmarkEntries.userId", userId);
 
-  if (request.videoId) {
-    sql = sql.where("bookmarkEntries.videoId", request.videoId);
-  }
-
-  // TODO: test
-  if (request.deckId) {
-    sql = sql
-      .join(
-        "practiceEntries",
-        "practiceEntries.bookmarkEntryId",
-        "bookmarkEntries.id"
-      )
-      .join("decks", "decks.id", "practiceEntries.deckId")
-      .where("decks.id", request.deckId);
-  }
-
-  if (request.order === "createdAt") {
-    sql = sql.orderBy("bookmarkEntries.createdAt", "desc");
-  }
-
-  if (request.order === "caption") {
-    sql = sql.join(
-      "captionEntries",
-      "captionEntries.id",
-      "bookmarkEntries.captionEntryId"
+  let query = db
+    .select()
+    .from(T.bookmarkEntries)
+    .innerJoin(T.videos, E.eq(T.videos.id, T.bookmarkEntries.videoId))
+    .innerJoin(
+      T.captionEntries,
+      E.eq(T.captionEntries.id, T.bookmarkEntries.captionEntryId)
     );
-    sql = sql.orderBy([
-      {
-        column: "captionEntries.index",
-        order: "asc",
-      },
-      {
-        column: "bookmarkEntries.offset",
-        order: "asc",
-      },
-    ]);
+
+  if (request.deckId) {
+    query = query
+      .innerJoin(
+        T.practiceEntries,
+        E.eq(T.practiceEntries.bookmarkEntryId, T.bookmarkEntries.id)
+      )
+      .innerJoin(T.decks, E.eq(T.decks.id, T.practiceEntries.deckId));
   }
 
-  const pagination = await toPaginationResult(sql, parsed.data);
-  const bookmarkEntries = pagination.data;
-  const videos = await Q.videos().whereIn(
-    "id",
-    bookmarkEntries.map((x) => x.videoId)
+  const [rows, pagination] = await toPaginationResult(
+    query
+      .where(
+        E.and(
+          E.eq(T.bookmarkEntries.userId, user.id),
+          request.videoId
+            ? E.eq(T.bookmarkEntries.videoId, request.videoId)
+            : undefined,
+          request.deckId ? E.eq(T.decks.id, request.deckId) : undefined
+        )
+      )
+      .orderBy(
+        request.order === "caption"
+          ? E.asc(T.captionEntries.index)
+          : E.desc(T.bookmarkEntries.createdAt)
+      ),
+    request
   );
-  const captionEntries = await Q.captionEntries().whereIn(
-    "id",
-    bookmarkEntries.map((x) => x.captionEntryId)
-  );
-  const res: LoaderData = {
-    videos,
-    captionEntries,
+  const loaderData: LoaderData = {
+    rows,
     pagination,
     request,
   };
-  return this.serialize(res);
+  return this.serialize(loaderData);
 });
 
 export default function DefaultComponent() {
@@ -138,23 +124,19 @@ export default function DefaultComponent() {
 }
 
 function ComponentImpl(props: LoaderData) {
-  const videos = useToById(props.videos);
-  const captionEntries = useToById(props.captionEntries);
-  const bookmarkEntries = props.pagination.data;
-
   return (
     <>
       <div className="w-full flex justify-center">
         <div className="h-full w-full max-w-lg">
           <div className="h-full flex flex-col p-2 gap-2">
             {/* TODO: CTA when empty */}
-            {bookmarkEntries.length === 0 && <div>Empty</div>}
-            {bookmarkEntries.map((bookmarkEntry) => (
+            {props.rows.length === 0 && <div>Empty</div>}
+            {props.rows.map((row) => (
               <BookmarkEntryComponent
-                key={bookmarkEntry.id}
-                video={videos.byId[bookmarkEntry.videoId]}
-                captionEntry={captionEntries.byId[bookmarkEntry.captionEntryId]}
-                bookmarkEntry={bookmarkEntry}
+                key={row.bookmarkEntries.id}
+                video={row.videos}
+                captionEntry={row.captionEntries}
+                bookmarkEntry={row.bookmarkEntries}
               />
             ))}
           </div>

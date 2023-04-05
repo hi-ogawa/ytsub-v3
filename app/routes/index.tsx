@@ -1,25 +1,19 @@
 import { useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
-import {
-  PaginationResult,
-  Q,
-  VideoTable,
-  toPaginationResult,
-} from "../db/models";
 import { R } from "../misc/routes";
 import { Controller, makeLoader } from "../utils/controller-utils";
 import { useDeserialize } from "../utils/hooks";
 import type { PageHandle } from "../utils/page-handle";
 import { PAGINATION_PARAMS_SCHEMA } from "../utils/pagination";
-import { VideoListComponent } from "./videos";
+import {
+  VideoListComponent,
+  VideosLoaderData,
+  getVideosLoaderData,
+} from "./videos";
 
 export const handle: PageHandle = {
   navBarTitle: () => "Examples",
 };
-
-interface LoaderData {
-  pagination: PaginationResult<VideoTable>;
-}
 
 export const loader = makeLoader(Controller, async function () {
   const parsed = PAGINATION_PARAMS_SCHEMA.safeParse(this.query());
@@ -28,15 +22,11 @@ export const loader = makeLoader(Controller, async function () {
     return redirect(R["/"]);
   }
 
-  const pagination = await toPaginationResult(
-    Q.videos().where("userId", null).orderBy("updatedAt", "desc"),
-    parsed.data
-  );
-  const data: LoaderData = { pagination };
+  const data: VideosLoaderData = await getVideosLoaderData(parsed.data);
   return this.serialize(data);
 });
 
 export default function DefaultComponent() {
-  const data: LoaderData = useDeserialize(useLoaderData());
-  return <VideoListComponent pagination={data.pagination} />;
+  const data: VideosLoaderData = useDeserialize(useLoaderData());
+  return <VideoListComponent {...data} />;
 }

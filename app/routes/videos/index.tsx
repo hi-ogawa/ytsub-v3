@@ -10,13 +10,12 @@ import {
   transitionProps,
 } from "../../components/misc";
 import { useModal } from "../../components/modal";
-import {
+import { E, T, db, toPaginationResult } from "../../db/drizzle-client.server";
+import type {
   DeckTable,
-  PaginationResult,
-  Q,
+  PaginationMetadata,
   UserTable,
   VideoTable,
-  toPaginationResult,
 } from "../../db/models";
 import { R } from "../../misc/routes";
 import {
@@ -27,7 +26,10 @@ import {
 import { useDeserialize } from "../../utils/hooks";
 import { useRootLoaderData } from "../../utils/loader-utils";
 import type { PageHandle } from "../../utils/page-handle";
-import { PAGINATION_PARAMS_SCHEMA } from "../../utils/pagination";
+import {
+  PAGINATION_PARAMS_SCHEMA,
+  PaginationParams,
+} from "../../utils/pagination";
 import { toForm } from "../../utils/url-data";
 import type { DecksLoaderData } from "../decks";
 import type {
@@ -47,8 +49,24 @@ export const handle: PageHandle = {
 //   - by "lastWatchedAt"
 // - better layout for desktop
 
-interface LoaderData {
-  pagination: PaginationResult<VideoTable>;
+export interface VideosLoaderData {
+  videos: VideoTable[];
+  pagination: PaginationMetadata;
+}
+
+export async function getVideosLoaderData(
+  paginationParams: PaginationParams,
+  userId?: number
+): Promise<VideosLoaderData> {
+  const [videos, pagination] = await toPaginationResult(
+    db
+      .select()
+      .from(T.videos)
+      .where(userId ? E.eq(T.videos.userId, userId) : E.isNull(T.videos.userId))
+      .orderBy(E.desc(T.videos.updatedAt)),
+    paginationParams
+  );
+  return { videos, pagination };
 }
 
 export const loader = makeLoader(Controller, async function () {
@@ -67,28 +85,28 @@ export const loader = makeLoader(Controller, async function () {
     return redirect(R["/bookmarks"]);
   }
 
-  const pagination = await toPaginationResult(
-    Q.videos()
-      .where("videos.userId", user.id)
-      .orderBy("videos.updatedAt", "desc"),
+  const data: VideosLoaderData = await getVideosLoaderData(
     parsed.data,
-    { clearJoin: true }
+    user.id
   );
-
-  const data: LoaderData = { pagination };
   return this.serialize(data);
 });
 
+//
+// component
+//
+
 export default function DefaultComponent() {
   const { currentUser } = useRootLoaderData();
-  const data: LoaderData = useDeserialize(useLoaderData());
+  const data: VideosLoaderData = useDeserialize(useLoaderData());
   return <VideoListComponent {...data} currentUser={currentUser} />;
 }
 
 export function VideoListComponent({
+  videos,
   pagination,
   currentUser,
-}: LoaderData & {
+}: VideosLoaderData & {
   currentUser?: UserTable;
 }) {
   // cannot run this effect in `VideoComponentExtra` because the component is already gone when action returns response
@@ -117,8 +135,8 @@ export function VideoListComponent({
         <div className="h-full w-full max-w-lg">
           <div className="h-full flex flex-col p-2 gap-2">
             {/* TODO: CTA when empty */}
-            {pagination.data.length === 0 && <div>Empty</div>}
-            {pagination.data.map((video) => (
+            {videos.length === 0 && <div>Empty</div>}
+            {videos.map((video) => (
               <VideoComponentExtra
                 key={video.id}
                 video={video}

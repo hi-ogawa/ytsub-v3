@@ -1,3 +1,4 @@
+import { sql } from "drizzle-orm";
 import { client } from "../db/client.server";
 import { E, T, db } from "../db/drizzle-client.server";
 import { Q } from "../db/models";
@@ -20,6 +21,7 @@ async function main() {
     T,
     E,
     db,
+    sql,
   });
 }
 

@@ -3,8 +3,8 @@ import { truncateAll } from "../db/models";
 import { testSetupCommon } from "./test-setup-common";
 
 export default async () => {
-  await truncateAll();
   await testSetupCommon();
+  await truncateAll();
 
   // returns teardown callback
   return async () => {
