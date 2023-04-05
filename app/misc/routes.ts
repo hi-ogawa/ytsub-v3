@@ -19,6 +19,7 @@ export const R = {
   "/users/signout": "/users/signout",
   "/decks": "/decks",
   "/decks?index": "/decks?index",
+  "/decks/index-detail": "/decks/index-detail",
   "/decks/new": "/decks/new",
   "/decks/import": "/decks/import",
   "/decks/$id": (id: number) => `/decks/${id}`,
