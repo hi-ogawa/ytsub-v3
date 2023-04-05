@@ -161,7 +161,6 @@ function VideoComponentExtra({
   const fetcher = useFetcher();
   const modal = useModal();
   const addToDeckDisabled = !video.bookmarkEntriesCount;
-  video.bookmarkEntriesCount;
 
   const videoComponent = (
     <VideoComponent
@@ -253,6 +252,7 @@ function AddToDeckComponent({
       const data: NewPracticeEntryResponse = fetcher.data;
       if (data.ok) {
         toast.success(`Added ${data.value.ids.length} to a deck`);
+        decksQuery.refetch();
         onSuccess();
       } else {
         toast.error("Failed to add to a deck");
