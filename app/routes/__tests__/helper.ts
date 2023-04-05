@@ -79,8 +79,6 @@ export function useUser(...args: Parameters<typeof useUserImpl>) {
   }
 
   return {
-    /** @deprecated use `data` */
-    user: () => user,
     signin,
     isReady: isReady.promise,
     get data() {

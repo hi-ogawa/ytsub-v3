@@ -5,24 +5,23 @@ import { loader } from "../decks/$id/history-graph";
 import { testLoader, useUser } from "./helper";
 
 describe("decks/id/history-graph.loader", () => {
-  const { user, signin } = useUser({
+  const user = useUser({
     seed: __filename,
   });
 
   it("basic", async () => {
-    const userId = user().id;
     const [deckId] = await Q.decks().insert({
       name: "test-" + sha256(__filename),
       newEntriesPerDay: 20,
       reviewsPerDay: 200,
       easeMultiplier: 1.5,
       easeBonus: 2,
-      userId,
+      userId: user.data.id,
     });
     const res = await testLoader(loader, {
       params: { id: String(deckId) },
       query: { now: new Date("2022-05-13T07:00:00+09:00"), page: 1 },
-      transform: signin,
+      transform: user.signin,
     });
     const resJson = await res.json();
     expect(resJson?.json?.data).toMatchInlineSnapshot(`

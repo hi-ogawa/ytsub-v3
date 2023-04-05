@@ -40,8 +40,6 @@ export function useUserE2E(
   }
 
   return {
-    /** @deprecated use `data` */
-    user: () => user,
     signin,
     isReady: isReady.promise,
     get data() {

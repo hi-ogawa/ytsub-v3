@@ -57,17 +57,17 @@ test.describe(() => {
 });
 
 test.describe("/users/me", () => {
-  const { user, signin } = useUserE2E(test, {
+  const user = useUserE2E(test, {
     seed: __filename + "/users/me",
   });
 
   test("with-session", async ({ page }) => {
-    await signin(page);
+    await user.signin(page);
     await page.goto("/users/me");
 
     // check user data is loaded
     await expect(page.locator("data-test=me-username")).toHaveValue(
-      user().username
+      user.data.username
     );
 
     // update settings
