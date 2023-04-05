@@ -39,6 +39,7 @@
   "dependencies": {
     "@badrap/bar-of-progress": "^0.2.2",
     "@floating-ui/react": "^0.21.1",
+    "@formatjs/intl": "^2.6.9",
     "@headlessui/react": "^1.7.13",
     "@hiogawa/utils": "1.4.2-pre.3",
     "@hiogawa/utils-react": "^1.2.0",

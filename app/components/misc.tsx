@@ -199,3 +199,19 @@ export function QueryClientWrapper({ children }: React.PropsWithChildren) {
     </QueryClientProvider>
   );
 }
+
+// we use good-old `useEffect` based ClientOnly wrapper since React.Suspence based one leads to noisy error logs https://react.dev/reference/react/Suspense#providing-a-fallback-for-server-errors-and-server-only-content
+export function ClientOnly(props: React.PropsWithChildren) {
+  const clientOnly = useClientOnly();
+  return <>{clientOnly ? props.children : null}</>;
+}
+
+let _clientOnly = false;
+
+export function useClientOnly() {
+  const [state, setState] = React.useState(_clientOnly);
+  React.useEffect(() => {
+    setState((_clientOnly = true));
+  }, []);
+  return state;
+}

@@ -9,6 +9,7 @@ import { sql } from "drizzle-orm";
 import React from "react";
 import toast from "react-hot-toast";
 import { z } from "zod";
+import { ClientOnly } from "../../components/misc";
 import { PopoverSimple } from "../../components/popover";
 import { T, db } from "../../db/drizzle-client.server";
 import type { UserTable } from "../../db/models";
@@ -113,12 +114,14 @@ export default function DefaultComponent() {
             </label>
             <label className="flex flex-col gap-1">
               Created At
-              <input
-                className="antd-input p-1"
-                disabled
-                readOnly
-                value={dtf.format(currentUser.createdAt)}
-              />
+              <ClientOnly>
+                <input
+                  className="antd-input p-1"
+                  disabled
+                  readOnly
+                  value={dtf.format(currentUser.createdAt)}
+                />
+              </ClientOnly>
             </label>
             <label className="flex flex-col gap-1">
               1st language

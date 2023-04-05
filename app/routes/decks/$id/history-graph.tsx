@@ -15,7 +15,7 @@ import { client } from "../../../db/client.server";
 import { DeckTable, PracticeQueueType, Q } from "../../../db/models";
 import { R } from "../../../misc/routes";
 import { Controller, makeLoader } from "../../../utils/controller-utils";
-import { useDeserialize, useHydrated } from "../../../utils/hooks";
+import { useDeserialize } from "../../../utils/hooks";
 import { useLeafLoaderData } from "../../../utils/loader-utils";
 import { cls } from "../../../utils/misc";
 import type { PageHandle } from "../../../utils/page-handle";
@@ -118,8 +118,7 @@ export default function DefaultComponent() {
   // TODO: no need to fetch on server. use defer.
   const { data, page }: LoaderData = useDeserialize(useLeafLoaderData());
 
-  // show loading between SSR and echarts "rendered" event
-  const [isLoading, setIsLoading] = React.useState(!useHydrated());
+  const [isLoading, setIsLoading] = React.useState(true);
 
   const [instance, setInstance] = React.useState<ECharts>();
 
