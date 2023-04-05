@@ -258,7 +258,7 @@ function AddToDeckComponent({
   }, [fetcher.data]);
 
   function onClickPlus(deck: DeckTable) {
-    if (!window.confirm("Are you sure?")) {
+    if (!window.confirm(`Please confirm to add bookmarks to '${deck.name}'.`)) {
       toast.error("Cancelled to add to a deck");
       return;
     }
