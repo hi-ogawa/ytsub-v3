@@ -2,7 +2,7 @@ import { z } from "zod";
 import type { CaptionEntry, VideoMetadata } from "../utils/types";
 import type { NewVideo } from "../utils/youtube";
 import { client } from "./client.server";
-import { E, T, TT, db, findOne, toDeleteQuery } from "./drizzle-client.server";
+import { E, T, TT, db, findOne } from "./drizzle-client.server";
 
 // TODO: organize code (move everything to drizzle-client?)
 
@@ -46,20 +46,6 @@ export async function truncateAll(): Promise<void> {
 
 // no "FOREIGN KEY" constraint https://docs.planetscale.com/learn/operating-without-foreign-key-constraints#cleaning-up-orphaned-rows
 export async function deleteOrphans(): Promise<void> {
-  "todo" ||
-    (await toDeleteQuery(
-      db
-        .select()
-        .from(T.videos)
-        .leftJoin(T.users, E.eq(T.users.id, T.videos.userId))
-        .where(
-          E.and(
-            // @ts-expect-error nullable sincee leftJoin
-            E.isNull(T.users.id),
-            E.isNotNull(T.videos.userId) // not delete "anonymouse" videos
-          )
-        )
-    ));
   await Q.videos()
     .delete()
     .leftJoin("users", "users.id", "videos.userId")
