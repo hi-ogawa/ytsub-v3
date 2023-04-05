@@ -27,8 +27,6 @@ export const Z_VIDEO_METADATA = z.object({
 
 export type VideoMetadata = z.infer<typeof Z_VIDEO_METADATA>;
 
-export type VideoDetails = VideoMetadata["videoDetails"];
-
 export interface CaptionConfig {
   id: string;
   translation?: string;

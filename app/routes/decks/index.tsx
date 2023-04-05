@@ -16,7 +16,7 @@ export const handle: PageHandle = {
 //
 
 // TODO: more data (e.g. deck statistics, etc...)
-export interface DecksLoaderData {
+interface DecksLoaderData {
   decks: DeckTable[];
 }
 

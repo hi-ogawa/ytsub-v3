@@ -1,17 +1,7 @@
 import { newPromiseWithResolvers } from "@hiogawa/utils";
 import { UseQueryOptions, useQuery } from "@tanstack/react-query";
 
-// E.g.
-//  fetch("...").then(getCall("json"))
-//  fetch("...").then(getCall("text"))
-export function getCall<M extends string>(m: M) {
-  return function <F extends () => any, T extends Record<M, F>>(
-    t: T
-  ): ReturnType<F> {
-    return t[m]();
-  };
-}
-
+// TODO: js-utils
 export function fromEntries<K extends string, V>(
   entries: [K, V][]
 ): Record<K, V> {

@@ -29,7 +29,7 @@ export async function fetchVideoMetadata(videoId: string) {
 }
 
 // cf. https://gist.github.com/hi-ogawa/23f6d0b212f51c2b1b255339c642e9b9
-export async function fetchVideoMetadataRaw(videoId: string): Promise<any> {
+async function fetchVideoMetadataRaw(videoId: string): Promise<any> {
   // prettier-ignore
   const res = await fetch("https://www.youtube.com/youtubei/v1/player", {
     method: "POST",
@@ -115,7 +115,7 @@ export function toCaptionConfigOptions(
   return { captions, translationGroups };
 }
 
-export function captionConfigToUrl(
+function captionConfigToUrl(
   captionConfig: CaptionConfig,
   videoMetadata: VideoMetadata
 ): string | undefined {
@@ -253,7 +253,7 @@ function computeIntersection(e1: TtmlEntry, e2: TtmlEntry): number {
   return Math.max(right - left, 0);
 }
 
-export function parseTimestamp(text: string): number {
+function parseTimestamp(text: string): number {
   const [h, m, s] = text.split(":").map(Number);
   return (h * 60 + m) * 60 + s;
 }
@@ -328,7 +328,7 @@ export type YoutubePlayerOptions = {
   };
 };
 
-export type YoutubeIframeApi = {
+type YoutubeIframeApi = {
   ready: (callback: () => void) => void;
   Player: new (...args: any[]) => YoutubePlayer;
 };
@@ -357,7 +357,7 @@ const loadYoutubeIframeApi = once(async () => {
   await promise;
 });
 
-export async function loadYoutubePlayer(
+async function loadYoutubePlayer(
   el: HTMLElement,
   options: YoutubePlayerOptions
 ): Promise<YoutubePlayer> {

@@ -14,7 +14,7 @@ import { cls } from "../utils/misc";
 
 // based on https://github.com/hi-ogawa/unocss-preset-antd/blob/02adfc9dfcb7cebbc31cd4651395e1ecc67d813e/packages/app/src/components/modal.tsx
 
-export function Modal(props: {
+function Modal(props: {
   open: boolean;
   onClose: () => void;
   children: React.ReactNode;

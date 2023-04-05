@@ -12,9 +12,7 @@ export function CollapseTransition(
   return <Transition {...props} {...collpaseProps} />;
 }
 
-export function useCollapseProps(): Partial<
-  React.ComponentProps<typeof Transition>
-> {
+function useCollapseProps(): Partial<React.ComponentProps<typeof Transition>> {
   const refEl = React.useRef<HTMLDivElement>();
 
   const refCallback: React.RefCallback<HTMLDivElement> = (el) => {

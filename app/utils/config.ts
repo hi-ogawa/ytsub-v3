@@ -9,7 +9,7 @@ import { throwGetterProxy } from "./misc";
 //
 
 // prettier-ignore
-export const Z_SERVER_CONFIG = z.object({
+const Z_SERVER_CONFIG = z.object({
   APP_MYSQL_HOST: z.string().default("localhost"),
   APP_MYSQL_PORT: z.coerce.number().default(3306),
   APP_MYSQL_USER: z.string().default("root"),
@@ -23,7 +23,7 @@ export const Z_SERVER_CONFIG = z.object({
 });
 
 // prettier-ignore
-export const Z_PUBLIC_CONFIG = z.object({
+const Z_PUBLIC_CONFIG = z.object({
   APP_RECAPTCHA_CLIENT_KEY: z.string().default("6Lc79AcgAAAAAOdPnmAZfQqhVwL7mJngRndTyG19"),
   APP_RECAPTCHA_DISABLED: z.coerce.boolean(),
   VERCEL_ENV: z.string().optional(),

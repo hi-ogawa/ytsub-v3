@@ -824,7 +824,7 @@ const autoScrollStorageAtom = atomWithStorage(
   Array<number>()
 );
 
-export function useAutoScrollState() {
+function useAutoScrollState() {
   const [state, setState] = useAtom(autoScrollStorageAtom);
   return [state, toArraySetState(setState).toggle] as const;
 }

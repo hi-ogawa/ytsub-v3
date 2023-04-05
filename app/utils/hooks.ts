@@ -24,10 +24,7 @@ export function useHydrated() {
   return hydrated;
 }
 
-export function useMemoWrap<F extends (_: D) => any, D>(
-  f: F,
-  data: D
-): ReturnType<F> {
+function useMemoWrap<F extends (_: D) => any, D>(f: F, data: D): ReturnType<F> {
   return React.useMemo(() => f(data), [data]);
 }
 

@@ -116,15 +116,12 @@ const LANGUAGE_CODE_TO_NAME_ADHOC = {
   "fr-FR": "French (France)",
 } as const;
 
-export const LANGUAGE_CODE_TO_NAME = {
+const LANGUAGE_CODE_TO_NAME = {
   ...LANGUAGE_CODE_TO_NAME_YOUTUBE,
   ...LANGUAGE_CODE_TO_NAME_ADHOC,
 };
 
 export type LanguageCode = keyof typeof LANGUAGE_CODE_TO_NAME;
-export const LANGUAGE_CODES = Object.keys(
-  LANGUAGE_CODE_TO_NAME
-) as LanguageCode[];
 
 export function languageCodeToName(code: string, kind?: string): string {
   return (
