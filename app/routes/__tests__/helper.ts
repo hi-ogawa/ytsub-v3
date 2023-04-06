@@ -22,6 +22,7 @@ export function testLoader(
     method,
     query,
     form,
+    json,
     params = {},
     transform,
   }: {
@@ -29,6 +30,7 @@ export function testLoader(
     query?: any;
     form?: any;
     params?: Record<string, string>;
+    json?: unknown;
     transform?: (request: Request) => Request;
   } = {}
 ) {
@@ -37,6 +39,12 @@ export function testLoader(
     url += "/?" + toQuery(query);
   }
   let request = new Request(url, { method: method ?? "GET" });
+  if (json) {
+    request = new Request(url, {
+      method: method ?? "POST",
+      body: JSON.stringify(json),
+    });
+  }
   if (form) {
     request = new Request(url, {
       method: method ?? "POST",
@@ -106,6 +114,7 @@ const NEW_VIDEOS: NewVideo[] = [
   },
 ];
 
+// TODO: simplify like useUser
 export function useVideo(type: 0 | 1 | 2 = 2, userId?: () => number) {
   const newVideo = NEW_VIDEOS[type];
   let result: { video: VideoTable; captionEntries: CaptionEntryTable[] };

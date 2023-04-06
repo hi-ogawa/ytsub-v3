@@ -37,7 +37,7 @@ export const action = makeLoader(Controller, async function () {
         )
       )
   );
-  tinyassert(found);
+  tinyassert(found, "not found");
 
   // insert with counter cache increment
   await db.insert(T.bookmarkEntries).values({

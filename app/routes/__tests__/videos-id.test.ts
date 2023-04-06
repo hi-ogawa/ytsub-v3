@@ -64,21 +64,16 @@ describe("videos/id.action", () => {
       id: video().id,
       userId: user().id,
     };
-    expect(Q.videos().where(where).first()).resolves.toBeDefined();
+    expect((await Q.videos().where(where)).length).toMatchInlineSnapshot("1");
 
     const res = await testLoader(action, {
       method: "DELETE",
       params: { id: String(video().id) },
       transform: signin,
     });
-    const resJson = await res.json();
-    expect(resJson).toMatchInlineSnapshot(`
-      {
-        "success": true,
-        "type": "DELETE /videos/\$id",
-      }
-    `);
+    tinyassert(res instanceof Response);
+    tinyassert(res.ok);
 
-    expect(Q.videos().where(where).first()).resolves.toBe(undefined);
+    expect((await Q.videos().where(where)).length).toMatchInlineSnapshot("0");
   });
 });
