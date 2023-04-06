@@ -1,9 +1,8 @@
 import { Transition } from "@headlessui/react";
 import { mapOption } from "@hiogawa/utils";
-import { useFetcher, useFetchers, useLoaderData } from "@remix-run/react";
+import { useLoaderData, useNavigate } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import React from "react";
 import toast from "react-hot-toast";
 import {
   PaginationComponent,
@@ -29,6 +28,7 @@ import {
 } from "../../utils/pagination";
 import { createNewPracticeEntryMutation } from "../decks/$id/new-practice-entry";
 import { createDecksIndexDetailQuery } from "../decks/index-detail";
+import { createDeleteVideoMutation } from "./$id";
 
 export const handle: PageHandle = {
   navBarTitle: () => "Your Videos",
@@ -102,26 +102,6 @@ export function VideoListComponent({
 }: VideosLoaderData & {
   currentUser?: UserTable;
 }) {
-  // cannot run this effect in `VideoComponentExtra` because the component is already gone when action returns response
-  const fetchers = useFetchers();
-
-  React.useEffect(() => {
-    for (const fetcher of fetchers) {
-      if (
-        fetcher.type === "done" &&
-        // extra runtime check for remix (typing) issue? https://github.com/hi-ogawa/ytsub-v3/issues/179
-        fetcher.data &&
-        fetcher.data.type === "DELETE /videos/$id"
-      ) {
-        if (fetcher.data.success) {
-          toast.success("Deletion success");
-        } else {
-          toast.error("Deleted failed");
-        }
-      }
-    }
-  }, [fetchers]);
-
   return (
     <>
       <div className="w-full flex justify-center">
@@ -154,7 +134,17 @@ function VideoComponentExtra({
   video: VideoTable;
   currentUser?: UserTable;
 }) {
-  const fetcher = useFetcher();
+  const navigate = useNavigate();
+  const deleteVideoMutation = useMutation({
+    ...createDeleteVideoMutation(),
+    onSuccess: () => {
+      toast.success("Successfully deleted a video");
+      navigate(R["/videos"]); // refetch
+    },
+    onError: () => {
+      toast.error("Failed to delete a video");
+    },
+  });
   const modal = useModal();
   const addToDeckDisabled = !video.bookmarkEntriesCount;
 
@@ -163,7 +153,7 @@ function VideoComponentExtra({
       key={video.id}
       video={video}
       bookmarkEntriesCount={video.bookmarkEntriesCount}
-      isLoading={fetcher.state !== "idle"}
+      isLoading={deleteVideoMutation.isLoading}
       actions={
         currentUser &&
         currentUser.id === video.userId && (
@@ -184,24 +174,19 @@ function VideoComponentExtra({
               </button>
             </li>
             <li>
-              <fetcher.Form
-                method="delete"
-                action={R["/videos/$id"](video.id)}
+              <button
+                className="w-full antd-menu-item p-2 flex items-center gap-2"
                 data-test="video-delete-form"
-                onSubmitCapture={(e) => {
+                onClick={() => {
                   if (!window.confirm("Are you sure?")) {
-                    e.preventDefault();
+                    return;
                   }
+                  deleteVideoMutation.mutate({ videoId: video.id });
                 }}
               >
-                <button
-                  type="submit"
-                  className="w-full antd-menu-item p-2 flex items-center gap-2"
-                >
-                  <span className="i-ri-delete-bin-line w-5 h-5"></span>
-                  Delete
-                </button>
-              </fetcher.Form>
+                <span className="i-ri-delete-bin-line w-5 h-5"></span>
+                Delete
+              </button>
             </li>
           </>
         )

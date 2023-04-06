@@ -87,30 +87,34 @@ export const loader = makeLoader(Controller, async function () {
 
 export const action = makeLoader(Controller, async function () {
   if (this.request.method === "DELETE") {
-    const parsed = Z_PARAMS.safeParse(this.args.params);
-    if (parsed.success) {
-      const { id } = parsed.data;
-      const user = await this.currentUser();
-      if (user) {
-        const video = await Q.videos().where({ id, userId: user.id }).first();
-        if (video) {
-          await Promise.all([
-            Q.videos().delete().where({ id, userId: user.id }),
-            Q.captionEntries().delete().where("videoId", id),
-            Q.bookmarkEntries().delete().where("videoId", id),
-          ]);
-          // return `type` so that `useFetchers` can identify where the response is from
-          return { type: "DELETE /videos/$id", success: true };
-        }
-      }
-    }
+    const { id } = Z_PARAMS.parse(this.args.params);
+    const user = await this.currentUser();
+    tinyassert(user);
+    const video = await Q.videos().where({ id, userId: user.id }).first();
+    tinyassert(video);
+    await Promise.all([
+      Q.videos().delete().where({ id, userId: user.id }),
+      Q.captionEntries().delete().where("videoId", id),
+      Q.bookmarkEntries().delete().where("videoId", id),
+    ]);
+    return;
   }
-  return {
-    type: "DELETE /videos/$id",
-    success: false,
-    message: "invalid request",
-  };
+  tinyassert(false);
 });
+
+// client query
+export function createDeleteVideoMutation() {
+  const url = R["/videos/$id"];
+  return {
+    mutationKey: [String(url)],
+    mutationFn: async (req: { videoId: number }) => {
+      const res = await fetch(url(req.videoId), {
+        method: "DELETE",
+      });
+      tinyassert(res.ok);
+    },
+  };
+}
 
 //
 // component
