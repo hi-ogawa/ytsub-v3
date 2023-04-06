@@ -36,6 +36,7 @@ export const action = makeLoader(Controller, async function () {
 
   const system = new PracticeSystem(user, deck);
   await system.createPracticeAction(practiceEntry, actionType, new Date());
+  return null;
 });
 
 // client query

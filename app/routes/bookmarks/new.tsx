@@ -47,6 +47,7 @@ export const action = makeLoader(Controller, async function () {
   await db
     .update(T.videos)
     .set({ bookmarkEntriesCount: found.videos.bookmarkEntriesCount + 1 });
+  return null;
 });
 
 // client query
