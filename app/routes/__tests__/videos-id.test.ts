@@ -73,8 +73,8 @@ describe("videos/id.action", () => {
     await expect(getVideos()).resolves.toHaveLength(1);
 
     const res = await testLoader(action, {
-      method: "DELETE",
       params: { id: String(hook.video.id) },
+      json: { destroy: true },
       transform: hook.signin,
     });
     tinyassert(res instanceof Response);
