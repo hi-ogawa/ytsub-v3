@@ -46,7 +46,8 @@ export const action = makeLoader(Controller, async function () {
   });
   await db
     .update(T.videos)
-    .set({ bookmarkEntriesCount: found.videos.bookmarkEntriesCount + 1 });
+    .set({ bookmarkEntriesCount: found.videos.bookmarkEntriesCount + 1 })
+    .where(E.eq(T.videos.id, req.videoId));
   return null;
 });
 
