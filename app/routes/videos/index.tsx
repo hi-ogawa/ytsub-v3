@@ -2,7 +2,7 @@ import { Transition } from "@headlessui/react";
 import { mapOption } from "@hiogawa/utils";
 import { useFetcher, useFetchers, useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import React from "react";
 import toast from "react-hot-toast";
 import {
@@ -27,11 +27,7 @@ import {
   PAGINATION_PARAMS_SCHEMA,
   PaginationParams,
 } from "../../utils/pagination";
-import { toForm } from "../../utils/url-data";
-import type {
-  NewPracticeEntryRequest,
-  NewPracticeEntryResponse,
-} from "../decks/$id/new-practice-entry";
+import { createNewPracticeEntryMutation } from "../decks/$id/new-practice-entry";
 import { createDecksIndexDetailQuery } from "../decks/index-detail";
 
 export const handle: PageHandle = {
@@ -240,40 +236,27 @@ function AddToDeckComponent({
   const decksQuery = useQuery(createDecksIndexDetailQuery({ videoId }));
 
   // create new practice entries
-  const fetcher = useFetcher();
-
-  React.useEffect(() => {
-    // It doesn't have to wait until "done" since action response is ready on "actionReload"
-    // (actionSubmission => actionReload => done)
-    if (fetcher.data) {
-      const data: NewPracticeEntryResponse = fetcher.data;
-      if (data.ok) {
-        toast.success(`Added ${data.value.ids.length} to a deck`);
-        decksQuery.refetch();
-        onSuccess();
-      } else {
-        toast.error("Failed to add to a deck");
-      }
-    }
-  }, [fetcher.data]);
+  const newPracticeEntryMutation = useMutation({
+    ...createNewPracticeEntryMutation(),
+    onSuccess: (data) => {
+      toast.success(`Added ${data.practiceEntryIds.length} to a deck`);
+      decksQuery.refetch();
+      onSuccess();
+    },
+    onError: () => {
+      toast.error("Failed to add to a deck");
+    },
+  });
 
   function onClickPlus(deck: DeckTable) {
     if (!window.confirm(`Please confirm to add bookmarks to '${deck.name}'.`)) {
       toast.error("Cancelled to add to a deck");
       return;
     }
-
-    const data: NewPracticeEntryRequest = {
-      videoId,
-      now: new Date(),
-    };
-    fetcher.submit(toForm(data), {
-      action: R["/decks/$id/new-practice-entry"](deck.id),
-      method: "post",
-    });
+    newPracticeEntryMutation.mutate({ videoId, deckId: deck.id });
   }
 
-  const isLoading = decksQuery.isLoading || fetcher.state !== "idle";
+  const isLoading = decksQuery.isLoading || newPracticeEntryMutation.isLoading;
 
   return (
     <div

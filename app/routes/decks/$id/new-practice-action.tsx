@@ -40,10 +40,11 @@ export const action = makeLoader(Controller, async function () {
 
 // client query
 export function createNewPracticeActionMutation() {
+  const url = R["/decks/$id/new-practice-action"];
   return {
-    mutationKey: ["/decks/$id/new-practice-action"],
+    mutationKey: [String(url)],
     mutationFn: async (req: NewPracticeActionRequest & { deckId: number }) => {
-      const res = await fetch(R["/decks/$id/new-practice-action"](req.deckId), {
+      const res = await fetch(url(req.deckId), {
         method: "POST",
         body: JSON.stringify(req),
       });

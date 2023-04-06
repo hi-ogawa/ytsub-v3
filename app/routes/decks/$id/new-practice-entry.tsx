@@ -1,9 +1,8 @@
 import { requireUserAndDeck } from ".";
-import { Err, Ok, Result } from "@hiogawa/utils";
 import { tinyassert } from "@hiogawa/utils";
-import { isNil } from "@hiogawa/utils";
 import { z } from "zod";
 import { Q } from "../../../db/models";
+import { R } from "../../../misc/routes";
 import { Controller, makeLoader } from "../../../utils/controller-utils";
 import { PracticeSystem } from "../../../utils/practice-system";
 
@@ -11,36 +10,23 @@ import { PracticeSystem } from "../../../utils/practice-system";
 // action
 //
 
-// TODO: support `bookmarkEntryId`
-const ACTION_REQUEST_SCHEMA = z
-  .object({
-    videoId: z.coerce.number().int().optional(),
-    bookmarkEntryId: z.coerce.number().int().optional(),
-    now: z.coerce.date(),
-  })
-  .refine(
-    (data) =>
-      [data.videoId, data.bookmarkEntryId].filter((x) => !isNil(x)).length === 1
-  );
+const Z_NEW_PRACTICE_ENTRY_REQUEST = z.object({
+  videoId: z.number().int(),
+});
 
-export type NewPracticeEntryRequest = z.infer<typeof ACTION_REQUEST_SCHEMA>;
+type NewPracticeEntryRequest = z.infer<typeof Z_NEW_PRACTICE_ENTRY_REQUEST>;
 
-export type NewPracticeEntryResponse = Result<
-  { ids: number[] },
-  { message: string }
->;
+type NewPracticeEntryResponse = {
+  practiceEntryIds: number[];
+};
 
 export const action = makeLoader(Controller, actionImpl);
 
 async function actionImpl(this: Controller): Promise<NewPracticeEntryResponse> {
   const [user, deck] = await requireUserAndDeck.apply(this);
-  const parsed = ACTION_REQUEST_SCHEMA.safeParse(await this.form());
-  if (!parsed.success) {
-    return Err({ message: "Invalid request" });
-  }
-
-  const { videoId, now } = parsed.data;
-  tinyassert(videoId);
+  const { videoId } = Z_NEW_PRACTICE_ENTRY_REQUEST.parse(
+    await this.request.json()
+  );
 
   const bookmarkEntries = await Q.bookmarkEntries()
     .select("bookmarkEntries.*")
@@ -62,6 +48,26 @@ async function actionImpl(this: Controller): Promise<NewPracticeEntryResponse> {
     ]);
 
   const system = new PracticeSystem(user, deck);
-  const ids = await system.createPracticeEntries(bookmarkEntries, now);
-  return Ok({ ids });
+  const practiceEntryIds = await system.createPracticeEntries(
+    bookmarkEntries,
+    new Date()
+  );
+  return { practiceEntryIds };
+}
+
+// client query
+export function createNewPracticeEntryMutation() {
+  const url = R["/decks/$id/new-practice-entry"];
+  return {
+    mutationKey: [String(url)],
+    mutationFn: async (req: NewPracticeEntryRequest & { deckId: number }) => {
+      const res = await fetch(url(req.deckId), {
+        method: "POST",
+        body: JSON.stringify(req),
+      });
+      tinyassert(res.ok);
+      const resJson = await res.json();
+      return resJson as NewPracticeEntryResponse;
+    },
+  };
 }
