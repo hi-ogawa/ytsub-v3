@@ -5,19 +5,22 @@ import { action } from "../bookmarks/new";
 import { testLoader, useUserVideo } from "./helper";
 
 describe("bookmarks/new.action", () => {
-  const { signin, video, captionEntries } = useUserVideo(2, {
+  const hook = useUserVideo({
     seed: __filename,
   });
 
   it("basic", async () => {
     const data = {
-      videoId: video().id,
-      captionEntryId: captionEntries()[0].id,
+      videoId: hook.video.id,
+      captionEntryId: hook.captionEntries[0].id,
       text: "Bonjour à tous",
       side: 0,
       offset: 8,
     };
-    const res = await testLoader(action, { json: data, transform: signin });
+    const res = await testLoader(action, {
+      json: data,
+      transform: hook.signin,
+    });
     tinyassert(res instanceof Response);
     tinyassert(res.ok);
 
@@ -25,7 +28,7 @@ describe("bookmarks/new.action", () => {
       .select()
       .from(T.bookmarkEntries)
       .innerJoin(T.videos, E.eq(T.videos.id, T.bookmarkEntries.videoId))
-      .where(E.eq(T.videos.id, video().id));
+      .where(E.eq(T.videos.id, hook.video.id));
     expect(
       rows.map((row) =>
         objectPick(row.bookmarkEntries, ["text", "side", "offset"])
@@ -44,13 +47,15 @@ describe("bookmarks/new.action", () => {
   it("error", async () => {
     const data = {
       videoId: -1, // video not found
-      captionEntryId: captionEntries()[0].id,
+      captionEntryId: hook.captionEntries[0].id,
       text: "Bonjour à tous",
       side: 0,
       offset: 8,
     };
     expect(
-      await wrapPromise(testLoader(action, { json: data, transform: signin }))
+      await wrapPromise(
+        testLoader(action, { json: data, transform: hook.signin })
+      )
     ).toMatchInlineSnapshot(`
       {
         "ok": false,
