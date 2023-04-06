@@ -63,6 +63,7 @@ export const action = makeLoader(Controller, async function () {
   return this.serialize(loaderData);
 });
 
+// client query
 export function createDecksIndexDetailQuery(req: DecksIndexDetailRequest) {
   const url = R["/decks/index-detail"];
   return {
