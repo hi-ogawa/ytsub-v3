@@ -6,10 +6,10 @@ import {
   Form,
   Link,
   ShouldReloadFunction,
-  useFetcher,
   useLoaderData,
 } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
+import { useMutation } from "@tanstack/react-query";
 import {
   VirtualItem,
   Virtualizer,
@@ -38,14 +38,13 @@ import { useLeafLoaderData, useRootLoaderData } from "../../utils/loader-utils";
 import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 import type { CaptionEntry } from "../../utils/types";
-import { toForm } from "../../utils/url-data";
 import {
   YoutubePlayer,
   YoutubePlayerOptions,
   stringifyTimestamp,
   usePlayerLoader,
 } from "../../utils/youtube";
-import type { NewBookmark } from "../bookmarks/new";
+import { createNewBookmarkMutation } from "../bookmarks/new";
 
 export const handle: PageHandle = {
   navBarTitle: () => "Watch",
@@ -171,7 +170,7 @@ const BOOKMARKABLE_CLASSNAME = "--bookmarkable--";
 interface BookmarkState {
   captionEntry: CaptionEntryTable;
   text: string;
-  side: number; // 0 | 1
+  side: 0 | 1; // 0 | 1
   offset: number;
 }
 
@@ -181,7 +180,6 @@ function PageComponent({
   currentUser,
   params,
 }: LoaderData & { currentUser?: UserTable }) {
-  const fetcher = useFetcher();
   const [autoScrollState] = useAutoScrollState();
   const autoScroll = autoScrollState.includes(video.id);
   const [repeatingEntries, setRepeatingEntries, toggleRepeatingEntries] =
@@ -196,6 +194,22 @@ function PageComponent({
   const [isPlaying, setIsPlaying] = React.useState(false);
   const [currentEntry, setCurrentEntry] = React.useState<CaptionEntry>();
   const [bookmarkState, setBookmarkState] = React.useState<BookmarkState>();
+
+  //
+  // query
+  //
+  const newBookmarkMutation = useMutation({
+    ...createNewBookmarkMutation(),
+    onSuccess: () => {
+      toast.success("Bookmark success");
+    },
+    onError: () => {
+      toast.success("Bookmark failed");
+    },
+    onSettled: () => {
+      setBookmarkState(undefined);
+    },
+  });
 
   //
   // handlers
@@ -269,17 +283,12 @@ function PageComponent({
 
   function onClickBookmark() {
     if (!bookmarkState) return;
-    const typedData: NewBookmark = {
+    newBookmarkMutation.mutate({
       videoId: video.id,
       captionEntryId: bookmarkState.captionEntry.id,
       text: bookmarkState.text,
       side: bookmarkState.side,
       offset: bookmarkState.offset,
-    };
-    // use `unstable_shouldReload` to prevent invalidating loaders
-    fetcher.submit(toForm(typedData), {
-      method: "post",
-      action: R["/bookmarks/new"],
     });
     document.getSelection()?.removeAllRanges();
   }
@@ -292,17 +301,6 @@ function PageComponent({
   //
   // effects
   //
-
-  React.useEffect(() => {
-    if (fetcher.type === "done") {
-      if (fetcher.data.success) {
-        toast.success("Bookmark success");
-      } else {
-        toast.success("Bookmark failed");
-      }
-      setBookmarkState(undefined);
-    }
-  }, [fetcher.type]);
 
   React.useEffect(() => {
     if (!isNil(params.index)) {
@@ -374,7 +372,7 @@ function PageComponent({
         currentUser &&
         currentUser.id === video.userId && (
           <Transition
-            show={!!bookmarkState || fetcher.state !== "idle"}
+            show={!!bookmarkState || newBookmarkMutation.isLoading}
             className="absolute bottom-0 right-0 flex gap-2 p-1.5 transition duration-300 z-10"
             enterFrom="scale-30 opacity-0"
             enterTo="scale-100 opacity-100"
@@ -397,7 +395,9 @@ function PageComponent({
             >
               <span
                 className={cls(
-                  fetcher.state === "idle" ? "i-ri-bookmark-line" : "antd-spin",
+                  newBookmarkMutation.isLoading
+                    ? "i-ri-bookmark-line"
+                    : "antd-spin",
                   "w-6 h-6"
                 )}
               />

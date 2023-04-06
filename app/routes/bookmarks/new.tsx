@@ -1,60 +1,65 @@
+import { tinyassert } from "@hiogawa/utils";
 import { z } from "zod";
-import { client } from "../../db/client.server";
-import { Q } from "../../db/models";
+import { E, T, db, findOne } from "../../db/drizzle-client.server";
+import { R } from "../../misc/routes";
 import { Controller, makeLoader } from "../../utils/controller-utils";
-import { AppError } from "../../utils/errors";
 
 //
 // action
 //
 
-const NEW_BOOKMARK_SCHEMA = z.object({
-  videoId: z.coerce.number().int(),
-  captionEntryId: z.coerce.number().int(),
+const Z_NEW_BOOKMARK = z.object({
+  videoId: z.number().int(),
+  captionEntryId: z.number().int(),
   text: z.string().nonempty(),
-  side: z.coerce
-    .number()
-    .int()
-    .refine((x) => x === 0 || x === 1),
-  offset: z.coerce.number().int(),
+  side: z.union([z.literal(0), z.literal(1)]),
+  offset: z.number().int(),
 });
 
-export type NewBookmark = z.infer<typeof NEW_BOOKMARK_SCHEMA>;
+type NewBookmark = z.infer<typeof Z_NEW_BOOKMARK>;
 
-// TODO: error handling
 export const action = makeLoader(Controller, async function () {
-  const parsed = NEW_BOOKMARK_SCHEMA.safeParse(await this.form());
-  if (!parsed.success) throw new AppError("Invalid parameters");
+  const req = Z_NEW_BOOKMARK.parse(await this.request.json());
 
   const user = await this.currentUser();
-  if (!user) throw new AppError("Authenticaton failure");
+  tinyassert(user);
 
-  const { videoId, captionEntryId } = parsed.data;
-
-  const video = await Q.videos()
-    .where("userId", user.id)
-    .where("id", videoId)
-    .first();
-  const captionEntry = await Q.captionEntries()
-    .where("videoId", videoId)
-    .where("id", captionEntryId)
-    .first();
-  if (!video || !captionEntry) throw new AppError("Resource not found");
+  const found = await findOne(
+    db
+      .select()
+      .from(T.captionEntries)
+      .innerJoin(T.videos, E.eq(T.videos.id, T.captionEntries.videoId))
+      .where(
+        E.and(
+          E.eq(T.captionEntries.id, req.captionEntryId),
+          E.eq(T.videos.id, req.videoId),
+          E.eq(T.videos.userId, user.id)
+        )
+      )
+  );
+  tinyassert(found);
 
   // insert with counter cache increment
-  const id = await client.transaction(async (trx) => {
-    const { videoId } = parsed.data;
-    const [id] = await Q.bookmarkEntries()
-      .transacting(trx)
-      .insert({
-        ...parsed.data,
-        userId: user.id,
-      });
-    await Q.videos()
-      .transacting(trx)
-      .where("id", videoId)
-      .increment("bookmarkEntriesCount");
-    return id;
+  await db.insert(T.bookmarkEntries).values({
+    ...req,
+    userId: user.id,
   });
-  return { success: true, data: { id } };
+  await db
+    .update(T.videos)
+    .set({ bookmarkEntriesCount: found.videos.bookmarkEntriesCount + 1 });
 });
+
+// client query
+export function createNewBookmarkMutation() {
+  const url = R["/bookmarks/new"];
+  return {
+    mutationKey: [url],
+    mutationFn: async (req: NewBookmark) => {
+      const res = await fetch(url, {
+        method: "POST",
+        body: JSON.stringify(req),
+      });
+      tinyassert(res.ok);
+    },
+  };
+}
