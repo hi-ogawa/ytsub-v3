@@ -1,5 +1,4 @@
-import { tinyassert } from "@hiogawa/utils";
-import { omit } from "lodash";
+import { objectOmit, objectPick, tinyassert } from "@hiogawa/utils";
 import { describe, expect, it } from "vitest";
 import { CaptionEntryTable, Q, VideoTable } from "../../db/models";
 import { deserialize } from "../../utils/controller-utils";
@@ -8,24 +7,30 @@ import { useUserVideo, useVideo } from "./helper";
 import { testLoader } from "./helper";
 
 describe("videos/id.loader", () => {
-  const { video } = useVideo();
+  const videoHook = useVideo();
 
   it("basic", async () => {
     const res = await testLoader(loader, {
-      params: { id: String(video().id) },
+      params: { id: String(videoHook.video.id) },
     });
     tinyassert(res instanceof Response);
+    tinyassert(res.ok);
+
     const resJson: { video: VideoTable; captionEntries: CaptionEntryTable[] } =
       deserialize(await res.json());
-    expect(resJson.video.videoId).toBe("EnPYXckiUVg");
-    expect(resJson.video.title).toMatchInlineSnapshot(
-      '"Are French People Really That Mean?! // French Girls React to Emily In Paris (in FR w/ FR & EN subs)"'
-    );
-    expect(resJson.captionEntries.length).toMatchInlineSnapshot("183");
+
+    expect(objectPick(resJson.video, ["videoId", "title"]))
+      .toMatchInlineSnapshot(`
+      {
+        "title": "Are French People Really That Mean?! // French Girls React to Emily In Paris (in FR w/ FR & EN subs)",
+        "videoId": "EnPYXckiUVg",
+      }
+    `);
+
     expect(
       resJson.captionEntries
         .slice(0, 3)
-        .map((e) => omit(e, ["id", "videoId", "createdAt", "updatedAt"]))
+        .map((e) => objectOmit(e, ["id", "videoId", "createdAt", "updatedAt"]))
     ).toMatchInlineSnapshot(`
       [
         {

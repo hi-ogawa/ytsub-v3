@@ -114,15 +114,13 @@ const NEW_VIDEOS: NewVideo[] = [
   },
 ];
 
-// TODO: simplify like useUser
-export function useVideo(type: 0 | 1 | 2 = 2, userId?: () => number) {
+export function useVideo(type: 0 | 1 | 2 = 2) {
   const newVideo = NEW_VIDEOS[type];
   let result: { video: VideoTable; captionEntries: CaptionEntryTable[] };
 
   beforeAll(async () => {
-    const id = userId?.();
     const data = await fetchCaptionEntries(newVideo);
-    const videoId = await insertVideoAndCaptionEntries(newVideo, data, id);
+    const videoId = await insertVideoAndCaptionEntries(newVideo, data);
     const resultOption = await getVideoAndCaptionEntries(videoId);
     tinyassert(resultOption);
     result = resultOption;
@@ -133,8 +131,12 @@ export function useVideo(type: 0 | 1 | 2 = 2, userId?: () => number) {
   });
 
   return {
-    video: () => result.video,
-    captionEntries: () => result.captionEntries,
+    get video() {
+      return result.video;
+    },
+    get captionEntries() {
+      return result.captionEntries;
+    },
   };
 }
 
