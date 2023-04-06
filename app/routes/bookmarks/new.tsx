@@ -1,4 +1,5 @@
 import { tinyassert } from "@hiogawa/utils";
+import { sql } from "drizzle-orm";
 import { z } from "zod";
 import { E, T, db, findOne } from "../../db/drizzle-client.server";
 import { R } from "../../misc/routes";
@@ -46,7 +47,7 @@ export const action = makeLoader(Controller, async function () {
   });
   await db
     .update(T.videos)
-    .set({ bookmarkEntriesCount: found.videos.bookmarkEntriesCount + 1 })
+    .set({ bookmarkEntriesCount: sql`${T.videos.bookmarkEntriesCount} + 1` })
     .where(E.eq(T.videos.id, req.videoId));
   return null;
 });

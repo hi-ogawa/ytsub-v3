@@ -30,16 +30,20 @@ describe("bookmarks/new.action", () => {
       .innerJoin(T.videos, E.eq(T.videos.id, T.bookmarkEntries.videoId))
       .where(E.eq(T.videos.id, hook.video.id));
     expect(
-      rows.map((row) =>
-        objectPick(row.bookmarkEntries, ["text", "side", "offset"])
-      )
+      rows.map((row) => [
+        row.videos.bookmarkEntriesCount,
+        objectPick(row.bookmarkEntries, ["text", "side", "offset"]),
+      ])
     ).toMatchInlineSnapshot(`
       [
-        {
-          "offset": 8,
-          "side": 0,
-          "text": "Bonjour à tous",
-        },
+        [
+          1,
+          {
+            "offset": 8,
+            "side": 0,
+            "text": "Bonjour à tous",
+          },
+        ],
       ]
     `);
   });
