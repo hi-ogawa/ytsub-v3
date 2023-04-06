@@ -395,7 +395,7 @@ function PageComponent({
             >
               <span
                 className={cls(
-                  newBookmarkMutation.isLoading
+                  !newBookmarkMutation.isLoading
                     ? "i-ri-bookmark-line"
                     : "antd-spin",
                   "w-6 h-6"
