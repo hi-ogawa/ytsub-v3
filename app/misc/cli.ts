@@ -379,7 +379,9 @@ cli
         .transacting(trx)
         .select({
           id: "videos.id",
-          bookmarkEntriesCount: client.raw("COUNT(bookmarkEntries.id)"),
+          bookmarkEntriesCount: client.raw(
+            "COALESCE(COUNT(bookmarkEntries.id), 0)"
+          ),
           updatedAt: "videos.updatedAt", // prevent changing `updatedAt` timestamp for the migration
           videoId: client.raw("'dummy'"),
           language1_id: client.raw("'dummy'"),
@@ -389,8 +391,7 @@ cli
           channelId: client.raw("'dummy'"),
         })
         .leftJoin("bookmarkEntries", "bookmarkEntries.videoId", "videos.id")
-        .groupBy("videos.id")
-        .having("bookmarkEntriesCount", ">", 0);
+        .groupBy("videos.id");
       await Q.videos()
         .transacting(trx)
         .insert(rows)
@@ -407,7 +408,9 @@ cli
         .transacting(trx)
         .select({
           id: "practiceEntries.id",
-          practiceActionsCount: client.raw("COUNT(practiceActions.id)"),
+          practiceActionsCount: client.raw(
+            "COALESCE(COUNT(practiceActions.id), 0)"
+          ),
           updatedAt: "practiceEntries.updatedAt", // prevent changing `updatedAt` timestamp for the migration
           queueType: client.raw("'dummy'"),
           easeFactor: 0,
@@ -420,8 +423,7 @@ cli
           "practiceActions.practiceEntryId",
           "practiceEntries.id"
         )
-        .groupBy("practiceEntries.id")
-        .having("practiceActionsCount", ">", 0);
+        .groupBy("practiceEntries.id");
       await Q.practiceEntries()
         .transacting(trx)
         .insert(rows)
