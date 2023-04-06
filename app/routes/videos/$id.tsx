@@ -2,12 +2,7 @@ import { Transition } from "@headlessui/react";
 import { tinyassert } from "@hiogawa/utils";
 import { isNil } from "@hiogawa/utils";
 import { toArraySetState, useRafLoop } from "@hiogawa/utils-react";
-import {
-  Form,
-  Link,
-  ShouldReloadFunction,
-  useLoaderData,
-} from "@remix-run/react";
+import { Form, Link, useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import { useMutation } from "@tanstack/react-query";
 import {
@@ -85,13 +80,6 @@ export const loader = makeLoader(Controller, async function () {
   });
   return redirect(R["/"]);
 });
-
-export const unstable_shouldReload: ShouldReloadFunction = ({ submission }) => {
-  if (submission?.action === R["/bookmarks/new"]) {
-    return false;
-  }
-  return true;
-};
 
 //
 // action
