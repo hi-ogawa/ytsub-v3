@@ -230,7 +230,6 @@ function PracticeBookmarkEntryComponent({
   showAutoplay?: boolean;
 }) {
   const [open, setOpen] = React.useState(false);
-  const scheduledAt = formatScheduledAt(practiceEntry.scheduledAt, new Date());
   const actionsCount = practiceEntry.practiceActionsCount;
   const practiceEntryId = practiceEntry.id;
 
@@ -268,7 +267,9 @@ function PracticeBookmarkEntryComponent({
             Answered {formatCount(actionsCount)}
           </Link>
           {"⋅"}
-          <div>Scheduled {scheduledAt}</div>
+          <div suppressHydrationWarning>
+            Scheduled {formatScheduledAt(practiceEntry.scheduledAt, new Date())}
+          </div>
           <div className="absolute right-0 bottom-0 flex">
             <button
               className={cls(

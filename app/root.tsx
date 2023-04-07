@@ -29,7 +29,6 @@ import { ConfigPlaceholder } from "./utils/config-placeholder";
 import { Controller, makeLoader } from "./utils/controller-utils";
 import { getFlashMessages } from "./utils/flash-message";
 import { useFlashMessages } from "./utils/flash-message-hook";
-import { useHydrated } from "./utils/hooks";
 import { RootLoaderData, useRootLoaderData } from "./utils/loader-utils";
 import { cls } from "./utils/misc";
 import type { Match } from "./utils/page-handle";
@@ -71,11 +70,9 @@ export const loader = makeLoader(Controller, async function () {
 //
 
 export default function DefaultComponent() {
-  useHydrated(); // initialize global hydration state shared via this hook
-
-  // TODO: hydration error for theme class (dark, light)
+  // hydration error for theme class (dark, light)
   return (
-    <html lang="en" className="h-full">
+    <html lang="en" className="h-full" suppressHydrationWarning>
       <head>
         <meta charSet="utf-8" />
         <Meta />

@@ -114,6 +114,7 @@ export default function DefaultComponent() {
             <label className="flex flex-col gap-1">
               Created At
               <input
+                suppressHydrationWarning
                 className="antd-input p-1"
                 disabled
                 readOnly

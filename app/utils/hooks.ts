@@ -16,14 +16,6 @@ export function useIsFormValid() {
   return [isValid, formProps] as const;
 }
 
-// Based on https://github.com/remix-run/remix/issues/180
-let _hydrated = false;
-export function useHydrated() {
-  const [hydrated, setHydrated] = React.useState(_hydrated);
-  React.useEffect(() => setHydrated((_hydrated = true)), []);
-  return hydrated;
-}
-
 function useMemoWrap<F extends (_: D) => any, D>(f: F, data: D): ReturnType<F> {
   return React.useMemo(() => f(data), [data]);
 }
