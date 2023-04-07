@@ -35,7 +35,7 @@ export default function DefaultComponent() {
   const newDeckMutation = useMutation({
     ...createNewDeckMutation(),
     onSuccess: (res) => {
-      toast.success("Successfuly created a deck");
+      toast.success("Successfully created a deck");
       navigate(R["/decks/$id"](res.deckId));
     },
     onError: () => {

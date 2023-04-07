@@ -27,7 +27,7 @@ test.describe("decks", () => {
     await page
       .locator('data-test=new-deck-form >> button[type="submit"]')
       .click();
-    await page.waitForSelector(`"Deck created successfully"`);
+    await page.waitForSelector(`"Successfully created a deck"`);
     await expect(page).toHaveURL(/\/decks\/\d+$/);
     await forceDismissToast(page);
 
