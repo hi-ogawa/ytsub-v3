@@ -2,7 +2,6 @@ import { Transition } from "@headlessui/react";
 import { Link } from "@remix-run/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { atom, useAtom } from "jotai";
 import React from "react";
 import type { PaginationMetadata, VideoTable } from "../db/models";
 import { R } from "../misc/routes";
@@ -199,35 +198,4 @@ export function QueryClientWrapper({ children }: React.PropsWithChildren) {
       {false && <ReactQueryDevtools />}
     </QueryClientProvider>
   );
-}
-
-// we use good-old `useEffect` based ClientOnly wrapper since React.Suspence based one leads to noisy error logs https://react.dev/reference/react/Suspense#providing-a-fallback-for-server-errors-and-server-only-content
-export function ClientOnly(props: React.PropsWithChildren) {
-  const clientOnly = useClientOnly();
-  return <>{clientOnly ? props.children : null}</>;
-}
-
-let _clientOnly = false;
-
-export function useClientOnly() {
-  const [state, setState] = React.useState(_clientOnly);
-  React.useEffect(() => {
-    setState((_clientOnly = true));
-  }, []);
-  return state;
-}
-
-// TODO:
-// global now with refresh interval?
-// share same valud from SSR to hydration?
-const dateNow = atom({ date: new Date(), usedCount: 0 });
-
-export function useDateNow() {
-  const [state, setState] = useAtom(dateNow);
-
-  React.useEffect(() => {
-    setState;
-  }, []);
-
-  return state.date;
 }
