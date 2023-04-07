@@ -22,6 +22,7 @@ export function testLoader(
     method,
     query,
     form,
+    json,
     params = {},
     transform,
   }: {
@@ -29,6 +30,7 @@ export function testLoader(
     query?: any;
     form?: any;
     params?: Record<string, string>;
+    json?: unknown;
     transform?: (request: Request) => Request;
   } = {}
 ) {
@@ -37,6 +39,12 @@ export function testLoader(
     url += "/?" + toQuery(query);
   }
   let request = new Request(url, { method: method ?? "GET" });
+  if (json) {
+    request = new Request(url, {
+      method: method ?? "POST",
+      body: JSON.stringify(json),
+    });
+  }
   if (form) {
     request = new Request(url, {
       method: method ?? "POST",
@@ -106,14 +114,21 @@ const NEW_VIDEOS: NewVideo[] = [
   },
 ];
 
-export function useVideo(type: 0 | 1 | 2 = 2, userId?: () => number) {
-  const newVideo = NEW_VIDEOS[type];
+export function useVideo(
+  args?: { videoFixture?: 0 | 1 | 2 },
+  userHook?: ReturnType<typeof useUser>
+) {
+  const newVideo = NEW_VIDEOS[args?.videoFixture ?? 2];
   let result: { video: VideoTable; captionEntries: CaptionEntryTable[] };
 
   beforeAll(async () => {
-    const id = userId?.();
+    await userHook?.isReady;
     const data = await fetchCaptionEntries(newVideo);
-    const videoId = await insertVideoAndCaptionEntries(newVideo, data, id);
+    const videoId = await insertVideoAndCaptionEntries(
+      newVideo,
+      data,
+      userHook?.data.id
+    );
     const resultOption = await getVideoAndCaptionEntries(videoId);
     tinyassert(resultOption);
     result = resultOption;
@@ -124,50 +139,31 @@ export function useVideo(type: 0 | 1 | 2 = 2, userId?: () => number) {
   });
 
   return {
-    video: () => result.video,
-    captionEntries: () => result.captionEntries,
+    get video() {
+      return result.video;
+    },
+    get captionEntries() {
+      return result.captionEntries;
+    },
   };
 }
 
-// TODO: jest/vitest doesn't serialize `before` hooks, so we cannot simply combine `useUser` and `useVideo`
 export function useUserVideo(
-  type: 0 | 1 | 2 = 2,
-  ...args: Parameters<typeof useUserImpl>
+  args: Parameters<typeof useUser>[0] & { videoFixture?: 0 | 1 | 2 }
 ) {
-  const { before, after } = useUserImpl(...args);
-
-  let user: UserTable;
-  let cookie: string;
-  let video: VideoTable;
-  let captionEntries: CaptionEntryTable[];
-  const newVideo = NEW_VIDEOS[type];
-
-  beforeAll(async () => {
-    user = await before();
-    cookie = await createUserCookie(user);
-
-    const data = await fetchCaptionEntries(newVideo);
-    const videoId = await insertVideoAndCaptionEntries(newVideo, data, user.id);
-    const result = await getVideoAndCaptionEntries(videoId);
-    tinyassert(result);
-    video = result.video;
-    captionEntries = result.captionEntries;
-  });
-
-  afterAll(async () => {
-    await after();
-    await db.delete(T.videos).where(E.eq(T.videos.id, video.id));
-  });
-
-  function signin(request: Request): Request {
-    request.headers.set("cookie", cookie);
-    return request;
-  }
+  const userHook = useUser(args);
+  const videoHook = useVideo(args, userHook);
 
   return {
-    user: () => user,
-    video: () => video,
-    captionEntries: () => captionEntries,
-    signin,
+    signin: userHook.signin,
+    get user() {
+      return userHook.data;
+    },
+    get video() {
+      return videoHook.video;
+    },
+    get captionEntries() {
+      return videoHook.captionEntries;
+    },
   };
 }

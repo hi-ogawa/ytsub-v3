@@ -32,7 +32,3 @@ export const R = {
   "/decks/$id/new-practice-action": (id: number) => `/decks/${id}/new-practice-action`,
   "/decks/$id/export": (id: number) => `/decks/${id}/export`,
 };
-
-export const R_RE = {
-  "/decks/$id/practice": /\/decks\/\d+\/practice/,
-};

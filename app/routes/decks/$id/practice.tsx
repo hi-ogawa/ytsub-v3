@@ -1,6 +1,8 @@
 import { tinyassert } from "@hiogawa/utils";
-import { useFetcher, useLoaderData, useTransition } from "@remix-run/react";
+import { useLoaderData, useNavigate } from "@remix-run/react";
+import { useMutation } from "@tanstack/react-query";
 import React from "react";
+import { toast } from "react-hot-toast";
 import { E, T, db, findOne } from "../../../db/drizzle-client.server";
 import {
   BookmarkEntryTable,
@@ -21,14 +23,13 @@ import {
   DeckPracticeStatistics,
   PracticeSystem,
 } from "../../../utils/practice-system";
-import { toForm } from "../../../utils/url-data";
 import { BookmarkEntryComponent } from "../../bookmarks";
 import {
   DeckNavBarMenuComponent,
   DeckPracticeStatisticsComponent,
   requireUserAndDeck,
 } from "./index";
-import type { NewPracticeActionRequest } from "./new-practice-action";
+import { createNewPracticeActionMutation } from "./new-practice-action";
 
 export const handle: PageHandle = {
   navBarTitle: () => <NavBarTitleComponent />,
@@ -139,29 +140,20 @@ function PracticeComponent({
   captionEntry: CaptionEntryTable;
   video: VideoTable;
 }) {
-  const fetcher = useFetcher();
-  const transition = useTransition();
-  const isLoading =
-    fetcher.state !== "idle" ||
-    (transition.state !== "idle" &&
-      transition.location?.pathname.startsWith(
-        R["/decks/$id/practice"](deck.id)
-      ));
-  const [loadingActionType, setLoadingActionType] =
-    React.useState<PracticeActionType>();
+  const navigate = useNavigate();
+  const newPracticeActionMutation = useMutation({
+    ...createNewPracticeActionMutation(),
+    onSuccess: () => {
+      // reload to proceed to next practice
+      navigate(R["/decks/$id/practice"](deck.id));
+    },
+    onError: () => {
+      toast.error("Failed to submit answer");
+    },
+  });
 
-  function onClickAction(actionType: PracticeActionType) {
-    setLoadingActionType(actionType);
-    const data: NewPracticeActionRequest = {
-      practiceEntryId: practiceEntry.id,
-      now: new Date(),
-      actionType,
-    };
-    fetcher.submit(toForm(data), {
-      action: R["/decks/$id/new-practice-action"](deck.id),
-      method: "post",
-    });
-  }
+  const [lastActionType, setLastActionType] =
+    React.useState<PracticeActionType>();
 
   return (
     <>
@@ -182,10 +174,19 @@ function PracticeComponent({
               key={type}
               className={cls(
                 "antd-btn antd-btn-default px-3 py-0.5",
-                isLoading && loadingActionType === type && "antd-btn-loading"
+                newPracticeActionMutation.isLoading &&
+                  lastActionType === type &&
+                  "antd-btn-loading"
               )}
-              disabled={isLoading}
-              onClick={() => onClickAction(type)}
+              disabled={newPracticeActionMutation.isLoading}
+              onClick={() => {
+                setLastActionType(type);
+                newPracticeActionMutation.mutate({
+                  deckId: deck.id,
+                  actionType: type,
+                  practiceEntryId: practiceEntry.id,
+                });
+              }}
             >
               {type}
             </button>

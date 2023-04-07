@@ -1,53 +1,70 @@
-import { tinyassert } from "@hiogawa/utils";
+import { objectPick, tinyassert, wrapPromise } from "@hiogawa/utils";
 import { describe, expect, it } from "vitest";
-import { Q } from "../../db/models";
-import { AppError } from "../../utils/errors";
+import { E, T, db } from "../../db/drizzle-client.server";
 import { action } from "../bookmarks/new";
 import { testLoader, useUserVideo } from "./helper";
 
 describe("bookmarks/new.action", () => {
-  const { signin, video, captionEntries } = useUserVideo(2, {
+  const hook = useUserVideo({
     seed: __filename,
   });
 
   it("basic", async () => {
     const data = {
-      videoId: video().id,
-      captionEntryId: captionEntries()[0].id,
+      videoId: hook.video.id,
+      captionEntryId: hook.captionEntries[0].id,
       text: "Bonjour à tous",
       side: 0,
       offset: 8,
     };
-    const res = await testLoader(action, { form: data, transform: signin });
+    const res = await testLoader(action, {
+      json: data,
+      transform: hook.signin,
+    });
     tinyassert(res instanceof Response);
+    tinyassert(res.ok);
 
-    const resJson = await res.json();
-    expect(resJson.success).toBe(true);
-
-    const id = resJson.data.id;
-    tinyassert(typeof id === "number");
-    {
-      const found = await Q.bookmarkEntries().where("id", id).first();
-      tinyassert(found);
-      expect(found.text).toBe(data.text);
-    }
-    {
-      const found = await Q.videos().where("id", data.videoId).first();
-      tinyassert(found);
-      expect(found.bookmarkEntriesCount).toBe(1);
-    }
+    const rows = await db
+      .select()
+      .from(T.bookmarkEntries)
+      .innerJoin(T.videos, E.eq(T.videos.id, T.bookmarkEntries.videoId))
+      .where(E.eq(T.videos.id, hook.video.id));
+    expect(
+      rows.map((row) => [
+        row.videos.bookmarkEntriesCount,
+        objectPick(row.bookmarkEntries, ["text", "side", "offset"]),
+      ])
+    ).toMatchInlineSnapshot(`
+      [
+        [
+          1,
+          {
+            "offset": 8,
+            "side": 0,
+            "text": "Bonjour à tous",
+          },
+        ],
+      ]
+    `);
   });
 
   it("error", async () => {
     const data = {
       videoId: -1, // video not found
-      captionEntryId: captionEntries()[0].id,
+      captionEntryId: hook.captionEntries[0].id,
       text: "Bonjour à tous",
       side: 0,
       offset: 8,
     };
-    await expect(
-      testLoader(action, { form: data, transform: signin })
-    ).rejects.toBeInstanceOf(AppError);
+    expect(
+      await wrapPromise(
+        testLoader(action, { json: data, transform: hook.signin })
+      )
+    ).toMatchInlineSnapshot(`
+      {
+        "ok": false,
+        "value": [Error: not found],
+      }
+    `);
   });
 });

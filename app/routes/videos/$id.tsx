@@ -2,14 +2,9 @@ import { Transition } from "@headlessui/react";
 import { tinyassert } from "@hiogawa/utils";
 import { isNil } from "@hiogawa/utils";
 import { toArraySetState, useRafLoop } from "@hiogawa/utils-react";
-import {
-  Form,
-  Link,
-  ShouldReloadFunction,
-  useFetcher,
-  useLoaderData,
-} from "@remix-run/react";
+import { Form, Link, useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
+import { useMutation } from "@tanstack/react-query";
 import {
   VirtualItem,
   Virtualizer,
@@ -38,14 +33,13 @@ import { useLeafLoaderData, useRootLoaderData } from "../../utils/loader-utils";
 import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 import type { CaptionEntry } from "../../utils/types";
-import { toForm } from "../../utils/url-data";
 import {
   YoutubePlayer,
   YoutubePlayerOptions,
   stringifyTimestamp,
   usePlayerLoader,
 } from "../../utils/youtube";
-import type { NewBookmark } from "../bookmarks/new";
+import { createNewBookmarkMutation } from "../bookmarks/new";
 
 export const handle: PageHandle = {
   navBarTitle: () => "Watch",
@@ -87,43 +81,48 @@ export const loader = makeLoader(Controller, async function () {
   return redirect(R["/"]);
 });
 
-export const unstable_shouldReload: ShouldReloadFunction = ({ submission }) => {
-  if (submission?.action === R["/bookmarks/new"]) {
-    return false;
-  }
-  return true;
-};
-
 //
 // action
 //
 
-export const action = makeLoader(Controller, async function () {
-  if (this.request.method === "DELETE") {
-    const parsed = Z_PARAMS.safeParse(this.args.params);
-    if (parsed.success) {
-      const { id } = parsed.data;
-      const user = await this.currentUser();
-      if (user) {
-        const video = await Q.videos().where({ id, userId: user.id }).first();
-        if (video) {
-          await Promise.all([
-            Q.videos().delete().where({ id, userId: user.id }),
-            Q.captionEntries().delete().where("videoId", id),
-            Q.bookmarkEntries().delete().where("videoId", id),
-          ]);
-          // return `type` so that `useFetchers` can identify where the response is from
-          return { type: "DELETE /videos/$id", success: true };
-        }
-      }
-    }
-  }
-  return {
-    type: "DELETE /videos/$id",
-    success: false,
-    message: "invalid request",
-  };
+const Z_ACTION_REQUEST = z.object({
+  destroy: z.boolean(),
 });
+
+export const action = makeLoader(Controller, async function () {
+  tinyassert(this.request.method === "POST");
+  const { id } = Z_PARAMS.parse(this.args.params);
+  const { destroy } = Z_ACTION_REQUEST.parse(await this.request.json());
+  tinyassert(destroy);
+
+  const user = await this.currentUser();
+  tinyassert(user);
+
+  const video = await Q.videos().where({ id, userId: user.id }).first();
+  tinyassert(video);
+
+  await Promise.all([
+    Q.videos().delete().where({ id, userId: user.id }),
+    Q.captionEntries().delete().where("videoId", id),
+    Q.bookmarkEntries().delete().where("videoId", id),
+  ]);
+  return null;
+});
+
+// client query
+export function createDeleteVideoMutation() {
+  const url = R["/videos/$id"];
+  return {
+    mutationKey: [String(url)],
+    mutationFn: async (req: { videoId: number }) => {
+      const res = await fetch(url(req.videoId), {
+        method: "POST",
+        body: JSON.stringify({ destroy: true }),
+      });
+      tinyassert(res.ok);
+    },
+  };
+}
 
 //
 // component
@@ -171,7 +170,7 @@ const BOOKMARKABLE_CLASSNAME = "--bookmarkable--";
 interface BookmarkState {
   captionEntry: CaptionEntryTable;
   text: string;
-  side: number; // 0 | 1
+  side: 0 | 1; // 0 | 1
   offset: number;
 }
 
@@ -181,7 +180,6 @@ function PageComponent({
   currentUser,
   params,
 }: LoaderData & { currentUser?: UserTable }) {
-  const fetcher = useFetcher();
   const [autoScrollState] = useAutoScrollState();
   const autoScroll = autoScrollState.includes(video.id);
   const [repeatingEntries, setRepeatingEntries, toggleRepeatingEntries] =
@@ -196,6 +194,22 @@ function PageComponent({
   const [isPlaying, setIsPlaying] = React.useState(false);
   const [currentEntry, setCurrentEntry] = React.useState<CaptionEntry>();
   const [bookmarkState, setBookmarkState] = React.useState<BookmarkState>();
+
+  //
+  // query
+  //
+  const newBookmarkMutation = useMutation({
+    ...createNewBookmarkMutation(),
+    onSuccess: () => {
+      toast.success("Bookmark success");
+    },
+    onError: () => {
+      toast.success("Bookmark failed");
+    },
+    onSettled: () => {
+      setBookmarkState(undefined);
+    },
+  });
 
   //
   // handlers
@@ -269,17 +283,12 @@ function PageComponent({
 
   function onClickBookmark() {
     if (!bookmarkState) return;
-    const typedData: NewBookmark = {
+    newBookmarkMutation.mutate({
       videoId: video.id,
       captionEntryId: bookmarkState.captionEntry.id,
       text: bookmarkState.text,
       side: bookmarkState.side,
       offset: bookmarkState.offset,
-    };
-    // use `unstable_shouldReload` to prevent invalidating loaders
-    fetcher.submit(toForm(typedData), {
-      method: "post",
-      action: R["/bookmarks/new"],
     });
     document.getSelection()?.removeAllRanges();
   }
@@ -292,17 +301,6 @@ function PageComponent({
   //
   // effects
   //
-
-  React.useEffect(() => {
-    if (fetcher.type === "done") {
-      if (fetcher.data.success) {
-        toast.success("Bookmark success");
-      } else {
-        toast.success("Bookmark failed");
-      }
-      setBookmarkState(undefined);
-    }
-  }, [fetcher.type]);
 
   React.useEffect(() => {
     if (!isNil(params.index)) {
@@ -374,7 +372,7 @@ function PageComponent({
         currentUser &&
         currentUser.id === video.userId && (
           <Transition
-            show={!!bookmarkState || fetcher.state !== "idle"}
+            show={!!bookmarkState || newBookmarkMutation.isLoading}
             className="absolute bottom-0 right-0 flex gap-2 p-1.5 transition duration-300 z-10"
             enterFrom="scale-30 opacity-0"
             enterTo="scale-100 opacity-100"
@@ -397,7 +395,9 @@ function PageComponent({
             >
               <span
                 className={cls(
-                  fetcher.state === "idle" ? "i-ri-bookmark-line" : "antd-spin",
+                  !newBookmarkMutation.isLoading
+                    ? "i-ri-bookmark-line"
+                    : "antd-spin",
                   "w-6 h-6"
                 )}
               />
