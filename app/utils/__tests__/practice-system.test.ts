@@ -10,14 +10,14 @@ import { PracticeSystem } from "../practice-system";
 const NOW = new Date(677721600 * 1000);
 
 describe("PracticeSystem", () => {
-  const { user, video, captionEntries } = useUserVideo(2, {
+  const hook = useUserVideo({
     seed: __filename,
   });
 
   it("basic", async () => {
     // TODO: move to `use...` helpers
     const [deckId] = await Q.decks().insert({
-      userId: user().id,
+      userId: hook.user.id,
       name: __filename,
     });
     const deck = await Q.decks().where({ id: deckId }).first();
@@ -28,9 +28,9 @@ describe("PracticeSystem", () => {
       text: "Bonjour à tous",
       side: 0,
       offset: 8,
-      userId: user().id,
-      videoId: video().id,
-      captionEntryId: captionEntries()[0].id,
+      userId: hook.user.id,
+      videoId: hook.video.id,
+      captionEntryId: hook.captionEntries[0].id,
     });
     const bookmarkEntry = await Q.bookmarkEntries()
       .where({ id: bookmarkEntryId })
@@ -38,7 +38,7 @@ describe("PracticeSystem", () => {
     tinyassert(bookmarkEntry);
 
     // instantiate practice system
-    const system = new PracticeSystem(user(), deck);
+    const system = new PracticeSystem(hook.user, deck);
 
     // create practice
     const [practiceEntryId] = await system.createPracticeEntries(
@@ -115,7 +115,7 @@ describe("PracticeSystem", () => {
   // TODO: setup data
   it("randomMode", async () => {
     const [deckId] = await Q.decks().insert({
-      userId: user().id,
+      userId: hook.user.id,
       name: __filename,
       randomMode: true,
     });
@@ -123,7 +123,7 @@ describe("PracticeSystem", () => {
     tinyassert(deck);
 
     // instantiate practice system
-    const system = new PracticeSystem(user(), deck);
+    const system = new PracticeSystem(hook.user, deck);
     const entry = await system.getNextPracticeEntry(NOW);
     expect(entry).toBe(undefined);
   });

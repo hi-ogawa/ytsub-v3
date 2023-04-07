@@ -9,7 +9,6 @@ import {
   NavLink,
   Outlet,
   Scripts,
-  ShouldReloadFunction,
   useMatches,
 } from "@remix-run/react";
 import type { LinksFunction, MetaFunction } from "@remix-run/server-runtime";
@@ -23,7 +22,7 @@ import { PopoverSimple } from "./components/popover";
 import { ThemeSelect } from "./components/theme-select";
 import { TopProgressBarRemix } from "./components/top-progress-bar";
 import type { UserTable } from "./db/models";
-import { R, R_RE } from "./misc/routes";
+import { R } from "./misc/routes";
 import { HideRecaptchaBadge } from "./routes/users/register";
 import { publicConfig } from "./utils/config";
 import { ConfigPlaceholder } from "./utils/config-placeholder";
@@ -65,25 +64,6 @@ export const loader = makeLoader(Controller, async function () {
   };
   return this.serialize(data);
 });
-
-export const unstable_shouldReload: ShouldReloadFunction = ({
-  submission,
-  url,
-  prevUrl,
-}) => {
-  if (submission?.action === R["/bookmarks/new"]) {
-    return false;
-  }
-  // skip reload during "practice" loop
-  if (
-    url.pathname === prevUrl.pathname &&
-    url.pathname.match(R_RE["/decks/$id/practice"])
-  ) {
-    return false;
-  }
-  // TODO: rest should fallback to default behavior
-  return true;
-};
 
 //
 // component
