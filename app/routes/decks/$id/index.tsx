@@ -4,7 +4,7 @@ import { redirect } from "@remix-run/server-runtime";
 import React from "react";
 import { NavLink } from "react-router-dom";
 import { z } from "zod";
-import { PaginationComponent, useClientOnly } from "../../../components/misc";
+import { PaginationComponent } from "../../../components/misc";
 import { PopoverSimple } from "../../../components/popover";
 import {
   E,
@@ -267,8 +267,8 @@ function PracticeBookmarkEntryComponent({
             Answered {formatCount(actionsCount)}
           </Link>
           {"⋅"}
-          <div>
-            Scheduled <FormatScheduledAt date={practiceEntry.scheduledAt} />
+          <div suppressHydrationWarning>
+            Scheduled {formatScheduledAt(practiceEntry.scheduledAt, new Date())}
           </div>
           <div className="absolute right-0 bottom-0 flex">
             <button
@@ -317,18 +317,9 @@ function formatCount(n: number): string {
   return `${n} times`;
 }
 
-function FormatScheduledAt({ date }: { date: Date }) {
-  const clientOnly = useClientOnly();
-  return <>{formatScheduledAt(date, new Date(), clientOnly)}</>;
-}
-
-function formatScheduledAt(
-  date: Date,
-  now: Date,
-  clientOnly: boolean
-): string | undefined {
+function formatScheduledAt(date: Date, now: Date): string | undefined {
   const delta = Timedelta.difference(date, now);
-  if (!clientOnly || delta.value <= 0) {
+  if (delta.value <= 0) {
     return "at " + dtfDateOnly.format(date);
   }
   const n = delta.normalize();
