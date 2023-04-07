@@ -1,13 +1,16 @@
-import { Form, useActionData } from "@remix-run/react";
-import { redirect } from "@remix-run/server-runtime";
-import React from "react";
+import { useNavigate } from "@remix-run/react";
+import { useMutation } from "@tanstack/react-query";
+import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import { z } from "zod";
-import { DeckTable, Q } from "../../db/models";
 import { R } from "../../misc/routes";
 import { Controller, makeLoader } from "../../utils/controller-utils";
-import { useIsFormValid } from "../../utils/hooks";
+import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
+import {
+  DEFAULT_DECK_OPTIONS,
+  NewDeckRequest,
+  createNewDeckMutation,
+} from "./new-api";
 
 export const handle: PageHandle = {
   navBarTitle: () => "New Deck",
@@ -23,104 +26,74 @@ export const loader = makeLoader(Controller, async function () {
 });
 
 //
-// action
-//
-
-const DEFAULT_DECK_OPTIONS: Pick<
-  DeckTable,
-  "newEntriesPerDay" | "reviewsPerDay" | "easeMultiplier" | "easeBonus"
-> = {
-  newEntriesPerDay: 50,
-  reviewsPerDay: 200,
-  easeMultiplier: 2,
-  easeBonus: 1.5,
-};
-
-const NEW_DECK_REQUEST_SCHEMA = z.object({
-  name: z.string().nonempty(),
-  newEntriesPerDay: z.coerce.number().int(),
-  reviewsPerDay: z.coerce.number().int(),
-  easeMultiplier: z.coerce
-    .number()
-    .default(DEFAULT_DECK_OPTIONS.easeMultiplier),
-  easeBonus: z.coerce.number().default(DEFAULT_DECK_OPTIONS.easeBonus),
-});
-
-interface ActionData {
-  message: string;
-}
-
-export const action = makeLoader(Controller, async function () {
-  const user = await this.requireUser();
-
-  const parsed = NEW_DECK_REQUEST_SCHEMA.safeParse(await this.form());
-  if (!parsed.success) {
-    return { message: "invalid request" } as ActionData;
-  }
-
-  const [id] = await Q.decks().insert({
-    userId: user.id,
-    ...parsed.data,
-  });
-  this.flash({ content: "Deck created successfully", variant: "success" });
-  return redirect(R["/decks/$id"](id));
-});
-
-//
 // component
 //
 
 export default function DefaultComponent() {
-  const actionData = useActionData<ActionData>();
-  const [isValid, formProps] = useIsFormValid();
+  const navigate = useNavigate();
 
-  React.useEffect(() => {
-    if (actionData?.message) {
-      toast.error(actionData.message);
-    }
-  }, [actionData]);
+  const newDeckMutation = useMutation({
+    ...createNewDeckMutation(),
+    onSuccess: (res) => {
+      toast.success("Successfuly created a deck");
+      navigate(R["/decks/$id"](res.deckId));
+    },
+    onError: () => {
+      toast.error("Failed to create a deck");
+    },
+  });
+
+  const form = useForm<NewDeckRequest>({
+    defaultValues: {
+      name: "",
+      ...DEFAULT_DECK_OPTIONS,
+    },
+  });
 
   return (
     <div className="w-full p-4 flex justify-center">
-      <Form
+      <form
         method="post"
         className="flex flex-col border w-full max-w-sm p-4 px-6 gap-3"
         data-test="new-deck-form"
-        {...formProps}
+        onSubmit={form.handleSubmit((data) => newDeckMutation.mutate(data))}
       >
         <h1 className="text-lg">New Deck</h1>
         <label className="flex flex-col gap-1">
           <span className="text-colorTextLabel">Name</span>
-          <input type="text" name="name" className="antd-input p-1" required />
+          <input
+            type="text"
+            className="antd-input p-1"
+            {...form.register("name", { required: true })}
+          />
         </label>
         <label className="flex flex-col gap-1">
           <span className="text-colorTextLabel">New entries per day</span>
           <input
             type="number"
-            name="newEntriesPerDay"
             className="antd-input p-1"
-            defaultValue={String(DEFAULT_DECK_OPTIONS.newEntriesPerDay)}
-            required
+            {...form.register("newEntriesPerDay", { required: true })}
           />
         </label>
         <label className="flex flex-col gap-1">
           <span className="text-colorTextLabel">Reviews per day</span>
           <input
             type="number"
-            name="reviewsPerDay"
             className="antd-input p-1"
-            defaultValue={String(DEFAULT_DECK_OPTIONS.reviewsPerDay)}
-            required
+            {...form.register("reviewsPerDay", { required: true })}
           />
         </label>
         <button
           type="submit"
-          className="antd-btn antd-btn-primary p-1"
-          disabled={!isValid}
+          className={cls(
+            "antd-btn antd-btn-primary p-1",
+            newDeckMutation.isLoading && "antd-btn-loading"
+          )}
+          disabled={!form.formState.isValid || newDeckMutation.isLoading}
         >
           Create
         </button>
-      </Form>
+      </form>
     </div>
   );
 }
