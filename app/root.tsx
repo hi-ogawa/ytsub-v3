@@ -70,9 +70,9 @@ export const loader = makeLoader(Controller, async function () {
 //
 
 export default function DefaultComponent() {
-  // TODO: hydration error for theme class (dark, light)
+  // hydration error for theme class (dark, light)
   return (
-    <html lang="en" className="h-full">
+    <html lang="en" className="h-full" suppressHydrationWarning>
       <head>
         <meta charSet="utf-8" />
         <Meta />

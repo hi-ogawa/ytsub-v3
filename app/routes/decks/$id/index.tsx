@@ -4,7 +4,7 @@ import { redirect } from "@remix-run/server-runtime";
 import React from "react";
 import { NavLink } from "react-router-dom";
 import { z } from "zod";
-import { PaginationComponent } from "../../../components/misc";
+import { PaginationComponent, useClientOnly } from "../../../components/misc";
 import { PopoverSimple } from "../../../components/popover";
 import {
   E,
@@ -230,7 +230,6 @@ function PracticeBookmarkEntryComponent({
   showAutoplay?: boolean;
 }) {
   const [open, setOpen] = React.useState(false);
-  const scheduledAt = formatScheduledAt(practiceEntry.scheduledAt, new Date());
   const actionsCount = practiceEntry.practiceActionsCount;
   const practiceEntryId = practiceEntry.id;
 
@@ -268,7 +267,9 @@ function PracticeBookmarkEntryComponent({
             Answered {formatCount(actionsCount)}
           </Link>
           {"⋅"}
-          <div>Scheduled {scheduledAt}</div>
+          <div>
+            Scheduled <FormatScheduledAt date={practiceEntry.scheduledAt} />
+          </div>
           <div className="absolute right-0 bottom-0 flex">
             <button
               className={cls(
@@ -316,9 +317,18 @@ function formatCount(n: number): string {
   return `${n} times`;
 }
 
-function formatScheduledAt(date: Date, now: Date): string | undefined {
+function FormatScheduledAt({ date }: { date: Date }) {
+  const clientOnly = useClientOnly();
+  return <>{formatScheduledAt(date, new Date(), clientOnly)}</>;
+}
+
+function formatScheduledAt(
+  date: Date,
+  now: Date,
+  clientOnly: boolean
+): string | undefined {
   const delta = Timedelta.difference(date, now);
-  if (delta.value <= 0) {
+  if (!clientOnly || delta.value <= 0) {
     return "at " + dtfDateOnly.format(date);
   }
   const n = delta.normalize();
