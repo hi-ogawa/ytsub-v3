@@ -26,7 +26,7 @@ export const createTrpcAppContext = async ({
 
 const requireUser = t.middleware(async ({ ctx, next }) => {
   const user = await getSessionUser(ctx.session);
-  tinyassert(user);
+  tinyassert(user, "require user");
   return next({
     ctx: { user },
   });

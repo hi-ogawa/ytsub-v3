@@ -111,7 +111,10 @@ export async function verifySignin(data: {
 
 const SESSION_USER_KEY = "session-user-v1";
 
-export function signinSession(session: Session, user: UserTable): void {
+export function signinSession(
+  session: Session,
+  user: Pick<UserTable, "id">
+): void {
   session.set(SESSION_USER_KEY, user.id);
 }
 
@@ -134,7 +137,8 @@ export async function getSessionUser(
   return;
 }
 
-export async function createUserCookie(user: UserTable) {
+// TODO: should be sync for cookie storage?
+export async function createUserCookie(user: Pick<UserTable, "id">) {
   const session = await getSession();
   signinSession(session, user);
   const cookie = await commitSession(session);
