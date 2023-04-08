@@ -7,11 +7,14 @@ import React from "react";
 import { z } from "zod";
 import { transitionProps } from "../../../components/misc";
 import {
-  PracticeHistoryChart,
-  PracticeHistoryChartData,
+  EchartsComponent,
+  PRACTICE_HISTORY_DATASET_KEYS,
+  PracticeHistoryChartDataEntry,
+  PracticeHistoryChartDatasetKeys,
+  practiceHistoryChartDataToEchartsOption,
 } from "../../../components/practice-history-chart";
-import { client } from "../../../db/client.server";
-import { DeckTable, PracticeQueueType, Q } from "../../../db/models";
+import { E, T, db } from "../../../db/drizzle-client.server";
+import type { DeckTable } from "../../../db/models";
 import { R } from "../../../misc/routes";
 import { Controller, makeLoader } from "../../../utils/controller-utils";
 import { useDeserialize } from "../../../utils/hooks";
@@ -21,6 +24,8 @@ import type { PageHandle } from "../../../utils/page-handle";
 import { Timedelta } from "../../../utils/timedelta";
 import { formatYmd } from "../../../utils/timezone";
 import { toQuery } from "../../../utils/url-data";
+
+// TODO: this page fails to dev auto reload due to server code sneaked into client?
 
 //
 // handle
@@ -46,7 +51,7 @@ const Z_LOADER_REQUEST = z.object({
 interface LoaderData {
   deck: DeckTable;
   page: number;
-  data: PracticeHistoryChartData;
+  datasetSource: PracticeHistoryChartDataEntry[];
 }
 
 export const loader = makeLoader(Controller, async function () {
@@ -56,51 +61,48 @@ export const loader = makeLoader(Controller, async function () {
   const begin = Timedelta.make({ days: -7 * (page + 1) }).radd(now);
   const end = Timedelta.make({ days: -7 * page }).radd(now);
 
-  const rows: { queueType: PracticeQueueType; date: string; count: number }[] =
-    await Q.practiceActions()
-      .select("queueType", {
-        date: client.raw(
-          "DATE_FORMAT(CONVERT_TZ(createdAt, '+00:00', ?), '%Y-%m-%d')",
-          user.timezone
-        ), // Date
-        count: client.raw("COUNT(0)"), // number
-      })
-      .where("deckId", deck.id)
-      // extend range by 1 day to cover timezone offset
-      .where("createdAt", ">", Timedelta.make({ days: -1 }).radd(begin))
-      .where("createdAt", "<=", Timedelta.make({ days: 1 }).radd(end))
-      .groupBy("date", "queueType");
-
-  const dates = range(7)
-    .reverse()
-    .map((i) =>
-      formatYmd(Timedelta.make({ days: i }).rsub(end), user.timezone)
+  // aggregate count in js
+  const rows = await db
+    .select()
+    .from(T.practiceActions)
+    .where(
+      // prettier-ignore
+      E.and(
+        E.eq(T.practiceActions.deckId, deck.id),
+        // extend range by 1 day to not miss data due to timezone offset
+        E.gt(T.practiceActions.createdAt, Timedelta.make({ days: -1 }).radd(begin)),
+        E.lt(T.practiceActions.createdAt, Timedelta.make({ days: 1 }).radd(end))
+      )
     );
 
-  const tmpData: {
-    [date: string]: PracticeHistoryChartData[number];
-  } = Object.fromEntries(
-    dates.map((date) => [
-      date,
-      {
-        date,
-        total: 0,
-        NEW: 0,
-        LEARN: 0,
-        REVIEW: 0,
-      },
-    ])
+  const dates = range(7).map((i) =>
+    formatYmd(Timedelta.make({ days: i + 1 }).radd(begin), user.timezone)
   );
 
+  const countMap = Object.fromEntries(
+    dates.map((date) => [
+      date,
+      Object.fromEntries(PRACTICE_HISTORY_DATASET_KEYS.map((key) => [key, 0])),
+    ])
+  ) as Record<string, Record<PracticeHistoryChartDatasetKeys, number>>;
+
   for (const row of rows) {
-    if (row.date in tmpData) {
-      tmpData[row.date].total += row.count;
-      tmpData[row.date][row.queueType] = row.count;
+    const date = formatYmd(row.createdAt, user.timezone);
+    if (!dates.includes(date)) {
+      continue;
     }
+    countMap[date]["total"]++;
+    countMap[date][`queue-${row.queueType}`]++;
+    countMap[date][`action-${row.actionType}`]++;
   }
 
-  const res: LoaderData = { deck, page, data: Object.values(tmpData) };
-  return this.serialize(res);
+  const datasetSource: PracticeHistoryChartDataEntry[] = dates.map((date) => ({
+    date,
+    ...countMap[date],
+  }));
+
+  const loaderData: LoaderData = { deck, page, datasetSource };
+  return this.serialize(loaderData);
 });
 
 //
@@ -108,8 +110,9 @@ export const loader = makeLoader(Controller, async function () {
 //
 
 export default function DefaultComponent() {
-  // TODO: no need to fetch on server. use defer.
-  const { data, page }: LoaderData = useDeserialize(useLeafLoaderData());
+  const { page, datasetSource }: LoaderData = useDeserialize(
+    useLeafLoaderData()
+  );
 
   const [isLoading, setIsLoading] = React.useState(true);
 
@@ -122,7 +125,6 @@ export default function DefaultComponent() {
     setInstance(instance);
   }
 
-  // TODO: keepPreviousData like in react-query?
   function onClickPage() {
     // TODO: "hideTip" also when click outside of chart (on mobile)
     instance?.dispatchAction({ type: "hideTip" });
@@ -133,10 +135,14 @@ export default function DefaultComponent() {
     <div className="w-full flex justify-center">
       <div className="w-full max-w-lg flex flex-col gap-3 mt-2">
         <div className="relative w-full h-[300px]">
-          <PracticeHistoryChart
-            data={data}
-            setInstance={setInstanceWrapper}
+          <EchartsComponent
             className="w-full h-full"
+            setInstance={setInstanceWrapper}
+            option={practiceHistoryChartDataToEchartsOption(
+              datasetSource,
+              "action"
+            )}
+            optionDeps={datasetSource}
           />
           <Transition
             show={isLoading}
