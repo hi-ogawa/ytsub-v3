@@ -6,6 +6,8 @@ import { middlewares } from "./context.server";
 import { routerFactory } from "./factory.server";
 import { procedureBuilder } from "./factory.server";
 
+// TODO: figure out file organization (put all routes here for now)
+
 const createBookmark = procedureBuilder
   .use(middlewares.requireUser)
   .input(
