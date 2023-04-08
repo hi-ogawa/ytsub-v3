@@ -1,5 +1,7 @@
 import { tinyassert } from "@hiogawa/utils";
+import type { LoaderFunction } from "@remix-run/server-runtime";
 import { sql } from "drizzle-orm";
+import { deserialize } from "superjson";
 import { z } from "zod";
 import { E, T, db, findOne } from "../../db/drizzle-client.server";
 import { R } from "../../misc/routes";
@@ -63,6 +65,33 @@ export function createNewBookmarkMutation() {
         body: JSON.stringify(req),
       });
       tinyassert(res.ok);
+    },
+  };
+}
+
+function defineQueryHandler<InputSchema extends z.ZodType<unknown>, Output>(
+  inputSchema: InputSchema, handler: (args: { input: z.infer<InputSchema>, controller: Controller }) => Output
+) {
+  const loader = async (...args: Parameters<LoaderFunction>) => {
+    const controller = await Controller.create(...args);
+    const inputRaw = await controller.request.json();
+    const input = inputSchema.parse(inputRaw);
+    const output = await handler({ input, controller });
+    return controller.serialize(output);
+  };
+  return loader as any as { __input: z.infer<InputSchema>, __output: Awaited<Output> };
+}
+
+function deriveClientMutation<QueryHandler extends { __input: unknown, __output: unknown }>(url: string) {
+  return {
+    mutationKey: [url],
+    mutationFn: async (req: QueryHandler["__input"]): Promise<QueryHandler["__output"]> => {
+      const res = await fetch(url, {
+        method: "POST",
+        body: JSON.stringify(req),
+      });
+      tinyassert(res.ok);
+      return deserialize(await res.json());
     },
   };
 }
