@@ -1,6 +1,6 @@
 import type { ActionFunction, LoaderFunction } from "@remix-run/server-runtime";
 import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
-import { trpcAppRouter } from "../../trpc/app.server";
+import { trpcApp } from "../../trpc/app.server";
 import { createTrpcAppContext } from "../../trpc/context.server";
 
 // catch-all trpc endpoint (cf. https://trpc.io/docs/server/adapters/fetch#remix)
@@ -12,7 +12,7 @@ function trpcHandler(args: { request: Request }) {
   return fetchRequestHandler({
     endpoint: "/trpc",
     req: args.request,
-    router: trpcAppRouter,
+    router: trpcApp,
     createContext: createTrpcAppContext,
   });
 }

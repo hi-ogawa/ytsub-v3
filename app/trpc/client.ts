@@ -1,9 +1,10 @@
 import { createTRPCProxyClient, httpLink } from "@trpc/client";
-import type { trpcAppRouter } from "./app.server";
+import type { trpcApp } from "./app.server";
 
 // cf. https://trpc.io/docs/client/setup
 
-export const trpcClient = createTRPCProxyClient<typeof trpcAppRouter>({
+// we cannot tree-shake from server bundle for idiomatic use of `useMutation(trpcClient.xxx.mutate)`
+export const trpcClient = createTRPCProxyClient<typeof trpcApp>({
   links: [
     httpLink({
       url: "/trpc",

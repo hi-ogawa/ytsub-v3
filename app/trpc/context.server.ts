@@ -4,7 +4,7 @@ import type { FetchCreateContextFnOptions } from "@trpc/server/adapters/fetch";
 import type { TT } from "../db/drizzle-client.server";
 import { getSessionUser } from "../utils/auth";
 import { getRequestSession } from "../utils/session-utils";
-import { t } from "./t.server";
+import { middlewareFactory } from "./factory.server";
 
 export type TrpcAppContext = {
   session: Session;
@@ -24,7 +24,7 @@ export const createTrpcAppContext = async ({
 // middlewares
 //
 
-const requireUser = t.middleware(async ({ ctx, next }) => {
+const requireUser = middlewareFactory(async ({ ctx, next }) => {
   const user = await getSessionUser(ctx.session);
   tinyassert(user, "require user");
   return next({

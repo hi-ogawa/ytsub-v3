@@ -1,6 +1,6 @@
 import type { TT } from "../db/drizzle-client.server";
 import { createUserCookie } from "../utils/auth";
-import { trpcAppRouter } from "./app.server";
+import { trpcApp } from "./app.server";
 import { createTrpcAppContext } from "./context.server";
 
 export async function testTrpcClient(options?: { user?: TT["users"] }) {
@@ -13,5 +13,5 @@ export async function testTrpcClient(options?: { user?: TT["users"] }) {
     req,
     resHeaders: new Response().headers,
   });
-  return trpcAppRouter.createCaller(ctx);
+  return trpcApp.createCaller(ctx);
 }
