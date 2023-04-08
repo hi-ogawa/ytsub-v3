@@ -17,7 +17,7 @@ import type {
   VideoTable,
 } from "../../db/models";
 import { R } from "../../misc/routes";
-import { trpcClient } from "../../trpc/client";
+import { trpcQueryOptions } from "../../trpc/client";
 import { Controller, makeLoader } from "../../utils/controller-utils";
 import { toastInfo } from "../../utils/flash-message-hook";
 import { useDeserialize } from "../../utils/hooks";
@@ -218,10 +218,9 @@ function AddToDeckComponent({
   onSuccess: () => void;
 }) {
   // get decks
-  const decksQuery = useQuery({
-    queryKey: ["trpc", "decks_practiceEntriesCount", videoId],
-    queryFn: () => trpcClient.decks_practiceEntriesCount.query({ videoId }),
-  });
+  const decksQuery = useQuery(
+    trpcQueryOptions("decks_practiceEntriesCount", { videoId })
+  );
 
   // create new practice entries
   const newPracticeEntryMutation = useMutation({
