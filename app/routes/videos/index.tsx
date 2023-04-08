@@ -236,7 +236,7 @@ function AddToDeckComponent({
     },
   });
 
-  function onClickPlus(deck: Pick<DeckTable, "id" | "name">) {
+  function onClickPlus(deck: DeckTable) {
     if (!window.confirm(`Please confirm to add bookmarks to '${deck.name}'.`)) {
       toastInfo("Cancelled to add to a deck");
       return;
