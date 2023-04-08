@@ -198,7 +198,7 @@ function PageComponent({
   //
   // query
   //
-  const newBookmarkMutation = useMutation(trpcClient.createBookmark.mutate, {
+  const newBookmarkMutation = useMutation(trpcClient.bookmarks_create.mutate, {
     onSuccess: () => {
       toast.success("Bookmark success");
     },

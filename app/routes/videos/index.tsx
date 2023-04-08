@@ -1,5 +1,4 @@
 import { Transition } from "@headlessui/react";
-import { mapOption } from "@hiogawa/utils";
 import { useLoaderData, useNavigate } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -18,7 +17,9 @@ import type {
   VideoTable,
 } from "../../db/models";
 import { R } from "../../misc/routes";
+import { trpcClient } from "../../trpc/client";
 import { Controller, makeLoader } from "../../utils/controller-utils";
+import { toastInfo } from "../../utils/flash-message-hook";
 import { useDeserialize } from "../../utils/hooks";
 import { useRootLoaderData } from "../../utils/loader-utils";
 import type { PageHandle } from "../../utils/page-handle";
@@ -27,7 +28,6 @@ import {
   PaginationParams,
 } from "../../utils/pagination";
 import { createNewPracticeEntryMutation } from "../decks/$id/new-practice-entry";
-import { createDecksIndexDetailQuery } from "../decks/index-detail";
 import { createDeleteVideoMutation } from "./$id";
 
 export const handle: PageHandle = {
@@ -218,7 +218,10 @@ function AddToDeckComponent({
   onSuccess: () => void;
 }) {
   // get decks
-  const decksQuery = useQuery(createDecksIndexDetailQuery({ videoId }));
+  const decksQuery = useQuery({
+    queryKey: ["trpc", "decks_practiceEntriesCount", videoId],
+    queryFn: () => trpcClient.decks_practiceEntriesCount.query({ videoId }),
+  });
 
   // create new practice entries
   const newPracticeEntryMutation = useMutation({
@@ -233,9 +236,9 @@ function AddToDeckComponent({
     },
   });
 
-  function onClickPlus(deck: DeckTable) {
+  function onClickPlus(deck: Pick<DeckTable, "id" | "name">) {
     if (!window.confirm(`Please confirm to add bookmarks to '${deck.name}'.`)) {
-      toast.error("Cancelled to add to a deck");
+      toastInfo("Cancelled to add to a deck");
       return;
     }
     newPracticeEntryMutation.mutate({ videoId, deckId: deck.id });
@@ -254,7 +257,7 @@ function AddToDeckComponent({
       </div>
       <ul className="flex flex-col gap-2">
         {decksQuery.isSuccess &&
-          decksQuery.data.decks.map((deck) => (
+          decksQuery.data.map(({ deck, practiceEntriesCount }) => (
             <li key={deck.id}>
               <button
                 className="w-full antd-menu-item p-2 flex items-center"
@@ -262,12 +265,10 @@ function AddToDeckComponent({
               >
                 <div className="flex-1 flex items-center gap-1">
                   <span>{deck.name}</span>
-                  {mapOption(
-                    decksQuery.data.counts.find((row) => row.deckId === deck.id)
-                      ?.count,
-                    (c) => (
-                      <span className="text-colorTextLabel">({c})</span>
-                    )
+                  {practiceEntriesCount > 0 && (
+                    <span className="text-colorTextLabel">
+                      ({practiceEntriesCount})
+                    </span>
                   )}
                 </div>
                 <span className="i-ri-add-box-line w-5 h-5"></span>

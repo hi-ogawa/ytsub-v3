@@ -11,7 +11,7 @@ describe("createBookmark", () => {
 
   it("basic", async () => {
     const trpc = await testTrpcClient({ user: hook.user });
-    await trpc.createBookmark({
+    await trpc.bookmarks_create({
       videoId: hook.video.id,
       captionEntryId: hook.captionEntries[0].id,
       text: "Bonjour à tous",
@@ -46,7 +46,7 @@ describe("createBookmark", () => {
   it("error-no-video", async () => {
     const trpc = await testTrpcClient({ user: hook.user });
     const result = await wrapPromise(
-      trpc.createBookmark({
+      trpc.bookmarks_create({
         videoId: -1, // invalid video id
         captionEntryId: hook.captionEntries[0].id,
         text: "Bonjour à tous",
@@ -65,7 +65,7 @@ describe("createBookmark", () => {
   it("error-no-user", async () => {
     const trpc = await testTrpcClient();
     const result = await wrapPromise(
-      trpc.createBookmark({
+      trpc.bookmarks_create({
         videoId: -1, // invalid video id
         captionEntryId: hook.captionEntries[0].id,
         text: "Bonjour à tous",
