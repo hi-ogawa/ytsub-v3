@@ -26,6 +26,7 @@ import {
   getVideoAndCaptionEntries,
 } from "../../db/models";
 import { R } from "../../misc/routes";
+import { trpcClient } from "../../trpc/client";
 import { Controller, makeLoader } from "../../utils/controller-utils";
 import { useDeserialize, useSelection } from "../../utils/hooks";
 import { dtf } from "../../utils/intl";
@@ -39,7 +40,6 @@ import {
   stringifyTimestamp,
   usePlayerLoader,
 } from "../../utils/youtube";
-import { createNewBookmarkMutation } from "../bookmarks/new";
 
 export const handle: PageHandle = {
   navBarTitle: () => "Watch",
@@ -198,8 +198,7 @@ function PageComponent({
   //
   // query
   //
-  const newBookmarkMutation = useMutation({
-    ...createNewBookmarkMutation(),
+  const newBookmarkMutation = useMutation(trpcClient.createBookmark.mutate, {
     onSuccess: () => {
       toast.success("Bookmark success");
     },

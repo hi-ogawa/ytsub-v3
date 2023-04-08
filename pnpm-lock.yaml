@@ -51,6 +51,12 @@ dependencies:
   '@tanstack/react-virtual':
     specifier: 3.0.0-beta.54
     version: 3.0.0-beta.54(react@18.2.0)
+  '@trpc/client':
+    specifier: ^10.19.1
+    version: 10.19.1(@trpc/server@10.19.1)
+  '@trpc/server':
+    specifier: ^10.19.1
+    version: 10.19.1
   '@vercel/node':
     specifier: ^1.15.3
     version: 1.15.3
@@ -2400,6 +2406,18 @@ packages:
 
   /@tanstack/virtual-core@3.0.0-beta.54:
     resolution: {integrity: sha512-jtkwqdP2rY2iCCDVAFuaNBH3fiEi29aTn2RhtIoky8DTTiCdc48plpHHreLwmv1PICJ4AJUUESaq3xa8fZH8+g==}
+    dev: false
+
+  /@trpc/client@10.19.1(@trpc/server@10.19.1):
+    resolution: {integrity: sha512-H61dIgoAjiA7/SfuHlUAsqshhaxOSSRFyEfaoBwYvXzLyno+fvQRUXvxpsC4A8IsDuNX2pxiggAK8AwTNKqIzg==}
+    peerDependencies:
+      '@trpc/server': 10.19.1
+    dependencies:
+      '@trpc/server': 10.19.1
+    dev: false
+
+  /@trpc/server@10.19.1:
+    resolution: {integrity: sha512-LAa8BQhMYJL+GU28cigOPKlEogCEBeff1wIKflnUj34ou1ythwTboe7Mi6rjDW3Q9EasP7s9YmqRv9Fkp8fL4Q==}
     dev: false
 
   /@ts-morph/common@0.12.3:

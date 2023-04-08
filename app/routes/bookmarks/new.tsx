@@ -2,7 +2,6 @@ import { tinyassert } from "@hiogawa/utils";
 import { sql } from "drizzle-orm";
 import { z } from "zod";
 import { E, T, db, findOne } from "../../db/drizzle-client.server";
-import { R } from "../../misc/routes";
 import { Controller, makeLoader } from "../../utils/controller-utils";
 
 //
@@ -17,8 +16,7 @@ const Z_NEW_BOOKMARK = z.object({
   offset: z.number().int(),
 });
 
-type NewBookmark = z.infer<typeof Z_NEW_BOOKMARK>;
-
+// TODO: remove after updating unit test
 export const action = makeLoader(Controller, async function () {
   const req = Z_NEW_BOOKMARK.parse(await this.request.json());
 
@@ -51,18 +49,3 @@ export const action = makeLoader(Controller, async function () {
     .where(E.eq(T.videos.id, req.videoId));
   return null;
 });
-
-// client query
-export function createNewBookmarkMutation() {
-  const url = R["/bookmarks/new"];
-  return {
-    mutationKey: [url],
-    mutationFn: async (req: NewBookmark) => {
-      const res = await fetch(url, {
-        method: "POST",
-        body: JSON.stringify(req),
-      });
-      tinyassert(res.ok);
-    },
-  };
-}
