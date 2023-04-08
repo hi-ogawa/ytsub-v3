@@ -1,7 +1,6 @@
 import { DeckNavBarMenuComponent, requireUserAndDeck } from ".";
 import { Transition } from "@headlessui/react";
 import { Link, useMatches, useNavigate } from "@remix-run/react";
-import { redirect } from "@remix-run/server-runtime";
 import type { ECharts } from "echarts";
 import { range } from "lodash";
 import React from "react";
@@ -53,7 +52,7 @@ interface LoaderData {
 export const loader = makeLoader(Controller, async function () {
   const [user, deck] = await requireUserAndDeck.apply(this);
 
-  let { page, now = new Date() } = Z_LOADER_REQUEST.parse(this.query());
+  const { page, now = new Date() } = Z_LOADER_REQUEST.parse(this.query());
   const begin = Timedelta.make({ days: -7 * (page + 1) }).radd(now);
   const end = Timedelta.make({ days: -7 * page }).radd(now);
 
@@ -67,8 +66,9 @@ export const loader = makeLoader(Controller, async function () {
         count: client.raw("COUNT(0)"), // number
       })
       .where("deckId", deck.id)
-      .where("createdAt", ">", begin)
-      .where("createdAt", "<=", end)
+      // extend range by 1 day to cover timezone offset
+      .where("createdAt", ">", Timedelta.make({ days: -1 }).radd(begin))
+      .where("createdAt", "<=", Timedelta.make({ days: 1 }).radd(end))
       .groupBy("date", "queueType");
 
   const dates = range(7)
