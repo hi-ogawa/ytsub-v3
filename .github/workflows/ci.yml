@@ -55,13 +55,11 @@ jobs:
       - if: steps.cache-playwright.outputs.cache-hit != 'true'
         run: npx playwright install --with-deps
       - run: make docker/up db/reset/test db/seed-download
-      # TODO: fix coverage
-      # - run: APP_RECAPTCHA_DISABLED=1 E2E_CLIENT_TRACE=1 pnpm test-e2e-coverage
-      # - uses: actions/upload-artifact@v3
-      #   with:
-      #     name: coverage-e2e
-      #     path: coverage
-      - run: E2E_CLIENT_TRACE=1 pnpm test-e2e
+      - run: APP_RECAPTCHA_DISABLED=1 E2E_CLIENT_TRACE=1 pnpm test-e2e-coverage
+      - uses: actions/upload-artifact@v3
+        with:
+          name: coverage-e2e
+          path: coverage
       - uses: actions/upload-artifact@v3
         if: always()
         with:
