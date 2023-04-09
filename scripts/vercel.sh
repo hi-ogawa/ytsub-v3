@@ -8,9 +8,6 @@ rm -rf build/css/production
 # css
 NODE_ENV=production pnpm build:css
 
-# copy assets not managed by remix
-NODE_ENV=production bash scripts/copy-assets.sh
-
 # default "node-cjs" build with custom server main
 NODE_ENV=production BUILD_VERCEL=1 npx remix build
 

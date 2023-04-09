@@ -1,4 +1,3 @@
-// see scripts/copy-assets.sh
 const SERVICE_WORKER_PATH = "/service-worker.js";
 
 export function registerServiceWorker() {

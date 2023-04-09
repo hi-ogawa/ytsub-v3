@@ -1,5 +1,7 @@
 import type { LoaderFunction } from "@remix-run/server-runtime";
 
+// use loader since otherwise it's tricky to reference assets
+
 export const loader: LoaderFunction = () => MANIFEST_JSON;
 
 const MANIFEST_JSON = {
