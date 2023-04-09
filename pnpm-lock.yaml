@@ -1,5 +1,10 @@
 lockfileVersion: '6.0'
 
+patchedDependencies:
+  '@remix-run/dev@1.15.0':
+    hash: rqfzo7n2m63btcgz53abqmb2he
+    path: patches/@remix-run__dev@1.15.0.patch
+
 dependencies:
   '@badrap/bar-of-progress':
     specifier: ^0.2.2
@@ -113,7 +118,7 @@ devDependencies:
     version: 1.31.2
   '@remix-run/dev':
     specifier: 1.15.0
-    version: 1.15.0(@remix-run/serve@1.15.0)(@types/node@16.11.35)
+    version: 1.15.0(patch_hash=rqfzo7n2m63btcgz53abqmb2he)(@remix-run/serve@1.15.0)(@types/node@16.11.35)
   '@remix-run/serve':
     specifier: 1.15.0
     version: 1.15.0
@@ -2493,7 +2498,7 @@ packages:
     resolution: {integrity: sha512-a5Sab1C4/icpTZVzZc5Ghpz88yQtGOyNqYXcZgOssB2uuAr+wF/MvN6bgtW32q7HHrvBki+BsZ0OuNv6EV3K9g==}
     dev: true
 
-  /@remix-run/dev@1.15.0(@remix-run/serve@1.15.0)(@types/node@16.11.35):
+  /@remix-run/dev@1.15.0(patch_hash=rqfzo7n2m63btcgz53abqmb2he)(@remix-run/serve@1.15.0)(@types/node@16.11.35):
     resolution: {integrity: sha512-BsE1GN6WM9PhN+agZi4TqUIuYzoHYZrufEdXLg3ZEYxWXqvtRKUNfhsYSDlEhrW+D5fyVQhJrs61wQ83sEXHLQ==}
     engines: {node: '>=14'}
     hasBin: true
@@ -2571,6 +2576,7 @@ packages:
       - ts-node
       - utf-8-validate
     dev: true
+    patched: true
 
   /@remix-run/express@1.15.0(express@4.17.3):
     resolution: {integrity: sha512-mvDZB03W6NqbtyVpeiJfmGQY1L7CX+KEfSIV/kNgyK+gAMAWhsioC/Vjlo4IFY3NvOD0rh9mxuC+/IPT6Al3uw==}
@@ -5969,7 +5975,7 @@ packages:
   /jsonfile@4.0.0:
     resolution: {integrity: sha1-h3Gq4HmbZAdrdmQPygWPnBDjPss=}
     optionalDependencies:
-      graceful-fs: 4.2.9
+      graceful-fs: 4.2.11
     dev: true
 
   /jsonfile@6.1.0:
@@ -5977,7 +5983,7 @@ packages:
     dependencies:
       universalify: 2.0.0
     optionalDependencies:
-      graceful-fs: 4.2.9
+      graceful-fs: 4.2.11
     dev: true
 
   /keyv@4.5.2:
