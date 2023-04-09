@@ -9,15 +9,17 @@ module.exports = {
   assetsBuildDirectory: `build/remix/${env}/public/build`,
   publicPath: process.env.BUILD_VERCEL ? undefined : `/build/remix/${env}/public/build`,
   server: process.env.BUILD_VERCEL ? "./app/misc/vercel.ts" : undefined,
-  ignoredRouteFiles: ["**/*.test.ts"],
   future: {
     v2_meta: true,
     v2_errorBoundary: true,
     v2_normalizeFormMethod: true,
-    // TODO: doesn't work with `ignoredRouteFiles` options?
-    // v2_routeConvention: true,
+    v2_routeConvention: true,
   },
-  // routes: require("@remix-run/v1-route-convention").createRoutesFromFolders,
+  routes: (defineRoutes) =>
+    require("@remix-run/v1-route-convention").createRoutesFromFolders(
+      defineRoutes,
+      { ignoredFilePatterns: ["**/__tests__/**/*"] }
+    ),
 };
 
 function patch() {
