@@ -110,10 +110,5 @@
   },
   "volta": {
     "node": "16.15.0"
-  },
-  "pnpm": {
-    "patchedDependencies": {
-      "@remix-run/dev@1.15.0": "patches/@remix-run__dev@1.15.0.patch"
-    }
   }
 }

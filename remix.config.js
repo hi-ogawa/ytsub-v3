@@ -1,3 +1,5 @@
+patch();
+
 const env = process.env.NODE_ENV ?? "development";
 const buildDir = `build/remix/${env}/`;
 
@@ -17,3 +19,11 @@ module.exports = {
   },
   // routes: require("@remix-run/v1-route-convention").createRoutesFromFolders,
 };
+
+function patch() {
+  // silence tsconfig mandatory options (cf. https://github.com/remix-run/remix/pull/5510)
+  const writeConfigDefaults = require("@remix-run/dev/dist/compiler/utils/tsconfig/write-config-defaults.js");
+  writeConfigDefaults.writeConfigDefaults = () => {
+    console.log("[PATCH:remix.config.js] writeConfigDefaults");
+  };
+}
