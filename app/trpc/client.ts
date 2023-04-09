@@ -4,8 +4,7 @@ import type { trpcApp } from "./server";
 
 // cf. https://trpc.io/docs/client/setup
 
-// we cannot tree-shake from server bundle for idiomatic use of `useMutation(trpcClient.xxx.mutate)`
-export const trpcClient = createTRPCProxyClient<typeof trpcApp>({
+const trpcClient = createTRPCProxyClient<typeof trpcApp>({
   transformer: superjson,
   links: [
     httpLink({
@@ -18,25 +17,30 @@ export const trpcClient = createTRPCProxyClient<typeof trpcApp>({
 // toy version of https://trpc.io/docs/reactjs/introduction
 //
 
-type TrpcRoutes = (typeof trpcApp)["_def"]["record"];
+type TRecord = (typeof trpcApp)["_def"]["record"];
 
-type TrpcQueryRoutes = {
-  [K in keyof TrpcRoutes]: TrpcRoutes[K]["_type"] extends "query" ? K : never;
-}[keyof TrpcRoutes];
+type KeyOfIf<T, IfV> = {
+  [K in keyof T]: T[K] extends IfV ? K : never;
+}[keyof T];
 
-type TrpcIO = {
-  [K in keyof TrpcRoutes]: {
-    i: TrpcRoutes[K]["_def"]["_input_in"];
-    o: TrpcRoutes[K]["_def"]["_output_out"];
-  };
-};
-
-export function trpcQueryOptions<K extends TrpcQueryRoutes>(
-  k: K,
-  i: TrpcIO[K]["i"]
-) {
+export function trpcQueryOptions<
+  K extends KeyOfIf<TRecord, { _type: "query" }>,
+  I = TRecord[K]["_def"]["_input_in"],
+  O = TRecord[K]["_def"]["_output_out"]
+>(k: K, i: I) {
   return {
     queryKey: ["trpc", k, i],
-    queryFn: () => (trpcClient as any)[k].query(i) as Promise<TrpcIO[K]["o"]>,
+    queryFn: () => (trpcClient as any)[k].query(i) as Promise<O>,
+  };
+}
+
+export function trpcMutationOptions<
+  K extends KeyOfIf<TRecord, { _type: "mutation" }>,
+  I = TRecord[K]["_def"]["_input_in"],
+  O = TRecord[K]["_def"]["_output_out"]
+>(k: K) {
+  return {
+    mutationKey: ["trpc", k],
+    mutationFn: (i: I) => (trpcClient as any)[k].mutate(i) as Promise<O>,
   };
 }
