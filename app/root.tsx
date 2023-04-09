@@ -67,7 +67,7 @@ export default function DefaultComponent() {
           content="width=device-width, height=device-height, initial-scale=1.0"
         />
         <title>
-          {publicConfig.VERCEL_ENV === "preview" ? "[PREVIEW] YTSUB" : "YTSUB"}
+          {publicConfig.VERCEL_ENV === "preview" ? "[PREVIEW] Ytsub" : "Ytsub"}
         </title>
         <Meta />
         <Links />

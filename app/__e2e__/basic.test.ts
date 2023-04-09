@@ -3,7 +3,7 @@ import { test } from "./coverage";
 
 test("/ => /videos/new", async ({ page }) => {
   await page.goto("/");
-  await expect(page).toHaveTitle("ytsub-v3");
+  await expect(page).toHaveTitle("Ytsub");
 
   // Input
   await page.getByRole("button").click();
