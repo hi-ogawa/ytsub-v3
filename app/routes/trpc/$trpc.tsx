@@ -1,5 +1,6 @@
 import type { ActionFunction, LoaderFunction } from "@remix-run/server-runtime";
 import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
+import consola from "consola";
 import { createTrpcAppContext } from "../../trpc/context";
 import { trpcApp } from "../../trpc/server";
 
@@ -14,5 +15,9 @@ function trpcHandler(args: { request: Request }) {
     req: args.request,
     router: trpcApp,
     createContext: createTrpcAppContext,
+    // quick error logging since otherwise remix only shows 500 access log
+    onError: (e) => {
+      consola.error(e);
+    },
   });
 }
