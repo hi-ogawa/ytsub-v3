@@ -36,7 +36,7 @@ export const links: LinksFunction = () => {
   return [
     { rel: "stylesheet", href: require("../build/css/" + process.env.NODE_ENV + "/index.css") },
     { rel: "icon", href: require("./assets/icon-32.png"), sizes: "32x32" },
-    { rel: "manifest", href: "/_copy/manifest.json" },
+    { rel: "manifest", href: "/manifest.json" },
   ];
 };
 
