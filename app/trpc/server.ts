@@ -3,6 +3,7 @@ import { sql } from "drizzle-orm";
 import { z } from "zod";
 import { E, T, db, findOne } from "../db/drizzle-client.server";
 import { Q, Z_PRACTICE_ACTION_TYPES } from "../db/models";
+import { importDeckJson } from "../misc/seed-utils";
 import { PracticeSystem } from "../utils/practice-system";
 import { middlewares } from "./context";
 import { routerFactory } from "./factory";
@@ -123,6 +124,17 @@ export const trpcApp = routerFactory({
         input.actionType,
         new Date()
       );
+    }),
+
+  decks_import: procedureBuilder
+    .use(middlewares.requireUser)
+    .input(
+      z.object({
+        data: z.string(),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      await importDeckJson(ctx.user.id, JSON.parse(input.data));
     }),
 
   decks_practiceEntriesCount: procedureBuilder
