@@ -1,16 +1,6 @@
 import { tinyassert } from "@hiogawa/utils";
-import { createTRPCProxyClient, httpLink } from "@trpc/client";
-import superjson from "superjson";
+import { _trpc } from "./client-internal.client";
 import type { trpcApp } from "./server";
-
-const trpcClient = createTRPCProxyClient<typeof trpcApp>({
-  transformer: superjson,
-  links: [
-    httpLink({
-      url: "/trpc",
-    }),
-  ],
-});
 
 //
 // quick and dirty flat route version of https://trpc.io/docs/reactjs/introduction
@@ -31,13 +21,13 @@ export const trpc =
       if (prop === "queryOptions") {
         return (input: unknown) => ({
           queryKey: [k, input],
-          queryFn: () => (trpcClient as any)[k].query(input),
+          queryFn: () => (_trpc as any)[k].query(input),
         })
       }
       if (prop === "mutationOptions") {
         return () => ({
           mutationKey: [k],
-          mutationFn: (input: unknown) => (trpcClient as any)[k].mutate(input),
+          mutationFn: (input: unknown) => (_trpc as any)[k].mutate(input),
         })
       }
       tinyassert(false, "unreachable");
