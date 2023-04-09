@@ -198,6 +198,6 @@ function findUserDeck({ deckId, userId }: { deckId: number; userId: number }) {
     db
       .select()
       .from(T.decks)
-      .where(E.and(E.eq(T.decks.id, deckId), E.eq(T.decks.id, userId)))
+      .where(E.and(E.eq(T.decks.id, deckId), E.eq(T.decks.userId, userId)))
   );
 }
