@@ -20,6 +20,10 @@ export const trpcClient = createTRPCProxyClient<typeof trpcApp>({
 
 type TrpcRoutes = (typeof trpcApp)["_def"]["record"];
 
+type TrpcQueryRoutes = {
+  [K in keyof TrpcRoutes]: TrpcRoutes[K]["_type"] extends "query" ? K : never;
+}[keyof TrpcRoutes];
+
 type TrpcIO = {
   [K in keyof TrpcRoutes]: {
     i: TrpcRoutes[K]["_def"]["_input_in"];
@@ -27,7 +31,7 @@ type TrpcIO = {
   };
 };
 
-export function trpcQueryOptions<K extends keyof TrpcIO>(
+export function trpcQueryOptions<K extends TrpcQueryRoutes>(
   k: K,
   i: TrpcIO[K]["i"]
 ) {
