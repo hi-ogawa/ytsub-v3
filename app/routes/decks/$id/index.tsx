@@ -1,8 +1,7 @@
 import { tinyassert } from "@hiogawa/utils";
-import { Link, useLoaderData } from "@remix-run/react";
+import { Link, NavLink, useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import React from "react";
-import { NavLink } from "react-router-dom";
 import { z } from "zod";
 import { PaginationComponent } from "../../../components/misc";
 import { PopoverSimple } from "../../../components/popover";

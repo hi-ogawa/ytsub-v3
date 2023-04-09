@@ -1,8 +1,8 @@
 import { tinyassert } from "@hiogawa/utils";
+import { useNavigate } from "@remix-run/react";
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
 import { R } from "../../misc/routes";
 import { _trpc } from "../../trpc/client-internal.client";
 import { cls } from "../../utils/misc";
