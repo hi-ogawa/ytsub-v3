@@ -2,7 +2,8 @@ import { tinyassert } from "@hiogawa/utils";
 import { sql } from "drizzle-orm";
 import { z } from "zod";
 import { E, T, db, findOne } from "../db/drizzle-client.server";
-import { Q } from "../db/models";
+import { Q, Z_PRACTICE_ACTION_TYPES } from "../db/models";
+import { PracticeSystem } from "../utils/practice-system";
 import { middlewares } from "./context";
 import { routerFactory } from "./factory";
 import { procedureBuilder } from "./factory";
@@ -48,6 +49,80 @@ export const trpcApp = routerFactory({
           bookmarkEntriesCount: sql`${T.videos.bookmarkEntriesCount} + 1`,
         })
         .where(E.eq(T.videos.id, input.videoId));
+    }),
+
+  decks_practiceEntriesCreate: procedureBuilder
+    .use(middlewares.requireUser)
+    .input(
+      z.object({
+        deckId: z.number().int(),
+        videoId: z.number().int(),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      const deck = await findUserDeck({
+        deckId: input.deckId,
+        userId: ctx.user.id,
+      });
+      tinyassert(deck);
+
+      const bookmarkEntries = await Q.bookmarkEntries()
+        .select("bookmarkEntries.*")
+        .where("bookmarkEntries.videoId", input.videoId)
+        .leftJoin(
+          "captionEntries",
+          "captionEntries.id",
+          "bookmarkEntries.captionEntryId"
+        )
+        .orderBy([
+          {
+            column: "captionEntries.index",
+            order: "asc",
+          },
+          {
+            column: "bookmarkEntries.offset",
+            order: "asc",
+          },
+        ]);
+
+      const system = new PracticeSystem(ctx.user, deck);
+      const practiceEntryIds = await system.createPracticeEntries(
+        bookmarkEntries,
+        new Date()
+      );
+      return { practiceEntryIds };
+    }),
+
+  decks_practiceActionsCreate: procedureBuilder
+    .use(middlewares.requireUser)
+    .input(
+      z.object({
+        deckId: z.number().int(),
+        practiceEntryId: z.number().int(),
+        actionType: Z_PRACTICE_ACTION_TYPES,
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      const deck = await findUserDeck({
+        deckId: input.deckId,
+        userId: ctx.user.id,
+      });
+      tinyassert(deck);
+
+      const practiceEntry = await findOne(
+        db
+          .select()
+          .from(T.practiceEntries)
+          .where(E.eq(T.practiceEntries.id, input.practiceEntryId))
+      );
+      tinyassert(practiceEntry);
+
+      const system = new PracticeSystem(ctx.user, deck);
+      await system.createPracticeAction(
+        practiceEntry,
+        input.actionType,
+        new Date()
+      );
     }),
 
   decks_practiceEntriesCount: procedureBuilder
@@ -113,3 +188,16 @@ export const trpcApp = routerFactory({
       ]);
     }),
 });
+
+//
+// utils
+//
+
+function findUserDeck({ deckId, userId }: { deckId: number; userId: number }) {
+  return findOne(
+    db
+      .select()
+      .from(T.decks)
+      .where(E.and(E.eq(T.decks.id, deckId), E.eq(T.decks.id, userId)))
+  );
+}

@@ -27,7 +27,6 @@ import {
   PAGINATION_PARAMS_SCHEMA,
   PaginationParams,
 } from "../../utils/pagination";
-import { createNewPracticeEntryMutation } from "../decks/$id/new-practice-entry";
 
 export const handle: PageHandle = {
   navBarTitle: () => "Your Videos",
@@ -223,7 +222,7 @@ function AddToDeckComponent({
 
   // create new practice entries
   const newPracticeEntryMutation = useMutation({
-    ...createNewPracticeEntryMutation(),
+    ...trpc.decks_practiceEntriesCreate.mutationOptions(),
     onSuccess: (data) => {
       toast.success(`Added ${data.practiceEntryIds.length} to a deck`);
       decksQuery.refetch();
