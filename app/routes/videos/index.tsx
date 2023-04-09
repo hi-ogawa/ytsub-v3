@@ -17,7 +17,7 @@ import type {
   VideoTable,
 } from "../../db/models";
 import { R } from "../../misc/routes";
-import { trpcMutationOptions, trpcQueryOptions } from "../../trpc/client";
+import { trpc } from "../../trpc/client";
 import { Controller, makeLoader } from "../../utils/controller-utils";
 import { toastInfo } from "../../utils/flash-message-hook";
 import { useDeserialize } from "../../utils/hooks";
@@ -135,7 +135,7 @@ function VideoComponentExtra({
 }) {
   const navigate = useNavigate();
   const deleteVideoMutation = useMutation({
-    ...trpcMutationOptions("videos_destroy"),
+    ...trpc.videos_destroy.mutationOptions(),
     onSuccess: () => {
       toast.success("Successfully deleted a video");
       navigate(R["/videos"]); // refetch
@@ -218,7 +218,7 @@ function AddToDeckComponent({
 }) {
   // get decks
   const decksQuery = useQuery(
-    trpcQueryOptions("decks_practiceEntriesCount", { videoId })
+    trpc.decks_practiceEntriesCount.queryOptions({ videoId })
   );
 
   // create new practice entries

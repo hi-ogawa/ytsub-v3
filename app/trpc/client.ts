@@ -1,8 +1,7 @@
+import { tinyassert } from "@hiogawa/utils";
 import { createTRPCProxyClient, httpLink } from "@trpc/client";
 import superjson from "superjson";
 import type { trpcApp } from "./server";
-
-// cf. https://trpc.io/docs/client/setup
 
 const trpcClient = createTRPCProxyClient<typeof trpcApp>({
   transformer: superjson,
@@ -14,33 +13,63 @@ const trpcClient = createTRPCProxyClient<typeof trpcApp>({
 });
 
 //
-// toy version of https://trpc.io/docs/reactjs/introduction
+// quick and dirty flat route version of https://trpc.io/docs/reactjs/introduction
 //
 
 type TRecord = (typeof trpcApp)["_def"]["record"];
+type TType<K extends keyof TRecord> = TRecord[K]["_type"];
+type TInput<K extends keyof TRecord> = TRecord[K]["_def"]["_input_in"];
+type TOutput<K extends keyof TRecord> = TRecord[K]["_def"]["_output_out"];
 
-type KeyOfIf<T, IfV> = {
-  [K in keyof T]: T[K] extends IfV ? K : never;
-}[keyof T];
+// prettier-ignore
+export const trpc =
+  createProxy((k) =>
+    createProxy(prop => {
+      if (prop === "queryKey" || prop === "mutationKey") {
+        return k;
+      }
+      if (prop === "queryOptions") {
+        return (input: unknown) => ({
+          queryKey: [k, input],
+          queryFn: () => (trpcClient as any)[k].query(input),
+        })
+      }
+      if (prop === "mutationOptions") {
+        return () => ({
+          mutationKey: [k],
+          mutationFn: (input: unknown) => (trpcClient as any)[k].mutate(input),
+        })
+      }
+      tinyassert(false, "unreachable");
+    })
+  ) as {
+  [K in keyof TRecord]:
+     TType<K> extends "query"
+      ? {
+          queryKey: K;
+          queryOptions: (input: TInput<K>) => {
+            queryKey: unknown[];
+            queryFn: () => Promise<TOutput<K>>;
+          }
+        }
+   : TType<K> extends "mutation"
+      ? {
+          mutationKey: K;
+          mutationOptions: () => {
+            mutationKey: unknown[];
+            mutationFn: (input: TInput<K>) => Promise<TOutput<K>>;
+          }
+        }
+   : never
+};
 
-export function trpcQueryOptions<
-  K extends KeyOfIf<TRecord, { _type: "query" }>,
-  I = TRecord[K]["_def"]["_input_in"],
-  O = TRecord[K]["_def"]["_output_out"]
->(k: K, i: I) {
-  return {
-    queryKey: ["trpc", k, i],
-    queryFn: () => (trpcClient as any)[k].query(i) as Promise<O>,
-  };
-}
-
-export function trpcMutationOptions<
-  K extends KeyOfIf<TRecord, { _type: "mutation" }>,
-  I = TRecord[K]["_def"]["_input_in"],
-  O = TRecord[K]["_def"]["_output_out"]
->(k: K) {
-  return {
-    mutationKey: ["trpc", k],
-    mutationFn: (i: I) => (trpcClient as any)[k].mutate(i) as Promise<O>,
-  };
+function createProxy(propHandler: (prop: string | symbol) => unknown): unknown {
+  return new Proxy(
+    {},
+    {
+      get(_target, prop, _receiver) {
+        return propHandler(prop);
+      },
+    }
+  );
 }

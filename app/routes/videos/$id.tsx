@@ -25,7 +25,7 @@ import {
   getVideoAndCaptionEntries,
 } from "../../db/models";
 import { R } from "../../misc/routes";
-import { trpcMutationOptions } from "../../trpc/client";
+import { trpc } from "../../trpc/client";
 import { Controller, makeLoader } from "../../utils/controller-utils";
 import { useDeserialize, useSelection } from "../../utils/hooks";
 import { dtf } from "../../utils/intl";
@@ -155,12 +155,12 @@ function PageComponent({
   // query
   //
   const newBookmarkMutation = useMutation({
-    ...trpcMutationOptions("bookmarks_create"),
+    ...trpc.bookmarks_create.mutationOptions(),
     onSuccess: () => {
       toast.success("Bookmark success");
     },
     onError: () => {
-      toast.success("Bookmark failed");
+      toast.error("Bookmark failed");
     },
     onSettled: () => {
       setBookmarkState(undefined);

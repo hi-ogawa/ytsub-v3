@@ -2,9 +2,10 @@ import { objectPick, wrapPromise } from "@hiogawa/utils";
 import { describe, expect, it } from "vitest";
 import { E, T, db } from "../db/drizzle-client.server";
 import { useUserVideo } from "../routes/__tests__/helper";
+import { trpc } from "./client";
 import { testTrpcClient } from "./test-helper";
 
-describe("bookmarks_create", () => {
+describe(trpc.decks_practiceEntriesCount.queryKey, () => {
   const hook = useUserVideo({
     seed: __filename + "bookmarks_create",
   });
@@ -82,7 +83,7 @@ describe("bookmarks_create", () => {
   });
 });
 
-describe("videos_destroy", () => {
+describe(trpc.videos_destroy.mutationKey, () => {
   const hook = useUserVideo({
     seed: __filename + "videos_destroy",
   });
