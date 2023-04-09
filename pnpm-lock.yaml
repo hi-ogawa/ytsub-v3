@@ -1,19 +1,5 @@
 lockfileVersion: '6.0'
 
-patchedDependencies:
-  '@remix-run/dev@1.4.1':
-    hash: stojxe6rvkuiyvdec5abatvvv4
-    path: patches/@remix-run__dev@1.4.1.patch
-  '@remix-run/node@1.4.1':
-    hash: tutenudqr6qo3f7c7butytgm7m
-    path: patches/@remix-run__node@1.4.1.patch
-  '@remix-run/serve@1.4.1':
-    hash: yjdvfjiu2lmiptxkd6bjomzlcu
-    path: patches/@remix-run__serve@1.4.1.patch
-  '@remix-run/server-runtime@1.4.1':
-    hash: wpwhenlchb2zoxxbk7yaxttpi4
-    path: patches/@remix-run__server-runtime@1.4.1.patch
-
 dependencies:
   '@badrap/bar-of-progress':
     specifier: ^0.2.2
@@ -32,13 +18,13 @@ dependencies:
     version: 1.2.0(react@18.2.0)
   '@remix-run/node':
     specifier: 1.4.1
-    version: 1.4.1(patch_hash=tutenudqr6qo3f7c7butytgm7m)(react-dom@18.2.0)(react@18.2.0)
+    version: 1.4.1(react-dom@18.2.0)(react@18.2.0)
   '@remix-run/react':
     specifier: 1.4.1
     version: 1.4.1(react-dom@18.2.0)(react@18.2.0)
   '@remix-run/server-runtime':
     specifier: 1.4.1
-    version: 1.4.1(patch_hash=wpwhenlchb2zoxxbk7yaxttpi4)(react-dom@18.2.0)(react@18.2.0)
+    version: 1.4.1(react-dom@18.2.0)(react@18.2.0)
   '@remix-run/vercel':
     specifier: 1.4.1
     version: 1.4.1(@vercel/node@1.15.3)(react-dom@18.2.0)(react@18.2.0)
@@ -127,10 +113,10 @@ devDependencies:
     version: 1.31.2
   '@remix-run/dev':
     specifier: 1.4.1
-    version: 1.4.1(patch_hash=stojxe6rvkuiyvdec5abatvvv4)(@babel/preset-env@7.21.4)(react-dom@18.2.0)(react@18.2.0)
+    version: 1.4.1(@babel/preset-env@7.21.4)(react-dom@18.2.0)(react@18.2.0)
   '@remix-run/serve':
     specifier: 1.4.1
-    version: 1.4.1(patch_hash=yjdvfjiu2lmiptxkd6bjomzlcu)(react-dom@18.2.0)(react@18.2.0)
+    version: 1.4.1(react-dom@18.2.0)(react@18.2.0)
   '@tsconfig/strictest':
     specifier: ^1.0.2
     version: 1.0.2
@@ -2171,7 +2157,7 @@ packages:
     resolution: {integrity: sha512-a5Sab1C4/icpTZVzZc5Ghpz88yQtGOyNqYXcZgOssB2uuAr+wF/MvN6bgtW32q7HHrvBki+BsZ0OuNv6EV3K9g==}
     dev: true
 
-  /@remix-run/dev@1.4.1(patch_hash=stojxe6rvkuiyvdec5abatvvv4)(@babel/preset-env@7.21.4)(react-dom@18.2.0)(react@18.2.0):
+  /@remix-run/dev@1.4.1(@babel/preset-env@7.21.4)(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-bIq6UPjOJeBp8ifA9MAMGQ4WLjkMOGSqNlomEwmga1VwZUYmx/rZUFy0vqtBdCLSuhTj6tmfWA6b+aMdi1kcew==}
     hasBin: true
     dependencies:
@@ -2180,7 +2166,7 @@ packages:
       '@babel/preset-typescript': 7.16.7(@babel/core@7.17.8)
       '@esbuild-plugins/node-modules-polyfill': 0.1.4(esbuild@0.14.22)
       '@npmcli/package-json': 2.0.0
-      '@remix-run/server-runtime': 1.4.1(patch_hash=wpwhenlchb2zoxxbk7yaxttpi4)(react-dom@18.2.0)(react@18.2.0)
+      '@remix-run/server-runtime': 1.4.1(react-dom@18.2.0)(react@18.2.0)
       cacache: 15.3.0
       chalk: 4.1.2
       chokidar: 3.5.3
@@ -2225,14 +2211,13 @@ packages:
       - supports-color
       - utf-8-validate
     dev: true
-    patched: true
 
   /@remix-run/express@1.4.1(express@4.17.3)(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-nXoAIws+i3GUeAujqJPJNT3l2XZi6wLSmxPua46eeFLnStzk4FyW9Ckqtypzq7WYb+yaOMhXPrTv1puvrAAbLA==}
     peerDependencies:
       express: ^4.17.1
     dependencies:
-      '@remix-run/node': 1.4.1(patch_hash=tutenudqr6qo3f7c7butytgm7m)(react-dom@18.2.0)(react@18.2.0)
+      '@remix-run/node': 1.4.1(react-dom@18.2.0)(react@18.2.0)
       express: 4.17.3
     transitivePeerDependencies:
       - encoding
@@ -2240,10 +2225,10 @@ packages:
       - react-dom
     dev: true
 
-  /@remix-run/node@1.4.1(patch_hash=tutenudqr6qo3f7c7butytgm7m)(react-dom@18.2.0)(react@18.2.0):
+  /@remix-run/node@1.4.1(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-82nujfiZTt7DyceeTWtKRL0L6QtHZy6WnW0zGFnOW2mjCsG9dA166po8X7026VWTa254BxckJLY9GgF+5957Bw==}
     dependencies:
-      '@remix-run/server-runtime': 1.4.1(patch_hash=wpwhenlchb2zoxxbk7yaxttpi4)(react-dom@18.2.0)(react@18.2.0)
+      '@remix-run/server-runtime': 1.4.1(react-dom@18.2.0)(react@18.2.0)
       '@types/busboy': 0.3.2
       '@types/node-fetch': 2.6.2
       '@web-std/file': 3.0.2
@@ -2258,7 +2243,6 @@ packages:
       - encoding
       - react
       - react-dom
-    patched: true
 
   /@remix-run/react@1.4.1(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-SNUQV1jFm8zPtQdVsXOjNwlsyMhr3RAy/5hQOo19G1KAP7eHALmG2dpbm+La1s6oN7ngSdey0ahLnDPHmU0xeQ==}
@@ -2272,7 +2256,7 @@ packages:
       react-router-dom: 6.3.0(react-dom@18.2.0)(react@18.2.0)
     dev: false
 
-  /@remix-run/serve@1.4.1(patch_hash=yjdvfjiu2lmiptxkd6bjomzlcu)(react-dom@18.2.0)(react@18.2.0):
+  /@remix-run/serve@1.4.1(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-K/tGLiT3zPywLIb1nqcJaXioo0xV9/nCCoNPQFiPHnUIAsYcY0sEVRWYct0ff4TlxJkZfJ9wY0xu1K6Vr9rrOw==}
     hasBin: true
     dependencies:
@@ -2286,9 +2270,8 @@ packages:
       - react-dom
       - supports-color
     dev: true
-    patched: true
 
-  /@remix-run/server-runtime@1.4.1(patch_hash=wpwhenlchb2zoxxbk7yaxttpi4)(react-dom@18.2.0)(react@18.2.0):
+  /@remix-run/server-runtime@1.4.1(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-vC5+7IZSNbAQEHC0436O3bYl6DpPAguJT0sSoemHE1jwJ1x+hUej3/k1QjIy1T/bioa6/7eHPggnm0hUlIFX1g==}
     peerDependencies:
       react: '>=16.8'
@@ -2302,14 +2285,13 @@ packages:
       react-router-dom: 6.3.0(react-dom@18.2.0)(react@18.2.0)
       set-cookie-parser: 2.4.8
       source-map: 0.7.4
-    patched: true
 
   /@remix-run/vercel@1.4.1(@vercel/node@1.15.3)(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-4GdQGWSTw+QWkpxm8n0TcuA0XmVxvVYySJdpGQhmsrp/axCQZ+/rKosGkmjhFDkJeel+teXrM0wp7v3PgyzN3A==}
     peerDependencies:
       '@vercel/node': ^1.8.3
     dependencies:
-      '@remix-run/node': 1.4.1(patch_hash=tutenudqr6qo3f7c7butytgm7m)(react-dom@18.2.0)(react@18.2.0)
+      '@remix-run/node': 1.4.1(react-dom@18.2.0)(react@18.2.0)
       '@vercel/node': 1.15.3
     transitivePeerDependencies:
       - encoding
