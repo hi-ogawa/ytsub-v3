@@ -99,6 +99,18 @@ test.describe("decks", () => {
       .click();
     await expect(page).toHaveURL(/\/decks\/\d+\/history-graph$/);
   });
+
+  test("practice", async ({ page }) => {
+    await user.signin(page);
+    await page.goto("/decks");
+    await page.getByRole("link", { name: "Korean" }).click();
+    await page.locator('[data-test="deck-menu-popover-reference"]').click();
+    await page.getByRole("link", { name: "Practice" }).click();
+    await page.getByText("Progress").click();
+    await page.getByText("0 | 140").click();
+    await page.getByRole("button", { name: "AGAIN" }).click();
+    await page.getByText("1 | 139").click();
+  });
 });
 
 // TODO
