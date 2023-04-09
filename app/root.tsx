@@ -1,4 +1,3 @@
-import { typedBoolean } from "@hiogawa/utils";
 import { Compose } from "@hiogawa/utils-react";
 import {
   Form,
@@ -11,7 +10,7 @@ import {
   Scripts,
   useMatches,
 } from "@remix-run/react";
-import type { LinksFunction, MetaFunction } from "@remix-run/server-runtime";
+import type { LinksFunction } from "@remix-run/server-runtime";
 import { atom, useAtom } from "jotai";
 import type React from "react";
 import { Toaster, toast } from "react-hot-toast";
@@ -41,17 +40,6 @@ export const links: LinksFunction = () => {
   ];
 };
 
-export const meta: MetaFunction = () => {
-  [publicConfig.VERCEL_ENV == "preview" && "[PREVIEW]", "ytsub-v3"].filter(
-    typedBoolean
-  );
-  return {
-    title:
-      (publicConfig.VERCEL_ENV === "preview" ? "[PREVIEW] " : "") + "ytsub-v3",
-    viewport: "width=device-width, height=device-height, initial-scale=1",
-  };
-};
-
 //
 // loader
 //
@@ -74,6 +62,14 @@ export default function DefaultComponent() {
     <html lang="en" className="h-full" suppressHydrationWarning>
       <head>
         <meta charSet="utf-8" />
+        <meta
+          name="viewport"
+          content="width=device-width, height=device-height, initial-scale=1.0"
+        />
+        <title>
+          {publicConfig.VERCEL_ENV === "preview" && "[PREVIEW]"}
+          ytsub
+        </title>
         <Meta />
         <Links />
         <ConfigPlaceholder />

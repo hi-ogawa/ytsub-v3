@@ -8,4 +8,11 @@ module.exports = {
   publicPath: buildDir + `public/build`,
   server: process.env.BUILD_VERCEL ? "./app/misc/vercel.ts" : undefined,
   ignoredRouteFiles: ["**/*.test.*"],
+  routes: require("@remix-run/v1-route-convention").createRoutesFromFolders,
+  future: {
+    v2_meta: true,
+    v2_errorBoundary: true,
+    v2_normalizeFormMethod: true,
+    v2_routeConvention: true,
+  },
 };
