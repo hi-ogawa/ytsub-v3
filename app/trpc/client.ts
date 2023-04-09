@@ -42,26 +42,29 @@ export const trpc =
       }
       tinyassert(false, "unreachable");
     })
-  ) as {
+  ) as TrpcProxy;
+
+// prettier-ignore
+type TrpcProxy = {
   [K in keyof TRecord]:
-     TType<K> extends "query"
-      ? {
-          queryKey: K;
-          queryOptions: (input: TInput<K>) => {
-            queryKey: unknown[];
-            queryFn: () => Promise<TOutput<K>>;
-          }
+    TType<K> extends "query"
+    ? {
+        queryKey: K;
+        queryOptions: (input: TInput<K>) => {
+          queryKey: unknown[];
+          queryFn: () => Promise<TOutput<K>>;
         }
-   : TType<K> extends "mutation"
-      ? {
-          mutationKey: K;
-          mutationOptions: () => {
-            mutationKey: unknown[];
-            mutationFn: (input: TInput<K>) => Promise<TOutput<K>>;
-          }
+      }
+  : TType<K> extends "mutation"
+    ? {
+        mutationKey: K;
+        mutationOptions: () => {
+          mutationKey: unknown[];
+          mutationFn: (input: TInput<K>) => Promise<TOutput<K>>;
         }
-   : never
-};
+      }
+  : never
+}
 
 function createProxy(propHandler: (prop: string | symbol) => unknown): unknown {
   return new Proxy(
