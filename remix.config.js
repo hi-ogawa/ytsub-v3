@@ -1,9 +1,11 @@
 const env = process.env.NODE_ENV ?? "development";
+const buildDir = `build/remix/${env}/`;
 
 /** @type {import('@remix-run/dev').AppConfig} */
 module.exports = {
-  serverBuildPath: `build/remix/${env}/server/index.js`,
-  assetsBuildDirectory: `build/remix/${env}/public/build`, // @remix-run/serve is patched to serve this directory
+  serverBuildPath: buildDir + `server/index.js`,
+  assetsBuildDirectory: buildDir + `public/build`,
+  publicPath: buildDir + `public/build`,
   server: process.env.BUILD_VERCEL ? "./app/misc/vercel.ts" : undefined,
-  ignoredRouteFiles: ["**/__tests__/**/*"],
+  ignoredRouteFiles: ["**/*.test.*"],
 };
