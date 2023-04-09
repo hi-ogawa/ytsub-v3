@@ -1,6 +1,9 @@
 lockfileVersion: '6.0'
 
 patchedDependencies:
+  '@remix-run/node@1.15.0':
+    hash: z6mxtllsu73w4y6xnddlyl6j6y
+    path: patches/@remix-run__node@1.15.0.patch
   '@remix-run/server-runtime@1.15.0':
     hash: qalbsgt3akixld37vecooshrwu
     path: patches/@remix-run__server-runtime@1.15.0.patch
@@ -23,7 +26,7 @@ dependencies:
     version: 1.2.0(react@18.2.0)
   '@remix-run/node':
     specifier: 1.15.0
-    version: 1.15.0
+    version: 1.15.0(patch_hash=z6mxtllsu73w4y6xnddlyl6j6y)
   '@remix-run/react':
     specifier: 1.15.0
     version: 1.15.0(react-dom@18.2.0)(react@18.2.0)
@@ -2389,10 +2392,10 @@ packages:
     peerDependencies:
       express: ^4.17.1
     dependencies:
-      '@remix-run/node': 1.15.0
+      '@remix-run/node': 1.15.0(patch_hash=z6mxtllsu73w4y6xnddlyl6j6y)
       express: 4.17.3
 
-  /@remix-run/node@1.15.0:
+  /@remix-run/node@1.15.0(patch_hash=z6mxtllsu73w4y6xnddlyl6j6y):
     resolution: {integrity: sha512-CS0p8T6A2KvMoAW5zzLA/BtNNCsv34A5RJoouJvXK9/o6MriAQ/YSugg6ldS5mec49neSep+CGeL1RS6tL+3NQ==}
     engines: {node: '>=14'}
     dependencies:
@@ -2405,6 +2408,7 @@ packages:
       cookie-signature: 1.2.1
       source-map-support: 0.5.21
       stream-slice: 0.1.2
+    patched: true
 
   /@remix-run/react@1.15.0(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-S0RuIeHvQTqryCZ3KVl8EsIWCqL6/ky1/kmDpN2n5Pdjew2BLC6DX7OdrY1ZQjbzOMHAROsZlyaSSVXCItunag==}
@@ -2464,7 +2468,7 @@ packages:
     peerDependencies:
       '@vercel/node': ^1.8.3 || ^2.4.0
     dependencies:
-      '@remix-run/node': 1.15.0
+      '@remix-run/node': 1.15.0(patch_hash=z6mxtllsu73w4y6xnddlyl6j6y)
       '@vercel/node': 1.15.3
     dev: false
 
