@@ -68,16 +68,16 @@ test.describe("decks", () => {
 
     // show add to deck modal
     await page
-      .locator("data-test=video-component-popover-button >> nth=0")
+      .locator("data-test=video-component-popover-button >> nth=1")
       .click();
     await page
-      .locator("data-test=video-component-add-to-deck-button >> nth=0")
+      .locator('[data-test="video-component-add-to-deck-button"]')
       .click();
 
-    // assert "add to deck" component in modal
-    await page.waitForSelector(
-      "data-test=modal >> data-test=add-to-deck-component"
-    );
+    // add to deck
+    page.on("dialog", (dialog) => dialog.accept());
+    await page.getByRole("button", { name: "Korean (56)" }).click();
+    await page.getByText("Added 0 to a deck").click();
   });
 
   test("show-deck => pagination => deck-history", async ({ page }) => {
