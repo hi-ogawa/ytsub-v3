@@ -20,7 +20,6 @@ import { useModal } from "../../components/modal";
 import { PopoverSimple } from "../../components/popover";
 import {
   CaptionEntryTable,
-  Q,
   UserTable,
   VideoTable,
   getVideoAndCaptionEntries,
@@ -80,49 +79,6 @@ export const loader = makeLoader(Controller, async function () {
   });
   return redirect(R["/"]);
 });
-
-//
-// action
-//
-
-const Z_ACTION_REQUEST = z.object({
-  destroy: z.boolean(),
-});
-
-export const action = makeLoader(Controller, async function () {
-  tinyassert(this.request.method === "POST");
-  const { id } = Z_PARAMS.parse(this.args.params);
-  const { destroy } = Z_ACTION_REQUEST.parse(await this.request.json());
-  tinyassert(destroy);
-
-  const user = await this.currentUser();
-  tinyassert(user);
-
-  const video = await Q.videos().where({ id, userId: user.id }).first();
-  tinyassert(video);
-
-  await Promise.all([
-    Q.videos().delete().where({ id, userId: user.id }),
-    Q.captionEntries().delete().where("videoId", id),
-    Q.bookmarkEntries().delete().where("videoId", id),
-  ]);
-  return null;
-});
-
-// client query
-export function createDeleteVideoMutation() {
-  const url = R["/videos/$id"];
-  return {
-    mutationKey: [String(url)],
-    mutationFn: async (req: { videoId: number }) => {
-      const res = await fetch(url(req.videoId), {
-        method: "POST",
-        body: JSON.stringify({ destroy: true }),
-      });
-      tinyassert(res.ok);
-    },
-  };
-}
 
 //
 // component

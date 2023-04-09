@@ -1,10 +1,9 @@
 import { objectOmit, objectPick, tinyassert } from "@hiogawa/utils";
 import { describe, expect, it } from "vitest";
-import { E, T, db } from "../../db/drizzle-client.server";
 import type { CaptionEntryTable, VideoTable } from "../../db/models";
 import { deserialize } from "../../utils/controller-utils";
-import { action, loader } from "../videos/$id";
-import { useUserVideo, useVideo } from "./helper";
+import { loader } from "../videos/$id";
+import { useVideo } from "./helper";
 import { testLoader } from "./helper";
 
 describe("videos/id.loader", () => {
@@ -57,29 +56,5 @@ describe("videos/id.loader", () => {
         },
       ]
     `);
-  });
-});
-
-describe("videos/id.action", () => {
-  const hook = useUserVideo({
-    seed: __filename + "videos/id.action",
-  });
-
-  it("delete", async () => {
-    function getVideos() {
-      return db.select().from(T.videos).where(E.eq(T.videos.id, hook.video.id));
-    }
-
-    await expect(getVideos()).resolves.toHaveLength(1);
-
-    const res = await testLoader(action, {
-      params: { id: String(hook.video.id) },
-      json: { destroy: true },
-      transform: hook.signin,
-    });
-    tinyassert(res instanceof Response);
-    tinyassert(res.ok);
-
-    await expect(getVideos()).resolves.toHaveLength(0);
   });
 });
