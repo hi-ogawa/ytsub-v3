@@ -2,9 +2,9 @@ import { tinyassert } from "@hiogawa/utils";
 import { sql } from "drizzle-orm";
 import { z } from "zod";
 import { E, T, db, findOne } from "../db/drizzle-client.server";
-import { middlewares } from "./context.server";
-import { routerFactory } from "./factory.server";
-import { procedureBuilder } from "./factory.server";
+import { middlewares } from "./context";
+import { routerFactory } from "./factory";
+import { procedureBuilder } from "./factory";
 
 // TODO: figure out file organization (put all routes here for now)
 

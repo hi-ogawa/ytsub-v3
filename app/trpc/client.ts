@@ -1,6 +1,6 @@
 import { createTRPCProxyClient, httpLink } from "@trpc/client";
 import superjson from "superjson";
-import type { trpcApp } from "./app.server";
+import type { trpcApp } from "./server";
 
 // cf. https://trpc.io/docs/client/setup
 

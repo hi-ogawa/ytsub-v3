@@ -4,7 +4,7 @@ import type { FetchCreateContextFnOptions } from "@trpc/server/adapters/fetch";
 import type { TT } from "../db/drizzle-client.server";
 import { getSessionUser } from "../utils/auth";
 import { getRequestSession } from "../utils/session-utils";
-import { middlewareFactory } from "./factory.server";
+import { middlewareFactory } from "./factory";
 
 export type TrpcAppContext = {
   session: Session;

@@ -1,6 +1,6 @@
 import { initTRPC } from "@trpc/server";
 import superjson from "superjson";
-import type { TrpcAppContext } from "./context.server";
+import type { TrpcAppContext } from "./context";
 
 // dedicated factory exports to break dependency cycle
 

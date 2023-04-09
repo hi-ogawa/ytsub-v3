@@ -1,7 +1,7 @@
 import type { ActionFunction, LoaderFunction } from "@remix-run/server-runtime";
 import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
-import { trpcApp } from "../../trpc/app.server";
-import { createTrpcAppContext } from "../../trpc/context.server";
+import { createTrpcAppContext } from "../../trpc/context";
+import { trpcApp } from "../../trpc/server";
 
 // catch-all trpc endpoint (cf. https://trpc.io/docs/server/adapters/fetch#remix)
 
