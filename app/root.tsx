@@ -13,7 +13,6 @@ import {
 } from "@remix-run/react";
 import type { LinksFunction, MetaFunction } from "@remix-run/server-runtime";
 import { atom, useAtom } from "jotai";
-import { last } from "lodash";
 import type React from "react";
 import { Toaster, toast } from "react-hot-toast";
 import { Drawer } from "./components/drawer";
@@ -31,7 +30,7 @@ import { getFlashMessages } from "./utils/flash-message";
 import { useFlashMessages } from "./utils/flash-message-hook";
 import { RootLoaderData, useRootLoaderData } from "./utils/loader-utils";
 import { cls } from "./utils/misc";
-import type { Match } from "./utils/page-handle";
+import type { PageHandle } from "./utils/page-handle";
 
 export const links: LinksFunction = () => {
   // prettier-ignore
@@ -110,17 +109,17 @@ function Root() {
   useFlashMessages(data.flashMessages);
 
   // `PageHandle` of the leaf compoment
-  const matches: Match[] = useMatches();
-  const { navBarTitle, navBarMenu } = last(matches)?.handle ?? {};
+  const matches = useMatches();
+  const handle: PageHandle = matches.at(-1)?.handle ?? {};
 
   return (
     <>
       <TopProgressBarRemix />
       <div className="h-full flex flex-col">
         <Navbar
-          title={navBarTitle?.()}
+          title={handle.navBarTitle?.()}
           user={data.currentUser}
-          menu={navBarMenu?.()}
+          menu={handle.navBarMenu?.()}
         />
         <div className="flex-[1_0_0] flex flex-col" data-test="main">
           <div className="w-full flex-[1_0_0] h-full overflow-y-auto">
