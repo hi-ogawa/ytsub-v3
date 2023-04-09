@@ -5,6 +5,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import React from "react";
 import type { PaginationMetadata, VideoTable } from "../db/models";
 import { R } from "../misc/routes";
+import { useDocumentEvent } from "../utils/hooks";
 import { cls } from "../utils/misc";
 import { toNewPages } from "../utils/pagination";
 import { toQuery } from "../utils/url-data";
@@ -192,10 +193,19 @@ export function QueryClientWrapper({ children }: React.PropsWithChildren) {
       })
   );
 
+  const [showDevtools, setShowDevtools] = React.useState(false);
+
+  // alt + shift + q to toggle
+  useDocumentEvent("keyup", (e) => {
+    if (e.altKey && e.key === "Q") {
+      setShowDevtools((prev) => !prev);
+    }
+  });
+
   return (
     <QueryClientProvider client={queryClient}>
       {children}
-      {false && <ReactQueryDevtools />}
+      {showDevtools && <ReactQueryDevtools />}
     </QueryClientProvider>
   );
 }
