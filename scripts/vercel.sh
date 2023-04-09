@@ -3,10 +3,10 @@ set -eux -o pipefail
 
 # cleanup
 rm -rf build/remix/production
-rm -rf build/css/production
+rm -rf build/css
 
 # css
-NODE_ENV=production pnpm build:css
+pnpm build:css
 
 # default "node-cjs" build with custom server main
 NODE_ENV=production BUILD_VERCEL=1 npx remix build
