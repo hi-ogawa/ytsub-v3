@@ -17,7 +17,7 @@ import type {
   VideoTable,
 } from "../../db/models";
 import { R } from "../../misc/routes";
-import { trpcQueryOptions } from "../../trpc/client";
+import { trpcMutationOptions, trpcQueryOptions } from "../../trpc/client";
 import { Controller, makeLoader } from "../../utils/controller-utils";
 import { toastInfo } from "../../utils/flash-message-hook";
 import { useDeserialize } from "../../utils/hooks";
@@ -28,7 +28,6 @@ import {
   PaginationParams,
 } from "../../utils/pagination";
 import { createNewPracticeEntryMutation } from "../decks/$id/new-practice-entry";
-import { createDeleteVideoMutation } from "./$id";
 
 export const handle: PageHandle = {
   navBarTitle: () => "Your Videos",
@@ -136,7 +135,7 @@ function VideoComponentExtra({
 }) {
   const navigate = useNavigate();
   const deleteVideoMutation = useMutation({
-    ...createDeleteVideoMutation(),
+    ...trpcMutationOptions("videos_destroy"),
     onSuccess: () => {
       toast.success("Successfully deleted a video");
       navigate(R["/videos"]); // refetch

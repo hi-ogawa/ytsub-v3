@@ -2,6 +2,7 @@ import { tinyassert } from "@hiogawa/utils";
 import { sql } from "drizzle-orm";
 import { z } from "zod";
 import { E, T, db, findOne } from "../db/drizzle-client.server";
+import { Q } from "../db/models";
 import { middlewares } from "./context";
 import { routerFactory } from "./factory";
 import { procedureBuilder } from "./factory";
@@ -89,5 +90,26 @@ export const trpcApp = routerFactory({
       }));
 
       return results;
+    }),
+
+  videos_destroy: procedureBuilder
+    .use(middlewares.requireUser)
+    .input(
+      z.object({
+        videoId: z.number().int(),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      const id = input.videoId;
+      const userId = ctx.user.id;
+
+      const video = await Q.videos().where({ id, userId }).first();
+      tinyassert(video);
+
+      await Promise.all([
+        Q.videos().delete().where({ id, userId }),
+        Q.captionEntries().delete().where("videoId", id),
+        Q.bookmarkEntries().delete().where("videoId", id),
+      ]);
     }),
 });

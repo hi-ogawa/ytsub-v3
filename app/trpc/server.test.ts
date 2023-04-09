@@ -4,9 +4,9 @@ import { E, T, db } from "../db/drizzle-client.server";
 import { useUserVideo } from "../routes/__tests__/helper";
 import { testTrpcClient } from "./test-helper";
 
-describe("createBookmark", () => {
+describe("bookmarks_create", () => {
   const hook = useUserVideo({
-    seed: __filename,
+    seed: __filename + "bookmarks_create",
   });
 
   it("basic", async () => {
@@ -79,5 +79,26 @@ describe("createBookmark", () => {
         "value": [TRPCError: require user],
       }
     `);
+  });
+});
+
+describe("videos_destroy", () => {
+  const hook = useUserVideo({
+    seed: __filename + "videos_destroy",
+  });
+
+  function getVideos() {
+    return db.select().from(T.videos).where(E.eq(T.videos.id, hook.video.id));
+  }
+
+  it("basic", async () => {
+    await expect(getVideos()).resolves.toHaveLength(1);
+
+    const trpc = await testTrpcClient({ user: hook.user });
+    await trpc.videos_destroy({
+      videoId: hook.video.id,
+    });
+
+    await expect(getVideos()).resolves.toHaveLength(0);
   });
 });
