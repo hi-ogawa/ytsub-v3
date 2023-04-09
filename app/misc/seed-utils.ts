@@ -155,7 +155,7 @@ async function importDeck(userId: number, data: ExportDeckData) {
 //
 
 // make db/seed-download
-const DEFAULT_SEED_FILE = "misc/db/export/ytsub-deck-export--Korean.txt";
+export const DEFAULT_SEED_FILE = "misc/db/export/ytsub-deck-export--Korean.txt";
 
 export async function importSeed(userId: number) {
   const fileDataRaw = await fs.promises.readFile(DEFAULT_SEED_FILE, "utf-8");
