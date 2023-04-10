@@ -20,8 +20,8 @@ docker run --rm --network=host jwilder/dockerize:0.6.1 -wait tcp://localhost:300
 # run e2e test
 playwright test "${@}"
 
-# kill remix server
-curl "http://localhost:$PORT/kill"
+# stop remix server
+curl "http://localhost:$PORT/dev/stop"
 
 # wait for c8 to create coverage
 wait "$coverage_pid"
