@@ -7,7 +7,6 @@
 // prettier-ignore
 export const R = {
   "/": "/",
-  "/health-check": "/health-check",
   "/videos": "/videos",
   "/videos/new": "/videos/new",
   "/videos/$id": (id: number) => `/videos/${id}`,
