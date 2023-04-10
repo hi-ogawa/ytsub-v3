@@ -5,7 +5,7 @@ import {
   fetchVideoMetadata,
   ttmlToEntries,
   ttmlsToCaptionEntries,
-} from "../youtube";
+} from "./youtube";
 
 describe("fetchVideoMetadata", () => {
   it("basic", async () => {
