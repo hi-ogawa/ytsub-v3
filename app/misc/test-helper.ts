@@ -1,18 +1,18 @@
 import { newPromiseWithResolvers, tinyassert } from "@hiogawa/utils";
 import type { LoaderFunction } from "@remix-run/server-runtime";
 import { afterAll, beforeAll } from "vitest";
-import { E, T, db } from "../../db/drizzle-client.server";
+import { E, T, db } from "../db/drizzle-client.server";
 import {
   CaptionEntryTable,
   UserTable,
   VideoTable,
   getVideoAndCaptionEntries,
   insertVideoAndCaptionEntries,
-} from "../../db/models";
-import { useUserImpl } from "../../misc/helper";
-import { createUserCookie } from "../../utils/auth";
-import { toQuery } from "../../utils/url-data";
-import { NewVideo, fetchCaptionEntries } from "../../utils/youtube";
+} from "../db/models";
+import { createUserCookie } from "../utils/auth";
+import { toQuery } from "../utils/url-data";
+import { NewVideo, fetchCaptionEntries } from "../utils/youtube";
+import { useUserImpl } from "./test-helper-common";
 
 const DUMMY_URL = "http://localhost:3000";
 

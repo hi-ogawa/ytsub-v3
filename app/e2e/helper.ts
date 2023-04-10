@@ -1,18 +1,18 @@
 import { newPromiseWithResolvers } from "@hiogawa/utils";
 import { Page, test } from "@playwright/test";
 import type { UserTable } from "../db/models";
-import { useUserImpl } from "../misc/helper";
+import { useUserImpl } from "../misc/test-helper-common";
 import { testSetupCommon } from "../misc/test-setup-common";
 import { createUserCookie } from "../utils/auth";
 
 type Test = typeof test;
 
+// TODO: avoid e2e code to depend on application code
 // need to setup for each test since playwright cannot inject global in `globalSetup`
 test.beforeAll(async () => {
   await testSetupCommon();
 });
 
-// cf. `useUser` in routes/__tests__/helper.ts
 export function useUserE2E(
   test: Test,
   ...args: Parameters<typeof useUserImpl>

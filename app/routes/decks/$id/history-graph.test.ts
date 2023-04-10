@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { Q } from "../../db/models";
-import { sha256 } from "../../utils/auth";
-import { loader } from "../decks/$id/history-graph";
-import { testLoader, useUser } from "./helper";
+import { Q } from "../../../db/models";
+import { testLoader, useUser } from "../../../misc/test-helper";
+import { sha256 } from "../../../utils/auth";
+import { loader } from "./history-graph";
 
 describe("decks/id/history-graph.loader", () => {
   const user = useUser({
