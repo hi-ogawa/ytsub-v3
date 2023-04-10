@@ -16,6 +16,6 @@ module.exports = {
   routes: (defineRoutes) =>
     require("@remix-run/v1-route-convention").createRoutesFromFolders(
       defineRoutes,
-      { ignoredFilePatterns: ["**/__tests__/**/*"] }
+      { ignoredFilePatterns: ["**/*.test.*"] }
     ),
 };
