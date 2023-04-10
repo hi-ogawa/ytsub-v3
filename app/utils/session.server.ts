@@ -8,7 +8,7 @@ import { serverConfig } from "./config";
 
 export let sessionStore: SessionStorage;
 
-export const initializeSessionStorage = once(() => {
+export const initializeSessionStore = once(() => {
   sessionStore = createCookieSessionStorage({
     cookie: {
       httpOnly: true,
@@ -29,10 +29,9 @@ export async function getResponseSession(response: Response): Promise<Session> {
   return sessionStore.getSession(response.headers.get("set-cookie"));
 }
 
-export async function withResponseSession(
+export async function setResponseSession(
   response: Response,
   session: Session
-): Promise<Response> {
+): Promise<void> {
   response.headers.set("set-cookie", await sessionStore.commitSession(session));
-  return response;
 }
