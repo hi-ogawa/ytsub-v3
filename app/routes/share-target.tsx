@@ -1,13 +1,13 @@
-import { useCatch } from "@remix-run/react";
-import { LoaderFunction, json, redirect } from "@remix-run/server-runtime";
+import { redirect } from "@remix-run/server-runtime";
 import { R } from "../misc/routes";
+import { Controller, makeLoader } from "../utils/controller-utils";
 import { parseVideoId } from "../utils/youtube";
 
 // see manifest.json
 const SHARE_TARGET_TEXT = "share-target-text";
 
-export const loader: LoaderFunction = async ({ request }) => {
-  const shareTargetText = new URL(request.url).searchParams.get(
+export const loader = makeLoader(Controller, function () {
+  const shareTargetText = new URL(this.request.url).searchParams.get(
     SHARE_TARGET_TEXT
   );
   if (shareTargetText) {
@@ -16,10 +16,6 @@ export const loader: LoaderFunction = async ({ request }) => {
       return redirect(R["/videos/new"] + `?videoId=${videoId}`);
     }
   }
-  throw json({ message: "Invalid share data" });
-};
-
-export function CatchBoundary() {
-  const { data } = useCatch();
-  return <div>ERROR: {data.message}</div>;
-}
+  this.flash({ variant: "error", content: "Failed to handle share" });
+  return redirect(R["/"]);
+});
