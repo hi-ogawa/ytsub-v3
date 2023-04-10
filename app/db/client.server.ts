@@ -12,5 +12,9 @@ declare let globalThis: {
 export let client = throwGetterProxy as Knex;
 
 export const initializeKnexClient = once(() => {
-  client = globalThis.__knexClient ??= knex(knexfile());
+  client = globalThis.__knexClient ??= inner();
+
+  function inner() {
+    return knex(knexfile());
+  }
 });

@@ -248,15 +248,15 @@ declare let globalThis: {
 export let db = throwGetterProxy as MySql2Database;
 
 export const initializeDrizzleClient = once(async () => {
-  async function wrapper() {
+  db = globalThis.__db ??= await inner();
+
+  async function inner() {
     const config = knexfile();
     const connection = await createConnection(config.connection as any);
     return drizzle(connection, {
-      // enable query logging by DEBUG=drizzle
-      logger: process.env["DEBUG"]?.includes("drizzle"),
+      logger: process.env["DEBUG"]?.includes("drizzle"), // enable query logging by DEBUG=drizzle
     });
   }
-  db = globalThis.__db ??= await wrapper();
 });
 
 export async function finalizeDrizzleClient() {
