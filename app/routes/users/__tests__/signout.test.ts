@@ -1,7 +1,7 @@
 import { tinyassert } from "@hiogawa/utils";
 import { describe, expect, it } from "vitest";
+import { testLoader, useUser } from "../../../misc/test-helper";
 import { getResponseSession } from "../../../utils/session-utils";
-import { testLoader, useUser } from "../../__tests__/helper";
 import { action } from "../signout";
 
 describe("signout.action", () => {

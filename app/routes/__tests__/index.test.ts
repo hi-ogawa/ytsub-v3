@@ -1,8 +1,8 @@
 import { tinyassert } from "@hiogawa/utils";
 import { beforeAll, describe, expect, it } from "vitest";
 import { Q } from "../../db/models";
+import { testLoader } from "../../misc/test-helper";
 import { loader } from "../index";
-import { testLoader } from "./helper";
 
 // TODO: use data
 describe("index.loader", () => {

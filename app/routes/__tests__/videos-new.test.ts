@@ -3,9 +3,9 @@ import { last, omit } from "lodash";
 import { beforeAll, describe, expect, it } from "vitest";
 import { E, T, db } from "../../db/drizzle-client.server";
 import { Q } from "../../db/models";
+import { testLoader, useUser } from "../../misc/test-helper";
 import { getResponseSession } from "../../utils/session-utils";
 import { action, loader } from "../videos/new";
-import { testLoader, useUser } from "./helper";
 
 describe("videos/new.loader", () => {
   it("basic", async () => {

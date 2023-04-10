@@ -1,7 +1,7 @@
 import { tinyassert } from "@hiogawa/utils";
 import { describe, expect, it } from "vitest";
 import { Q } from "../../db/models";
-import { useUserVideo } from "../../routes/__tests__/helper";
+import { useUserVideo } from "../../misc/test-helper";
 import { PracticeSystem } from "../practice-system";
 
 // >>> import datetime

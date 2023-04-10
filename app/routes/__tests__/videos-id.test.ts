@@ -1,10 +1,10 @@
 import { objectOmit, objectPick, tinyassert } from "@hiogawa/utils";
 import { describe, expect, it } from "vitest";
 import type { CaptionEntryTable, VideoTable } from "../../db/models";
+import { useVideo } from "../../misc/test-helper";
+import { testLoader } from "../../misc/test-helper";
 import { deserialize } from "../../utils/controller-utils";
 import { loader } from "../videos/$id";
-import { useVideo } from "./helper";
-import { testLoader } from "./helper";
 
 describe("videos/id.loader", () => {
   const videoHook = useVideo();

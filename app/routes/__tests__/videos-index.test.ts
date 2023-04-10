@@ -1,7 +1,7 @@
 import { tinyassert } from "@hiogawa/utils";
 import { describe, expect, it } from "vitest";
+import { testLoader, useUser } from "../../misc/test-helper";
 import { loader } from "../videos/index";
-import { testLoader, useUser } from "./helper";
 
 // TODO: use data
 describe("videos/index.loader", () => {
