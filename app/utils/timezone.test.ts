@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { exec } from "../node.server";
-import { TIMEZONE_RE, getMinutesOffset, getTimezone } from "../timezone";
+import { exec } from "./node.server";
+import { TIMEZONE_RE, getMinutesOffset, getTimezone } from "./timezone";
 
 describe("getTimezone", () => {
   it("basic", async () => {
