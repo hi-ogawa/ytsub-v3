@@ -4,7 +4,7 @@ import type { CaptionEntryTable, VideoTable } from "../../db/models";
 import { useVideo } from "../../misc/test-helper";
 import { testLoader } from "../../misc/test-helper";
 import { deserialize } from "../../utils/controller-utils";
-import { loader } from "../videos/$id";
+import { loader } from "./$id";
 
 describe("videos/id.loader", () => {
   const videoHook = useVideo();

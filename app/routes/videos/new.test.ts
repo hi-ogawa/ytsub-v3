@@ -5,7 +5,7 @@ import { E, T, db } from "../../db/drizzle-client.server";
 import { Q } from "../../db/models";
 import { testLoader, useUser } from "../../misc/test-helper";
 import { getResponseSession } from "../../utils/session-utils";
-import { action, loader } from "../videos/new";
+import { action, loader } from "./new";
 
 describe("videos/new.loader", () => {
   it("basic", async () => {

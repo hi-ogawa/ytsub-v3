@@ -13,7 +13,6 @@ test.beforeAll(async () => {
   await testSetupCommon();
 });
 
-// cf. `useUser` in routes/__tests__/helper.ts
 export function useUserE2E(
   test: Test,
   ...args: Parameters<typeof useUserImpl>

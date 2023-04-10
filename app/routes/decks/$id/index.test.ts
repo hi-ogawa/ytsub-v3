@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { testLoader, useUser } from "../../misc/test-helper";
-import { loader } from "../decks/$id";
+import { testLoader, useUser } from "../../../misc/test-helper";
+import { loader } from "./index";
 
 describe("decks/id.loader", () => {
   const { signin } = useUser({
