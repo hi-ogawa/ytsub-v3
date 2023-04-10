@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it } from "vitest";
 import { T, db } from "../../db/drizzle-client.server";
 import { testLoader } from "../../misc/test-helper";
 import { findByUsername, getSessionUser } from "../../utils/auth";
-import { getSession } from "../../utils/session.server";
+import { getResponseSession } from "../../utils/session.server";
 import { action } from "./register";
 
 describe("register.action", () => {
@@ -36,7 +36,7 @@ describe("register.action", () => {
       expect(res.headers.get("location")).toBe("/");
 
       // verify session user
-      const session = await getSession(res.headers.get("set-cookie"));
+      const session = await getResponseSession(res);
       const sessionUser = await getSessionUser(session);
       expect(sessionUser).toEqual(found);
     });

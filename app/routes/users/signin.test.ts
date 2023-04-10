@@ -4,7 +4,7 @@ import { T, db } from "../../db/drizzle-client.server";
 import type { UserTable } from "../../db/models";
 import { testLoader } from "../../misc/test-helper";
 import { getSessionUser, register } from "../../utils/auth";
-import { getSession } from "../../utils/session.server";
+import { getResponseSession } from "../../utils/session.server";
 import { action } from "./signin";
 
 describe("signin.action", () => {
@@ -26,7 +26,7 @@ describe("signin.action", () => {
       expect(res.headers.get("location")).toBe("/");
 
       // verify session user
-      const session = await getSession(res.headers.get("set-cookie"));
+      const session = await getResponseSession(res);
       const sessionUser = await getSessionUser(session);
       expect(sessionUser).toEqual(user);
     });

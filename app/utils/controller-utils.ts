@@ -10,7 +10,7 @@ import type { UserTable } from "../db/models";
 import { R } from "../misc/routes";
 import { getSessionUser, getSessionUserId } from "./auth";
 import { FlashMessage, pushFlashMessage } from "./flash-message";
-import { getRequestSession, withResponseSession } from "./session-utils";
+import { getRequestSession, withResponseSession } from "./session.server";
 import { fromRequestForm, fromRequestQuery } from "./url-data";
 
 //

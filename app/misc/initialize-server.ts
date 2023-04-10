@@ -6,10 +6,12 @@ import {
   initializeDrizzleClient,
 } from "../db/drizzle-client.server";
 import { initializeConfigServer } from "../utils/config";
+import { initializeSessionStorage } from "../utils/session.server";
 
 export const initializeServer = once(async () => {
   installGlobals();
   initializeConfigServer();
+  initializeSessionStorage();
   await initializeDrizzleClient();
 });
 
