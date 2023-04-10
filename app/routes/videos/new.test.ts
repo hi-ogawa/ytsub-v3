@@ -4,7 +4,7 @@ import { beforeAll, describe, expect, it } from "vitest";
 import { E, T, db } from "../../db/drizzle-client.server";
 import { Q } from "../../db/models";
 import { testLoader, useUser } from "../../misc/test-helper";
-import { getResponseSession } from "../../utils/session-utils";
+import { getResponseSession } from "../../utils/session.server";
 import { action, loader } from "./new";
 
 describe("videos/new.loader", () => {

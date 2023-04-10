@@ -242,23 +242,23 @@ export async function toDeleteQuery<Q extends { getSQL: () => SQL }>(
 
 // persist through dev auto reloading
 declare let globalThis: {
-  __db: any;
+  __drizzleClient: MySql2Database;
 };
 
-export let db: MySql2Database = globalThis.__db ?? throwGetterProxy;
-let dbConnection: Awaited<ReturnType<typeof createConnection>>;
+export let db = throwGetterProxy as typeof globalThis.__drizzleClient;
 
 export const initializeDrizzleClient = once(async () => {
-  if (globalThis.__db) return;
-  const config = knexfile();
-  const connection = await createConnection(config.connection as any);
-  db = globalThis.__db = drizzle(connection, {
-    // enable query logging by DEBUG=drizzle
-    logger: process.env["DEBUG"]?.includes("drizzle"),
-  });
-  dbConnection = connection;
+  db = globalThis.__drizzleClient ??= await inner();
+
+  async function inner() {
+    const config = knexfile();
+    const connection = await createConnection(config.connection as any);
+    return drizzle(connection, {
+      logger: process.env["DEBUG"]?.includes("drizzle"), // enable query logging by DEBUG=drizzle
+    });
+  }
 });
 
 export async function finalizeDrizzleClient() {
-  dbConnection.destroy();
+  (db as any).session.client.destroy();
 }

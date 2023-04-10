@@ -6,7 +6,7 @@ import { E, T, db, findOne } from "../db/drizzle-client.server";
 import type { UserTable } from "../db/models";
 import { AppError } from "./errors";
 import { crypto } from "./node.server";
-import { commitSession, getSession } from "./session.server";
+import { sessionStore } from "./session.server";
 import { DEFAULT_TIMEZONE, TIMEZONE_RE } from "./timezone";
 
 export const USERNAME_MAX_LENGTH = 32;
@@ -139,8 +139,8 @@ export async function getSessionUser(
 
 // TODO: should be sync for cookie storage?
 export async function createUserCookie(user: Pick<UserTable, "id">) {
-  const session = await getSession();
+  const session = await sessionStore.getSession();
   signinSession(session, user);
-  const cookie = await commitSession(session);
+  const cookie = await sessionStore.commitSession(session);
   return cookie;
 }
