@@ -1,7 +1,6 @@
 import { DeckNavBarMenuComponent, requireUserAndDeck } from ".";
 import { Transition } from "@headlessui/react";
 import { Link, useMatches, useNavigate } from "@remix-run/react";
-import { redirect } from "@remix-run/server-runtime";
 import type { ECharts } from "echarts";
 import { range } from "lodash";
 import React from "react";
@@ -39,9 +38,9 @@ export const handle: PageHandle = {
 // TODO
 // - group by PracticeActionType
 // - different date range (e.g. month, year)
-const REQUEST_SCHEMA = z.object({
+const Z_LOADER_REQUEST = z.object({
   page: z.coerce.number().int().optional().default(0), // 0 => this week, 1 => last week, ...
-  now: z.string().optional(), // currently only for testing
+  now: z.coerce.date().optional(), // for testing
 });
 
 interface LoaderData {
@@ -53,14 +52,7 @@ interface LoaderData {
 export const loader = makeLoader(Controller, async function () {
   const [user, deck] = await requireUserAndDeck.apply(this);
 
-  const parsed = REQUEST_SCHEMA.safeParse(this.query());
-  if (!parsed.success) {
-    this.flash({ content: "invalid parameters", variant: "error" });
-    return redirect(R["/decks/$id/history-graph"](deck.id));
-  }
-
-  const { page } = parsed.data;
-  const now = parsed.data.now ? new Date(parsed.data.now) : new Date();
+  const { page, now = new Date() } = Z_LOADER_REQUEST.parse(this.query());
   const begin = Timedelta.make({ days: -7 * (page + 1) }).radd(now);
   const end = Timedelta.make({ days: -7 * page }).radd(now);
 
@@ -74,8 +66,9 @@ export const loader = makeLoader(Controller, async function () {
         count: client.raw("COUNT(0)"), // number
       })
       .where("deckId", deck.id)
-      .where("createdAt", ">", begin)
-      .where("createdAt", "<=", end)
+      // extend range by 1 day to cover timezone offset
+      .where("createdAt", ">", Timedelta.make({ days: -1 }).radd(begin))
+      .where("createdAt", "<=", Timedelta.make({ days: 1 }).radd(end))
       .groupBy("date", "queueType");
 
   const dates = range(7)

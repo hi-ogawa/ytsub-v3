@@ -1,14 +1,14 @@
 {
   "scripts": {
     "dev": "pnpm dev-pre && run-p dev:*",
-    "dev-pre": "pnpm build:css && bash scripts/copy-assets.sh",
+    "dev-pre": "pnpm build:css",
     "dev-e2e": "export NODE_ENV=test && pnpm dev-pre && PORT=3001 pnpm dev:remix",
     "dev-ui": "vite --host",
     "dev:remix": "remix dev",
     "dev-coverage:remix": "c8 -o coverage/e2e-server -r text -r html --exclude build --exclude packages --exclude-after-remap node_modules/.bin/remix dev",
     "tsc": "tsc -b",
     "dev:tsc": "pnpm tsc --watch --preserveWatchOutput",
-    "build:css": "unocss 'app/**/*.tsx' --out-file \"./build/css/${NODE_ENV:-development}/index.css\"",
+    "build:css": "unocss 'app/**/*.tsx' --out-file ./build/css/index.css",
     "dev:css": "pnpm build:css --watch",
     "lint": "run-s lint:*",
     "lint-check": "run-s lint-check:*",
@@ -42,13 +42,16 @@
     "@headlessui/react": "^1.7.13",
     "@hiogawa/utils": "1.4.2-pre.3",
     "@hiogawa/utils-react": "^1.2.0",
-    "@remix-run/node": "1.4.1",
-    "@remix-run/react": "1.4.1",
-    "@remix-run/server-runtime": "1.4.1",
-    "@remix-run/vercel": "1.4.1",
+    "@remix-run/node": "1.15.0",
+    "@remix-run/react": "1.15.0",
+    "@remix-run/server-runtime": "1.15.0",
+    "@remix-run/v1-route-convention": "^0.1.1",
+    "@remix-run/vercel": "1.15.0",
     "@tanstack/react-query": "^4.28.0",
     "@tanstack/react-query-devtools": "^4.28.0",
     "@tanstack/react-virtual": "3.0.0-beta.54",
+    "@trpc/client": "^10.19.1",
+    "@trpc/server": "^10.19.1",
     "@vercel/node": "^1.15.3",
     "bcryptjs": "^2.4.3",
     "drizzle-orm": "^0.22.0",
@@ -73,8 +76,8 @@
     "@hiogawa/unocss-preset-antd": "2.2.1-pre.2",
     "@iconify-json/ri": "^1.1.5",
     "@playwright/test": "^1.31.2",
-    "@remix-run/dev": "1.4.1",
-    "@remix-run/serve": "1.4.1",
+    "@remix-run/dev": "1.15.0",
+    "@remix-run/serve": "1.15.0",
     "@tsconfig/strictest": "^1.0.2",
     "@types/bcryptjs": "^2.4.2",
     "@types/fs-extra": "^9.0.13",
@@ -110,10 +113,9 @@
   },
   "pnpm": {
     "patchedDependencies": {
-      "@remix-run/dev@1.4.1": "patches/@remix-run__dev@1.4.1.patch",
-      "@remix-run/serve@1.4.1": "patches/@remix-run__serve@1.4.1.patch",
-      "@remix-run/node@1.4.1": "patches/@remix-run__node@1.4.1.patch",
-      "@remix-run/server-runtime@1.4.1": "patches/@remix-run__server-runtime@1.4.1.patch"
+      "@remix-run/dev@1.15.0": "patches/@remix-run__dev@1.15.0.patch",
+      "@remix-run/server-runtime@1.15.0": "patches/@remix-run__server-runtime@1.15.0.patch",
+      "@remix-run/node@1.15.0": "patches/@remix-run__node@1.15.0.patch"
     }
   }
 }

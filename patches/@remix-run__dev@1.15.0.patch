@@ -1,0 +1,13 @@
+diff --git a/dist/config.js b/dist/config.js
+index 4127eef2a81df8ea28f6c71f3f98d614dd31ef46..76e6a8d0df63498a8a690af476d66072ff198e94 100644
+--- a/dist/config.js
++++ b/dist/config.js
+@@ -243,7 +243,7 @@ async function readConfig(remixRoot, serverMode = serverModes.ServerMode.Product
+     tsconfigPath = rootJsConfig;
+   }
+   if (tsconfigPath) {
+-    writeConfigDefaults.writeConfigDefaults(tsconfigPath);
++    // writeConfigDefaults.writeConfigDefaults(tsconfigPath);
+   }
+   let future = {
+     unstable_cssModules: ((_appConfig$future5 = appConfig.future) === null || _appConfig$future5 === void 0 ? void 0 : _appConfig$future5.unstable_cssModules) === true,

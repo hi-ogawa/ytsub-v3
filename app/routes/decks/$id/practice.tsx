@@ -14,6 +14,7 @@ import {
   VideoTable,
 } from "../../../db/models";
 import { R } from "../../../misc/routes";
+import { trpc } from "../../../trpc/client";
 import { Controller, makeLoader } from "../../../utils/controller-utils";
 import { useDeserialize } from "../../../utils/hooks";
 import { useLeafLoaderData } from "../../../utils/loader-utils";
@@ -29,7 +30,6 @@ import {
   DeckPracticeStatisticsComponent,
   requireUserAndDeck,
 } from "./index";
-import { createNewPracticeActionMutation } from "./new-practice-action";
 
 export const handle: PageHandle = {
   navBarTitle: () => <NavBarTitleComponent />,
@@ -142,7 +142,7 @@ function PracticeComponent({
 }) {
   const navigate = useNavigate();
   const newPracticeActionMutation = useMutation({
-    ...createNewPracticeActionMutation(),
+    ...trpc.decks_practiceActionsCreate.mutationOptions(),
     onSuccess: () => {
       // reload to proceed to next practice
       navigate(R["/decks/$id/practice"](deck.id));

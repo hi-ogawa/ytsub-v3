@@ -1,4 +1,3 @@
-import { typedBoolean } from "@hiogawa/utils";
 import { Compose } from "@hiogawa/utils-react";
 import {
   Form,
@@ -11,9 +10,8 @@ import {
   Scripts,
   useMatches,
 } from "@remix-run/react";
-import type { LinksFunction, MetaFunction } from "@remix-run/server-runtime";
+import type { LinksFunction } from "@remix-run/server-runtime";
 import { atom, useAtom } from "jotai";
-import { last } from "lodash";
 import type React from "react";
 import { Toaster, toast } from "react-hot-toast";
 import { Drawer } from "./components/drawer";
@@ -31,26 +29,15 @@ import { getFlashMessages } from "./utils/flash-message";
 import { useFlashMessages } from "./utils/flash-message-hook";
 import { RootLoaderData, useRootLoaderData } from "./utils/loader-utils";
 import { cls } from "./utils/misc";
-import type { Match } from "./utils/page-handle";
+import type { PageHandle } from "./utils/page-handle";
 
 export const links: LinksFunction = () => {
   // prettier-ignore
   return [
-    { rel: "stylesheet", href: require("../build/css/" + process.env.NODE_ENV + "/index.css") },
+    { rel: "stylesheet", href: require("../build/css/index.css") },
     { rel: "icon", href: require("./assets/icon-32.png"), sizes: "32x32" },
-    { rel: "manifest", href: "/_copy/manifest.json" },
+    { rel: "manifest", href: "/manifest.json" },
   ];
-};
-
-export const meta: MetaFunction = () => {
-  [publicConfig.VERCEL_ENV == "preview" && "[PREVIEW]", "ytsub-v3"].filter(
-    typedBoolean
-  );
-  return {
-    title:
-      (publicConfig.VERCEL_ENV === "preview" ? "[PREVIEW] " : "") + "ytsub-v3",
-    viewport: "width=device-width, height=device-height, initial-scale=1",
-  };
 };
 
 //
@@ -75,6 +62,13 @@ export default function DefaultComponent() {
     <html lang="en" className="h-full" suppressHydrationWarning>
       <head>
         <meta charSet="utf-8" />
+        <meta
+          name="viewport"
+          content="width=device-width, height=device-height, initial-scale=1.0"
+        />
+        <title>
+          {publicConfig.VERCEL_ENV === "preview" ? "[PREVIEW] Ytsub" : "Ytsub"}
+        </title>
         <Meta />
         <Links />
         <ConfigPlaceholder />
@@ -110,17 +104,17 @@ function Root() {
   useFlashMessages(data.flashMessages);
 
   // `PageHandle` of the leaf compoment
-  const matches: Match[] = useMatches();
-  const { navBarTitle, navBarMenu } = last(matches)?.handle ?? {};
+  const matches = useMatches();
+  const handle: PageHandle = matches.at(-1)?.handle ?? {};
 
   return (
     <>
       <TopProgressBarRemix />
       <div className="h-full flex flex-col">
         <Navbar
-          title={navBarTitle?.()}
+          title={handle.navBarTitle?.()}
           user={data.currentUser}
-          menu={navBarMenu?.()}
+          menu={handle.navBarMenu?.()}
         />
         <div className="flex-[1_0_0] flex flex-col" data-test="main">
           <div className="w-full flex-[1_0_0] h-full overflow-y-auto">

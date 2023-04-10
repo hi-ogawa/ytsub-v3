@@ -1,28 +1,16 @@
 import { tinyassert } from "@hiogawa/utils";
+import { useNavigate } from "@remix-run/react";
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
 import { R } from "../../misc/routes";
-import { importDeckJson } from "../../misc/seed-utils";
-import { Controller, makeLoader } from "../../utils/controller-utils";
+import { _trpc } from "../../trpc/client-internal.client";
 import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 
 export const handle: PageHandle = {
   navBarTitle: () => "Import Deck",
 };
-
-//
-// action
-//
-
-export const action = makeLoader(Controller, async function () {
-  const user = await this.requireUser();
-  const data = JSON.parse(await this.request.text());
-  await importDeckJson(user.id, data);
-  return null;
-});
 
 //
 // component
@@ -47,11 +35,8 @@ function FormComponent() {
       const { fileList } = form.getValues();
       const file = fileList?.[0];
       tinyassert(file);
-      const res = await fetch(R["/decks/import"], {
-        method: "POST",
-        body: file,
-      });
-      tinyassert(res.ok);
+      const data = await file.text();
+      await _trpc.decks_import.mutate({ data });
     },
     {
       onSuccess: () => {
