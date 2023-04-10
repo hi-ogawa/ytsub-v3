@@ -6,10 +6,10 @@ import knexfile from "./knexfile.server";
 // persist through dev auto reloading
 
 declare let globalThis: {
-  __knexClient: any;
+  __knexClient: Knex;
 };
 
-export let client = throwGetterProxy as Knex;
+export let client = throwGetterProxy as typeof globalThis.__knexClient;
 
 export const initializeKnexClient = once(() => {
   client = globalThis.__knexClient ??= inner();

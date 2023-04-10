@@ -242,13 +242,13 @@ export async function toDeleteQuery<Q extends { getSQL: () => SQL }>(
 
 // persist through dev auto reloading
 declare let globalThis: {
-  __db: any;
+  __drizzleClient: MySql2Database;
 };
 
-export let db = throwGetterProxy as MySql2Database;
+export let db = throwGetterProxy as typeof globalThis.__drizzleClient;
 
 export const initializeDrizzleClient = once(async () => {
-  db = globalThis.__db ??= await inner();
+  db = globalThis.__drizzleClient ??= await inner();
 
   async function inner() {
     const config = knexfile();
