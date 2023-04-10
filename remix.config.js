@@ -1,5 +1,3 @@
-patch();
-
 const env = process.env.NODE_ENV ?? "development";
 
 /** @type {import('@remix-run/dev').AppConfig} */
@@ -21,11 +19,3 @@ module.exports = {
       { ignoredFilePatterns: ["**/__tests__/**/*"] }
     ),
 };
-
-function patch() {
-  // silence tsconfig mandatory options (cf. https://github.com/remix-run/remix/pull/5510)
-  const writeConfigDefaults = require("@remix-run/dev/dist/compiler/utils/tsconfig/write-config-defaults.js");
-  writeConfigDefaults.writeConfigDefaults = () => {
-    console.log("[PATCH:remix.config.js] writeConfigDefaults");
-  };
-}
