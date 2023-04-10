@@ -1,10 +1,10 @@
 import { tinyassert } from "@hiogawa/utils";
 import { beforeEach, describe, expect, it } from "vitest";
-import { T, db } from "../../../db/drizzle-client.server";
-import { testLoader } from "../../../misc/test-helper";
-import { findByUsername, getSessionUser } from "../../../utils/auth";
-import { getSession } from "../../../utils/session.server";
-import { action } from "../register";
+import { T, db } from "../../db/drizzle-client.server";
+import { testLoader } from "../../misc/test-helper";
+import { findByUsername, getSessionUser } from "../../utils/auth";
+import { getSession } from "../../utils/session.server";
+import { action } from "./register";
 
 describe("register.action", () => {
   beforeEach(async () => {
