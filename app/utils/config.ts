@@ -1,6 +1,5 @@
 import * as process from "process";
-import { tinyassert } from "@hiogawa/utils";
-import { once } from "lodash";
+import { once, tinyassert } from "@hiogawa/utils";
 import { z } from "zod";
 import { throwGetterProxy } from "./misc";
 

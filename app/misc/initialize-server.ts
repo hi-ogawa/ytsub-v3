@@ -1,6 +1,6 @@
 import { installGlobals } from "@remix-run/node";
 import { once } from "lodash";
-import { client } from "../db/client.server";
+import { client, initializeKnexClient } from "../db/client.server";
 import {
   finalizeDrizzleClient,
   initializeDrizzleClient,
@@ -12,6 +12,7 @@ export const initializeServer = once(async () => {
   installGlobals();
   initializeConfigServer();
   initializeSessionStorage();
+  initializeKnexClient();
   await initializeDrizzleClient();
 });
 
