@@ -60,7 +60,6 @@ export class Controller {
     const response = result instanceof Response ? result : json(result);
     if (!isEqual(controller.session.data, controller.initialSessionData)) {
       await setResponseSession(response, controller.session);
-      return response;
     }
     return response;
   }
@@ -72,7 +71,6 @@ export class Controller {
     if (caught instanceof Response) {
       if (!isEqual(controller.session.data, controller.initialSessionData)) {
         await setResponseSession(caught, controller.session);
-        return caught;
       }
     }
     throw caught;
