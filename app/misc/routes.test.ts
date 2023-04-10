@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { R } from "../routes";
+import { R } from "./routes";
 
 describe("routes", () => {
   it("basic", () => {

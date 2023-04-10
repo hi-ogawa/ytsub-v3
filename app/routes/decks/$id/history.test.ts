@@ -1,7 +1,7 @@
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import { E, T, db } from "../../db/drizzle-client.server";
-import { loader } from "../decks/$id/history";
-import { testLoader, useUser } from "./helper";
+import { E, T, db } from "../../../db/drizzle-client.server";
+import { testLoader, useUser } from "../../../misc/test-helper";
+import { loader } from "./history";
 
 describe("decks/id/history.loader", () => {
   const user = useUser({

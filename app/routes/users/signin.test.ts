@@ -1,11 +1,11 @@
 import { tinyassert } from "@hiogawa/utils";
 import { beforeAll, describe, expect, it } from "vitest";
-import { T, db } from "../../../db/drizzle-client.server";
-import type { UserTable } from "../../../db/models";
-import { getSessionUser, register } from "../../../utils/auth";
-import { getSession } from "../../../utils/session.server";
-import { testLoader } from "../../__tests__/helper";
-import { action } from "../signin";
+import { T, db } from "../../db/drizzle-client.server";
+import type { UserTable } from "../../db/models";
+import { testLoader } from "../../misc/test-helper";
+import { getSessionUser, register } from "../../utils/auth";
+import { getSession } from "../../utils/session.server";
+import { action } from "./signin";
 
 describe("signin.action", () => {
   let user: UserTable;

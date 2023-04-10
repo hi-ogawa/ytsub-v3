@@ -1,7 +1,7 @@
 import { objectPick, wrapPromise } from "@hiogawa/utils";
 import { describe, expect, it } from "vitest";
 import { E, T, db } from "../db/drizzle-client.server";
-import { useUserVideo } from "../routes/__tests__/helper";
+import { useUserVideo } from "../misc/test-helper";
 import { trpc } from "./client";
 import { testTrpcClient } from "./test-helper";
 

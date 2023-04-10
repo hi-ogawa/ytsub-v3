@@ -1,10 +1,10 @@
 import { tinyassert } from "@hiogawa/utils";
 import { describe, expect, it } from "vitest";
-import { loader } from "../videos/index";
-import { testLoader, useUser } from "./helper";
+import { testLoader, useUser } from "../../misc/test-helper";
+import { loader } from "./index";
 
 // TODO: use data
-describe("videos/index.loader", () => {
+describe("decks/index.loader", () => {
   const { signin } = useUser({
     seed: __filename,
   });
@@ -15,13 +15,7 @@ describe("videos/index.loader", () => {
     expect(await res.json()).toMatchInlineSnapshot(`
       {
         "json": {
-          "pagination": {
-            "page": 1,
-            "perPage": 20,
-            "total": 0,
-            "totalPage": 0,
-          },
-          "videos": [],
+          "decks": [],
         },
       }
     `);
