@@ -3,14 +3,10 @@ import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { R } from "../../misc/routes";
+import { trpc } from "../../trpc/client";
 import { Controller, makeLoader } from "../../utils/controller-utils";
 import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
-import {
-  DEFAULT_DECK_OPTIONS,
-  NewDeckRequest,
-  createNewDeckMutation,
-} from "./new-api";
 
 export const handle: PageHandle = {
   navBarTitle: () => "New Deck",
@@ -33,7 +29,7 @@ export default function DefaultComponent() {
   const navigate = useNavigate();
 
   const newDeckMutation = useMutation({
-    ...createNewDeckMutation(),
+    ...trpc.decks_create.mutationOptions(),
     onSuccess: (res) => {
       toast.success("Successfully created a deck");
       navigate(R["/decks/$id"](res.deckId));
@@ -43,10 +39,13 @@ export default function DefaultComponent() {
     },
   });
 
-  const form = useForm<NewDeckRequest>({
+  const form = useForm({
     defaultValues: {
       name: "",
-      ...DEFAULT_DECK_OPTIONS,
+      newEntriesPerDay: 50,
+      reviewsPerDay: 200,
+      easeMultiplier: 2,
+      easeBonus: 1.5,
     },
   });
 

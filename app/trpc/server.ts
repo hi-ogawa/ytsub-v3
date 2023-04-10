@@ -126,6 +126,25 @@ export const trpcApp = routerFactory({
       );
     }),
 
+  decks_create: procedureBuilder
+    .use(middlewares.requireUser)
+    .input(
+      z.object({
+        name: z.string().nonempty(),
+        newEntriesPerDay: z.number().int(),
+        reviewsPerDay: z.number().int(),
+        easeMultiplier: z.number(),
+        easeBonus: z.number(),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      const [{ insertId: deckId }] = await db.insert(T.decks).values({
+        ...input,
+        userId: ctx.user.id,
+      });
+      return { deckId };
+    }),
+
   decks_import: procedureBuilder
     .use(middlewares.requireUser)
     .input(
