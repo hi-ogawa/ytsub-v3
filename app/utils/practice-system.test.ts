@@ -1,8 +1,8 @@
 import { tinyassert } from "@hiogawa/utils";
 import { describe, expect, it } from "vitest";
-import { Q } from "../../db/models";
-import { useUserVideo } from "../../misc/test-helper";
-import { PracticeSystem } from "../practice-system";
+import { Q } from "../db/models";
+import { useUserVideo } from "../misc/test-helper";
+import { PracticeSystem } from "./practice-system";
 
 // >>> import datetime
 // >>> datetime.datetime(year=1991, month=6, day=24, tzinfo=datetime.timezone.utc).timestamp()
