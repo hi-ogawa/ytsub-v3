@@ -1,5 +1,4 @@
 import { DeckNavBarMenuComponent, requireUserAndDeck } from ".";
-import { Debug } from "@hiogawa/utils-react";
 import { Form, useLoaderData } from "@remix-run/react";
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
@@ -63,8 +62,6 @@ function DefaultComponentInner() {
 
   return (
     <div className="w-full max-w-md flex flex-col items-center gap-4">
-      <Debug debug={form.formState} />
-      <Debug debug={form.watch()} />
       <form
         className="flex flex-col border w-full p-6 gap-3"
         data-test="edit-deck-form"
