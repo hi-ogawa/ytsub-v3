@@ -54,11 +54,10 @@ export default function DefaultComponent() {
     },
   });
 
-  // TODO: clickers on SSR?
   const form = useForm({
     defaultValues: {
-      language1: currentUser.language1,
-      language2: currentUser.language2,
+      language1: currentUser.language1 ?? "",
+      language2: currentUser.language2 ?? "",
       timezone: currentUser.timezone,
     },
   });
@@ -96,6 +95,8 @@ export default function DefaultComponent() {
               1st language
               <select
                 className="antd-input p-1"
+                // pass defaultValue explicitly to avoid ssr flickering https://github.com/react-hook-form/react-hook-form/issues/8707
+                defaultValue={form.formState.defaultValues?.language1}
                 {...form.register("language1", { required: true })}
               >
                 <LanguageSelectOptions />
@@ -105,6 +106,7 @@ export default function DefaultComponent() {
               2nd language
               <select
                 className="antd-input p-1"
+                defaultValue={form.formState.defaultValues?.language2}
                 {...form.register("language2", { required: true })}
               >
                 <LanguageSelectOptions />
@@ -133,6 +135,7 @@ export default function DefaultComponent() {
               </div>
               <input
                 className="antd-input p-1"
+                defaultValue={form.formState.defaultValues?.timezone}
                 {...form.register("timezone", { required: true })}
               />
             </div>
