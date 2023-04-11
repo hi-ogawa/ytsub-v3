@@ -47,10 +47,11 @@ export default function DefaultComponent() {
   const updateMutation = useMutation({
     ...trpc.users_update.mutationOptions(),
     onSuccess: () => {
-      toast.success("Successfully updated a setting");
+      toast.success("Successfully updated settings");
+      form.reset({});
     },
     onError: () => {
-      toast.error("Failed to update a setting");
+      toast.error("Failed to update settings");
     },
   });
 
