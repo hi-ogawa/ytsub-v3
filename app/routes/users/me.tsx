@@ -48,6 +48,7 @@ export default function DefaultComponent() {
     onSuccess: () => {
       toast.success("Successfully updated settings");
       form.reset(form.getValues());
+      //
     },
     onError: () => {
       toast.error("Failed to update settings");

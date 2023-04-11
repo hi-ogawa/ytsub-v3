@@ -2,11 +2,12 @@ import { tinyassert } from "@hiogawa/utils";
 import { sql } from "drizzle-orm";
 import { z } from "zod";
 import { E, T, db, findOne } from "../db/drizzle-client.server";
-import { Q } from "../db/models";
+import { Q, filterNewVideo, insertVideoAndCaptionEntries } from "../db/models";
 import { Z_PRACTICE_ACTION_TYPES } from "../db/types";
 import { importDeckJson } from "../misc/seed-utils";
 import { PracticeSystem } from "../utils/practice-system";
 import { TIMEZONE_RE } from "../utils/timezone";
+import { Z_NEW_VIDEO, fetchCaptionEntries } from "../utils/youtube";
 import { middlewares } from "./context";
 import { routerFactory } from "./factory";
 import { procedureBuilder } from "./factory";
@@ -253,6 +254,19 @@ export const trpcApp = routerFactory({
       }));
 
       return results;
+    }),
+
+  videos_create: procedureBuilder
+    .use(middlewares.currentUser)
+    .input(Z_NEW_VIDEO)
+    .mutation(async ({ input, ctx }) => {
+      const [found] = await filterNewVideo(input, ctx.user?.id);
+      if (found) {
+        return { id: found.id, created: false };
+      }
+      const data = await fetchCaptionEntries(input);
+      const id = await insertVideoAndCaptionEntries(input, data, ctx.user?.id);
+      return { id, created: true };
     }),
 
   videos_destroy: procedureBuilder
