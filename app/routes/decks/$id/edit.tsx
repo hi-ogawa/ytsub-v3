@@ -1,5 +1,5 @@
 import { DeckNavBarMenuComponent, requireUserAndDeck } from ".";
-import { Form, useLoaderData } from "@remix-run/react";
+import { useLoaderData, useNavigate } from "@remix-run/react";
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
@@ -57,6 +57,19 @@ function DefaultComponentInner() {
     },
     onError: () => {
       toast.error("Failed to update a deck");
+    },
+  });
+
+  const navigate = useNavigate();
+
+  const deckDestroyMutation = useMutation({
+    ...trpc.decks_destroy.mutationOptions(),
+    onSuccess: () => {
+      toast.success("Successfully deleted a deck");
+      navigate(R["/decks"]);
+    },
+    onError: () => {
+      toast.error("Failed to delete a deck");
     },
   });
 
@@ -139,26 +152,24 @@ function DefaultComponentInner() {
       </div>
       <div className="flex flex-col border w-full p-6 gap-3 border-colorErrorBorder">
         <h1 className="text-lg">Danger Zone</h1>
-        <Form
-          className="flex"
-          action={R["/decks/$id?index"](deck.id)}
-          method="delete"
-          onSubmitCapture={(e) => {
+        <button
+          className={cls(
+            "w-full antd-btn antd-btn-default p-1",
+            deckDestroyMutation.isLoading && "antd-btn-loading"
+          )}
+          disabled={deckDestroyMutation.isLoading}
+          onClick={() => {
             const message = `Are you sure? Please type '${deck.name}' to delete this deck.`;
             const response = window.prompt(message);
             if (response !== deck.name) {
-              e.preventDefault();
               toastInfo("Deletion canceled");
+              return;
             }
+            deckDestroyMutation.mutate(deck);
           }}
         >
-          <button
-            type="submit"
-            className="w-full antd-btn antd-btn-default p-1"
-          >
-            Delete this deck
-          </button>
-        </Form>
+          Delete this deck
+        </button>
       </div>
     </div>
   );

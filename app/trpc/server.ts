@@ -182,6 +182,26 @@ export const trpcApp = routerFactory({
         .where(E.and(E.eq(T.decks.id, id), E.eq(T.decks.userId, ctx.user.id)));
     }),
 
+  decks_destroy: procedureBuilder
+    .use(middlewares.requireUser)
+    .input(
+      z.object({
+        id: z.number().int(),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      const deck = await findUserDeck({
+        deckId: input.id,
+        userId: ctx.user.id,
+      });
+      tinyassert(deck);
+      await db
+        .delete(T.decks)
+        .where(
+          E.and(E.eq(T.decks.id, input.id), E.eq(T.decks.userId, ctx.user.id))
+        );
+    }),
+
   decks_import: procedureBuilder
     .use(middlewares.requireUser)
     .input(
