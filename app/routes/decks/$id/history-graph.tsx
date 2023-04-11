@@ -11,7 +11,8 @@ import {
   PracticeHistoryChartData,
 } from "../../../components/practice-history-chart";
 import { client } from "../../../db/client.server";
-import { DeckTable, PracticeQueueType, Q } from "../../../db/models";
+import { DeckTable, Q } from "../../../db/models";
+import type { PracticeQueueType } from "../../../db/types";
 import { R } from "../../../misc/routes";
 import { Controller, makeLoader } from "../../../utils/controller-utils";
 import { useDeserialize } from "../../../utils/hooks";
