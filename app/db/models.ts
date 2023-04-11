@@ -1,10 +1,9 @@
-import { z } from "zod";
 import type { CaptionEntry, VideoMetadata } from "../utils/types";
 import type { NewVideo } from "../utils/youtube";
 import { client } from "./client.server";
 import { E, T, TT, db, findOne } from "./drizzle-client.server";
 
-// TODO: organize code (move everything to drizzle-client?)
+// TODO: organize code
 
 export type UserTable = TT["users"];
 export type VideoTable = TT["videos"];
@@ -13,21 +12,6 @@ export type BookmarkEntryTable = TT["bookmarkEntries"];
 export type DeckTable = TT["decks"];
 export type PracticeEntryTable = TT["practiceEntries"];
 export type PracticeActionTable = TT["practiceActions"];
-
-// cf. Anki's practice system
-// - https://docs.ankiweb.net/studying.html
-// - https://docs.ankiweb.net/deck-options.html
-export const Z_PRACTICE_ACTION_TYPES = z.enum([
-  "AGAIN",
-  "HARD",
-  "GOOD",
-  "EASY",
-]);
-const Z_PRACTICE_QUEUE_TYPES = z.enum(["NEW", "LEARN", "REVIEW"]);
-export const PRACTICE_ACTION_TYPES = Z_PRACTICE_ACTION_TYPES.options;
-export const PRACTICE_QUEUE_TYPES = Z_PRACTICE_QUEUE_TYPES.options;
-export type PracticeActionType = z.infer<typeof Z_PRACTICE_ACTION_TYPES>;
-export type PracticeQueueType = z.infer<typeof Z_PRACTICE_QUEUE_TYPES>;
 
 export const Q = {
   users: () => client<UserTable>("users"),

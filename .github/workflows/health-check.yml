@@ -10,7 +10,7 @@ jobs:
     container:
       image: badouralix/curl-jq
     steps:
-      - run: curl -sSfL https://ytsub-v3-hiro18181.vercel.app/health-check | jq --exit-status
+      - run: curl -sSfL https://ytsub-v3-hiro18181.vercel.app/dev/health-check | jq --exit-status
 
   # TODO: does it require database write to prevent planetscale from sleeping?
   health-check-db:
@@ -18,4 +18,4 @@ jobs:
     container:
       image: badouralix/curl-jq
     steps:
-      - run: curl -sSfL https://ytsub-v3-hiro18181.vercel.app/health-check-db | jq --exit-status
+      - run: curl -sSfL https://ytsub-v3-hiro18181.vercel.app/dev/health-check-db | jq --exit-status
