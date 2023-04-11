@@ -71,7 +71,10 @@ export default function DefaultComponent() {
           <input
             type="number"
             className="antd-input p-1"
-            {...form.register("newEntriesPerDay", { required: true })}
+            {...form.register("newEntriesPerDay", {
+              required: true,
+              valueAsNumber: true,
+            })}
           />
         </label>
         <label className="flex flex-col gap-1">
@@ -79,7 +82,10 @@ export default function DefaultComponent() {
           <input
             type="number"
             className="antd-input p-1"
-            {...form.register("reviewsPerDay", { required: true })}
+            {...form.register("reviewsPerDay", {
+              required: true,
+              valueAsNumber: true,
+            })}
           />
         </label>
         <button

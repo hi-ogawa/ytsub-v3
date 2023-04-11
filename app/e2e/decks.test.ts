@@ -1,7 +1,7 @@
 import { expect } from "@playwright/test";
 import { DEFAULT_SEED_FILE, importSeed } from "../misc/seed-utils";
 import { test } from "./coverage";
-import { forceDismissToast, useUserE2E } from "./helper";
+import { useUserE2E } from "./helper";
 
 test.describe("decks", () => {
   const user = useUserE2E(test, { seed: __filename });
@@ -13,52 +13,40 @@ test.describe("decks", () => {
 
   test("decks => new-deck => edit-deck", async ({ page }) => {
     await user.signin(page);
-
     await page.goto("/decks");
 
-    await page.locator("data-test=new-deck-link").click();
-
+    // navigate to new deck page
+    await page.locator('[data-test="new-deck-link"]').click();
     await expect(page).toHaveURL("/decks/new");
 
     // create new deck
-    await page
-      .locator('data-test=new-deck-form >> input[name="name"]')
-      .fill("deck-e2e-test");
-    await page
-      .locator('data-test=new-deck-form >> button[type="submit"]')
-      .click();
-    await page.waitForSelector(`"Successfully created a deck"`);
+    await page.getByLabel("Name").fill("deck-e2e-test");
+    await page.getByLabel("New entries per day").fill("40");
+    await page.getByRole("button", { name: "Create" }).click();
+    await page.getByText("Successfully created a deck").click();
     await expect(page).toHaveURL(/\/decks\/\d+$/);
-    await forceDismissToast(page);
 
     // navigate to edit deck page
-    await page.locator("data-test=deck-menu-popover-reference").click();
-    await page
-      .locator("data-test=deck-menu-popover-floating >> text=Edit")
-      .click();
+    await page.locator('[data-test="deck-menu-popover-reference"]').click();
+    await page.getByRole("link", { name: "Edit" }).click();
     await expect(page).toHaveURL(/\/decks\/\d+\/edit$/);
 
     // submit edit deck form
-    await page
-      .locator('data-test=edit-deck-form >> input[name="newEntriesPerDay"]')
-      .fill("25");
-    await page
-      .locator('data-test=edit-deck-form >> button[type="submit"]')
-      .click();
-    await page.waitForSelector(`"Deck updated successfully"`);
-    await expect(page).toHaveURL(/\/decks\/\d+$/);
+    await page.getByLabel("New entries per day").click();
+    await page.getByLabel("New entries per day").fill("");
+    await page.getByLabel("New entries per day").type("25");
+    await page.getByRole("button", { name: "Save" }).click();
+    await page.getByText("Successfully updated a deck").click();
 
     // navigate to "/decks/$id/history-graph"
-    await page.locator("data-test=deck-menu-popover-reference").click();
-    await page
-      .locator("data-test=deck-menu-popover-floating >> text=History")
-      .click();
+    await page.locator('[data-test="deck-menu-popover-reference"]').click();
+    await page.getByRole("link", { name: "History" }).click();
     await expect(page).toHaveURL(/\/decks\/\d+\/history-graph$/);
 
     // navigate to "/decks/$id/history"
     await page.getByRole("combobox").selectOption({ label: "List" });
     await expect(page).toHaveURL(/\/decks\/\d+\/history$/);
-    await expect(page.locator(`data-test=main >> "Empty"`)).toBeVisible();
+    await page.getByText("Empty").click();
   });
 
   test("videos => add-to-deck", async ({ page }) => {

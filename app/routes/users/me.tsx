@@ -43,12 +43,11 @@ export const loader = makeLoader(Controller, async function () {
 export default function DefaultComponent() {
   const currentUser: UserTable = deserialize(useLoaderData());
 
-  // TODO: reset form on success
   const updateMutation = useMutation({
     ...trpc.users_update.mutationOptions(),
     onSuccess: () => {
       toast.success("Successfully updated settings");
-      form.reset({});
+      form.reset(form.getValues());
     },
     onError: () => {
       toast.error("Failed to update settings");

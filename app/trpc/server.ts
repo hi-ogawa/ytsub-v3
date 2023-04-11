@@ -163,6 +163,25 @@ export const trpcApp = routerFactory({
       return { deckId };
     }),
 
+  decks_update: procedureBuilder
+    .use(middlewares.requireUser)
+    .input(
+      z.object({
+        id: z.number().int(),
+        name: z.string().nonempty(),
+        newEntriesPerDay: z.number().int(),
+        reviewsPerDay: z.number().int(),
+        randomMode: z.boolean(),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      const { id, ...rest } = input;
+      await db
+        .update(T.decks)
+        .set(rest)
+        .where(E.and(E.eq(T.decks.id, id), E.eq(T.decks.userId, ctx.user.id)));
+    }),
+
   decks_import: procedureBuilder
     .use(middlewares.requireUser)
     .input(
