@@ -18,11 +18,8 @@ import { createConnection } from "mysql2/promise";
 import { throwGetterProxy } from "../utils/misc";
 import type { PaginationParams } from "../utils/pagination";
 import knexfile from "./knexfile.server";
-import type {
-  PaginationMetadata,
-  PracticeActionType,
-  PracticeQueueType,
-} from "./models";
+import type { PaginationMetadata } from "./models";
+import type { PracticeActionType, PracticeQueueType } from "./types";
 
 //
 // schema utils

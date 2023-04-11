@@ -19,11 +19,11 @@ import {
   DeckTable,
   PaginationMetadata,
   PracticeEntryTable,
-  PracticeQueueType,
   Q,
   UserTable,
   VideoTable,
 } from "../../../db/models";
+import type { PracticeQueueType } from "../../../db/types";
 import { R } from "../../../misc/routes";
 import { Controller, makeLoader } from "../../../utils/controller-utils";
 import { useDeserialize } from "../../../utils/hooks";

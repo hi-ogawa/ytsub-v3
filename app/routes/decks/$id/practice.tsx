@@ -4,15 +4,14 @@ import { useMutation } from "@tanstack/react-query";
 import React from "react";
 import { toast } from "react-hot-toast";
 import { E, T, db, findOne } from "../../../db/drizzle-client.server";
-import {
+import type {
   BookmarkEntryTable,
   CaptionEntryTable,
   DeckTable,
-  PRACTICE_ACTION_TYPES,
-  PracticeActionType,
   PracticeEntryTable,
   VideoTable,
 } from "../../../db/models";
+import { PRACTICE_ACTION_TYPES, PracticeActionType } from "../../../db/types";
 import { R } from "../../../misc/routes";
 import { trpc } from "../../../trpc/client";
 import { Controller, makeLoader } from "../../../utils/controller-utils";

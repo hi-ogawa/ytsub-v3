@@ -2,7 +2,7 @@ import { tinyassert } from "@hiogawa/utils";
 import { useStableRef } from "@hiogawa/utils-react";
 import * as echarts from "echarts";
 import React from "react";
-import type { PracticeQueueType } from "../db/models";
+import type { PracticeQueueType } from "../db/types";
 
 type PracticeHistoryChartDataEntry = {
   date: string;
