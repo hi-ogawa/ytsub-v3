@@ -10,7 +10,7 @@ import type { UserTable } from "../db/models";
 import { R } from "../misc/routes";
 import { getSessionUser, getSessionUserId } from "./auth";
 import { FlashMessage, pushFlashMessage } from "./flash-message";
-import { getRequestSession, withResponseSession } from "./session-utils";
+import { getRequestSession, setResponseSession } from "./session.server";
 import { fromRequestForm, fromRequestQuery } from "./url-data";
 
 //
@@ -59,7 +59,7 @@ export class Controller {
   ): Promise<LoaderResult> {
     const response = result instanceof Response ? result : json(result);
     if (!isEqual(controller.session.data, controller.initialSessionData)) {
-      await withResponseSession(response, controller.session);
+      await setResponseSession(response, controller.session);
     }
     return response;
   }
@@ -70,7 +70,7 @@ export class Controller {
   ): Promise<LoaderResult> {
     if (caught instanceof Response) {
       if (!isEqual(controller.session.data, controller.initialSessionData)) {
-        await withResponseSession(caught, controller.session);
+        await setResponseSession(caught, controller.session);
       }
     }
     throw caught;
