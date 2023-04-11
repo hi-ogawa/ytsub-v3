@@ -16,7 +16,7 @@ export async function exportDeckJson(id: number) {
 
 export async function importDeckJson(userId: number, dataJson: any) {
   const data: any = superjson.deserialize(dataJson);
-  await importDeck(userId, data);
+  return await importDeck(userId, data);
 }
 
 async function exportDeck(id: number) {
@@ -148,6 +148,8 @@ async function importDeck(userId: number, data: ExportDeckData) {
     practiceActionsInsert.insertId,
     practiceActions.map((e) => e.id)
   );
+
+  return deckInsert.insertId;
 }
 
 //
@@ -159,7 +161,7 @@ export const DEFAULT_SEED_FILE = "misc/db/export/ytsub-deck-export--Korean.txt";
 
 export async function importSeed(userId: number) {
   const fileDataRaw = await fs.promises.readFile(DEFAULT_SEED_FILE, "utf-8");
-  await importDeckJson(userId, JSON.parse(fileDataRaw));
+  return await importDeckJson(userId, JSON.parse(fileDataRaw));
 }
 
 //

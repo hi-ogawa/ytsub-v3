@@ -1,79 +1,104 @@
-import { describe, expect, it } from "vitest";
-import { Q } from "../../../db/models";
+import { beforeAll, describe, expect, it } from "vitest";
+import { importSeed } from "../../../misc/seed-utils";
 import { testLoader, useUser } from "../../../misc/test-helper";
-import { sha256 } from "../../../utils/auth";
 import { loader } from "./history-graph";
 
 describe("decks/id/history-graph.loader", () => {
   const user = useUser({
     seed: __filename,
   });
+  let deckId: number;
+
+  beforeAll(async () => {
+    await user.isReady;
+    deckId = await importSeed(user.data.id);
+  });
 
   it("basic", async () => {
-    const [deckId] = await Q.decks().insert({
-      name: "test-" + sha256(__filename),
-      newEntriesPerDay: 20,
-      reviewsPerDay: 200,
-      easeMultiplier: 1.5,
-      easeBonus: 2,
-      userId: user.data.id,
-    });
     const res = await testLoader(loader, {
       params: { id: String(deckId) },
-      query: { now: new Date("2022-05-13T07:00:00+09:00"), page: 1 },
+      query: { now: new Date("2023-04-11T12:00:00+09:00"), page: 3 },
       transform: user.signin,
     });
     const resJson = await res.json();
-    expect(resJson?.json?.data).toMatchInlineSnapshot(`
+    expect(resJson?.json?.datasetSource).toMatchInlineSnapshot(`
       [
         {
-          "LEARN": 0,
-          "NEW": 0,
-          "REVIEW": 0,
-          "date": "2022-04-29",
-          "total": 0,
+          "action-AGAIN": 3,
+          "action-EASY": 0,
+          "action-GOOD": 1,
+          "action-HARD": 10,
+          "date": "2023-03-15",
+          "queue-LEARN": 4,
+          "queue-NEW": 10,
+          "queue-REVIEW": 0,
+          "total": 14,
         },
         {
-          "LEARN": 0,
-          "NEW": 0,
-          "REVIEW": 0,
-          "date": "2022-04-30",
-          "total": 0,
+          "action-AGAIN": 8,
+          "action-EASY": 0,
+          "action-GOOD": 1,
+          "action-HARD": 2,
+          "date": "2023-03-16",
+          "queue-LEARN": 3,
+          "queue-NEW": 8,
+          "queue-REVIEW": 0,
+          "total": 11,
         },
         {
-          "LEARN": 0,
-          "NEW": 0,
-          "REVIEW": 0,
-          "date": "2022-05-01",
-          "total": 0,
+          "action-AGAIN": 1,
+          "action-EASY": 0,
+          "action-GOOD": 1,
+          "action-HARD": 2,
+          "date": "2023-03-17",
+          "queue-LEARN": 0,
+          "queue-NEW": 3,
+          "queue-REVIEW": 1,
+          "total": 4,
         },
         {
-          "LEARN": 0,
-          "NEW": 0,
-          "REVIEW": 0,
-          "date": "2022-05-02",
-          "total": 0,
+          "action-AGAIN": 5,
+          "action-EASY": 0,
+          "action-GOOD": 3,
+          "action-HARD": 2,
+          "date": "2023-03-18",
+          "queue-LEARN": 0,
+          "queue-NEW": 9,
+          "queue-REVIEW": 1,
+          "total": 10,
         },
         {
-          "LEARN": 0,
-          "NEW": 0,
-          "REVIEW": 0,
-          "date": "2022-05-03",
-          "total": 0,
+          "action-AGAIN": 6,
+          "action-EASY": 0,
+          "action-GOOD": 2,
+          "action-HARD": 3,
+          "date": "2023-03-19",
+          "queue-LEARN": 0,
+          "queue-NEW": 10,
+          "queue-REVIEW": 1,
+          "total": 11,
         },
         {
-          "LEARN": 0,
-          "NEW": 0,
-          "REVIEW": 0,
-          "date": "2022-05-04",
-          "total": 0,
+          "action-AGAIN": 7,
+          "action-EASY": 0,
+          "action-GOOD": 1,
+          "action-HARD": 1,
+          "date": "2023-03-20",
+          "queue-LEARN": 4,
+          "queue-NEW": 4,
+          "queue-REVIEW": 1,
+          "total": 9,
         },
         {
-          "LEARN": 0,
-          "NEW": 0,
-          "REVIEW": 0,
-          "date": "2022-05-05",
-          "total": 0,
+          "action-AGAIN": 13,
+          "action-EASY": 0,
+          "action-GOOD": 3,
+          "action-HARD": 6,
+          "date": "2023-03-21",
+          "queue-LEARN": 2,
+          "queue-NEW": 20,
+          "queue-REVIEW": 0,
+          "total": 22,
         },
       ]
     `);

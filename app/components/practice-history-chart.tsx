@@ -2,165 +2,101 @@ import { tinyassert } from "@hiogawa/utils";
 import { useStableRef } from "@hiogawa/utils-react";
 import * as echarts from "echarts";
 import React from "react";
-import type { PracticeQueueType } from "../db/types";
+import { PRACTICE_ACTION_TYPES, PRACTICE_QUEUE_TYPES } from "../db/types";
 
-type PracticeHistoryChartDataEntry = {
+export const PRACTICE_HISTORY_DATASET_KEYS = [
+  "total",
+  ...PRACTICE_QUEUE_TYPES.map((t) => `queue-${t}` as const),
+  ...PRACTICE_ACTION_TYPES.map((t) => `action-${t}` as const),
+] as const;
+
+export type PracticeHistoryChartDatasetKeys =
+  (typeof PRACTICE_HISTORY_DATASET_KEYS)[number];
+
+export type PracticeHistoryChartDataEntry = {
   date: string;
-  total: number;
-} & Record<PracticeQueueType, number>;
+} & Record<PracticeHistoryChartDatasetKeys, number>;
 
-export type PracticeHistoryChartData = PracticeHistoryChartDataEntry[];
-
-export function PracticeHistoryChart(
-  props: {
-    data: PracticeHistoryChartData;
-  } & Omit<React.ComponentProps<typeof EchartsComponent>, "option">
-) {
-  const { data, ...rest } = props;
-  const option = React.useMemo(
-    () => practiceHistoryChartDataToEchartsOption(data),
-    [data]
-  );
-  return <EchartsComponent option={option} {...rest} />;
-}
-
-function practiceHistoryChartDataToEchartsOption(
-  data: PracticeHistoryChartData
-) {
+export function practiceHistoryChartDataToEchartsOption(
+  datasetSource: Partial<PracticeHistoryChartDataEntry>[],
+  mode: "queue" | "action"
+): echarts.EChartsOption {
   return {
-    ...BASE_ECHARTS_OPTION,
     dataset: {
-      dimensions: ["date", "total", "NEW", "LEARN", "REVIEW"],
-      source: data,
+      dimensions: ["date", ...PRACTICE_HISTORY_DATASET_KEYS],
+      source: datasetSource,
     },
+    animation: false,
+    tooltip: {
+      trigger: "axis",
+      axisPointer: {
+        type: "line",
+        label: {
+          backgroundColor: "#6a7985",
+        },
+      },
+      order: "seriesDesc",
+    },
+    grid: {
+      left: "8%",
+      right: "6%",
+      bottom: "8%",
+    },
+    xAxis: {
+      type: "category",
+      boundaryGap: false,
+      axisLabel: {
+        formatter: (value, _index) => {
+          // 2022-05-14 => 05/14
+          const [, m, d] = value.split("-");
+          return m + "/" + d;
+        },
+      },
+    },
+    yAxis: {
+      type: "value",
+      minInterval: 1,
+    },
+    series: [
+      ...(mode === "queue" ? PRACTICE_QUEUE_TYPES : PRACTICE_ACTION_TYPES).map(
+        (t): echarts.LineSeriesOption => ({
+          type: "line",
+          stack: "total",
+          name: t.toLowerCase(),
+          areaStyle: {},
+          emphasis: {
+            disabled: true,
+          },
+          encode: {
+            x: "date",
+            y: `${mode}-${t}`,
+          },
+        })
+      ),
+      // show "total" only in tooltip
+      {
+        type: "line",
+        name: "total",
+        symbol: "none",
+        cursor: "none",
+        color: "#ccc",
+        lineStyle: { opacity: 0 },
+        encode: {
+          x: "date",
+          y: "total",
+        },
+      },
+    ],
   };
 }
-
-const BASE_ECHARTS_OPTION: echarts.EChartsOption = {
-  animation: false,
-  tooltip: {
-    trigger: "axis",
-    axisPointer: {
-      type: "line",
-      label: {
-        backgroundColor: "#6a7985",
-      },
-    },
-    order: "seriesDesc",
-  },
-  grid: {
-    left: "8%",
-    right: "6%",
-    bottom: "8%",
-  },
-  dataset: {},
-  xAxis: {
-    type: "category",
-    boundaryGap: false,
-    axisLabel: {
-      formatter: (value, _index) => {
-        // 2022-05-14 => 05/14
-        const [, m, d] = value.split("-");
-        return m + "/" + d;
-      },
-    },
-  },
-  yAxis: {
-    type: "value",
-    minInterval: 1,
-  },
-  series: [
-    // colors are obtained by reordering default theme colors in
-    // https://github.com/apache/echarts/blob/1fb0d6f1c2d5a6084198bbc2a1b928df66abbaab/src/model/globalDefault.ts#L37-L47
-    {
-      type: "line",
-      stack: "total",
-      name: "new",
-      areaStyle: {
-        color: "#5470c6",
-      },
-      lineStyle: {
-        color: "#5470c6",
-      },
-      itemStyle: {
-        color: "#5470c6",
-      },
-      emphasis: {
-        disabled: true,
-      },
-      encode: {
-        x: "date",
-        y: "NEW",
-      },
-    },
-    {
-      type: "line",
-      stack: "total",
-      name: "learn",
-      areaStyle: {
-        color: "#ee6666",
-      },
-      lineStyle: {
-        color: "#ee6666",
-      },
-      itemStyle: {
-        color: "#ee6666",
-      },
-      emphasis: {
-        disabled: true,
-      },
-      encode: {
-        x: "date",
-        y: "LEARN",
-      },
-    },
-    {
-      type: "line",
-      stack: "total",
-      name: "review",
-      areaStyle: {
-        color: "#91cc75",
-      },
-      lineStyle: {
-        color: "#91cc75",
-      },
-      itemStyle: {
-        color: "#91cc75",
-      },
-      emphasis: {
-        disabled: true,
-      },
-      encode: {
-        x: "date",
-        y: "REVIEW",
-      },
-    },
-    {
-      type: "line",
-      name: "total",
-      symbol: "none",
-      cursor: "none",
-      itemStyle: {
-        color: "#fac858",
-      },
-      lineStyle: {
-        color: "#fac858",
-        opacity: 0,
-      },
-      encode: {
-        x: "date",
-        y: "total",
-      },
-    },
-  ],
-};
 
 //
 // utils
 //
 
-function EchartsComponent(props: {
+export function EchartsComponent(props: {
   option: echarts.EChartsOption;
+  optionDeps?: unknown; // convenience for simpler render/option invalidation
   className?: string;
   setInstance?: (instance?: echarts.ECharts) => void;
 }) {
@@ -176,7 +112,7 @@ function EchartsComponent(props: {
   React.useEffect(() => {
     tinyassert(instanceRef.current);
     instanceRef.current.setOption(props.option);
-  }, [props.option]);
+  }, [props.optionDeps ?? props.option]);
 
   return <div className={props.className} ref={React.useCallback(elRef, [])} />;
 }
