@@ -12,6 +12,33 @@ import { procedureBuilder } from "./factory";
 // TODO: figure out file organization (put all routes here for now)
 
 export const trpcApp = routerFactory({
+  // TODO: integrate with `misc/routes.ts` constant to have typed query/params
+  videos_new: procedureBuilder
+    .use(middlewares.requireUser)
+    .input(
+      z.object({
+        query: z.object({
+          videoId: z.string(),
+        }),
+      })
+    )
+    .query(async ({ input }) => {
+      input.query.videoId;
+    }),
+
+  decks_export: procedureBuilder
+    .use(middlewares.requireUser)
+    .input(
+      z.object({
+        params: z.object({
+          id: z.number().int(),
+        }),
+      })
+    )
+    .query(async ({ input }) => {
+      input.params.id;
+    }),
+
   bookmarks_create: procedureBuilder
     .use(middlewares.requireUser)
     .input(
