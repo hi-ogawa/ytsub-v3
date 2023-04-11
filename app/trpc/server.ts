@@ -6,6 +6,7 @@ import { Q } from "../db/models";
 import { Z_PRACTICE_ACTION_TYPES } from "../db/types";
 import { importDeckJson } from "../misc/seed-utils";
 import { PracticeSystem } from "../utils/practice-system";
+import { TIMEZONE_RE } from "../utils/timezone";
 import { middlewares } from "./context";
 import { routerFactory } from "./factory";
 import { procedureBuilder } from "./factory";
@@ -13,6 +14,22 @@ import { procedureBuilder } from "./factory";
 // TODO: figure out file organization (put all routes here for now)
 
 export const trpcApp = routerFactory({
+  users_update: procedureBuilder
+    .use(middlewares.requireUser)
+    .input(
+      z.object({
+        language1: z.string().nullable(),
+        language2: z.string().nullable(),
+        timezone: z.string().regex(TIMEZONE_RE),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      await db
+        .update(T.users)
+        .set(input)
+        .where(sql`${T.users.id} = ${ctx.user.id}`);
+    }),
+
   bookmarks_create: procedureBuilder
     .use(middlewares.requireUser)
     .input(
