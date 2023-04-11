@@ -11,7 +11,7 @@ test.describe("decks", () => {
     await importSeed(user.data.id);
   });
 
-  test("decks => new-deck => edit-deck", async ({ page }) => {
+  test("decks => new-deck => edit-deck => delete-deck", async ({ page }) => {
     await user.signin(page);
     await page.goto("/decks");
 
@@ -49,6 +49,17 @@ test.describe("decks", () => {
     await page.getByRole("combobox").selectOption({ label: "List" });
     await expect(page).toHaveURL(/\/decks\/\d+\/history$/);
     await page.getByText("Empty").click();
+
+    // go to edit page and delete deck
+    await page.locator('[data-test="deck-menu-popover-reference"]').click();
+    await page.getByRole("link", { name: "Edit" }).click();
+    page.once("dialog", (dialog) => dialog.accept("wrong-input"));
+    await page.getByRole("button", { name: "Delete this deck" }).click();
+    await page.getByText("Deletion canceled").click();
+    page.once("dialog", (dialog) => dialog.accept("deck-e2e-test"));
+    await page.getByRole("button", { name: "Delete this deck" }).click();
+    await page.getByText("Successfully deleted a deck").click();
+    await expect(page).toHaveURL("/decks");
   });
 
   test("videos => add-to-deck", async ({ page }) => {
