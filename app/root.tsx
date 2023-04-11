@@ -9,12 +9,10 @@ import {
   Outlet,
   Scripts,
   useMatches,
-  useNavigate,
 } from "@remix-run/react";
 import type { LinksFunction } from "@remix-run/server-runtime";
 import { atom, useAtom } from "jotai";
 import type React from "react";
-import { useForm } from "react-hook-form";
 import { Toaster, toast } from "react-hot-toast";
 import { Drawer } from "./components/drawer";
 import { QueryClientWrapper } from "./components/misc";
@@ -288,28 +286,26 @@ const SIDE_MENU_ENTRIES: SideMenuEntry[] = [
 
 function SearchComponent() {
   const [, setDrawerOpen] = useAtom(drawerOpenAtom);
-  const form = useForm({ defaultValues: { videoId: "" }})
-  const navigate = useNavigate();
 
   return (
-    <form
-      data-test="search-form"
+    <Form
       className="w-full"
-      onSubmit={form.handleSubmit((data) => {
-        setDrawerOpen(false);
-        navigate(R["/videos/new"] + "?" + new URLSearchParams(data))
-      })}
-      >
+      action={R["/videos/new"]}
+      method="get"
+      onSubmit={() => setDrawerOpen(false)}
+      data-test="search-form"
+    >
       <label className="w-full relative text-base-content flex items-center">
         <span className="absolute text-colorTextSecondary ml-2.5 i-ri-search-line w-4 h-4"></span>
         <input
           type="text"
+          name="videoId"
           className="w-full antd-input p-1 pl-9"
           placeholder="Enter Video ID or URL"
-          {...form.register("videoId", { required: true })}
+          required
         />
       </label>
-    </form>
+    </Form>
   );
 }
 
