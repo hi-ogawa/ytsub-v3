@@ -2,10 +2,12 @@ import { tinyassert } from "@hiogawa/utils";
 import { sql } from "drizzle-orm";
 import { z } from "zod";
 import { E, T, db, findOne } from "../db/drizzle-client.server";
-import { Q } from "../db/models";
+import { Q, filterNewVideo, insertVideoAndCaptionEntries } from "../db/models";
 import { Z_PRACTICE_ACTION_TYPES } from "../db/types";
 import { importDeckJson } from "../misc/seed-utils";
 import { PracticeSystem } from "../utils/practice-system";
+import { TIMEZONE_RE } from "../utils/timezone";
+import { Z_NEW_VIDEO, fetchCaptionEntries } from "../utils/youtube";
 import { middlewares } from "./context";
 import { routerFactory } from "./factory";
 import { procedureBuilder } from "./factory";
@@ -13,6 +15,22 @@ import { procedureBuilder } from "./factory";
 // TODO: figure out file organization (put all routes here for now)
 
 export const trpcApp = routerFactory({
+  users_update: procedureBuilder
+    .use(middlewares.requireUser)
+    .input(
+      z.object({
+        language1: z.string().nullable(),
+        language2: z.string().nullable(),
+        timezone: z.string().regex(TIMEZONE_RE),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      await db
+        .update(T.users)
+        .set(input)
+        .where(sql`${T.users.id} = ${ctx.user.id}`);
+    }),
+
   bookmarks_create: procedureBuilder
     .use(middlewares.requireUser)
     .input(
@@ -127,6 +145,64 @@ export const trpcApp = routerFactory({
       );
     }),
 
+  decks_create: procedureBuilder
+    .use(middlewares.requireUser)
+    .input(
+      z.object({
+        name: z.string().nonempty(),
+        newEntriesPerDay: z.number().int(),
+        reviewsPerDay: z.number().int(),
+        easeMultiplier: z.number(),
+        easeBonus: z.number(),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      const [{ insertId: deckId }] = await db.insert(T.decks).values({
+        ...input,
+        userId: ctx.user.id,
+      });
+      return { deckId };
+    }),
+
+  decks_update: procedureBuilder
+    .use(middlewares.requireUser)
+    .input(
+      z.object({
+        id: z.number().int(),
+        name: z.string().nonempty(),
+        newEntriesPerDay: z.number().int(),
+        reviewsPerDay: z.number().int(),
+        randomMode: z.boolean(),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      const { id, ...rest } = input;
+      await db
+        .update(T.decks)
+        .set(rest)
+        .where(E.and(E.eq(T.decks.id, id), E.eq(T.decks.userId, ctx.user.id)));
+    }),
+
+  decks_destroy: procedureBuilder
+    .use(middlewares.requireUser)
+    .input(
+      z.object({
+        id: z.number().int(),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      const deck = await findUserDeck({
+        deckId: input.id,
+        userId: ctx.user.id,
+      });
+      tinyassert(deck);
+      await db
+        .delete(T.decks)
+        .where(
+          E.and(E.eq(T.decks.id, input.id), E.eq(T.decks.userId, ctx.user.id))
+        );
+    }),
+
   decks_import: procedureBuilder
     .use(middlewares.requireUser)
     .input(
@@ -178,6 +254,19 @@ export const trpcApp = routerFactory({
       }));
 
       return results;
+    }),
+
+  videos_create: procedureBuilder
+    .use(middlewares.currentUser)
+    .input(Z_NEW_VIDEO)
+    .mutation(async ({ input, ctx }) => {
+      const [found] = await filterNewVideo(input, ctx.user?.id);
+      if (found) {
+        return { id: found.id, created: false };
+      }
+      const data = await fetchCaptionEntries(input);
+      const id = await insertVideoAndCaptionEntries(input, data, ctx.user?.id);
+      return { id, created: true };
     }),
 
   videos_destroy: procedureBuilder

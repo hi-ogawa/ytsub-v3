@@ -4,7 +4,6 @@ import { XMLParser } from "fast-xml-parser";
 import { maxBy, once } from "lodash";
 import React from "react";
 import { z } from "zod";
-import { AppError } from "./errors";
 import {
   FILTERED_LANGUAGE_CODES,
   LanguageCode,
@@ -159,14 +158,14 @@ function findCaptionConfig(
 
 export function findCaptionConfigPair(
   videoMetadata: VideoMetadata,
-  [code1, code2]: [LanguageCode, LanguageCode]
-): [CaptionConfig | undefined, CaptionConfig | undefined] {
-  const found1 = findCaptionConfig(videoMetadata, code1);
-  let found2 = findCaptionConfig(videoMetadata, code2);
-  if (found1 && !found2) {
-    found2 = { ...found1, translation: code2 };
+  { code1, code2 }: { code1: LanguageCode; code2: LanguageCode }
+) {
+  const language1 = findCaptionConfig(videoMetadata, code1);
+  let language2 = findCaptionConfig(videoMetadata, code2);
+  if (language1 && !language2) {
+    language2 = { ...language1, translation: code2 };
   }
-  return [found1, found2];
+  return { language1, language2 };
 }
 
 interface TtmlEntry {
@@ -273,25 +272,19 @@ export function stringifyTimestamp(s: number): string {
   return `${D(h, 2)}:${D(m, 2)}:${D(s, 2)}.${D(ms, 3)}`;
 }
 
-export const NEW_VIDEO_SCHEMA = z.object({
+export const Z_NEW_VIDEO = z.object({
   videoId: z.string().length(11),
   language1: z.object({
     id: z.string(),
-    translation: z
-      .string()
-      .optional()
-      .transform((s) => s || undefined), // ignore empty string from html form
+    translation: z.string().optional(),
   }),
   language2: z.object({
     id: z.string(),
-    translation: z
-      .string()
-      .optional()
-      .transform((s) => s || undefined),
+    translation: z.string().optional(),
   }),
 });
 
-export type NewVideo = z.infer<typeof NEW_VIDEO_SCHEMA>;
+export type NewVideo = z.infer<typeof Z_NEW_VIDEO>;
 
 export async function fetchCaptionEntries({
   videoId,
@@ -304,12 +297,14 @@ export async function fetchCaptionEntries({
   const videoMetadata = await fetchVideoMetadata(videoId);
   const url1 = captionConfigToUrl(language1, videoMetadata);
   const url2 = captionConfigToUrl(language2, videoMetadata);
-  if (!url1) throw new AppError("Caption not found", language1);
-  if (!url2) throw new AppError("Caption not found", language2);
-  const [ttml1, ttml2] = await Promise.all([
-    fetch(url1).then((res) => res.text()),
-    fetch(url2).then((res) => res.text()),
-  ]);
+  tinyassert(url1);
+  tinyassert(url2);
+  const ttmls = [url1, url2].map(async (url) => {
+    const res = await fetch(url);
+    tinyassert(res.ok);
+    return res.text();
+  });
+  const [ttml1, ttml2] = await Promise.all(ttmls);
   const captionEntries = ttmlsToCaptionEntries(ttml1, ttml2);
   return { videoMetadata, captionEntries };
 }
