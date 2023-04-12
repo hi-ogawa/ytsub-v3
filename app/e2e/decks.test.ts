@@ -1,4 +1,5 @@
 import { expect } from "@playwright/test";
+import { E, T, db } from "../db/drizzle-client.server";
 import { DEFAULT_SEED_FILE, importSeed } from "../misc/seed-utils";
 import { test } from "./coverage";
 import { forceDismissToast, useUserE2E } from "./helper";
@@ -6,8 +7,9 @@ import { forceDismissToast, useUserE2E } from "./helper";
 test.describe("decks", () => {
   const user = useUserE2E(test, { seed: __filename });
 
-  test.beforeAll(async () => {
+  test.beforeEach(async () => {
     await user.isReady;
+    await db.delete(T.decks).where(E.eq(T.decks.userId, user.data.id));
     await importSeed(user.data.id);
   });
 
@@ -85,7 +87,8 @@ test.describe("decks", () => {
     await page.goto("/decks");
 
     // nagivate to "/decks/$id"
-    await page.locator("text=Korean").click();
+    await page.locator('[data-test="deck-menu-popover-reference"]').click();
+    await page.getByRole("link", { name: "Deck" }).click();
     await expect(page).toHaveURL(/\/decks\/\d+$/);
 
     // navigate pagination
@@ -104,8 +107,6 @@ test.describe("decks", () => {
     await user.signin(page);
     await page.goto("/decks");
     await page.getByRole("link", { name: "Korean" }).click();
-    await page.locator('[data-test="deck-menu-popover-reference"]').click();
-    await page.getByRole("link", { name: "Practice" }).click();
     await page.getByText("Progress").click();
     await page.getByText("0 | 140").click();
     await page.getByRole("button", { name: "AGAIN" }).click();
@@ -127,7 +128,6 @@ test.describe("decks-import-export", () => {
     await page.getByText("Deck imported successfully!").click();
 
     // export
-    await page.getByRole("link", { name: "Korean" }).click();
     await page.locator('[data-test="deck-menu-popover-reference"]').click();
     await page.getByRole("link", { name: "Edit" }).click();
     const downloadPromise = page.waitForEvent("download");
