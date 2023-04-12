@@ -38,9 +38,9 @@ const Z_ID_PARAMS = z.object({
   id: z.coerce.number().int(),
 });
 
-const Z_PAGE_QUERY = z.object({
-  page: z.coerce.number().int().optional(),
-  perPage: z.coerce.number().int().optional(),
+const Z_PAGINATION_QUERY = z.object({
+  page: z.coerce.number().int().optional().default(1),
+  perPage: z.coerce.number().int().optional().default(20),
 });
 
 export const ROUTE_DEF = {
@@ -72,7 +72,7 @@ export const ROUTE_DEF = {
   "/decks/import": {},
   "/decks/$id": {
     params: Z_ID_PARAMS,
-    query: Z_PAGE_QUERY,
+    query: Z_PAGINATION_QUERY,
   },
   "/decks/$id/edit": {
     params: Z_ID_PARAMS,
@@ -82,9 +82,11 @@ export const ROUTE_DEF = {
   },
   "/decks/$id/history": {
     params: Z_ID_PARAMS,
-    query: z.object({
-      practiceEntryId: z.coerce.number().int().optional(),
-    }),
+    query: z
+      .object({
+        practiceEntryId: z.coerce.number().int().optional(),
+      })
+      .merge(Z_PAGINATION_QUERY),
   },
   "/decks/$id/history-graph": {
     params: Z_ID_PARAMS,
@@ -105,15 +107,15 @@ type RouteDef = typeof ROUTE_DEF;
 type RouteFormatter = {
   [K in keyof RouteDef]:
     RouteDef[K] extends { params: z.ZodType, query: z.ZodType }
-      ? (params: z.infer<RouteDef[K]["params"]>, query?: z.infer<RouteDef[K]["query"]>) => string
+      ? (params: z.input<RouteDef[K]["params"]>, query?: z.input<RouteDef[K]["query"]>) => string
       :
 
     RouteDef[K] extends { params: z.ZodType }
-      ? (params: z.infer<RouteDef[K]["params"]>) => string
+      ? (params: z.input<RouteDef[K]["params"]>) => string
       :
 
     RouteDef[K] extends { query: z.ZodType }
-      ? (params?: null, query?: z.infer<RouteDef[K]["query"]>) => string
+      ? (params?: null, query?: z.input<RouteDef[K]["query"]>) => string
 
       : () => string;
 }
