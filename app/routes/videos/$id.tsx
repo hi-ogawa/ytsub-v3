@@ -24,7 +24,7 @@ import {
   VideoTable,
   getVideoAndCaptionEntries,
 } from "../../db/models";
-import { R } from "../../misc/routes";
+import { $R, R } from "../../misc/routes";
 import { trpc } from "../../trpc/client";
 import { Controller, makeLoader } from "../../utils/controller-utils";
 import { useDeserialize, useSelection } from "../../utils/hooks";
@@ -546,7 +546,7 @@ export function CaptionEntryComponent({
         <div>{timestamp}</div>
         {!isNil(videoId) && (
           <Link
-            to={R["/videos/$id"](videoId) + `?index=${entry.index}`}
+            to={$R["/videos/$id"]({ id: videoId }, { index: entry.index })}
             className="antd-btn antd-btn-ghost i-ri-vidicon-line w-4 h-4"
             data-test="caption-entry-component__video-link"
           />
@@ -647,7 +647,7 @@ function NavBarMenuComponentImpl({
       {user && user.id !== video.userId && (
         <Form
           method="post"
-          action={R["/videos/new"]}
+          action={$R["/videos/new"]()}
           className="flex items-center"
         >
           {/* prettier-ignore */}
@@ -686,7 +686,7 @@ function NavBarMenuComponentImpl({
               <li>
                 <Link
                   className="w-full antd-menu-item p-2 flex"
-                  to={R["/videos/new"] + "?videoId=" + video.videoId}
+                  to={$R["/videos/new"](null, video)}
                   onClick={() => context.onOpenChange(false)}
                 >
                   Change languages

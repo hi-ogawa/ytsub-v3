@@ -22,7 +22,7 @@ import type {
   VideoTable,
 } from "../../../db/models";
 import type { PracticeQueueType } from "../../../db/types";
-import { R } from "../../../misc/routes";
+import { $R, R } from "../../../misc/routes";
 import { Controller, makeLoader } from "../../../utils/controller-utils";
 import { useDeserialize } from "../../../utils/hooks";
 import { dtfDateOnly, rtf } from "../../../utils/intl";
@@ -35,7 +35,6 @@ import {
   PracticeSystem,
 } from "../../../utils/practice-system";
 import { Timedelta } from "../../../utils/timedelta";
-import { toQuery } from "../../../utils/url-data";
 import { MiniPlayer } from "../../bookmarks";
 
 export const handle: PageHandle = {
@@ -98,7 +97,7 @@ export const loader = makeLoader(Controller, async function () {
   const paginationParams = PAGINATION_PARAMS_SCHEMA.safeParse(this.query());
   if (!paginationParams.success) {
     this.flash({ content: "invalid parameters", variant: "error" });
-    return redirect(R["/decks/$id"](deck.id));
+    return redirect($R["/decks/$id"](deck));
   }
 
   const baseQuery = db
@@ -242,11 +241,7 @@ function PracticeBookmarkEntryComponent({
         </div>
         <div className="relative flex items-center gap-2 ml-6 text-xs text-colorTextSecondary">
           <Link
-            to={
-              R["/decks/$id/history"](deck.id) +
-              "?" +
-              toQuery({ practiceEntryId })
-            }
+            to={$R["/decks/$id/history"](deck, { practiceEntryId })}
             className="hover:underline"
           >
             Answered {formatCount(actionsCount)}
@@ -337,7 +332,7 @@ export function DeckNavBarMenuComponent() {
 export function DeckMenuComponent({ deck }: { deck: DeckTable }) {
   const items = [
     {
-      to: R["/decks/$id"](deck.id),
+      to: $R["/decks/$id"](deck),
       children: (
         <>
           <span className="i-ri-book-line w-6 h-6"></span>
@@ -346,7 +341,7 @@ export function DeckMenuComponent({ deck }: { deck: DeckTable }) {
       ),
     },
     {
-      to: R["/decks/$id/practice"](deck.id),
+      to: $R["/decks/$id/practice"](deck),
       children: (
         <>
           <span className="i-ri-play-line w-6 h-6"></span>
@@ -355,7 +350,7 @@ export function DeckMenuComponent({ deck }: { deck: DeckTable }) {
       ),
     },
     {
-      to: R["/decks/$id/history-graph"](deck.id),
+      to: $R["/decks/$id/history-graph"](deck),
       children: (
         <>
           <span className="i-ri-history-line w-6 h-6"></span>
@@ -364,7 +359,7 @@ export function DeckMenuComponent({ deck }: { deck: DeckTable }) {
       ),
     },
     {
-      to: R["/bookmarks"] + `?deckId=${deck.id}`,
+      to: $R["/bookmarks"](null, { deckId: deck.id }),
       children: (
         <>
           <span className="i-ri-bookmark-line w-6 h-6"></span>
@@ -373,7 +368,7 @@ export function DeckMenuComponent({ deck }: { deck: DeckTable }) {
       ),
     },
     {
-      to: R["/decks/$id/edit"](deck.id),
+      to: $R["/decks/$id/edit"](deck),
       children: (
         <>
           <span className="i-ri-edit-line w-6 h-6"></span>

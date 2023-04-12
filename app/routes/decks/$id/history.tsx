@@ -13,7 +13,7 @@ import {
   toPaginationResult,
 } from "../../../db/drizzle-client.server";
 import type { DeckTable, PaginationMetadata } from "../../../db/models";
-import { R } from "../../../misc/routes";
+import { $R } from "../../../misc/routes";
 import { Controller, makeLoader } from "../../../utils/controller-utils";
 import { useDeserialize } from "../../../utils/hooks";
 import { dtf } from "../../../utils/intl";
@@ -58,7 +58,7 @@ export const loader = makeLoader(Controller, async function () {
   const parsed = REQUEST_SCHEMA.safeParse(this.query());
   if (!parsed.success) {
     this.flash({ content: "invalid parameters", variant: "error" });
-    return redirect(R["/decks/$id/history"](deck.id));
+    return redirect($R["/decks/$id/history"](deck));
   }
 
   const [rows, pagination] = await toPaginationResult(

@@ -4,7 +4,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import React from "react";
 import type { PaginationMetadata, VideoTable } from "../db/models";
-import { R } from "../misc/routes";
+import { $R } from "../misc/routes";
 import { useDocumentEvent } from "../utils/hooks";
 import { cls } from "../utils/misc";
 import { toNewPages } from "../utils/pagination";
@@ -35,7 +35,7 @@ export function VideoComponent({
   isLoading?: boolean;
 }) {
   const { id, videoId, title, author, channelId } = video;
-  const to = R["/videos/$id"](id);
+  const to = $R["/videos/$id"]({ id });
   const code1 = video.language1_translation ?? parseVssId(video.language1_id);
   const code2 = video.language2_translation ?? parseVssId(video.language2_id);
 
@@ -67,7 +67,7 @@ export function VideoComponent({
         </div>
         {bookmarkEntriesCount !== undefined && (
           <Link
-            to={R["/bookmarks"] + `?videoId=${video.id}&order=caption`}
+            to={$R["/bookmarks"](null, { videoId: video.id, order: "caption" })}
             className="absolute right-1 top-1 px-1 py-0.5 bg-black/75 text-white text-xs font-bold"
           >
             <div className="flex justify-center items-center gap-1">

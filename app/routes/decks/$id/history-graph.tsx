@@ -15,7 +15,7 @@ import {
 } from "../../../components/practice-history-chart";
 import { E, T, db } from "../../../db/drizzle-client.server";
 import type { DeckTable } from "../../../db/models";
-import { R } from "../../../misc/routes";
+import { $R } from "../../../misc/routes";
 import { Controller, makeLoader } from "../../../utils/controller-utils";
 import { useDeserialize } from "../../../utils/hooks";
 import { useLeafLoaderData } from "../../../utils/loader-utils";
@@ -214,11 +214,11 @@ function HistoryViewSelect({ deckId }: { deckId: number }) {
 
   const options = [
     {
-      to: R["/decks/$id/history-graph"](deckId),
+      to: $R["/decks/$id/history-graph"]({ id: deckId }),
       label: "Chart",
     },
     {
-      to: R["/decks/$id/history"](deckId),
+      to: $R["/decks/$id/history"]({ id: deckId }),
       label: "List",
     },
   ];

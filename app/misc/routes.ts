@@ -43,8 +43,7 @@ const Z_PAGE_QUERY = z.object({
   perPage: z.coerce.number().int().optional(),
 });
 
-// TODO: use this in loader to validate params/query
-const ROUTE_DEF = {
+export const ROUTE_DEF = {
   "/": {},
   "/videos": {},
   "/videos/new": {
@@ -54,8 +53,17 @@ const ROUTE_DEF = {
   },
   "/videos/$id": {
     params: Z_ID_PARAMS,
+    query: z.object({
+      index: z.coerce.number().int().optional(),
+    }),
   },
-  "/bookmarks": {},
+  "/bookmarks": {
+    query: z.object({
+      videoId: z.coerce.number().int().optional(),
+      deckId: z.coerce.number().int().optional(),
+      order: z.coerce.string().optional(),
+    }),
+  },
   "/users/me": {},
   "/users/register": {},
   "/users/signin": {},
@@ -74,6 +82,9 @@ const ROUTE_DEF = {
   },
   "/decks/$id/history": {
     params: Z_ID_PARAMS,
+    query: z.object({
+      practiceEntryId: z.coerce.number().int().optional(),
+    }),
   },
   "/decks/$id/history-graph": {
     params: Z_ID_PARAMS,
@@ -81,7 +92,8 @@ const ROUTE_DEF = {
   "/decks/$id/export": {
     params: Z_ID_PARAMS,
   },
-} satisfies Record<string, { params?: unknown; query?: unknown }>;
+  // ts-prune-ignore-next something buggy in ts-prune
+} satisfies Record<string, { params?: z.ZodType; query?: z.ZodType }>;
 
 //
 // type-safe route url formatter
