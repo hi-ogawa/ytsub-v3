@@ -11,7 +11,7 @@ export type CaptionEntryTable = TT["captionEntries"];
 export type BookmarkEntryTable = TT["bookmarkEntries"];
 export type DeckTable = TT["decks"];
 export type PracticeEntryTable = TT["practiceEntries"];
-export type PracticeActionTable = TT["practiceActions"];
+type PracticeActionTable = TT["practiceActions"];
 
 export const Q = {
   users: () => client<UserTable>("users"),
