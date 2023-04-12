@@ -114,3 +114,11 @@ test("anonymouse: / => /videos/new => /videos/id", async ({ page }) => {
   await page.waitForURL(/\/videos\/\d+$/);
   await page.getByText("Hey you 지금 뭐 해").click();
 });
+
+test("invalid videoId input", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button").click();
+  await page.getByPlaceholder("Enter Video ID or URL").fill("xxx");
+  await page.getByPlaceholder("Enter Video ID or URL").press("Enter");
+  await page.getByText("Invalid input").click();
+});
