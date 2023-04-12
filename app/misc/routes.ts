@@ -36,11 +36,13 @@ export const ROUTE_DEF = {
     }),
   },
   "/bookmarks": {
-    query: z.object({
-      videoId: z.coerce.number().int().optional(),
-      deckId: z.coerce.number().int().optional(),
-      order: z.coerce.string().optional(),
-    }),
+    query: z
+      .object({
+        videoId: z.coerce.number().int().optional(),
+        deckId: z.coerce.number().int().optional(),
+        order: z.enum(["createdAt", "caption"]).default("createdAt"),
+      })
+      .merge(Z_PAGINATION_QUERY),
   },
   "/users/me": {},
   "/users/register": {},

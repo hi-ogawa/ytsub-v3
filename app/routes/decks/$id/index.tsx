@@ -22,14 +22,13 @@ import type {
   VideoTable,
 } from "../../../db/models";
 import type { PracticeQueueType } from "../../../db/types";
-import { $R, R } from "../../../misc/routes";
+import { $R, R, ROUTE_DEF } from "../../../misc/routes";
 import { Controller, makeLoader } from "../../../utils/controller-utils";
 import { useDeserialize } from "../../../utils/hooks";
 import { dtfDateOnly, rtf } from "../../../utils/intl";
 import { useLeafLoaderData } from "../../../utils/loader-utils";
 import { cls } from "../../../utils/misc";
 import type { PageHandle } from "../../../utils/page-handle";
-import { PAGINATION_PARAMS_SCHEMA } from "../../../utils/pagination";
 import {
   DeckPracticeStatistics,
   PracticeSystem,
@@ -94,7 +93,9 @@ export const loader = makeLoader(Controller, async function () {
   const now = new Date();
   const statistics = await system.getStatistics(now);
 
-  const paginationParams = PAGINATION_PARAMS_SCHEMA.safeParse(this.query());
+  const paginationParams = ROUTE_DEF["/decks/$id"].query.safeParse(
+    this.query()
+  );
   if (!paginationParams.success) {
     this.flash({ content: "invalid parameters", variant: "error" });
     return redirect($R["/decks/$id"](deck));
