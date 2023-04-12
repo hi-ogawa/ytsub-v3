@@ -47,7 +47,7 @@ interface LoaderData {
 export const loader = makeLoader(Controller, async function () {
   const [, deck] = await requireUserAndDeck.apply(this);
 
-  const parsed = ROUTE_DEF["/decks/$id/history"].query.safeParse(this.query);
+  const parsed = ROUTE_DEF["/decks/$id/history"].query.safeParse(this.query());
   if (!parsed.success) {
     this.flash({ content: "invalid parameters", variant: "error" });
     return redirect($R["/decks/$id/history"](deck));
