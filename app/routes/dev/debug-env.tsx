@@ -1,6 +1,6 @@
 import { LoaderFunction, json } from "@remix-run/server-runtime";
 import { fromPairs, sortBy, toPairs } from "lodash";
-import { verifyPassword } from "../utils/auth";
+import { verifyPassword } from "../../utils/auth";
 
 // npm run console
 // > await require("./app/utils/auth.ts").toPasswordHash("Basic " + Buffer.from("<user>:<pass>").toString("base64"))

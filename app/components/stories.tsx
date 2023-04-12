@@ -4,7 +4,10 @@ import { useForm } from "react-hook-form";
 import { cls } from "../utils/misc";
 import { VideoComponent, transitionProps } from "./misc";
 import { PopoverSimple } from "./popover";
-import { PracticeHistoryChart } from "./practice-history-chart";
+import {
+  EchartsComponent,
+  practiceHistoryChartDataToEchartsOption,
+} from "./practice-history-chart";
 
 export function TestMenu() {
   const [state, setState] = React.useState(true);
@@ -252,19 +255,24 @@ export function TestSpinner() {
 }
 
 export function TestPracticeHistoryChart() {
+  // prettier-ignore
   const data = [
-    { date: "2022-05-08", total: 10, NEW: 3, LEARN: 4, REVIEW: 3 },
-    { date: "2022-05-09", total: 9, NEW: 2, LEARN: 5, REVIEW: 2 },
-    { date: "2022-05-10", total: 16, NEW: 7, LEARN: 6, REVIEW: 3 },
-    { date: "2022-05-11", total: 18, NEW: 5, LEARN: 8, REVIEW: 5 },
-    { date: "2022-05-12", total: 18, NEW: 8, LEARN: 7, REVIEW: 3 },
-    { date: "2022-05-13", total: 14, NEW: 2, LEARN: 5, REVIEW: 7 },
-    { date: "2022-05-14", total: 18, NEW: 5, LEARN: 8, REVIEW: 5 },
+    { date: "2022-05-08", total: 10, "queue-NEW": 3, "queue-LEARN": 4, "queue-REVIEW": 3 },
+    { date: "2022-05-09", total: 9,  "queue-NEW": 2, "queue-LEARN": 5, "queue-REVIEW": 2 },
+    { date: "2022-05-10", total: 16, "queue-NEW": 7, "queue-LEARN": 6, "queue-REVIEW": 3 },
+    { date: "2022-05-11", total: 18, "queue-NEW": 5, "queue-LEARN": 8, "queue-REVIEW": 5 },
+    { date: "2022-05-12", total: 18, "queue-NEW": 8, "queue-LEARN": 7, "queue-REVIEW": 3 },
+    { date: "2022-05-13", total: 14, "queue-NEW": 2, "queue-LEARN": 5, "queue-REVIEW": 7 },
+    { date: "2022-05-14", total: 18, "queue-NEW": 5, "queue-LEARN": 8, "queue-REVIEW": 5 },
   ];
+
   return (
     <div className="w-full flex justify-center">
       <div className="w-full max-w-lg">
-        <PracticeHistoryChart data={data} className="h-[300px] w-full" />
+        <EchartsComponent
+          className="h-[300px] w-full"
+          option={practiceHistoryChartDataToEchartsOption(data, "queue")}
+        />
       </div>
     </div>
   );

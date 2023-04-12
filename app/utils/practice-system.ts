@@ -4,13 +4,15 @@ import { client } from "../db/client.server";
 import {
   BookmarkEntryTable,
   DeckTable,
-  PRACTICE_QUEUE_TYPES,
-  PracticeActionType,
   PracticeEntryTable,
-  PracticeQueueType,
   Q,
   UserTable,
 } from "../db/models";
+import {
+  PRACTICE_QUEUE_TYPES,
+  PracticeActionType,
+  PracticeQueueType,
+} from "../db/types";
 import { aggregate } from "../db/utils";
 import { fromEntries } from "./misc";
 import { Timedelta, TimedeltaOptions } from "./timedelta";
