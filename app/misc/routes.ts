@@ -2,33 +2,11 @@ import { tinyassert } from "@hiogawa/utils";
 import { z } from "zod";
 import { createGetProxy } from "../utils/proxy-utiils";
 
-// Centralize route definitions to facilitate static analysis.e.g.
+// centralized route definitions to benefit from static analysis e.g.
 // - prevent typo by type check
 // - auto-completion
 // - refactoring routes via "Rename symbol"
 // - showing usage via "Find all references"
-
-// prettier-ignore
-export const R = {
-  "/": "/",
-  "/videos": "/videos",
-  "/videos/new": "/videos/new",
-  "/videos/$id": (id: number) => `/videos/${id}`,
-  "/bookmarks": "/bookmarks",
-  "/users/me": "/users/me",
-  "/users/register": "/users/register",
-  "/users/signin": "/users/signin",
-  "/users/signout": "/users/signout",
-  "/decks": "/decks",
-  "/decks/new": "/decks/new",
-  "/decks/import": "/decks/import",
-  "/decks/$id": (id: number) => `/decks/${id}`,
-  "/decks/$id/edit": (id: number) => `/decks/${id}/edit`,
-  "/decks/$id/practice": (id: number) => `/decks/${id}/practice`,
-  "/decks/$id/history": (id: number) => `/decks/${id}/history`,
-  "/decks/$id/history-graph": (id: number) => `/decks/${id}/history-graph`,
-  "/decks/$id/export": (id: number) => `/decks/${id}/export`,
-};
 
 //
 // type-safe route url definition
@@ -68,6 +46,7 @@ export const ROUTE_DEF = {
   "/users/register": {},
   "/users/signin": {},
   "/users/signout": {},
+  "/decks": {},
   "/decks/new": {},
   "/decks/import": {},
   "/decks/$id": {
@@ -142,3 +121,17 @@ export const $R = createGetProxy((path) => {
     return path;
   };
 }) as RouteFormatter;
+
+//
+// allow old usage for path without params
+//
+
+// prettier-ignore
+type RouteFormatterV1 = {
+  [K in keyof RouteDef]:
+    RouteDef[K] extends { params: z.ZodType }
+      ? never
+      : string;
+}
+
+export const R = createGetProxy((path) => path) as RouteFormatterV1;
