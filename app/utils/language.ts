@@ -123,6 +123,10 @@ const LANGUAGE_CODE_TO_NAME = {
 
 export type LanguageCode = keyof typeof LANGUAGE_CODE_TO_NAME;
 
+export function isLanguageCode(v: string): v is LanguageCode {
+  return v in LANGUAGE_CODE_TO_NAME;
+}
+
 export function languageCodeToName(code: string, kind?: string): string {
   return (
     (LANGUAGE_CODE_TO_NAME[code as LanguageCode] ?? code) +

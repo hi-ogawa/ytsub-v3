@@ -1,7 +1,9 @@
 import { QueueTypeIcon, requireUserAndDeck } from ".";
 import { useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
+import React from "react";
 import { z } from "zod";
+import { CollapseTransition } from "../../../components/collapse";
 import { PaginationComponent } from "../../../components/misc";
 import {
   E,
@@ -10,19 +12,16 @@ import {
   db,
   toPaginationResult,
 } from "../../../db/drizzle-client.server";
-import type {
-  BookmarkEntryTable,
-  DeckTable,
-  PaginationMetadata,
-  PracticeActionTable,
-} from "../../../db/models";
+import type { DeckTable, PaginationMetadata } from "../../../db/models";
 import { R } from "../../../misc/routes";
 import { Controller, makeLoader } from "../../../utils/controller-utils";
 import { useDeserialize } from "../../../utils/hooks";
 import { dtf } from "../../../utils/intl";
 import { useLeafLoaderData } from "../../../utils/loader-utils";
+import { cls } from "../../../utils/misc";
 import type { PageHandle } from "../../../utils/page-handle";
 import { PAGINATION_PARAMS_SCHEMA } from "../../../utils/pagination";
+import { MiniPlayer } from "../../bookmarks";
 import { DeckHistoryNavBarMenuComponent } from "./history-graph";
 
 //
@@ -46,7 +45,10 @@ const REQUEST_SCHEMA = z
 
 interface LoaderData {
   deck: DeckTable;
-  rows: Pick<TT, "practiceActions" | "bookmarkEntries">[];
+  rows: Pick<
+    TT,
+    "practiceActions" | "bookmarkEntries" | "captionEntries" | "videos"
+  >[];
   pagination: PaginationMetadata;
 }
 
@@ -71,6 +73,11 @@ export const loader = makeLoader(Controller, async function () {
         T.bookmarkEntries,
         E.eq(T.bookmarkEntries.id, T.practiceEntries.bookmarkEntryId)
       )
+      .innerJoin(
+        T.captionEntries,
+        E.eq(T.captionEntries.id, T.bookmarkEntries.captionEntryId)
+      )
+      .innerJoin(T.videos, E.eq(T.videos.id, T.captionEntries.videoId))
       .where(
         E.and(
           E.eq(T.practiceActions.deckId, deck.id),
@@ -104,11 +111,7 @@ export default function DefaultComponent() {
           <div className="h-full flex flex-col p-2 gap-2">
             {rows.length === 0 && <div>Empty</div>}
             {rows.map((row) => (
-              <PracticeActionComponent
-                key={row.practiceActions.id}
-                practiceAction={row.practiceActions}
-                bookmarkEntry={row.bookmarkEntries}
-              />
+              <PracticeActionComponent key={row.practiceActions.id} {...row} />
             ))}
           </div>
         </div>
@@ -121,32 +124,63 @@ export default function DefaultComponent() {
   );
 }
 
-function PracticeActionComponent(props: {
-  practiceAction: PracticeActionTable;
-  bookmarkEntry: BookmarkEntryTable;
-}) {
-  const { createdAt, actionType, queueType } = props.practiceAction;
+function PracticeActionComponent(
+  props: Pick<
+    TT,
+    "videos" | "captionEntries" | "bookmarkEntries" | "practiceActions"
+  >
+) {
+  const { createdAt, actionType, queueType } = props.practiceActions;
+  const [open, setOpen] = React.useState(false);
+
   return (
-    <div className="flex flex-col p-2 gap-2 border">
-      <div className="flex gap-2">
-        <div className="h-[20px] flex items-center">
-          <QueueTypeIcon queueType={queueType} />
+    <div className="flex flex-col border">
+      <div className="flex flex-col p-2 gap-2">
+        <div className="flex gap-2">
+          <div className="h-[20px] flex items-center">
+            <QueueTypeIcon queueType={queueType} />
+          </div>
+          <div className="flex-1 text-sm" data-test="bookmark-entry-text">
+            {props.bookmarkEntries.text}
+          </div>
         </div>
-        <div className="flex-1 text-sm" data-test="bookmark-entry-text">
-          {props.bookmarkEntry.text}
+        <div className="flex items-center ml-6 text-xs gap-3">
+          <div className="border rounded-full px-2 py-0.5 w-14 text-center">
+            {actionType}
+          </div>
+          <div
+            className="flex-1 text-colorTextSecondary"
+            suppressHydrationWarning
+          >
+            {dtf.format(createdAt)}
+          </div>
+          <button
+            className={cls(
+              "antd-btn antd-btn-ghost i-ri-arrow-down-s-line w-5 h-5",
+              open && "rotate-180"
+            )}
+            onClick={() => setOpen(!open)}
+          ></button>
         </div>
       </div>
-      <div className="flex items-center ml-6 text-xs gap-3">
-        <div className="border rounded-full px-2 py-0.5 w-14 text-center">
-          {actionType}
+      <CollapseTransition
+        show={open}
+        className="duration-300 h-0 overflow-hidden border-t border-dashed"
+      >
+        <div className="p-2 pt-0">
+          <MiniPlayer
+            video={props.videos}
+            captionEntry={props.captionEntries}
+            autoplay={true}
+            defaultIsRepeating={true}
+            highlight={{
+              side: props.bookmarkEntries.side,
+              offset: props.bookmarkEntries.offset,
+              length: props.bookmarkEntries.text.length,
+            }}
+          />
         </div>
-        <div
-          className="flex-1 text-colorTextSecondary"
-          suppressHydrationWarning
-        >
-          {dtf.format(createdAt)}
-        </div>
-      </div>
+      </CollapseTransition>
     </div>
   );
 }

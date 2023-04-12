@@ -70,20 +70,34 @@ test.describe("/users/me", () => {
       user.data.username
     );
 
-    // update settings
-    await expect(page.locator("text=Save")).toBeDisabled();
-    await page.locator('select[name="language1"]').selectOption("fr");
-    await page.locator('select[name="language2"]').selectOption("en");
-    await page.locator('input[name="timezone"]').fill("+09:00");
-    await expect(page.locator("text=Save")).toBeEnabled();
-    await page.locator("text=Save").click();
+    // disabled initially
+    await expect(page.getByRole("button", { name: "Save" })).toBeDisabled();
 
-    // button is disabled again after successful update
-    await page.waitForSelector(`"Settings updated successfuly"`);
-    await expect(page.locator("text=Save")).toBeDisabled();
-    await expect(page.locator('select[name="language1"]')).toHaveValue("fr");
-    await expect(page.locator('select[name="language2"]')).toHaveValue("en");
-    await expect(page.locator('input[name="timezone"]')).toHaveValue("+09:00");
+    // update settings
+    await page
+      .getByRole("combobox", { name: "1st language" })
+      .selectOption("ko");
+    await page
+      .getByRole("combobox", { name: "2nd language" })
+      .selectOption("en");
+    await page.locator('input[name="timezone"]').fill("+09:00");
+    await page.getByRole("button", { name: "Save" }).click();
+    await page.getByText("Successfully updated settings").click();
+
+    // check settings are applied
+    // prettier-ignore
+    async function chcekSettings() {
+      // button is disabled back after successful update
+      await expect(page.getByRole("button", { name: "Save" })).toBeDisabled();
+      await expect(page.getByRole("combobox", { name: "1st language" })).toHaveValue("ko");
+      await expect(page.getByRole("combobox", { name: "2nd language" })).toHaveValue("en");
+      await expect(page.locator('input[name="timezone"]')).toHaveValue("+09:00");
+    }
+
+    // now and after reload
+    await chcekSettings();
+    await page.goto("/users/me");
+    await chcekSettings();
   });
 
   test("without-session", async ({ page }) => {

@@ -1,16 +1,20 @@
-import { Form, useLoaderData } from "@remix-run/react";
+import { useLoaderData, useNavigate } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
-import React from "react";
+import { useMutation } from "@tanstack/react-query";
+import { useForm } from "react-hook-form";
+import { toast } from "react-hot-toast";
 import { z } from "zod";
-import { filterNewVideo, insertVideoAndCaptionEntries } from "../../db/models";
+import type { UserTable } from "../../db/models";
 import { R } from "../../misc/routes";
+import { trpc } from "../../trpc/client";
 import { Controller, makeLoader } from "../../utils/controller-utils";
-import { AppError } from "../../utils/errors";
-import { useIsFormValid } from "../../utils/hooks";
+import { toastInfo } from "../../utils/flash-message-hook";
+import { useDeserialize } from "../../utils/hooks";
+import { isLanguageCode } from "../../utils/language";
 import { useRootLoaderData } from "../../utils/loader-utils";
+import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 import type { CaptionConfig, VideoMetadata } from "../../utils/types";
-import { NEW_VIDEO_SCHEMA, fetchCaptionEntries } from "../../utils/youtube";
 import {
   fetchVideoMetadata,
   findCaptionConfigPair,
@@ -26,13 +30,25 @@ const LOADER_SCHEMA = z.object({
   videoId: z.string().nonempty(),
 });
 
+type LoaderData = {
+  videoMetadata: VideoMetadata;
+  userCaptionConfigs?: { language1?: CaptionConfig; language2?: CaptionConfig };
+};
+
 export const loader = makeLoader(Controller, async function () {
   const parsed = LOADER_SCHEMA.safeParse(this.query());
   if (parsed.success) {
     const videoId = parseVideoId(parsed.data.videoId);
     if (videoId) {
+      const user = await this.currentUser();
       try {
-        return await fetchVideoMetadata(videoId);
+        const videoMetadata = await fetchVideoMetadata(videoId);
+        const loaderData: LoaderData = {
+          videoMetadata,
+          userCaptionConfigs:
+            user && findUserCaptionConfigs(videoMetadata, user),
+        };
+        return this.serialize(loaderData);
       } catch (e) {
         this.flash({
           content: `Failed to load a video`,
@@ -49,32 +65,20 @@ export const loader = makeLoader(Controller, async function () {
   return redirect(R["/"]);
 });
 
-//
-// action
-//
-
-export const action = makeLoader(Controller, async function () {
-  const parsed = NEW_VIDEO_SCHEMA.safeParse(await this.form());
-  if (!parsed.success) throw new AppError("Invalid parameters");
-
-  const user = await this.currentUser();
-  const rows = await filterNewVideo(parsed.data, user?.id);
-  let id = rows[0]?.id;
-  if (id) {
-    this.flash({
-      content: "Loaded existing video",
-      variant: "info",
-    });
-  } else {
-    const data = await fetchCaptionEntries(parsed.data);
-    id = await insertVideoAndCaptionEntries(parsed.data, data, user?.id);
-    this.flash({
-      content: "Created new video",
-      variant: "success",
+function findUserCaptionConfigs(videoMetadata: VideoMetadata, user: UserTable) {
+  if (
+    user.language1 &&
+    user.language2 &&
+    isLanguageCode(user.language1) &&
+    isLanguageCode(user.language2)
+  ) {
+    return findCaptionConfigPair(videoMetadata, {
+      code1: user.language1,
+      code2: user.language2,
     });
   }
-  return redirect(R["/videos/$id"](id));
-});
+  return;
+}
 
 //
 // component
@@ -86,25 +90,40 @@ export const handle: PageHandle = {
 
 export default function DefaultComponent() {
   const { currentUser } = useRootLoaderData();
-  const videoMetadata: VideoMetadata = useLoaderData();
-  const [isValid, formProps] = useIsFormValid();
+  const { videoMetadata, userCaptionConfigs }: LoaderData = useDeserialize(
+    useLoaderData()
+  );
 
-  // TODO: more heuristics to set default languages e.g.
-  //   language1 = { id: <any caption track> } (maybe we can infer from `videoDetails.keywords`)
-  //   language2 = { id: language1.id, translation: "en" }
-  let defaultValues = ["", ""];
-  const { language1, language2 } = currentUser ?? {};
-  if (language1 && language2) {
-    const pair = findCaptionConfigPair(videoMetadata, [
-      language1,
-      language2,
-    ] as any);
-    pair.forEach((config, i) => {
-      if (config) {
-        defaultValues[i] = JSON.stringify(config);
+  const navigate = useNavigate();
+
+  const createMutation = useMutation({
+    ...trpc.videos_create.mutationOptions(),
+    onSuccess: (data) => {
+      if (data.created) {
+        toast.success("Created a new video");
+      } else {
+        toastInfo("Loading an already saved video");
       }
-    });
-  }
+      navigate(R["/videos/$id"](data.id));
+    },
+    onError: () => {
+      toast.error("Failed to create a video");
+    },
+  });
+
+  const form = useForm({
+    defaultValues: {
+      videoId: videoMetadata.videoDetails.videoId,
+      language1: userCaptionConfigs?.language1 ?? {
+        id: "",
+        translation: undefined,
+      },
+      language2: userCaptionConfigs?.language2 ?? {
+        id: "",
+        translation: undefined,
+      },
+    },
+  });
 
   return (
     <div className="w-full p-4 flex justify-center">
@@ -117,22 +136,18 @@ export default function DefaultComponent() {
             </div>
           )}
           <div className="text-xl">Select Languages</div>
-          <Form
-            method="post"
-            action={R["/videos/new"]}
-            className="w-full flex flex-col gap-3"
-            // TODO: rename to new-video-form
+          <form
             data-test="setup-form"
-            {...formProps}
+            className="w-full flex flex-col gap-3"
+            onSubmit={form.handleSubmit((data) => createMutation.mutate(data))}
           >
             <label className="flex flex-col gap-1">
               Video ID
               <input
-                name="videoId"
                 type="text"
                 className="antd-input p-1 bg-colorBgContainerDisabled"
-                value={videoMetadata.videoDetails.videoId}
                 readOnly
+                {...form.register("videoId", { required: true })}
               />
             </label>
             <label className="flex flex-col gap-1">
@@ -158,9 +173,9 @@ export default function DefaultComponent() {
               <LanguageSelectComponent
                 className="antd-input p-1"
                 required
-                defaultValue={defaultValues[0]}
+                value={form.watch("language1")}
+                onChange={(value) => form.setValue("language1", value)}
                 videoMetadata={videoMetadata}
-                propertyName="language1"
               />
             </label>
             <label className="flex flex-col gap-1">
@@ -168,19 +183,22 @@ export default function DefaultComponent() {
               <LanguageSelectComponent
                 className="antd-input p-1"
                 required
-                defaultValue={defaultValues[1]}
+                value={form.watch("language2")}
+                onChange={(value) => form.setValue("language2", value)}
                 videoMetadata={videoMetadata}
-                propertyName="language2"
               />
             </label>
             <button
               type="submit"
-              className="antd-btn antd-btn-primary p-1"
-              disabled={!isValid}
+              className={cls(
+                "antd-btn antd-btn-primary p-1",
+                createMutation.isLoading && "antd-btn-loading"
+              )}
+              disabled={createMutation.isLoading || !form.formState.isValid}
             >
               {currentUser ? "Save and Play" : "Play"}
             </button>
-          </Form>
+          </form>
         </div>
       </div>
     </div>
@@ -188,36 +206,26 @@ export default function DefaultComponent() {
 }
 
 function LanguageSelectComponent({
+  value,
+  onChange,
   videoMetadata,
-  propertyName,
-  ...props
-}: JSX.IntrinsicElements["select"] & {
+  ...selectProps
+}: {
+  value: CaptionConfig;
+  onChange: (value: CaptionConfig) => void;
   videoMetadata: VideoMetadata;
-  propertyName: string;
-}) {
-  const ref0 = React.useRef<HTMLSelectElement>();
-  const ref1 = React.useRef<HTMLInputElement>();
-  const ref2 = React.useRef<HTMLInputElement>();
-  React.useEffect(copy, []);
-
-  function copy() {
-    const value = ref0.current?.value;
-    if (value) {
-      const { id, translation } = JSON.parse(value) as CaptionConfig;
-      ref1.current!.value = id;
-      ref2.current!.value = translation ?? "";
-    } else {
-      ref1.current!.value = "";
-      ref2.current!.value = "";
-    }
-  }
-
+} & Omit<JSX.IntrinsicElements["select"], "value" | "onChange">) {
   const { captions, translationGroups } = toCaptionConfigOptions(videoMetadata);
+
   return (
     <>
-      <input ref={ref1 as any} name={`${propertyName}.id`} hidden />
-      <input ref={ref2 as any} name={`${propertyName}.translation`} hidden />
-      <select ref={ref0 as any} {...props} onChange={() => copy()}>
+      <select
+        {...selectProps}
+        value={value.id && JSON.stringify(value)}
+        onChange={(e) => {
+          onChange(JSON.parse(e.target.value));
+        }}
+      >
         <option value="" disabled />
         <optgroup label="Captions">
           {captions.map(({ name, captionConfig }) => (
