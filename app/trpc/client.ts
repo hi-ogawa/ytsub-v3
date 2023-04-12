@@ -1,11 +1,16 @@
 import { tinyassert } from "@hiogawa/utils";
 import { createGetProxy } from "../utils/proxy-utiils";
 import { _trpc } from "./client-internal.client";
-import type { TrpcInput, TrpcOutput, TrpcRecord, TrpcType } from "./types";
+import type { trpcApp } from "./server";
 
 //
 // quick and dirty flat route version of https://trpc.io/docs/reactjs/introduction
 //
+
+type TRecord = (typeof trpcApp)["_def"]["record"];
+type TType<K extends keyof TRecord> = TRecord[K]["_type"];
+type TInput<K extends keyof TRecord> = TRecord[K]["_def"]["_input_in"];
+type TOutput<K extends keyof TRecord> = TRecord[K]["_def"]["_output_out"];
 
 // prettier-ignore
 export const trpc =
@@ -32,21 +37,21 @@ export const trpc =
 
 // prettier-ignore
 type TrpcProxy = {
-  [K in keyof TrpcRecord]:
-    TrpcType[K] extends "query"
+  [K in keyof TRecord]:
+    TType<K> extends "query"
     ? {
         queryKey: K;
-        queryOptions: (input: TrpcInput[K]) => {
+        queryOptions: (input: TInput<K>) => {
           queryKey: unknown[];
-          queryFn: () => Promise<TrpcOutput[K]>;
+          queryFn: () => Promise<TOutput<K>>;
         }
       }
-  : TrpcType[K] extends "mutation"
+  : TType<K> extends "mutation"
     ? {
         mutationKey: K;
         mutationOptions: () => {
           mutationKey: unknown[];
-          mutationFn: (input: TrpcInput[K]) => Promise<TrpcOutput[K]>;
+          mutationFn: (input: TInput<K>) => Promise<TOutput<K>>;
         }
       }
   : never
