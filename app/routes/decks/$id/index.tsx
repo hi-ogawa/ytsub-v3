@@ -331,7 +331,10 @@ function NavBarTitleComponent() {
 
 export function DeckNavBarMenuComponent() {
   const { deck }: LoaderData = useDeserialize(useLeafLoaderData());
+  return <DeckMenuComponent deck={deck} />;
+}
 
+export function DeckMenuComponent({ deck }: { deck: DeckTable }) {
   const items = [
     {
       to: R["/decks/$id"](deck.id),
