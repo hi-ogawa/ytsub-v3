@@ -1,4 +1,4 @@
-import { useLoaderData } from "@remix-run/react";
+import { useLoaderData, useNavigate } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
@@ -43,12 +43,14 @@ export const loader = makeLoader(Controller, async function () {
 export default function DefaultComponent() {
   const currentUser: UserTable = deserialize(useLoaderData());
 
+  const navigate = useNavigate();
+
   const updateMutation = useMutation({
     ...trpc.users_update.mutationOptions(),
     onSuccess: () => {
       toast.success("Successfully updated settings");
       form.reset(form.getValues());
-      //
+      navigate({}, { replace: true }); // refetch root loader currentUser
     },
     onError: () => {
       toast.error("Failed to update settings");
