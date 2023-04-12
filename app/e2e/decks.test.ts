@@ -9,6 +9,7 @@ test.describe("decks", () => {
 
   test.beforeEach(async () => {
     await user.isReady;
+    await db.delete(T.videos).where(E.eq(T.videos.userId, user.data.id));
     await db.delete(T.decks).where(E.eq(T.decks.userId, user.data.id));
     await importSeed(user.data.id);
   });
