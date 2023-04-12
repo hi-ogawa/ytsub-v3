@@ -1,13 +1,16 @@
 import { DeckNavBarMenuComponent, requireUserAndDeck } from ".";
-import { Form, useLoaderData } from "@remix-run/react";
-import { redirect } from "@remix-run/server-runtime";
-import { z } from "zod";
-import { DeckTable, Q } from "../../../db/models";
+import { useLoaderData, useNavigate } from "@remix-run/react";
+import { useMutation } from "@tanstack/react-query";
+import { useForm } from "react-hook-form";
+import { toast } from "react-hot-toast";
+import type { DeckTable } from "../../../db/models";
 import { R } from "../../../misc/routes";
+import { trpc } from "../../../trpc/client";
 import { Controller, makeLoader } from "../../../utils/controller-utils";
 import { toastInfo } from "../../../utils/flash-message-hook";
-import { useDeserialize, useIsFormValid } from "../../../utils/hooks";
+import { useDeserialize } from "../../../utils/hooks";
 import { dtf } from "../../../utils/intl";
+import { cls } from "../../../utils/misc";
 import type { PageHandle } from "../../../utils/page-handle";
 
 export const handle: PageHandle = {
@@ -30,35 +33,6 @@ export const loader = makeLoader(Controller, async function () {
 });
 
 //
-// action
-//
-
-const EDIT_DECK_REQUEST_SCHEMA = z.object({
-  name: z.string().nonempty(),
-  newEntriesPerDay: z.coerce.number().int(),
-  reviewsPerDay: z.coerce.number().int(),
-  // TODO: support same option on "/decks/new" page
-  randomMode: z
-    .string()
-    .optional()
-    .transform((s) => s === "on"),
-});
-
-export const action = makeLoader(Controller, async function () {
-  const [, deck] = await requireUserAndDeck.apply(this);
-
-  const parsed = EDIT_DECK_REQUEST_SCHEMA.safeParse(await this.form());
-  if (!parsed.success) {
-    this.flash({ content: "invalid request", variant: "error" });
-    return null;
-  }
-
-  await Q.decks().update(parsed.data).where("id", deck.id);
-  this.flash({ content: "Deck updated successfully", variant: "success" });
-  return redirect(R["/decks/$id"](deck.id));
-});
-
-//
 // component
 //
 
@@ -72,54 +46,74 @@ export default function DefaultComponent() {
 
 function DefaultComponentInner() {
   const { deck }: LoaderData = useDeserialize(useLoaderData());
-  const [isValid, formProps] = useIsFormValid();
+
+  const form = useForm({ defaultValues: deck });
+
+  const updateDeckMutation = useMutation({
+    ...trpc.decks_update.mutationOptions(),
+    onSuccess: () => {
+      toast.success("Successfully updated a deck");
+      form.reset(form.getValues());
+    },
+    onError: () => {
+      toast.error("Failed to update a deck");
+    },
+  });
+
+  const navigate = useNavigate();
+
+  const deckDestroyMutation = useMutation({
+    ...trpc.decks_destroy.mutationOptions(),
+    onSuccess: () => {
+      toast.success("Successfully deleted a deck");
+      navigate(R["/decks"]);
+    },
+    onError: () => {
+      toast.error("Failed to delete a deck");
+    },
+  });
 
   return (
     <div className="w-full max-w-md flex flex-col items-center gap-4">
-      <Form
-        method="post"
+      <form
         className="flex flex-col border w-full p-6 gap-3"
         data-test="edit-deck-form"
-        {...formProps}
+        onSubmit={form.handleSubmit((data) => updateDeckMutation.mutate(data))}
       >
         <h1 className="text-lg">Edit Deck</h1>
         <label className="flex flex-col gap-1">
           <span className="text-colorTextLabel">Name</span>
           <input
             type="text"
-            name="name"
             className="antd-input p-1"
-            defaultValue={deck.name}
-            required
+            {...form.register("name", { required: true })}
           />
         </label>
         <label className="flex flex-col gap-1">
           <span className="text-colorTextLabel">New entries per day</span>
           <input
             type="number"
-            name="newEntriesPerDay"
             className="antd-input p-1"
-            defaultValue={deck.newEntriesPerDay}
-            required
+            {...form.register("newEntriesPerDay", {
+              required: true,
+              valueAsNumber: true,
+            })}
           />
         </label>
         <label className="flex flex-col gap-1">
           <span className="text-colorTextLabel">Reviews per day</span>
           <input
             type="number"
-            name="reviewsPerDay"
             className="antd-input p-1"
-            defaultValue={deck.reviewsPerDay}
-            required
+            {...form.register("reviewsPerDay", {
+              required: true,
+              valueAsNumber: true,
+            })}
           />
         </label>
         <label className="flex gap-2">
           <span className="text-colorTextLabel">Randomize</span>
-          <input
-            type="checkbox"
-            name="randomMode"
-            defaultChecked={deck.randomMode}
-          />
+          <input type="checkbox" {...form.register("randomMode")} />
         </label>
         <label className="flex flex-col gap-1">
           <span className="text-colorTextLabel">Created At</span>
@@ -132,12 +126,19 @@ function DefaultComponentInner() {
         </label>
         <button
           type="submit"
-          className="antd-btn antd-btn-primary p-1"
-          disabled={!isValid}
+          className={cls(
+            "antd-btn antd-btn-primary p-1",
+            updateDeckMutation.isLoading && "antd-btn-loading"
+          )}
+          disabled={
+            !form.formState.isDirty ||
+            !form.formState.isValid ||
+            updateDeckMutation.isLoading
+          }
         >
           Save
         </button>
-      </Form>
+      </form>
       <div className="flex flex-col border w-full p-6 gap-3">
         <h1 className="text-lg">Others</h1>
         <a
@@ -151,26 +152,24 @@ function DefaultComponentInner() {
       </div>
       <div className="flex flex-col border w-full p-6 gap-3 border-colorErrorBorder">
         <h1 className="text-lg">Danger Zone</h1>
-        <Form
-          className="flex"
-          action={R["/decks/$id?index"](deck.id)}
-          method="delete"
-          onSubmitCapture={(e) => {
+        <button
+          className={cls(
+            "w-full antd-btn antd-btn-default p-1",
+            deckDestroyMutation.isLoading && "antd-btn-loading"
+          )}
+          disabled={deckDestroyMutation.isLoading}
+          onClick={() => {
             const message = `Are you sure? Please type '${deck.name}' to delete this deck.`;
             const response = window.prompt(message);
             if (response !== deck.name) {
-              e.preventDefault();
               toastInfo("Deletion canceled");
+              return;
             }
+            deckDestroyMutation.mutate(deck);
           }}
         >
-          <button
-            type="submit"
-            className="w-full antd-btn antd-btn-default p-1"
-          >
-            Delete this deck
-          </button>
-        </Form>
+          Delete this deck
+        </button>
       </div>
     </div>
   );

@@ -1,4 +1,3 @@
-import { tinyassert } from "@hiogawa/utils";
 import { Link, NavLink, useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import React from "react";
@@ -13,13 +12,12 @@ import {
   findOne,
   toPaginationResult,
 } from "../../../db/drizzle-client.server";
-import {
+import type {
   BookmarkEntryTable,
   CaptionEntryTable,
   DeckTable,
   PaginationMetadata,
   PracticeEntryTable,
-  Q,
   UserTable,
   VideoTable,
 } from "../../../db/models";
@@ -130,18 +128,6 @@ export const loader = makeLoader(Controller, async function () {
     rows,
   };
   return this.serialize(res);
-});
-
-//
-// action
-//
-
-export const action = makeLoader(Controller, async function () {
-  tinyassert(this.request.method === "DELETE");
-  const [, deck] = await requireUserAndDeck.apply(this);
-  await Q.decks().delete().where("id", deck.id);
-  this.flash({ content: `Deck '${deck.name}' is deleted`, variant: "info" });
-  return redirect(R["/decks"]);
 });
 
 //
@@ -345,7 +331,10 @@ function NavBarTitleComponent() {
 
 export function DeckNavBarMenuComponent() {
   const { deck }: LoaderData = useDeserialize(useLeafLoaderData());
+  return <DeckMenuComponent deck={deck} />;
+}
 
+export function DeckMenuComponent({ deck }: { deck: DeckTable }) {
   const items = [
     {
       to: R["/decks/$id"](deck.id),

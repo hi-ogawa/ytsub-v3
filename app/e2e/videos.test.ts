@@ -30,7 +30,7 @@ test.describe("videos-signed-in", () => {
     // navigate to /videos/$id
     //
 
-    await page.waitForSelector(`"Created new video"`);
+    await page.waitForSelector(`"Created a new video"`);
 
     await expect(page).toHaveURL(/\/videos\/\d+$/);
 
@@ -86,4 +86,39 @@ test.describe("videos-signed-in", () => {
 
     await expect(page).toHaveURL(/\/videos\/\d+\?index=\d+$/);
   });
+});
+
+test("anonymouse: / => /videos/new => /videos/id", async ({ page }) => {
+  await page.goto("/");
+
+  // input videoId
+  await page.getByRole("button").click();
+  await page.getByPlaceholder("Enter Video ID or URL").fill("4gXmClk8rKI");
+  await page.getByPlaceholder("Enter Video ID or URL").press("Enter");
+
+  // navigated to /vides/new
+  await page.waitForURL("/videos/new?videoId=4gXmClk8rKI");
+  await expect(page.getByLabel("Title")).toHaveValue(
+    "fromis_9 (프로미스나인) 'DM' Official MV"
+  );
+  await page
+    .getByRole("combobox", { name: "1st language" })
+    .selectOption('{"id":".ko"}');
+  await page
+    .getByRole("combobox", { name: "2nd language" })
+    .selectOption('{"id":".en"}');
+  await page.getByRole("button", { name: "Play" }).click();
+
+  // navigated to /videos/id
+  await page.getByText("Created a new video").click();
+  await page.waitForURL(/\/videos\/\d+$/);
+  await page.getByText("Hey you 지금 뭐 해").click();
+});
+
+test("invalid videoId input", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button").click();
+  await page.getByPlaceholder("Enter Video ID or URL").fill("xxx");
+  await page.getByPlaceholder("Enter Video ID or URL").press("Enter");
+  await page.getByText("Invalid input").click();
 });

@@ -24,6 +24,13 @@ export const createTrpcAppContext = async ({
 // middlewares
 //
 
+const currentUser = middlewareFactory(async ({ ctx, next }) => {
+  const user = await getSessionUser(ctx.session);
+  return next({
+    ctx: { user },
+  });
+});
+
 const requireUser = middlewareFactory(async ({ ctx, next }) => {
   const user = await getSessionUser(ctx.session);
   tinyassert(user, "require user");
@@ -32,4 +39,4 @@ const requireUser = middlewareFactory(async ({ ctx, next }) => {
   });
 });
 
-export const middlewares = { requireUser };
+export const middlewares = { requireUser, currentUser };
