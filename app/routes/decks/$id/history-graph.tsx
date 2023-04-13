@@ -60,11 +60,10 @@ export const loader = makeLoader(Controller, async function () {
   const { page, now = new Date() } = Z_LOADER_REQUEST.parse(this.query());
 
   // manipulate in user timezone
-  const nowZdt = toZonedDateTime(now, user.timezone);
-  const todayZdt = nowZdt.startOfDay();
-  const thisWeekZdt = todayZdt.subtract({ days: todayZdt.dayOfWeek - 1 });
-  const beginZdt = thisWeekZdt.add({ weeks: -page });
-  const endZdt = thisWeekZdt.add({ weeks: 1 - page });
+  const today = toZonedDateTime(now, user.timezone).startOfDay();
+  const thisWeek = today.subtract({ days: today.dayOfWeek - 1 });
+  const begin = thisWeek.add({ weeks: -page });
+  const end = thisWeek.add({ weeks: 1 - page });
 
   // aggregate count in js
   const rows = await db
@@ -73,13 +72,13 @@ export const loader = makeLoader(Controller, async function () {
     .where(
       E.and(
         E.eq(T.practiceActions.deckId, deck.id),
-        E.gt(T.practiceActions.createdAt, fromTemporal(beginZdt)),
-        E.lt(T.practiceActions.createdAt, fromTemporal(endZdt))
+        E.gt(T.practiceActions.createdAt, fromTemporal(begin)),
+        E.lt(T.practiceActions.createdAt, fromTemporal(end))
       )
     );
 
   const dates = range(7).map((i) =>
-    beginZdt.add({ days: i }).toPlainDate().toString()
+    begin.add({ days: i }).toPlainDate().toString()
   );
 
   const countMap = Object.fromEntries(
