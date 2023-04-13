@@ -216,7 +216,9 @@ export default function DefaultComponent() {
               className="antd-input p-1"
               options={["week", "month"]}
               value={query.rangeType}
-              onChange={(rangeType) => navigate(mergeQuery({ rangeType }))}
+              onChange={(rangeType) =>
+                navigate(mergeQuery({ rangeType, page: 0 }))
+              }
             />
             <SelectWrapper
               className="antd-input p-1"
