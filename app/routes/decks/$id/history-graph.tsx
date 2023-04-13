@@ -1,9 +1,11 @@
 import { DeckNavBarMenuComponent, requireUserAndDeck } from ".";
 import { Transition } from "@headlessui/react";
+import { tinyassert } from "@hiogawa/utils";
+import { Temporal } from "@js-temporal/polyfill";
 import { Link, useMatches, useNavigate } from "@remix-run/react";
 import type { ECharts } from "echarts";
-import { range } from "lodash";
 import React from "react";
+import type { z } from "zod";
 import { transitionProps } from "../../../components/misc";
 import {
   EchartsComponent,
@@ -20,9 +22,8 @@ import { useDeserialize } from "../../../utils/hooks";
 import { useLeafLoaderData } from "../../../utils/loader-utils";
 import { cls } from "../../../utils/misc";
 import type { PageHandle } from "../../../utils/page-handle";
-import { Timedelta } from "../../../utils/timedelta";
+import { fromTemporal, toZonedDateTime } from "../../../utils/temporal-utils";
 import { formatYmd } from "../../../utils/timezone";
-import { toQuery } from "../../../utils/url-data";
 
 // TODO: this page fails to dev auto reload due to server code sneaked into client?
 
@@ -39,41 +40,39 @@ export const handle: PageHandle = {
 // loader
 //
 
-// TODO
-// - switch group (PracticeActionType or PracticeQueueType)
-// - switch different date range (week or month)
+type QueryType = z.infer<
+  (typeof ROUTE_DEF)["/decks/$id/history-graph"]["query"]
+>;
+type RangeType = QueryType["rangeType"];
 
 interface LoaderData {
   deck: DeckTable;
-  page: number;
+  query: QueryType;
   datasetSource: PracticeHistoryChartDataEntry[];
 }
 
 export const loader = makeLoader(Controller, async function () {
   const [user, deck] = await requireUserAndDeck.apply(this);
 
-  const { page, now = new Date() } = ROUTE_DEF[
-    "/decks/$id/history-graph"
-  ].query.parse(this.query());
-  const begin = Timedelta.make({ days: -7 * (page + 1) }).radd(now);
-  const end = Timedelta.make({ days: -7 * page }).radd(now);
+  const query = ROUTE_DEF["/decks/$id/history-graph"].query.parse(this.query());
+  const { rangeType, page, now = new Date() } = query;
+
+  const { begin, end } = getDateRange(now, user.timezone, rangeType, page);
 
   // aggregate count in js
   const rows = await db
     .select()
     .from(T.practiceActions)
     .where(
-      // prettier-ignore
       E.and(
         E.eq(T.practiceActions.deckId, deck.id),
-        // extend range by 1 day to not miss data due to timezone offset
-        E.gt(T.practiceActions.createdAt, Timedelta.make({ days: -1 }).radd(begin)),
-        E.lt(T.practiceActions.createdAt, Timedelta.make({ days: 1 }).radd(end))
+        E.gt(T.practiceActions.createdAt, fromTemporal(begin)),
+        E.lt(T.practiceActions.createdAt, fromTemporal(end))
       )
     );
 
-  const dates = range(7).map((i) =>
-    formatYmd(Timedelta.make({ days: i + 1 }).radd(begin), user.timezone)
+  const dates = getZonedDateTimesBetween(begin, end).map((date) =>
+    date.toPlainDate().toString()
   );
 
   const countMap = Object.fromEntries(
@@ -98,18 +97,57 @@ export const loader = makeLoader(Controller, async function () {
     ...countMap[date],
   }));
 
-  const loaderData: LoaderData = { deck, page, datasetSource };
+  const loaderData: LoaderData = { deck, query, datasetSource };
   return this.serialize(loaderData);
 });
+
+function getDateRange(
+  now: Date,
+  timezone: string,
+  type: RangeType,
+  page: number
+) {
+  const today = toZonedDateTime(now, timezone).startOfDay();
+  if (type === "week") {
+    const thisWeek = today.subtract({ days: today.dayOfWeek - 1 });
+    const begin = thisWeek.add({ weeks: -page });
+    const end = begin.add({ weeks: 1 });
+    return { begin, end };
+  }
+  if (type === "month") {
+    const thisMonth = today.subtract({ days: today.day - 1 });
+    const begin = thisMonth.add({ months: -page });
+    const end = begin.add({ months: 1 });
+    return { begin, end };
+  }
+  tinyassert(false, "unreachable");
+}
+
+function getZonedDateTimesBetween(
+  begin: Temporal.ZonedDateTime,
+  end: Temporal.ZonedDateTime
+): Temporal.ZonedDateTime[] {
+  const result: Temporal.ZonedDateTime[] = [];
+  for (let i = 0; Temporal.ZonedDateTime.compare(begin, end) < 0; i++) {
+    // bound loop just in case
+    if (i > 1000) {
+      throw new Error("getDatesBetween");
+    }
+    result.push(begin);
+    begin = begin.add({ days: 1 });
+  }
+  return result;
+}
 
 //
 // DefaultComponent
 //
 
 export default function DefaultComponent() {
-  const { page, datasetSource }: LoaderData = useDeserialize(
+  const { deck, query, datasetSource }: LoaderData = useDeserialize(
     useLeafLoaderData()
   );
+  const navigate = useNavigate();
 
   const [isLoading, setIsLoading] = React.useState(true);
 
@@ -128,6 +166,13 @@ export default function DefaultComponent() {
     setIsLoading(true);
   }
 
+  function mergeQuery(newQuery: Partial<QueryType>) {
+    return $R["/decks/$id/history-graph"](deck, {
+      ...query,
+      ...newQuery,
+    });
+  }
+
   return (
     <div className="w-full flex justify-center">
       <div className="w-full max-w-lg flex flex-col gap-3 mt-2">
@@ -137,9 +182,11 @@ export default function DefaultComponent() {
             setInstance={setInstanceWrapper}
             option={practiceHistoryChartDataToEchartsOption(
               datasetSource,
-              "action"
+              query.graphType
             )}
             optionDeps={datasetSource}
+            // TODO: workaround tooltip bugs when switching series
+            key={query.graphType}
           />
           <Transition
             show={isLoading}
@@ -147,21 +194,39 @@ export default function DefaultComponent() {
             {...transitionProps("opacity-0", "opacity-100")}
           />
         </div>
-        <div className="w-full flex justify-center">
+        <div className="w-full flex flex-col items-center gap-2">
           <div className="flex items-center gap-2 px-2 py-1">
             <Link
-              to={"?" + toQuery({ page: page + 1 })}
+              to={mergeQuery({ page: query.page + 1 })}
               onClick={onClickPage}
               className="antd-btn antd-btn-ghost i-ri-play-mini-fill w-4 h-4 rotate-[180deg]"
             />
-            <div className="text-sm px-2">{formatPage(page)}</div>
+            <div className="text-sm px-2">{formatPage(query)}</div>
             <Link
-              to={"?" + toQuery({ page: page - 1 })}
+              to={mergeQuery({ page: query.page - 1 })}
               onClick={onClickPage}
               className={cls(
                 "antd-btn antd-btn-ghost i-ri-play-mini-fill w-4 h-4",
-                page === 0 && "text-colorTextDisabled pointer-events-none"
+                query.page === 0 && "text-colorTextDisabled pointer-events-none"
               )}
+            />
+          </div>
+          <div className="flex justify-center items-center gap-2">
+            <SelectWrapper
+              data-testid="SelectWrapper-rangeType"
+              className="antd-input p-1"
+              options={["week", "month"]}
+              value={query.rangeType}
+              onChange={(rangeType) =>
+                navigate(mergeQuery({ rangeType, page: 0 }))
+              }
+            />
+            <SelectWrapper
+              data-testid="SelectWrapper-graphType"
+              className="antd-input p-1"
+              options={["action", "queue"]}
+              value={query.graphType}
+              onChange={(graphType) => navigate(mergeQuery({ graphType }))}
             />
           </div>
         </div>
@@ -170,10 +235,35 @@ export default function DefaultComponent() {
   );
 }
 
-function formatPage(page: number): string {
-  if (page === 0) return "this week";
-  if (page === 1) return "last week";
-  return `${page} weeks ago`;
+function SelectWrapper<T extends string>({
+  value,
+  onChange,
+  options,
+  ...selectProps
+}: {
+  value: T;
+  onChange: (value: T) => void;
+  options: T[];
+} & Omit<JSX.IntrinsicElements["select"], "value" | "onChange">) {
+  return (
+    <select
+      value={value}
+      onChange={(e) => onChange(options[e.target.selectedIndex])}
+      {...selectProps}
+    >
+      {options.map((option) => (
+        <option key={option} value={option}>
+          {option}
+        </option>
+      ))}
+    </select>
+  );
+}
+
+function formatPage({ page, rangeType }: QueryType): string {
+  if (page === 0) return `this ${rangeType}`;
+  if (page === 1) return `last ${rangeType}`;
+  return `${page} ${rangeType}s ago`;
 }
 
 //
@@ -222,6 +312,7 @@ function HistoryViewSelect({ deckId }: { deckId: number }) {
 
   return (
     <select
+      data-testid="HistoryViewSelect"
       className="antd-input py-0.5 px-1 text-sm"
       value={pathname}
       onChange={(e) => {

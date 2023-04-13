@@ -1,10 +1,13 @@
 import { tinyassert } from "@hiogawa/utils";
 import { Timedelta } from "./timedelta";
 
+// TODO: use Temporal.ZonedDateTime
+
 export const DEFAULT_TIMEZONE = "+00:00";
 
 export const TIMEZONE_RE = /^[+-]\d{2}:\d{2}$/;
 
+// TODO: use Temporal.Now.zonedDateTimeISO().offset?
 export function getTimezone(): string {
   const offset = new Date().getTimezoneOffset();
   const sign = Math.sign(offset);

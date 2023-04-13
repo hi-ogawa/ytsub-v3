@@ -49,7 +49,7 @@ test.describe("decks", () => {
     await expect(page).toHaveURL(/\/decks\/\d+\/history-graph$/);
 
     // navigate to "/decks/$id/history"
-    await page.getByRole("combobox").selectOption({ label: "List" });
+    await page.getByTestId("HistoryViewSelect").selectOption({ label: "List" });
     await expect(page).toHaveURL(/\/decks\/\d+\/history$/);
     await page.getByText("Empty").click();
 
@@ -103,6 +103,12 @@ test.describe("decks", () => {
       .locator("data-test=deck-menu-popover-floating >> text=History")
       .click();
     await expect(page).toHaveURL(/\/decks\/\d+\/history-graph$/);
+    await page.getByText("this week").click();
+
+    // change graph options
+    await page.getByTestId("SelectWrapper-rangeType").selectOption("month");
+    await page.getByText("this month").click();
+    await page.getByTestId("SelectWrapper-graphType").selectOption("queue");
   });
 
   test("practice", async ({ page }) => {
