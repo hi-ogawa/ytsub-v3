@@ -4,7 +4,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import type { DeckTable } from "../../../db/models";
-import { R } from "../../../misc/routes";
+import { $R, R } from "../../../misc/routes";
 import { trpc } from "../../../trpc/client";
 import { Controller, makeLoader } from "../../../utils/controller-utils";
 import { toastInfo } from "../../../utils/flash-message-hook";
@@ -143,7 +143,7 @@ function DefaultComponentInner() {
         <h1 className="text-lg">Others</h1>
         <a
           className="antd-btn antd-btn-default p-1 grid place-content-center"
-          href={R["/decks/$id/export"](deck.id)}
+          href={$R["/decks/$id/export"](deck)}
           // avoid `json` since it cannot be attached on github editor https://github.com/isaacs/github/issues/1130
           download={`ytsub-deck-export--${deck.name}.txt`}
         >

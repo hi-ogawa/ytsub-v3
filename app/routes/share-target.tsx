@@ -1,5 +1,5 @@
 import { redirect } from "@remix-run/server-runtime";
-import { R } from "../misc/routes";
+import { $R } from "../misc/routes";
 import { Controller, makeLoader } from "../utils/controller-utils";
 import { parseVideoId } from "../utils/youtube";
 
@@ -13,9 +13,9 @@ export const loader = makeLoader(Controller, function () {
   if (shareTargetText) {
     const videoId = parseVideoId(shareTargetText);
     if (videoId) {
-      return redirect(R["/videos/new"] + `?videoId=${videoId}`);
+      return $R["/videos/new"](null, { videoId });
     }
   }
   this.flash({ variant: "error", content: "Failed to handle share" });
-  return redirect(R["/"]);
+  return redirect($R["/"]());
 });

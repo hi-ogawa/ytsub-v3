@@ -1,7 +1,6 @@
 import { Link, NavLink, useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import React from "react";
-import { z } from "zod";
 import { PaginationComponent } from "../../../components/misc";
 import { PopoverSimple } from "../../../components/popover";
 import {
@@ -22,20 +21,18 @@ import type {
   VideoTable,
 } from "../../../db/models";
 import type { PracticeQueueType } from "../../../db/types";
-import { R } from "../../../misc/routes";
+import { $R, R, ROUTE_DEF } from "../../../misc/routes";
 import { Controller, makeLoader } from "../../../utils/controller-utils";
 import { useDeserialize } from "../../../utils/hooks";
 import { dtfDateOnly, rtf } from "../../../utils/intl";
 import { useLeafLoaderData } from "../../../utils/loader-utils";
 import { cls } from "../../../utils/misc";
 import type { PageHandle } from "../../../utils/page-handle";
-import { PAGINATION_PARAMS_SCHEMA } from "../../../utils/pagination";
 import {
   DeckPracticeStatistics,
   PracticeSystem,
 } from "../../../utils/practice-system";
 import { Timedelta } from "../../../utils/timedelta";
-import { toQuery } from "../../../utils/url-data";
 import { MiniPlayer } from "../../bookmarks";
 
 export const handle: PageHandle = {
@@ -43,16 +40,12 @@ export const handle: PageHandle = {
   navBarMenu: () => <DeckNavBarMenuComponent />,
 };
 
-const PARAMS_SCHEMA = z.object({
-  id: z.coerce.number().int(),
-});
-
 export async function requireUserAndDeck(
   this: Controller
 ): Promise<[UserTable, DeckTable]> {
   const userId = this.currentUserId();
   if (userId) {
-    const parsed = PARAMS_SCHEMA.safeParse(this.args.params);
+    const parsed = ROUTE_DEF["/decks/$id"].params.safeParse(this.args.params);
     if (parsed.success) {
       const { id } = parsed.data;
       const found = await findOne(
@@ -95,10 +88,12 @@ export const loader = makeLoader(Controller, async function () {
   const now = new Date();
   const statistics = await system.getStatistics(now);
 
-  const paginationParams = PAGINATION_PARAMS_SCHEMA.safeParse(this.query());
+  const paginationParams = ROUTE_DEF["/decks/$id"].query.safeParse(
+    this.query()
+  );
   if (!paginationParams.success) {
     this.flash({ content: "invalid parameters", variant: "error" });
-    return redirect(R["/decks/$id"](deck.id));
+    return redirect($R["/decks/$id"](deck));
   }
 
   const baseQuery = db
@@ -242,11 +237,7 @@ function PracticeBookmarkEntryComponent({
         </div>
         <div className="relative flex items-center gap-2 ml-6 text-xs text-colorTextSecondary">
           <Link
-            to={
-              R["/decks/$id/history"](deck.id) +
-              "?" +
-              toQuery({ practiceEntryId })
-            }
+            to={$R["/decks/$id/history"](deck, { practiceEntryId })}
             className="hover:underline"
           >
             Answered {formatCount(actionsCount)}
@@ -337,7 +328,7 @@ export function DeckNavBarMenuComponent() {
 export function DeckMenuComponent({ deck }: { deck: DeckTable }) {
   const items = [
     {
-      to: R["/decks/$id"](deck.id),
+      to: $R["/decks/$id"](deck),
       children: (
         <>
           <span className="i-ri-book-line w-6 h-6"></span>
@@ -346,7 +337,7 @@ export function DeckMenuComponent({ deck }: { deck: DeckTable }) {
       ),
     },
     {
-      to: R["/decks/$id/practice"](deck.id),
+      to: $R["/decks/$id/practice"](deck),
       children: (
         <>
           <span className="i-ri-play-line w-6 h-6"></span>
@@ -355,7 +346,7 @@ export function DeckMenuComponent({ deck }: { deck: DeckTable }) {
       ),
     },
     {
-      to: R["/decks/$id/history-graph"](deck.id),
+      to: $R["/decks/$id/history-graph"](deck),
       children: (
         <>
           <span className="i-ri-history-line w-6 h-6"></span>
@@ -364,7 +355,7 @@ export function DeckMenuComponent({ deck }: { deck: DeckTable }) {
       ),
     },
     {
-      to: R["/bookmarks"] + `?deckId=${deck.id}`,
+      to: $R["/bookmarks"](null, { deckId: deck.id }),
       children: (
         <>
           <span className="i-ri-bookmark-line w-6 h-6"></span>
@@ -373,7 +364,7 @@ export function DeckMenuComponent({ deck }: { deck: DeckTable }) {
       ),
     },
     {
-      to: R["/decks/$id/edit"](deck.id),
+      to: $R["/decks/$id/edit"](deck),
       children: (
         <>
           <span className="i-ri-edit-line w-6 h-6"></span>
