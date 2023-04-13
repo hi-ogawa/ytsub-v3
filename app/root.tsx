@@ -20,7 +20,7 @@ import { PopoverSimple } from "./components/popover";
 import { ThemeSelect } from "./components/theme-select";
 import { TopProgressBarRemix } from "./components/top-progress-bar";
 import type { UserTable } from "./db/models";
-import { R } from "./misc/routes";
+import { $R, R } from "./misc/routes";
 import { HideRecaptchaBadge } from "./routes/users/register";
 import { publicConfig } from "./utils/config";
 import { ConfigPlaceholder } from "./utils/config-placeholder";
@@ -290,7 +290,7 @@ function SearchComponent() {
   return (
     <Form
       className="w-full"
-      action={R["/videos/new"]}
+      action={$R["/videos/new"]()}
       method="get"
       onSubmit={() => setDrawerOpen(false)}
       data-test="search-form"

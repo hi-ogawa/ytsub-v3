@@ -5,7 +5,7 @@ import { Link, useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import { omit } from "lodash";
 import React from "react";
-import { z } from "zod";
+import type { z } from "zod";
 import { CollapseTransition } from "../../components/collapse";
 import { PaginationComponent, transitionProps } from "../../components/misc";
 import { useModal } from "../../components/modal";
@@ -23,13 +23,12 @@ import type {
   PaginationMetadata,
   VideoTable,
 } from "../../db/models";
-import { R } from "../../misc/routes";
+import { R, ROUTE_DEF } from "../../misc/routes";
 import { Controller, makeLoader } from "../../utils/controller-utils";
 import { useDeserialize } from "../../utils/hooks";
 import { useLeafLoaderData } from "../../utils/loader-utils";
 import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
-import { PAGINATION_PARAMS_SCHEMA } from "../../utils/pagination";
 import type { CaptionEntry } from "../../utils/types";
 import { toQuery } from "../../utils/url-data";
 import { YoutubePlayer, usePlayerLoader } from "../../utils/youtube";
@@ -40,20 +39,10 @@ export const handle: PageHandle = {
   navBarMenu: () => <NavBarMenuComponent />,
 };
 
-const BOOKMARKS_REQUEST = z
-  .object({
-    videoId: z.coerce.number().int().optional(),
-    deckId: z.coerce.number().int().optional(),
-    order: z.enum(["createdAt", "caption"]).default("createdAt"),
-  })
-  .merge(PAGINATION_PARAMS_SCHEMA);
-
-type BookmarksRequest = z.infer<typeof BOOKMARKS_REQUEST>;
-
 interface LoaderData {
   rows: Pick<TT, "bookmarkEntries" | "videos" | "captionEntries">[];
   pagination: PaginationMetadata;
-  request: BookmarksRequest;
+  request: z.infer<(typeof ROUTE_DEF)["/bookmarks"]["query"]>;
 }
 
 export const loader = makeLoader(Controller, async function () {
@@ -66,7 +55,7 @@ export const loader = makeLoader(Controller, async function () {
     return redirect(R["/users/signin"]);
   }
 
-  const parsed = BOOKMARKS_REQUEST.safeParse(this.query());
+  const parsed = ROUTE_DEF["/bookmarks"].query.safeParse(this.query());
   if (!parsed.success) {
     this.flash({ content: "invalid parameters", variant: "error" });
     return redirect(R["/bookmarks"]);

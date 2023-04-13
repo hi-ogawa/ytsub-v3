@@ -3,9 +3,8 @@ import { redirect } from "@remix-run/server-runtime";
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
-import { z } from "zod";
 import type { UserTable } from "../../db/models";
-import { R } from "../../misc/routes";
+import { $R, R, ROUTE_DEF } from "../../misc/routes";
 import { trpc } from "../../trpc/client";
 import { Controller, makeLoader } from "../../utils/controller-utils";
 import { toastInfo } from "../../utils/flash-message-hook";
@@ -26,17 +25,13 @@ import {
 // loader
 //
 
-const LOADER_SCHEMA = z.object({
-  videoId: z.string().nonempty(),
-});
-
 type LoaderData = {
   videoMetadata: VideoMetadata;
   userCaptionConfigs?: { language1?: CaptionConfig; language2?: CaptionConfig };
 };
 
 export const loader = makeLoader(Controller, async function () {
-  const parsed = LOADER_SCHEMA.safeParse(this.query());
+  const parsed = ROUTE_DEF["/videos/new"].query.safeParse(this.query());
   if (parsed.success) {
     const videoId = parseVideoId(parsed.data.videoId);
     if (videoId) {
@@ -104,7 +99,7 @@ export default function DefaultComponent() {
       } else {
         toastInfo("Loading an already saved video");
       }
-      navigate(R["/videos/$id"](data.id));
+      navigate($R["/videos/$id"](data));
     },
     onError: () => {
       toast.error("Failed to create a video");
