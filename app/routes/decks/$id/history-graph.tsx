@@ -40,8 +40,8 @@ export const handle: PageHandle = {
 //
 
 // TODO
-// - group by PracticeActionType
-// - different date range (e.g. month, year)
+// - switch group (PracticeActionType or PracticeQueueType)
+// - switch different date range (week or month)
 
 interface LoaderData {
   deck: DeckTable;
