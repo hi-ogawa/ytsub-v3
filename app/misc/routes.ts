@@ -71,6 +71,10 @@ export const ROUTE_DEF = {
   },
   "/decks/$id/history-graph": {
     params: Z_ID_PARAMS,
+    query: z.object({
+      page: z.coerce.number().int().optional().default(0), // 0 => this week, 1 => last week, ...
+      now: z.coerce.date().optional(), // for testing
+    }),
   },
   "/decks/$id/export": {
     params: Z_ID_PARAMS,

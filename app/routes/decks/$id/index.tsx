@@ -1,7 +1,6 @@
 import { Link, NavLink, useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import React from "react";
-import { z } from "zod";
 import { PaginationComponent } from "../../../components/misc";
 import { PopoverSimple } from "../../../components/popover";
 import {
@@ -41,16 +40,12 @@ export const handle: PageHandle = {
   navBarMenu: () => <DeckNavBarMenuComponent />,
 };
 
-const PARAMS_SCHEMA = z.object({
-  id: z.coerce.number().int(),
-});
-
 export async function requireUserAndDeck(
   this: Controller
 ): Promise<[UserTable, DeckTable]> {
   const userId = this.currentUserId();
   if (userId) {
-    const parsed = PARAMS_SCHEMA.safeParse(this.args.params);
+    const parsed = ROUTE_DEF["/decks/$id"].params.safeParse(this.args.params);
     if (parsed.success) {
       const { id } = parsed.data;
       const found = await findOne(

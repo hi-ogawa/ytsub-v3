@@ -24,7 +24,7 @@ import {
   VideoTable,
   getVideoAndCaptionEntries,
 } from "../../db/models";
-import { $R, R } from "../../misc/routes";
+import { $R, R, ROUTE_DEF } from "../../misc/routes";
 import { trpc } from "../../trpc/client";
 import { Controller, makeLoader } from "../../utils/controller-utils";
 import { useDeserialize, useSelection } from "../../utils/hooks";
@@ -49,26 +49,23 @@ export const handle: PageHandle = {
 // loader
 //
 
-const Z_PARAMS = z.object({
-  id: z.coerce.number().int(),
-  index: z.coerce.number().int().optional(),
-});
-
 type LoaderData = {
   video: VideoTable;
   captionEntries: CaptionEntryTable[];
-  params: z.infer<typeof Z_PARAMS>;
+  query: z.infer<(typeof ROUTE_DEF)["/videos/$id"]["query"]>;
 };
 
 export const loader = makeLoader(Controller, async function () {
-  const parsed = Z_PARAMS.safeParse({ ...this.args.params, ...this.query() });
-  if (parsed.success) {
-    const { id } = parsed.data;
-    const data = await getVideoAndCaptionEntries(id);
+  const parsedParams = ROUTE_DEF["/videos/$id"].params.safeParse(
+    this.args.params
+  );
+  const parsedQuery = ROUTE_DEF["/videos/$id"].query.safeParse(this.query());
+  if (parsedParams.success && parsedQuery.success) {
+    const data = await getVideoAndCaptionEntries(parsedParams.data.id);
     if (data) {
       const loaderData: LoaderData = {
         ...data,
-        params: parsed.data,
+        query: parsedQuery.data,
       };
       return this.serialize(loaderData);
     }
@@ -134,7 +131,7 @@ function PageComponent({
   video,
   captionEntries,
   currentUser,
-  params,
+  query: params,
 }: LoaderData & { currentUser?: UserTable }) {
   const [autoScrollState] = useAutoScrollState();
   const autoScroll = autoScrollState.includes(video.id);
