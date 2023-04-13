@@ -213,6 +213,7 @@ export default function DefaultComponent() {
           </div>
           <div className="flex justify-center items-center gap-2">
             <SelectWrapper
+              data-testid="SelectWrapper-rangeType"
               className="antd-input p-1"
               options={["week", "month"]}
               value={query.rangeType}
@@ -221,6 +222,7 @@ export default function DefaultComponent() {
               }
             />
             <SelectWrapper
+              data-testid="SelectWrapper-graphType"
               className="antd-input p-1"
               options={["action", "queue"]}
               value={query.graphType}
