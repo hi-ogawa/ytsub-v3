@@ -12,7 +12,7 @@ import type {
   VideoTable,
 } from "../../../db/models";
 import { PRACTICE_ACTION_TYPES, PracticeActionType } from "../../../db/types";
-import { R } from "../../../misc/routes";
+import { $R } from "../../../misc/routes";
 import { trpc } from "../../../trpc/client";
 import { Controller, makeLoader } from "../../../utils/controller-utils";
 import { useDeserialize } from "../../../utils/hooks";
@@ -144,7 +144,7 @@ function PracticeComponent({
     ...trpc.decks_practiceActionsCreate.mutationOptions(),
     onSuccess: () => {
       // reload to proceed to next practice
-      navigate(R["/decks/$id/practice"](deck.id));
+      navigate($R["/decks/$id/practice"](deck));
     },
     onError: () => {
       toast.error("Failed to submit answer");

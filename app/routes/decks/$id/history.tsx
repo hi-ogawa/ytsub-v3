@@ -2,7 +2,6 @@ import { QueueTypeIcon, requireUserAndDeck } from ".";
 import { useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import React from "react";
-import { z } from "zod";
 import { CollapseTransition } from "../../../components/collapse";
 import { PaginationComponent } from "../../../components/misc";
 import {
@@ -13,14 +12,13 @@ import {
   toPaginationResult,
 } from "../../../db/drizzle-client.server";
 import type { DeckTable, PaginationMetadata } from "../../../db/models";
-import { R } from "../../../misc/routes";
+import { $R, ROUTE_DEF } from "../../../misc/routes";
 import { Controller, makeLoader } from "../../../utils/controller-utils";
 import { useDeserialize } from "../../../utils/hooks";
 import { dtf } from "../../../utils/intl";
 import { useLeafLoaderData } from "../../../utils/loader-utils";
 import { cls } from "../../../utils/misc";
 import type { PageHandle } from "../../../utils/page-handle";
-import { PAGINATION_PARAMS_SCHEMA } from "../../../utils/pagination";
 import { MiniPlayer } from "../../bookmarks";
 import { DeckHistoryNavBarMenuComponent } from "./history-graph";
 
@@ -37,12 +35,6 @@ export const handle: PageHandle = {
 // loader
 //
 
-const REQUEST_SCHEMA = z
-  .object({
-    practiceEntryId: z.coerce.number().int().optional(),
-  })
-  .merge(PAGINATION_PARAMS_SCHEMA);
-
 interface LoaderData {
   deck: DeckTable;
   rows: Pick<
@@ -55,10 +47,10 @@ interface LoaderData {
 export const loader = makeLoader(Controller, async function () {
   const [, deck] = await requireUserAndDeck.apply(this);
 
-  const parsed = REQUEST_SCHEMA.safeParse(this.query());
+  const parsed = ROUTE_DEF["/decks/$id/history"].query.safeParse(this.query());
   if (!parsed.success) {
     this.flash({ content: "invalid parameters", variant: "error" });
-    return redirect(R["/decks/$id/history"](deck.id));
+    return redirect($R["/decks/$id/history"](deck));
   }
 
   const [rows, pagination] = await toPaginationResult(

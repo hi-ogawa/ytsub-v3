@@ -4,7 +4,6 @@ import { Link, useMatches, useNavigate } from "@remix-run/react";
 import type { ECharts } from "echarts";
 import { range } from "lodash";
 import React from "react";
-import { z } from "zod";
 import { transitionProps } from "../../../components/misc";
 import {
   EchartsComponent,
@@ -15,7 +14,7 @@ import {
 } from "../../../components/practice-history-chart";
 import { E, T, db } from "../../../db/drizzle-client.server";
 import type { DeckTable } from "../../../db/models";
-import { R } from "../../../misc/routes";
+import { $R, ROUTE_DEF } from "../../../misc/routes";
 import { Controller, makeLoader } from "../../../utils/controller-utils";
 import { useDeserialize } from "../../../utils/hooks";
 import { useLeafLoaderData } from "../../../utils/loader-utils";
@@ -41,12 +40,8 @@ export const handle: PageHandle = {
 //
 
 // TODO
-// - group by PracticeActionType
-// - different date range (e.g. month, year)
-const Z_LOADER_REQUEST = z.object({
-  page: z.coerce.number().int().optional().default(0), // 0 => this week, 1 => last week, ...
-  now: z.coerce.date().optional(), // for testing
-});
+// - switch group (PracticeActionType or PracticeQueueType)
+// - switch different date range (week or month)
 
 interface LoaderData {
   deck: DeckTable;
@@ -57,7 +52,9 @@ interface LoaderData {
 export const loader = makeLoader(Controller, async function () {
   const [user, deck] = await requireUserAndDeck.apply(this);
 
-  const { page, now = new Date() } = Z_LOADER_REQUEST.parse(this.query());
+  const { page, now = new Date() } = ROUTE_DEF[
+    "/decks/$id/history-graph"
+  ].query.parse(this.query());
   const begin = Timedelta.make({ days: -7 * (page + 1) }).radd(now);
   const end = Timedelta.make({ days: -7 * page }).radd(now);
 
@@ -214,11 +211,11 @@ function HistoryViewSelect({ deckId }: { deckId: number }) {
 
   const options = [
     {
-      to: R["/decks/$id/history-graph"](deckId),
+      to: $R["/decks/$id/history-graph"]({ id: deckId }),
       label: "Chart",
     },
     {
-      to: R["/decks/$id/history"](deckId),
+      to: $R["/decks/$id/history"]({ id: deckId }),
       label: "List",
     },
   ];

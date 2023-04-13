@@ -1,7 +1,7 @@
 import { Link, useLoaderData } from "@remix-run/react";
 import { E, T, db } from "../../db/drizzle-client.server";
 import type { DeckTable } from "../../db/models";
-import { R } from "../../misc/routes";
+import { $R } from "../../misc/routes";
 import { Controller, makeLoader } from "../../utils/controller-utils";
 import { useDeserialize } from "../../utils/hooks";
 import type { PageHandle } from "../../utils/page-handle";
@@ -56,7 +56,7 @@ export default function DefaultComponent() {
 function DeckComponent({ deck }: { deck: DeckTable }) {
   return (
     <div className="relative border flex items-center p-2 gap-3">
-      <Link to={R["/decks/$id/practice"](deck.id)} className="flex-1 pl-2">
+      <Link to={$R["/decks/$id/practice"](deck)} className="flex-1 pl-2">
         {deck.name}
       </Link>
       <DeckMenuComponent deck={deck} />
@@ -72,12 +72,12 @@ function NavBarMenuComponent() {
   return (
     <>
       <Link
-        to={R["/decks/new"]}
+        to={$R["/decks/new"]()}
         className="antd-btn antd-btn-ghost i-ri-add-box-line w-6 h-6"
         data-test="new-deck-link"
       />
       <Link
-        to={R["/decks/import"]}
+        to={$R["/decks/import"]()}
         className="antd-btn antd-btn-ghost i-ri-file-upload-line w-6 h-6"
       />
     </>

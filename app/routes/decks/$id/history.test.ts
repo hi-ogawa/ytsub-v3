@@ -1,3 +1,4 @@
+import { tinyassert } from "@hiogawa/utils";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { E, T, db } from "../../../db/drizzle-client.server";
 import { testLoader, useUser } from "../../../misc/test-helper";
@@ -30,6 +31,8 @@ describe("decks/id/history.loader", () => {
       params: { id: String(deckId) },
       transform: user.signin,
     });
+    tinyassert(res instanceof Response);
+    tinyassert(res.ok);
     const resJson = await res.json();
     resJson.json.deck.createdAt =
       resJson.json.deck.updatedAt =

@@ -1,4 +1,5 @@
 import { tinyassert } from "@hiogawa/utils";
+import { createGetProxy } from "../utils/proxy-utiils";
 import { _trpc } from "./client-internal.client";
 import type { trpcApp } from "./server";
 
@@ -13,8 +14,8 @@ type TOutput<K extends keyof TRecord> = TRecord[K]["_def"]["_output_out"];
 
 // prettier-ignore
 export const trpc =
-  createProxy((k) =>
-    createProxy(prop => {
+  createGetProxy((k) =>
+    createGetProxy(prop => {
       if (prop === "queryKey" || prop === "mutationKey") {
         return k;
       }
@@ -54,15 +55,4 @@ type TrpcProxy = {
         }
       }
   : never
-}
-
-function createProxy(propHandler: (prop: string | symbol) => unknown): unknown {
-  return new Proxy(
-    {},
-    {
-      get(_target, prop, _receiver) {
-        return propHandler(prop);
-      },
-    }
-  );
 }
