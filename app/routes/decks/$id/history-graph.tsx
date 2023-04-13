@@ -215,7 +215,8 @@ export default function DefaultComponent() {
             <SelectWrapper
               data-testid="SelectWrapper-rangeType"
               className="antd-input p-1"
-              options={["week", "month"]}
+              options={["week", "month"] as const}
+              labelFn={(value) => `by ${value}`}
               value={query.rangeType}
               onChange={(rangeType) =>
                 navigate(mergeQuery({ rangeType, page: 0 }))
@@ -224,7 +225,8 @@ export default function DefaultComponent() {
             <SelectWrapper
               data-testid="SelectWrapper-graphType"
               className="antd-input p-1"
-              options={["action", "queue"]}
+              options={["action", "queue"] as const}
+              labelFn={(value) => `by ${value}`}
               value={query.graphType}
               onChange={(graphType) => navigate(mergeQuery({ graphType }))}
             />
@@ -237,13 +239,15 @@ export default function DefaultComponent() {
 
 function SelectWrapper<T extends string>({
   value,
-  onChange,
   options,
+  onChange,
+  labelFn,
   ...selectProps
 }: {
   value: T;
+  options: readonly T[];
   onChange: (value: T) => void;
-  options: T[];
+  labelFn?: (value: T) => React.ReactNode;
 } & Omit<JSX.IntrinsicElements["select"], "value" | "onChange">) {
   return (
     <select
@@ -253,7 +257,7 @@ function SelectWrapper<T extends string>({
     >
       {options.map((option) => (
         <option key={option} value={option}>
-          {option}
+          {labelFn ? labelFn(option) : option}
         </option>
       ))}
     </select>
