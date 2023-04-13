@@ -1,8 +1,9 @@
 import { DeckNavBarMenuComponent, requireUserAndDeck } from ".";
 import { Transition } from "@headlessui/react";
+import { tinyassert } from "@hiogawa/utils";
+import { Temporal } from "@js-temporal/polyfill";
 import { Link, useMatches, useNavigate } from "@remix-run/react";
 import type { ECharts } from "echarts";
-import { range } from "lodash";
 import React from "react";
 import { transitionProps } from "../../../components/misc";
 import {
@@ -52,15 +53,13 @@ interface LoaderData {
 export const loader = makeLoader(Controller, async function () {
   const [user, deck] = await requireUserAndDeck.apply(this);
 
-  const { page, now = new Date() } = ROUTE_DEF[
-    "/decks/$id/history-graph"
-  ].query.parse(this.query());
+  const {
+    rangeType,
+    page,
+    now = new Date(),
+  } = ROUTE_DEF["/decks/$id/history-graph"].query.parse(this.query());
 
-  // manipulate in user timezone
-  const today = toZonedDateTime(now, user.timezone).startOfDay();
-  const thisWeek = today.subtract({ days: today.dayOfWeek - 1 });
-  const begin = thisWeek.add({ weeks: -page });
-  const end = thisWeek.add({ weeks: 1 - page });
+  const { begin, end } = getDateRange(now, user.timezone, rangeType, page);
 
   // aggregate count in js
   const rows = await db
@@ -74,8 +73,8 @@ export const loader = makeLoader(Controller, async function () {
       )
     );
 
-  const dates = range(7).map((i) =>
-    begin.add({ days: i }).toPlainDate().toString()
+  const dates = getZonedDateTimesBetween(begin, end).map((date) =>
+    date.toPlainDate().toString()
   );
 
   const countMap = Object.fromEntries(
@@ -103,6 +102,44 @@ export const loader = makeLoader(Controller, async function () {
   const loaderData: LoaderData = { deck, page, datasetSource };
   return this.serialize(loaderData);
 });
+
+function getDateRange(
+  now: Date,
+  timezone: string,
+  type: "week" | "month",
+  page: number
+) {
+  const today = toZonedDateTime(now, timezone).startOfDay();
+  if (type === "week") {
+    const thisWeek = today.subtract({ days: today.dayOfWeek - 1 });
+    const begin = thisWeek.add({ weeks: -page });
+    const end = begin.add({ weeks: 1 });
+    return { begin, end };
+  }
+  if (type === "month") {
+    const thisMonth = today.subtract({ days: today.day - 1 });
+    const begin = thisMonth.add({ months: -page });
+    const end = begin.add({ months: 1 });
+    return { begin, end };
+  }
+  tinyassert(false, "unreachable");
+}
+
+function getZonedDateTimesBetween(
+  begin: Temporal.ZonedDateTime,
+  end: Temporal.ZonedDateTime
+): Temporal.ZonedDateTime[] {
+  const result: Temporal.ZonedDateTime[] = [];
+  for (let i = 0; Temporal.ZonedDateTime.compare(begin, end) < 0; i++) {
+    // bound loop just in case
+    if (i > 1000) {
+      throw new Error("getDatesBetween");
+    }
+    result.push(begin);
+    begin = begin.add({ days: 1 });
+  }
+  return result;
+}
 
 //
 // DefaultComponent

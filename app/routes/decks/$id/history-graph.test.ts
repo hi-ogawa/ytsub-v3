@@ -21,6 +21,7 @@ describe("decks/id/history-graph.loader", () => {
       transform: user.signin,
     });
     const resJson = await res.json();
+    expect(resJson?.json?.datasetSource.length).toMatchInlineSnapshot("7");
     expect(resJson?.json?.datasetSource).toMatchInlineSnapshot(`
       [
         {
@@ -99,6 +100,72 @@ describe("decks/id/history-graph.loader", () => {
           "queue-NEW": 24,
           "queue-REVIEW": 0,
           "total": 26,
+        },
+      ]
+    `);
+  });
+
+  it("month", async () => {
+    const res = await testLoader(loader, {
+      params: { id: String(deckId) },
+      query: {
+        now: new Date("2023-04-11T12:00:00+09:00"),
+        page: 1,
+        rangeType: "month",
+      },
+      transform: user.signin,
+    });
+    const resJson = await res.json();
+    expect(resJson?.json?.datasetSource.length).toMatchInlineSnapshot("31");
+    expect(resJson?.json?.datasetSource.slice(0, 2)).toMatchInlineSnapshot(`
+      [
+        {
+          "action-AGAIN": 0,
+          "action-EASY": 0,
+          "action-GOOD": 0,
+          "action-HARD": 0,
+          "date": "2023-03-01",
+          "queue-LEARN": 0,
+          "queue-NEW": 0,
+          "queue-REVIEW": 0,
+          "total": 0,
+        },
+        {
+          "action-AGAIN": 0,
+          "action-EASY": 0,
+          "action-GOOD": 0,
+          "action-HARD": 0,
+          "date": "2023-03-02",
+          "queue-LEARN": 0,
+          "queue-NEW": 0,
+          "queue-REVIEW": 0,
+          "total": 0,
+        },
+      ]
+    `);
+    expect(resJson?.json?.datasetSource.slice(-2)).toMatchInlineSnapshot(`
+      [
+        {
+          "action-AGAIN": 13,
+          "action-EASY": 0,
+          "action-GOOD": 4,
+          "action-HARD": 3,
+          "date": "2023-03-30",
+          "queue-LEARN": 2,
+          "queue-NEW": 18,
+          "queue-REVIEW": 0,
+          "total": 20,
+        },
+        {
+          "action-AGAIN": 8,
+          "action-EASY": 0,
+          "action-GOOD": 3,
+          "action-HARD": 2,
+          "date": "2023-03-31",
+          "queue-LEARN": 1,
+          "queue-NEW": 10,
+          "queue-REVIEW": 2,
+          "total": 13,
         },
       ]
     `);
