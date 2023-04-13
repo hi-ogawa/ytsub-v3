@@ -1,5 +1,6 @@
 import { tinyassert } from "@hiogawa/utils";
 import { useStableRef } from "@hiogawa/utils-react";
+import { Temporal } from "@js-temporal/polyfill";
 import * as echarts from "echarts";
 import React from "react";
 import { PRACTICE_ACTION_TYPES, PRACTICE_QUEUE_TYPES } from "../db/types";
@@ -21,6 +22,8 @@ export function practiceHistoryChartDataToEchartsOption(
   datasetSource: Partial<PracticeHistoryChartDataEntry>[],
   mode: "queue" | "action"
 ): echarts.EChartsOption {
+  const today = Temporal.Now.zonedDateTimeISO().toPlainDate().toString();
+
   return {
     dataset: {
       dimensions: ["date", ...PRACTICE_HISTORY_DATASET_KEYS],
@@ -49,7 +52,12 @@ export function practiceHistoryChartDataToEchartsOption(
         formatter: (value, _index) => {
           // 2022-05-14 => 05/14
           const [, m, d] = value.split("-");
-          return m + "/" + d;
+          let result = m + "/" + d;
+          if (value === today) {
+            // emphasize label for "today"
+            result = `[${result}]`;
+          }
+          return result;
         },
       },
     },
