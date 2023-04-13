@@ -1,6 +1,8 @@
 // similar api to python's timdelta https://docs.python.org/3/library/datetime.html
 // originally from https://github.com/hi-ogawa/ytsub-v2/blob/ec8902209d9a7b733bd6550e05d9df9fa478c1e8/src/utils/datetime.ts
 
+// TODO: use Temporal.Duration
+
 export type TimedeltaOptions = Partial<
   Record<"days" | "hours" | "minutes" | "seconds" | "milliseconds", number>
 >;
