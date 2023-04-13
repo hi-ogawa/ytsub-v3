@@ -308,6 +308,7 @@ function HistoryViewSelect({ deckId }: { deckId: number }) {
 
   return (
     <select
+      data-testid="HistoryViewSelect"
       className="antd-input py-0.5 px-1 text-sm"
       value={pathname}
       onChange={(e) => {

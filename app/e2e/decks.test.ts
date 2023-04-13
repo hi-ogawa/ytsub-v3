@@ -49,7 +49,7 @@ test.describe("decks", () => {
     await expect(page).toHaveURL(/\/decks\/\d+\/history-graph$/);
 
     // navigate to "/decks/$id/history"
-    await page.getByRole("combobox").selectOption({ label: "List" });
+    await page.getByTestId("HistoryViewSelect").selectOption({ label: "List" });
     await expect(page).toHaveURL(/\/decks\/\d+\/history$/);
     await page.getByText("Empty").click();
 
