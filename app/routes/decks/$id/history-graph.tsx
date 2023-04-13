@@ -21,7 +21,7 @@ import { useDeserialize } from "../../../utils/hooks";
 import { useLeafLoaderData } from "../../../utils/loader-utils";
 import { cls } from "../../../utils/misc";
 import type { PageHandle } from "../../../utils/page-handle";
-import { Timedelta } from "../../../utils/timedelta";
+import { fromTemporal, toZonedDateTime } from "../../../utils/temporal";
 import { formatYmd } from "../../../utils/timezone";
 import { toQuery } from "../../../utils/url-data";
 
@@ -58,25 +58,28 @@ export const loader = makeLoader(Controller, async function () {
   const [user, deck] = await requireUserAndDeck.apply(this);
 
   const { page, now = new Date() } = Z_LOADER_REQUEST.parse(this.query());
-  const begin = Timedelta.make({ days: -7 * (page + 1) }).radd(now);
-  const end = Timedelta.make({ days: -7 * page }).radd(now);
+
+  // manipulate in user timezone
+  const nowZdt = toZonedDateTime(now, user.timezone);
+  const todayZdt = nowZdt.startOfDay();
+  const thisWeekZdt = todayZdt.subtract({ days: todayZdt.dayOfWeek - 1 });
+  const beginZdt = thisWeekZdt.add({ weeks: -page });
+  const endZdt = thisWeekZdt.add({ weeks: 1 - page });
 
   // aggregate count in js
   const rows = await db
     .select()
     .from(T.practiceActions)
     .where(
-      // prettier-ignore
       E.and(
         E.eq(T.practiceActions.deckId, deck.id),
-        // extend range by 1 day to not miss data due to timezone offset
-        E.gt(T.practiceActions.createdAt, Timedelta.make({ days: -1 }).radd(begin)),
-        E.lt(T.practiceActions.createdAt, Timedelta.make({ days: 1 }).radd(end))
+        E.gt(T.practiceActions.createdAt, fromTemporal(beginZdt)),
+        E.lt(T.practiceActions.createdAt, fromTemporal(endZdt))
       )
     );
 
   const dates = range(7).map((i) =>
-    formatYmd(Timedelta.make({ days: i + 1 }).radd(begin), user.timezone)
+    beginZdt.add({ days: i }).toPlainDate().toString()
   );
 
   const countMap = Object.fromEntries(
