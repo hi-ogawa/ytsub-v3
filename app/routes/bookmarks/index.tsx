@@ -23,7 +23,7 @@ import type {
   PaginationMetadata,
   VideoTable,
 } from "../../db/models";
-import { R, ROUTE_DEF } from "../../misc/routes";
+import { $R, ROUTE_DEF } from "../../misc/routes";
 import { Controller, makeLoader } from "../../utils/controller-utils";
 import { useDeserialize } from "../../utils/hooks";
 import { useLeafLoaderData } from "../../utils/loader-utils";
@@ -52,13 +52,13 @@ export const loader = makeLoader(Controller, async function () {
       content: "Signin required.",
       variant: "error",
     });
-    return redirect(R["/users/signin"]);
+    return redirect($R["/users/signin"]());
   }
 
   const parsed = ROUTE_DEF["/bookmarks"].query.safeParse(this.query());
   if (!parsed.success) {
     this.flash({ content: "invalid parameters", variant: "error" });
-    return redirect(R["/bookmarks"]);
+    return redirect($R["/bookmarks"]());
   }
 
   const request = parsed.data;
@@ -371,14 +371,14 @@ function NavBarMenuComponent() {
                   Select Deck
                 </button>
               </li>
-              <li>
+              <li className={cls(!isFilterActive && "hidden")}>
                 <Link
                   className="w-full antd-menu-item flex items-center gap-2 p-2"
-                  to={R["/bookmarks"]}
+                  to={$R["/bookmarks"]()}
                   onClick={() => context.onOpenChange(false)}
                 >
                   <span className="i-ri-close-line w-5 h-5"></span>
-                  Clear
+                  Clear Filter
                 </Link>
               </li>
             </ul>
@@ -418,7 +418,7 @@ export function BookmarksMenuItems({
 }) {
   const items = [
     {
-      to: R["/bookmarks"],
+      to: $R["/bookmarks"](),
       children: (
         <>
           <span className="i-ri-bookmark-line w-6 h-6"></span>
@@ -427,7 +427,7 @@ export function BookmarksMenuItems({
       ),
     },
     {
-      to: R["/bookmarks/history-chart"],
+      to: $R["/bookmarks/history-chart"](),
       children: (
         <>
           <span className="i-ri-bar-chart-line w-6 h-6"></span>
