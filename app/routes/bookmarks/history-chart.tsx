@@ -9,7 +9,9 @@ import {
 import { trpc } from "../../trpc/client";
 import { Controller, makeLoader } from "../../utils/controller-utils";
 import { cls } from "../../utils/misc";
+import type { PageHandle } from "../../utils/page-handle";
 import { SelectWrapper, formatPage } from "../decks/$id/history-graph";
+import { BookmarksNavBarMenuComponent } from "./index";
 
 //
 // loader
@@ -23,6 +25,16 @@ export const loader = makeLoader(Controller, async function () {
 //
 // component
 //
+
+export const handle: PageHandle = {
+  navBarTitle: () => (
+    <span>
+      Bookmarks <span className="text-colorTextSecondary text-sm">(chart)</span>
+    </span>
+  ),
+  // TODO
+  navBarMenu: () => null && <BookmarksNavBarMenuComponent />,
+};
 
 export default function PageComponent() {
   const form = useForm<{

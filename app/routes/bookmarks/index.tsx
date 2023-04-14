@@ -36,7 +36,7 @@ import { CaptionEntryComponent } from "../videos/$id";
 
 export const handle: PageHandle = {
   navBarTitle: () => "Bookmarks",
-  navBarMenu: () => <NavBarMenuComponent />,
+  navBarMenu: () => <BookmarksNavBarMenuComponent />,
 };
 
 interface LoaderData {
@@ -328,7 +328,7 @@ export function MiniPlayer({
 // NavBarMenuComponent
 //
 
-function NavBarMenuComponent() {
+export function BookmarksNavBarMenuComponent() {
   const { request }: LoaderData = useDeserialize(useLeafLoaderData());
   const videoSelectModal = useModal();
   const deckSelectModal = useModal();
