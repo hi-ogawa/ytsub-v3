@@ -343,13 +343,25 @@ function NavBarMenuComponent() {
           reference={
             <button
               className={cls(
-                "antd-btn antd-btn-ghost i-ri-filter-line w-6 h-6",
+                "antd-btn antd-btn-ghost i-ri-more-2-line w-6 h-6",
                 isFilterActive && "text-colorPrimary"
               )}
             />
           }
           floating={(context) => (
             <ul className="flex flex-col gap-2 p-2 w-[160px] text-sm">
+              {/* TODO: link to bookmarks/index.ts */}
+              {/* TODO: share NavBarMenuComponent with history-chart.tsx */}
+              <li>
+                <Link
+                  className="w-full antd-menu-item flex items-center gap-2 p-2"
+                  to={R["/bookmarks/history-chart"]}
+                  onClick={() => context.onOpenChange(false)}
+                >
+                  <span className="i-ri-history-line w-5 h-5"></span>
+                  History
+                </Link>
+              </li>
               <li>
                 <button
                   className="w-full antd-menu-item flex items-center gap-2 p-2"
