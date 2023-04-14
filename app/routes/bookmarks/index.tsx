@@ -430,7 +430,7 @@ export function BookmarksMenuItems({
       to: R["/bookmarks/history-chart"],
       children: (
         <>
-          <span className="i-ri-bar-chart-2-line w-6 h-6"></span>
+          <span className="i-ri-bar-chart-line w-6 h-6"></span>
           Chart
         </>
       ),
