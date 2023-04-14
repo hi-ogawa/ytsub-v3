@@ -1,7 +1,7 @@
 import { sql } from "drizzle-orm";
 import { z } from "zod";
 import { T, db } from "../../db/drizzle-client.server";
-import { TIMEZONE_RE } from "../../utils/timezone";
+import { isValidTimezone } from "../../utils/temporal-utils";
 import { middlewares } from "../context";
 import { procedureBuilder } from "../factory";
 
@@ -12,7 +12,7 @@ export const trpcRoutesUsers = {
       z.object({
         language1: z.string().nullable(),
         language2: z.string().nullable(),
-        timezone: z.string().regex(TIMEZONE_RE),
+        timezone: z.string().refine(isValidTimezone),
       })
     )
     .mutation(async ({ input, ctx }) => {

@@ -22,8 +22,7 @@ import { useDeserialize } from "../../../utils/hooks";
 import { useLeafLoaderData } from "../../../utils/loader-utils";
 import { cls } from "../../../utils/misc";
 import type { PageHandle } from "../../../utils/page-handle";
-import { fromTemporal, toZonedDateTime } from "../../../utils/temporal-utils";
-import { formatYmd } from "../../../utils/timezone";
+import { fromZdt, toZdt } from "../../../utils/temporal-utils";
 
 // TODO: this page fails to dev auto reload due to server code sneaked into client?
 // TODO: rename to "history-chart"
@@ -67,8 +66,8 @@ export const loader = makeLoader(Controller, async function () {
     .where(
       E.and(
         E.eq(T.practiceActions.deckId, deck.id),
-        E.gt(T.practiceActions.createdAt, fromTemporal(begin)),
-        E.lt(T.practiceActions.createdAt, fromTemporal(end))
+        E.gt(T.practiceActions.createdAt, fromZdt(begin)),
+        E.lt(T.practiceActions.createdAt, fromZdt(end))
       )
     );
 
@@ -84,7 +83,7 @@ export const loader = makeLoader(Controller, async function () {
   ) as Record<string, Record<PracticeHistoryChartDatasetKeys, number>>;
 
   for (const row of rows) {
-    const date = formatYmd(row.createdAt, user.timezone);
+    const date = toZdt(row.createdAt, user.timezone).toPlainDate().toString();
     if (!dates.includes(date)) {
       continue;
     }
@@ -109,7 +108,7 @@ export function getDateRange(
   type: RangeType,
   page: number
 ) {
-  const today = toZonedDateTime(now, timezone).startOfDay();
+  const today = toZdt(now, timezone).startOfDay();
   if (type === "week") {
     const thisWeek = today.subtract({ days: today.dayOfWeek - 1 });
     const begin = thisWeek.add({ weeks: -page });

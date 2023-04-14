@@ -15,8 +15,8 @@ import {
 } from "../db/types";
 import { aggregate } from "../db/utils";
 import { fromEntries } from "./misc";
+import { fromZdt, toZdt } from "./temporal-utils";
 import { Timedelta, TimedeltaOptions } from "./timedelta";
-import { getStartOfDay } from "./timezone";
 
 const QUEUE_RULES: Record<
   PracticeQueueType,
@@ -76,13 +76,13 @@ export class PracticeSystem {
 
   async getStatistics(now: Date): Promise<DeckPracticeStatistics> {
     const deckId = this.deck.id;
-    const start = getStartOfDay(now, this.user.timezone);
+    const today = fromZdt(toZdt(now, this.user.timezone).startOfDay());
     const [deck, daily] = await Promise.all([
       Q.decks().where("id", deckId).first(), // reload deck for simplicity
       Q.practiceActions()
         .select("queueType", { count: client.raw("COUNT(0)") })
         .where({ deckId })
-        .where("createdAt", ">=", start)
+        .where("createdAt", ">=", today)
         .groupBy("queueType"),
     ]);
     tinyassert(deck);
@@ -107,7 +107,6 @@ export class PracticeSystem {
       reviewsPerDay,
       randomMode,
     } = this.deck;
-    const start = getStartOfDay(now, this.user.timezone);
 
     if (randomMode) {
       const result: PracticeEntryTable = await Q.practiceEntries()
@@ -148,12 +147,13 @@ export class PracticeSystem {
       return result;
     }
 
+    const today = fromZdt(toZdt(now, this.user.timezone).startOfDay());
     const [actions, entries] = await Promise.all([
       // TODO(refactor): copeid from `getStatistics`
       Q.practiceActions()
         .select("queueType", { count: client.raw("COUNT(0)") })
         .where({ deckId })
-        .where("createdAt", ">=", start)
+        .where("createdAt", ">=", today)
         .groupBy("queueType"),
       // select `practiceEntries` with minimum `scheduledAt` for each `queueType`
       Q.practiceEntries()

@@ -1,14 +1,14 @@
+import { wrapError } from "@hiogawa/utils";
 import { Temporal, toTemporalInstant } from "@js-temporal/polyfill";
 
-// minimal wrappers to replace DIY timezone.ts and timedelta.ts
-
-export function toZonedDateTime(
-  date: Date,
-  timezone: string
-): Temporal.ZonedDateTime {
+export function toZdt(date: Date, timezone: string): Temporal.ZonedDateTime {
   return toTemporalInstant.apply(date).toZonedDateTimeISO(timezone);
 }
 
-export function fromTemporal(temporal: { epochMilliseconds: number }): Date {
-  return new Date(temporal.epochMilliseconds);
+export function fromZdt(zdt: Temporal.ZonedDateTime): Date {
+  return new Date(zdt.epochMilliseconds);
+}
+
+export function isValidTimezone(timezone: string) {
+  return wrapError(() => Temporal.Now.zonedDateTimeISO(timezone)).ok;
 }

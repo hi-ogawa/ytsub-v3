@@ -6,7 +6,7 @@ import {
   getDateRange,
   getZonedDateTimesBetween,
 } from "../../routes/decks/$id/history-graph";
-import { fromTemporal, toZonedDateTime } from "../../utils/temporal-utils";
+import { fromZdt, toZdt } from "../../utils/temporal-utils";
 import { middlewares } from "../context";
 import { procedureBuilder } from "../factory";
 
@@ -80,8 +80,8 @@ export const trpcRoutesBookmarks = {
         .where(
           E.and(
             E.eq(T.bookmarkEntries.userId, ctx.user.id),
-            E.gt(T.bookmarkEntries.createdAt, fromTemporal(begin)),
-            E.lt(T.bookmarkEntries.createdAt, fromTemporal(end))
+            E.gt(T.bookmarkEntries.createdAt, fromZdt(begin)),
+            E.lt(T.bookmarkEntries.createdAt, fromZdt(end))
           )
         );
 
@@ -91,9 +91,7 @@ export const trpcRoutesBookmarks = {
 
       // TODO: group by video? language?
       for (const row of rows) {
-        const date = toZonedDateTime(row.createdAt, timezone)
-          .toPlainDate()
-          .toString();
+        const date = toZdt(row.createdAt, timezone).toPlainDate().toString();
         countMap[date].total++;
       }
 

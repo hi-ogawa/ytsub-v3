@@ -7,10 +7,11 @@ import type { UserTable } from "../db/models";
 import { AppError } from "./errors";
 import { crypto } from "./node.server";
 import { sessionStore } from "./session.server";
-import { DEFAULT_TIMEZONE, TIMEZONE_RE } from "./timezone";
+import { isValidTimezone } from "./temporal-utils";
 
 export const USERNAME_MAX_LENGTH = 32;
 export const PASSWORD_MAX_LENGTH = 128;
+const DEFAULT_TIMEZONE = "+00:00";
 
 export const REGISTER_SCHEMA = z
   .object({
@@ -22,7 +23,7 @@ export const REGISTER_SCHEMA = z
     password: z.string().nonempty().max(PASSWORD_MAX_LENGTH),
     passwordConfirmation: z.string().nonempty().max(PASSWORD_MAX_LENGTH),
     recaptchaToken: z.string(),
-    timezone: z.string().regex(TIMEZONE_RE).default(DEFAULT_TIMEZONE),
+    timezone: z.string().refine(isValidTimezone).default(DEFAULT_TIMEZONE),
   })
   .refine((obj) => obj.password === obj.passwordConfirmation, {
     message: "Invalid",
