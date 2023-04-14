@@ -69,9 +69,9 @@ export default function PageComponent() {
             />
           )}
           <Transition
-            show={historyChartQuery.isLoading}
+            show={historyChartQuery.isFetching}
             className="duration-500 antd-body antd-spin-overlay-20"
-            {...transitionProps("opacity-0", "opacity-100")}
+            {...transitionProps("opacity-0", "opacity-50")}
           />
         </div>
         <div className="w-full flex flex-col items-center gap-2">
