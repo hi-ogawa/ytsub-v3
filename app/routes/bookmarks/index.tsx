@@ -1,7 +1,7 @@
 import { Transition } from "@headlessui/react";
 import { isNil } from "@hiogawa/utils";
 import { useRafLoop } from "@hiogawa/utils-react";
-import { Link, useLoaderData } from "@remix-run/react";
+import { Link, NavLink, useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import { omit } from "lodash";
 import React from "react";
@@ -36,7 +36,7 @@ import { CaptionEntryComponent } from "../videos/$id";
 
 export const handle: PageHandle = {
   navBarTitle: () => "Bookmarks",
-  navBarMenu: () => <BookmarksNavBarMenuComponent />,
+  navBarMenu: () => <NavBarMenuComponent />,
 };
 
 interface LoaderData {
@@ -328,7 +328,7 @@ export function MiniPlayer({
 // NavBarMenuComponent
 //
 
-export function BookmarksNavBarMenuComponent() {
+function NavBarMenuComponent() {
   const { request }: LoaderData = useDeserialize(useLeafLoaderData());
   const videoSelectModal = useModal();
   const deckSelectModal = useModal();
@@ -350,18 +350,9 @@ export function BookmarksNavBarMenuComponent() {
           }
           floating={(context) => (
             <ul className="flex flex-col gap-2 p-2 w-[160px] text-sm">
-              {/* TODO: link to bookmarks/index.ts */}
-              {/* TODO: share NavBarMenuComponent with history-chart.tsx */}
-              <li>
-                <Link
-                  className="w-full antd-menu-item flex items-center gap-2 p-2"
-                  to={R["/bookmarks/history-chart"]}
-                  onClick={() => context.onOpenChange(false)}
-                >
-                  <span className="i-ri-history-line w-5 h-5"></span>
-                  History
-                </Link>
-              </li>
+              <BookmarksMenuItems
+                onClickItem={() => context.onOpenChange(false)}
+              />
               <li>
                 <button
                   className="w-full antd-menu-item flex items-center gap-2 p-2"
@@ -417,5 +408,52 @@ function DeckSelectComponent() {
     <div className="border shadow-xl rounded-xl bg-base-100 p-4 flex flex-col gap-2">
       <div className="text-lg">TODO</div>
     </div>
+  );
+}
+
+export function BookmarksMenuItems({
+  onClickItem,
+}: {
+  onClickItem: () => void;
+}) {
+  const items = [
+    {
+      to: R["/bookmarks"],
+      children: (
+        <>
+          <span className="i-ri-bookmark-line w-6 h-6"></span>
+          Bookmarks
+        </>
+      ),
+    },
+    {
+      to: R["/bookmarks/history-chart"],
+      children: (
+        <>
+          <span className="i-ri-bar-chart-2-line w-6 h-6"></span>
+          Chart
+        </>
+      ),
+    },
+  ];
+
+  return (
+    <>
+      {items.map((item) => (
+        <li key={item.to}>
+          <NavLink
+            className={({ isActive }) =>
+              cls(
+                "w-full antd-menu-item flex items-center gap-2 p-2",
+                isActive && "antd-menu-item-active"
+              )
+            }
+            end
+            onClick={onClickItem}
+            {...item}
+          />
+        </li>
+      ))}
+    </>
   );
 }

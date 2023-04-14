@@ -2,6 +2,7 @@ import { Transition } from "@headlessui/react";
 import { useQuery } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { transitionProps } from "../../components/misc";
+import { PopoverSimple } from "../../components/popover";
 import {
   EchartsComponent,
   createBookmarkHistoryChartOption,
@@ -11,7 +12,7 @@ import { Controller, makeLoader } from "../../utils/controller-utils";
 import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 import { SelectWrapper, formatPage } from "../decks/$id/history-graph";
-import { BookmarksNavBarMenuComponent } from "./index";
+import { BookmarksMenuItems } from "./index";
 
 //
 // loader
@@ -23,7 +24,7 @@ export const loader = makeLoader(Controller, async function () {
 });
 
 //
-// component
+// handle
 //
 
 export const handle: PageHandle = {
@@ -32,9 +33,12 @@ export const handle: PageHandle = {
       Bookmarks <span className="text-colorTextSecondary text-sm">(chart)</span>
     </span>
   ),
-  // TODO
-  navBarMenu: () => null && <BookmarksNavBarMenuComponent />,
+  navBarMenu: () => <NavBarMenuComponent />,
 };
+
+//
+// component
+//
 
 export default function PageComponent() {
   const form = useForm<{
@@ -102,5 +106,27 @@ export default function PageComponent() {
         </div>
       </div>
     </div>
+  );
+}
+
+function NavBarMenuComponent() {
+  return (
+    <>
+      <div className="flex items-center">
+        <PopoverSimple
+          placement="bottom-end"
+          reference={
+            <button className="antd-btn antd-btn-ghost i-ri-more-2-line w-6 h-6" />
+          }
+          floating={(context) => (
+            <ul className="flex flex-col gap-2 p-2 w-[160px] text-sm">
+              <BookmarksMenuItems
+                onClickItem={() => context.onOpenChange(false)}
+              />
+            </ul>
+          )}
+        />
+      </div>
+    </>
   );
 }
