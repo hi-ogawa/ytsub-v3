@@ -44,6 +44,7 @@ export const ROUTE_DEF = {
       })
       .merge(Z_PAGINATION_QUERY),
   },
+  "/bookmarks/history-chart": {},
   "/users/me": {},
   "/users/register": {},
   "/users/signin": {},

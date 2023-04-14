@@ -98,6 +98,73 @@ export function practiceHistoryChartDataToEchartsOption(
   };
 }
 
+// TODO: refactor with above
+export function createBookmarkHistoryChartOption(
+  datasetSource: {
+    date: string;
+    total: number;
+  }[]
+): echarts.EChartsOption {
+  const today = Temporal.Now.zonedDateTimeISO().toPlainDate().toString();
+
+  return {
+    dataset: {
+      dimensions: ["date", "total"],
+      source: datasetSource,
+    },
+    animation: false,
+    tooltip: {
+      trigger: "axis",
+      axisPointer: {
+        type: "line",
+        label: {
+          backgroundColor: "#6a7985",
+        },
+      },
+      order: "seriesDesc",
+    },
+    grid: {
+      left: "8%",
+      right: "6%",
+      bottom: "8%",
+    },
+    xAxis: {
+      type: "category",
+      boundaryGap: false,
+      axisLabel: {
+        formatter: (value, _index) => {
+          // 2022-05-14 => 05/14
+          const [, m, d] = value.split("-");
+          let result = m + "/" + d;
+          if (value === today) {
+            // emphasize label for "today"
+            result = `[${result}]`;
+          }
+          return result;
+        },
+      },
+    },
+    yAxis: {
+      type: "value",
+      minInterval: 1,
+    },
+    series: [
+      {
+        type: "line",
+        name: "total",
+        areaStyle: {},
+        emphasis: {
+          disabled: true,
+        },
+        encode: {
+          x: "date",
+          y: "total",
+        },
+      },
+    ],
+  };
+}
+
 //
 // utils
 //

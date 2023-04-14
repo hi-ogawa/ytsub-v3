@@ -1,7 +1,7 @@
 import { Transition } from "@headlessui/react";
 import { isNil } from "@hiogawa/utils";
 import { useRafLoop } from "@hiogawa/utils-react";
-import { Link, useLoaderData } from "@remix-run/react";
+import { Link, NavLink, useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import { omit } from "lodash";
 import React from "react";
@@ -23,7 +23,7 @@ import type {
   PaginationMetadata,
   VideoTable,
 } from "../../db/models";
-import { R, ROUTE_DEF } from "../../misc/routes";
+import { $R, ROUTE_DEF } from "../../misc/routes";
 import { Controller, makeLoader } from "../../utils/controller-utils";
 import { useDeserialize } from "../../utils/hooks";
 import { useLeafLoaderData } from "../../utils/loader-utils";
@@ -52,13 +52,13 @@ export const loader = makeLoader(Controller, async function () {
       content: "Signin required.",
       variant: "error",
     });
-    return redirect(R["/users/signin"]);
+    return redirect($R["/users/signin"]());
   }
 
   const parsed = ROUTE_DEF["/bookmarks"].query.safeParse(this.query());
   if (!parsed.success) {
     this.flash({ content: "invalid parameters", variant: "error" });
-    return redirect(R["/bookmarks"]);
+    return redirect($R["/bookmarks"]());
   }
 
   const request = parsed.data;
@@ -343,13 +343,16 @@ function NavBarMenuComponent() {
           reference={
             <button
               className={cls(
-                "antd-btn antd-btn-ghost i-ri-filter-line w-6 h-6",
+                "antd-btn antd-btn-ghost i-ri-more-2-line w-6 h-6",
                 isFilterActive && "text-colorPrimary"
               )}
             />
           }
           floating={(context) => (
             <ul className="flex flex-col gap-2 p-2 w-[160px] text-sm">
+              <BookmarksMenuItems
+                onClickItem={() => context.onOpenChange(false)}
+              />
               <li>
                 <button
                   className="w-full antd-menu-item flex items-center gap-2 p-2"
@@ -368,14 +371,14 @@ function NavBarMenuComponent() {
                   Select Deck
                 </button>
               </li>
-              <li>
+              <li className={cls(!isFilterActive && "hidden")}>
                 <Link
                   className="w-full antd-menu-item flex items-center gap-2 p-2"
-                  to={R["/bookmarks"]}
+                  to={$R["/bookmarks"]()}
                   onClick={() => context.onOpenChange(false)}
                 >
                   <span className="i-ri-close-line w-5 h-5"></span>
-                  Clear
+                  Clear Filter
                 </Link>
               </li>
             </ul>
@@ -405,5 +408,52 @@ function DeckSelectComponent() {
     <div className="border shadow-xl rounded-xl bg-base-100 p-4 flex flex-col gap-2">
       <div className="text-lg">TODO</div>
     </div>
+  );
+}
+
+export function BookmarksMenuItems({
+  onClickItem,
+}: {
+  onClickItem: () => void;
+}) {
+  const items = [
+    {
+      to: $R["/bookmarks"](),
+      children: (
+        <>
+          <span className="i-ri-bookmark-line w-6 h-6"></span>
+          Bookmarks
+        </>
+      ),
+    },
+    {
+      to: $R["/bookmarks/history-chart"](),
+      children: (
+        <>
+          <span className="i-ri-bar-chart-line w-6 h-6"></span>
+          Chart
+        </>
+      ),
+    },
+  ];
+
+  return (
+    <>
+      {items.map((item) => (
+        <li key={item.to}>
+          <NavLink
+            className={({ isActive }) =>
+              cls(
+                "w-full antd-menu-item flex items-center gap-2 p-2",
+                isActive && "antd-menu-item-active"
+              )
+            }
+            end
+            onClick={onClickItem}
+            {...item}
+          />
+        </li>
+      ))}
+    </>
   );
 }

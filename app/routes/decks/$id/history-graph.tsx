@@ -26,6 +26,7 @@ import { fromTemporal, toZonedDateTime } from "../../../utils/temporal-utils";
 import { formatYmd } from "../../../utils/timezone";
 
 // TODO: this page fails to dev auto reload due to server code sneaked into client?
+// TODO: rename to "history-chart"
 
 //
 // handle
@@ -101,7 +102,8 @@ export const loader = makeLoader(Controller, async function () {
   return this.serialize(loaderData);
 });
 
-function getDateRange(
+// TODO: move to temporal-utils
+export function getDateRange(
   now: Date,
   timezone: string,
   type: RangeType,
@@ -123,7 +125,7 @@ function getDateRange(
   tinyassert(false, "unreachable");
 }
 
-function getZonedDateTimesBetween(
+export function getZonedDateTimesBetween(
   begin: Temporal.ZonedDateTime,
   end: Temporal.ZonedDateTime
 ): Temporal.ZonedDateTime[] {
@@ -237,7 +239,8 @@ export default function DefaultComponent() {
   );
 }
 
-function SelectWrapper<T extends string>({
+// TODO: to utils
+export function SelectWrapper<T extends string>({
   value,
   options,
   onChange,
@@ -264,7 +267,10 @@ function SelectWrapper<T extends string>({
   );
 }
 
-function formatPage({ page, rangeType }: QueryType): string {
+export function formatPage({
+  page,
+  rangeType,
+}: Pick<QueryType, "page" | "rangeType">): string {
   if (page === 0) return `this ${rangeType}`;
   if (page === 1) return `last ${rangeType}`;
   return `${page} ${rangeType}s ago`;

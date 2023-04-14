@@ -2,6 +2,11 @@ import { tinyassert } from "@hiogawa/utils";
 import { sql } from "drizzle-orm";
 import { z } from "zod";
 import { E, T, db, findOne } from "../../db/drizzle-client.server";
+import {
+  getDateRange,
+  getZonedDateTimesBetween,
+} from "../../routes/decks/$id/history-graph";
+import { fromTemporal, toZonedDateTime } from "../../utils/temporal-utils";
 import { middlewares } from "../context";
 import { procedureBuilder } from "../factory";
 
@@ -44,5 +49,54 @@ export const trpcRoutesBookmarks = {
           bookmarkEntriesCount: sql`${T.videos.bookmarkEntriesCount} + 1`,
         })
         .where(E.eq(T.videos.id, input.videoId));
+    }),
+
+  bookmarks_historyChart: procedureBuilder
+    .use(middlewares.requireUser)
+    .input(
+      z.object({
+        rangeType: z.enum(["week", "month"]).default("week"),
+        page: z.coerce.number().int().optional().default(0), // 0 => this week/month, 1 => last week/month, ...
+        __now: z.coerce.date().optional(), // for testing
+      })
+    )
+    .query(async ({ input, ctx }) => {
+      const timezone = ctx.user.timezone;
+      const now = input.__now ?? new Date();
+      const { begin, end } = getDateRange(
+        now,
+        timezone,
+        input.rangeType,
+        input.page
+      );
+      const dates = getZonedDateTimesBetween(begin, end).map((d) =>
+        d.toPlainDate().toString()
+      );
+
+      // aggregate in js
+      const rows = await db
+        .select()
+        .from(T.bookmarkEntries)
+        .where(
+          E.and(
+            E.eq(T.bookmarkEntries.userId, ctx.user.id),
+            E.gt(T.bookmarkEntries.createdAt, fromTemporal(begin)),
+            E.lt(T.bookmarkEntries.createdAt, fromTemporal(end))
+          )
+        );
+
+      const countMap = Object.fromEntries(
+        dates.map((date) => [date, { date, total: 0 }])
+      );
+
+      // TODO: group by video? language?
+      for (const row of rows) {
+        const date = toZonedDateTime(row.createdAt, timezone)
+          .toPlainDate()
+          .toString();
+        countMap[date].total++;
+      }
+
+      return Object.values(countMap);
     }),
 };
