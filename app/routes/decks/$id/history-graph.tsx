@@ -22,7 +22,7 @@ import { useDeserialize } from "../../../utils/hooks";
 import { useLeafLoaderData } from "../../../utils/loader-utils";
 import { cls } from "../../../utils/misc";
 import type { PageHandle } from "../../../utils/page-handle";
-import { fromZdt, toZdt } from "../../../utils/temporal-utils";
+import { fromTemporal, toZdt } from "../../../utils/temporal-utils";
 
 // TODO: this page fails to dev auto reload due to server code sneaked into client?
 // TODO: rename to "history-chart"
@@ -66,8 +66,8 @@ export const loader = makeLoader(Controller, async function () {
     .where(
       E.and(
         E.eq(T.practiceActions.deckId, deck.id),
-        E.gt(T.practiceActions.createdAt, fromZdt(begin)),
-        E.lt(T.practiceActions.createdAt, fromZdt(end))
+        E.gt(T.practiceActions.createdAt, fromTemporal(begin)),
+        E.lt(T.practiceActions.createdAt, fromTemporal(end))
       )
     );
 

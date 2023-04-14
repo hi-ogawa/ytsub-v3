@@ -6,7 +6,7 @@ import {
   getDateRange,
   getZonedDateTimesBetween,
 } from "../../routes/decks/$id/history-graph";
-import { fromZdt, toZdt } from "../../utils/temporal-utils";
+import { fromTemporal, toZdt } from "../../utils/temporal-utils";
 import { middlewares } from "../context";
 import { procedureBuilder } from "../factory";
 
@@ -80,8 +80,8 @@ export const trpcRoutesBookmarks = {
         .where(
           E.and(
             E.eq(T.bookmarkEntries.userId, ctx.user.id),
-            E.gt(T.bookmarkEntries.createdAt, fromZdt(begin)),
-            E.lt(T.bookmarkEntries.createdAt, fromZdt(end))
+            E.gt(T.bookmarkEntries.createdAt, fromTemporal(begin)),
+            E.lt(T.bookmarkEntries.createdAt, fromTemporal(end))
           )
         );
 

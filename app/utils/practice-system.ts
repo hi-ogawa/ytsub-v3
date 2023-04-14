@@ -1,4 +1,5 @@
 import { tinyassert } from "@hiogawa/utils";
+import { Temporal } from "@js-temporal/polyfill";
 import { difference, range } from "lodash";
 import { client } from "../db/client.server";
 import {
@@ -15,8 +16,7 @@ import {
 } from "../db/types";
 import { aggregate } from "../db/utils";
 import { fromEntries } from "./misc";
-import { fromZdt, toZdt } from "./temporal-utils";
-import { Timedelta, TimedeltaOptions } from "./timedelta";
+import { fromTemporal, toInstant, toZdt } from "./temporal-utils";
 
 const QUEUE_RULES: Record<
   PracticeQueueType,
@@ -44,7 +44,7 @@ const QUEUE_RULES: Record<
 
 const SCHEDULE_RULES: Record<
   PracticeQueueType,
-  Record<PracticeActionType, TimedeltaOptions>
+  Record<PracticeActionType, Temporal.DurationLike>
 > = {
   NEW: {
     AGAIN: { minutes: 1 },
@@ -76,7 +76,7 @@ export class PracticeSystem {
 
   async getStatistics(now: Date): Promise<DeckPracticeStatistics> {
     const deckId = this.deck.id;
-    const today = fromZdt(toZdt(now, this.user.timezone).startOfDay());
+    const today = fromTemporal(toZdt(now, this.user.timezone).startOfDay());
     const [deck, daily] = await Promise.all([
       Q.decks().where("id", deckId).first(), // reload deck for simplicity
       Q.practiceActions()
@@ -147,7 +147,7 @@ export class PracticeSystem {
       return result;
     }
 
-    const today = fromZdt(toZdt(now, this.user.timezone).startOfDay());
+    const today = fromTemporal(toZdt(now, this.user.timezone).startOfDay());
     const [actions, entries] = await Promise.all([
       // TODO(refactor): copeid from `getStatistics`
       Q.practiceActions()
@@ -248,11 +248,13 @@ export class PracticeSystem {
     });
 
     // update schedule
-    let delta = Timedelta.make(SCHEDULE_RULES[queueType][actionType]);
+    let delta = Temporal.Duration.from(
+      SCHEDULE_RULES[queueType][actionType]
+    ).total({ unit: "second" });
     if (queueType === "REVIEW") {
-      delta = delta.mul(practiceEntry.easeFactor);
+      delta *= practiceEntry.easeFactor;
     }
-    const newScheduledAt = delta.radd(now);
+    const newScheduledAt = fromTemporal(toInstant(now).add({ seconds: delta }));
 
     // update queue type
     const newQueueType = QUEUE_RULES[queueType][actionType];

@@ -1,6 +1,6 @@
 import { Temporal } from "@js-temporal/polyfill";
 import { describe, expect, it } from "vitest";
-import { fromZdt, isValidTimezone, toZdt } from "./temporal-utils";
+import { fromTemporal, isValidTimezone, toZdt } from "./temporal-utils";
 
 describe("isValidTimezone", () => {
   it("basic", () => {
@@ -21,6 +21,6 @@ describe("toZdt", () => {
     const timezone = "+09:00";
     const zdt = toZdt(date, timezone);
     expect(zdt.toPlainDate().toString()).toMatchInlineSnapshot('"2023-04-15"');
-    expect(fromZdt(zdt)).toEqual(date);
+    expect(fromTemporal(zdt)).toEqual(date);
   });
 });

@@ -5,8 +5,12 @@ export function toZdt(date: Date, timezone: string): Temporal.ZonedDateTime {
   return toTemporalInstant.apply(date).toZonedDateTimeISO(timezone);
 }
 
-export function fromZdt(zdt: Temporal.ZonedDateTime): Date {
-  return new Date(zdt.epochMilliseconds);
+export function toInstant(date: Date): Temporal.Instant {
+  return toTemporalInstant.apply(date);
+}
+
+export function fromTemporal(t: { epochMilliseconds: number }): Date {
+  return new Date(t.epochMilliseconds);
 }
 
 export function isValidTimezone(timezone: string) {
