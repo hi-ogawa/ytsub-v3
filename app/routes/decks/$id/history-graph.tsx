@@ -19,6 +19,7 @@ import type { DeckTable } from "../../../db/models";
 import { $R, ROUTE_DEF } from "../../../misc/routes";
 import { Controller, makeLoader } from "../../../utils/controller-utils";
 import { useDeserialize } from "../../../utils/hooks";
+import { useClickOutside } from "../../../utils/hooks-client-utils";
 import { useLeafLoaderData } from "../../../utils/loader-utils";
 import { cls } from "../../../utils/misc";
 import type { PageHandle } from "../../../utils/page-handle";
@@ -161,11 +162,9 @@ export default function DefaultComponent() {
     setInstance(instance);
   }
 
-  function onClickPage() {
-    // TODO: "hideTip" also when click outside of chart (on mobile)
+  const clickOutsideRef = useClickOutside(() => {
     instance?.dispatchAction({ type: "hideTip" });
-    setIsLoading(true);
-  }
+  });
 
   function mergeQuery(newQuery: Partial<QueryType>) {
     return $R["/decks/$id/history-graph"](deck, {
@@ -177,7 +176,7 @@ export default function DefaultComponent() {
   return (
     <div className="w-full flex justify-center">
       <div className="w-full max-w-lg flex flex-col gap-3 mt-2">
-        <div className="relative w-full h-[300px]">
+        <div className="relative w-full h-[300px]" ref={clickOutsideRef}>
           <EchartsComponent
             className="w-full h-full"
             setInstance={setInstanceWrapper}
@@ -199,13 +198,11 @@ export default function DefaultComponent() {
           <div className="flex items-center gap-2 px-2 py-1">
             <Link
               to={mergeQuery({ page: query.page + 1 })}
-              onClick={onClickPage}
               className="antd-btn antd-btn-ghost i-ri-play-mini-fill w-4 h-4 rotate-[180deg]"
             />
             <div className="text-sm px-2">{formatPage(query)}</div>
             <Link
               to={mergeQuery({ page: query.page - 1 })}
-              onClick={onClickPage}
               className={cls(
                 "antd-btn antd-btn-ghost i-ri-play-mini-fill w-4 h-4",
                 query.page === 0 && "text-colorTextDisabled pointer-events-none"

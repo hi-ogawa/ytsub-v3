@@ -61,6 +61,7 @@ export default function PageComponent() {
 
   const [instance, setInstance] = React.useState<echarts.ECharts>();
 
+  // echarts doesn't close tooltip when clicked outside on mobile?
   const clickOutsideRef = useClickOutside(() => {
     instance?.dispatchAction({ type: "hideTip" });
   });
