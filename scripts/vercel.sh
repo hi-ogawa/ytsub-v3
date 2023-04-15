@@ -9,11 +9,10 @@ rm -rf build/css
 pnpm build:css
 
 # default "node-cjs" build with custom server main
-NODE_ENV=production BUILD_VERCEL=1 npx remix build
+NODE_ENV=production BUILD_VERCEL=1 npx remix build --sourcemap
 
 # run esbuild again manually to bundle server app
-# - skip `mysql` which appears in https://github.com/knex/knex/blob/3616791ac2a6d17d55b29feed6a503a793d7c488/lib/dialects/mysql/index.js#L23
-npx esbuild build/remix/production/server/index.js --outfile=build/remix/production/server/index-bundled.js \
+npx esbuild build/remix/production/server/index.js --sourcemap=inline --outfile=build/remix/production/server/index-bundled.js \
   --bundle --platform=node \
   --external:mysql \
   --external:sqlite3 \
@@ -40,6 +39,7 @@ npx esbuild build/remix/production/server/index.js --outfile=build/remix/product
 #         index.func/
 #           .vc-config.json
 #           index-bundled.js
+#           index.js         (load index-bundled.js after process.setSourceMapsEnabled)
 #
 
 deploy_dir=build/remix/production/deploy
@@ -47,6 +47,12 @@ mkdir -p "$deploy_dir/.vercel/output/static"
 mkdir -p "$deploy_dir/.vercel/output/functions/server/index.func"
 cp -r build/remix/production/public "$deploy_dir/.vercel/output/static"
 cp build/remix/production/server/index-bundled.js "$deploy_dir/.vercel/output/functions/server/index.func"
+
+cat > "$deploy_dir/.vercel/output/functions/server/index.func/index.js" << "EOF"
+process.setSourceMapsEnabled(true);
+require("./index-bundled.js");
+EOF
+
 cat > "$deploy_dir/.vercel/output/config.json" << "EOF"
 {
   "version": 3,
@@ -71,14 +77,16 @@ cat > "$deploy_dir/.vercel/output/config.json" << "EOF"
   ]
 }
 EOF
+
 cat > "$deploy_dir/.vercel/output/functions/server/index.func/.vc-config.json" <<EOF
 {
   "runtime": "nodejs16.x",
-  "handler": "index-bundled.js",
+  "handler": "index.js",
   "launcherType": "Nodejs",
   "regions": ["hnd1"]
 }
 EOF
+
 if [ -f .vercel/project.json ]; then
   cp .vercel/project.json "$deploy_dir/.vercel"  # skip on CI
 fi
