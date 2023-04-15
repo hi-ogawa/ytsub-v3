@@ -1,35 +1,15 @@
 import { isNil, tinyassert } from "@hiogawa/utils";
 import type { Session } from "@remix-run/server-runtime";
 import bcrypt from "bcryptjs";
-import { z } from "zod";
 import { E, T, db, findOne } from "../db/drizzle-client.server";
 import type { UserTable } from "../db/models";
 import { AppError } from "./errors";
 import { crypto } from "./node.server";
 import { sessionStore } from "./session.server";
-import { isValidTimezone } from "./temporal-utils";
 
 export const USERNAME_MAX_LENGTH = 32;
 export const PASSWORD_MAX_LENGTH = 128;
 const DEFAULT_TIMEZONE = "+00:00";
-
-export const REGISTER_SCHEMA = z
-  .object({
-    username: z
-      .string()
-      .nonempty()
-      .max(USERNAME_MAX_LENGTH)
-      .regex(/^[a-zA-Z0-9_.-]+$/),
-    password: z.string().nonempty().max(PASSWORD_MAX_LENGTH),
-    passwordConfirmation: z.string().nonempty().max(PASSWORD_MAX_LENGTH),
-    recaptchaToken: z.string(),
-    timezone: z.string().refine(isValidTimezone).default(DEFAULT_TIMEZONE),
-  })
-  .refine((obj) => obj.password === obj.passwordConfirmation, {
-    message: "Invalid",
-    path: ["passwordConfirmation"],
-  });
-
 const BCRYPT_ROUNDS = 10;
 
 export function sha256(

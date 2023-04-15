@@ -18,6 +18,9 @@ export default function PageComponent() {
       Object.fromEntries(searchParams.entries())
     );
     if (parsed.success) {
+      if (parsed.data.type === "register") {
+        toast.success("Successfully registered");
+      }
       if (parsed.data.type === "signin") {
         toast.success("Successfully signed in");
       }

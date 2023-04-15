@@ -51,7 +51,7 @@ export const ROUTE_DEF = {
   "/users/signout": {},
   "/users/reset": {
     query: z.object({
-      type: z.enum(["signin", "signout"]),
+      type: z.enum(["signin", "signout", "register"]),
     }),
   },
   "/decks": {},

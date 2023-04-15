@@ -1,6 +1,8 @@
-import { describe, expect, it } from "vitest";
+import { tinyassert } from "@hiogawa/utils";
+import { beforeEach, describe, expect, it } from "vitest";
+import { T, db } from "../../db/drizzle-client.server";
 import { useUser } from "../../misc/test-helper";
-import { getSessionUser } from "../../utils/auth";
+import { findByUsername, getSessionUser } from "../../utils/auth";
 import { getResponseSession } from "../../utils/session.server";
 import { trpc } from "../client";
 import { testTrpcClient, testTrpcClientWithContext } from "../test-helper";
@@ -83,6 +85,102 @@ describe(trpc.users_signout.mutationKey, () => {
       await expect(trpc.users_signout(null)).rejects.toMatchInlineSnapshot(
         "[TRPCError: Not signed in]"
       );
+    });
+  });
+});
+
+describe(trpc.users_register.mutationKey, () => {
+  const credentials = {
+    username: "test-trpc-register",
+    password: "correct",
+    passwordConfirmation: "correct",
+    recaptchaToken: "",
+    timezone: "+00:00",
+  };
+
+  beforeEach(async () => {
+    await db.delete(T.users);
+  });
+
+  describe("success", () => {
+    it("basic", async () => {
+      const trpc = await testTrpcClientWithContext();
+      await trpc.caller.users_register(credentials);
+
+      const found = await findByUsername(credentials.username);
+      tinyassert(found);
+      expect(found.username).toBe(credentials.username);
+      expect(found.timezone).toBe("+00:00");
+      expect(found.createdAt).toEqual(found.updatedAt);
+      expect(Math.abs(found.createdAt.getTime() - Date.now())).toBeLessThan(
+        // ci flaky if 1000
+        5000
+      );
+
+      // check session cookie in response header
+      const sessionUser = await getSessionUser(
+        await getResponseSession({ headers: trpc.ctx.resHeaders })
+      );
+      expect(sessionUser).toEqual(found);
+    });
+  });
+
+  describe("error", () => {
+    it("username format", async () => {
+      const trpc = await testTrpcClientWithContext();
+      await expect(
+        trpc.caller.users_register({
+          ...credentials,
+          username: "$invalid@format#",
+        })
+      ).rejects.toMatchInlineSnapshot(`
+        [TRPCError: [
+          {
+            "validation": "regex",
+            "code": "invalid_string",
+            "message": "Invalid",
+            "path": [
+              "username"
+            ]
+          }
+        ]]
+      `);
+    });
+
+    it("password confirmation", async () => {
+      const trpc = await testTrpcClientWithContext();
+      await expect(
+        trpc.caller.users_register({
+          ...credentials,
+          passwordConfirmation: "wrong",
+        })
+      ).rejects.toMatchInlineSnapshot(`
+        [TRPCError: [
+          {
+            "code": "custom",
+            "message": "Invalid",
+            "path": [
+              "passwordConfirmation"
+            ]
+          }
+        ]]
+      `);
+    });
+
+    it("unique username", async () => {
+      {
+        const trpc = await testTrpcClientWithContext();
+        await trpc.caller.users_register(credentials);
+      }
+
+      {
+        const trpc = await testTrpcClientWithContext();
+        await expect(
+          trpc.caller.users_register(credentials)
+        ).rejects.toMatchInlineSnapshot(
+          "[TRPCError: Username 'test-trpc-register' is already taken]"
+        );
+      }
     });
   });
 });
