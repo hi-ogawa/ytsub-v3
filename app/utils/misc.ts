@@ -1,4 +1,4 @@
-import { newPromiseWithResolvers } from "@hiogawa/utils";
+import { newPromiseWithResolvers, tinyassert } from "@hiogawa/utils";
 import { UseQueryOptions, useQuery } from "@tanstack/react-query";
 
 // TODO: js-utils
@@ -50,4 +50,8 @@ export function usePromise<T>(
     cacheTime: Infinity,
     ...options,
   });
+}
+
+export function assertUnreachable(_value: never): never {
+  tinyassert(false, "unreachable");
 }

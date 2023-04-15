@@ -8,12 +8,13 @@ import {
 import { E, T, db, findOne } from "../../db/drizzle-client.server";
 import { Z_PRACTICE_ACTION_TYPES } from "../../db/types";
 import { importDeckJson } from "../../misc/seed-utils";
-import {
-  getDateRange,
-  getZonedDateTimesBetween,
-} from "../../routes/decks/$id/history-graph";
 import { PracticeSystem } from "../../utils/practice-system";
-import { fromTemporal, toZdt } from "../../utils/temporal-utils";
+import {
+  Z_DATE_RANGE_TYPE,
+  fromTemporal,
+  getZonedDateRange,
+  toZdt,
+} from "../../utils/temporal-utils";
 import { middlewares } from "../context";
 import { procedureBuilder } from "../factory";
 
@@ -203,7 +204,7 @@ export const trpcRoutesDecks = {
     .input(
       z.object({
         deckId: z.number().int(),
-        rangeType: z.enum(["week", "month"]).default("week"),
+        rangeType: Z_DATE_RANGE_TYPE.default("week"),
         page: z.number().int().optional().default(0), // 0 => this week/month, 1 => last week/month, ...
         __now: z.date().optional(), // for testing
       })
@@ -211,15 +212,12 @@ export const trpcRoutesDecks = {
     .query(async ({ input, ctx }) => {
       const timezone = ctx.user.timezone;
       const now = input.__now ?? new Date();
-      const { begin, end } = getDateRange(
-        now,
-        timezone,
+      const dateRange = getZonedDateRange(
+        toZdt(now, timezone),
         input.rangeType,
         input.page
       );
-      const dates = getZonedDateTimesBetween(begin, end).map((d) =>
-        d.toPlainDate().toString()
-      );
+      const dates = dateRange.dates.map((d) => d.toPlainDate().toString());
 
       // aggregate count in js
       const rows = await db
@@ -228,8 +226,8 @@ export const trpcRoutesDecks = {
         .where(
           E.and(
             E.eq(T.practiceActions.deckId, input.deckId),
-            E.gt(T.practiceActions.createdAt, fromTemporal(begin)),
-            E.lt(T.practiceActions.createdAt, fromTemporal(end))
+            E.gt(T.practiceActions.createdAt, fromTemporal(dateRange.begin)),
+            E.lt(T.practiceActions.createdAt, fromTemporal(dateRange.end))
           )
         );
 

@@ -1,20 +1,17 @@
 import { DeckNavBarMenuComponent, requireUserAndDeck } from ".";
 import { Transition } from "@headlessui/react";
-import { tinyassert } from "@hiogawa/utils";
-import { Temporal } from "@js-temporal/polyfill";
 import { useMatches, useNavigate } from "@remix-run/react";
 import { useQuery } from "@tanstack/react-query";
 import type { ECharts } from "echarts";
 import React from "react";
 import { useForm } from "react-hook-form";
-import type { z } from "zod";
-import { transitionProps } from "../../../components/misc";
+import { SelectWrapper, transitionProps } from "../../../components/misc";
 import {
   EchartsComponent,
   practiceHistoryChartDataToEchartsOption,
 } from "../../../components/practice-history-chart";
 import type { DeckTable } from "../../../db/models";
-import { $R, ROUTE_DEF } from "../../../misc/routes";
+import { $R } from "../../../misc/routes";
 import { trpc } from "../../../trpc/client";
 import { Controller, makeLoader } from "../../../utils/controller-utils";
 import { useDeserialize } from "../../../utils/hooks";
@@ -22,7 +19,7 @@ import { useClickOutside } from "../../../utils/hooks-client-utils";
 import { useLeafLoaderData } from "../../../utils/loader-utils";
 import { cls } from "../../../utils/misc";
 import type { PageHandle } from "../../../utils/page-handle";
-import { toZdt } from "../../../utils/temporal-utils";
+import { formatDateRange } from "../../../utils/temporal-utils";
 
 //
 // handle
@@ -37,11 +34,6 @@ export const handle: PageHandle = {
 // loader
 //
 
-type QueryType = z.infer<
-  (typeof ROUTE_DEF)["/decks/$id/history-graph"]["query"]
->;
-type RangeType = QueryType["rangeType"];
-
 interface LoaderData {
   deck: DeckTable;
 }
@@ -51,45 +43,6 @@ export const loader = makeLoader(Controller, async function () {
   const loaderData: LoaderData = { deck };
   return this.serialize(loaderData);
 });
-
-// TODO: move to temporal-utils
-export function getDateRange(
-  now: Date,
-  timezone: string,
-  type: RangeType,
-  page: number
-) {
-  const today = toZdt(now, timezone).startOfDay();
-  if (type === "week") {
-    const thisWeek = today.subtract({ days: today.dayOfWeek - 1 });
-    const begin = thisWeek.add({ weeks: -page });
-    const end = begin.add({ weeks: 1 });
-    return { begin, end };
-  }
-  if (type === "month") {
-    const thisMonth = today.subtract({ days: today.day - 1 });
-    const begin = thisMonth.add({ months: -page });
-    const end = begin.add({ months: 1 });
-    return { begin, end };
-  }
-  tinyassert(false, "unreachable");
-}
-
-export function getZonedDateTimesBetween(
-  begin: Temporal.ZonedDateTime,
-  end: Temporal.ZonedDateTime
-): Temporal.ZonedDateTime[] {
-  const result: Temporal.ZonedDateTime[] = [];
-  for (let i = 0; Temporal.ZonedDateTime.compare(begin, end) < 0; i++) {
-    // bound loop just in case
-    if (i > 1000) {
-      throw new Error("getDatesBetween");
-    }
-    result.push(begin);
-    begin = begin.add({ days: 1 });
-  }
-  return result;
-}
 
 //
 // DefaultComponent
@@ -155,7 +108,9 @@ export default function DefaultComponent() {
               className="antd-btn antd-btn-ghost i-ri-play-mini-fill w-4 h-4 rotate-[180deg]"
               onClick={() => form.setValue("page", params.page + 1)}
             />
-            <div className="text-sm px-2">{formatPage(params)}</div>
+            <div className="text-sm px-2">
+              {formatDateRange(params.rangeType, params.page)}
+            </div>
             <button
               className={cls(
                 "antd-btn antd-btn-ghost i-ri-play-mini-fill w-4 h-4",
@@ -190,43 +145,6 @@ export default function DefaultComponent() {
       </div>
     </div>
   );
-}
-
-// TODO: to utils
-export function SelectWrapper<T extends string>({
-  value,
-  options,
-  onChange,
-  labelFn,
-  ...selectProps
-}: {
-  value: T;
-  options: readonly T[];
-  onChange: (value: T) => void;
-  labelFn?: (value: T) => React.ReactNode;
-} & Omit<JSX.IntrinsicElements["select"], "value" | "onChange">) {
-  return (
-    <select
-      value={value}
-      onChange={(e) => onChange(options[e.target.selectedIndex])}
-      {...selectProps}
-    >
-      {options.map((option) => (
-        <option key={option} value={option}>
-          {labelFn ? labelFn(option) : option}
-        </option>
-      ))}
-    </select>
-  );
-}
-
-export function formatPage({
-  page,
-  rangeType,
-}: Pick<QueryType, "page" | "rangeType">): string {
-  if (page === 0) return `this ${rangeType}`;
-  if (page === 1) return `last ${rangeType}`;
-  return `${page} ${rangeType}s ago`;
 }
 
 //
