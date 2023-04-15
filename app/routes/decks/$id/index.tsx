@@ -32,7 +32,7 @@ import {
   DeckPracticeStatistics,
   PracticeSystem,
 } from "../../../utils/practice-system";
-import { Timedelta } from "../../../utils/timedelta";
+import { toInstant } from "../../../utils/temporal-utils";
 import { MiniPlayer } from "../../bookmarks";
 
 export const handle: PageHandle = {
@@ -294,17 +294,16 @@ function formatCount(n: number): string {
 }
 
 function formatScheduledAt(date: Date, now: Date): string | undefined {
-  const delta = Timedelta.difference(date, now);
-  if (delta.value <= 0) {
+  const duration = toInstant(date).since(toInstant(now));
+  if (duration.sign <= 0) {
     return "at " + dtfDateOnly.format(date);
   }
-  const n = delta.normalize();
   for (const unit of ["days", "hours", "minutes"] as const) {
-    if (n[unit] > 0) {
-      return rtf.format(n[unit], unit);
+    if (duration[unit] > 0) {
+      return rtf.format(duration[unit], unit);
     }
   }
-  return rtf.format(n.seconds, "seconds");
+  return rtf.format(duration.total({ unit: "seconds" }), "seconds");
 }
 
 //

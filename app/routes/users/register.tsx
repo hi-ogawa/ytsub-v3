@@ -1,4 +1,5 @@
 import { mapOption, newPromiseWithResolvers, tinyassert } from "@hiogawa/utils";
+import { Temporal } from "@js-temporal/polyfill";
 import { Form, Link, useActionData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import { once } from "lodash";
@@ -18,7 +19,6 @@ import { AppError } from "../../utils/errors";
 import { useIsFormValid } from "../../utils/hooks";
 import { loadScript, throwGetterProxy, usePromise } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
-import { getTimezone } from "../../utils/timezone";
 import { toForm } from "../../utils/url-data";
 
 export const handle: PageHandle = {
@@ -112,7 +112,10 @@ export default function DefaultComponent() {
   const [isValid, formProps] = useIsFormValid();
   const recaptchaTokenInputRef = React.createRef<HTMLInputElement>();
   const errors = mapOption(actionData?.errors?.fieldErrors, Object.keys) ?? [];
-  const timezone = React.useMemo(getTimezone, []);
+  const timezone = React.useMemo(
+    () => Temporal.Now.zonedDateTimeISO().offset,
+    []
+  ); // client only
 
   // TODO: teardown on unmount?
   const recaptchaApiQuery = useRecaptchaApi();
