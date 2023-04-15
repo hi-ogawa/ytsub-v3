@@ -1,5 +1,6 @@
 import { Transition } from "@headlessui/react";
 import { useQuery } from "@tanstack/react-query";
+import React from "react";
 import { useForm } from "react-hook-form";
 import { transitionProps } from "../../components/misc";
 import { PopoverSimple } from "../../components/popover";
@@ -9,6 +10,7 @@ import {
 } from "../../components/practice-history-chart";
 import { trpc } from "../../trpc/client";
 import { Controller, makeLoader } from "../../utils/controller-utils";
+import { useClickOutside } from "../../utils/hooks-client-utils";
 import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 import { SelectWrapper, formatPage } from "../decks/$id/history-graph";
@@ -57,13 +59,21 @@ export default function PageComponent() {
     keepPreviousData: true,
   });
 
+  const [instance, setInstance] = React.useState<echarts.ECharts>();
+
+  // echarts doesn't close tooltip when clicked outside on mobile?
+  const clickOutsideRef = useClickOutside(() => {
+    instance?.dispatchAction({ type: "hideTip" });
+  });
+
   return (
     <div className="w-full flex justify-center">
       <div className="w-full max-w-lg flex flex-col gap-3 mt-2">
-        <div className="relative w-full h-[300px]">
+        <div className="relative w-full h-[300px]" ref={clickOutsideRef}>
           {historyChartQuery.isSuccess && (
             <EchartsComponent
               className="w-full h-full"
+              setInstance={setInstance}
               option={createBookmarkHistoryChartOption(historyChartQuery.data)}
               optionDeps={historyChartQuery.data}
             />
