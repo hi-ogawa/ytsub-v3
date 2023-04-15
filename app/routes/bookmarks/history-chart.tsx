@@ -2,7 +2,7 @@ import { Transition } from "@headlessui/react";
 import { useQuery } from "@tanstack/react-query";
 import React from "react";
 import { useForm } from "react-hook-form";
-import { SimpleSelect, transitionProps } from "../../components/misc";
+import { SelectWrapper, transitionProps } from "../../components/misc";
 import { PopoverSimple } from "../../components/popover";
 import {
   EchartsComponent,
@@ -103,7 +103,7 @@ export default function PageComponent() {
             />
           </div>
           <div className="flex justify-center items-center gap-2">
-            <SimpleSelect
+            <SelectWrapper
               data-testid="SelectWrapper-rangeType"
               className="antd-input p-1"
               options={["week", "month"] as const}

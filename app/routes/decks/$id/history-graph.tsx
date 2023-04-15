@@ -5,7 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import type { ECharts } from "echarts";
 import React from "react";
 import { useForm } from "react-hook-form";
-import { SimpleSelect, transitionProps } from "../../../components/misc";
+import { SelectWrapper, transitionProps } from "../../../components/misc";
 import {
   EchartsComponent,
   practiceHistoryChartDataToEchartsOption,
@@ -121,7 +121,7 @@ export default function DefaultComponent() {
             />
           </div>
           <div className="flex justify-center items-center gap-2">
-            <SimpleSelect
+            <SelectWrapper
               data-testid="SelectWrapper-rangeType"
               className="antd-input p-1"
               options={["week", "month"] as const}
@@ -132,7 +132,7 @@ export default function DefaultComponent() {
                 form.setValue("page", 0);
               }}
             />
-            <SimpleSelect
+            <SelectWrapper
               data-testid="SelectWrapper-graphType"
               className="antd-input p-1"
               options={["action", "queue"] as const}
