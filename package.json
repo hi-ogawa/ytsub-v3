@@ -110,7 +110,7 @@
     "vitest": "^0.29.3"
   },
   "volta": {
-    "node": "16.15.0"
+    "node": "16.20.0"
   },
   "pnpm": {
     "patchedDependencies": {
