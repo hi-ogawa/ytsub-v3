@@ -303,7 +303,7 @@ function SignoutComponent() {
   const signoutMutation = useMutation({
     ...trpc.users_signout.mutationOptions(),
     onSuccess: () => {
-      window.location.href = $R["/users/reset"](null, { type: "signout" });
+      window.location.href = $R["/users/redirect"](null, { type: "signout" });
     },
   });
 

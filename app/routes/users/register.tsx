@@ -41,7 +41,7 @@ export default function DefaultComponent() {
   const registerMutation = useMutation({
     ...trpc.users_register.mutationOptions(),
     onSuccess: () => {
-      window.location.href = $R["/users/reset"](null, { type: "register" });
+      window.location.href = $R["/users/redirect"](null, { type: "register" });
     },
   });
 

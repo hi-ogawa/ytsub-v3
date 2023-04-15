@@ -14,7 +14,7 @@ export default function PageComponent() {
   const [searchParams] = useSearchParams();
 
   React.useEffect(() => {
-    const parsed = ROUTE_DEF["/users/reset"].query.safeParse(
+    const parsed = ROUTE_DEF["/users/redirect"].query.safeParse(
       Object.fromEntries(searchParams.entries())
     );
     if (parsed.success) {
