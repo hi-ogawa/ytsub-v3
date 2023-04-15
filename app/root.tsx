@@ -11,6 +11,7 @@ import {
   useNavigate,
 } from "@remix-run/react";
 import type { LinksFunction } from "@remix-run/server-runtime";
+import { useMutation } from "@tanstack/react-query";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { Toaster, toast } from "react-hot-toast";
@@ -22,6 +23,7 @@ import { TopProgressBarRemix } from "./components/top-progress-bar";
 import type { UserTable } from "./db/models";
 import { $R, R } from "./misc/routes";
 import { HideRecaptchaBadge } from "./routes/users/register";
+import { trpc } from "./trpc/client";
 import { publicConfig } from "./utils/config";
 import { ConfigPlaceholder } from "./utils/config-placeholder";
 import { Controller, makeLoader } from "./utils/controller-utils";
@@ -179,19 +181,7 @@ function Navbar({
                   </Link>
                 </li>
                 <li>
-                  <form
-                    method="post"
-                    action={R["/users/signout"]}
-                    data-test="signout-form"
-                  >
-                    <button
-                      type="submit"
-                      className="w-full antd-menu-item flex items-center gap-2 p-2"
-                    >
-                      <span className="i-ri-logout-box-line w-6 h-6"></span>
-                      Sign out
-                    </button>
-                  </form>
+                  <SignoutComponent />
                 </li>
               </ul>
             )}
@@ -306,5 +296,25 @@ function SearchComponent(props: { closeDrawer: () => void }) {
         />
       </label>
     </form>
+  );
+}
+
+function SignoutComponent() {
+  const signoutMutation = useMutation({
+    ...trpc.users_signout.mutationOptions(),
+    onSuccess: () => {
+      window.location.href = $R["/users/reset"](null, { type: "signout" });
+    },
+  });
+
+  return (
+    <button
+      className="w-full antd-menu-item flex items-center gap-2 p-2"
+      onClick={() => signoutMutation.mutate(null)}
+      disabled={signoutMutation.isLoading}
+    >
+      <span className="i-ri-logout-box-line w-6 h-6"></span>
+      Sign out
+    </button>
   );
 }

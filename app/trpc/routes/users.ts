@@ -33,6 +33,7 @@ export const trpcRoutesUsers = {
 
   users_signout: procedureBuilder
     .use(middlewares.currentUser)
+    .input(z.null())
     .mutation(async ({ ctx }) => {
       signoutSession(ctx.session);
       await ctx.commitSession();
