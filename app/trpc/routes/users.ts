@@ -35,6 +35,7 @@ export const trpcRoutesUsers = {
     .use(middlewares.currentUser)
     .input(z.null())
     .mutation(async ({ ctx }) => {
+      tinyassert(ctx.user, "Not signed in");
       signoutSession(ctx.session);
       await ctx.commitSession();
     }),

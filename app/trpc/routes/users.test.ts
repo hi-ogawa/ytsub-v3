@@ -59,3 +59,30 @@ describe(trpc.users_signin.mutationKey, () => {
     });
   });
 });
+
+describe(trpc.users_signout.mutationKey, () => {
+  const credentials = { username: "test-trpc-signout", password: "correct" };
+  const userHook = useUser(credentials);
+
+  describe("success", () => {
+    it("basic", async () => {
+      const trpc = await testTrpcClientWithContext({ user: userHook.data });
+      await trpc.caller.users_signout(null);
+
+      // check session cookie in response header
+      const sessionUser = await getSessionUser(
+        await getResponseSession({ headers: trpc.ctx.resHeaders })
+      );
+      expect(sessionUser).toBeUndefined();
+    });
+  });
+
+  describe("error", () => {
+    it("not signed in", async () => {
+      const trpc = await testTrpcClient();
+      await expect(trpc.users_signout(null)).rejects.toMatchInlineSnapshot(
+        "[TRPCError: Not signed in]"
+      );
+    });
+  });
+});
