@@ -204,7 +204,7 @@ export const trpcRoutesDecks = {
     .input(
       z.object({
         deckId: z.number().int(),
-        rangeType: Z_DATE_RANGE_TYPE.default("week"),
+        rangeType: Z_DATE_RANGE_TYPE,
         page: z.number().int().optional().default(0), // 0 => this week/month, 1 => last week/month, ...
         __now: z.date().optional(), // for testing
       })

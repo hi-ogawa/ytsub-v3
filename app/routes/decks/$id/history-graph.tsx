@@ -19,7 +19,7 @@ import { useClickOutside } from "../../../utils/hooks-client-utils";
 import { useLeafLoaderData } from "../../../utils/loader-utils";
 import { cls } from "../../../utils/misc";
 import type { PageHandle } from "../../../utils/page-handle";
-import { formatDateRange } from "../../../utils/temporal-utils";
+import { DateRangeType, formatDateRange } from "../../../utils/temporal-utils";
 
 //
 // handle
@@ -58,7 +58,7 @@ export default function DefaultComponent() {
   });
 
   const form = useForm<{
-    rangeType: "week" | "month";
+    rangeType: DateRangeType;
     graphType: "action" | "queue";
     page: number;
   }>({

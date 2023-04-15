@@ -56,7 +56,7 @@ export const trpcRoutesBookmarks = {
     .use(middlewares.requireUser)
     .input(
       z.object({
-        rangeType: Z_DATE_RANGE_TYPE.default("week"),
+        rangeType: Z_DATE_RANGE_TYPE,
         page: z.coerce.number().int().optional().default(0), // 0 => this week/month, 1 => last week/month, ...
         __now: z.coerce.date().optional(), // for testing
       })

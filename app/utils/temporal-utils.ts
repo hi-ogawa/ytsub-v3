@@ -20,7 +20,7 @@ export function isValidTimezone(timezone: string) {
 }
 
 export const Z_DATE_RANGE_TYPE = z.enum(["week", "month"]);
-type DateRangeType = z.infer<typeof Z_DATE_RANGE_TYPE>;
+export type DateRangeType = z.infer<typeof Z_DATE_RANGE_TYPE>;
 
 export function getZonedDateRange(
   now: Temporal.ZonedDateTime,

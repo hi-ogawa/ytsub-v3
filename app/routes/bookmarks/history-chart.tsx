@@ -13,7 +13,7 @@ import { Controller, makeLoader } from "../../utils/controller-utils";
 import { useClickOutside } from "../../utils/hooks-client-utils";
 import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
-import { formatDateRange } from "../../utils/temporal-utils";
+import { DateRangeType, formatDateRange } from "../../utils/temporal-utils";
 import { BookmarksMenuItems } from "./index";
 
 //
@@ -44,7 +44,7 @@ export const handle: PageHandle = {
 
 export default function PageComponent() {
   const form = useForm<{
-    rangeType: "week" | "month";
+    rangeType: DateRangeType;
     page: number;
   }>({
     defaultValues: {
