@@ -4,6 +4,7 @@ import { E, T, db } from "../../db/drizzle-client.server";
 import {
   findByUsername,
   signinSession,
+  signoutSession,
   verifyPassword,
 } from "../../utils/auth";
 import { isValidTimezone } from "../../utils/temporal-utils";
@@ -28,6 +29,13 @@ export const trpcRoutesUsers = {
         return user;
       }
       throw new Error("Invalid username or password");
+    }),
+
+  users_signout: procedureBuilder
+    .use(middlewares.currentUser)
+    .mutation(async ({ ctx }) => {
+      signoutSession(ctx.session);
+      await ctx.commitSession();
     }),
 
   users_update: procedureBuilder

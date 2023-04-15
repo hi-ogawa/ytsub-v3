@@ -1,10 +1,8 @@
-import { Link, useNavigate } from "@remix-run/react";
+import { Link } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
-import { toast } from "react-hot-toast";
 import { $R, R } from "../../misc/routes";
-import { INVALIDATE_ROOT_LOADER } from "../../root";
 import { trpc } from "../../trpc/client";
 import { getSessionUser } from "../../utils/auth";
 import { Controller, makeLoader } from "../../utils/controller-utils";
@@ -36,13 +34,10 @@ export const loader = makeLoader(Controller, async function () {
 //
 
 export default function DefaultComponent() {
-  const navigate = useNavigate();
-
   const signinMutation = useMutation({
     ...trpc.users_signin.mutationOptions(),
-    onSuccess: (data) => {
-      toast.success(`Successfully signed in as '${data.username}'`);
-      navigate(R["/"], { state: INVALIDATE_ROOT_LOADER });
+    onSuccess: () => {
+      window.location.href = $R["/users/reset"](null, { type: "signin" });
     },
   });
 

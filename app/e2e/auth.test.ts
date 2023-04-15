@@ -50,9 +50,7 @@ test.describe(() => {
 
     // navigate to root
     await expect(page).toHaveURL("/");
-    await page.waitForSelector(
-      `"Successfully signed in as '${user.data.username}'"`
-    );
+    await page.waitForSelector(`"Successfully signed in"`);
   });
 });
 
