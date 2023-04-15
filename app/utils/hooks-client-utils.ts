@@ -22,7 +22,8 @@ export function useClickOutside(callback: () => void) {
   const callbackRef = useStableRef(callback);
   const elRef = useRefAsCallback<Element>();
 
-  useDocumentEvent("mousedown", (e) => {
+  // cf. https://github.com/floating-ui/floating-ui/blob/09a3ce259fc35d9c936ad469051ab6ea602a1249/packages/react/src/hooks/useDismiss.ts#L84
+  useDocumentEvent("pointerdown", (e) => {
     if (
       elRef.current &&
       e.target instanceof Element &&
