@@ -1,4 +1,3 @@
-import { useStableRef } from "@hiogawa/utils-react";
 import React from "react";
 import { deserialize } from "./controller-utils";
 
@@ -22,35 +21,4 @@ function useMemoWrap<F extends (_: D) => any, D>(f: F, data: D): ReturnType<F> {
 
 export function useDeserialize(data: any): any {
   return useMemoWrap(deserialize, data);
-}
-
-export function useSelection(listener: (selection?: Selection) => void) {
-  const listenerRef = useStableRef(listener);
-
-  React.useEffect(() => {
-    function listenerImpl() {
-      listenerRef.current(document.getSelection() ?? undefined);
-    }
-    document.addEventListener("selectionchange", listenerImpl);
-    return () => {
-      document.removeEventListener("selectionchange", listenerImpl);
-    };
-  }, []);
-}
-
-export function useDocumentEvent<K extends keyof DocumentEventMap>(
-  type: K,
-  handler: (e: DocumentEventMap[K]) => void
-) {
-  const handlerRef = useStableRef(handler);
-
-  React.useEffect(() => {
-    const handler = (e: DocumentEventMap[K]) => {
-      handlerRef.current(e);
-    };
-    document.addEventListener(type, handler);
-    return () => {
-      document.removeEventListener(type, handler);
-    };
-  });
 }

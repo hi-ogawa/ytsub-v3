@@ -27,7 +27,8 @@ import {
 import { $R, R, ROUTE_DEF } from "../../misc/routes";
 import { trpc } from "../../trpc/client";
 import { Controller, makeLoader } from "../../utils/controller-utils";
-import { useDeserialize, useSelection } from "../../utils/hooks";
+import { useDeserialize } from "../../utils/hooks";
+import { useDocumentEvent } from "../../utils/hooks-client-utils";
 import { dtf } from "../../utils/intl";
 import { useLeafLoaderData, useRootLoaderData } from "../../utils/loader-utils";
 import { cls } from "../../utils/misc";
@@ -265,7 +266,8 @@ function PageComponent({
     }
   }, [params.index]);
 
-  useSelection((selection?: Selection): void => {
+  useDocumentEvent("selectionchange", () => {
+    const selection = document.getSelection();
     let newBookmarkState: BookmarkState | undefined = undefined;
     if (selection) {
       const index = findSelectionEntryIndex(selection);

@@ -1,9 +1,7 @@
 import { useStableRef } from "@hiogawa/utils-react";
 import React from "react";
 
-// TODO: move some from hooks.ts
-
-function useDocumentEvent<K extends keyof DocumentEventMap>(
+export function useDocumentEvent<K extends keyof DocumentEventMap>(
   type: K,
   handler: (e: DocumentEventMap[K]) => void
 ) {
