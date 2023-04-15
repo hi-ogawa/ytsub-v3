@@ -2,7 +2,6 @@ import { tinyassert } from "@hiogawa/utils";
 import { sql } from "drizzle-orm";
 import { z } from "zod";
 import { E, T, db, findOne } from "../../db/drizzle-client.server";
-import { Q } from "../../db/models";
 import { Z_PRACTICE_ACTION_TYPES } from "../../db/types";
 import { importDeckJson } from "../../misc/seed-utils";
 import { PracticeSystem } from "../../utils/practice-system";
@@ -25,24 +24,19 @@ export const trpcRoutesDecks = {
       });
       tinyassert(deck);
 
-      const bookmarkEntries = await Q.bookmarkEntries()
-        .select("bookmarkEntries.*")
-        .where("bookmarkEntries.videoId", input.videoId)
-        .leftJoin(
-          "captionEntries",
-          "captionEntries.id",
-          "bookmarkEntries.captionEntryId"
+      const rows = await db
+        .select()
+        .from(T.bookmarkEntries)
+        .innerJoin(
+          T.captionEntries,
+          E.eq(T.captionEntries.id, T.bookmarkEntries.captionEntryId)
         )
-        .orderBy([
-          {
-            column: "captionEntries.index",
-            order: "asc",
-          },
-          {
-            column: "bookmarkEntries.offset",
-            order: "asc",
-          },
-        ]);
+        .where(E.eq(T.bookmarkEntries.videoId, input.videoId))
+        .orderBy(
+          E.asc(T.captionEntries.index),
+          E.asc(T.bookmarkEntries.offset)
+        );
+      const bookmarkEntries = rows.map((row) => row.bookmarkEntries);
 
       const system = new PracticeSystem(ctx.user, deck);
       const practiceEntryIds = await system.createPracticeEntries(

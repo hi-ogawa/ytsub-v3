@@ -1,6 +1,5 @@
-import { sql } from "drizzle-orm";
 import { z } from "zod";
-import { T, db } from "../../db/drizzle-client.server";
+import { E, T, db } from "../../db/drizzle-client.server";
 import { isValidTimezone } from "../../utils/temporal-utils";
 import { middlewares } from "../context";
 import { procedureBuilder } from "../factory";
@@ -16,9 +15,6 @@ export const trpcRoutesUsers = {
       })
     )
     .mutation(async ({ input, ctx }) => {
-      await db
-        .update(T.users)
-        .set(input)
-        .where(sql`${T.users.id} = ${ctx.user.id}`);
+      await db.update(T.users).set(input).where(E.eq(T.users.id, ctx.user.id));
     }),
 };
