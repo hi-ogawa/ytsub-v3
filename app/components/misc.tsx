@@ -209,3 +209,31 @@ export function QueryClientWrapper({ children }: React.PropsWithChildren) {
     </QueryClientProvider>
   );
 }
+
+// simple typed controlled select input wrapper
+export function SelectWrapper<T extends string>({
+  value,
+  options,
+  onChange,
+  labelFn,
+  ...selectProps
+}: {
+  value: T;
+  options: readonly T[];
+  onChange: (value: T) => void;
+  labelFn?: (value: T) => React.ReactNode;
+} & Omit<JSX.IntrinsicElements["select"], "value" | "onChange">) {
+  return (
+    <select
+      value={value}
+      onChange={(e) => onChange(options[e.target.selectedIndex])}
+      {...selectProps}
+    >
+      {options.map((option) => (
+        <option key={option} value={option}>
+          {labelFn ? labelFn(option) : option}
+        </option>
+      ))}
+    </select>
+  );
+}

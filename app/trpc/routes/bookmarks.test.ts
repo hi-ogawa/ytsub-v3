@@ -4,7 +4,7 @@ import { useUser } from "../../misc/test-helper";
 import { trpc } from "../client";
 import { testTrpcClient } from "../test-helper";
 
-describe(trpc.videos_destroy.mutationKey, () => {
+describe(trpc.bookmarks_historyChart.queryKey, () => {
   const user = useUser({
     seed: __filename,
   });

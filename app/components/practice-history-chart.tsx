@@ -11,15 +11,13 @@ export const PRACTICE_HISTORY_DATASET_KEYS = [
   ...PRACTICE_ACTION_TYPES.map((t) => `action-${t}` as const),
 ] as const;
 
-export type PracticeHistoryChartDatasetKeys =
-  (typeof PRACTICE_HISTORY_DATASET_KEYS)[number];
-
-export type PracticeHistoryChartDataEntry = {
-  date: string;
-} & Record<PracticeHistoryChartDatasetKeys, number>;
+export type PracticeHistoryChartDataEntry = { date: string } & Record<
+  (typeof PRACTICE_HISTORY_DATASET_KEYS)[number],
+  number
+>;
 
 export function practiceHistoryChartDataToEchartsOption(
-  datasetSource: Partial<PracticeHistoryChartDataEntry>[],
+  datasetSource: PracticeHistoryChartDataEntry[],
   mode: "queue" | "action"
 ): echarts.EChartsOption {
   const today = Temporal.Now.zonedDateTimeISO().toPlainDate().toString();

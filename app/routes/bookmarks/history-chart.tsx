@@ -2,7 +2,7 @@ import { Transition } from "@headlessui/react";
 import { useQuery } from "@tanstack/react-query";
 import React from "react";
 import { useForm } from "react-hook-form";
-import { transitionProps } from "../../components/misc";
+import { SelectWrapper, transitionProps } from "../../components/misc";
 import { PopoverSimple } from "../../components/popover";
 import {
   EchartsComponent,
@@ -13,7 +13,7 @@ import { Controller, makeLoader } from "../../utils/controller-utils";
 import { useClickOutside } from "../../utils/hooks-client-utils";
 import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
-import { SelectWrapper, formatPage } from "../decks/$id/history-graph";
+import { DateRangeType, formatDateRange } from "../../utils/temporal-utils";
 import { BookmarksMenuItems } from "./index";
 
 //
@@ -44,7 +44,7 @@ export const handle: PageHandle = {
 
 export default function PageComponent() {
   const form = useForm<{
-    rangeType: "week" | "month";
+    rangeType: DateRangeType;
     page: number;
   }>({
     defaultValues: {
@@ -90,7 +90,9 @@ export default function PageComponent() {
               className="antd-btn antd-btn-ghost i-ri-play-mini-fill w-4 h-4 rotate-[180deg]"
               onClick={() => form.setValue("page", params.page + 1)}
             />
-            <div className="text-sm px-2">{formatPage(params)}</div>
+            <div className="text-sm px-2">
+              {formatDateRange(params.rangeType, params.page)}
+            </div>
             <button
               className={cls(
                 "antd-btn antd-btn-ghost i-ri-play-mini-fill w-4 h-4",
