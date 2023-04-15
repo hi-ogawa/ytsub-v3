@@ -10,6 +10,7 @@ import esbuild from "esbuild";
 // - https://github.com/evanw/esbuild/issues/1685#issuecomment-944916409
 
 esbuild.build({
+  logLevel: "info",
   entryPoints: ["./build/remix/production/server/index.js"],
   outfile: "./build/remix/production/server/index-bundled.js",
   bundle: true,
