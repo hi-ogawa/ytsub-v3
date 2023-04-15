@@ -11,11 +11,8 @@ export const PRACTICE_HISTORY_DATASET_KEYS = [
   ...PRACTICE_ACTION_TYPES.map((t) => `action-${t}` as const),
 ] as const;
 
-export type PracticeHistoryChartDatasetKeys =
-  (typeof PRACTICE_HISTORY_DATASET_KEYS)[number];
-
 export type PracticeHistoryChartDataEntry = { date: string } & Record<
-  PracticeHistoryChartDatasetKeys,
+  (typeof PRACTICE_HISTORY_DATASET_KEYS)[number],
   number
 >;
 
