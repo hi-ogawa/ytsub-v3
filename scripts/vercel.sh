@@ -12,15 +12,7 @@ pnpm build:css
 NODE_ENV=production BUILD_VERCEL=1 npx remix build --sourcemap
 
 # run esbuild again manually to bundle server app
-npx esbuild build/remix/production/server/index.js --sourcemap=inline --outfile=build/remix/production/server/index-bundled.js \
-  --bundle --platform=node \
-  --external:mysql \
-  --external:sqlite3 \
-  --external:better-sqlite3 \
-  --external:tedious \
-  --external:pg \
-  --external:oracledb \
-  --external:pg-query-stream
+node -r esbuild-register ./misc/build/bundle-vercel.ts
 
 #
 # setup files for `vercel deploy --prebuilt`
