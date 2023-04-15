@@ -37,7 +37,7 @@ export default function DefaultComponent() {
   const signinMutation = useMutation({
     ...trpc.users_signin.mutationOptions(),
     onSuccess: () => {
-      window.location.href = $R["/users/reset"](null, { type: "signin" });
+      window.location.href = $R["/users/redirect"](null, { type: "signin" });
     },
   });
 
