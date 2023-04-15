@@ -1,4 +1,5 @@
 import { Transition } from "@headlessui/react";
+import { tinyassert } from "@hiogawa/utils";
 import { Link } from "@remix-run/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
@@ -210,28 +211,35 @@ export function QueryClientWrapper({ children }: React.PropsWithChildren) {
   );
 }
 
-// simple typed controlled select input wrapper
-export function SelectWrapper<T extends string>({
+// simple controlled select input
+// - no multiple select
+// - no "unselected" state
+export function SimpleSelect<T>({
   value,
   options,
   onChange,
   labelFn,
+  keyFn = JSON.stringify,
   ...selectProps
 }: {
   value: T;
   options: readonly T[];
   onChange: (value: T) => void;
-  labelFn?: (value: T) => React.ReactNode;
+  labelFn: (value: T) => React.ReactNode;
+  keyFn?: (value: T) => React.Key;
 } & Omit<JSX.IntrinsicElements["select"], "value" | "onChange">) {
+  const currentIndex = options.indexOf(value);
+  tinyassert(currentIndex !== -1);
+
   return (
     <select
-      value={value}
+      value={currentIndex}
       onChange={(e) => onChange(options[e.target.selectedIndex])}
       {...selectProps}
     >
-      {options.map((option) => (
-        <option key={option} value={option}>
-          {labelFn ? labelFn(option) : option}
+      {options.map((option, i) => (
+        <option key={keyFn(option)} value={i}>
+          {labelFn(option)}
         </option>
       ))}
     </select>
