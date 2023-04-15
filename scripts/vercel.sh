@@ -39,7 +39,7 @@ npx esbuild build/remix/production/server/index.js --sourcemap=inline --outfile=
 #         index.func/
 #           .vc-config.json
 #           index-bundled.js
-#           index.js         (load index-bundled.js after process.setSourceMapsEnabled)
+#           index.js         (require index-bundled.js after process.setSourceMapsEnabled)
 #
 
 deploy_dir=build/remix/production/deploy
@@ -50,7 +50,7 @@ cp build/remix/production/server/index-bundled.js "$deploy_dir/.vercel/output/fu
 
 cat > "$deploy_dir/.vercel/output/functions/server/index.func/index.js" << "EOF"
 process.setSourceMapsEnabled(true);
-require("./index-bundled.js");
+module.exports = require("./index-bundled.js");
 EOF
 
 cat > "$deploy_dir/.vercel/output/config.json" << "EOF"
