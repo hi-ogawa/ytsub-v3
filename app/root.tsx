@@ -1,6 +1,5 @@
 import { Compose } from "@hiogawa/utils-react";
 import {
-  Form,
   Link,
   Links,
   LiveReload,
@@ -9,10 +8,11 @@ import {
   Outlet,
   Scripts,
   useMatches,
+  useNavigate,
 } from "@remix-run/react";
 import type { LinksFunction } from "@remix-run/server-runtime";
-import { atom, useAtom } from "jotai";
-import type React from "react";
+import React from "react";
+import { useForm } from "react-hook-form";
 import { Toaster, toast } from "react-hot-toast";
 import { Drawer } from "./components/drawer";
 import { QueryClientWrapper } from "./components/misc";
@@ -137,7 +137,7 @@ function Navbar({
   user?: UserTable;
   menu?: React.ReactNode;
 }) {
-  const [drawerOpen, setDrawerOpen] = useAtom(drawerOpenAtom);
+  const [drawerOpen, setDrawerOpen] = React.useState(false);
 
   return (
     <header className="w-full h-12 flex-none bg-primary text-primary-content flex items-center p-2 px-6 gap-4 shadow-md shadow-black/[0.05] dark:shadow-black/[0.7]">
@@ -179,11 +179,10 @@ function Navbar({
                   </Link>
                 </li>
                 <li>
-                  <Form
+                  <form
                     method="post"
                     action={R["/users/signout"]}
                     data-test="signout-form"
-                    onClick={() => context.onOpenChange(false)}
                   >
                     <button
                       type="submit"
@@ -192,7 +191,7 @@ function Navbar({
                       <span className="i-ri-logout-box-line w-6 h-6"></span>
                       Sign out
                     </button>
-                  </Form>
+                  </form>
                 </li>
               </ul>
             )}
@@ -202,7 +201,7 @@ function Navbar({
       <Drawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
         <ul className="flex flex-col gap-3 p-4 w-[280px] h-full">
           <li>
-            <SearchComponent />
+            <SearchComponent closeDrawer={() => setDrawerOpen(false)} />
           </li>
           {SIDE_MENU_ENTRIES.map((entry) => {
             const disabled = entry.requireSignin && !user;
@@ -284,33 +283,28 @@ const SIDE_MENU_ENTRIES: SideMenuEntry[] = [
   },
 ];
 
-function SearchComponent() {
-  const [, setDrawerOpen] = useAtom(drawerOpenAtom);
+function SearchComponent(props: { closeDrawer: () => void }) {
+  const form = useForm({ defaultValues: { videoId: "" } });
+  const navigate = useNavigate();
 
   return (
-    <Form
+    <form
       className="w-full"
-      action={$R["/videos/new"]()}
-      method="get"
-      onSubmit={() => setDrawerOpen(false)}
       data-test="search-form"
+      onSubmit={form.handleSubmit((data) => {
+        props.closeDrawer();
+        navigate($R["/videos/new"](null, data));
+      })}
     >
       <label className="w-full relative text-base-content flex items-center">
         <span className="absolute text-colorTextSecondary ml-2.5 i-ri-search-line w-4 h-4"></span>
         <input
           type="text"
-          name="videoId"
           className="w-full antd-input p-1 pl-9"
           placeholder="Enter Video ID or URL"
-          required
+          {...form.register("videoId", { required: true })}
         />
       </label>
-    </Form>
+    </form>
   );
 }
-
-//
-// page local state
-//
-
-const drawerOpenAtom = atom(false);
