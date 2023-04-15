@@ -3,7 +3,7 @@ import React from "react";
 import { toast } from "react-hot-toast";
 import { $R, ROUTE_DEF } from "../../misc/routes";
 
-// use this temporary route to simplify client-oritented session manipulation
+// use this temporary route to simplify client-oritented session userflow
 
 //
 // component
@@ -31,5 +31,10 @@ export default function PageComponent() {
     navigate($R["/"](), { replace: true });
   }, []);
 
-  return null;
+  return (
+    <div className="w-full p-4 flex justify-center items-center gap-4">
+      Redirecting...
+      <span className="antd-spin h-4"></span>
+    </div>
+  );
 }
