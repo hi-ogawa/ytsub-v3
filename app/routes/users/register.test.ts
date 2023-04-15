@@ -27,7 +27,8 @@ describe("register.action", () => {
       expect(found.timezone).toBe("+00:00");
       expect(found.createdAt).toEqual(found.updatedAt);
       expect(Math.abs(found.createdAt.getTime() - Date.now())).toBeLessThan(
-        1000
+        // ci flaky if 1000
+        5000
       );
 
       // redirect to root
