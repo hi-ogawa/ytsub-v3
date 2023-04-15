@@ -84,7 +84,7 @@ test.describe("decks", () => {
     await page.getByText("Added 0 to a deck").click();
   });
 
-  test.only("show-deck => pagination => deck-history", async ({ page }) => {
+  test("show-deck => pagination => deck-history", async ({ page }) => {
     await user.signin(page);
     await page.goto("/decks");
 
@@ -106,10 +106,9 @@ test.describe("decks", () => {
     await page.getByText("this week").click();
 
     // change graph options
-    await page.pause();
-    await page.getByTestId("SelectWrapper-rangeType").selectOption("1");
+    await page.getByTestId("SelectWrapper-rangeType").selectOption("month");
     await page.getByText("this month").click();
-    await page.getByTestId("SelectWrapper-graphType").selectOption("1");
+    await page.getByTestId("SelectWrapper-graphType").selectOption("queue");
   });
 
   test("practice", async ({ page }) => {
