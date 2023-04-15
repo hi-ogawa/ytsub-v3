@@ -25,7 +25,9 @@ export async function getRequestSession(request: Request): Promise<Session> {
   return sessionStore.getSession(request.headers.get("cookie"));
 }
 
-export async function getResponseSession(response: Response): Promise<Session> {
+export async function getResponseSession(
+  response: Pick<Response, "headers">
+): Promise<Session> {
   return sessionStore.getSession(response.headers.get("set-cookie"));
 }
 

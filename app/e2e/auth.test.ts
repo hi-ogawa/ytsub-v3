@@ -50,9 +50,7 @@ test.describe(() => {
 
     // navigate to root
     await expect(page).toHaveURL("/");
-    await page.waitForSelector(
-      `"Successfully signed in as '${user.data.username}'"`
-    );
+    await page.getByText("Successfully signed in").click();
   });
 });
 
@@ -114,8 +112,8 @@ test.describe("/users/signout", () => {
     await page.goto("/");
 
     // Signout from top menu
-    await page.locator("header >> data-test=user-menu").click();
-    await page.locator("data-test=signout-form >> button").click();
-    await page.waitForSelector('"Signed out successfuly"');
+    await page.locator('[data-test="user-menu"]').click();
+    await page.getByRole("button", { name: "Sign out" }).click();
+    await page.getByText("Successfully signed out").click();
   });
 });

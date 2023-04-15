@@ -30,15 +30,6 @@ export const REGISTER_SCHEMA = z
     path: ["passwordConfirmation"],
   });
 
-export const SIGNIN_SCHEMA = z.object({
-  username: z
-    .string()
-    .nonempty()
-    .max(USERNAME_MAX_LENGTH)
-    .regex(/^[a-zA-Z0-9_.-]+$/),
-  password: z.string().nonempty().max(PASSWORD_MAX_LENGTH),
-});
-
 const BCRYPT_ROUNDS = 10;
 
 export function sha256(

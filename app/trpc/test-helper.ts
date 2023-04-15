@@ -3,7 +3,16 @@ import { createUserCookie } from "../utils/auth";
 import { createTrpcAppContext } from "./context";
 import { trpcApp } from "./server";
 
-export async function testTrpcClient(options?: { user?: TT["users"] }) {
+export async function testTrpcClient(
+  ...args: Parameters<typeof testTrpcClientWithContext>
+) {
+  const { caller } = await testTrpcClientWithContext(...args);
+  return caller;
+}
+
+export async function testTrpcClientWithContext(options?: {
+  user?: TT["users"];
+}) {
   const req = new Request("http://example.com"); // dummy
   if (options?.user) {
     const cookie = await createUserCookie(options.user);
@@ -13,5 +22,6 @@ export async function testTrpcClient(options?: { user?: TT["users"] }) {
     req,
     resHeaders: new Response().headers,
   });
-  return trpcApp.createCaller(ctx);
+  const caller = trpcApp.createCaller(ctx);
+  return { caller, ctx };
 }
