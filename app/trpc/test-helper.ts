@@ -15,3 +15,19 @@ export async function testTrpcClient(options?: { user?: TT["users"] }) {
   });
   return trpcApp.createCaller(ctx);
 }
+
+export async function testTrpcClientWithContext(options?: {
+  user?: TT["users"];
+}) {
+  const req = new Request("http://example.com"); // dummy
+  if (options?.user) {
+    const cookie = await createUserCookie(options.user);
+    req.headers.set("cookie", cookie);
+  }
+  const ctx = await createTrpcAppContext({
+    req,
+    resHeaders: new Response().headers,
+  });
+  const caller = trpcApp.createCaller(ctx);
+  return { caller, ctx };
+}
