@@ -2,31 +2,27 @@ import { DeckNavBarMenuComponent, requireUserAndDeck } from ".";
 import { Transition } from "@headlessui/react";
 import { tinyassert } from "@hiogawa/utils";
 import { Temporal } from "@js-temporal/polyfill";
-import { Link, useMatches, useNavigate } from "@remix-run/react";
+import { useMatches, useNavigate } from "@remix-run/react";
+import { useQuery } from "@tanstack/react-query";
 import type { ECharts } from "echarts";
 import React from "react";
+import { useForm } from "react-hook-form";
 import type { z } from "zod";
 import { transitionProps } from "../../../components/misc";
 import {
   EchartsComponent,
-  PRACTICE_HISTORY_DATASET_KEYS,
-  PracticeHistoryChartDataEntry,
-  PracticeHistoryChartDatasetKeys,
   practiceHistoryChartDataToEchartsOption,
 } from "../../../components/practice-history-chart";
-import { E, T, db } from "../../../db/drizzle-client.server";
 import type { DeckTable } from "../../../db/models";
 import { $R, ROUTE_DEF } from "../../../misc/routes";
+import { trpc } from "../../../trpc/client";
 import { Controller, makeLoader } from "../../../utils/controller-utils";
 import { useDeserialize } from "../../../utils/hooks";
 import { useClickOutside } from "../../../utils/hooks-client-utils";
 import { useLeafLoaderData } from "../../../utils/loader-utils";
 import { cls } from "../../../utils/misc";
 import type { PageHandle } from "../../../utils/page-handle";
-import { fromTemporal, toZdt } from "../../../utils/temporal-utils";
-
-// TODO: this page fails to dev auto reload due to server code sneaked into client?
-// TODO: rename to "history-chart"
+import { toZdt } from "../../../utils/temporal-utils";
 
 //
 // handle
@@ -48,57 +44,11 @@ type RangeType = QueryType["rangeType"];
 
 interface LoaderData {
   deck: DeckTable;
-  query: QueryType;
-  datasetSource: PracticeHistoryChartDataEntry[];
 }
 
 export const loader = makeLoader(Controller, async function () {
-  const [user, deck] = await requireUserAndDeck.apply(this);
-
-  const query = ROUTE_DEF["/decks/$id/history-graph"].query.parse(this.query());
-  const { rangeType, page, now = new Date() } = query;
-
-  const { begin, end } = getDateRange(now, user.timezone, rangeType, page);
-
-  // aggregate count in js
-  const rows = await db
-    .select()
-    .from(T.practiceActions)
-    .where(
-      E.and(
-        E.eq(T.practiceActions.deckId, deck.id),
-        E.gt(T.practiceActions.createdAt, fromTemporal(begin)),
-        E.lt(T.practiceActions.createdAt, fromTemporal(end))
-      )
-    );
-
-  const dates = getZonedDateTimesBetween(begin, end).map((date) =>
-    date.toPlainDate().toString()
-  );
-
-  const countMap = Object.fromEntries(
-    dates.map((date) => [
-      date,
-      Object.fromEntries(PRACTICE_HISTORY_DATASET_KEYS.map((key) => [key, 0])),
-    ])
-  ) as Record<string, Record<PracticeHistoryChartDatasetKeys, number>>;
-
-  for (const row of rows) {
-    const date = toZdt(row.createdAt, user.timezone).toPlainDate().toString();
-    if (!dates.includes(date)) {
-      continue;
-    }
-    countMap[date]["total"]++;
-    countMap[date][`queue-${row.queueType}`]++;
-    countMap[date][`action-${row.actionType}`]++;
-  }
-
-  const datasetSource: PracticeHistoryChartDataEntry[] = dates.map((date) => ({
-    date,
-    ...countMap[date],
-  }));
-
-  const loaderData: LoaderData = { deck, query, datasetSource };
+  const [, deck] = await requireUserAndDeck.apply(this);
+  const loaderData: LoaderData = { deck };
   return this.serialize(loaderData);
 });
 
@@ -146,67 +96,73 @@ export function getZonedDateTimesBetween(
 //
 
 export default function DefaultComponent() {
-  const { deck, query, datasetSource }: LoaderData = useDeserialize(
-    useLeafLoaderData()
-  );
-  const navigate = useNavigate();
-
-  const [isLoading, setIsLoading] = React.useState(true);
+  const { deck }: LoaderData = useDeserialize(useLeafLoaderData());
 
   const [instance, setInstance] = React.useState<ECharts>();
-
-  function setInstanceWrapper(instance?: ECharts) {
-    if (instance) {
-      instance.on("rendered", () => setIsLoading(false));
-    }
-    setInstance(instance);
-  }
 
   const clickOutsideRef = useClickOutside(() => {
     instance?.dispatchAction({ type: "hideTip" });
   });
 
-  function mergeQuery(newQuery: Partial<QueryType>) {
-    return $R["/decks/$id/history-graph"](deck, {
-      ...query,
-      ...newQuery,
-    });
-  }
+  const form = useForm<{
+    rangeType: "week" | "month";
+    graphType: "action" | "queue";
+    page: number;
+  }>({
+    defaultValues: {
+      rangeType: "week",
+      graphType: "action",
+      page: 0,
+    },
+  });
+  const params = form.watch();
+
+  const historyChartQuery = useQuery({
+    ...trpc.decks_practiceHistoryChart.queryOptions({
+      deckId: deck.id,
+      rangeType: params.rangeType,
+      page: params.page,
+    }),
+    keepPreviousData: true,
+  });
 
   return (
     <div className="w-full flex justify-center">
       <div className="w-full max-w-lg flex flex-col gap-3 mt-2">
         <div className="relative w-full h-[300px]" ref={clickOutsideRef}>
-          <EchartsComponent
-            className="w-full h-full"
-            setInstance={setInstanceWrapper}
-            option={practiceHistoryChartDataToEchartsOption(
-              datasetSource,
-              query.graphType
-            )}
-            optionDeps={datasetSource}
-            // TODO: workaround tooltip bugs when switching series
-            key={query.graphType}
-          />
+          {historyChartQuery.isSuccess && (
+            <EchartsComponent
+              className="w-full h-full"
+              setInstance={setInstance}
+              option={practiceHistoryChartDataToEchartsOption(
+                historyChartQuery.data,
+                params.graphType
+              )}
+              optionDeps={historyChartQuery.data}
+              // TODO: workaround tooltip bugs when switching series
+              key={params.graphType}
+            />
+          )}
           <Transition
-            show={isLoading}
+            show={historyChartQuery.isFetching}
             className="duration-500 antd-body antd-spin-overlay-20"
-            {...transitionProps("opacity-0", "opacity-100")}
+            {...transitionProps("opacity-0", "opacity-50")}
           />
         </div>
         <div className="w-full flex flex-col items-center gap-2">
           <div className="flex items-center gap-2 px-2 py-1">
-            <Link
-              to={mergeQuery({ page: query.page + 1 })}
+            <button
               className="antd-btn antd-btn-ghost i-ri-play-mini-fill w-4 h-4 rotate-[180deg]"
+              onClick={() => form.setValue("page", params.page + 1)}
             />
-            <div className="text-sm px-2">{formatPage(query)}</div>
-            <Link
-              to={mergeQuery({ page: query.page - 1 })}
+            <div className="text-sm px-2">{formatPage(params)}</div>
+            <button
               className={cls(
                 "antd-btn antd-btn-ghost i-ri-play-mini-fill w-4 h-4",
-                query.page === 0 && "text-colorTextDisabled pointer-events-none"
+                params.page === 0 &&
+                  "text-colorTextDisabled pointer-events-none"
               )}
+              onClick={() => form.setValue("page", params.page - 1)}
             />
           </div>
           <div className="flex justify-center items-center gap-2">
@@ -215,18 +171,19 @@ export default function DefaultComponent() {
               className="antd-input p-1"
               options={["week", "month"] as const}
               labelFn={(value) => `by ${value}`}
-              value={query.rangeType}
-              onChange={(rangeType) =>
-                navigate(mergeQuery({ rangeType, page: 0 }))
-              }
+              value={params.rangeType}
+              onChange={(rangeType) => {
+                form.setValue("rangeType", rangeType);
+                form.setValue("page", 0);
+              }}
             />
             <SelectWrapper
               data-testid="SelectWrapper-graphType"
               className="antd-input p-1"
               options={["action", "queue"] as const}
               labelFn={(value) => `by ${value}`}
-              value={query.graphType}
-              onChange={(graphType) => navigate(mergeQuery({ graphType }))}
+              value={params.graphType}
+              onChange={(graphType) => form.setValue("graphType", graphType)}
             />
           </div>
         </div>

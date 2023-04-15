@@ -1,9 +1,10 @@
 import { beforeAll, describe, expect, it } from "vitest";
-import { importSeed } from "../../../misc/seed-utils";
-import { testLoader, useUser } from "../../../misc/test-helper";
-import { loader } from "./history-graph";
+import { importSeed } from "../../misc/seed-utils";
+import { useUser } from "../../misc/test-helper";
+import { trpc } from "../client";
+import { testTrpcClient } from "../test-helper";
 
-describe("decks/id/history-graph.loader", () => {
+describe(trpc.decks_practiceHistoryChart.queryKey, () => {
   const user = useUser({
     seed: __filename,
   });
@@ -14,15 +15,15 @@ describe("decks/id/history-graph.loader", () => {
     deckId = await importSeed(user.data.id);
   });
 
-  it("basic", async () => {
-    const res = await testLoader(loader, {
-      params: { id: String(deckId) },
-      query: { now: new Date("2023-04-11T12:00:00+09:00"), page: 3 },
-      transform: user.signin,
+  it("week", async () => {
+    const trpc = await testTrpcClient({ user: user.data });
+    const output = await trpc.decks_practiceHistoryChart({
+      deckId,
+      rangeType: "week",
+      page: 3,
+      __now: new Date("2023-04-11T12:00:00+09:00"),
     });
-    const resJson = await res.json();
-    expect(resJson?.json?.datasetSource.length).toMatchInlineSnapshot("7");
-    expect(resJson?.json?.datasetSource).toMatchInlineSnapshot(`
+    expect(output).toMatchInlineSnapshot(`
       [
         {
           "action-AGAIN": 7,
@@ -106,18 +107,15 @@ describe("decks/id/history-graph.loader", () => {
   });
 
   it("month", async () => {
-    const res = await testLoader(loader, {
-      params: { id: String(deckId) },
-      query: {
-        now: new Date("2023-04-11T12:00:00+09:00"),
-        page: 1,
-        rangeType: "month",
-      },
-      transform: user.signin,
+    const trpc = await testTrpcClient({ user: user.data });
+    const output = await trpc.decks_practiceHistoryChart({
+      deckId,
+      rangeType: "month",
+      page: 1,
+      __now: new Date("2023-04-11T12:00:00+09:00"),
     });
-    const resJson = await res.json();
-    expect(resJson?.json?.datasetSource.length).toMatchInlineSnapshot("31");
-    expect(resJson?.json?.datasetSource.slice(0, 2)).toMatchInlineSnapshot(`
+    expect(output.length).toMatchInlineSnapshot("31");
+    expect(output.slice(0, 2)).toMatchInlineSnapshot(`
       [
         {
           "action-AGAIN": 0,
@@ -143,7 +141,7 @@ describe("decks/id/history-graph.loader", () => {
         },
       ]
     `);
-    expect(resJson?.json?.datasetSource.slice(-2)).toMatchInlineSnapshot(`
+    expect(output.slice(-2)).toMatchInlineSnapshot(`
       [
         {
           "action-AGAIN": 13,

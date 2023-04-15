@@ -1,10 +1,19 @@
 import { tinyassert } from "@hiogawa/utils";
 import { sql } from "drizzle-orm";
 import { z } from "zod";
+import {
+  PRACTICE_HISTORY_DATASET_KEYS,
+  PracticeHistoryChartDataEntry,
+} from "../../components/practice-history-chart";
 import { E, T, db, findOne } from "../../db/drizzle-client.server";
 import { Z_PRACTICE_ACTION_TYPES } from "../../db/types";
 import { importDeckJson } from "../../misc/seed-utils";
+import {
+  getDateRange,
+  getZonedDateTimesBetween,
+} from "../../routes/decks/$id/history-graph";
 import { PracticeSystem } from "../../utils/practice-system";
+import { fromTemporal, toZdt } from "../../utils/temporal-utils";
 import { middlewares } from "../context";
 import { procedureBuilder } from "../factory";
 
@@ -187,6 +196,63 @@ export const trpcRoutesDecks = {
       }));
 
       return results;
+    }),
+
+  decks_practiceHistoryChart: procedureBuilder
+    .use(middlewares.requireUser)
+    .input(
+      z.object({
+        deckId: z.number().int(),
+        rangeType: z.enum(["week", "month"]).default("week"),
+        page: z.number().int().optional().default(0), // 0 => this week/month, 1 => last week/month, ...
+        __now: z.date().optional(), // for testing
+      })
+    )
+    .query(async ({ input, ctx }) => {
+      const timezone = ctx.user.timezone;
+      const now = input.__now ?? new Date();
+      const { begin, end } = getDateRange(
+        now,
+        timezone,
+        input.rangeType,
+        input.page
+      );
+      const dates = getZonedDateTimesBetween(begin, end).map((d) =>
+        d.toPlainDate().toString()
+      );
+
+      // aggregate count in js
+      const rows = await db
+        .select()
+        .from(T.practiceActions)
+        .where(
+          E.and(
+            E.eq(T.practiceActions.deckId, input.deckId),
+            E.gt(T.practiceActions.createdAt, fromTemporal(begin)),
+            E.lt(T.practiceActions.createdAt, fromTemporal(end))
+          )
+        );
+
+      const countMap = Object.fromEntries(
+        dates.map((date) => [date, { date }])
+      ) as Record<string, PracticeHistoryChartDataEntry>;
+
+      for (const v of Object.values(countMap)) {
+        for (const k of PRACTICE_HISTORY_DATASET_KEYS) {
+          v[k] = 0;
+        }
+      }
+
+      for (const row of rows) {
+        const date = toZdt(row.createdAt, ctx.user.timezone)
+          .toPlainDate()
+          .toString();
+        countMap[date].total++;
+        countMap[date][`queue-${row.queueType}`]++;
+        countMap[date][`action-${row.actionType}`]++;
+      }
+
+      return Object.values(countMap);
     }),
 };
 

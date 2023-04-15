@@ -271,7 +271,7 @@ export function TestPracticeHistoryChart() {
       <div className="w-full max-w-lg">
         <EchartsComponent
           className="h-[300px] w-full"
-          option={practiceHistoryChartDataToEchartsOption(data, "queue")}
+          option={practiceHistoryChartDataToEchartsOption(data as any, "queue")}
         />
       </div>
     </div>
