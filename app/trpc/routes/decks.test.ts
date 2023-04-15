@@ -1,8 +1,76 @@
+import { objectPick } from "@hiogawa/utils";
 import { beforeAll, describe, expect, it } from "vitest";
+import { E, T, db } from "../../db/drizzle-client.server";
 import { importSeed } from "../../misc/seed-utils";
-import { useUser } from "../../misc/test-helper";
+import { useUser, useUserVideo } from "../../misc/test-helper";
 import { trpc } from "../client";
 import { testTrpcClient } from "../test-helper";
+
+describe(trpc.decks_practiceEntriesCount.queryKey, () => {
+  const hook = useUserVideo({
+    seed: __filename + "bookmarks_create",
+  });
+
+  it("basic", async () => {
+    const trpc = await testTrpcClient({ user: hook.user });
+    await trpc.bookmarks_create({
+      videoId: hook.video.id,
+      captionEntryId: hook.captionEntries[0].id,
+      text: "Bonjour à tous",
+      side: 0,
+      offset: 8,
+    });
+
+    const rows = await db
+      .select()
+      .from(T.bookmarkEntries)
+      .innerJoin(T.videos, E.eq(T.videos.id, T.bookmarkEntries.videoId))
+      .where(E.eq(T.videos.id, hook.video.id));
+    expect(
+      rows.map((row) => [
+        row.videos.bookmarkEntriesCount,
+        objectPick(row.bookmarkEntries, ["text", "side", "offset"]),
+      ])
+    ).toMatchInlineSnapshot(`
+      [
+        [
+          1,
+          {
+            "offset": 8,
+            "side": 0,
+            "text": "Bonjour à tous",
+          },
+        ],
+      ]
+    `);
+  });
+
+  it("error-no-video", async () => {
+    const trpc = await testTrpcClient({ user: hook.user });
+    await expect(
+      trpc.bookmarks_create({
+        videoId: -1, // invalid video id
+        captionEntryId: hook.captionEntries[0].id,
+        text: "Bonjour à tous",
+        side: 0 as const,
+        offset: 8,
+      })
+    ).rejects.toMatchInlineSnapshot("[TRPCError: not found]");
+  });
+
+  it("error-no-user", async () => {
+    const trpc = await testTrpcClient();
+    await expect(
+      trpc.bookmarks_create({
+        videoId: -1, // invalid video id
+        captionEntryId: hook.captionEntries[0].id,
+        text: "Bonjour à tous",
+        side: 0 as const,
+        offset: 8,
+      })
+    ).rejects.toMatchInlineSnapshot("[TRPCError: require user]");
+  });
+});
 
 describe(trpc.decks_practiceHistoryChart.queryKey, () => {
   const user = useUser({
