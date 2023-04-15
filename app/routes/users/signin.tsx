@@ -70,6 +70,7 @@ export default function DefaultComponent() {
           <input
             type="text"
             className="antd-input p-1"
+            autoFocus
             {...form.register("username", { required: true })}
           />
         </label>
