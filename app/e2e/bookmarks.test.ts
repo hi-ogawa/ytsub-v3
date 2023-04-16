@@ -5,7 +5,7 @@ import { useUserE2E } from "./helper";
 test.describe("bookmarks", () => {
   const user = useUserE2E(test, { seed: __filename });
 
-  test.beforeEach(async () => {
+  test.beforeAll(async () => {
     await user.isReady;
     await importSeed(user.data.id);
   });
