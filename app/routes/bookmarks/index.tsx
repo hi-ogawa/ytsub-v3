@@ -147,6 +147,7 @@ function ComponentImpl(props: LoaderData) {
                 video={row.videos}
                 captionEntry={row.captionEntries}
                 bookmarkEntry={row.bookmarkEntries}
+                showAutoplay
               />
             ))}
           </div>
