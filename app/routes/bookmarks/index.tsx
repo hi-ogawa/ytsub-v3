@@ -339,7 +339,14 @@ export function MiniPlayer({
   });
 
   const loadCaptionEntryMutation = useMutation({
-    ...trpc.videos_getCaptionEntries.mutationOptions(),
+    mutationFn: async (direction: "previous" | "next") =>
+      trpc.videos_getCaptionEntries.mutationOptions().mutationFn({
+        videoId: initialEntry.videoId,
+        index:
+          direction === "previous"
+            ? captionEntries.at(0)!.index - 1
+            : captionEntries.at(-1)!.index + 1,
+      }),
     onSuccess: (data) => {
       toArraySetState(setCaptionEntries).push(data);
       toArraySetState(setCaptionEntries).sort((a, b) => a.index - b.index);
@@ -353,24 +360,26 @@ export function MiniPlayer({
     <div className="w-full flex flex-col items-center p-2 gap-2">
       <div className="w-full flex justify-start gap-1 px-1 text-xs">
         <button
-          className="antd-btn antd-btn-ghost i-ri-upload-line w-4 h-4"
+          className={cls(
+            "antd-btn antd-btn-ghost w-4 h-4",
+            loadCaptionEntryMutation.isLoading &&
+              loadCaptionEntryMutation.variables === "previous"
+              ? "antd-spin"
+              : "i-ri-upload-line"
+          )}
           disabled={loadCaptionEntryMutation.isLoading}
-          onClick={() =>
-            loadCaptionEntryMutation.mutate({
-              videoId: initialEntry.videoId,
-              index: captionEntries.at(0)!.index - 1,
-            })
-          }
+          onClick={() => loadCaptionEntryMutation.mutate("previous")}
         />
         <button
-          className="antd-btn antd-btn-ghost i-ri-download-line w-4 h-4"
+          className={cls(
+            "antd-btn antd-btn-ghost w-4 h-4",
+            loadCaptionEntryMutation.isLoading &&
+              loadCaptionEntryMutation.variables === "next"
+              ? "antd-spin"
+              : "i-ri-download-line"
+          )}
           disabled={loadCaptionEntryMutation.isLoading}
-          onClick={() =>
-            loadCaptionEntryMutation.mutate({
-              videoId: initialEntry.videoId,
-              index: captionEntries.at(-1)!.index + 1,
-            })
-          }
+          onClick={() => loadCaptionEntryMutation.mutate("next")}
         />
       </div>
       {captionEntries.map((captionEntry) => (
