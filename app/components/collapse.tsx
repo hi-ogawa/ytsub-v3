@@ -25,10 +25,20 @@ function useCollapseProps(): Partial<React.ComponentProps<typeof Transition>> {
   function uncollapse(el: HTMLDivElement) {
     const child = el.firstElementChild;
     tinyassert(child);
+    el.style.height = "0px";
+    forceStyle(el);
     el.style.height = child.clientHeight + "px";
   }
 
+  function reset(el: HTMLDivElement) {
+    el.style.height = "";
+  }
+
   function collapse(el: HTMLDivElement) {
+    const child = el.firstElementChild;
+    tinyassert(child);
+    el.style.height = child.clientHeight + "px";
+    forceStyle(el);
     el.style.height = "0px";
   }
 
@@ -38,11 +48,26 @@ function useCollapseProps(): Partial<React.ComponentProps<typeof Transition>> {
     uncollapse(el);
   }
 
+  function afterEnter() {
+    const el = refEl.current;
+    tinyassert(el);
+    reset(el);
+  }
+
   function beforeLeave() {
     const el = refEl.current;
     tinyassert(el);
     collapse(el);
   }
 
-  return { ref: React.useCallback(refCallback, []), beforeEnter, beforeLeave };
+  return {
+    ref: React.useCallback(refCallback, []),
+    beforeEnter,
+    afterEnter,
+    beforeLeave,
+  };
+}
+
+function forceStyle(el: Element) {
+  tinyassert(window.getComputedStyle(el).height);
 }

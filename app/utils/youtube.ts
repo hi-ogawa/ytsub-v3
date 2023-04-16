@@ -310,16 +310,19 @@ export async function fetchCaptionEntries({
 }
 
 //
-// Youtube Iframe API wrapper
+// Youtube Iframe API wrapper https://developers.google.com/youtube/iframe_api_reference
 //
 
 export type YoutubePlayerOptions = {
   videoId: string;
   height?: number;
   width?: number;
+  // https://developers.google.com/youtube/player_parameters#Parameters
   playerVars?: {
     autoplay?: 0 | 1;
     start?: number; // must be integer
+    // TODO: cc_load_policy = 0 cannot always turn off CC?
+    cc_load_policy?: 0 | 1;
   };
 };
 

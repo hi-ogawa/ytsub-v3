@@ -88,7 +88,7 @@ export default function DeafultComponent() {
   return <PageComponent currentUser={currentUser} {...data} />;
 }
 
-function findCurrentEntry(
+export function findCurrentEntry(
   entries: CaptionEntry[],
   time: number
 ): CaptionEntry | undefined {

@@ -45,4 +45,30 @@ export const trpcRoutesVideos = {
         db.delete(T.bookmarkEntries).where(E.eq(T.bookmarkEntries.videoId, id)),
       ]);
     }),
+
+  videos_getCaptionEntries: procedureBuilder
+    .use(middlewares.requireUser)
+    .input(
+      z.object({
+        videoId: z.number().int(),
+        index: z.number().int(),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      const found = await findOne(
+        db
+          .select()
+          .from(T.captionEntries)
+          .innerJoin(T.videos, E.eq(T.videos.id, T.captionEntries.videoId))
+          .where(
+            E.and(
+              E.eq(T.videos.id, input.videoId),
+              E.eq(T.videos.userId, ctx.user.id),
+              E.eq(T.captionEntries.index, input.index)
+            )
+          )
+      );
+      tinyassert(found);
+      return found.captionEntries;
+    }),
 };
