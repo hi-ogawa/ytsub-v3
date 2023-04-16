@@ -1,5 +1,5 @@
 import { tinyassert } from "@hiogawa/utils";
-import { useLoaderData, useNavigate } from "@remix-run/react";
+import { useLoaderData, useNavigate, useNavigation } from "@remix-run/react";
 import { useMutation } from "@tanstack/react-query";
 import React from "react";
 import { toast } from "react-hot-toast";
@@ -151,8 +151,13 @@ function PracticeComponent({
     },
   });
 
+  // extra state for a bit nicer loading indicator
   const [lastActionType, setLastActionType] =
     React.useState<PracticeActionType>();
+
+  const navigation = useNavigation();
+  const isLoading =
+    newPracticeActionMutation.isLoading || navigation.state !== "idle";
 
   return (
     <>
@@ -164,6 +169,7 @@ function PracticeComponent({
           captionEntry={captionEntry}
           bookmarkEntry={bookmarkEntry}
           showAutoplay
+          isLoading={isLoading}
         />
       </div>
       <div className="flex justify-center pb-4">
@@ -173,11 +179,9 @@ function PracticeComponent({
               key={type}
               className={cls(
                 "antd-btn antd-btn-default px-3 py-0.5",
-                newPracticeActionMutation.isLoading &&
-                  lastActionType === type &&
-                  "antd-btn-loading"
+                isLoading && lastActionType === type && "antd-btn-loading"
               )}
-              disabled={newPracticeActionMutation.isLoading}
+              disabled={isLoading}
               onClick={() => {
                 setLastActionType(type);
                 newPracticeActionMutation.mutate({

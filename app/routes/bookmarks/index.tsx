@@ -165,11 +165,13 @@ export function BookmarkEntryComponent({
   captionEntry,
   bookmarkEntry,
   showAutoplay,
+  isLoading,
 }: {
   video: VideoTable;
   captionEntry: CaptionEntryTable;
   bookmarkEntry: BookmarkEntryTable;
   showAutoplay?: boolean;
+  isLoading?: boolean; // for /decks/$id/practice
 }) {
   let [open, setOpen] = React.useState(false);
   let [autoplay, setAutoplay] = React.useState(false);
@@ -178,11 +180,6 @@ export function BookmarkEntryComponent({
     setAutoplay(true);
     setOpen(!open);
   }
-
-  // close when practice entry changed (/decks/$id/practice.tsx)
-  React.useEffect(() => {
-    setOpen(false);
-  }, [bookmarkEntry]);
 
   return (
     <div className="border flex flex-col" data-test="bookmark-entry">
@@ -208,7 +205,10 @@ export function BookmarkEntryComponent({
         </div>
         {showAutoplay && (
           <button
-            className="antd-btn antd-btn-ghost i-ri-play-line w-5 h-5"
+            className={cls(
+              "antd-btn antd-btn-ghost w-5 h-5",
+              isLoading ? "antd-spin" : "i-ri-play-line"
+            )}
             onClick={onClickAutoPlay}
           />
         )}
