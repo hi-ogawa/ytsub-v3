@@ -1,5 +1,5 @@
 import { Transition } from "@headlessui/react";
-import { isNil } from "@hiogawa/utils";
+import { isNil, sortBy } from "@hiogawa/utils";
 import { toArraySetState, useRafLoop } from "@hiogawa/utils-react";
 import { Link, NavLink, useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
@@ -354,8 +354,8 @@ export function MiniPlayer({
             : captionEntries.at(-1)!.index + 1,
       }),
     onSuccess: (data) => {
-      const newCaptionEntries = [...captionEntries, data];
-      newCaptionEntries.sort((a, b) => a.index - b.index);
+      let newCaptionEntries = [...captionEntries, data];
+      newCaptionEntries = sortBy(newCaptionEntries, (e) => e.index);
       setCaptionEntries(newCaptionEntries);
       if (repeatingEntries.length > 0) {
         setRepeatingEntries([
