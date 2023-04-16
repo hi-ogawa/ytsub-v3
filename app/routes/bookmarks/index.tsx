@@ -393,6 +393,7 @@ export function MiniPlayer({
           isPlaying={isPlaying}
           videoId={video.id}
           highlight={captionEntry === initialEntry ? highlight : undefined}
+          isFocused={captionEntry === initialEntry}
         />
       ))}
       <div className="relative w-full">
