@@ -174,7 +174,7 @@ export function BookmarkEntryComponent({
   video: VideoTable;
   captionEntry: CaptionEntryTable;
   bookmarkEntry: BookmarkEntryTable;
-  showAutoplay?: boolean;
+  showAutoplay?: boolean; // TODO: always true?
   isLoading?: boolean; // for /decks/$id/practice
 }) {
   let [open, setOpen] = React.useState(false);
