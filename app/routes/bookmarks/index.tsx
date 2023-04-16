@@ -315,6 +315,11 @@ export function MiniPlayer({
     const currentTime = player.getCurrentTime();
     let nextEntry = findCurrentEntry(captionEntries, currentTime);
 
+    // small hack since above `findCurrentEntry` assumes all caption entries are available
+    if (nextEntry && nextEntry.end < currentTime) {
+      nextEntry = undefined;
+    }
+
     // repeat mode
     if (repeatingEntries.length > 0) {
       // update player
@@ -348,8 +353,15 @@ export function MiniPlayer({
             : captionEntries.at(-1)!.index + 1,
       }),
     onSuccess: (data) => {
-      toArraySetState(setCaptionEntries).push(data);
-      toArraySetState(setCaptionEntries).sort((a, b) => a.index - b.index);
+      const newCaptionEntries = [...captionEntries, data];
+      newCaptionEntries.sort((a, b) => a.index - b.index);
+      setCaptionEntries(newCaptionEntries);
+      if (repeatingEntries.length > 0) {
+        setRepeatingEntries([
+          newCaptionEntries.at(0)!,
+          newCaptionEntries.at(-1)!,
+        ]);
+      }
     },
     onError: () => {
       toast.error("Failed to load caption");
