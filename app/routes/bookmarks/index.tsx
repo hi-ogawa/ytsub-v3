@@ -1,5 +1,5 @@
 import { Transition } from "@headlessui/react";
-import { isNil } from "@hiogawa/utils";
+import { isNil, sortBy } from "@hiogawa/utils";
 import { toArraySetState, useRafLoop } from "@hiogawa/utils-react";
 import { Link, NavLink, useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
@@ -147,6 +147,7 @@ function ComponentImpl(props: LoaderData) {
                 video={row.videos}
                 captionEntry={row.captionEntries}
                 bookmarkEntry={row.bookmarkEntries}
+                showAutoplay
               />
             ))}
           </div>
@@ -173,7 +174,7 @@ export function BookmarkEntryComponent({
   video: VideoTable;
   captionEntry: CaptionEntryTable;
   bookmarkEntry: BookmarkEntryTable;
-  showAutoplay?: boolean;
+  showAutoplay?: boolean; // TODO: always true?
   isLoading?: boolean; // for /decks/$id/practice
 }) {
   let [open, setOpen] = React.useState(false);
@@ -315,6 +316,11 @@ export function MiniPlayer({
     const currentTime = player.getCurrentTime();
     let nextEntry = findCurrentEntry(captionEntries, currentTime);
 
+    // small hack since above `findCurrentEntry` assumes all caption entries are available
+    if (nextEntry && nextEntry.end < currentTime) {
+      nextEntry = undefined;
+    }
+
     // repeat mode
     if (repeatingEntries.length > 0) {
       // update player
@@ -348,8 +354,15 @@ export function MiniPlayer({
             : captionEntries.at(-1)!.index + 1,
       }),
     onSuccess: (data) => {
-      toArraySetState(setCaptionEntries).push(data);
-      toArraySetState(setCaptionEntries).sort((a, b) => a.index - b.index);
+      let newCaptionEntries = [...captionEntries, data];
+      newCaptionEntries = sortBy(newCaptionEntries, (e) => e.index);
+      setCaptionEntries(newCaptionEntries);
+      if (repeatingEntries.length > 0) {
+        setRepeatingEntries([
+          newCaptionEntries.at(0)!,
+          newCaptionEntries.at(-1)!,
+        ]);
+      }
     },
     onError: () => {
       toast.error("Failed to load caption");
