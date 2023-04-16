@@ -241,7 +241,7 @@ export function BookmarkEntryComponent({
 // TODO: refactor almost same logic from /videos/$id
 export function MiniPlayer({
   video,
-  captionEntry,
+  captionEntry: initialEntry,
   autoplay,
   defaultIsRepeating,
   highlight,
@@ -257,10 +257,10 @@ export function MiniPlayer({
   const [currentEntry, setCurrentEntry] = React.useState<CaptionEntry>();
   const [captionEntries, setCaptionEntries] = React.useState<
     CaptionEntryTable[]
-  >([captionEntry]);
+  >([initialEntry]);
   const [repeatingEntries, setRepeatingEntries] = React.useState<
     CaptionEntry[]
-  >(() => (defaultIsRepeating ? [captionEntry] : []));
+  >(() => (defaultIsRepeating ? [initialEntry] : []));
 
   //
   // handlers
@@ -272,7 +272,7 @@ export function MiniPlayer({
     // No-op if some text is selected (e.g. for google translate extension)
     if (document.getSelection()?.toString()) return;
 
-    if (toggle) {
+    if (toggle && entry === currentEntry) {
       if (isPlaying) {
         player.pauseVideo();
       } else {
@@ -293,7 +293,7 @@ export function MiniPlayer({
       videoId: video.videoId,
       playerVars: {
         // only integer supported. start from at least 1 second ahead.
-        start: Math.max(0, Math.floor(captionEntry.begin) - 1),
+        start: Math.max(0, Math.floor(initialEntry.begin) - 1),
         autoplay: autoplay ? 1 : 0,
         // TODO: no-op?
         cc_load_policy: 0,
@@ -357,7 +357,7 @@ export function MiniPlayer({
           disabled={loadCaptionEntryMutation.isLoading}
           onClick={() =>
             loadCaptionEntryMutation.mutate({
-              videoId: captionEntry.videoId,
+              videoId: initialEntry.videoId,
               index: captionEntries.at(0)!.index - 1,
             })
           }
@@ -367,7 +367,7 @@ export function MiniPlayer({
           disabled={loadCaptionEntryMutation.isLoading}
           onClick={() =>
             loadCaptionEntryMutation.mutate({
-              videoId: captionEntry.videoId,
+              videoId: initialEntry.videoId,
               index: captionEntries.at(-1)!.index + 1,
             })
           }
@@ -383,7 +383,7 @@ export function MiniPlayer({
           onClickEntryRepeat={toArraySetState(setRepeatingEntries).toggle}
           isPlaying={isPlaying}
           videoId={video.id}
-          highlight={highlight}
+          highlight={captionEntry === initialEntry ? highlight : undefined}
         />
       ))}
       <div className="relative w-full">
