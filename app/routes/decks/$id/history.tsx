@@ -108,7 +108,7 @@ export default function DefaultComponent() {
           </div>
         </div>
       </div>
-      <div className="w-full h-8" /> {/* fake padding to allow scrool more */}
+      <div className="w-full h-8" /> {/* padding for scroll */}
       <div className="absolute bottom-2 w-full flex justify-center">
         <PaginationComponent pagination={pagination} />
       </div>

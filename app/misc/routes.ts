@@ -41,6 +41,7 @@ export const ROUTE_DEF = {
         videoId: z.coerce.number().int().optional(),
         deckId: z.coerce.number().int().optional(),
         order: z.enum(["createdAt", "caption"]).default("createdAt"),
+        q: z.string().optional(),
       })
       .merge(Z_PAGINATION_QUERY),
   },

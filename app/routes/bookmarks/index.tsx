@@ -89,7 +89,11 @@ export const loader = makeLoader(Controller, async function () {
           request.videoId
             ? E.eq(T.bookmarkEntries.videoId, request.videoId)
             : undefined,
-          request.deckId ? E.eq(T.decks.id, request.deckId) : undefined
+          request.deckId ? E.eq(T.decks.id, request.deckId) : undefined,
+          // TODO(perf): fulltext index? avoid count?
+          request.q
+            ? E.like(T.bookmarkEntries.text, `%${request.q}%`)
+            : undefined
         )
       )
       .orderBy(
@@ -118,6 +122,20 @@ function ComponentImpl(props: LoaderData) {
       <div className="w-full flex justify-center">
         <div className="h-full w-full max-w-lg">
           <div className="h-full flex flex-col p-2 gap-2">
+            <div className="flex py-1">
+              <form>
+                <label className="relative flex items-center">
+                  <span className="absolute text-colorTextSecondary ml-2 i-ri-search-line w-4 h-4"></span>
+                  <input
+                    className="antd-input pl-7 py-0.5"
+                    name={ROUTE_DEF["/bookmarks"].query.keyof().enum.q}
+                    type="text"
+                    placeholder="Search text..."
+                    defaultValue={props.request.q}
+                  />
+                </label>
+              </form>
+            </div>
             {/* TODO: CTA when empty */}
             {props.rows.length === 0 && <div>Empty</div>}
             {props.rows.map((row) => (
@@ -131,7 +149,7 @@ function ComponentImpl(props: LoaderData) {
           </div>
         </div>
       </div>
-      <div className="w-full h-8" /> {/* fake padding to allow scrool more */}
+      <div className="w-full h-8" /> {/* padding for scroll */}
       <div className="absolute bottom-2 w-full flex justify-center">
         <PaginationComponent
           pagination={props.pagination}
