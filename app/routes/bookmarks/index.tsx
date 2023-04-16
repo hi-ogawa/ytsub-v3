@@ -1,10 +1,12 @@
 import { Transition } from "@headlessui/react";
 import { isNil } from "@hiogawa/utils";
-import { useRafLoop } from "@hiogawa/utils-react";
+import { toArraySetState, useRafLoop } from "@hiogawa/utils-react";
 import { Link, NavLink, useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
+import { useMutation } from "@tanstack/react-query";
 import { omit } from "lodash";
 import React from "react";
+import { toast } from "react-hot-toast";
 import type { z } from "zod";
 import { CollapseTransition } from "../../components/collapse";
 import { PaginationComponent, transitionProps } from "../../components/misc";
@@ -24,6 +26,7 @@ import type {
   VideoTable,
 } from "../../db/models";
 import { $R, ROUTE_DEF } from "../../misc/routes";
+import { trpc } from "../../trpc/client";
 import { Controller, makeLoader } from "../../utils/controller-utils";
 import { useDeserialize } from "../../utils/hooks";
 import { useLeafLoaderData } from "../../utils/loader-utils";
@@ -32,7 +35,7 @@ import type { PageHandle } from "../../utils/page-handle";
 import type { CaptionEntry } from "../../utils/types";
 import { toQuery } from "../../utils/url-data";
 import { YoutubePlayer, usePlayerLoader } from "../../utils/youtube";
-import { CaptionEntryComponent } from "../videos/$id";
+import { CaptionEntryComponent, findCurrentEntry } from "../videos/$id";
 
 export const handle: PageHandle = {
   navBarTitle: () => "Bookmarks",
@@ -218,10 +221,7 @@ export function BookmarkEntryComponent({
           onClick={() => {}}
         />
       </div>
-      <CollapseTransition
-        show={open}
-        className="duration-300 h-0 overflow-hidden"
-      >
+      <CollapseTransition show={open} className="duration-300 overflow-hidden">
         <MiniPlayer
           video={video}
           captionEntry={captionEntry}
@@ -238,9 +238,10 @@ export function BookmarkEntryComponent({
   );
 }
 
+// TODO: refactor almost same logic from /videos/$id
 export function MiniPlayer({
   video,
-  captionEntry,
+  captionEntry: initialEntry,
   autoplay,
   defaultIsRepeating,
   highlight,
@@ -253,8 +254,13 @@ export function MiniPlayer({
 }) {
   const [player, setPlayer] = React.useState<YoutubePlayer>();
   const [isPlaying, setIsPlaying] = React.useState(false);
-  const [isRepeating, setIsRepeating] = React.useState(defaultIsRepeating);
-  const { begin, end } = captionEntry;
+  const [currentEntry, setCurrentEntry] = React.useState<CaptionEntry>();
+  const [captionEntries, setCaptionEntries] = React.useState<
+    CaptionEntryTable[]
+  >([initialEntry]);
+  const [repeatingEntries, setRepeatingEntries] = React.useState<
+    CaptionEntry[]
+  >(() => (defaultIsRepeating ? [initialEntry] : []));
 
   //
   // handlers
@@ -266,7 +272,7 @@ export function MiniPlayer({
     // No-op if some text is selected (e.g. for google translate extension)
     if (document.getSelection()?.toString()) return;
 
-    if (toggle) {
+    if (toggle && entry === currentEntry) {
       if (isPlaying) {
         player.pauseVideo();
       } else {
@@ -278,10 +284,6 @@ export function MiniPlayer({
     }
   }
 
-  function onClickEntryRepeat() {
-    setIsRepeating(!isRepeating);
-  }
-
   //
   // effects
   //
@@ -290,8 +292,11 @@ export function MiniPlayer({
     {
       videoId: video.videoId,
       playerVars: {
-        start: Math.max(0, Math.floor(begin) - 1),
+        // only integer supported. start from at least 1 second ahead.
+        start: Math.max(0, Math.floor(initialEntry.begin) - 1),
         autoplay: autoplay ? 1 : 0,
+        // TODO: no-op?
+        cc_load_policy: 0,
       },
     },
     {
@@ -302,29 +307,95 @@ export function MiniPlayer({
   useRafLoop(() => {
     if (!player) return;
 
-    setIsPlaying(player.getPlayerState() === 1);
+    const isPlaying = player.getPlayerState() === 1;
+    setIsPlaying(isPlaying);
 
-    if (isRepeating) {
-      const currentTime = player.getCurrentTime();
+    if (!isPlaying) return;
+
+    const currentTime = player.getCurrentTime();
+    let nextEntry = findCurrentEntry(captionEntries, currentTime);
+
+    // repeat mode
+    if (repeatingEntries.length > 0) {
+      // update player
+      const begin = Math.min(...repeatingEntries.map((entry) => entry.begin));
+      const end = Math.max(...repeatingEntries.map((entry) => entry.end));
       if (currentTime < begin || end < currentTime) {
         player.seekTo(begin);
       }
+
+      // predict `nextEntry`
+      if (
+        nextEntry &&
+        currentEntry &&
+        nextEntry.index === currentEntry.index + 1 &&
+        repeatingEntries.at(-1) === currentEntry
+      ) {
+        nextEntry = repeatingEntries[0];
+      }
     }
+
+    setCurrentEntry(nextEntry);
+  });
+
+  const loadCaptionEntryMutation = useMutation({
+    mutationFn: async (direction: "previous" | "next") =>
+      trpc.videos_getCaptionEntries.mutationOptions().mutationFn({
+        videoId: initialEntry.videoId,
+        index:
+          direction === "previous"
+            ? captionEntries.at(0)!.index - 1
+            : captionEntries.at(-1)!.index + 1,
+      }),
+    onSuccess: (data) => {
+      toArraySetState(setCaptionEntries).push(data);
+      toArraySetState(setCaptionEntries).sort((a, b) => a.index - b.index);
+    },
+    onError: () => {
+      toast.error("Failed to load caption");
+    },
   });
 
   return (
-    <div className="w-full flex flex-col items-center p-2 pt-0 gap-2">
-      <CaptionEntryComponent
-        entry={captionEntry}
-        currentEntry={captionEntry}
-        repeatingEntries={isRepeating ? [captionEntry] : []}
-        onClickEntryPlay={onClickEntryPlay}
-        onClickEntryRepeat={onClickEntryRepeat}
-        isPlaying={isPlaying}
-        videoId={video.id}
-        border={false}
-        highlight={highlight}
-      />
+    <div className="w-full flex flex-col items-center p-2 gap-2">
+      <div className="w-full flex justify-start gap-1 px-1 text-xs">
+        <button
+          className={cls(
+            "antd-btn antd-btn-ghost w-4 h-4",
+            loadCaptionEntryMutation.isLoading &&
+              loadCaptionEntryMutation.variables === "previous"
+              ? "antd-spin"
+              : "i-ri-upload-line"
+          )}
+          disabled={loadCaptionEntryMutation.isLoading}
+          onClick={() => loadCaptionEntryMutation.mutate("previous")}
+        />
+        <button
+          className={cls(
+            "antd-btn antd-btn-ghost w-4 h-4",
+            loadCaptionEntryMutation.isLoading &&
+              loadCaptionEntryMutation.variables === "next"
+              ? "antd-spin"
+              : "i-ri-download-line"
+          )}
+          disabled={loadCaptionEntryMutation.isLoading}
+          onClick={() => loadCaptionEntryMutation.mutate("next")}
+        />
+      </div>
+      {captionEntries.map((captionEntry) => (
+        <CaptionEntryComponent
+          key={captionEntry.id}
+          entry={captionEntry}
+          currentEntry={currentEntry}
+          repeatingEntries={repeatingEntries}
+          onClickEntryPlay={onClickEntryPlay}
+          onClickEntryRepeat={toArraySetState(setRepeatingEntries).toggle}
+          isPlaying={isPlaying}
+          videoId={video.id}
+          highlight={captionEntry === initialEntry ? highlight : undefined}
+          isFocused={captionEntry === initialEntry}
+        />
+      ))}
       <div className="relative w-full">
         <div className="relative pt-[56.2%]">
           <div
