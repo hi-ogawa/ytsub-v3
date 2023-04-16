@@ -1,5 +1,10 @@
 import { tinyassert } from "@hiogawa/utils";
-import { useLoaderData, useNavigate, useNavigation } from "@remix-run/react";
+import {
+  useLoaderData,
+  useLocation,
+  useNavigate,
+  useNavigation,
+} from "@remix-run/react";
 import { useMutation } from "@tanstack/react-query";
 import React from "react";
 import { toast } from "react-hot-toast";
@@ -155,9 +160,8 @@ function PracticeComponent({
   const [lastActionType, setLastActionType] =
     React.useState<PracticeActionType>();
 
-  const navigation = useNavigation();
-  const isLoading =
-    newPracticeActionMutation.isLoading || navigation.state !== "idle";
+  const isReloading = useNavigationIsReloading();
+  const isLoading = isReloading || newPracticeActionMutation.isLoading;
 
   return (
     <>
@@ -197,6 +201,15 @@ function PracticeComponent({
         </div>
       </div>
     </>
+  );
+}
+
+function useNavigationIsReloading() {
+  const navigation = useNavigation();
+  const location = useLocation();
+  return (
+    navigation.location?.pathname === location.pathname &&
+    navigation.state !== "idle"
   );
 }
 
