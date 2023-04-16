@@ -75,7 +75,7 @@
   "devDependencies": {
     "@hiogawa/isort-ts": "1.0.1",
     "@hiogawa/unocss-preset-antd": "2.2.1-pre.2",
-    "@iconify-json/ri": "^1.1.5",
+    "@iconify-json/ri": "^1.1.7",
     "@playwright/test": "^1.31.2",
     "@remix-run/dev": "1.15.0",
     "@remix-run/serve": "1.15.0",

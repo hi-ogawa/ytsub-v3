@@ -173,7 +173,7 @@ export function BookmarkEntryComponent({
   showAutoplay?: boolean;
   isLoading?: boolean; // for /decks/$id/practice
 }) {
-  let [open, setOpen] = React.useState(false);
+  let [open, setOpen] = React.useState(true);
   let [autoplay, setAutoplay] = React.useState(false);
 
   function onClickAutoPlay() {
@@ -313,16 +313,42 @@ export function MiniPlayer({
   });
 
   return (
-    <div className="w-full flex flex-col items-center p-2 pt-0 gap-2">
+    <div className="w-full flex flex-col items-center p-2 gap-2">
+      <div className="w-full flex justify-start gap-1 px-1 text-xs">
+        <button className="antd-btn antd-btn-ghost i-ri-upload-line w-4 h-4" />
+        <button className="antd-btn antd-btn-ghost i-ri-download-line w-4 h-4" />
+      </div>
       <CaptionEntryComponent
         entry={captionEntry}
-        currentEntry={captionEntry}
+        // currentEntry={captionEntry}
         repeatingEntries={isRepeating ? [captionEntry] : []}
         onClickEntryPlay={onClickEntryPlay}
         onClickEntryRepeat={onClickEntryRepeat}
         isPlaying={isPlaying}
         videoId={video.id}
-        border={false}
+        // border={false}
+        highlight={highlight}
+      />
+      <CaptionEntryComponent
+        entry={captionEntry}
+        // currentEntry={captionEntry}
+        repeatingEntries={isRepeating ? [captionEntry] : []}
+        onClickEntryPlay={onClickEntryPlay}
+        onClickEntryRepeat={onClickEntryRepeat}
+        isPlaying={isPlaying}
+        videoId={video.id}
+        // border={false}
+        highlight={highlight}
+      />
+      <CaptionEntryComponent
+        entry={captionEntry}
+        // currentEntry={captionEntry}
+        repeatingEntries={isRepeating ? [captionEntry] : []}
+        onClickEntryPlay={onClickEntryPlay}
+        onClickEntryRepeat={onClickEntryRepeat}
+        isPlaying={isPlaying}
+        videoId={video.id}
+        // border={false}
         highlight={highlight}
       />
       <div className="relative w-full">
