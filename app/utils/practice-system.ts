@@ -148,7 +148,7 @@ export class PracticeSystem {
           )
         )
         .orderBy(
-          // choose queueType by distribution (0.85, 0.1, 0.05), but ability to fallback to others when there's none
+          // choose queueType by the fixed probability (0.85, 0.1, 0.05) but with the ability to fallback to others when there's none
           sql`-(${T.practiceEntries.queueType} = ${seedUniform <= 0.85 ? "NEW" : seedUniform <= 0.95 ? "LEARN" : "REVIEW"})`,
           // then take the minimum of randomModeScore
           sql`randomModeScore`,
