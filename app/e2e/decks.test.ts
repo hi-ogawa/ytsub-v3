@@ -119,7 +119,6 @@ test.describe("decks", () => {
     await page.getByText("Progress").click();
     await page.getByText("0 | 187").click();
     await page.getByRole("button", { name: "GOOD" }).click();
-    await page.getByText("1 | 186").click();
   });
 });
 

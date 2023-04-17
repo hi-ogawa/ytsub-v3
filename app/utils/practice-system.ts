@@ -115,11 +115,7 @@ export class PracticeSystem {
       // such seed allows picking a same practice entry, for example, after refreshing "practice" page.
       const seedInt = hashInt32(this.deck.updatedAt.getTime());
       const seedUniform = seedInt / 2 ** 32;
-
-      // choose queueType by distribution (0.85, 0.1, 0.05)
-      const queueType: PracticeQueueType =
-        seedUniform <= 0.85 ? "NEW" : seedUniform <= 0.95 ? "LEARN" : "REVIEW";
-
+      // prettier-ignore
       const query = db
         .select({
           ...T.practiceEntries,
@@ -148,11 +144,15 @@ export class PracticeSystem {
         .where(
           E.and(
             E.eq(T.practiceEntries.deckId, deckId),
-            E.eq(T.practiceEntries.queueType, queueType),
             E.lt(T.practiceEntries.scheduledAt, now)
           )
         )
-        .orderBy(sql`randomModeScore`);
+        .orderBy(
+          // choose queueType by distribution (0.85, 0.1, 0.05), but ability to fallback to others when there's none
+          sql`-(${T.practiceEntries.queueType} = ${seedUniform <= 0.85 ? "NEW" : seedUniform <= 0.95 ? "LEARN" : "REVIEW"})`,
+          // then take the minimum of randomModeScore
+          sql`randomModeScore`,
+        );
       const result = await findOne(query);
       return result;
     }

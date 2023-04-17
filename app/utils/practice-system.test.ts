@@ -1,7 +1,16 @@
-import { tinyassert } from "@hiogawa/utils";
-import { describe, expect, it } from "vitest";
+import {
+  DefaultMap,
+  groupBy,
+  mapValues,
+  range,
+  tinyassert,
+  uniq,
+} from "@hiogawa/utils";
+import { beforeAll, describe, expect, it } from "vitest";
+import { E, T, TT, db, findOne } from "../db/drizzle-client.server";
 import { Q } from "../db/models";
-import { useUserVideo } from "../misc/test-helper";
+import { importSeed } from "../misc/seed-utils";
+import { useUser, useUserVideo } from "../misc/test-helper";
 import { PracticeSystem } from "./practice-system";
 
 // >>> import datetime
@@ -126,5 +135,49 @@ describe("PracticeSystem", () => {
     const system = new PracticeSystem(hook.user, deck);
     const entry = await system.getNextPracticeEntry(NOW);
     expect(entry).toBe(undefined);
+  });
+});
+
+describe("randomMode", () => {
+  const userHook = useUser({
+    seed: __filename + "randomMode",
+  });
+  let deckId: number;
+
+  beforeAll(async () => {
+    await userHook.isReady;
+    deckId = await importSeed(userHook.data.id);
+  });
+
+  it("practice loop", async () => {
+    const deck = await findOne(
+      db.select().from(T.decks).where(E.eq(T.decks.id, deckId))
+    );
+    tinyassert(deck);
+    const system = new PracticeSystem(userHook.data, deck);
+    const entries: TT["practiceEntries"][] = [];
+    // loop practice N times
+    const n = 100;
+    for (const _ of range(n)) {
+      const entry = await system.getNextPracticeEntry();
+      tinyassert(entry);
+      entries.push(entry);
+      await system.createPracticeAction(entry, "GOOD");
+      deck.updatedAt = new Date(deck.updatedAt.getTime() + 1); // force mutating seed since `updateAt` is not precise enough
+    }
+    // NEW should be picked most often
+    const countMap = new DefaultMap(
+      () => 0,
+      [
+        ...mapValues(
+          groupBy(entries, (e) => e.queueType),
+          (group) => group.length
+        ),
+      ]
+    );
+    expect(countMap.get("NEW")).greaterThan(countMap.get("LEARN"));
+    expect(countMap.get("NEW")).greaterThan(countMap.get("REVIEW"));
+    // should pick mostly random practice entries
+    expect(uniq(entries.map((e) => e.id)).length).greaterThan(n - 5);
   });
 });
