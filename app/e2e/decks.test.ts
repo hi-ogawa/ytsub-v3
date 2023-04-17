@@ -117,9 +117,9 @@ test.describe("decks", () => {
     await page.goto("/decks");
     await page.getByRole("link", { name: "Korean" }).click();
     await page.getByText("Progress").click();
-    await page.getByText("0 | 140").click();
-    await page.getByRole("button", { name: "AGAIN" }).click();
-    await page.getByText("1 | 139").click();
+    await page.getByText("0 | 187").click();
+    await page.getByRole("button", { name: "GOOD" }).click();
+    await page.getByText("1 | 186").click();
   });
 });
 
