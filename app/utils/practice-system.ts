@@ -119,25 +119,25 @@ export class PracticeSystem {
       const query = db
         .select({
           ...T.practiceEntries,
-          // RANDOM(HASH(practiceAction) ^ seedInt) + <scheduledAt factor>
+          // RANDOM(HASH(practiceAction) ^ seedInt)  (in [0, 1))
+          // +
+          // (scheduledAt bonus)                     (in [0, 0.5])
           _: sql<number>`(
             RAND(
-              CAST(
-                CONV(
-                  SUBSTRING(
-                    HEX(
-                      UNHEX(SHA1(${T.practiceEntries.id})) ^
-                      UNHEX(SHA1(${T.practiceEntries.updatedAt})) ^
-                      UNHEX(SHA1(${seedInt}))
-                    ),
-                    1,
-                    8),
-                  16,
-                  10
-                ) as UNSIGNED
+              UNHEX(
+                SUBSTRING(
+                  HEX(
+                    UNHEX(SHA1(${T.practiceEntries.id})) ^
+                    UNHEX(SHA1(${T.practiceEntries.updatedAt})) ^
+                    UNHEX(SHA1(${seedInt}))
+                  ),
+                  1,
+                  8
+                )
               )
             )
-            + GREATEST(-0.5, 0.1 / (60 * 60 * 24 * 7) * (UNIX_TIMESTAMP(scheduledAt) - UNIX_TIMESTAMP(${now})))
+            +
+            LEAST(0.5, 0.1 / (60 * 60 * 24 * 7) * (UNIX_TIMESTAMP(${now}) - UNIX_TIMESTAMP(scheduledAt)))
           )`.as("randomModeScore"),
         })
         .from(T.practiceEntries)
@@ -149,9 +149,9 @@ export class PracticeSystem {
         )
         .orderBy(
           // choose queueType by the fixed probability (0.85, 0.1, 0.05) but with the ability to fallback to others when there's none
-          sql`-(${T.practiceEntries.queueType} = ${seedUniform <= 0.85 ? "NEW" : seedUniform <= 0.95 ? "LEARN" : "REVIEW"})`,
-          // then take the minimum of randomModeScore
-          sql`randomModeScore`,
+          E.desc(sql`(${T.practiceEntries.queueType} = ${seedUniform <= 0.85 ? "NEW" : seedUniform <= 0.95 ? "LEARN" : "REVIEW"})`),
+          // then take the maximum of randomModeScore
+          E.desc(sql`randomModeScore`),
         );
       const result = await findOne(query);
       return result;
