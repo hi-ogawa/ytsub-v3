@@ -1,4 +1,4 @@
-import crypto from "node:crypto";
+import crypto from "crypto";
 import { tinyassert } from "@hiogawa/utils";
 import { Temporal } from "@js-temporal/polyfill";
 import { difference, range } from "lodash";
