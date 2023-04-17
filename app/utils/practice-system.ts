@@ -1,3 +1,4 @@
+import crypto from "node:crypto";
 import { tinyassert } from "@hiogawa/utils";
 import { Temporal } from "@js-temporal/polyfill";
 import { difference, range } from "lodash";
@@ -108,25 +109,23 @@ export class PracticeSystem {
       randomMode,
     } = this.deck;
 
+    // `decks.updatedAt` is used as a seed to shuffle everything for each `createPracticeAction` call,
+    // so that refreshing "practice" page refresh will keep showing the same practice entry.
+    const seedInt = hashInt32(String(this.deck.updatedAt.getTime()));
+    const seedUniform = seedInt / 2 ** 32;
+
     if (randomMode) {
       const result: PracticeEntryTable = await Q.practiceEntries()
         .select("practiceEntries.*", {
           // uniform random with "id" and "updatedAt" computed by
           //   rand(hash(id) ^ hash(updatedAt) ^ seed)
           __uniform__: client.raw(
-            "RAND(CAST(CONV(SUBSTRING(HEX(UNHEX(SHA1(id)) ^ UNHEX(SHA1(updatedAt)) ^ __subQuery__.__seed__), 1, 8), 16, 10) as UNSIGNED))"
+            "RAND(CAST(CONV(SUBSTRING(HEX(UNHEX(SHA1(id)) ^ UNHEX(SHA1(updatedAt)) ^ :seedInt), 1, 8), 16, 10) as UNSIGNED))",
+            { seedInt }
           ),
         })
         .where("practiceEntries.deckId", deckId)
         .where("practiceEntries.scheduledAt", "<=", now)
-        .crossJoin(
-          client.raw(
-            // global seed `hash(hash(max(updatedAt)))` which satisfies a desired property:
-            //   a seed should be updated on each `createPracticeAction`
-            "(SELECT UNHEX(SHA1(SHA1(updatedAt))) as __seed__, RAND(CAST(CONV(SUBSTRING(SHA1(updatedAt), 1, 8), 16, 10) as UNSIGNED)) as __seed_uniform__ FROM practiceEntries where deckId = ? ORDER BY updatedAt DESC LIMIT 1) as __subQuery__",
-            deckId
-          )
-        )
         .orderByRaw(
           // tweak the distribution based on
           // - queueType
@@ -135,12 +134,15 @@ export class PracticeSystem {
             `
             (
               __uniform__
-              + (queueType = 'NEW'   ) * -10 * (__subQuery__.__seed_uniform__ <= 0.80)
-              + (queueType = 'LEARN' ) * -10 * (__subQuery__.__seed_uniform__ >  0.80) * (__subQuery__.__seed_uniform__ <= 0.95)
-              + (queueType = 'REVIEW') * -10 *                                           (__subQuery__.__seed_uniform__ >  0.95)
-              + LEAST(-0.5, 0.1 / (60 * 60 * 24 * 7) * (UNIX_TIMESTAMP(scheduledAt) - UNIX_TIMESTAMP(?)))
+              + (queueType = 'NEW'   ) * -10 * (:seedUniform <= 0.80)
+              + (queueType = 'LEARN' ) * -10 * (:seedUniform >  0.80) * (:seedUniform <= 0.95)
+              + (queueType = 'REVIEW') * -10 *                          (:seedUniform >  0.95)
+              + LEAST(-0.5, 0.1 / (60 * 60 * 24 * 7) * (UNIX_TIMESTAMP(scheduledAt) - UNIX_TIMESTAMP(:now)))
             )`,
-            now
+            {
+              now,
+              seedUniform,
+            }
           )
         )
         .first();
@@ -334,4 +336,13 @@ export async function queryDeckPracticeEntriesCountByQueueType(
   return Object.fromEntries(
     PRACTICE_QUEUE_TYPES.map((type) => [type, aggregated[type]?.count ?? 0])
   ) as any;
+}
+
+function hashInt32(input: string) {
+  const hex = crypto
+    .createHash("sha256")
+    .update(input, "utf8")
+    .digest()
+    .toString("hex");
+  return parseInt(hex.slice(0, 8), 16);
 }
