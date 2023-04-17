@@ -110,7 +110,7 @@ export class PracticeSystem {
     } = this.deck;
 
     // `decks.updatedAt` is used as a seed to shuffle everything for each `createPracticeAction` call,
-    // so that refreshing "practice" page refresh will keep showing the same practice entry.
+    // so that refreshing "practice" page will keep showing the same practice entry.
     const seedInt = hashInt32(String(this.deck.updatedAt.getTime()));
     const seedUniform = seedInt / 2 ** 32;
 
