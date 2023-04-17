@@ -46,6 +46,7 @@ export default function DefaultComponent() {
       reviewsPerDay: 200,
       easeMultiplier: 2,
       easeBonus: 1.5,
+      randomMode: true,
     },
   });
 

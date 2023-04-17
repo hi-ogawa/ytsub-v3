@@ -97,6 +97,7 @@ export const trpcRoutesDecks = {
         reviewsPerDay: z.number().int(),
         easeMultiplier: z.number(),
         easeBonus: z.number(),
+        randomMode: z.boolean(),
       })
     )
     .mutation(async ({ input, ctx }) => {
