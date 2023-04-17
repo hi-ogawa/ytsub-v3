@@ -293,15 +293,17 @@ export function MiniPlayer({
     {
       videoId: video.videoId,
       playerVars: {
-        // only integer supported. start from at least 1 second ahead.
         start: Math.max(0, Math.floor(initialEntry.begin) - 1),
-        autoplay: autoplay ? 1 : 0,
-        // TODO: no-op?
-        cc_load_policy: 0,
       },
     },
     {
-      onSuccess: setPlayer,
+      onSuccess: (player) => {
+        setPlayer(player);
+        // autoplay manually since it seems playerVars.autoplay doesn't work for mobile
+        if (autoplay) {
+          player.playVideo();
+        }
+      },
     }
   );
 
