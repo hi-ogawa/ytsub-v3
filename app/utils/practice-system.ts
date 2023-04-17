@@ -1,8 +1,9 @@
-import crypto from "crypto";
 import { tinyassert } from "@hiogawa/utils";
 import { Temporal } from "@js-temporal/polyfill";
+import { sql } from "drizzle-orm";
 import { difference, range } from "lodash";
 import { client } from "../db/client.server";
+import { E, T, db, findOne } from "../db/drizzle-client.server";
 import {
   BookmarkEntryTable,
   DeckTable,
@@ -109,43 +110,50 @@ export class PracticeSystem {
       randomMode,
     } = this.deck;
 
-    // `decks.updatedAt` is used as a seed to shuffle everything for each `createPracticeAction` call,
-    // so that refreshing "practice" page will keep showing the same practice entry.
-    const seedInt = hashInt32(String(this.deck.updatedAt.getTime()));
-    const seedUniform = seedInt / 2 ** 32;
-
     if (randomMode) {
-      const result: PracticeEntryTable = await Q.practiceEntries()
-        .select("practiceEntries.*", {
-          // uniform random with "id" and "updatedAt" computed by
-          //   rand(hash(id) ^ hash(updatedAt) ^ seed)
-          __uniform__: client.raw(
-            "RAND(CAST(CONV(SUBSTRING(HEX(UNHEX(SHA1(id)) ^ UNHEX(SHA1(updatedAt)) ^ :seedInt), 1, 8), 16, 10) as UNSIGNED))",
-            { seedInt }
-          ),
+      // `decks.updatedAt` is used as a seed to shuffle everything after each `createPracticeAction` call.
+      // such seed allows picking a same practice entry, for example, after refreshing "practice" page.
+      const seedInt = hashInt32(this.deck.updatedAt.getTime());
+      const seedUniform = seedInt / 2 ** 32;
+
+      // choose queueType by distribution (0.85, 0.1, 0.05)
+      const queueType: PracticeQueueType =
+        seedUniform <= 0.85 ? "NEW" : seedUniform <= 0.95 ? "LEARN" : "REVIEW";
+
+      const query = db
+        .select({
+          ...T.practiceEntries,
+          // RANDOM(HASH(practiceAction) ^ seedInt) + <scheduledAt factor>
+          _: sql<number>`(
+            RAND(
+              CAST(
+                CONV(
+                  SUBSTRING(
+                    HEX(
+                      UNHEX(SHA1(${T.practiceEntries.id})) ^
+                      UNHEX(SHA1(${T.practiceEntries.updatedAt})) ^
+                      UNHEX(SHA1(${seedInt}))
+                    ),
+                    1,
+                    8),
+                  16,
+                  10
+                ) as UNSIGNED
+              )
+            )
+            + GREATEST(-0.5, 0.1 / (60 * 60 * 24 * 7) * (UNIX_TIMESTAMP(scheduledAt) - UNIX_TIMESTAMP(${now})))
+          )`.as("randomModeScore"),
         })
-        .where("practiceEntries.deckId", deckId)
-        .where("practiceEntries.scheduledAt", "<=", now)
-        .orderByRaw(
-          // tweak the distribution based on
-          // - queueType
-          // - scheduledAt
-          client.raw(
-            `
-            (
-              __uniform__
-              + (queueType = 'NEW'   ) * -10 * (:seedUniform <= 0.80)
-              + (queueType = 'LEARN' ) * -10 * (:seedUniform >  0.80) * (:seedUniform <= 0.95)
-              + (queueType = 'REVIEW') * -10 *                          (:seedUniform >  0.95)
-              + LEAST(-0.5, 0.1 / (60 * 60 * 24 * 7) * (UNIX_TIMESTAMP(scheduledAt) - UNIX_TIMESTAMP(:now)))
-            )`,
-            {
-              now,
-              seedUniform,
-            }
+        .from(T.practiceEntries)
+        .where(
+          E.and(
+            E.eq(T.practiceEntries.deckId, deckId),
+            E.eq(T.practiceEntries.queueType, queueType),
+            E.lt(T.practiceEntries.scheduledAt, now)
           )
         )
-        .first();
+        .orderBy(sql`randomModeScore`);
+      const result = await findOne(query);
       return result;
     }
 
@@ -338,11 +346,12 @@ export async function queryDeckPracticeEntriesCountByQueueType(
   ) as any;
 }
 
-function hashInt32(input: string) {
-  const hex = crypto
-    .createHash("sha256")
-    .update(input, "utf8")
-    .digest()
-    .toString("hex");
-  return parseInt(hex.slice(0, 8), 16);
+// https://nullprogram.com/blog/2018/07/31/
+function hashInt32(x: number) {
+  x ^= x >>> 16;
+  x = Math.imul(x, 0x21f0aaad);
+  x ^= x >>> 15;
+  x = Math.imul(x, 0xd35a2d97);
+  x ^= x >>> 15;
+  return x >>> 0;
 }
