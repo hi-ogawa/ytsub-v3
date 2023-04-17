@@ -37,6 +37,7 @@ test.describe("decks", () => {
     // submit edit deck form
     await expect(page.getByLabel("Name")).toHaveValue("deck-e2e-test");
     await expect(page.getByLabel("New entries per day")).toHaveValue("40");
+    await expect(page.getByLabel("Randomize")).toBeChecked();
     await page.getByLabel("New entries per day").click();
     await page.getByLabel("New entries per day").fill("");
     await page.getByLabel("New entries per day").type("25");
