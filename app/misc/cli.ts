@@ -6,7 +6,7 @@ import consola from "consola";
 import { range, zip } from "lodash";
 import { z } from "zod";
 import { client } from "../db/client.server";
-import { E, T, db, findOne } from "../db/drizzle-client.server";
+import { findOne } from "../db/drizzle-client.server";
 import {
   Q,
   deleteOrphans,
@@ -23,7 +23,8 @@ import {
 import { exec, streamToString } from "../utils/node.server";
 import {
   queryDeckPracticeEntriesCountByQueueType,
-  queryNextPracticeEntryRandomMode,
+  queryPracticeEntryRandomMode,
+  queryPracticeEntryRandomModeSeed,
 } from "../utils/practice-system";
 import { NewVideo, fetchCaptionEntries } from "../utils/youtube";
 import { finalizeServer, initializeServer } from "./initialize-server";
@@ -262,17 +263,14 @@ cli
 
 async function commandDebugPracticeRandomMode(argsRaw: unknown) {
   const args = commandDebugPracticeModeArgs.parse(argsRaw);
-  const deck = await findOne(
-    db.select().from(T.decks).where(E.eq(T.decks.id, args.deckId))
-  );
-  tinyassert(deck);
-  const seed = args.seed ?? deck?.updatedAt.getTime();
-  const { query, ...misc } = queryNextPracticeEntryRandomMode(
+  const seed =
+    args.seed ?? (await queryPracticeEntryRandomModeSeed(args.deckId));
+  const { query, ...meta } = queryPracticeEntryRandomMode(
     args.deckId,
     args.now,
     seed
   );
-  console.log(misc);
+  console.log({ seed, meta });
   console.log(await query.limit(args.limit));
 }
 
