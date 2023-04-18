@@ -304,7 +304,7 @@ export async function queryDeckPracticeEntriesCountByQueueType(
 
   const record = Object.fromEntries([
     ...PRACTICE_QUEUE_TYPES.map((t) => [t, 0]),
-    ...mapValueGroupBy(rows, "queueType", (row) => row.count).entries(),
+    ...mapValueGroupBy(rows, "queueType", (row) => row.count),
   ]);
   return record;
 }
