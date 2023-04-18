@@ -204,7 +204,9 @@ describe("queryNextPracticeEntryRandomMode", () => {
     expect(rows.length).toMatchInlineSnapshot("339");
     console.log(rows);
     console.log(
-      rows.map((row) => objectPick(row, ["queueType", "id", "updatedAt", "_"]))
+      rows.map((row) =>
+        objectPick(row, ["queueType", "id", "updatedAt", "randomModeScore"])
+      )
     );
   });
 });

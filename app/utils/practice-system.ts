@@ -327,9 +327,9 @@ export function queryNextPracticeEntryRandomMode(
       // RANDOM(HASH(practiceAction) ^ seedInt)  (in [0, 1))
       // +
       // (scheduledAt bonus)                     (in [0, 0.5])
-      _: sql<number>`(
+      randomModeScore: sql<number>`(
         RAND(
-          UNHEX(
+          CONV(
             SUBSTRING(
               HEX(
                 UNHEX(SHA1(${T.practiceEntries.id})) ^
@@ -338,7 +338,9 @@ export function queryNextPracticeEntryRandomMode(
               ),
               1,
               8
-            )
+            ),
+            16,
+            10
           )
         )
         +
