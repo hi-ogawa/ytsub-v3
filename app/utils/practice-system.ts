@@ -348,7 +348,7 @@ export function queryNextPracticeEntryRandomMode(
           )
         )
         +
-        LEAST(0.5, 0.1 / (60 * 60 * 24 * 7) * (UNIX_TIMESTAMP(${now}) - UNIX_TIMESTAMP(scheduledAt)))
+        0.1 * LEAST(5, (UNIX_TIMESTAMP(${now}) - UNIX_TIMESTAMP(scheduledAt)) / (60 * 60 * 24 * 7))
         +
         2 * (${T.practiceEntries.queueType} = ${randQueueType})
       )`.as(RANDOM_MODE_SCORE_ALIAS),
@@ -366,7 +366,7 @@ export function queryNextPracticeEntryRandomMode(
 }
 
 // https://nullprogram.com/blog/2018/07/31/
-function hashInt32(x: number) {
+export function hashInt32(x: number) {
   x ^= x >>> 16;
   x = Math.imul(x, 0x21f0aaad);
   x ^= x >>> 15;

@@ -13,6 +13,7 @@ import { importSeed } from "../misc/seed-utils";
 import { useUser, useUserVideo } from "../misc/test-helper";
 import {
   PracticeSystem,
+  hashInt32,
   queryNextPracticeEntryRandomMode,
 } from "./practice-system";
 
@@ -201,5 +202,30 @@ describe("queryNextPracticeEntryRandomMode", () => {
     const seed = 0;
     const rows = await queryNextPracticeEntryRandomMode(deckId, now, seed);
     expect(rows.length).toMatchInlineSnapshot("339");
+  });
+});
+
+describe("hashInt32", () => {
+  it("basic", async () => {
+    const xs = range(1000).map((i) => hashInt32(i + 12345) / 2 ** 32);
+
+    const bins = range(10).map(() => 0);
+    for (const x of xs) {
+      bins[Math.floor(x * bins.length)]++;
+    }
+    expect(bins).toMatchInlineSnapshot(`
+      [
+        107,
+        91,
+        75,
+        102,
+        114,
+        102,
+        99,
+        120,
+        100,
+        90,
+      ]
+    `);
   });
 });
