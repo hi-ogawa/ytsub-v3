@@ -336,7 +336,7 @@ async function getDailyPracticeStatistics(
 
   return new DefaultMap(
     () => 0,
-    [...mapValueGroupBy(rows, "queueType", (row) => row.count)]
+    mapValueGroupBy(rows, "queueType", (row) => row.count)
   );
 }
 
