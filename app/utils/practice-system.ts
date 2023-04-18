@@ -111,7 +111,7 @@ export class PracticeSystem {
     } = this.deck;
 
     if (randomMode) {
-      const query = queryNextPracticeEntryRandomMode(
+      const { query } = queryNextPracticeEntryRandomMode(
         this.deck.id,
         now,
         this.deck.updatedAt.getTime()
@@ -362,7 +362,7 @@ export function queryNextPracticeEntryRandomMode(
     )
     .orderBy(E.desc(sql.raw(RANDOM_MODE_SCORE_ALIAS)));
 
-  return query;
+  return { query, randInt, randUniform, randQueueType };
 }
 
 // https://nullprogram.com/blog/2018/07/31/

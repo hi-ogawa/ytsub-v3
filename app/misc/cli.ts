@@ -6,7 +6,7 @@ import consola from "consola";
 import { range, zip } from "lodash";
 import { z } from "zod";
 import { client } from "../db/client.server";
-import { findOne } from "../db/drizzle-client.server";
+import { E, T, db, findOne } from "../db/drizzle-client.server";
 import {
   Q,
   deleteOrphans,
@@ -21,7 +21,10 @@ import {
   verifySignin,
 } from "../utils/auth";
 import { exec, streamToString } from "../utils/node.server";
-import { queryDeckPracticeEntriesCountByQueueType } from "../utils/practice-system";
+import {
+  queryDeckPracticeEntriesCountByQueueType,
+  queryNextPracticeEntryRandomMode,
+} from "../utils/practice-system";
 import { NewVideo, fetchCaptionEntries } from "../utils/youtube";
 import { finalizeServer, initializeServer } from "./initialize-server";
 import { exportDeckJson, importDeckJson } from "./seed-utils";
@@ -236,6 +239,41 @@ async function commandDbSeedImport(argsRaw: unknown) {
   tinyassert(user);
   const fileDataRaw = await fs.promises.readFile(args.inFile, "utf-8");
   await importDeckJson(user.id, JSON.parse(fileDataRaw));
+}
+
+//
+// debug-practice-randomMode
+//
+
+const commandDebugPracticeModeArgs = z.object({
+  deckId: z.coerce.number(),
+  now: z.coerce.date().default(new Date()),
+  seed: z.coerce.number().optional(),
+  limit: z.coerce.number().default(10),
+});
+
+cli
+  .command("debugPracticeRandomMode")
+  .option(`--${commandDebugPracticeModeArgs.keyof().enum.deckId} [string]`, "")
+  .option(`--${commandDebugPracticeModeArgs.keyof().enum.now} [string]`, "")
+  .option(`--${commandDebugPracticeModeArgs.keyof().enum.seed} [string]`, "")
+  .option(`--${commandDebugPracticeModeArgs.keyof().enum.limit} [string]`, "")
+  .action(commandDebugPracticeRandomMode);
+
+async function commandDebugPracticeRandomMode(argsRaw: unknown) {
+  const args = commandDebugPracticeModeArgs.parse(argsRaw);
+  const deck = await findOne(
+    db.select().from(T.decks).where(E.eq(T.decks.id, args.deckId))
+  );
+  tinyassert(deck);
+  const seed = args.seed ?? deck?.updatedAt.getTime();
+  const { query, ...misc } = queryNextPracticeEntryRandomMode(
+    args.deckId,
+    args.now,
+    seed
+  );
+  console.log(misc);
+  console.log(await query.limit(args.limit));
 }
 
 //
