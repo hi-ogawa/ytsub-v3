@@ -61,13 +61,19 @@ export function assertUnreachable(_value: never): never {
   tinyassert(false, "unreachable");
 }
 
-export function mapFromGroupBy<T, Key extends keyof T, Value extends keyof T>(
-  rows: T[],
-  key: Key,
-  value: Value
-): Map<T[Key], T[Value]> {
+export function mapValueGroupBy<
+  T,
+  Key extends keyof T,
+  F extends (row: T) => unknown
+>(rows: T[], key: Key, valueFn: F): Map<T[Key], ReturnType<F>> {
   return mapValues(
     groupBy(rows, (row) => row[key]),
-    (group) => group[0][value]
+    (group) => valueFn(group[0]) as ReturnType<F>
   );
+}
+
+export function objectFromMap<K extends string, V>(
+  map: Map<K, V>
+): Partial<Record<K, V>> {
+  return Object.fromEntries(map) as any;
 }
