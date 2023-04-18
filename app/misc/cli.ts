@@ -267,12 +267,12 @@ async function commandDebugPracticeRandomMode(argsRaw: unknown) {
   );
   tinyassert(deck);
   const seed = args.seed ?? deck?.updatedAt.getTime();
-  const { query, ...misc } = queryNextPracticeEntryRandomMode(
+  const { query, ...meta } = queryNextPracticeEntryRandomMode(
     args.deckId,
     args.now,
     seed
   );
-  console.log(misc);
+  console.log({ seed, meta });
   console.log(await query.limit(args.limit));
 }
 
