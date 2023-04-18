@@ -273,27 +273,20 @@ async function updateDeckPracticeEntriesCountByQueueType(
   deckId: number,
   increments: Partial<Record<PracticeQueueType, number>>
 ): Promise<void> {
-  await Q.decks()
-    .where("id", deckId)
-    .update(
-      "practiceEntriesCountByQueueType",
-      client.raw(
-        `JSON_SET(:column:,
-          '$."NEW"',    JSON_EXTRACT(:column:, '$."NEW"')    + ${
-            increments.NEW ?? 0
-          },
-          '$."LEARN"',  JSON_EXTRACT(:column:, '$."LEARN"')  + ${
-            increments.LEARN ?? 0
-          },
-          '$."REVIEW"', JSON_EXTRACT(:column:, '$."REVIEW"') + ${
-            increments.REVIEW ?? 0
-          }
-         )`,
-        {
-          column: "practiceEntriesCountByQueueType",
-        }
-      )
-    );
+  const column = T.decks.practiceEntriesCountByQueueType;
+  await db
+    .update(T.decks)
+    .set({
+      // prettier-ignore
+      practiceEntriesCountByQueueType: sql`
+        JSON_SET(${column},
+          '$."NEW"',    JSON_EXTRACT(${column}, '$."NEW"')    + ${increments.NEW ?? 0},
+          '$."LEARN"',  JSON_EXTRACT(${column}, '$."LEARN"')  + ${increments.LEARN ?? 0},
+          '$."REVIEW"', JSON_EXTRACT(${column}, '$."REVIEW"') + ${increments.REVIEW ?? 0},
+        )
+      `,
+    })
+    .where(E.eq(T.decks.id, deckId));
 }
 
 // used by "reset-counter-cache:decks.practiceEntriesCountByQueueType" in cli.ts
