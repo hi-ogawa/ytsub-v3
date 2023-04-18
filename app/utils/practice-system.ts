@@ -321,13 +321,17 @@ export function queryNextPracticeEntryRandomMode(
   const randQueueType =
     randUniform <= 0.85 ? "NEW" : randUniform <= 0.95 ? "LEARN" : "REVIEW";
 
+  const RANDOM_MODE_SCORE_ALIAS = "randomModeScore";
+
   const query = db
     .select({
       ...T.practiceEntries,
       // RANDOM(HASH(practiceAction) ^ seedInt)  (in [0, 1))
       // +
       // (scheduledAt bonus)                     (in [0, 0.5])
-      randomModeScore: sql<number>`(
+      // +
+      // (queueType bonus)                       (2 if randQueueType)
+      [RANDOM_MODE_SCORE_ALIAS]: sql<number>`(
         RAND(
           CONV(
             SUBSTRING(
@@ -345,7 +349,9 @@ export function queryNextPracticeEntryRandomMode(
         )
         +
         LEAST(0.5, 0.1 / (60 * 60 * 24 * 7) * (UNIX_TIMESTAMP(${now}) - UNIX_TIMESTAMP(scheduledAt)))
-      )`.as("randomModeScore"),
+        +
+        2 * (${T.practiceEntries.queueType} = ${randQueueType})
+      )`.as(RANDOM_MODE_SCORE_ALIAS),
     })
     .from(T.practiceEntries)
     .where(
@@ -354,12 +360,7 @@ export function queryNextPracticeEntryRandomMode(
         E.lt(T.practiceEntries.scheduledAt, now)
       )
     )
-    .orderBy(
-      // choose queueType (but can fallback if such queue is empty)
-      E.desc(sql`(${T.practiceEntries.queueType} = ${randQueueType})`),
-      // take the maximum of randomModeScore
-      E.desc(sql`randomModeScore`)
-    );
+    .orderBy(E.desc(sql.raw(RANDOM_MODE_SCORE_ALIAS)));
 
   return query;
 }

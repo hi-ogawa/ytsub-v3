@@ -2,7 +2,6 @@ import {
   DefaultMap,
   groupBy,
   mapValues,
-  objectPick,
   range,
   tinyassert,
   uniq,
@@ -202,11 +201,5 @@ describe("queryNextPracticeEntryRandomMode", () => {
     const seed = 0;
     const rows = await queryNextPracticeEntryRandomMode(deckId, now, seed);
     expect(rows.length).toMatchInlineSnapshot("339");
-    console.log(rows);
-    console.log(
-      rows.map((row) =>
-        objectPick(row, ["queueType", "id", "updatedAt", "randomModeScore"])
-      )
-    );
   });
 });
