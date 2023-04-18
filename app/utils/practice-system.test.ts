@@ -14,7 +14,7 @@ import { useUser, useUserVideo } from "../misc/test-helper";
 import {
   PracticeSystem,
   hashInt32,
-  queryPracticeEntryRandomMode,
+  queryNextPracticeEntryRandomMode,
 } from "./practice-system";
 
 // >>> import datetime
@@ -200,7 +200,8 @@ describe("queryNextPracticeEntryRandomMode", () => {
   it("basic", async () => {
     const now = new Date("2023-04-10T00:00:00Z");
     const seed = 0;
-    const rows = await queryPracticeEntryRandomMode(deckId, now, seed).query;
+    const rows = await queryNextPracticeEntryRandomMode(deckId, now, seed)
+      .query;
     expect(rows.length).toMatchInlineSnapshot("339");
   });
 });

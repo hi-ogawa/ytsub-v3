@@ -111,8 +111,11 @@ export class PracticeSystem {
     } = this.deck;
 
     if (randomMode) {
-      const seed = await queryPracticeEntryRandomModeSeed(this.deck.id);
-      const { query } = queryPracticeEntryRandomMode(this.deck.id, now, seed);
+      const { query } = queryNextPracticeEntryRandomMode(
+        this.deck.id,
+        now,
+        this.deck.updatedAt.getTime()
+      );
       const entry = await findOne(query);
       return entry;
     }
@@ -304,22 +307,7 @@ export async function queryDeckPracticeEntriesCountByQueueType(
   ) as any;
 }
 
-export async function queryPracticeEntryRandomModeSeed(
-  deckId: number
-): Promise<number> {
-  // use last practice actions's timestamp as a seed
-  // since it's stable until next `createPracticeAction`
-  const lastPracticeAction = await findOne(
-    db
-      .select()
-      .from(T.practiceActions)
-      .where(E.eq(T.practiceActions.deckId, deckId))
-      .orderBy(E.desc(T.practiceActions.createdAt))
-  );
-  return lastPracticeAction?.createdAt.getTime() ?? 0;
-}
-
-export function queryPracticeEntryRandomMode(
+export function queryNextPracticeEntryRandomMode(
   deckId: number,
   now: Date,
   seed: number
