@@ -2,6 +2,7 @@ import {
   DefaultMap,
   groupBy,
   mapValues,
+  objectPick,
   range,
   tinyassert,
   uniq,
@@ -11,7 +12,10 @@ import { E, T, TT, db, findOne } from "../db/drizzle-client.server";
 import { Q } from "../db/models";
 import { importSeed } from "../misc/seed-utils";
 import { useUser, useUserVideo } from "../misc/test-helper";
-import { PracticeSystem } from "./practice-system";
+import {
+  PracticeSystem,
+  queryNextPracticeEntryRandomMode,
+} from "./practice-system";
 
 // >>> import datetime
 // >>> datetime.datetime(year=1991, month=6, day=24, tzinfo=datetime.timezone.utc).timestamp()
@@ -179,5 +183,28 @@ describe("randomMode", () => {
     expect(countMap.get("NEW")).greaterThan(countMap.get("REVIEW"));
     // should pick mostly random practice entries
     expect(uniq(entries.map((e) => e.id)).length).greaterThan(n - 5);
+  });
+});
+
+describe("queryNextPracticeEntryRandomMode", () => {
+  const userHook = useUser({
+    seed: __filename + "randomMode",
+  });
+  let deckId: number;
+
+  beforeAll(async () => {
+    await userHook.isReady;
+    deckId = await importSeed(userHook.data.id);
+  });
+
+  it("basic", async () => {
+    const now = new Date("2023-04-10T00:00:00Z");
+    const seed = 0;
+    const rows = await queryNextPracticeEntryRandomMode(deckId, now, seed);
+    expect(rows.length).toMatchInlineSnapshot("339");
+    console.log(rows);
+    console.log(
+      rows.map((row) => objectPick(row, ["queueType", "id", "updatedAt", "_"]))
+    );
   });
 });

@@ -111,50 +111,13 @@ export class PracticeSystem {
     } = this.deck;
 
     if (randomMode) {
-      // `decks.updatedAt` is used as a seed to shuffle everything after each `createPracticeAction` call.
-      // such seed allows picking a same practice entry, for example, after refreshing "practice" page.
-      const seedInt = hashInt32(this.deck.updatedAt.getTime());
-      const seedUniform = seedInt / 2 ** 32;
-      // prettier-ignore
-      const query = db
-        .select({
-          ...T.practiceEntries,
-          // RANDOM(HASH(practiceAction) ^ seedInt)  (in [0, 1))
-          // +
-          // (scheduledAt bonus)                     (in [0, 0.5])
-          _: sql<number>`(
-            RAND(
-              UNHEX(
-                SUBSTRING(
-                  HEX(
-                    UNHEX(SHA1(${T.practiceEntries.id})) ^
-                    UNHEX(SHA1(${T.practiceEntries.updatedAt})) ^
-                    UNHEX(SHA1(${seedInt}))
-                  ),
-                  1,
-                  8
-                )
-              )
-            )
-            +
-            LEAST(0.5, 0.1 / (60 * 60 * 24 * 7) * (UNIX_TIMESTAMP(${now}) - UNIX_TIMESTAMP(scheduledAt)))
-          )`.as("randomModeScore"),
-        })
-        .from(T.practiceEntries)
-        .where(
-          E.and(
-            E.eq(T.practiceEntries.deckId, deckId),
-            E.lt(T.practiceEntries.scheduledAt, now)
-          )
-        )
-        .orderBy(
-          // choose queueType by the fixed probability (0.85, 0.1, 0.05) but with the ability to fallback to others when there's none
-          E.desc(sql`(${T.practiceEntries.queueType} = ${seedUniform <= 0.85 ? "NEW" : seedUniform <= 0.95 ? "LEARN" : "REVIEW"})`),
-          // then take the maximum of randomModeScore
-          E.desc(sql`randomModeScore`),
-        );
-      const result = await findOne(query);
-      return result;
+      const query = queryNextPracticeEntryRandomMode(
+        this.deck.id,
+        now,
+        this.deck.updatedAt.getTime()
+      );
+      const entry = await findOne(query);
+      return entry;
     }
 
     const today = fromTemporal(toZdt(now, this.user.timezone).startOfDay());
@@ -344,6 +307,59 @@ export async function queryDeckPracticeEntriesCountByQueueType(
   return Object.fromEntries(
     PRACTICE_QUEUE_TYPES.map((type) => [type, aggregated[type]?.count ?? 0])
   ) as any;
+}
+
+export function queryNextPracticeEntryRandomMode(
+  deckId: number,
+  now: Date,
+  seed: number
+) {
+  const randInt = hashInt32(seed);
+  const randUniform = randInt / 2 ** 32;
+
+  // choose queueType by a fixed probability (0.85, 0.1, 0.05)
+  const randQueueType =
+    randUniform <= 0.85 ? "NEW" : randUniform <= 0.95 ? "LEARN" : "REVIEW";
+
+  const query = db
+    .select({
+      ...T.practiceEntries,
+      // RANDOM(HASH(practiceAction) ^ seedInt)  (in [0, 1))
+      // +
+      // (scheduledAt bonus)                     (in [0, 0.5])
+      _: sql<number>`(
+        RAND(
+          UNHEX(
+            SUBSTRING(
+              HEX(
+                UNHEX(SHA1(${T.practiceEntries.id})) ^
+                UNHEX(SHA1(${T.practiceEntries.updatedAt})) ^
+                UNHEX(SHA1(${randInt}))
+              ),
+              1,
+              8
+            )
+          )
+        )
+        +
+        LEAST(0.5, 0.1 / (60 * 60 * 24 * 7) * (UNIX_TIMESTAMP(${now}) - UNIX_TIMESTAMP(scheduledAt)))
+      )`.as("randomModeScore"),
+    })
+    .from(T.practiceEntries)
+    .where(
+      E.and(
+        E.eq(T.practiceEntries.deckId, deckId),
+        E.lt(T.practiceEntries.scheduledAt, now)
+      )
+    )
+    .orderBy(
+      // choose queueType (but can fallback if such queue is empty)
+      E.desc(sql`(${T.practiceEntries.queueType} = ${randQueueType})`),
+      // take the maximum of randomModeScore
+      E.desc(sql`randomModeScore`)
+    );
+
+  return query;
 }
 
 // https://nullprogram.com/blog/2018/07/31/
