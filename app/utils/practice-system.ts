@@ -213,7 +213,7 @@ export class PracticeSystem {
     } = practiceEntry;
 
     // sql: create practiceAction
-    const qActions = Q.practiceActions().insert({
+    const queryCreatePracticeAction = db.insert(T.practiceActions).values({
       queueType: queueType,
       actionType,
       userId,
@@ -246,26 +246,29 @@ export class PracticeSystem {
     }
 
     // sql: update practiceEntry
-    const qEntries = Q.practiceEntries()
-      .update({
+    const queryUpdatePracticeEntry = db
+      .update(T.practiceEntries)
+      .set({
         queueType: newQueueType,
         easeFactor: newEaseFactor,
         scheduledAt: newScheduledAt,
-        practiceActionsCount: client.raw("practiceActionsCount + 1"),
+        practiceActionsCount: sql<number>`${T.practiceEntries.practiceActionsCount} + 1`,
       })
-      .where("id", practiceEntryId);
+      .where(E.eq(T.practiceEntries.id, practiceEntryId));
 
     // sql: update decks.practiceEntriesCountByQueueType
-    let qDecks;
-    if (queueType !== newQueueType) {
-      qDecks = updateDeckPracticeEntriesCountByQueueType(deckId, {
-        [queueType]: -1,
-        [newQueueType]: 1,
-      });
-    }
+    // (update deck even if queueType = newQueueType so that we can use `decks.updatedAt` as randomMode seed)
+    const queryUpdateDeck = updateDeckPracticeEntriesCountByQueueType(deckId, {
+      [queueType]: queueType !== newQueueType ? -1 : 0,
+      [newQueueType]: queueType !== newQueueType ? 1 : 0,
+    });
 
-    const [[id]] = await Promise.all([qActions, qEntries, qDecks]);
-    return id;
+    const [[{ insertId }]] = await Promise.all([
+      queryCreatePracticeAction,
+      queryUpdatePracticeEntry,
+      queryUpdateDeck,
+    ]);
+    return insertId;
   }
 }
 
