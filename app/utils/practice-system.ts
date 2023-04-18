@@ -252,13 +252,11 @@ export class PracticeSystem {
       .where("id", practiceEntryId);
 
     // sql: update decks.practiceEntriesCountByQueueType
-    let qDecks;
-    if (queueType !== newQueueType) {
-      qDecks = updateDeckPracticeEntriesCountByQueueType(deckId, {
-        [queueType]: -1,
-        [newQueueType]: 1,
-      });
-    }
+    // (update deck even if queueType = newQueueType so that we can use `decks.updatedAt` as randomMode seed)
+    const qDecks = updateDeckPracticeEntriesCountByQueueType(deckId, {
+      [queueType]: queueType !== newQueueType ? -1 : 0,
+      [newQueueType]: queueType !== newQueueType ? 1 : 0,
+    });
 
     const [[id]] = await Promise.all([qActions, qEntries, qDecks]);
     return id;
