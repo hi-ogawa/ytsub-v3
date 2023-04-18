@@ -78,7 +78,7 @@ export class PracticeSystem {
   async getStatistics(now: Date): Promise<DeckPracticeStatistics> {
     const deckId = this.deck.id;
     const [deck, daily] = await Promise.all([
-      Q.decks().where("id", deckId).first(), // reload deck for simplicity
+      Q.decks().where("id", deckId).first(), // reload deck for simplicity (TODO: don't)
       getDailyPracticeStatistics(
         this.deck.id,
         fromTemporal(toZdt(now, this.user.timezone).startOfDay())
@@ -175,27 +175,34 @@ export class PracticeSystem {
     const deckId = this.deck.id;
     // Prevent duplicates on applicatoin level (TODO: probably looks less surprising to do this outside...)
     const bookmarkEntryIds = bookmarkEntries.map((e) => e.id);
-    const dupIds = await Q.practiceEntries()
-      .pluck("bookmarkEntryId")
-      .where({ deckId })
-      .whereIn("bookmarkEntryId", bookmarkEntryIds);
+    const rows = await db
+      .select({ id: T.practiceEntries.bookmarkEntryId })
+      .from(T.practiceEntries)
+      .where(
+        E.and(
+          E.eq(T.practiceEntries.deckId, this.deck.id),
+          E.inArray(T.practiceEntries.bookmarkEntryId, bookmarkEntryIds)
+        )
+      );
+    const dupIds = rows.map((row) => row.id);
     const newIds = difference(bookmarkEntryIds, dupIds);
     if (newIds.length === 0) {
       return [];
     }
-    const [id] = await Q.practiceEntries().insert(
-      newIds.map((id) => ({
-        queueType: "NEW",
+    const [{ insertId }] = await db.insert(T.practiceEntries).values(
+      ...newIds.map((bookmarkEntryId) => ({
+        deckId,
+        bookmarkEntryId,
+        queueType: "NEW" as const,
         easeFactor: 1,
         scheduledAt: now,
-        deckId,
-        bookmarkEntryId: id,
+        practiceActionsCount: 0,
       }))
     );
     await updateDeckPracticeEntriesCountByQueueType(deckId, {
       NEW: newIds.length,
     });
-    return range(id, id + newIds.length);
+    return range(insertId, insertId + newIds.length);
   }
 
   async createPracticeAction(
