@@ -1,4 +1,9 @@
-import { newPromiseWithResolvers, tinyassert } from "@hiogawa/utils";
+import {
+  groupBy,
+  mapValues,
+  newPromiseWithResolvers,
+  tinyassert,
+} from "@hiogawa/utils";
 import { UseQueryOptions, useQuery } from "@tanstack/react-query";
 
 // TODO: js-utils
@@ -54,4 +59,15 @@ export function usePromise<T>(
 
 export function assertUnreachable(_value: never): never {
   tinyassert(false, "unreachable");
+}
+
+export function mapFromGroupBy<T, Key extends keyof T, Value extends keyof T>(
+  rows: T[],
+  key: Key,
+  value: Value
+): Map<T[Key], T[Value]> {
+  return mapValues(
+    groupBy(rows, (row) => row[key]),
+    (group) => group[0][value]
+  );
 }

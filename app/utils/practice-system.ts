@@ -1,7 +1,9 @@
 import { tinyassert } from "@hiogawa/utils";
 import { Temporal } from "@js-temporal/polyfill";
+import { sql } from "drizzle-orm";
 import { difference, range } from "lodash";
 import { client } from "../db/client.server";
+import { E, T, db } from "../db/drizzle-client.server";
 import {
   BookmarkEntryTable,
   DeckTable,
@@ -15,7 +17,7 @@ import {
   PracticeQueueType,
 } from "../db/types";
 import { aggregate } from "../db/utils";
-import { fromEntries } from "./misc";
+import { fromEntries, mapFromGroupBy } from "./misc";
 import { fromTemporal, toInstant, toZdt } from "./temporal-utils";
 
 const QUEUE_RULES: Record<
@@ -326,12 +328,20 @@ async function updateDeckPracticeEntriesCountByQueueType(
 export async function queryDeckPracticeEntriesCountByQueueType(
   deckId: number
 ): Promise<Record<PracticeQueueType, number>> {
-  const query = await Q.practiceEntries()
-    .select("queueType", { count: client.raw("COUNT(0)") })
-    .where({ deckId })
-    .groupBy("queueType");
-  const aggregated = aggregate(query, "queueType");
-  return Object.fromEntries(
-    PRACTICE_QUEUE_TYPES.map((type) => [type, aggregated[type]?.count ?? 0])
-  ) as any;
+  const rows = await db
+    .select({
+      queueType: T.practiceEntries.queueType,
+      count: sql<number>`COUNT(0)`,
+    })
+    .from(T.practiceEntries)
+    .where(E.eq(T.practiceEntries.deckId, deckId))
+    .groupBy(T.practiceEntries.queueType);
+
+  const map = mapFromGroupBy(rows, "queueType", "count");
+
+  const record = Object.fromEntries([
+    ...PRACTICE_QUEUE_TYPES.map((t) => [t, 0]),
+    ...map.entries(),
+  ]);
+  return record;
 }
