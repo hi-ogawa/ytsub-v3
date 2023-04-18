@@ -71,9 +71,3 @@ export function mapValueGroupBy<
     (group) => valueFn(group[0]) as ReturnType<F>
   );
 }
-
-export function objectFromMap<K extends string, V>(
-  map: Map<K, V>
-): Partial<Record<K, V>> {
-  return Object.fromEntries(map) as any;
-}
