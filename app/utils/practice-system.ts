@@ -81,20 +81,15 @@ export class PracticeSystem {
     const today = fromTemporal(toZdt(now, this.user.timezone).startOfDay());
     const [deck, daily] = await Promise.all([
       Q.decks().where("id", deckId).first(), // reload deck for simplicity
-      Q.practiceActions()
-        .select("queueType", { count: client.raw("COUNT(0)") })
-        .where({ deckId })
-        .where("createdAt", ">=", today)
-        .groupBy("queueType"),
+      getDailyPracticeStatistics(this.deck.id, today),
     ]);
     tinyassert(deck);
-    const aggDaily = aggregate(daily, "queueType");
     return fromEntries(
       PRACTICE_QUEUE_TYPES.map((type) => [
         type,
         {
           total: deck.practiceEntriesCountByQueueType[type],
-          daily: aggDaily[type]?.count ?? 0,
+          daily: daily[type],
         },
       ])
     );
@@ -337,11 +332,34 @@ export async function queryDeckPracticeEntriesCountByQueueType(
     .where(E.eq(T.practiceEntries.deckId, deckId))
     .groupBy(T.practiceEntries.queueType);
 
-  const map = mapFromGroupBy(rows, "queueType", "count");
+  const record = Object.fromEntries([
+    ...PRACTICE_QUEUE_TYPES.map((t) => [t, 0]),
+    ...mapFromGroupBy(rows, "queueType", "count").entries(),
+  ]);
+  return record;
+}
+
+async function getDailyPracticeStatistics(
+  deckId: number,
+  startOfDay: Date
+): Promise<Record<PracticeQueueType, number>> {
+  const rows = await db
+    .select({
+      queueType: T.practiceEntries.queueType,
+      count: sql<number>`COUNT(0)`,
+    })
+    .from(T.practiceActions)
+    .where(
+      E.and(
+        E.eq(T.practiceActions.deckId, deckId),
+        E.gte(T.practiceActions.createdAt, startOfDay)
+      )
+    )
+    .groupBy(T.practiceActions.queueType);
 
   const record = Object.fromEntries([
     ...PRACTICE_QUEUE_TYPES.map((t) => [t, 0]),
-    ...map.entries(),
+    ...mapFromGroupBy(rows, "queueType", "count").entries(),
   ]);
   return record;
 }
