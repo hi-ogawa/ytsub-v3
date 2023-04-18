@@ -1,14 +1,9 @@
-import { tinyassert } from "@hiogawa/utils";
-import {
-  useLoaderData,
-  useLocation,
-  useNavigate,
-  useNavigation,
-} from "@remix-run/react";
-import { useMutation } from "@tanstack/react-query";
+import { Transition } from "@headlessui/react";
+import { useLoaderData } from "@remix-run/react";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import React from "react";
 import { toast } from "react-hot-toast";
-import { E, T, db, findOne } from "../../../db/drizzle-client.server";
+import { transitionProps } from "../../../components/misc";
 import type {
   BookmarkEntryTable,
   CaptionEntryTable,
@@ -17,17 +12,12 @@ import type {
   VideoTable,
 } from "../../../db/models";
 import { PRACTICE_ACTION_TYPES, PracticeActionType } from "../../../db/types";
-import { $R } from "../../../misc/routes";
 import { trpc } from "../../../trpc/client";
 import { Controller, makeLoader } from "../../../utils/controller-utils";
 import { useDeserialize } from "../../../utils/hooks";
 import { useLeafLoaderData } from "../../../utils/loader-utils";
 import { cls } from "../../../utils/misc";
 import type { PageHandle } from "../../../utils/page-handle";
-import {
-  DeckPracticeStatistics,
-  PracticeSystem,
-} from "../../../utils/practice-system";
 import { BookmarkEntryComponent } from "../../bookmarks";
 import {
   DeckNavBarMenuComponent,
@@ -46,52 +36,11 @@ export const handle: PageHandle = {
 
 interface LoaderData {
   deck: DeckTable;
-  statistics: DeckPracticeStatistics;
-  // TODO: improve practice status message (e.g. it shouldn't say "finished" when there's no practice entry to start with)
-  data:
-    | {
-        finished: true;
-      }
-    | {
-        finished: false;
-        practiceEntry: PracticeEntryTable;
-        bookmarkEntry: BookmarkEntryTable;
-        captionEntry: CaptionEntryTable;
-        video: VideoTable;
-      };
 }
 
 export const loader = makeLoader(Controller, async function () {
-  const [user, deck] = await requireUserAndDeck.apply(this);
-  const system = new PracticeSystem(user, deck);
-  const now = new Date();
-  const statistics = system.getStatistics(now); // defer await
-  const practiceEntry = await system.getNextPracticeEntry(now);
-  let data: LoaderData["data"];
-  if (!practiceEntry) {
-    data = { finished: true };
-  } else {
-    const row = await findOne(
-      db
-        .select()
-        .from(T.bookmarkEntries)
-        .innerJoin(
-          T.captionEntries,
-          E.eq(T.captionEntries.id, T.bookmarkEntries.captionEntryId)
-        )
-        .innerJoin(T.videos, E.eq(T.videos.id, T.captionEntries.videoId))
-        .where(E.eq(T.bookmarkEntries.id, practiceEntry.bookmarkEntryId))
-    );
-    tinyassert(row);
-    data = {
-      finished: false,
-      practiceEntry,
-      bookmarkEntry: row.bookmarkEntries,
-      captionEntry: row.captionEntries,
-      video: row.videos,
-    };
-  }
-  const res: LoaderData = { deck, statistics: await statistics, data };
+  const [, deck] = await requireUserAndDeck.apply(this);
+  const res: LoaderData = { deck };
   return this.serialize(res);
 });
 
@@ -100,32 +49,50 @@ export const loader = makeLoader(Controller, async function () {
 //
 
 export default function DefaultComponent() {
-  const { deck, statistics, data }: LoaderData = useDeserialize(
-    useLoaderData()
-  );
+  const { deck }: LoaderData = useDeserialize(useLoaderData());
+
+  const nextPracticeQuery = useQuery({
+    ...trpc.decks_nextPracticeEntry.queryOptions({
+      deckId: deck.id,
+    }),
+    keepPreviousData: true,
+  });
 
   return (
     <div className="h-full w-full flex justify-center">
-      <div className="h-full w-full max-w-lg">
+      <div className="h-full w-full max-w-lg relative">
         <div className="h-full flex flex-col p-2 gap-2">
-          <DeckPracticeStatisticsComponent
-            statistics={statistics}
-            currentQueueType={
-              data.finished ? undefined : data.practiceEntry.queueType
-            }
-          />
-          {data.finished ? (
-            <div className="w-full text-center">Practice is completed!</div>
-          ) : (
-            <PracticeComponent
-              deck={deck}
-              practiceEntry={data.practiceEntry}
-              bookmarkEntry={data.bookmarkEntry}
-              captionEntry={data.captionEntry}
-              video={data.video}
-            />
+          {nextPracticeQuery.isSuccess && (
+            <>
+              <DeckPracticeStatisticsComponent
+                statistics={nextPracticeQuery.data.statistics}
+                currentQueueType={
+                  nextPracticeQuery.data.practiceEntry?.queueType
+                }
+              />
+              {nextPracticeQuery.data.finished && (
+                <div className="w-full text-center">Practice is completed!</div>
+              )}
+              {!nextPracticeQuery.data.finished && (
+                <PracticeComponent
+                  deck={deck}
+                  practiceEntry={nextPracticeQuery.data.practiceEntry}
+                  bookmarkEntry={nextPracticeQuery.data.bookmarkEntry}
+                  captionEntry={nextPracticeQuery.data.captionEntry}
+                  video={nextPracticeQuery.data.video}
+                  loadNext={() => nextPracticeQuery.refetch()}
+                  isLoadingNext={nextPracticeQuery.isFetching}
+                />
+              )}
+            </>
           )}
         </div>
+        {/* spinner for initial mount */}
+        <Transition
+          show={nextPracticeQuery.isLoading}
+          className="duration-500 antd-body antd-spin-overlay-20"
+          {...transitionProps("opacity-0", "opacity-100")}
+        />
       </div>
     </div>
   );
@@ -137,19 +104,21 @@ function PracticeComponent({
   bookmarkEntry,
   captionEntry,
   video,
+  loadNext,
+  isLoadingNext,
 }: {
   deck: DeckTable;
   practiceEntry: PracticeEntryTable;
   bookmarkEntry: BookmarkEntryTable;
   captionEntry: CaptionEntryTable;
   video: VideoTable;
+  loadNext: () => void;
+  isLoadingNext: boolean;
 }) {
-  const navigate = useNavigate();
   const newPracticeActionMutation = useMutation({
     ...trpc.decks_practiceActionsCreate.mutationOptions(),
     onSuccess: () => {
-      // reload to proceed to next practice
-      navigate($R["/decks/$id/practice"](deck));
+      loadNext();
     },
     onError: () => {
       toast.error("Failed to submit answer");
@@ -160,8 +129,7 @@ function PracticeComponent({
   const [lastActionType, setLastActionType] =
     React.useState<PracticeActionType>();
 
-  const isReloading = useNavigationIsReloading();
-  const isLoading = isReloading || newPracticeActionMutation.isLoading;
+  const isLoading = isLoadingNext || newPracticeActionMutation.isLoading;
 
   return (
     <>
@@ -201,15 +169,6 @@ function PracticeComponent({
         </div>
       </div>
     </>
-  );
-}
-
-function useNavigationIsReloading() {
-  const navigation = useNavigation();
-  const location = useLocation();
-  return (
-    navigation.location?.pathname === location.pathname &&
-    navigation.state !== "idle"
   );
 }
 
