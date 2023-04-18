@@ -3,7 +3,7 @@ import { Temporal } from "@js-temporal/polyfill";
 import { sql } from "drizzle-orm";
 import { difference, range } from "lodash";
 import { client } from "../db/client.server";
-import { E, T, TT, db } from "../db/drizzle-client.server";
+import { E, T, TT, db, findOne } from "../db/drizzle-client.server";
 import {
   BookmarkEntryTable,
   DeckTable,
@@ -78,7 +78,7 @@ export class PracticeSystem {
   async getStatistics(now: Date): Promise<DeckPracticeStatistics> {
     const deckId = this.deck.id;
     const [deck, daily] = await Promise.all([
-      Q.decks().where("id", deckId).first(), // reload deck for simplicity (TODO: don't)
+      findOne(db.select().from(T.decks).where(E.eq(T.decks.id, deckId))), // reload deck for simplicity (TODO: don't)
       getDailyPracticeStatistics(
         this.deck.id,
         fromTemporal(toZdt(now, this.user.timezone).startOfDay())
