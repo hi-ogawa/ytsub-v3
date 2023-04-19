@@ -63,7 +63,6 @@ export function practiceHistoryChartDataToEchartsOption(
       type: "value",
       minInterval: 1,
     },
-    // TODO: use consistent color with other pages
     series: [
       ...(mode === "queue" ? PRACTICE_QUEUE_TYPES : PRACTICE_ACTION_TYPES).map(
         (t): echarts.LineSeriesOption => ({
