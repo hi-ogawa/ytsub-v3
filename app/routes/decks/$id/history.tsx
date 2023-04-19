@@ -9,10 +9,7 @@ import { redirect } from "@remix-run/server-runtime";
 import React from "react";
 import type { z } from "zod";
 import { CollapseTransition } from "../../../components/collapse";
-import {
-  PaginationComponent,
-  SimpleSelectClearable,
-} from "../../../components/misc";
+import { PaginationComponent, SelectWrapper } from "../../../components/misc";
 import {
   E,
   T,
@@ -117,11 +114,11 @@ export default function DefaultComponent() {
           <div className="h-full flex flex-col p-2 gap-2">
             <div className="flex items-center gap-2 py-1">
               Filter
-              <SimpleSelectClearable
+              <SelectWrapper
                 className="antd-input p-1"
-                placeholder="Select..."
-                options={PRACTICE_ACTION_TYPES}
+                options={[undefined, ...PRACTICE_ACTION_TYPES]}
                 value={query.actionType}
+                labelFn={(v) => v ?? "Select..."}
                 onChange={(actionType) => {
                   navigate(
                     $R["/decks/$id/history"](

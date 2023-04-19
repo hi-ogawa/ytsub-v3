@@ -210,63 +210,30 @@ export function QueryClientWrapper({ children }: React.PropsWithChildren) {
   );
 }
 
-// simple typed controlled select input wrapper
-export function SelectWrapper<T extends string>({
+//
+// simple select input wrapper with convenient typing
+//
+
+export function SelectWrapper<T>({
   value,
   options,
   onChange,
-  labelFn,
+  labelFn = String,
+  keyFn = (value) => JSON.stringify({ value }),
   ...selectProps
 }: {
   value: T;
   options: readonly T[];
   onChange: (value: T) => void;
   labelFn?: (value: T) => React.ReactNode;
+  keyFn?: (value: T) => React.Key;
 } & Omit<JSX.IntrinsicElements["select"], "value" | "onChange">) {
   return (
     <select
-      value={value}
-      onChange={(e) => onChange(options[e.target.selectedIndex])}
+      value={options.indexOf(value)}
+      onChange={(e) => onChange(options[Number(e.target.value)])}
       {...selectProps}
     >
-      {options.map((option) => (
-        <option key={option} value={option}>
-          {labelFn ? labelFn(option) : option}
-        </option>
-      ))}
-    </select>
-  );
-}
-
-export function SimpleSelectClearable<T>({
-  value,
-  onChange,
-  options,
-  keyFn = JSON.stringify,
-  labelFn = String,
-  placeholder,
-  ...selectProps
-}: {
-  value?: T;
-  onChange: (value?: T) => void;
-  options: readonly T[];
-  keyFn?: (value: T) => React.Key;
-  labelFn?: (value: T) => React.ReactNode;
-  placeholder: React.ReactNode;
-} & Omit<
-  JSX.IntrinsicElements["select"],
-  "value" | "onChange" | "placeholder"
->) {
-  const valueIndex = typeof value === "undefined" ? -1 : options.indexOf(value);
-  return (
-    <select
-      value={valueIndex}
-      onChange={(e) => {
-        onChange(options[Number(e.target.value)]);
-      }}
-      {...selectProps}
-    >
-      <option value={-1}>{placeholder}</option>
       {options.map((option, i) => (
         <option key={keyFn(option)} value={i}>
           {labelFn(option)}
