@@ -70,7 +70,15 @@ export function practiceHistoryChartDataToEchartsOption(
           type: "line",
           stack: "total",
           name: t.toLowerCase(),
-          areaStyle: {},
+          areaStyle: {
+            color: `var(--antd-${COLOR_MAP[t]})`,
+          },
+          lineStyle: {
+            color: `var(--antd-${COLOR_MAP[t]})`,
+          },
+          itemStyle: {
+            color: `var(--antd-${COLOR_MAP[t]})`,
+          },
           emphasis: {
             disabled: true,
           },
@@ -96,6 +104,18 @@ export function practiceHistoryChartDataToEchartsOption(
     ],
   };
 }
+
+const COLOR_MAP = {
+  // queue
+  NEW: "colorWarning",
+  LEARN: "colorSuccess",
+  REVIEW: "colorInfo",
+  // action
+  AGAIN: "colorError",
+  HARD: "colorWarning",
+  GOOD: "colorSuccess",
+  EASY: "colorInfo",
+};
 
 // TODO: refactor with above
 export function createBookmarkHistoryChartOption(
@@ -179,7 +199,10 @@ export function EchartsComponent(props: {
 
   const elRef: React.RefCallback<HTMLElement> = (el) => {
     instanceRef.current?.dispose();
-    instanceRef.current = el ? echarts.init(el) : undefined;
+    // use svg for css variable based color
+    instanceRef.current = el
+      ? echarts.init(el, undefined, { renderer: "svg" })
+      : undefined;
     setInstanceRef.current?.(instanceRef.current);
   };
 
