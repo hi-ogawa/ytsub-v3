@@ -237,3 +237,41 @@ export function SelectWrapper<T extends string>({
     </select>
   );
 }
+
+export function SimpleSelectClearable<T>({
+  value,
+  onChange,
+  options,
+  keyFn = JSON.stringify,
+  labelFn = String,
+  placeholder,
+  ...selectProps
+}: {
+  value?: T;
+  onChange: (value?: T) => void;
+  options: readonly T[];
+  keyFn?: (value: T) => React.Key;
+  labelFn?: (value: T) => React.ReactNode;
+  placeholder: React.ReactNode;
+} & Omit<
+  JSX.IntrinsicElements["select"],
+  "value" | "onChange" | "placeholder"
+>) {
+  const valueIndex = typeof value === "undefined" ? -1 : options.indexOf(value);
+  return (
+    <select
+      value={valueIndex}
+      onChange={(e) => {
+        onChange(options[Number(e.target.value)]);
+      }}
+      {...selectProps}
+    >
+      <option value={-1}>{placeholder}</option>
+      {options.map((option, i) => (
+        <option key={keyFn(option)} value={i}>
+          {labelFn(option)}
+        </option>
+      ))}
+    </select>
+  );
+}

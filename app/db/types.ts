@@ -10,7 +10,7 @@ export const Z_PRACTICE_ACTION_TYPES = z.enum([
   "GOOD",
   "EASY",
 ]);
-const Z_PRACTICE_QUEUE_TYPES = z.enum(["NEW", "LEARN", "REVIEW"]);
+export const Z_PRACTICE_QUEUE_TYPES = z.enum(["NEW", "LEARN", "REVIEW"]);
 
 export const PRACTICE_ACTION_TYPES = Z_PRACTICE_ACTION_TYPES.options;
 export const PRACTICE_QUEUE_TYPES = Z_PRACTICE_QUEUE_TYPES.options;
