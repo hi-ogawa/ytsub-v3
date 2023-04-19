@@ -152,11 +152,15 @@ function PracticeActionComponent(
 ) {
   const { createdAt, actionType, queueType } = props.practiceActions;
   const [open, setOpen] = React.useState(false);
+  const [autoplay, setAutoplay] = React.useState(false);
 
   return (
     <div className="flex flex-col border">
       <div className="flex flex-col p-2 gap-2">
-        <div className="flex gap-2">
+        <div
+          className="flex gap-2 cursor-pointer"
+          onClick={() => setOpen(!open)}
+        >
           <div className="h-[20px] flex items-center">
             <QueueTypeIcon queueType={queueType} />
           </div>
@@ -184,7 +188,10 @@ function PracticeActionComponent(
               "antd-btn antd-btn-ghost i-ri-arrow-down-s-line w-5 h-5",
               open && "rotate-180"
             )}
-            onClick={() => setOpen(!open)}
+            onClick={() => {
+              setAutoplay(true);
+              setOpen(!open);
+            }}
           ></button>
         </div>
       </div>
@@ -196,7 +203,7 @@ function PracticeActionComponent(
           <MiniPlayer
             video={props.videos}
             captionEntry={props.captionEntries}
-            autoplay={true}
+            autoplay={autoplay}
             defaultIsRepeating={true}
             highlight={{
               side: props.bookmarkEntries.side,
