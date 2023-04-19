@@ -157,7 +157,7 @@ function PracticeActionComponent(
       </div>
       <CollapseTransition
         show={open}
-        className="duration-300 h-0 overflow-hidden border-t border-dashed"
+        className="duration-300 overflow-hidden border-t border-dashed"
       >
         <div className="p-2 pt-0">
           <MiniPlayer
