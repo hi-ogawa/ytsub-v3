@@ -170,17 +170,17 @@ describe("randomMode", () => {
       deck.updatedAt = new Date(deck.updatedAt.getTime() + 1); // force mutating seed since `updateAt` is not precise enough
     }
     // NEW should be picked most often
-    const countMap = new DefaultMap(
-      () => 0,
-      [
-        ...mapValues(
-          groupBy(entries, (e) => e.queueType),
-          (group) => group.length
-        ),
-      ]
+    const countMap = mapValues(
+      groupBy(entries, (e) => e.queueType),
+      (group) => group.length
     );
-    expect(countMap.get("NEW")).greaterThan(countMap.get("LEARN"));
-    expect(countMap.get("NEW")).greaterThan(countMap.get("REVIEW"));
+    expect(countMap).toMatchInlineSnapshot(`
+      Map {
+        "NEW" => 88,
+        "REVIEW" => 2,
+        "LEARN" => 10,
+      }
+    `);
     // should pick mostly random practice entries
     expect(uniq(entries.map((e) => e.id)).length).greaterThan(n - 5);
   });

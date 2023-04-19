@@ -309,20 +309,26 @@ export function queryNextPracticeEntryRandomMode(
   const randInt = hashInt32(seed);
   const randUniform = randInt / 2 ** 32;
 
-  // choose queueType by a fixed probability (0.85, 0.1, 0.05)
-  const randQueueType =
-    randUniform <= 0.85 ? "NEW" : randUniform <= 0.95 ? "LEARN" : "REVIEW";
-
   const RANDOM_MODE_SCORE_ALIAS = "randomModeScore";
+
+  // 0.1 bonus for a week older, up to 0.2
+  const SCHEDULED_AT_BONUS_SLOPE = 0.1 / (60 * 60 * 24 * 7);
+  const SCHEDULED_AT_BONUS_MAX = 0.2;
+
+  // choose queueType by a fixed probability
+  const QUEUE_TYPE_WEIGHT = [90, 8, 2];
+  const randQueueType =
+    PRACTICE_QUEUE_TYPES[randomChoice(randUniform, QUEUE_TYPE_WEIGHT)];
 
   const query = db
     .select({
       ...T.practiceEntries,
       // RANDOM(HASH(practiceAction) ^ seedInt)  (in [0, 1))
       // +
-      // (scheduledAt bonus)                     (in [0, 0.5])
+      // (scheduledAt bonus)                     (in [0, SCHEDULED_AT_BONUS_MAX])
       // +
-      // (queueType bonus)                       (2 if randQueueType)
+      // (queueType bonus)                       (10 if randQueueType)
+      // prettier-ignore
       [RANDOM_MODE_SCORE_ALIAS]: sql<number>`(
         RAND(
           CONV(
@@ -340,9 +346,9 @@ export function queryNextPracticeEntryRandomMode(
           )
         )
         +
-        0.1 * LEAST(5, (UNIX_TIMESTAMP(${now}) - UNIX_TIMESTAMP(scheduledAt)) / (60 * 60 * 24 * 7))
+        LEAST(${SCHEDULED_AT_BONUS_MAX}, (UNIX_TIMESTAMP(${now}) - UNIX_TIMESTAMP(scheduledAt)) * ${SCHEDULED_AT_BONUS_SLOPE})
         +
-        2 * (${T.practiceEntries.queueType} = ${randQueueType})
+        10 * (${T.practiceEntries.queueType} = ${randQueueType})
       )`.as(RANDOM_MODE_SCORE_ALIAS),
     })
     .from(T.practiceEntries)
@@ -365,4 +371,21 @@ export function hashInt32(x: number) {
   x = Math.imul(x, 0xd35a2d97);
   x ^= x >>> 15;
   return x >>> 0;
+}
+
+function randomChoice(uniform: number, weights: number[]): number {
+  tinyassert(weights.length > 0);
+  const cumWeights = prefixSum(weights);
+  const normalized = uniform * cumWeights[weights.length];
+  const found = cumWeights.slice(1).findIndex((c) => normalized < c);
+  tinyassert(0 <= found && found < weights.length);
+  return found;
+}
+
+function prefixSum(ls: number[]): number[] {
+  const acc = [0];
+  for (let i = 0; i < ls.length; i++) {
+    acc.push(acc[i] + ls[i]);
+  }
+  return acc;
 }
