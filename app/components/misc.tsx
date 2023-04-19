@@ -218,8 +218,9 @@ export function SelectWrapper<T>({
   value,
   options,
   onChange,
+  // these default works fine when `T extends string`
   labelFn = String,
-  keyFn = (value) => JSON.stringify({ value }),
+  keyFn = (value) => JSON.stringify({ value }), // wrap it so that `undefined` becomes `{}`
   ...selectProps
 }: {
   value: T;
