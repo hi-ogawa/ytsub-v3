@@ -107,9 +107,13 @@ test.describe("decks", () => {
     await page.getByText("this week").click();
 
     // change graph options
-    await page.getByTestId("SelectWrapper-rangeType").selectOption("month");
+    await page
+      .getByTestId("SelectWrapper-rangeType")
+      .selectOption({ label: "by month" });
     await page.getByText("this month").click();
-    await page.getByTestId("SelectWrapper-graphType").selectOption("queue");
+    await page
+      .getByTestId("SelectWrapper-graphType")
+      .selectOption({ label: "by queue" });
   });
 
   // TODO: detailed test with non randomMode?

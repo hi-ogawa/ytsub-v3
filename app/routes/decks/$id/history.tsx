@@ -3,11 +3,13 @@ import {
   QueueTypeIcon,
   requireUserAndDeck,
 } from ".";
-import { useLoaderData } from "@remix-run/react";
+import { mapOption } from "@hiogawa/utils";
+import { useLoaderData, useNavigate } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import React from "react";
+import type { z } from "zod";
 import { CollapseTransition } from "../../../components/collapse";
-import { PaginationComponent } from "../../../components/misc";
+import { PaginationComponent, SelectWrapper } from "../../../components/misc";
 import {
   E,
   T,
@@ -16,6 +18,7 @@ import {
   toPaginationResult,
 } from "../../../db/drizzle-client.server";
 import type { DeckTable, PaginationMetadata } from "../../../db/models";
+import { PRACTICE_ACTION_TYPES } from "../../../db/types";
 import { $R, ROUTE_DEF } from "../../../misc/routes";
 import { Controller, makeLoader } from "../../../utils/controller-utils";
 import { useDeserialize } from "../../../utils/hooks";
@@ -46,6 +49,7 @@ interface LoaderData {
     "practiceActions" | "bookmarkEntries" | "captionEntries" | "videos"
   >[];
   pagination: PaginationMetadata;
+  query: z.infer<(typeof ROUTE_DEF)["/decks/$id/history"]["query"]>;
 }
 
 export const loader = makeLoader(Controller, async function () {
@@ -77,19 +81,19 @@ export const loader = makeLoader(Controller, async function () {
       .where(
         E.and(
           E.eq(T.practiceActions.deckId, deck.id),
-          parsed.data.practiceEntryId
-            ? E.eq(
-                T.practiceActions.practiceEntryId,
-                parsed.data.practiceEntryId
-              )
-            : undefined
+          mapOption(parsed.data.actionType, (t) =>
+            E.eq(T.practiceActions.actionType, t)
+          ),
+          mapOption(parsed.data.practiceEntryId, (t) =>
+            E.eq(T.practiceActions.practiceEntryId, t)
+          )
         )
       )
       .orderBy(E.desc(T.practiceActions.createdAt)),
     parsed.data
   );
 
-  const res: LoaderData = { deck, rows, pagination };
+  const res: LoaderData = { deck, rows, pagination, query: parsed.data };
   return this.serialize(res);
 });
 
@@ -98,13 +102,33 @@ export const loader = makeLoader(Controller, async function () {
 //
 
 export default function DefaultComponent() {
-  const { rows, pagination }: LoaderData = useDeserialize(useLoaderData());
+  const { deck, rows, pagination, query }: LoaderData = useDeserialize(
+    useLoaderData()
+  );
+  const navigate = useNavigate();
 
   return (
     <>
       <div className="w-full flex justify-center">
         <div className="h-full w-full max-w-lg">
           <div className="h-full flex flex-col p-2 gap-2">
+            <div className="flex items-center gap-2 py-1">
+              Filter
+              <SelectWrapper
+                className="antd-input p-1"
+                options={[undefined, ...PRACTICE_ACTION_TYPES]}
+                value={query.actionType}
+                labelFn={(v) => v ?? "Select..."}
+                onChange={(actionType) => {
+                  navigate(
+                    $R["/decks/$id/history"](
+                      { id: deck.id },
+                      actionType ? { actionType } : {}
+                    )
+                  );
+                }}
+              />
+            </div>
             {rows.length === 0 && <div>Empty</div>}
             {rows.map((row) => (
               <PracticeActionComponent key={row.practiceActions.id} {...row} />
