@@ -20,7 +20,7 @@ import type {
   UserTable,
   VideoTable,
 } from "../../../db/models";
-import type { PracticeQueueType } from "../../../db/types";
+import type { PracticeActionType, PracticeQueueType } from "../../../db/types";
 import { $R, R, ROUTE_DEF } from "../../../misc/routes";
 import { Controller, makeLoader } from "../../../utils/controller-utils";
 import { useDeserialize } from "../../../utils/hooks";
@@ -174,26 +174,53 @@ export function DeckPracticeStatisticsComponent({
 }) {
   return (
     <div className="w-full flex items-center p-2 px-4">
+      {/* TODO: help to explain what these numbers mean */}
       <div className="text-sm uppercase">Progress</div>
-      {/* prettier-ignore */}
       <div className="grow flex px-4">
         <div className="flex-1" />
-        <div className={cls("text-colorInfoText border-b border-transparent", currentQueueType === "NEW" && "!border-current")}>
-          {statistics.NEW.daily} | {statistics.NEW.total}
-        </div>
+        {renderItem("NEW")}
         <div className="flex-1 text-center text-colorTextSecondary">-</div>
-        <div className={cls("text-colorWarningText border-b border-transparent", currentQueueType === "LEARN" && "!border-current")}>
-          {statistics.LEARN.daily} | {statistics.LEARN.total}
-        </div>
+        {renderItem("LEARN")}
         <div className="flex-1 text-center text-colorTextSecondary">-</div>
-        <div className={cls("text-colorSuccessText border-b border-transparent", currentQueueType === "REVIEW" && "!border-current")}>
-          {statistics.REVIEW.daily} | {statistics.REVIEW.total}
-        </div>
+        {renderItem("REVIEW")}
         <div className="flex-1" />
       </div>
     </div>
   );
+
+  function renderItem(type: PracticeQueueType) {
+    return (
+      <div
+        className={cls(
+          "border-b border-transparent",
+          PRACTICE_QUEUE_TYPE_TO_COLOR[type],
+          type === currentQueueType && "!border-current"
+        )}
+      >
+        {statistics[type].daily} | {statistics[type].total}
+      </div>
+    );
+  }
 }
+
+const PRACTICE_QUEUE_TYPE_TO_COLOR = {
+  NEW: "text-colorWarningText",
+  LEARN: "text-colorSuccessText",
+  REVIEW: "text-colorInfoText",
+} satisfies Record<PracticeQueueType, string>;
+
+const PRACTICE_QUEUE_TYPE_TO_ICON = {
+  NEW: "i-ri-checkbox-blank-circle-line",
+  LEARN: "i-ri-focus-line",
+  REVIEW: "i-ri-checkbox-circle-line",
+} satisfies Record<PracticeQueueType, string>;
+
+export const PRACTICE_ACTION_TYPE_TO_COLOR = {
+  AGAIN: "text-colorErrorText",
+  HARD: "text-colorWarningText",
+  GOOD: "text-colorSuccessText",
+  EASY: "text-colorInfoText",
+} satisfies Record<PracticeActionType, string>;
 
 function PracticeBookmarkEntryComponent({
   video,
@@ -280,9 +307,8 @@ export function QueueTypeIcon({ queueType }: { queueType: PracticeQueueType }) {
       // prettier-ignore
       className={cls(
         "w-5 h-5",
-        queueType === "NEW" && "i-ri-checkbox-blank-circle-line text-colorInfoText",
-        queueType === "LEARN" && "i-ri-record-circle-line text-colorWarningText",
-        queueType === "REVIEW" && "i-ri-checkbox-circle-line text-colorSuccessText"
+        PRACTICE_QUEUE_TYPE_TO_COLOR[queueType],
+        PRACTICE_QUEUE_TYPE_TO_ICON[queueType]
       )}
     />
   );

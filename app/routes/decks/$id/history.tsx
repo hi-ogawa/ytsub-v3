@@ -1,4 +1,8 @@
-import { QueueTypeIcon, requireUserAndDeck } from ".";
+import {
+  PRACTICE_ACTION_TYPE_TO_COLOR,
+  QueueTypeIcon,
+  requireUserAndDeck,
+} from ".";
 import { useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import React from "react";
@@ -137,7 +141,12 @@ function PracticeActionComponent(
           </div>
         </div>
         <div className="flex items-center ml-6 text-xs gap-3">
-          <div className="border rounded-full px-2 py-0.5 w-14 text-center">
+          <div
+            className={cls(
+              "rounded-full px-1 py-0.3 w-13 text-center border !border-current",
+              PRACTICE_ACTION_TYPE_TO_COLOR[actionType]
+            )}
+          >
             {actionType}
           </div>
           <div
