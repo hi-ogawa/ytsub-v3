@@ -1,4 +1,4 @@
-import { tinyassert } from "@hiogawa/utils";
+import { groupBy, mapValues, tinyassert } from "@hiogawa/utils";
 import { sql } from "drizzle-orm";
 import { z } from "zod";
 import {
@@ -6,7 +6,7 @@ import {
   PracticeHistoryChartDataEntry,
 } from "../../components/practice-history-chart";
 import { E, T, db, findOne } from "../../db/drizzle-client.server";
-import { Z_PRACTICE_ACTION_TYPES } from "../../db/types";
+import { PRACTICE_ACTION_TYPES, Z_PRACTICE_ACTION_TYPES } from "../../db/types";
 import { importDeckJson } from "../../misc/seed-utils";
 import { PracticeSystem } from "../../utils/practice-system";
 import {
@@ -253,6 +253,82 @@ export const trpcRoutesDecks = {
 
       return Object.values(countMap);
     }),
+
+  decks_practiceStatistics: procedureBuilder
+    .use(middlewares.requireUser)
+    .input(
+      z.object({
+        deckId: z.number().int(),
+        __now: z.date().optional(), // for testing
+      })
+    )
+    .query(async ({ input, ctx }) => {
+      const deck = await findUserDeck({
+        deckId: input.deckId,
+        userId: ctx.user.id,
+      });
+      tinyassert(deck);
+
+      const now = input.__now ?? new Date();
+      const startOfToday = fromTemporal(
+        toZdt(now, ctx.user.timezone).startOfDay()
+      );
+
+      const rowsToday = await db
+        .select()
+        .from(T.practiceActions)
+        .where(
+          E.and(
+            E.eq(T.practiceActions.id, deck.id),
+            E.gt(T.practiceActions.createdAt, startOfToday)
+          )
+        );
+
+      const practiceActionsCountByActionTypeToday = mapGroupBy(
+        rowsToday,
+        (row) => row.actionType,
+        (rows) => rows.length
+      );
+
+      const practiceActionsCountByQueueTypeToday = mapGroupBy(
+        rowsToday,
+        (row) => row.queueType,
+        (rows) => rows.length
+      );
+
+      // TODO: cache counter in deck table column
+      // deck.practiceActionsCountByActionType
+      const rowsCountByActionType = await db
+        .select({
+          actionType: T.practiceActions.actionType,
+          count: sql<number>`COUNT(0)`,
+        })
+        .from(T.practiceActions)
+        .where(E.and(E.eq(T.practiceActions.id, deck.id)))
+        .groupBy(T.practiceActions.actionType);
+
+      const practiceActionsCountByActionType = mapGroupBy(
+        rowsCountByActionType,
+        (row) => row.actionType,
+        ([row]) => row.count
+      );
+
+      return {
+        practiceEntriesCountByQueueType: deck.practiceEntriesCountByQueueType,
+        practiceActionsCountByActionType: toCountObject(
+          practiceActionsCountByActionType,
+          PRACTICE_ACTION_TYPES
+        ),
+        practiceActionsCountByQueueTypeToday: toCountObject(
+          practiceActionsCountByQueueTypeToday,
+          PRACTICE_ACTION_TYPES
+        ),
+        practiceActionsCountByActionTypeToday: toCountObject(
+          practiceActionsCountByActionTypeToday,
+          PRACTICE_ACTION_TYPES
+        ),
+      };
+    }),
 };
 
 //
@@ -266,4 +342,30 @@ function findUserDeck({ deckId, userId }: { deckId: number; userId: number }) {
       .from(T.decks)
       .where(E.and(E.eq(T.decks.id, deckId), E.eq(T.decks.userId, userId)))
   );
+}
+
+function mapGroupBy<T, K, V>(
+  ls: T[],
+  keyFn: (v: T) => K,
+  valueFn: (vs: T[]) => V
+) {
+  return mapValues(groupBy(ls, keyFn), valueFn);
+}
+
+function objectFromMapWithDefault<K extends keyof any, V>(
+  map: Map<K, V>,
+  allKeys: K[],
+  defaultValue: V
+): Record<K, V> {
+  return Object.fromEntries([
+    ...allKeys.map((t) => [t, defaultValue]),
+    ...map.entries(),
+  ]);
+}
+
+function toCountObject<K extends keyof any>(
+  map: Map<K, number>,
+  allKeys: K[]
+): Record<K, number> {
+  return objectFromMapWithDefault(map, allKeys, 0);
 }
