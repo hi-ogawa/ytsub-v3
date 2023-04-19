@@ -112,13 +112,14 @@ test.describe("decks", () => {
     await page.getByTestId("SelectWrapper-graphType").selectOption("queue");
   });
 
+  // TODO: detailed test with non randomMode?
   test("practice", async ({ page }) => {
     await user.signin(page);
     await page.goto("/decks");
     await page.getByRole("link", { name: "Korean" }).click();
     await page.getByText("Progress").click();
-    await page.getByText("0 | 187").click();
-    await page.getByRole("button", { name: "GOOD" }).click();
+    await page.getByText("0 | 140").click();
+    await page.getByRole("button", { name: "AGAIN" }).click();
   });
 });
 
