@@ -65,6 +65,10 @@ describe("decks/id/history.loader", () => {
             "total": 0,
             "totalPage": 0,
           },
+          "query": {
+            "page": 1,
+            "perPage": 20,
+          },
           "rows": [],
         },
         "meta": {
