@@ -1,3 +1,4 @@
+import fs from "node:fs";
 import { newPromiseWithResolvers, tinyassert } from "@hiogawa/utils";
 import type { LoaderFunction } from "@remix-run/server-runtime";
 import { afterAll, beforeAll } from "vitest";
@@ -11,7 +12,7 @@ import {
 } from "../db/models";
 import { createUserCookie } from "../utils/auth";
 import { toQuery } from "../utils/url-data";
-import { NewVideo, fetchCaptionEntries } from "../utils/youtube";
+import type { NewVideo, fetchCaptionEntries } from "../utils/youtube";
 import { useUserImpl } from "./test-helper-common";
 
 const DUMMY_URL = "http://localhost:3000";
@@ -95,37 +96,29 @@ export function useUser(...args: Parameters<typeof useUserImpl>) {
   };
 }
 
-// TODO: use pre-downloaded fixture
-const NEW_VIDEOS: NewVideo[] = [
-  {
-    videoId: "_2FF6O6Z8Hc",
-    language1: { id: ".fr-FR" },
-    language2: { id: ".en" },
-  },
-  {
-    videoId: "MoH8Fk2K9bc",
-    language1: { id: ".fr-FR" },
-    language2: { id: ".en" },
-  },
-  {
-    videoId: "EnPYXckiUVg",
-    language1: { id: ".fr" },
-    language2: { id: ".en" },
-  },
-];
+const FIXTURE_FIDEO: NewVideo = {
+  videoId: "EnPYXckiUVg",
+  language1: { id: ".fr" },
+  language2: { id: ".en" },
+};
 
-export function useVideo(
-  args?: { videoFixture?: 0 | 1 | 2 },
-  userHook?: ReturnType<typeof useUser>
-) {
-  const newVideo = NEW_VIDEOS[args?.videoFixture ?? 2];
+const FIXTURE_FILE = "misc/fixture/fetchCaptionEntries-EnPYXckiUVg-fr-en.txt";
+
+async function fetchCaptionEntriesFixture(): ReturnType<
+  typeof fetchCaptionEntries
+> {
+  const raw = await fs.promises.readFile(FIXTURE_FILE, "utf-8");
+  return JSON.parse(raw);
+}
+
+export function useVideo(userHook?: ReturnType<typeof useUser>) {
   let result: { video: VideoTable; captionEntries: CaptionEntryTable[] };
 
   beforeAll(async () => {
     await userHook?.isReady;
-    const data = await fetchCaptionEntries(newVideo);
+    const data = await fetchCaptionEntriesFixture();
     const videoId = await insertVideoAndCaptionEntries(
-      newVideo,
+      FIXTURE_FIDEO,
       data,
       userHook?.data.id
     );
@@ -148,11 +141,9 @@ export function useVideo(
   };
 }
 
-export function useUserVideo(
-  args: Parameters<typeof useUser>[0] & { videoFixture?: 0 | 1 | 2 }
-) {
+export function useUserVideo(args: Parameters<typeof useUser>[0]) {
   const userHook = useUser(args);
-  const videoHook = useVideo(args, userHook);
+  const videoHook = useVideo(userHook);
 
   return {
     signin: userHook.signin,
