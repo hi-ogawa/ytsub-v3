@@ -211,6 +211,7 @@ export async function toCountQuery<
   return count;
 }
 
+// just for experiment and not actually used yet
 export function toDeleteQueryInner(sql: SQL, tableName: string): SQL {
   // replace
   //   select ... from

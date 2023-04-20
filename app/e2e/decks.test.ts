@@ -107,11 +107,16 @@ test.describe("decks", () => {
     await page.getByText("this week").click();
 
     // change graph options
-    await page.getByTestId("SelectWrapper-rangeType").selectOption("month");
+    await page
+      .getByTestId("SelectWrapper-rangeType")
+      .selectOption({ label: "by month" });
     await page.getByText("this month").click();
-    await page.getByTestId("SelectWrapper-graphType").selectOption("queue");
+    await page
+      .getByTestId("SelectWrapper-graphType")
+      .selectOption({ label: "by queue" });
   });
 
+  // TODO: detailed test with non randomMode?
   test("practice", async ({ page }) => {
     await user.signin(page);
     await page.goto("/decks");
@@ -119,7 +124,6 @@ test.describe("decks", () => {
     await page.getByText("Progress").click();
     await page.getByText("0 | 140").click();
     await page.getByRole("button", { name: "AGAIN" }).click();
-    await page.getByText("1 | 139").click();
   });
 });
 

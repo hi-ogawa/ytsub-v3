@@ -2,13 +2,11 @@ import { DefaultMap, tinyassert } from "@hiogawa/utils";
 import { Temporal } from "@js-temporal/polyfill";
 import { sql } from "drizzle-orm";
 import { difference, range } from "lodash";
-import { client } from "../db/client.server";
 import { E, T, TT, db, findOne } from "../db/drizzle-client.server";
-import {
+import type {
   BookmarkEntryTable,
   DeckTable,
   PracticeEntryTable,
-  Q,
   UserTable,
 } from "../db/models";
 import {
@@ -99,50 +97,14 @@ export class PracticeSystem {
   async getNextPracticeEntry(
     now: Date = new Date()
   ): Promise<PracticeEntryTable | undefined> {
-    const {
-      id: deckId,
-      newEntriesPerDay,
-      reviewsPerDay,
-      randomMode,
-    } = this.deck;
-
-    if (randomMode) {
-      const result: PracticeEntryTable = await Q.practiceEntries()
-        .select("practiceEntries.*", {
-          // uniform random with "id" and "updatedAt" computed by
-          //   rand(hash(id) ^ hash(updatedAt) ^ seed)
-          __uniform__: client.raw(
-            "RAND(CAST(CONV(SUBSTRING(HEX(UNHEX(SHA1(id)) ^ UNHEX(SHA1(updatedAt)) ^ __subQuery__.__seed__), 1, 8), 16, 10) as UNSIGNED))"
-          ),
-        })
-        .where("practiceEntries.deckId", deckId)
-        .where("practiceEntries.scheduledAt", "<=", now)
-        .crossJoin(
-          client.raw(
-            // global seed `hash(hash(max(updatedAt)))` which satisfies a desired property:
-            //   a seed should be updated on each `createPracticeAction`
-            "(SELECT UNHEX(SHA1(SHA1(updatedAt))) as __seed__, RAND(CAST(CONV(SUBSTRING(SHA1(updatedAt), 1, 8), 16, 10) as UNSIGNED)) as __seed_uniform__ FROM practiceEntries where deckId = ? ORDER BY updatedAt DESC LIMIT 1) as __subQuery__",
-            deckId
-          )
-        )
-        .orderByRaw(
-          // tweak the distribution based on
-          // - queueType
-          // - scheduledAt
-          client.raw(
-            `
-            (
-              __uniform__
-              + (queueType = 'NEW'   ) * -10 * (__subQuery__.__seed_uniform__ <= 0.80)
-              + (queueType = 'LEARN' ) * -10 * (__subQuery__.__seed_uniform__ >  0.80) * (__subQuery__.__seed_uniform__ <= 0.95)
-              + (queueType = 'REVIEW') * -10 *                                           (__subQuery__.__seed_uniform__ >  0.95)
-              + LEAST(-0.5, 0.1 / (60 * 60 * 24 * 7) * (UNIX_TIMESTAMP(scheduledAt) - UNIX_TIMESTAMP(?)))
-            )`,
-            now
-          )
-        )
-        .first();
-      return result;
+    if (this.deck.randomMode) {
+      const { query } = queryNextPracticeEntryRandomMode(
+        this.deck.id,
+        now,
+        this.deck.updatedAt.getTime()
+      );
+      const entry = await findOne(query);
+      return entry;
     }
 
     const [daily, entries] = await Promise.all([
@@ -153,7 +115,7 @@ export class PracticeSystem {
       getNextScheduledPracticeEntries(this.deck.id, now),
     ]);
 
-    if (daily.get("NEW") < newEntriesPerDay && entries.get("NEW")) {
+    if (daily.get("NEW") < this.deck.newEntriesPerDay && entries.get("NEW")) {
       return entries.get("NEW");
     }
 
@@ -161,7 +123,10 @@ export class PracticeSystem {
       return entries.get("LEARN");
     }
 
-    if (daily.get("REVIEW") < reviewsPerDay && entries.get("REVIEW")) {
+    if (
+      daily.get("REVIEW") < this.deck.reviewsPerDay &&
+      entries.get("REVIEW")
+    ) {
       return entries.get("REVIEW");
     }
 
@@ -264,7 +229,6 @@ export class PracticeSystem {
       .where(E.eq(T.practiceEntries.id, practiceEntryId));
 
     // sql: update decks.practiceEntriesCountByQueueType
-    // (update deck even if queueType = newQueueType so that we can use `decks.updatedAt` as randomMode seed)
     const queryUpdateDeck = updateDeckPracticeEntriesCountByQueueType(deckId, {
       [queueType]: queueType !== newQueueType ? -1 : 0,
       [newQueueType]: queueType !== newQueueType ? 1 : 0,
@@ -287,12 +251,14 @@ async function updateDeckPracticeEntriesCountByQueueType(
   await db
     .update(T.decks)
     .set({
+      // force resetting `updatedAt` even if queueType = newQueueType so that we can use it as a randomMode seed
+      updatedAt: new Date(),
       // prettier-ignore
       practiceEntriesCountByQueueType: sql`
         JSON_SET(${column},
           '$."NEW"',    JSON_EXTRACT(${column}, '$."NEW"')    + ${increments.NEW ?? 0},
           '$."LEARN"',  JSON_EXTRACT(${column}, '$."LEARN"')  + ${increments.LEARN ?? 0},
-          '$."REVIEW"', JSON_EXTRACT(${column}, '$."REVIEW"') + ${increments.REVIEW ?? 0},
+          '$."REVIEW"', JSON_EXTRACT(${column}, '$."REVIEW"') + ${increments.REVIEW ?? 0}
         )
       `,
     })
@@ -381,4 +347,93 @@ async function getNextScheduledPracticeEntries(
     "queueType",
     (row) => row
   );
+}
+
+export function queryNextPracticeEntryRandomMode(
+  deckId: number,
+  now: Date,
+  seed: number
+) {
+  const randInt = hashInt32(seed);
+  const randUniform = randInt / 2 ** 32;
+
+  const RANDOM_MODE_SCORE_ALIAS = "randomModeScore";
+
+  // 0.1 bonus for a week older, up to 0.2
+  const SCHEDULED_AT_BONUS_SLOPE = 0.1 / (60 * 60 * 24 * 7);
+  const SCHEDULED_AT_BONUS_MAX = 0.2;
+
+  // choose queueType by a fixed probability
+  const QUEUE_TYPE_WEIGHT = [90, 8, 2];
+  const randQueueType =
+    PRACTICE_QUEUE_TYPES[randomChoice(randUniform, QUEUE_TYPE_WEIGHT)];
+
+  const query = db
+    .select({
+      ...T.practiceEntries,
+      // RANDOM(HASH(practiceAction) ^ seedInt)  (in [0, 1))
+      // +
+      // (scheduledAt bonus)                     (in [0, SCHEDULED_AT_BONUS_MAX])
+      // +
+      // (queueType bonus)                       (10 if randQueueType)
+      // prettier-ignore
+      [RANDOM_MODE_SCORE_ALIAS]: sql<number>`(
+        RAND(
+          CONV(
+            SUBSTRING(
+              HEX(
+                UNHEX(SHA1(${T.practiceEntries.id})) ^
+                UNHEX(SHA1(${T.practiceEntries.updatedAt})) ^
+                UNHEX(SHA1(${randInt}))
+              ),
+              1,
+              8
+            ),
+            16,
+            10
+          )
+        )
+        +
+        LEAST(${SCHEDULED_AT_BONUS_MAX}, (UNIX_TIMESTAMP(${now}) - UNIX_TIMESTAMP(scheduledAt)) * ${SCHEDULED_AT_BONUS_SLOPE})
+        +
+        10 * (${T.practiceEntries.queueType} = ${randQueueType})
+      )`.as(RANDOM_MODE_SCORE_ALIAS),
+    })
+    .from(T.practiceEntries)
+    .where(
+      E.and(
+        E.eq(T.practiceEntries.deckId, deckId),
+        E.lt(T.practiceEntries.scheduledAt, now)
+      )
+    )
+    .orderBy(E.desc(sql.raw(RANDOM_MODE_SCORE_ALIAS)));
+
+  return { query, randInt, randUniform, randQueueType };
+}
+
+// https://nullprogram.com/blog/2018/07/31/
+export function hashInt32(x: number) {
+  x ^= x >>> 16;
+  x = Math.imul(x, 0x21f0aaad);
+  x ^= x >>> 15;
+  x = Math.imul(x, 0xd35a2d97);
+  x ^= x >>> 15;
+  return x >>> 0;
+}
+
+function randomChoice(uniform: number, weights: number[]): number {
+  tinyassert(weights.length > 0);
+  const cumWeights = prefixSum(weights);
+  const normalized = uniform * cumWeights[weights.length];
+  const found = cumWeights.slice(1).findIndex((c) => normalized < c);
+  tinyassert(0 <= found && found < weights.length);
+  return found;
+}
+
+function prefixSum(ls: number[]): number[] {
+  const acc = [0];
+  for (let i = 0; i < ls.length; i++) {
+    acc.push(acc[i] + ls[i]);
+  }
+  return acc;
 }
