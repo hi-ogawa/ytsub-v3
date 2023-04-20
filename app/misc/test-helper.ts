@@ -96,24 +96,11 @@ export function useUser(...args: Parameters<typeof useUserImpl>) {
   };
 }
 
-// TODO: use pre-downloaded fixture
-const NEW_VIDEOS: NewVideo[] = [
-  {
-    videoId: "_2FF6O6Z8Hc",
-    language1: { id: ".fr-FR" },
-    language2: { id: ".en" },
-  },
-  {
-    videoId: "MoH8Fk2K9bc",
-    language1: { id: ".fr-FR" },
-    language2: { id: ".en" },
-  },
-  {
-    videoId: "EnPYXckiUVg",
-    language1: { id: ".fr" },
-    language2: { id: ".en" },
-  },
-];
+const FIXTURE_FIDEO: NewVideo = {
+  videoId: "EnPYXckiUVg",
+  language1: { id: ".fr" },
+  language2: { id: ".en" },
+};
 
 const FIXTURE_FILE = "misc/fixture/fetchCaptionEntries-EnPYXckiUVg-fr-en.txt";
 
@@ -124,18 +111,14 @@ async function fetchCaptionEntriesFixture(): ReturnType<
   return JSON.parse(raw);
 }
 
-export function useVideo(
-  args?: { videoFixture?: 0 | 1 | 2 },
-  userHook?: ReturnType<typeof useUser>
-) {
-  const newVideo = NEW_VIDEOS[args?.videoFixture ?? 2];
+export function useVideo(userHook?: ReturnType<typeof useUser>) {
   let result: { video: VideoTable; captionEntries: CaptionEntryTable[] };
 
   beforeAll(async () => {
     await userHook?.isReady;
     const data = await fetchCaptionEntriesFixture();
     const videoId = await insertVideoAndCaptionEntries(
-      newVideo,
+      FIXTURE_FIDEO,
       data,
       userHook?.data.id
     );
@@ -158,11 +141,9 @@ export function useVideo(
   };
 }
 
-export function useUserVideo(
-  args: Parameters<typeof useUser>[0] & { videoFixture?: 0 | 1 | 2 }
-) {
+export function useUserVideo(args: Parameters<typeof useUser>[0]) {
   const userHook = useUser(args);
-  const videoHook = useVideo(args, userHook);
+  const videoHook = useVideo(userHook);
 
   return {
     signin: userHook.signin,
