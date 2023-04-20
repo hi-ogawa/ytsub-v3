@@ -289,8 +289,7 @@ export async function queryDeckPracticeEntriesCountByQueueType(
 async function getDailyPracticeStatistics(deckId: number, startOfDay: Date) {
   const rows = await db
     .select({
-      // TODO: drizzle typing becomes "never"
-      queueType: T.practiceEntries.queueType as any as SQL<PracticeQueueType>,
+      queueType: T.practiceActions.queueType,
       count: sql<number>`COUNT(0)`,
     })
     .from(T.practiceActions)
