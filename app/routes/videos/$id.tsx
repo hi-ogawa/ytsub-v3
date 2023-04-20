@@ -652,7 +652,8 @@ function NavBarMenuComponentImpl({
           $R["/videos/$id"](
             { id: video.id },
             { index: data.captionEntries.index }
-          )
+          ),
+          { replace: true }
         );
       } else {
         toast.error("No bookmark is found");
@@ -688,7 +689,7 @@ function NavBarMenuComponentImpl({
           reference={
             <button
               className="antd-btn antd-btn-ghost i-ri-more-2-line w-6 h-6"
-              data-test="user-menu"
+              data-testid="video-menu-reference"
             />
           }
           floating={(context) => (
