@@ -192,6 +192,40 @@ cli
   });
 
 //
+// fetchCaptionEntries
+//
+
+const commandFetchCaptionEntriesArgs = z.object({
+  videoId: z.string(),
+  language1: z.string(),
+  language2: z.string(),
+  outFile: z.string(),
+});
+
+// prettier-ignore
+cli
+  .command("fetchCaptionEntries")
+  .option(`--${commandFetchCaptionEntriesArgs.keyof().enum.videoId} [string]`, "")
+  .option(`--${commandFetchCaptionEntriesArgs.keyof().enum.language1} [string]`, "")
+  .option(`--${commandFetchCaptionEntriesArgs.keyof().enum.language2} [string]`, "")
+  .option(`--${commandFetchCaptionEntriesArgs.keyof().enum.outFile} [string]`, "")
+  .action(commandFetchCaptionEntries);
+
+async function commandFetchCaptionEntries(rawArgs: unknown) {
+  const args = commandFetchCaptionEntriesArgs.parse(rawArgs);
+  const data = await fetchCaptionEntries({
+    videoId: args.videoId,
+    language1: {
+      id: args.language1,
+    },
+    language2: {
+      id: args.language2,
+    },
+  });
+  await fs.promises.writeFile(args.outFile, JSON.stringify(data, null, 2));
+}
+
+//
 // seed export/import e.g.
 //   pnpm cli db-seed-export --deckId 1 --outFile misc/db/dev.json
 //   pnpm cli db-seed-import --username dev-import --inFile misc/db/dev.json
