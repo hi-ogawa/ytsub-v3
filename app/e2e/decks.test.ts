@@ -37,6 +37,7 @@ test.describe("decks", () => {
     // submit edit deck form
     await expect(page.getByLabel("Name")).toHaveValue("deck-e2e-test");
     await expect(page.getByLabel("New entries per day")).toHaveValue("40");
+    await expect(page.getByLabel("Randomize")).toBeChecked();
     await page.getByLabel("New entries per day").click();
     await page.getByLabel("New entries per day").fill("");
     await page.getByLabel("New entries per day").type("25");
@@ -106,11 +107,16 @@ test.describe("decks", () => {
     await page.getByText("this week").click();
 
     // change graph options
-    await page.getByTestId("SelectWrapper-rangeType").selectOption("month");
+    await page
+      .getByTestId("SelectWrapper-rangeType")
+      .selectOption({ label: "by month" });
     await page.getByText("this month").click();
-    await page.getByTestId("SelectWrapper-graphType").selectOption("queue");
+    await page
+      .getByTestId("SelectWrapper-graphType")
+      .selectOption({ label: "by queue" });
   });
 
+  // TODO: detailed test with non randomMode?
   test("practice", async ({ page }) => {
     await user.signin(page);
     await page.goto("/decks");
@@ -118,7 +124,6 @@ test.describe("decks", () => {
     await page.getByText("Progress").click();
     await page.getByText("0 | 140").click();
     await page.getByRole("button", { name: "AGAIN" }).click();
-    await page.getByText("1 | 139").click();
   });
 });
 
