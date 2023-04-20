@@ -1,9 +1,15 @@
-import { QueueTypeIcon, requireUserAndDeck } from ".";
-import { useLoaderData } from "@remix-run/react";
+import {
+  PRACTICE_ACTION_TYPE_TO_COLOR,
+  QueueTypeIcon,
+  requireUserAndDeck,
+} from ".";
+import { mapOption } from "@hiogawa/utils";
+import { useLoaderData, useNavigate } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import React from "react";
+import type { z } from "zod";
 import { CollapseTransition } from "../../../components/collapse";
-import { PaginationComponent } from "../../../components/misc";
+import { PaginationComponent, SelectWrapper } from "../../../components/misc";
 import {
   E,
   T,
@@ -12,6 +18,7 @@ import {
   toPaginationResult,
 } from "../../../db/drizzle-client.server";
 import type { DeckTable, PaginationMetadata } from "../../../db/models";
+import { PRACTICE_ACTION_TYPES } from "../../../db/types";
 import { $R, ROUTE_DEF } from "../../../misc/routes";
 import { Controller, makeLoader } from "../../../utils/controller-utils";
 import { useDeserialize } from "../../../utils/hooks";
@@ -42,6 +49,7 @@ interface LoaderData {
     "practiceActions" | "bookmarkEntries" | "captionEntries" | "videos"
   >[];
   pagination: PaginationMetadata;
+  query: z.infer<(typeof ROUTE_DEF)["/decks/$id/history"]["query"]>;
 }
 
 export const loader = makeLoader(Controller, async function () {
@@ -73,19 +81,19 @@ export const loader = makeLoader(Controller, async function () {
       .where(
         E.and(
           E.eq(T.practiceActions.deckId, deck.id),
-          parsed.data.practiceEntryId
-            ? E.eq(
-                T.practiceActions.practiceEntryId,
-                parsed.data.practiceEntryId
-              )
-            : undefined
+          mapOption(parsed.data.actionType, (t) =>
+            E.eq(T.practiceActions.actionType, t)
+          ),
+          mapOption(parsed.data.practiceEntryId, (t) =>
+            E.eq(T.practiceActions.practiceEntryId, t)
+          )
         )
       )
       .orderBy(E.desc(T.practiceActions.createdAt)),
     parsed.data
   );
 
-  const res: LoaderData = { deck, rows, pagination };
+  const res: LoaderData = { deck, rows, pagination, query: parsed.data };
   return this.serialize(res);
 });
 
@@ -94,13 +102,33 @@ export const loader = makeLoader(Controller, async function () {
 //
 
 export default function DefaultComponent() {
-  const { rows, pagination }: LoaderData = useDeserialize(useLoaderData());
+  const { deck, rows, pagination, query }: LoaderData = useDeserialize(
+    useLoaderData()
+  );
+  const navigate = useNavigate();
 
   return (
     <>
       <div className="w-full flex justify-center">
         <div className="h-full w-full max-w-lg">
           <div className="h-full flex flex-col p-2 gap-2">
+            <div className="flex items-center gap-2 py-1">
+              Filter
+              <SelectWrapper
+                className="antd-input p-1"
+                options={[undefined, ...PRACTICE_ACTION_TYPES]}
+                value={query.actionType}
+                labelFn={(v) => v ?? "Select..."}
+                onChange={(actionType) => {
+                  navigate(
+                    $R["/decks/$id/history"](
+                      { id: deck.id },
+                      actionType ? { actionType } : {}
+                    )
+                  );
+                }}
+              />
+            </div>
             {rows.length === 0 && <div>Empty</div>}
             {rows.map((row) => (
               <PracticeActionComponent key={row.practiceActions.id} {...row} />
@@ -124,11 +152,15 @@ function PracticeActionComponent(
 ) {
   const { createdAt, actionType, queueType } = props.practiceActions;
   const [open, setOpen] = React.useState(false);
+  const [autoplay, setAutoplay] = React.useState(false);
 
   return (
     <div className="flex flex-col border">
       <div className="flex flex-col p-2 gap-2">
-        <div className="flex gap-2">
+        <div
+          className="flex gap-2 cursor-pointer"
+          onClick={() => setOpen(!open)}
+        >
           <div className="h-[20px] flex items-center">
             <QueueTypeIcon queueType={queueType} />
           </div>
@@ -137,7 +169,12 @@ function PracticeActionComponent(
           </div>
         </div>
         <div className="flex items-center ml-6 text-xs gap-3">
-          <div className="border rounded-full px-2 py-0.5 w-14 text-center">
+          <div
+            className={cls(
+              "rounded-full px-1 py-0.3 w-13 text-center border !border-current",
+              PRACTICE_ACTION_TYPE_TO_COLOR[actionType]
+            )}
+          >
             {actionType}
           </div>
           <div
@@ -151,19 +188,22 @@ function PracticeActionComponent(
               "antd-btn antd-btn-ghost i-ri-arrow-down-s-line w-5 h-5",
               open && "rotate-180"
             )}
-            onClick={() => setOpen(!open)}
+            onClick={() => {
+              setAutoplay(true);
+              setOpen(!open);
+            }}
           ></button>
         </div>
       </div>
       <CollapseTransition
         show={open}
-        className="duration-300 h-0 overflow-hidden border-t border-dashed"
+        className="duration-300 overflow-hidden border-t border-dashed"
       >
         <div className="p-2 pt-0">
           <MiniPlayer
             video={props.videos}
             captionEntry={props.captionEntries}
-            autoplay={true}
+            autoplay={autoplay}
             defaultIsRepeating={true}
             highlight={{
               side: props.bookmarkEntries.side,

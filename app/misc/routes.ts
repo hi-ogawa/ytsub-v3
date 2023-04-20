@@ -1,5 +1,6 @@
 import { tinyassert } from "@hiogawa/utils";
 import { z } from "zod";
+import { Z_PRACTICE_ACTION_TYPES, Z_PRACTICE_QUEUE_TYPES } from "../db/types";
 import { createGetProxy } from "../utils/proxy-utiils";
 
 // centralized route definitions to benefit from static analysis e.g.
@@ -60,7 +61,12 @@ export const ROUTE_DEF = {
   "/decks/import": {},
   "/decks/$id": {
     params: Z_ID_PARAMS,
-    query: Z_PAGINATION_QUERY,
+    query: z
+      .object({
+        // TODO
+        queueType: Z_PRACTICE_QUEUE_TYPES.optional(),
+      })
+      .merge(Z_PAGINATION_QUERY),
   },
   "/decks/$id/edit": {
     params: Z_ID_PARAMS,
@@ -72,6 +78,7 @@ export const ROUTE_DEF = {
     params: Z_ID_PARAMS,
     query: z
       .object({
+        actionType: Z_PRACTICE_ACTION_TYPES.optional(),
         practiceEntryId: z.coerce.number().int().optional(),
       })
       .merge(Z_PAGINATION_QUERY),
