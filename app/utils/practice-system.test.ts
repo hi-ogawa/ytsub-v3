@@ -13,6 +13,8 @@ import {
 // >>> import datetime
 // >>> datetime.datetime(year=1991, month=6, day=24, tzinfo=datetime.timezone.utc).timestamp()
 // 677721600.0
+
+// TODO: fix test
 const NOW = new Date(677721600 * 1000);
 
 describe("PracticeSystem", () => {

@@ -329,13 +329,17 @@ async function getNextScheduledPracticeEntries(deckId: number, now: Date) {
     .as("__subQuery");
 
   const rows = await db
-    .select()
+    .select({
+      practiceEntries: T.practiceEntries,
+    })
     .from(T.practiceEntries)
     .innerJoin(
       subQuery,
       E.and(
+        E.eq(T.practiceEntries.deckId, deckId),
         E.eq(T.practiceEntries.queueType, subQuery.queueType),
-        E.eq(T.practiceEntries.scheduledAt, subQuery.minScheduledAt)
+        // workaround custom datetimeUtc
+        sql`${T.practiceEntries.scheduledAt} = ${subQuery.minScheduledAt}`
       )
     );
 
