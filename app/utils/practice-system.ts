@@ -14,7 +14,7 @@ import {
   PracticeActionType,
   PracticeQueueType,
 } from "../db/types";
-import { fromEntries, mapGroupBy, objectFromMap } from "./misc";
+import { mapGroupBy, objectFromMap } from "./misc";
 import { fromTemporal, toInstant, toZdt } from "./temporal-utils";
 
 const QUEUE_RULES: Record<
@@ -83,7 +83,7 @@ export class PracticeSystem {
       ),
     ]);
     tinyassert(deck);
-    return fromEntries(
+    return Object.fromEntries(
       PRACTICE_QUEUE_TYPES.map((type) => [
         type,
         {
@@ -91,7 +91,7 @@ export class PracticeSystem {
           daily: daily[type] ?? 0,
         },
       ])
-    );
+    ) as DeckPracticeStatistics;
   }
 
   async getNextPracticeEntry(

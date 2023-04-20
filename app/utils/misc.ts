@@ -6,13 +6,6 @@ import {
 } from "@hiogawa/utils";
 import { UseQueryOptions, useQuery } from "@tanstack/react-query";
 
-// TODO: js-utils
-export function fromEntries<K extends string, V>(
-  entries: [K, V][]
-): Record<K, V> {
-  return Object.fromEntries(entries) as any;
-}
-
 //
 // Proxy to warn unexpected access
 //
