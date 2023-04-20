@@ -1,7 +1,6 @@
 import { tinyassert } from "@hiogawa/utils";
 import { Temporal } from "@js-temporal/polyfill";
 import { sql } from "drizzle-orm";
-import type { SQL } from "drizzle-orm/sql";
 import { difference, range } from "lodash";
 import { E, T, db, findOne } from "../db/drizzle-client.server";
 import type {
