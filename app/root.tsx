@@ -112,7 +112,7 @@ function Root() {
   return (
     <>
       <TopProgressBarRemix />
-      <div className="h-full flex flex-col">
+      <div className="h-full flex flex-col relative z-0">
         <Navbar
           title={handle.navBarTitle?.()}
           user={data.currentUser}

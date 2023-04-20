@@ -27,7 +27,7 @@ export function Drawer(props: {
 
   return (
     <FloatingPortal id={id}>
-      <Transition show={props.open} className="absolute z-100">
+      <Transition show={props.open}>
         {/* backdrop */}
         <Transition.Child
           className="transition duration-300 fixed inset-0 bg-black"
