@@ -57,17 +57,21 @@ export function usePromise<T>(
   });
 }
 
+// TODO: to utils
 export function assertUnreachable(_value: never): never {
   tinyassert(false, "unreachable");
 }
 
-export function mapValueGroupBy<
-  T,
-  Key extends keyof T,
-  F extends (row: T) => unknown
->(rows: T[], key: Key, valueFn: F): Map<T[Key], ReturnType<F>> {
-  return mapValues(
-    groupBy(rows, (row) => row[key]),
-    (group) => valueFn(group[0]) as ReturnType<F>
-  );
+export function mapGroupBy<T, K, V>(
+  ls: T[],
+  keyFn: (v: T) => K,
+  valueFn: (vs: T[]) => V
+) {
+  return mapValues(groupBy(ls, keyFn), valueFn);
+}
+
+export function objectFromMap<K extends keyof any, V>(
+  map: Map<K, V>
+): Partial<Record<K, V>> {
+  return Object.fromEntries(map.entries()) as any;
 }

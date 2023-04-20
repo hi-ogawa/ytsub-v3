@@ -1,8 +1,9 @@
-import { DefaultMap, tinyassert } from "@hiogawa/utils";
+import { tinyassert } from "@hiogawa/utils";
 import { Temporal } from "@js-temporal/polyfill";
 import { sql } from "drizzle-orm";
+import type { SQL } from "drizzle-orm/sql";
 import { difference, range } from "lodash";
-import { E, T, TT, db, findOne } from "../db/drizzle-client.server";
+import { E, T, db, findOne } from "../db/drizzle-client.server";
 import type {
   BookmarkEntryTable,
   DeckTable,
@@ -14,7 +15,7 @@ import {
   PracticeActionType,
   PracticeQueueType,
 } from "../db/types";
-import { fromEntries, mapValueGroupBy } from "./misc";
+import { fromEntries, mapGroupBy, objectFromMap } from "./misc";
 import { fromTemporal, toInstant, toZdt } from "./temporal-utils";
 
 const QUEUE_RULES: Record<
@@ -88,7 +89,7 @@ export class PracticeSystem {
         type,
         {
           total: deck.practiceEntriesCountByQueueType[type],
-          daily: daily.get(type),
+          daily: daily[type] ?? 0,
         },
       ])
     );
@@ -115,19 +116,16 @@ export class PracticeSystem {
       getNextScheduledPracticeEntries(this.deck.id, now),
     ]);
 
-    if (daily.get("NEW") < this.deck.newEntriesPerDay && entries.get("NEW")) {
-      return entries.get("NEW");
+    if ((daily.NEW ?? 0) < this.deck.newEntriesPerDay && entries.NEW) {
+      return entries.NEW;
     }
 
-    if (entries.get("LEARN")) {
-      return entries.get("LEARN");
+    if (entries.LEARN) {
+      return entries.LEARN;
     }
 
-    if (
-      daily.get("REVIEW") < this.deck.reviewsPerDay &&
-      entries.get("REVIEW")
-    ) {
-      return entries.get("REVIEW");
+    if ((daily.REVIEW ?? 0) < this.deck.reviewsPerDay && entries.REVIEW) {
+      return entries.REVIEW;
     }
 
     return;
@@ -278,20 +276,21 @@ export async function queryDeckPracticeEntriesCountByQueueType(
     .where(E.eq(T.practiceEntries.deckId, deckId))
     .groupBy(T.practiceEntries.queueType);
 
-  const record = Object.fromEntries([
+  return Object.fromEntries([
     ...PRACTICE_QUEUE_TYPES.map((t) => [t, 0]),
-    ...mapValueGroupBy(rows, "queueType", (row) => row.count),
+    ...mapGroupBy(
+      rows,
+      (row) => row.queueType,
+      ([row]) => row.count
+    ),
   ]);
-  return record;
 }
 
-async function getDailyPracticeStatistics(
-  deckId: number,
-  startOfDay: Date
-): Promise<DefaultMap<PracticeQueueType, number>> {
+async function getDailyPracticeStatistics(deckId: number, startOfDay: Date) {
   const rows = await db
     .select({
-      queueType: T.practiceEntries.queueType,
+      // TODO: drizzle typing becomes "never"
+      queueType: T.practiceEntries.queueType as any as SQL<PracticeQueueType>,
       count: sql<number>`COUNT(0)`,
     })
     .from(T.practiceActions)
@@ -303,16 +302,16 @@ async function getDailyPracticeStatistics(
     )
     .groupBy(T.practiceActions.queueType);
 
-  return new DefaultMap(
-    () => 0,
-    mapValueGroupBy(rows, "queueType", (row) => row.count)
+  return objectFromMap(
+    mapGroupBy(
+      rows,
+      (row) => row.queueType,
+      ([row]) => row.count
+    )
   );
 }
 
-async function getNextScheduledPracticeEntries(
-  deckId: number,
-  now: Date
-): Promise<Map<PracticeQueueType, TT["practiceEntries"]>> {
+async function getNextScheduledPracticeEntries(deckId: number, now: Date) {
   // get minimum `scheduledAt` for each `queueType`
   const subQuery = db
     .select({
@@ -342,10 +341,12 @@ async function getNextScheduledPracticeEntries(
       )
     );
 
-  return mapValueGroupBy(
-    rows.map((row) => row.practiceEntries),
-    "queueType",
-    (row) => row
+  return objectFromMap(
+    mapGroupBy(
+      rows.map((row) => row.practiceEntries),
+      (row) => row.queueType,
+      ([row]) => row
+    )
   );
 }
 
