@@ -89,9 +89,9 @@ export default function DefaultComponent() {
         </div>
         {/* spinner for initial mount */}
         <Transition
-          show={nextPracticeQuery.isLoading}
+          show={nextPracticeQuery.isFetching}
           className="duration-500 antd-body antd-spin-overlay-20"
-          {...transitionProps("opacity-0", "opacity-100")}
+          {...transitionProps("opacity-0", "opacity-50")}
         />
       </div>
     </div>
