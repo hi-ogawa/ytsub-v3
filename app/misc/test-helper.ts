@@ -1,3 +1,4 @@
+import fs from "node:fs";
 import { newPromiseWithResolvers, tinyassert } from "@hiogawa/utils";
 import type { LoaderFunction } from "@remix-run/server-runtime";
 import { afterAll, beforeAll } from "vitest";
@@ -11,7 +12,7 @@ import {
 } from "../db/models";
 import { createUserCookie } from "../utils/auth";
 import { toQuery } from "../utils/url-data";
-import { NewVideo, fetchCaptionEntries } from "../utils/youtube";
+import type { NewVideo, fetchCaptionEntries } from "../utils/youtube";
 import { useUserImpl } from "./test-helper-common";
 
 const DUMMY_URL = "http://localhost:3000";
@@ -114,6 +115,15 @@ const NEW_VIDEOS: NewVideo[] = [
   },
 ];
 
+const FIXTURE_FILE = "misc/fixture/fetchCaptionEntries-EnPYXckiUVg-fr-en.txt";
+
+async function fetchCaptionEntriesFixture(): ReturnType<
+  typeof fetchCaptionEntries
+> {
+  const raw = await fs.promises.readFile(FIXTURE_FILE, "utf-8");
+  return JSON.parse(raw);
+}
+
 export function useVideo(
   args?: { videoFixture?: 0 | 1 | 2 },
   userHook?: ReturnType<typeof useUser>
@@ -123,7 +133,7 @@ export function useVideo(
 
   beforeAll(async () => {
     await userHook?.isReady;
-    const data = await fetchCaptionEntries(newVideo);
+    const data = await fetchCaptionEntriesFixture();
     const videoId = await insertVideoAndCaptionEntries(
       newVideo,
       data,
