@@ -118,7 +118,7 @@ export function PopoverSimple({
       floating={({ props, open, arrowProps, context }) => (
         <Transition
           show={open}
-          className="transition duration-200"
+          className="transition duration-200 absolute z-100"
           enterFrom="scale-90 opacity-0"
           enterTo="scale-100 opacity-100"
           leaveFrom="scale-100 opacity-100"
