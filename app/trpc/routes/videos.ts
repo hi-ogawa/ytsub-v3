@@ -93,6 +93,7 @@ export const trpcRoutesVideos = {
             E.eq(T.bookmarkEntries.userId, ctx.user.id)
           )
         )
+        // TODO: also probably fine to just use E.desc(T.bookmarkEntries.createdAt)
         .orderBy(E.desc(T.captionEntries.index));
       return findOne(query);
     }),
