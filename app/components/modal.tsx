@@ -70,8 +70,8 @@ function Modal(props: {
   );
 }
 
-export function useModal() {
-  const [open, setOpen] = React.useState(false);
+export function useModal(defaultOpen?: boolean) {
+  const [open, setOpen] = React.useState(defaultOpen ?? false);
   const openRef = useStableRef(open); // pass stable ref to Wrapper
 
   const [Wrapper] = React.useState(

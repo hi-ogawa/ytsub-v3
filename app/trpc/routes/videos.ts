@@ -71,4 +71,29 @@ export const trpcRoutesVideos = {
       tinyassert(found);
       return found.captionEntries;
     }),
+
+  videos_getLastBookmark: procedureBuilder
+    .use(middlewares.requireUser)
+    .input(
+      z.object({
+        videoId: z.number().int(),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      const query = db
+        .select()
+        .from(T.bookmarkEntries)
+        .innerJoin(
+          T.captionEntries,
+          E.eq(T.captionEntries.id, T.bookmarkEntries.captionEntryId)
+        )
+        .where(
+          E.and(
+            E.eq(T.bookmarkEntries.videoId, input.videoId),
+            E.eq(T.bookmarkEntries.userId, ctx.user.id)
+          )
+        )
+        .orderBy(E.desc(T.captionEntries.index));
+      return findOne(query);
+    }),
 };
