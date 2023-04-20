@@ -2,7 +2,7 @@ import { Transition } from "@headlessui/react";
 import { tinyassert } from "@hiogawa/utils";
 import { isNil } from "@hiogawa/utils";
 import { toArraySetState, useRafLoop } from "@hiogawa/utils-react";
-import { Form, Link, useLoaderData } from "@remix-run/react";
+import { Form, Link, useLoaderData, useNavigate } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import { useMutation } from "@tanstack/react-query";
 import {
@@ -641,6 +641,26 @@ function NavBarMenuComponentImpl({
   const [repeatingEntries, setRepeatingEntries] = useRepeatingEntries();
   const modal = useModal();
 
+  const navigate = useNavigate();
+
+  const lastBookmarkQuery = useMutation({
+    ...trpc.videos_getLastBookmark.mutationOptions(),
+    onSuccess: (data) => {
+      if (data) {
+        modal.setOpen(false);
+        navigate(
+          $R["/videos/$id"](
+            { id: video.id },
+            { index: data.captionEntries.index }
+          ),
+          { replace: true }
+        );
+      } else {
+        toast.error("No bookmark is found");
+      }
+    },
+  });
+
   return (
     <>
       {user && user.id !== video.userId && (
@@ -669,7 +689,7 @@ function NavBarMenuComponentImpl({
           reference={
             <button
               className="antd-btn antd-btn-ghost i-ri-more-2-line w-6 h-6"
-              data-test="user-menu"
+              data-testid="video-menu-reference"
             />
           }
           floating={(context) => (
@@ -757,6 +777,21 @@ function NavBarMenuComponentImpl({
               value={video.bookmarkEntriesCount}
             />
           </label>
+          <div className="border-t my-1"></div>
+          <h4>Shortcuts</h4>
+          <div className="flex">
+            <button
+              className={cls(
+                "antd-btn antd-btn-default px-2 py-0.5 text-sm",
+                lastBookmarkQuery.isLoading && "antd-btn-loading"
+              )}
+              onClick={() => {
+                lastBookmarkQuery.mutate({ videoId: video.id });
+              }}
+            >
+              Go to Last Bookmark
+            </button>
+          </div>
         </div>
       </modal.Wrapper>
     </>
