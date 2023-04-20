@@ -322,7 +322,7 @@ async function getNextScheduledPracticeEntries(deckId: number, now: Date) {
     .where(
       E.and(
         E.eq(T.practiceEntries.deckId, deckId),
-        E.lt(T.practiceEntries.scheduledAt, now)
+        E.lte(T.practiceEntries.scheduledAt, now)
       )
     )
     .groupBy(T.practiceEntries.queueType)

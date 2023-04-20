@@ -10,12 +10,8 @@ import {
   queryNextPracticeEntryRandomMode,
 } from "./practice-system";
 
-// >>> import datetime
-// >>> datetime.datetime(year=1991, month=6, day=24, tzinfo=datetime.timezone.utc).timestamp()
-// 677721600.0
-
-// TODO: fix test
-const NOW = new Date(677721600 * 1000);
+// it doesn't matter yet but make NOW deterministic
+const NOW = new Date("2023-04-10T00:00:00Z");
 
 describe("PracticeSystem", () => {
   const hook = useUserVideo({
