@@ -109,7 +109,7 @@ jobs:
 
           # output summary
           git fetch --depth 1 origin __coverage__
-          report_url_base="https://htmlpreview.github.io/?https://raw.githubusercontent.com/hi-ogawa/ytsub-v3/$(git rev-parse __coverage__)"
+          report_url_base="https://htmlpreview.github.io/?https://raw.githubusercontent.com/hi-ogawa/ytsub-v3/$(git rev-parse origin/__coverage__)"
           echo "## coverage report" >> $GITHUB_STEP_SUMMARY
           echo "- [unit]($report_url_base/unit/index.html)" >> $GITHUB_STEP_SUMMARY
           echo "- [e2e-server]($report_url_base/e2e-server/index.html)" >> $GITHUB_STEP_SUMMARY
