@@ -5,13 +5,14 @@ jobs:
   build:
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v2
-      - uses: pnpm/action-setup@v2.0.1
+      - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2
         with:
           version: 7
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
           node-version: 16
+          cache: pnpm
       - run: make lint
       - run: pnpm i
       - run: pnpm lint-check
@@ -21,13 +22,14 @@ jobs:
   test:
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v2
-      - uses: pnpm/action-setup@v2.0.1
+      - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2
         with:
           version: 7
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
           node-version: 16
+          cache: pnpm
       - run: pnpm i
       - run: make docker/up db/reset/test db/seed-download
       - run: pnpm test-coverage
@@ -39,13 +41,14 @@ jobs:
   test-e2e:
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v2
-      - uses: pnpm/action-setup@v2.0.1
+      - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2
         with:
           version: 7
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
           node-version: 16
+          cache: pnpm
       - run: pnpm i
       - uses: actions/cache@v3
         id: cache-playwright
@@ -70,13 +73,14 @@ jobs:
   test-migrations:
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v2
-      - uses: pnpm/action-setup@v2.0.1
+      - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2
         with:
           version: 7
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
           node-version: 16
+          cache: pnpm
       - run: pnpm i
       - run: make docker/up db/recreate
       - run: pnpm cli db:test-migrations --unit-test
@@ -88,8 +92,8 @@ jobs:
       - test
       - test-e2e
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
           node-version: 16
       - uses: actions/download-artifact@v3
