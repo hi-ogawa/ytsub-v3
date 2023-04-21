@@ -57,9 +57,6 @@ export function injectConfigScript(markup: string): string {
 //
 
 export const initializeConfigClient = once(() => {
-  if (publicConfig !== uninitialized) {
-    return;
-  }
   const el = document.querySelector("#" + CONFIG_SCRIPT_ID);
   tinyassert(el);
   publicConfig = JSON.parse(el.innerHTML);
