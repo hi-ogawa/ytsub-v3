@@ -35,7 +35,7 @@ test.describe("bookmarks", () => {
       })
       .click();
     await page.getByTestId("video-menu-reference").click();
-    await page.getByRole("button", { name: "Video Info" }).click();
+    await page.getByRole("button", { name: "Details" }).click();
     await page.getByRole("button", { name: "Go to Last Bookmark" }).click();
     await page.getByText("케플러 대박 기원").click();
   });
