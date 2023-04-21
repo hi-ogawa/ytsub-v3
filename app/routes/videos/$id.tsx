@@ -201,12 +201,21 @@ function PageComponent({
     }
 
     // auto scroll subtitle list
-    if (autoScroll && nextEntry && virtualizer.scrollElement) {
+    if (
+      autoScroll &&
+      nextEntry &&
+      nextEntry !== currentEntry &&
+      virtualizer.scrollElement
+    ) {
       const { scrollTop, clientHeight } = virtualizer.scrollElement;
       const currentCenter = scrollTop + clientHeight / 2;
+      const threshold = clientHeight / 6;
       const items = virtualizer.getVirtualItems();
       const currentItem = items.find((item) => item.index === nextEntry?.index);
-      if (!currentItem || Math.abs(currentItem.start - currentCenter) > 150) {
+      if (
+        !currentItem ||
+        Math.abs(currentItem.start - currentCenter) > threshold
+      ) {
         virtualizer.scrollToIndex(nextEntry.index, {
           align: "center",
           behavior: "auto",

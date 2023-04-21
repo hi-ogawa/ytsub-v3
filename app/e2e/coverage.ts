@@ -24,6 +24,7 @@ export const test = testDefault.extend({
       await use(page);
       return;
     }
+    // TOOD: not working
     await page.coverage.startJSCoverage({ resetOnNavigation: false });
     await use(page);
 
@@ -44,12 +45,12 @@ type CoverageEntry = Awaited<
 >[number];
 
 const BUILD_URL = `http://localhost:3001/build`;
-const BUILD_DIR = path.resolve("build", "remix", "test", "public", "build");
+const BUILD_DIR = path.resolve("build");
 
 function preprocessCoverageEntry(entry: CoverageEntry): CoverageEntry {
-  let { url } = entry;
+  entry = { ...entry };
   if (entry.url.startsWith(BUILD_URL)) {
-    url = entry.url.replace(BUILD_URL, BUILD_DIR);
+    entry.url = entry.url.replace(BUILD_URL, BUILD_DIR);
   }
-  return { ...entry, url };
+  return entry;
 }

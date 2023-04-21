@@ -11,7 +11,7 @@ trap 'cat "${log_file}"' EXIT
 
 # run remix server with c8
 pnpm dev-pre
-pnpm dev-coverage:remix >> "$log_file" 2>&1 &
+pnpm dev-coverage:remix > "$log_file" 2>&1 &
 coverage_pid="$!"
 
 # wait server
@@ -20,11 +20,11 @@ docker run --rm --network=host jwilder/dockerize:0.6.1 -wait tcp://localhost:300
 # run e2e test
 playwright test "${@}"
 
+# process e2e-client coverage (TODO: not working)
+npx c8 report -o coverage/e2e-client -r text -r html --exclude build --exclude-after-remap --temp-directory coverage/e2e-client/tmp
+
 # stop remix server
 curl "http://localhost:$PORT/dev/stop"
 
-# wait for c8 to create coverage
-wait "$coverage_pid"
-
-# print client coverage
-npx c8 report -o coverage/e2e-client -r text -r html --exclude build --exclude-after-remap --temp-directory coverage/e2e-client/tmp
+# wait for c8 to create e2e-server coverage
+wait "$coverage_pid" || true
