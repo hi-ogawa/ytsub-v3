@@ -2,7 +2,7 @@ import { newPromiseWithResolvers, tinyassert } from "@hiogawa/utils";
 import { Temporal } from "@js-temporal/polyfill";
 import { Link } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { once } from "lodash";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
@@ -10,7 +10,8 @@ import { $R, R } from "../../misc/routes";
 import { trpc } from "../../trpc/client";
 import { publicConfig } from "../../utils/config";
 import { Controller, makeLoader } from "../../utils/controller-utils";
-import { loadScript, throwGetterProxy, usePromise } from "../../utils/misc";
+import { loadScript } from "../../utils/dom-utils";
+import { uninitialized, usePromiseQueryOpitons } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 
 export const handle: PageHandle = {
@@ -53,7 +54,12 @@ export default function DefaultComponent() {
     },
   });
 
-  const recaptchaApiQuery = useRecaptchaApi();
+  const recaptchaApiQuery = useQuery({
+    ...usePromiseQueryOpitons(() => loadRecaptchaApi().then(() => null)),
+    onError: () => {
+      toast.error("failed to load recaptcha");
+    },
+  });
 
   return (
     <div className="w-full p-4 flex justify-center">
@@ -159,7 +165,7 @@ interface RecaptchaApi {
 }
 
 // singleton
-let recaptchaApi: RecaptchaApi = throwGetterProxy as any;
+let recaptchaApi = uninitialized as RecaptchaApi;
 
 const loadRecaptchaApi = once(async () => {
   const key = publicConfig.APP_RECAPTCHA_CLIENT_KEY;
@@ -172,11 +178,3 @@ const loadRecaptchaApi = once(async () => {
   recaptchaApi.ready(() => resolve());
   await promise;
 });
-
-function useRecaptchaApi() {
-  return usePromise(() => loadRecaptchaApi().then(() => null), {
-    onError: () => {
-      toast.error("failed to load recaptcha");
-    },
-  });
-}

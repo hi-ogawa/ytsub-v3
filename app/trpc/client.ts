@@ -1,5 +1,5 @@
 import { tinyassert } from "@hiogawa/utils";
-import { createGetProxy } from "../utils/proxy-utiils";
+import { createGetProxy } from "../utils/misc";
 import { _trpc } from "./client-internal.client";
 import type { trpcApp } from "./server";
 
