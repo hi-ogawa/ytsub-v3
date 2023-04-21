@@ -253,6 +253,52 @@ export const trpcRoutesDecks = {
 
       return Object.values(countMap);
     }),
+
+  decks_nextPracticeEntry: procedureBuilder
+    .use(middlewares.requireUser)
+    .input(
+      z.object({
+        deckId: z.number().int(),
+      })
+    )
+    .query(async ({ input, ctx }) => {
+      const deck = await findUserDeck({
+        deckId: input.deckId,
+        userId: ctx.user.id,
+      });
+      tinyassert(deck);
+      const system = new PracticeSystem(ctx.user, deck);
+
+      const now = new Date();
+      const statistics = await system.getStatistics(now); // TODO: separate endpoint?
+
+      const practiceEntry = await system.getNextPracticeEntry(now);
+      if (!practiceEntry) {
+        return { finished: true, statistics } as const;
+      }
+
+      const row = await findOne(
+        db
+          .select()
+          .from(T.bookmarkEntries)
+          .innerJoin(
+            T.captionEntries,
+            E.eq(T.captionEntries.id, T.bookmarkEntries.captionEntryId)
+          )
+          .innerJoin(T.videos, E.eq(T.videos.id, T.captionEntries.videoId))
+          .where(E.eq(T.bookmarkEntries.id, practiceEntry.bookmarkEntryId))
+      );
+      tinyassert(row);
+
+      return {
+        finished: false,
+        statistics,
+        practiceEntry,
+        bookmarkEntry: row.bookmarkEntries,
+        captionEntry: row.captionEntries,
+        video: row.videos,
+      } as const;
+    }),
 };
 
 //
