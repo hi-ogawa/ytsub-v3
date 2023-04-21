@@ -6,16 +6,6 @@ name: health-check
     - cron: "0 * * * *"
 jobs:
   health-check:
-    runs-on: ubuntu-20.04
-    container:
-      image: badouralix/curl-jq
-    steps:
-      - run: curl -sSfL https://ytsub-v3-hiro18181.vercel.app/dev/health-check | jq --exit-status
-
-  # TODO: does it require database write to prevent planetscale from sleeping?
-  health-check-db:
-    runs-on: ubuntu-20.04
-    container:
-      image: badouralix/curl-jq
+    runs-on: ubuntu-latest
     steps:
       - run: curl -sSfL https://ytsub-v3-hiro18181.vercel.app/dev/health-check-db | jq --exit-status
