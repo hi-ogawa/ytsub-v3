@@ -56,10 +56,11 @@ jobs:
         run: npx playwright install --with-deps
       - run: make docker/up db/reset/test db/seed-download
       - run: E2E_CLIENT_TRACE=1 pnpm test-e2e-coverage
+      - run: rm -rf coverage/e2e-client/tmp coverage/e2e-server/tmp
       - uses: actions/upload-artifact@v3
         with:
-          name: coverage-e2e
-          path: coverage
+          name: coverage-e2e-server
+          path: coverage/e2e-server
       - uses: actions/upload-artifact@v3
         if: always()
         with:
