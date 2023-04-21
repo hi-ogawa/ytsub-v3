@@ -22,8 +22,8 @@ dependencies:
     specifier: ^1.7.13
     version: 1.7.13(react-dom@18.2.0)(react@18.2.0)
   '@hiogawa/utils':
-    specifier: 1.4.2-pre.3
-    version: 1.4.2-pre.3
+    specifier: 1.4.2-pre.4
+    version: 1.4.2-pre.4
   '@hiogawa/utils-react':
     specifier: ^1.2.0
     version: 1.2.0(react@18.2.0)
@@ -2073,8 +2073,8 @@ packages:
       react: 18.2.0
     dev: false
 
-  /@hiogawa/utils@1.4.2-pre.3:
-    resolution: {integrity: sha512-7TOIw9EdYT6ViJ6HP68i9yD3bAHiEBaPVzYselDqoxObIVrwM6KV/JlhOOHia3/N6fY0rRj0fTn5sz03rQWFYA==}
+  /@hiogawa/utils@1.4.2-pre.4:
+    resolution: {integrity: sha512-XNP2H8fWorILovHxEWWAQXCmxVrxVExABTrVGZtoELuSVPgNKmCnmdEv0o3eqjmmBvke+pRVcPdUpmsIKTd7/g==}
     dev: false
 
   /@iconify-json/ri@1.1.7:
@@ -4810,7 +4810,6 @@ packages:
 
   /graceful-fs@4.2.11:
     resolution: {integrity: sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ==}
-    dev: true
 
   /graceful-fs@4.2.9:
     resolution: {integrity: sha512-NtNxqUcXgpW2iMrfqSfR73Glt39K+BLwWsPs94yR63v45T0Wbej7eRmL5cWfwEgqXnmjQp3zaJTshdRW/qC2ZQ==}
@@ -5389,14 +5388,14 @@ packages:
   /jsonfile@4.0.0:
     resolution: {integrity: sha1-h3Gq4HmbZAdrdmQPygWPnBDjPss=}
     optionalDependencies:
-      graceful-fs: 4.2.9
+      graceful-fs: 4.2.11
 
   /jsonfile@6.1.0:
     resolution: {integrity: sha512-5dgndWOriYSm5cnYaJNhalLNDKOqFwyDB/rr1E9ZsGciGvKPs8R2xYGCacuf3z6K1YKDz182fd+fY3cn3pMqXQ==}
     dependencies:
       universalify: 2.0.0
     optionalDependencies:
-      graceful-fs: 4.2.9
+      graceful-fs: 4.2.11
 
   /keyv@4.5.2:
     resolution: {integrity: sha512-5MHbFaKn8cNSmVW7BYnijeAVlE4cYA/SVkifVgrh7yotnfhKmjuXpDKjrABLnT0SfHWV21P8ow07OGfRrNDg8g==}

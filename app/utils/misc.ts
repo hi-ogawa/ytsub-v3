@@ -1,11 +1,4 @@
-import { tinyassert } from "@hiogawa/utils";
-
-// TODO: remove
-export function fromEntries<K extends string, V>(
-  entries: [K, V][]
-): Record<K, V> {
-  return Object.fromEntries(entries) as any;
-}
+import { groupBy, mapValues, tinyassert } from "@hiogawa/utils";
 
 export function createGetProxy(
   propHandler: (prop: string | symbol) => unknown
@@ -35,6 +28,21 @@ export function usePromiseQueryOpitons<T>(queryFn: () => Promise<T>) {
   };
 }
 
+// TODO: to utils
 export function assertUnreachable(_value: never): never {
   tinyassert(false, "unreachable");
+}
+
+export function mapGroupBy<T, K, V>(
+  ls: T[],
+  keyFn: (v: T) => K,
+  valueFn: (vs: T[]) => V
+) {
+  return mapValues(groupBy(ls, keyFn), valueFn);
+}
+
+export function objectFromMap<K extends keyof any, V>(
+  map: Map<K, V>
+): Partial<Record<K, V>> {
+  return Object.fromEntries(map.entries()) as any;
 }
