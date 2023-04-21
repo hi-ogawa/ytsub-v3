@@ -107,7 +107,6 @@ jobs:
           NODE_DEBUG=gh-pages npx gh-pages --branch __coverage__ --dist coverage --repo "https://${GITHUB_ACTOR}:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git"
 
           git fetch --depth 1 __coverage__
-          git rev-parse __coverage__
           report_url_base="https://htmlpreview.github.io/?https://raw.githubusercontent.com/hi-ogawa/ytsub-v3/$(git rev-parse __coverage__)"
           echo "## coverage report" >> $GITHUB_STEP_SUMMARY
           echo "- [unit]($report_url_base/unit/index.html)" >> $GITHUB_STEP_SUMMARY
