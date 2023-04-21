@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">29.67% </span>
+                <span class="strong">30% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>54/182</span>
+                <span class='fraction'>54/180</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">37.5% </span>
+                <span class="strong">42.85% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>3/8</span>
+                <span class='fraction'>3/7</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">29.67% </span>
+                <span class="strong">30% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>54/182</span>
+                <span class='fraction'>54/180</span>
             </div>
         
             
@@ -243,9 +243,8 @@
 <a name='L178'></a><a href='#L178'>178</a>
 <a name='L179'></a><a href='#L179'>179</a>
 <a name='L180'></a><a href='#L180'>180</a>
-<a name='L181'></a><a href='#L181'>181</a>
-<a name='L182'></a><a href='#L182'>182</a>
-<a name='L183'></a><a href='#L183'>183</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L181'></a><a href='#L181'>181</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -285,6 +284,11 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -412,14 +416,6 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -431,7 +427,7 @@
 import { Temporal } from "@js-temporal/polyfill";
 import { Link } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { once } from "lodash";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
@@ -439,7 +435,8 @@ import { $R, R } from "../../misc/routes";
 import { trpc } from "../../trpc/client";
 import { publicConfig } from "../../utils/config";
 import { Controller, makeLoader } from "../../utils/controller-utils";
-import { loadScript, throwGetterProxy, usePromise } from "../../utils/misc";
+import { loadScript } from "../../utils/dom-utils";
+import { uninitialized, usePromiseQueryOpitons } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 &nbsp;
 export const handle: PageHandle = {
@@ -482,7 +479,12 @@ export default <span class="fstat-no" title="function not covered" >function Def
 <span class="cstat-no" title="statement not covered" >    },</span>
 <span class="cstat-no" title="statement not covered" >  });</span>
 <span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >  const recaptchaApiQuery = useRecaptchaApi();</span>
+<span class="cstat-no" title="statement not covered" >  const recaptchaApiQuery = useQuery({</span>
+<span class="cstat-no" title="statement not covered" >    ...usePromiseQueryOpitons(() =&gt; loadRecaptchaApi().then(() =&gt; null)),</span>
+<span class="cstat-no" title="statement not covered" >    onError: () =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >      toast.error("failed to load recaptcha");</span>
+<span class="cstat-no" title="statement not covered" >    },</span>
+<span class="cstat-no" title="statement not covered" >  });</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  return (</span>
 <span class="cstat-no" title="statement not covered" >    &lt;div className="w-full p-4 flex justify-center"&gt;</span>
@@ -588,7 +590,7 @@ interface RecaptchaApi {
 }
 &nbsp;
 // singleton
-let recaptchaApi: RecaptchaApi = throwGetterProxy as any;
+let recaptchaApi = uninitialized as RecaptchaApi;
 &nbsp;
 const loadRecaptchaApi = once(async () =&gt; {
 <span class="cstat-no" title="statement not covered" >  const key = publicConfig.APP_RECAPTCHA_CLIENT_KEY;</span>
@@ -601,14 +603,6 @@ const loadRecaptchaApi = once(async () =&gt; {
 <span class="cstat-no" title="statement not covered" >  recaptchaApi.ready(() =&gt; resolve());</span>
 <span class="cstat-no" title="statement not covered" >  await promise;</span>
 <span class="cstat-no" title="statement not covered" >});</span>
-&nbsp;
-<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >function useRecaptchaApi() {</span></span>
-<span class="cstat-no" title="statement not covered" >  return usePromise(() =&gt; loadRecaptchaApi().then(() =&gt; null), {</span>
-<span class="cstat-no" title="statement not covered" >    onError: () =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >      toast.error("failed to load recaptcha");</span>
-<span class="cstat-no" title="statement not covered" >    },</span>
-<span class="cstat-no" title="statement not covered" >  });</span>
-<span class="cstat-no" title="statement not covered" >}</span>
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -616,7 +610,7 @@ const loadRecaptchaApi = once(async () =&gt; {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-04-21T10:49:36.768Z
+                at 2023-04-21T12:08:47.569Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>

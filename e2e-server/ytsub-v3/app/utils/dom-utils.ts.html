@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for ytsub-v3/app/utils/proxy-utiils.tsx</title>
+    <title>Code coverage report for ytsub-v3/app/utils/dom-utils.ts</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../../../prettify.css" />
     <link rel="stylesheet" href="../../../base.css" />
@@ -19,34 +19,34 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../../../index.html">All files</a> / <a href="index.html">ytsub-v3/app/utils</a> proxy-utiils.tsx</h1>
+        <h1><a href="../../../index.html">All files</a> / <a href="index.html">ytsub-v3/app/utils</a> dom-utils.ts</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">16.66% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>12/12</span>
+                <span class='fraction'>2/12</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>2/2</span>
+                <span class='fraction'>0/0</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>2/2</span>
+                <span class='fraction'>0/1</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">16.66% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>12/12</span>
+                <span class='fraction'>2/12</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line high'></div>
+    <div class='status-line low'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -76,29 +76,29 @@
 <a name='L11'></a><a href='#L11'>11</a>
 <a name='L12'></a><a href='#L12'>12</a>
 <a name='L13'></a><a href='#L13'>13</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">246x</span>
-<span class="cline-any cline-yes">246x</span>
-<span class="cline-any cline-yes">246x</span>
-<span class="cline-any cline-yes">246x</span>
-<span class="cline-any cline-yes">246x</span>
-<span class="cline-any cline-yes">246x</span>
-<span class="cline-any cline-yes">400x</span>
-<span class="cline-any cline-yes">400x</span>
-<span class="cline-any cline-yes">246x</span>
-<span class="cline-any cline-yes">246x</span>
-<span class="cline-any cline-yes">246x</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">export function createGetProxy(
-  propHandler: (prop: string | symbol) =&gt; unknown
-): unknown {
-  return new Proxy(
-    {},
-    {
-      get(_target, prop, _receiver) {
-        return propHandler(prop);
-      },
-    }
-  );
-}
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { newPromiseWithResolvers } from "@hiogawa/utils";
+&nbsp;
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >export async function loadScript(src: string): Promise&lt;void&gt; {</span></span>
+<span class="cstat-no" title="statement not covered" >  const { promise, resolve, reject } = newPromiseWithResolvers&lt;void&gt;();</span>
+<span class="cstat-no" title="statement not covered" >  const el = document.createElement("script");</span>
+<span class="cstat-no" title="statement not covered" >  el.src = src;</span>
+<span class="cstat-no" title="statement not covered" >  el.async = true;</span>
+<span class="cstat-no" title="statement not covered" >  el.addEventListener("load", () =&gt; resolve());</span>
+<span class="cstat-no" title="statement not covered" >  el.addEventListener("error", reject);</span>
+<span class="cstat-no" title="statement not covered" >  document.body.appendChild(el);</span>
+<span class="cstat-no" title="statement not covered" >  await promise;</span>
+<span class="cstat-no" title="statement not covered" >}</span>
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -106,7 +106,7 @@
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-04-21T10:49:36.768Z
+                at 2023-04-21T12:08:47.569Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>
