@@ -24,7 +24,7 @@ playwright test "${@}"
 curl "http://localhost:$PORT/dev/stop"
 
 # wait for c8 to create coverage
-wait "$coverage_pid"
+wait "$coverage_pid" || true
 
 # print client coverage
 npx c8 report -o coverage/e2e-client -r text -r html --exclude build --exclude-after-remap --temp-directory coverage/e2e-client/tmp
