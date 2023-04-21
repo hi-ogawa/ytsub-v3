@@ -1,0 +1,10 @@
+default-character-set=utf8mb4
+default-collation=utf8mb4_0900_ai_ci
+generator=skeema:1.9.0-community
+
+flavor=mysql:8.0
+host=localhost
+password=password
+port=3306
+schema=ytsub_development
+user=root
