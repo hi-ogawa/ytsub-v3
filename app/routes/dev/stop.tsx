@@ -6,6 +6,6 @@ export const loader: LoaderFunction = async () => {
     return { success: false };
   }
   console.log("🔥 process.kill(process.pid) 🔥");
-  process.kill(process.pid);
+  process.kill(process.pid, "SIGINT");
   return { success: true };
 };

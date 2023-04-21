@@ -11,7 +11,7 @@ trap 'cat "${log_file}"' EXIT
 
 # run remix server with c8
 pnpm dev-pre
-pnpm dev-coverage:remix >> "$log_file" 2>&1 &
+pnpm dev-coverage:remix > "$log_file" 2>&1 &
 coverage_pid="$!"
 
 # wait server
