@@ -9,7 +9,7 @@ declare let globalThis: {
   __knexClient: Knex;
 };
 
-export let client: typeof globalThis.__knexClient = uninitialized;
+export let client = uninitialized as typeof globalThis.__knexClient;
 
 export const initializeKnexClient = once(() => {
   client = globalThis.__knexClient ??= inner();

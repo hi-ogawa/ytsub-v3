@@ -243,7 +243,7 @@ declare let globalThis: {
   __drizzleClient: MySql2Database;
 };
 
-export let db: typeof globalThis.__drizzleClient = uninitialized;
+export let db = uninitialized as typeof globalThis.__drizzleClient;
 
 export const initializeDrizzleClient = once(async () => {
   db = globalThis.__drizzleClient ??= await inner();

@@ -28,9 +28,9 @@ const Z_PUBLIC_CONFIG = z.object({
   VERCEL_ENV: z.string().optional(),
 });
 
-export let serverConfig: z.infer<typeof Z_SERVER_CONFIG> = uninitialized;
+export let serverConfig = uninitialized as z.infer<typeof Z_SERVER_CONFIG>;
 
-export let publicConfig: z.infer<typeof Z_PUBLIC_CONFIG> = uninitialized;
+export let publicConfig = uninitialized as z.infer<typeof Z_PUBLIC_CONFIG>;
 
 export const CONFIG_SCRIPT_ID = "__configScript";
 

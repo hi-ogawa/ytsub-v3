@@ -165,7 +165,7 @@ interface RecaptchaApi {
 }
 
 // singleton
-let recaptchaApi: RecaptchaApi = uninitialized;
+let recaptchaApi = uninitialized as RecaptchaApi;
 
 const loadRecaptchaApi = once(async () => {
   const key = publicConfig.APP_RECAPTCHA_CLIENT_KEY;

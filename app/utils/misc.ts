@@ -20,9 +20,9 @@ export function createGetProxy(
   );
 }
 
-export const uninitialized = createGetProxy((p) => {
-  throw new Error(`uninitialized: prop = ${p.toString()}`);
-}) as any;
+export const uninitialized: unknown = createGetProxy((p) => {
+  throw new Error(`uninitialized object access '${p.toString()}'`);
+});
 
 export function cls(...args: unknown[]): string {
   return args.filter(Boolean).join(" ");

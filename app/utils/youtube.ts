@@ -338,7 +338,7 @@ export interface YoutubePlayer {
 }
 
 // singleton
-let youtubeIframeApi: YoutubeIframeApi = uninitialized;
+let youtubeIframeApi = uninitialized as YoutubeIframeApi;
 
 const loadYoutubeIframeApi = once(async () => {
   tinyassert(typeof window !== "undefined");
