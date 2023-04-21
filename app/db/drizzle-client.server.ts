@@ -15,7 +15,7 @@ import {
 import { MySql2Database, drizzle } from "drizzle-orm/mysql2";
 import { SQL, noopDecoder } from "drizzle-orm/sql";
 import { createConnection } from "mysql2/promise";
-import { throwGetterProxy } from "../utils/misc";
+import { uninitialized } from "../utils/misc";
 import type { PaginationParams } from "../utils/pagination";
 import knexfile from "./knexfile.server";
 import type { PaginationMetadata } from "./models";
@@ -243,7 +243,7 @@ declare let globalThis: {
   __drizzleClient: MySql2Database;
 };
 
-export let db = throwGetterProxy as typeof globalThis.__drizzleClient;
+export let db: typeof globalThis.__drizzleClient = uninitialized;
 
 export const initializeDrizzleClient = once(async () => {
   db = globalThis.__drizzleClient ??= await inner();

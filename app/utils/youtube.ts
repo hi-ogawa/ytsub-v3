@@ -4,12 +4,13 @@ import { XMLParser } from "fast-xml-parser";
 import { maxBy, once } from "lodash";
 import React from "react";
 import { z } from "zod";
+import { loadScript } from "./dom-utils";
 import {
   FILTERED_LANGUAGE_CODES,
   LanguageCode,
   languageCodeToName,
 } from "./language";
-import { loadScript, throwGetterProxy } from "./misc";
+import { uninitialized } from "./misc";
 import {
   CaptionConfig,
   CaptionConfigOptions,
@@ -337,7 +338,7 @@ export interface YoutubePlayer {
 }
 
 // singleton
-let youtubeIframeApi: YoutubeIframeApi = throwGetterProxy as any;
+let youtubeIframeApi: YoutubeIframeApi = uninitialized;
 
 const loadYoutubeIframeApi = once(async () => {
   tinyassert(typeof window !== "undefined");

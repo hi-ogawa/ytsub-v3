@@ -1,7 +1,7 @@
 import * as process from "process";
 import { once, tinyassert } from "@hiogawa/utils";
 import { z } from "zod";
-import { throwGetterProxy } from "./misc";
+import { uninitialized } from "./misc";
 
 //
 // common
@@ -28,11 +28,9 @@ const Z_PUBLIC_CONFIG = z.object({
   VERCEL_ENV: z.string().optional(),
 });
 
-export let serverConfig: z.infer<typeof Z_SERVER_CONFIG> =
-  throwGetterProxy as any;
+export let serverConfig: z.infer<typeof Z_SERVER_CONFIG> = uninitialized;
 
-export let publicConfig: z.infer<typeof Z_PUBLIC_CONFIG> =
-  throwGetterProxy as any;
+export let publicConfig: z.infer<typeof Z_PUBLIC_CONFIG> = uninitialized;
 
 export const CONFIG_SCRIPT_ID = "__configScript";
 
@@ -59,7 +57,7 @@ export function injectConfigScript(markup: string): string {
 //
 
 export const initializeConfigClient = once(() => {
-  if (publicConfig !== throwGetterProxy) {
+  if (publicConfig !== uninitialized) {
     return;
   }
   const el = document.querySelector("#" + CONFIG_SCRIPT_ID);
