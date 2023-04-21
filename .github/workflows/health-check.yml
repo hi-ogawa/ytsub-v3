@@ -9,3 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: curl -sSfL https://ytsub-v3-hiro18181.vercel.app/dev/health-check-db | jq --exit-status
+  health-check-staging:
+    runs-on: ubuntu-latest
+    steps:
+      - run: curl -sSfL https://ytsub-v3-hiro18181-bo7xw0w6b-hiogawa.vercel.app/dev/health-check-db | jq --exit-status
