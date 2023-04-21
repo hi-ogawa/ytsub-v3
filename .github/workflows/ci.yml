@@ -34,7 +34,7 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: coverage-unit
-          path: coverage
+          path: coverage/unit
 
   test-e2e:
     runs-on: ubuntu-20.04
