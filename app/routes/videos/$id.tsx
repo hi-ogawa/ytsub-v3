@@ -708,17 +708,8 @@ function NavBarMenuComponentImpl({
                   className="w-full antd-menu-item p-2 flex"
                   onClick={() => modal.setOpen(true)}
                 >
-                  Video Info
+                  Details
                 </button>
-              </li>
-              <li>
-                <Link
-                  className="w-full antd-menu-item p-2 flex"
-                  to={$R["/videos/new"](null, video)}
-                  onClick={() => context.onOpenChange(false)}
-                >
-                  Change languages
-                </Link>
               </li>
               <li>
                 <button
@@ -749,7 +740,7 @@ function NavBarMenuComponentImpl({
       </div>
       <modal.Wrapper>
         <div className="flex flex-col gap-2 p-4 relative">
-          <div className="text-lg">Video Info</div>
+          <div className="text-lg">Details</div>
           <label className="flex flex-col gap-1">
             <span className="text-colorTextLabel">Title</span>
             <input
@@ -788,10 +779,10 @@ function NavBarMenuComponentImpl({
           </label>
           <div className="border-t my-1"></div>
           <h4>Shortcuts</h4>
-          <div className="flex">
+          <div className="flex gap-2 text-sm">
             <button
               className={cls(
-                "antd-btn antd-btn-default px-2 py-0.5 text-sm",
+                "antd-btn antd-btn-default px-2 py-0.5",
                 lastBookmarkQuery.isLoading && "antd-btn-loading"
               )}
               onClick={() => {
@@ -800,6 +791,12 @@ function NavBarMenuComponentImpl({
             >
               Go to Last Bookmark
             </button>
+            <Link
+              className="antd-btn antd-btn-default px-2 py-0.5"
+              to={$R["/videos/new"](null, { videoId: video.videoId })}
+            >
+              Change Languages
+            </Link>
           </div>
         </div>
       </modal.Wrapper>
