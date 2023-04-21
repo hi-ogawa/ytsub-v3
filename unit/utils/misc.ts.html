@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">60% </span>
+                <span class="strong">50.87% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>42/70</span>
+                <span class='fraction'>29/57</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>5/5</span>
+                <span class='fraction'>3/3</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">35.71% </span>
+                <span class="strong">25% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>5/14</span>
+                <span class='fraction'>3/12</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">60% </span>
+                <span class="strong">50.87% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>42/70</span>
+                <span class='fraction'>29/57</span>
             </div>
         
             
@@ -120,26 +120,15 @@
 <a name='L55'></a><a href='#L55'>55</a>
 <a name='L56'></a><a href='#L56'>56</a>
 <a name='L57'></a><a href='#L57'>57</a>
-<a name='L58'></a><a href='#L58'>58</a>
-<a name='L59'></a><a href='#L59'>59</a>
-<a name='L60'></a><a href='#L60'>60</a>
-<a name='L61'></a><a href='#L61'>61</a>
-<a name='L62'></a><a href='#L62'>62</a>
-<a name='L63'></a><a href='#L63'>63</a>
-<a name='L64'></a><a href='#L64'>64</a>
-<a name='L65'></a><a href='#L65'>65</a>
-<a name='L66'></a><a href='#L66'>66</a>
-<a name='L67'></a><a href='#L67'>67</a>
-<a name='L68'></a><a href='#L68'>68</a>
-<a name='L69'></a><a href='#L69'>69</a>
-<a name='L70'></a><a href='#L70'>70</a>
-<a name='L71'></a><a href='#L71'>71</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L58'></a><a href='#L58'>58</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -186,30 +175,17 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import {
-  groupBy,
-  mapValues,
-  newPromiseWithResolvers,
-  tinyassert,
-} from "@hiogawa/utils";
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { newPromiseWithResolvers, tinyassert } from "@hiogawa/utils";
 import { UseQueryOptions, useQuery } from "@tanstack/react-query";
+&nbsp;
+// TODO: js-utils
+export function fromEntries&lt;K extends string, V&gt;(
+  entries: [K, V][]
+): Record&lt;K, V&gt; {
+  return Object.fromEntries(entries) as any;
+}
 &nbsp;
 //
 // Proxy to warn unexpected access
@@ -255,24 +231,9 @@ export <span class="fstat-no" title="function not covered" >function usePromise&
 <span class="cstat-no" title="statement not covered" >  });</span>
 <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >}</span></span>
 &nbsp;
-// TODO: to utils
 export <span class="fstat-no" title="function not covered" >function assertUnreachable(_value: never): never {</span>
 <span class="cstat-no" title="statement not covered" >  tinyassert(false, "unreachable");</span>
 <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >}</span></span>
-&nbsp;
-export function mapGroupBy&lt;T, K, V&gt;(
-  ls: T[],
-  keyFn: (v: T) =&gt; K,
-  valueFn: (vs: T[]) =&gt; V
-) {
-  return mapValues(groupBy(ls, keyFn), valueFn);
-}
-&nbsp;
-export function objectFromMap&lt;K extends keyof any, V&gt;(
-  map: Map&lt;K, V&gt;
-): Partial&lt;Record&lt;K, V&gt;&gt; {
-  return Object.fromEntries(map.entries()) as any;
-}
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -280,7 +241,7 @@ export function objectFromMap&lt;K extends keyof any, V&gt;(
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-04-21T10:28:10.855Z
+                at 2023-04-21T10:45:12.397Z
             </div>
         <script src="../prettify.js"></script>
         <script>
