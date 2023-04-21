@@ -12,4 +12,5 @@ jobs:
   health-check-staging:
     runs-on: ubuntu-latest
     steps:
+      # no fixed url for the latest staging (aka preview deploy), so we use a fixed old deployment
       - run: curl -sSfL https://ytsub-v3-hiro18181-bo7xw0w6b-hiogawa.vercel.app/dev/health-check-db | jq --exit-status
