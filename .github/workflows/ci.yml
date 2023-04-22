@@ -85,6 +85,13 @@ jobs:
       - run: make docker/up db/recreate
       - run: pnpm cli db:test-migrations --unit-test
       - run: pnpm cli db:test-migrations --reversibility-test
+      - run: make db/reset/dev
+      - name: install skeema
+        run: |
+          curl -LO https://github.com/skeema/skeema/releases/latest/download/skeema_amd64.deb
+          sudo apt install ./skeema_amd64.deb
+      - run: pnpm skeema diff
+      - run: pnpm skeema lint
 
   publish-coverage-report:
     runs-on: ubuntu-20.04
