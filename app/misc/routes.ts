@@ -1,7 +1,7 @@
 import { tinyassert } from "@hiogawa/utils";
 import { z } from "zod";
 import { Z_PRACTICE_ACTION_TYPES, Z_PRACTICE_QUEUE_TYPES } from "../db/types";
-import { createGetProxy } from "../utils/proxy-utiils";
+import { createGetProxy } from "../utils/misc";
 
 // centralized route definitions to benefit from static analysis e.g.
 // - prevent typo by type check
