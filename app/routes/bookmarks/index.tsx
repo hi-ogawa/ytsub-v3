@@ -26,7 +26,7 @@ import type {
   VideoTable,
 } from "../../db/models";
 import { $R, ROUTE_DEF } from "../../misc/routes";
-import { trpc } from "../../trpc/client";
+import { trpcClient } from "../../trpc/client-internal.client";
 import { Controller, makeLoader } from "../../utils/controller-utils";
 import { useDeserialize } from "../../utils/hooks";
 import { useLeafLoaderData } from "../../utils/loader-utils";
@@ -347,14 +347,15 @@ export function MiniPlayer({
   });
 
   const loadCaptionEntryMutation = useMutation({
-    mutationFn: async (direction: "previous" | "next") =>
-      trpc.videos_getCaptionEntries.mutationOptions().mutationFn({
+    mutationFn: async (direction: "previous" | "next") => {
+      return trpcClient.videos_getCaptionEntries.mutate({
         videoId: initialEntry.videoId,
         index:
           direction === "previous"
             ? captionEntries.at(0)!.index - 1
             : captionEntries.at(-1)!.index + 1,
-      }),
+      });
+    },
     onSuccess: (data) => {
       let newCaptionEntries = [...captionEntries, data];
       newCaptionEntries = sortBy(newCaptionEntries, (e) => e.index);
