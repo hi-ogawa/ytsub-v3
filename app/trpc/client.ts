@@ -4,7 +4,7 @@ import { trpcClient } from "./client-internal.client";
 import type { trpcApp } from "./server";
 
 //
-// quick and dirty react-query integration (cf. https://trpc.io/docs/reactjs/introduction)
+// quick and dirty react-query integration (super simplified version of https://trpc.io/docs/reactjs/introduction)
 //
 
 type Inputs = inferRouterInputs<typeof trpcApp>;
