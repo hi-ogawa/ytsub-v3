@@ -1,6 +1,6 @@
 import { deepEqual } from "assert/strict";
 import fs from "node:fs";
-import { tinyassert } from "@hiogawa/utils";
+import { objectPick, tinyassert } from "@hiogawa/utils";
 import { cac } from "cac";
 import consola from "consola";
 import { range, zip } from "lodash";
@@ -24,6 +24,7 @@ import { exec, streamToString } from "../utils/node.server";
 import {
   queryDeckPracticeEntriesCountByQueueType,
   queryNextPracticeEntryRandomMode,
+  resetDeckCache,
 } from "../utils/practice-system";
 import { NewVideo, fetchCaptionEntries } from "../utils/youtube";
 import { finalizeServer, initializeServer } from "./initialize-server";
@@ -529,6 +530,21 @@ async function printSession(username: string, password: string) {
   const cookie = await createUserCookie(user);
   console.log(cookie);
 }
+
+//
+// resetDeckCache
+//
+
+cli.command(resetDeckCache.name).action(async () => {
+  const decks = await db.select().from(T.decks);
+  for (const deck of decks) {
+    console.log(
+      "::",
+      JSON.stringify(objectPick(deck, ["userId", "id", "name"]))
+    );
+    await resetDeckCache(deck.id);
+  }
+});
 
 //
 // main
