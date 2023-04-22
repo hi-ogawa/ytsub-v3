@@ -91,6 +91,7 @@ jobs:
           curl -LO https://github.com/skeema/skeema/releases/latest/download/skeema_amd64.deb
           sudo apt install ./skeema_amd64.deb
       - run: pnpm skeema diff
+      - run: pnpm skeema lint
 
   publish-coverage-report:
     runs-on: ubuntu-20.04
