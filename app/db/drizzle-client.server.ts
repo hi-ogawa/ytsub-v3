@@ -117,7 +117,15 @@ const decks = mysqlTable("decks", {
   easeBonus: float("easeBonus").notNull(),
   randomMode: boolean("randomMode").notNull().default(DUMMY_DEFAULT),
   practiceEntriesCountByQueueType: json<Record<PracticeQueueType, number>>("practiceEntriesCountByQueueType").notNull().default(DUMMY_DEFAULT),
+  cache: json<DeckCache>("cache").notNull().default(DUMMY_DEFAULT),
 });
+
+// prettier-ignore
+interface DeckCache {
+  nextEntriesRandomMode?: { id: number }[];
+  practiceEntriesCountByQueueType?: Partial<Record<PracticeQueueType, number>>;
+  practiceActionsCountByActionType?: Partial<Record<PracticeActionType, number>>;
+}
 
 const practiceEntries = mysqlTable("practiceEntries", {
   id: serial("id").primaryKey(),
