@@ -122,9 +122,9 @@ const decks = mysqlTable("decks", {
 
 // prettier-ignore
 interface DeckCache {
-  nextEntriesRandomMode?: { id: number }[];
-  practiceEntriesCountByQueueType?: Partial<Record<PracticeQueueType, number>>;
-  practiceActionsCountByActionType?: Partial<Record<PracticeActionType, number>>;
+  nextEntriesRandomMode: { id: number }[];
+  practiceEntriesCountByQueueType: Record<PracticeQueueType, number>;
+  practiceActionsCountByActionType: Record<PracticeActionType, number>;
 }
 
 const practiceEntries = mysqlTable("practiceEntries", {

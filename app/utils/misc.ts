@@ -50,3 +50,26 @@ export function objectFromMap<K extends keyof any, V>(
   }
   return result;
 }
+
+// safely create non-Partial record by forcing providing complete keys (cf. https://github.com/colinhacks/zod/blob/502384e56fe2b1f8173735df6c3b0d41bce04edc/src/types.ts#L3946)
+export function objectFromMapDefault<
+  K extends string,
+  Keys extends [K, ...K[]],
+  V
+>(
+  map: Map<Keys[number], V>,
+  keys: Keys,
+  defaultValue: V
+): Record<Keys[number], V> {
+  return {
+    ...defaultObject(keys, defaultValue),
+    ...objectFromMap(map),
+  };
+}
+
+function defaultObject<K extends string, Keys extends [K, ...K[]], V>(
+  keys: Keys,
+  defaultValue: V
+): Record<Keys[number], V> {
+  return Object.fromEntries(keys.map((t) => [t, defaultValue])) as any;
+}

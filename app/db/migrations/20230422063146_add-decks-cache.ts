@@ -1,6 +1,7 @@
 import type { Knex } from "knex";
 
 export async function up(knex: Knex) {
+  // ensures default value by application logic `resetDeckCache`
   await knex.raw(
     "ALTER TABLE `decks` ADD COLUMN `cache` json NOT NULL DEFAULT (json_object());"
   );

@@ -9,6 +9,7 @@ import {
   hashInt32,
   queryNextPracticeEntryRandomMode,
   resetDeckCache,
+  updateDeckCache,
 } from "./practice-system";
 
 // it doesn't matter yet but make NOW deterministic
@@ -223,7 +224,7 @@ describe("hashInt32", () => {
   });
 });
 
-describe(resetDeckCache.name, () => {
+describe("DeckCache", () => {
   const userHook = useUser({
     seed: __filename + "randomMode",
   });
@@ -234,16 +235,50 @@ describe(resetDeckCache.name, () => {
     deckId = await importSeed(userHook.data.id);
   });
 
-  it("basic", async () => {
-    await resetDeckCache(deckId);
+  async function getDeck() {
     const deck = await findOne(
       db.select().from(T.decks).where(E.eq(T.decks.id, deckId))
     );
     tinyassert(deck);
+    return deck;
+  }
+
+  it("basic", async () => {
+    await resetDeckCache(deckId);
+    let deck = await getDeck();
     expect(deck.cache).toMatchInlineSnapshot(`
       {
-        "practiceActionsCountByActionType": "{\\"HARD\\":64,\\"GOOD\\":55,\\"AGAIN\\":128}",
-        "practiceEntriesCountByQueueType": "{\\"REVIEW\\":13,\\"LEARN\\":187,\\"NEW\\":140}",
+        "nextEntriesRandomMode": [],
+        "practiceActionsCountByActionType": {
+          "AGAIN": 128,
+          "EASY": 0,
+          "GOOD": 55,
+          "HARD": 64,
+        },
+        "practiceEntriesCountByQueueType": {
+          "LEARN": 187,
+          "NEW": 140,
+          "REVIEW": 13,
+        },
+      }
+    `);
+
+    await updateDeckCache(deckId, { LEARN: 1, NEW: -1 }, { GOOD: 1 });
+    deck = await getDeck();
+    expect(deck.cache).toMatchInlineSnapshot(`
+      {
+        "nextEntriesRandomMode": [],
+        "practiceActionsCountByActionType": {
+          "AGAIN": 128,
+          "EASY": 0,
+          "GOOD": 56,
+          "HARD": 64,
+        },
+        "practiceEntriesCountByQueueType": {
+          "LEARN": 188,
+          "NEW": 139,
+          "REVIEW": 13,
+        },
       }
     `);
   });
