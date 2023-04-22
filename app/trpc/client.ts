@@ -1,16 +1,29 @@
-import { tinyassert } from "@hiogawa/utils";
+import type { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
 import { createGetProxy } from "../utils/misc";
-import { _trpc } from "./client-internal.client";
+import { trpcClient } from "./client-internal.client";
 import type { trpcApp } from "./server";
 
 //
-// quick and dirty flat route version of https://trpc.io/docs/reactjs/introduction
+// quick and dirty react-query integration (super simplified version of https://trpc.io/docs/reactjs/introduction)
 //
 
-type TRecord = (typeof trpcApp)["_def"]["record"];
-type TType<K extends keyof TRecord> = TRecord[K]["_type"];
-type TInput<K extends keyof TRecord> = TRecord[K]["_def"]["_input_in"];
-type TOutput<K extends keyof TRecord> = TRecord[K]["_def"]["_output_out"];
+type Inputs = inferRouterInputs<typeof trpcApp>;
+type Outputs = inferRouterOutputs<typeof trpcApp>;
+
+type ReactQueryIntegration = {
+  [K in keyof Inputs]: {
+    queryKey: K;
+    queryOptions: (input: Inputs[K]) => {
+      queryKey: unknown[];
+      queryFn: () => Promise<Outputs[K]>;
+    };
+    mutationKey: K;
+    mutationOptions: () => {
+      mutationKey: unknown[];
+      mutationFn: (input: Inputs[K]) => Promise<Outputs[K]>;
+    };
+  };
+};
 
 // prettier-ignore
 export const trpc =
@@ -22,37 +35,16 @@ export const trpc =
       if (prop === "queryOptions") {
         return (input: unknown) => ({
           queryKey: [k, input],
-          queryFn: () => (_trpc as any)[k].query(input),
+          queryFn: () => (trpcClient as any)[k].query(input),
         })
       }
       if (prop === "mutationOptions") {
         return () => ({
           mutationKey: [k],
-          mutationFn: (input: unknown) => (_trpc as any)[k].mutate(input),
+          mutationFn: (input: unknown) => (trpcClient as any)[k].mutate(input),
         })
       }
-      tinyassert(false, "unreachable");
+      console.error({ k, prop });
+      throw new Error("invalid trpc react-query call");
     })
-  ) as TrpcProxy;
-
-// prettier-ignore
-type TrpcProxy = {
-  [K in keyof TRecord]:
-    TType<K> extends "query"
-    ? {
-        queryKey: K;
-        queryOptions: (input: TInput<K>) => {
-          queryKey: unknown[];
-          queryFn: () => Promise<TOutput<K>>;
-        }
-      }
-  : TType<K> extends "mutation"
-    ? {
-        mutationKey: K;
-        mutationOptions: () => {
-          mutationKey: unknown[];
-          mutationFn: (input: TInput<K>) => Promise<TOutput<K>>;
-        }
-      }
-  : never
-}
+  ) as ReactQueryIntegration;
