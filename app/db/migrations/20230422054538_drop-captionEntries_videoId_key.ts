@@ -7,5 +7,7 @@ export async function up(knex: Knex) {
 }
 
 export async function down(knex: Knex) {
-  await knex.raw(`SELECT 1 + 1`);
+  await knex.raw(
+    "ALTER TABLE `captionEntries` ADD KEY `captionEntries_videoId_key` (`videoId`);"
+  );
 }
