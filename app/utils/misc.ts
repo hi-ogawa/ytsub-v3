@@ -44,5 +44,9 @@ export function mapGroupBy<T, K, V>(
 export function objectFromMap<K extends keyof any, V>(
   map: Map<K, V>
 ): Partial<Record<K, V>> {
-  return Object.fromEntries(map.entries()) as any;
+  const result: Partial<Record<K, V>> = {};
+  for (const [k, v] of map) {
+    result[k] = v;
+  }
+  return result;
 }

@@ -8,6 +8,7 @@ import {
   PracticeSystem,
   hashInt32,
   queryNextPracticeEntryRandomMode,
+  resetDeckCache,
 } from "./practice-system";
 
 // it doesn't matter yet but make NOW deterministic
@@ -218,6 +219,32 @@ describe("hashInt32", () => {
         100,
         90,
       ]
+    `);
+  });
+});
+
+describe(resetDeckCache.name, () => {
+  const userHook = useUser({
+    seed: __filename + "randomMode",
+  });
+  let deckId: number;
+
+  beforeAll(async () => {
+    await userHook.isReady;
+    deckId = await importSeed(userHook.data.id);
+  });
+
+  it("basic", async () => {
+    await resetDeckCache(deckId);
+    const deck = await findOne(
+      db.select().from(T.decks).where(E.eq(T.decks.id, deckId))
+    );
+    tinyassert(deck);
+    expect(deck.cache).toMatchInlineSnapshot(`
+      {
+        "practiceActionsCountByActionType": "{\\"HARD\\":64,\\"GOOD\\":55,\\"AGAIN\\":128}",
+        "practiceEntriesCountByQueueType": "{\\"REVIEW\\":13,\\"LEARN\\":187,\\"NEW\\":140}",
+      }
     `);
   });
 });

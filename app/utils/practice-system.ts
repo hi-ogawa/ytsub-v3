@@ -1,6 +1,6 @@
 import { tinyassert } from "@hiogawa/utils";
 import { Temporal } from "@js-temporal/polyfill";
-import { sql } from "drizzle-orm";
+import { AnyColumn, GetColumnData, sql } from "drizzle-orm";
 import { difference, range } from "lodash";
 import { E, T, db, findOne } from "../db/drizzle-client.server";
 import type {
@@ -283,6 +283,61 @@ export async function queryDeckPracticeEntriesCountByQueueType(
       ([row]) => row.count
     ),
   ]);
+}
+
+export async function resetDeckCache(deckId: number) {
+  const rows1 = await db
+    .select({
+      queueType: T.practiceEntries.queueType,
+      count: sql<number>`COUNT(0)`,
+    })
+    .from(T.practiceEntries)
+    .where(E.eq(T.practiceEntries.deckId, deckId))
+    .groupBy(T.practiceEntries.queueType);
+
+  const rows2 = await db
+    .select({
+      actionType: T.practiceActions.actionType,
+      count: sql<number>`COUNT(0)`,
+    })
+    .from(T.practiceActions)
+    .where(E.eq(T.practiceActions.deckId, deckId))
+    .groupBy(T.practiceActions.actionType);
+
+  await db
+    .update(T.decks)
+    .set({
+      cache: sqlJsonSetJs(T.decks.cache, {
+        practiceEntriesCountByQueueType: objectFromMap(
+          mapGroupBy(
+            rows1,
+            (row) => row.queueType,
+            ([row]) => row.count
+          )
+        ),
+        practiceActionsCountByActionType: objectFromMap(
+          mapGroupBy(
+            rows2,
+            (row) => row.actionType,
+            ([row]) => row.count
+          )
+        ),
+      }),
+    })
+    .where(E.eq(T.decks.id, deckId));
+}
+
+function sqlJsonSetJs<Column extends AnyColumn>(
+  column: Column,
+  data: Partial<GetColumnData<Column>> & object
+) {
+  let q = sql`JSON_SET(${column}`;
+  for (const [k, v] of Object.entries(data)) {
+    const path = `$."${k}"`;
+    q = sql`${q}, ${path}, ${JSON.stringify(v)}`;
+  }
+  q = sql`${q})`;
+  return q;
 }
 
 async function getDailyPracticeStatistics(deckId: number, startOfDay: Date) {
