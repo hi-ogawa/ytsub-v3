@@ -11,6 +11,7 @@ import {
   mysqlTable,
   serial,
   text,
+  timestamp,
 } from "drizzle-orm/mysql-core";
 import { MySql2Database, drizzle } from "drizzle-orm/mysql2";
 import { SQL, noopDecoder } from "drizzle-orm/sql";
@@ -141,6 +142,13 @@ const practiceActions = mysqlTable("practiceActions", {
   actionType: text<PracticeActionType>("actionType").notNull(),
 });
 
+const knex_migrations = mysqlTable("knex_migrations", {
+  id: serial("id").primaryKey(),
+  name: text("name"),
+  batch: int("batch"),
+  migration_time: timestamp("migration_time"),
+});
+
 // short accessor for tables
 export const T = {
   users,
@@ -150,6 +158,7 @@ export const T = {
   decks,
   practiceEntries,
   practiceActions,
+  knex_migrations,
 };
 
 export type TT = { [K in keyof typeof T]: InferModel<(typeof T)[K]> };
