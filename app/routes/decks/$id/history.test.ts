@@ -43,6 +43,7 @@ describe("decks/id/history.loader", () => {
       {
         "json": {
           "deck": {
+            "cache": {},
             "createdAt": "...",
             "easeBonus": 2,
             "easeMultiplier": 1.5,
