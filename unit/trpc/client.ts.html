@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">98.27% </span>
+                <span class="strong">96% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>57/58</span>
+                <span class='fraction'>48/50</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">50% </span>
+                <span class="strong">60% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>2/4</span>
+                <span class='fraction'>3/5</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">98.27% </span>
+                <span class="strong">96% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>57/58</span>
+                <span class='fraction'>48/50</span>
             </div>
         
             
@@ -113,17 +113,7 @@
 <a name='L48'></a><a href='#L48'>48</a>
 <a name='L49'></a><a href='#L49'>49</a>
 <a name='L50'></a><a href='#L50'>50</a>
-<a name='L51'></a><a href='#L51'>51</a>
-<a name='L52'></a><a href='#L52'>52</a>
-<a name='L53'></a><a href='#L53'>53</a>
-<a name='L54'></a><a href='#L54'>54</a>
-<a name='L55'></a><a href='#L55'>55</a>
-<a name='L56'></a><a href='#L56'>56</a>
-<a name='L57'></a><a href='#L57'>57</a>
-<a name='L58'></a><a href='#L58'>58</a>
-<a name='L59'></a><a href='#L59'>59</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<a name='L51'></a><a href='#L51'>51</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -155,6 +145,7 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -172,24 +163,15 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { tinyassert } from "@hiogawa/utils";
-import { createGetProxy } from "../utils/misc";
-import { _trpc } from "./client-internal.client";
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { createGetProxy } from "../utils/misc";
+import { trpcClient } from "./client-internal.client";
 import type { trpcApp } from "./server";
 &nbsp;
 //
-// quick and dirty flat route version of https://trpc.io/docs/reactjs/introduction
+// quick and dirty react-query integration (cf. https://trpc.io/docs/reactjs/introduction)
 //
 &nbsp;
 type TRecord = (typeof trpcApp)["_def"]["record"];
-type TType&lt;K extends keyof TRecord&gt; = TRecord[K]["_type"];
 type TInput&lt;K extends keyof TRecord&gt; = TRecord[K]["_def"]["_input_in"];
 type TOutput&lt;K extends keyof TRecord&gt; = TRecord[K]["_def"]["_output_out"];
 &nbsp;
@@ -203,40 +185,34 @@ export const trpc =
       if (prop === "queryOptions") {
         return (input: unknown) =&gt; ({
           queryKey: [k, input],
-          queryFn: <span class="fstat-no" title="function not covered" >() =&gt; (_trpc as any)[k].query(input),</span>
+          queryFn: <span class="fstat-no" title="function not covered" >() =&gt; (trpcClient as any)[k].query(input),</span>
         })
       }
       if (prop === "mutationOptions") {
         return () =&gt; ({
           mutationKey: [k],
-          mutationFn: <span class="fstat-no" title="function not covered" >(input: unknown) =&gt; (_trpc as any)[k].mutate(input),</span>
+          mutationFn: <span class="fstat-no" title="function not covered" >(input: unknown) =&gt; (trpcClient as any)[k].mutate(input),</span>
         })
 <span class="branch-0 cbranch-no" title="branch not covered" >      }</span>
-<span class="cstat-no" title="statement not covered" >      tinyassert(false, "unreachable");</span>
+<span class="cstat-no" title="statement not covered" >      console.error({ k, prop });</span>
+<span class="cstat-no" title="statement not covered" >      throw new Error("invalid trpc react-query call");</span>
     })
   ) as TrpcProxy;
 &nbsp;
-// prettier-ignore
 type TrpcProxy = {
-  [K in keyof TRecord]:
-    TType&lt;K&gt; extends "query"
-    ? {
-        queryKey: K;
-        queryOptions: (input: TInput&lt;K&gt;) =&gt; {
-          queryKey: unknown[];
-          queryFn: () =&gt; Promise&lt;TOutput&lt;K&gt;&gt;;
-        }
-      }
-  : TType&lt;K&gt; extends "mutation"
-    ? {
-        mutationKey: K;
-        mutationOptions: () =&gt; {
-          mutationKey: unknown[];
-          mutationFn: (input: TInput&lt;K&gt;) =&gt; Promise&lt;TOutput&lt;K&gt;&gt;;
-        }
-      }
-  : never
-}
+  [K in keyof TRecord]: {
+    queryKey: K;
+    queryOptions: (input: TInput&lt;K&gt;) =&gt; {
+      queryKey: unknown[];
+      queryFn: () =&gt; Promise&lt;TOutput&lt;K&gt;&gt;;
+    };
+    mutationKey: K;
+    mutationOptions: () =&gt; {
+      mutationKey: unknown[];
+      mutationFn: (input: TInput&lt;K&gt;) =&gt; Promise&lt;TOutput&lt;K&gt;&gt;;
+    };
+  };
+};
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -244,7 +220,7 @@ type TrpcProxy = {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-04-22T04:16:05.203Z
+                at 2023-04-22T04:27:47.171Z
             </div>
         <script src="../prettify.js"></script>
         <script>
