@@ -348,12 +348,13 @@ export function MiniPlayer({
 
   const loadCaptionEntryMutation = useMutation({
     mutationFn: async (direction: "previous" | "next") => {
+      const index =
+        direction === "previous"
+          ? captionEntries.at(0)!.index - 1
+          : captionEntries.at(-1)!.index + 1;
       return trpcClient.videos_getCaptionEntries.mutate({
         videoId: initialEntry.videoId,
-        index:
-          direction === "previous"
-            ? captionEntries.at(0)!.index - 1
-            : captionEntries.at(-1)!.index + 1,
+        index,
       });
     },
     onSuccess: (data) => {
