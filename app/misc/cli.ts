@@ -67,10 +67,16 @@ async function getSchema(options: {
       const [rows] = await client.raw(`SHOW CREATE TABLE ${name}`);
       result[name] = rows[0]["Create Table"];
     } else {
-      const [rows] = await client.raw(`DESCRIBE ${name}`);
-      result[name] = Object.fromEntries(
-        rows.map((row: any) => [row.Field, row])
-      );
+      const [fields] = await client.raw(`DESCRIBE ${name}`);
+      const [indices] = await client.raw(`SHOW INDEX FROM ${name}`);
+      result[name] = {
+        describe: Object.fromEntries(
+          fields.map((row: any) => [row.Field, row])
+        ),
+        index: Object.fromEntries(
+          indices.map((row: any) => [row.Key_name, row])
+        ),
+      };
     }
   }
   return result;
@@ -107,7 +113,7 @@ async function clieDbTestMigrations(options: {
   const downs = [];
 
   const getSchema_ = () =>
-    getSchema({ showCreateTable: true, includeKnex: false });
+    getSchema({ showCreateTable: false, includeKnex: false });
 
   console.error(":: running migrations");
   if (options.unitTest) {
@@ -134,7 +140,9 @@ async function clieDbTestMigrations(options: {
   }
 
   if (options.reversibilityTest) {
-    deepEqual(ups, downs);
+    for (const [up, down] of zip(ups, downs)) {
+      deepEqual(up, down);
+    }
     console.error(":: reversibility test success");
   }
 }
