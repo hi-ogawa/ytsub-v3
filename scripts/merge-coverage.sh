@@ -1,6 +1,8 @@
 #!/bin/bash
 set -eux -o pipefail
 
+# TODO: not working
+
 rm -rf coverage/all
 mkdir -p coverage/all/tmp
 

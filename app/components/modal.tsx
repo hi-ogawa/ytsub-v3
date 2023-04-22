@@ -32,7 +32,7 @@ function Modal(props: {
 
   return (
     <FloatingPortal id={id}>
-      <Transition appear show={props.open} className="z-100">
+      <Transition appear show={props.open}>
         {/* backdrop */}
         <Transition.Child
           className="transition duration-300 fixed inset-0 bg-black"
@@ -70,8 +70,8 @@ function Modal(props: {
   );
 }
 
-export function useModal() {
-  const [open, setOpen] = React.useState(false);
+export function useModal(defaultOpen?: boolean) {
+  const [open, setOpen] = React.useState(defaultOpen ?? false);
   const openRef = useStableRef(open); // pass stable ref to Wrapper
 
   const [Wrapper] = React.useState(

@@ -5,13 +5,14 @@ jobs:
   build:
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v2
-      - uses: pnpm/action-setup@v2.0.1
+      - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2
         with:
           version: 7
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
           node-version: 16
+          cache: pnpm
       - run: make lint
       - run: pnpm i
       - run: pnpm lint-check
@@ -21,31 +22,33 @@ jobs:
   test:
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v2
-      - uses: pnpm/action-setup@v2.0.1
+      - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2
         with:
           version: 7
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
           node-version: 16
+          cache: pnpm
       - run: pnpm i
       - run: make docker/up db/reset/test db/seed-download
       - run: pnpm test-coverage
       - uses: actions/upload-artifact@v3
         with:
           name: coverage-unit
-          path: coverage
+          path: coverage/unit
 
   test-e2e:
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v2
-      - uses: pnpm/action-setup@v2.0.1
+      - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2
         with:
           version: 7
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
           node-version: 16
+          cache: pnpm
       - run: pnpm i
       - uses: actions/cache@v3
         id: cache-playwright
@@ -55,11 +58,12 @@ jobs:
       - if: steps.cache-playwright.outputs.cache-hit != 'true'
         run: npx playwright install --with-deps
       - run: make docker/up db/reset/test db/seed-download
-      - run: APP_RECAPTCHA_DISABLED=1 E2E_CLIENT_TRACE=1 pnpm test-e2e-coverage
+      - run: E2E_CLIENT_TRACE=1 pnpm test-e2e-coverage
+      - run: rm -rf coverage/e2e-client/tmp coverage/e2e-server/tmp
       - uses: actions/upload-artifact@v3
         with:
-          name: coverage-e2e
-          path: coverage
+          name: coverage-e2e-server
+          path: coverage/e2e-server
       - uses: actions/upload-artifact@v3
         if: always()
         with:
@@ -69,57 +73,47 @@ jobs:
   test-migrations:
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v2
-      - uses: pnpm/action-setup@v2.0.1
+      - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2
         with:
           version: 7
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
           node-version: 16
+          cache: pnpm
       - run: pnpm i
       - run: make docker/up db/recreate
       - run: pnpm cli db:test-migrations --unit-test
       - run: pnpm cli db:test-migrations --reversibility-test
 
   publish-coverage-report:
-    # TODO: disabled since this is broken after vitest update https://github.com/hi-ogawa/ytsub-v3/pull/192
-    if: github.ref == 'refs/heads/master-xxx'
     runs-on: ubuntu-20.04
     needs:
       - test
       - test-e2e
     steps:
-      - uses: actions/checkout@v2
-      - uses: pnpm/action-setup@v2.0.1
-        with:
-          version: 7
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
           node-version: 16
-      - run: pnpm i
-      - run: export NODE_ENV=test && pnpm dev-pre && npx remix build --sourcemap
       - uses: actions/download-artifact@v3
         with:
           name: coverage-unit
-          path: coverage-unit
+          path: coverage/unit
       - uses: actions/download-artifact@v3
         with:
-          name: coverage-e2e
-          path: coverage-e2e
-      - name: generate report
-        run: |
-          mkdir -p coverage/all/tmp
-          mv coverage-unit/unit coverage-e2e/e2e-client coverage-e2e/e2e-server coverage
-          bash scripts/merge-coverage.sh
-          rm coverage/*/tmp/*.json
+          name: coverage-e2e-server
+          path: coverage/e2e-server
       - name: publish report
         run: |
-          echo "== HTML PREVIEW URL =="
-          echo "https://htmlpreview.github.io/?https://raw.githubusercontent.com/hi-ogawa/ytsub-v3/__coverage__/$(git rev-parse HEAD)/unit/index.html"
-          echo "https://htmlpreview.github.io/?https://raw.githubusercontent.com/hi-ogawa/ytsub-v3/__coverage__/$(git rev-parse HEAD)/e2e-server/index.html"
-          echo "https://htmlpreview.github.io/?https://raw.githubusercontent.com/hi-ogawa/ytsub-v3/__coverage__/$(git rev-parse HEAD)/e2e-client/index.html"
-          echo "https://htmlpreview.github.io/?https://raw.githubusercontent.com/hi-ogawa/ytsub-v3/__coverage__/$(git rev-parse HEAD)/all/index.html"
-          echo "======================"
+          # run gh-pages
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          NODE_DEBUG=gh-pages npx gh-pages --add --branch __coverage__ --dist coverage --dest $(git rev-parse HEAD) --repo "https://${GITHUB_ACTOR}:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git"
+          NODE_DEBUG=gh-pages npx gh-pages --branch __coverage__ --dist coverage --repo "https://${GITHUB_ACTOR}:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git"
+
+          # output summary
+          git fetch --depth 1 origin __coverage__
+          report_url_base="https://htmlpreview.github.io/?https://raw.githubusercontent.com/hi-ogawa/ytsub-v3/$(git rev-parse origin/__coverage__)"
+          echo "## coverage report" >> $GITHUB_STEP_SUMMARY
+          echo "- [unit]($report_url_base/unit/index.html)" >> $GITHUB_STEP_SUMMARY
+          echo "- [e2e-server]($report_url_base/e2e-server/index.html)" >> $GITHUB_STEP_SUMMARY

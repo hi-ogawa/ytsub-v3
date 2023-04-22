@@ -2,7 +2,7 @@ import { Transition } from "@headlessui/react";
 import { tinyassert } from "@hiogawa/utils";
 import { isNil } from "@hiogawa/utils";
 import { toArraySetState, useRafLoop } from "@hiogawa/utils-react";
-import { Form, Link, useLoaderData } from "@remix-run/react";
+import { Form, Link, useLoaderData, useNavigate } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import { useMutation } from "@tanstack/react-query";
 import {
@@ -201,12 +201,21 @@ function PageComponent({
     }
 
     // auto scroll subtitle list
-    if (autoScroll && nextEntry && virtualizer.scrollElement) {
+    if (
+      autoScroll &&
+      nextEntry &&
+      nextEntry !== currentEntry &&
+      virtualizer.scrollElement
+    ) {
       const { scrollTop, clientHeight } = virtualizer.scrollElement;
       const currentCenter = scrollTop + clientHeight / 2;
+      const threshold = clientHeight / 6;
       const items = virtualizer.getVirtualItems();
       const currentItem = items.find((item) => item.index === nextEntry?.index);
-      if (!currentItem || Math.abs(currentItem.start - currentCenter) > 150) {
+      if (
+        !currentItem ||
+        Math.abs(currentItem.start - currentCenter) > threshold
+      ) {
         virtualizer.scrollToIndex(nextEntry.index, {
           align: "center",
           behavior: "auto",
@@ -641,6 +650,26 @@ function NavBarMenuComponentImpl({
   const [repeatingEntries, setRepeatingEntries] = useRepeatingEntries();
   const modal = useModal();
 
+  const navigate = useNavigate();
+
+  const lastBookmarkQuery = useMutation({
+    ...trpc.videos_getLastBookmark.mutationOptions(),
+    onSuccess: (data) => {
+      if (data) {
+        modal.setOpen(false);
+        navigate(
+          $R["/videos/$id"](
+            { id: video.id },
+            { index: data.captionEntries.index }
+          ),
+          { replace: true }
+        );
+      } else {
+        toast.error("No bookmark is found");
+      }
+    },
+  });
+
   return (
     <>
       {user && user.id !== video.userId && (
@@ -669,7 +698,7 @@ function NavBarMenuComponentImpl({
           reference={
             <button
               className="antd-btn antd-btn-ghost i-ri-more-2-line w-6 h-6"
-              data-test="user-menu"
+              data-testid="video-menu-reference"
             />
           }
           floating={(context) => (
@@ -679,17 +708,8 @@ function NavBarMenuComponentImpl({
                   className="w-full antd-menu-item p-2 flex"
                   onClick={() => modal.setOpen(true)}
                 >
-                  Video Info
+                  Details
                 </button>
-              </li>
-              <li>
-                <Link
-                  className="w-full antd-menu-item p-2 flex"
-                  to={$R["/videos/new"](null, video)}
-                  onClick={() => context.onOpenChange(false)}
-                >
-                  Change languages
-                </Link>
               </li>
               <li>
                 <button
@@ -720,7 +740,7 @@ function NavBarMenuComponentImpl({
       </div>
       <modal.Wrapper>
         <div className="flex flex-col gap-2 p-4 relative">
-          <div className="text-lg">Video Info</div>
+          <div className="text-lg">Details</div>
           <label className="flex flex-col gap-1">
             <span className="text-colorTextLabel">Title</span>
             <input
@@ -757,6 +777,27 @@ function NavBarMenuComponentImpl({
               value={video.bookmarkEntriesCount}
             />
           </label>
+          <div className="border-t my-1"></div>
+          <h4>Shortcuts</h4>
+          <div className="flex gap-2 text-sm">
+            <button
+              className={cls(
+                "antd-btn antd-btn-default px-2 py-0.5",
+                lastBookmarkQuery.isLoading && "antd-btn-loading"
+              )}
+              onClick={() => {
+                lastBookmarkQuery.mutate({ videoId: video.id });
+              }}
+            >
+              Go to Last Bookmark
+            </button>
+            <Link
+              className="antd-btn antd-btn-default px-2 py-0.5"
+              to={$R["/videos/new"](null, { videoId: video.videoId })}
+            >
+              Change Languages
+            </Link>
+          </div>
         </div>
       </modal.Wrapper>
     </>
