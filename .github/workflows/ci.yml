@@ -31,7 +31,8 @@ jobs:
           node-version: 16
           cache: pnpm
       - run: pnpm i
-      - run: make docker/up db/reset/test db/seed-download
+      - run: make docker/up db/reset db/seed-download
+      - run: pnpm skeema diff
       - run: pnpm test-coverage
       - uses: actions/upload-artifact@v3
         with:
