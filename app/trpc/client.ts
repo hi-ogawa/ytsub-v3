@@ -1,3 +1,4 @@
+import type { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
 import { createGetProxy } from "../utils/misc";
 import { trpcClient } from "./client-internal.client";
 import type { trpcApp } from "./server";
@@ -6,9 +7,23 @@ import type { trpcApp } from "./server";
 // quick and dirty react-query integration (cf. https://trpc.io/docs/reactjs/introduction)
 //
 
-type TRecord = (typeof trpcApp)["_def"]["record"];
-type TInput<K extends keyof TRecord> = TRecord[K]["_def"]["_input_in"];
-type TOutput<K extends keyof TRecord> = TRecord[K]["_def"]["_output_out"];
+type Inputs = inferRouterInputs<typeof trpcApp>;
+type Outputs = inferRouterOutputs<typeof trpcApp>;
+
+type ReactQueryIntegration = {
+  [K in keyof Inputs]: {
+    queryKey: K;
+    queryOptions: (input: Inputs[K]) => {
+      queryKey: unknown[];
+      queryFn: () => Promise<Outputs[K]>;
+    };
+    mutationKey: K;
+    mutationOptions: () => {
+      mutationKey: unknown[];
+      mutationFn: (input: Inputs[K]) => Promise<Outputs[K]>;
+    };
+  };
+};
 
 // prettier-ignore
 export const trpc =
@@ -32,19 +47,4 @@ export const trpc =
       console.error({ k, prop });
       throw new Error("invalid trpc react-query call");
     })
-  ) as TrpcProxy;
-
-type TrpcProxy = {
-  [K in keyof TRecord]: {
-    queryKey: K;
-    queryOptions: (input: TInput<K>) => {
-      queryKey: unknown[];
-      queryFn: () => Promise<TOutput<K>>;
-    };
-    mutationKey: K;
-    mutationOptions: () => {
-      mutationKey: unknown[];
-      mutationFn: (input: TInput<K>) => Promise<TOutput<K>>;
-    };
-  };
-};
+  ) as ReactQueryIntegration;
