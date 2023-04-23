@@ -9,7 +9,6 @@ CREATE TABLE `practiceActions` (
   `practiceEntryId` bigint NOT NULL,
   PRIMARY KEY (`id`),
   KEY `practiceActions_userId_key` (`userId`),
-  KEY `practiceActions_deckId_key` (`deckId`),
-  KEY `practiceActions_practiceEntryId_key` (`practiceEntryId`),
-  KEY `practiceActions_createdAt_key` (`createdAt`)
+  KEY `practiceActions_deckId_createdAt_key` (`deckId`, `createdAt`),
+  KEY `practiceActions_practiceEntryId_key` (`practiceEntryId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
