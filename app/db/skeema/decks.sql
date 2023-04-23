@@ -9,7 +9,6 @@ CREATE TABLE `decks` (
   `easeMultiplier` float NOT NULL DEFAULT '2',
   `easeBonus` float NOT NULL DEFAULT '1.5',
   `randomMode` tinyint(1) NOT NULL DEFAULT '0',
-  `practiceEntriesCountByQueueType` json NOT NULL DEFAULT (json_object(_utf8mb4'NEW',0,_utf8mb4'LEARN',0,_utf8mb4'REVIEW',0)),
   `cache` json NOT NULL DEFAULT (json_object()),
   PRIMARY KEY (`id`),
   KEY `decks_userId_key` (`userId`)

@@ -116,9 +116,7 @@ const decks = mysqlTable("decks", {
   easeMultiplier: float("easeMultiplier").notNull().default(DUMMY_DEFAULT),
   easeBonus: float("easeBonus").notNull().default(DUMMY_DEFAULT),
   randomMode: boolean("randomMode").notNull().default(DUMMY_DEFAULT),
-  // TODO: drop later
-  practiceEntriesCountByQueueType: json<DeckCache>("practiceEntriesCountByQueueType"),
-  // cache various things to avoid heavy SELECT query
+  // cache various things to reduce repeating heavy SELECT queries
   cache: json<DeckCache>("cache").notNull(),
 });
 
