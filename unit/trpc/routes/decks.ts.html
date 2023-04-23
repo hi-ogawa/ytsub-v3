@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">53.29% </span>
+                <span class="strong">61.89% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>186/349</span>
+                <span class='fraction'>216/349</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">87.5% </span>
+                <span class="strong">81.81% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>7/8</span>
+                <span class='fraction'>9/11</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">50% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>1/2</span>
+                <span class='fraction'>2/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">53.29% </span>
+                <span class="strong">61.89% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>186/349</span>
+                <span class='fraction'>216/349</span>
             </div>
         
             
@@ -724,43 +724,43 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { tinyassert } from "@hiogawa/utils";
 import { sql } from "drizzle-orm";
 import { z } from "zod";
@@ -1073,28 +1073,28 @@ export const trpcRoutesDecks = {
       })
     )
     .query(async ({ input, ctx }) =&gt; {
-<span class="cstat-no" title="statement not covered" >      const deck = await findUserDeck({</span>
-<span class="cstat-no" title="statement not covered" >        deckId: input.deckId,</span>
-<span class="cstat-no" title="statement not covered" >        userId: ctx.user.id,</span>
-<span class="cstat-no" title="statement not covered" >      });</span>
-<span class="cstat-no" title="statement not covered" >      tinyassert(deck);</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >      const now = input.__now ?? new Date();</span>
-<span class="cstat-no" title="statement not covered" >      const startOfToday = fromTemporal(</span>
-<span class="cstat-no" title="statement not covered" >        toZdt(now, ctx.user.timezone).startOfDay()</span>
-<span class="cstat-no" title="statement not covered" >      );</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >      const total = {</span>
-<span class="cstat-no" title="statement not covered" >        byActionType: deck.cache.practiceActionsCountByActionType,</span>
-<span class="cstat-no" title="statement not covered" >        byQueueType: deck.cache.practiceEntriesCountByQueueType,</span>
-<span class="cstat-no" title="statement not covered" >      };</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >      const daily = await getDailyPracticeStatistics(deck.id, startOfToday);</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >      return {</span>
-<span class="cstat-no" title="statement not covered" >        total,</span>
-<span class="cstat-no" title="statement not covered" >        daily,</span>
-<span class="cstat-no" title="statement not covered" >      };</span>
+      const deck = await findUserDeck({
+        deckId: input.deckId,
+        userId: ctx.user.id,
+      });
+      tinyassert(deck);
+&nbsp;
+      const now = input.<span class="branch-0 cbranch-no" title="branch not covered" >__now ?? new Date();</span>
+      const startOfToday = fromTemporal(
+        toZdt(now, ctx.user.timezone).startOfDay()
+      );
+&nbsp;
+      const total = {
+        byActionType: deck.cache.practiceActionsCountByActionType,
+        byQueueType: deck.cache.practiceEntriesCountByQueueType,
+      };
+&nbsp;
+      const daily = await getDailyPracticeStatistics(deck.id, startOfToday);
+&nbsp;
+      return {
+        total,
+        daily,
+      };
     }),
 };
 &nbsp;
@@ -1102,14 +1102,14 @@ export const trpcRoutesDecks = {
 // utils
 //
 &nbsp;
-<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >function findUserDeck({ deckId, userId }: { deckId: number; userId: number }) {</span></span>
-<span class="cstat-no" title="statement not covered" >  return findOne(</span>
-<span class="cstat-no" title="statement not covered" >    db</span>
-<span class="cstat-no" title="statement not covered" >      .select()</span>
-<span class="cstat-no" title="statement not covered" >      .from(T.decks)</span>
-<span class="cstat-no" title="statement not covered" >      .where(E.and(E.eq(T.decks.id, deckId), E.eq(T.decks.userId, userId)))</span>
-<span class="cstat-no" title="statement not covered" >  );</span>
-<span class="cstat-no" title="statement not covered" >}</span>
+function findUserDeck({ deckId, userId }: { deckId: number; userId: number }) {
+  return findOne(
+    db
+      .select()
+      .from(T.decks)
+      .where(E.and(E.eq(T.decks.id, deckId), E.eq(T.decks.userId, userId)))
+  );
+}
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -1117,7 +1117,7 @@ export const trpcRoutesDecks = {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-04-23T06:42:24.563Z
+                at 2023-04-23T06:52:54.979Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
