@@ -363,8 +363,8 @@ export async function getDailyPracticeStatistics(
     .from(T.practiceActions)
     .where(
       E.and(
-        E.eq(T.practiceActions.id, deckId),
-        E.gt(T.practiceActions.createdAt, startOfToday)
+        E.eq(T.practiceActions.deckId, deckId),
+        E.gte(T.practiceActions.createdAt, startOfToday)
       )
     );
 
