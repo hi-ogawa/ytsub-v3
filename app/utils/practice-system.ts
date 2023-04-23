@@ -67,34 +67,8 @@ const SCHEDULE_RULES: Record<
   },
 };
 
-export type DeckPracticeStatistics = Record<
-  PracticeQueueType,
-  Record<"daily" | "total", number>
->;
-
 export class PracticeSystem {
   constructor(private user: UserTable, private deck: DeckTable) {}
-
-  async getStatistics(now: Date): Promise<DeckPracticeStatistics> {
-    const deckId = this.deck.id;
-    const [deck, daily] = await Promise.all([
-      findOne(db.select().from(T.decks).where(E.eq(T.decks.id, deckId))), // reload deck for simplicity (TODO: don't)
-      getDailyPracticeStatistics(
-        this.deck.id,
-        fromTemporal(toZdt(now, this.user.timezone).startOfDay())
-      ),
-    ]);
-    tinyassert(deck);
-    return Object.fromEntries(
-      PRACTICE_QUEUE_TYPES.map((type) => [
-        type,
-        {
-          total: deck.cache.practiceEntriesCountByQueueType[type],
-          daily: daily.byQueueType[type],
-        },
-      ])
-    ) as DeckPracticeStatistics;
-  }
 
   async getNextPracticeEntry(
     now: Date = new Date()

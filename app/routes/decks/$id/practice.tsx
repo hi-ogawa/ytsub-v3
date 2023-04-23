@@ -1,6 +1,6 @@
 import { Transition } from "@headlessui/react";
 import { useLoaderData } from "@remix-run/react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import React from "react";
 import { toast } from "react-hot-toast";
 import { transitionProps } from "../../../components/misc";
@@ -21,7 +21,7 @@ import type { PageHandle } from "../../../utils/page-handle";
 import { BookmarkEntryComponent } from "../../bookmarks";
 import {
   DeckNavBarMenuComponent,
-  DeckPracticeStatisticsComponent,
+  QueueStatisticsComponent,
   requireUserAndDeck,
 } from "./index";
 
@@ -58,14 +58,21 @@ export default function DefaultComponent() {
     keepPreviousData: true,
   });
 
+  const queryClient = useQueryClient();
+
+  function refetch() {
+    queryClient.invalidateQueries([trpc.decks_nextPracticeEntry.queryKey]);
+    queryClient.invalidateQueries([trpc.decks_practiceStatistics.queryKey]);
+  }
+
   return (
     <div className="h-full w-full flex justify-center">
       <div className="h-full w-full max-w-lg relative">
         <div className="h-full flex flex-col p-2 gap-2">
           {nextPracticeQuery.isSuccess && (
             <>
-              <DeckPracticeStatisticsComponent
-                statistics={nextPracticeQuery.data.statistics}
+              <QueueStatisticsComponent
+                deckId={deck.id}
                 currentQueueType={
                   nextPracticeQuery.data.practiceEntry?.queueType
                 }
@@ -80,7 +87,7 @@ export default function DefaultComponent() {
                   bookmarkEntry={nextPracticeQuery.data.bookmarkEntry}
                   captionEntry={nextPracticeQuery.data.captionEntry}
                   video={nextPracticeQuery.data.video}
-                  loadNext={() => nextPracticeQuery.refetch()}
+                  loadNext={() => refetch()}
                   isLoadingNext={nextPracticeQuery.isFetching}
                 />
               )}

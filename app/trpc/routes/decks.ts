@@ -274,11 +274,9 @@ export const trpcRoutesDecks = {
       const system = new PracticeSystem(ctx.user, deck);
 
       const now = new Date();
-      const statistics = await system.getStatistics(now); // TODO: separate endpoint?
-
       const practiceEntry = await system.getNextPracticeEntry(now);
       if (!practiceEntry) {
-        return { finished: true, statistics } as const;
+        return { finished: true } as const;
       }
 
       const row = await findOne(
@@ -296,7 +294,6 @@ export const trpcRoutesDecks = {
 
       return {
         finished: false,
-        statistics,
         practiceEntry,
         bookmarkEntry: row.bookmarkEntries,
         captionEntry: row.captionEntries,
