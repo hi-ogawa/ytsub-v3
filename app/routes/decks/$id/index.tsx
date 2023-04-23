@@ -1,7 +1,9 @@
+import { Transition } from "@headlessui/react";
 import { Link, NavLink, useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
+import { useQuery } from "@tanstack/react-query";
 import React from "react";
-import { PaginationComponent } from "../../../components/misc";
+import { PaginationComponent, transitionProps } from "../../../components/misc";
 import { PopoverSimple } from "../../../components/popover";
 import {
   E,
@@ -22,16 +24,13 @@ import type {
 } from "../../../db/models";
 import type { PracticeActionType, PracticeQueueType } from "../../../db/types";
 import { $R, R, ROUTE_DEF } from "../../../misc/routes";
+import { trpc } from "../../../trpc/client";
 import { Controller, makeLoader } from "../../../utils/controller-utils";
 import { useDeserialize } from "../../../utils/hooks";
 import { dtfDateOnly, rtf } from "../../../utils/intl";
 import { useLeafLoaderData } from "../../../utils/loader-utils";
 import { cls } from "../../../utils/misc";
 import type { PageHandle } from "../../../utils/page-handle";
-import {
-  DeckPracticeStatistics,
-  PracticeSystem,
-} from "../../../utils/practice-system";
 import { toInstant } from "../../../utils/temporal-utils";
 import { MiniPlayer } from "../../bookmarks";
 
@@ -74,7 +73,6 @@ type PracticeEntryTableExtra = PracticeEntryTable & {
 
 interface LoaderData {
   deck: DeckTable;
-  statistics: DeckPracticeStatistics;
   pagination: PaginationMetadata;
   rows: Pick<
     TT,
@@ -83,10 +81,7 @@ interface LoaderData {
 }
 
 export const loader = makeLoader(Controller, async function () {
-  const [user, deck] = await requireUserAndDeck.apply(this);
-  const system = new PracticeSystem(user, deck);
-  const now = new Date();
-  const statistics = await system.getStatistics(now);
+  const [, deck] = await requireUserAndDeck.apply(this);
 
   const paginationParams = ROUTE_DEF["/decks/$id"].query.safeParse(
     this.query()
@@ -118,7 +113,6 @@ export const loader = makeLoader(Controller, async function () {
 
   const res: LoaderData = {
     deck,
-    statistics,
     pagination,
     rows,
   };
@@ -130,7 +124,7 @@ export const loader = makeLoader(Controller, async function () {
 //
 
 export default function DefaultComponent() {
-  const { deck, statistics, pagination, rows }: LoaderData = useDeserialize(
+  const { deck, pagination, rows }: LoaderData = useDeserialize(
     useLoaderData()
   );
 
@@ -138,7 +132,7 @@ export default function DefaultComponent() {
     <div className="w-full flex justify-center">
       <div className="h-full w-full max-w-lg">
         <div className="h-full flex flex-col p-2 gap-2">
-          <DeckPracticeStatisticsComponent statistics={statistics} />
+          <QueueStatisticsComponent deckId={deck.id} />
           {rows.length === 0 && <div>Empty</div>}
           {rows.map((row) => (
             <PracticeBookmarkEntryComponent
@@ -165,18 +159,22 @@ export default function DefaultComponent() {
   );
 }
 
-export function DeckPracticeStatisticsComponent({
-  statistics,
+export function QueueStatisticsComponent({
+  deckId,
   currentQueueType,
 }: {
-  statistics: DeckPracticeStatistics;
+  deckId: number;
   currentQueueType?: PracticeQueueType;
 }) {
+  const practiceStatisticsQuery = useQuery(
+    trpc.decks_practiceStatistics.queryOptions({ deckId })
+  );
+
   return (
     <div className="w-full flex items-center p-2 px-4">
       {/* TODO: help to explain what these numbers mean */}
       <div className="text-sm uppercase">Progress</div>
-      <div className="grow flex px-4">
+      <div className="flex-1 flex px-4 relative">
         <div className="flex-1" />
         {renderItem("NEW")}
         <div className="flex-1 text-center text-colorTextSecondary">-</div>
@@ -184,11 +182,17 @@ export function DeckPracticeStatisticsComponent({
         <div className="flex-1 text-center text-colorTextSecondary">-</div>
         {renderItem("REVIEW")}
         <div className="flex-1" />
+        <Transition
+          show={practiceStatisticsQuery.isFetching}
+          className="duration-500 antd-body antd-spin-overlay-6"
+          {...transitionProps("opacity-0", "opacity-50")}
+        />
       </div>
     </div>
   );
 
   function renderItem(type: PracticeQueueType) {
+    const data = practiceStatisticsQuery.data;
     return (
       <div
         className={cls(
@@ -197,7 +201,7 @@ export function DeckPracticeStatisticsComponent({
           type === currentQueueType && "!border-current"
         )}
       >
-        {statistics[type].daily} | {statistics[type].total}
+        {data?.daily.byQueueType[type]} | {data?.total.byQueueType[type]}
       </div>
     );
   }

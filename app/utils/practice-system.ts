@@ -75,6 +75,7 @@ export type DeckPracticeStatistics = Record<
 export class PracticeSystem {
   constructor(private user: UserTable, private deck: DeckTable) {}
 
+  // TODO: remove
   async getStatistics(now: Date): Promise<DeckPracticeStatistics> {
     const deckId = this.deck.id;
     const [deck, daily] = await Promise.all([
