@@ -233,10 +233,22 @@ export class PracticeSystem {
       [newQueueType]: queueType !== newQueueType ? 1 : 0,
     });
 
+    const queryUpdateDeckV2 = updateDeckCache(
+      deckId,
+      {
+        [queueType]: queueType !== newQueueType ? -1 : 0,
+        [newQueueType]: queueType !== newQueueType ? 1 : 0,
+      },
+      {
+        [actionType]: 1,
+      }
+    );
+
     const [[{ insertId }]] = await Promise.all([
       queryCreatePracticeAction,
       queryUpdatePracticeEntry,
       queryUpdateDeck,
+      queryUpdateDeckV2,
     ]);
     return insertId;
   }
