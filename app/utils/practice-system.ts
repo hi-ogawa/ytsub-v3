@@ -455,11 +455,14 @@ async function queryNextPracticeEntryRandomModeWithCache(
   );
 
   // save cache
-  await db.update(T.decks).set({
-    cache: sqlJsonSetByObject(T.decks.cache, {
-      nextEntriesRandomMode: nextEntries.map((e) => e.id),
-    }),
-  });
+  await db
+    .update(T.decks)
+    .set({
+      cache: sqlJsonSetByObject(T.decks.cache, {
+        nextEntriesRandomMode: nextEntries.map((e) => e.id),
+      }),
+    })
+    .where(E.eq(T.decks.id, deckId));
 
   return nextEntries[0];
 }
