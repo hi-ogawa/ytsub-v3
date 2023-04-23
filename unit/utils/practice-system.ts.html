@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">97.04% </span>
+                <span class="strong">96.94% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>492/507</span>
+                <span class='fraction'>507/523</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">89.65% </span>
+                <span class="strong">91.22% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>52/58</span>
+                <span class='fraction'>52/57</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">95.23% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>20/20</span>
+                <span class='fraction'>20/21</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">97.04% </span>
+                <span class="strong">96.94% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>492/507</span>
+                <span class='fraction'>507/523</span>
             </div>
         
             
@@ -570,7 +570,23 @@
 <a name='L505'></a><a href='#L505'>505</a>
 <a name='L506'></a><a href='#L506'>506</a>
 <a name='L507'></a><a href='#L507'>507</a>
-<a name='L508'></a><a href='#L508'>508</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L508'></a><a href='#L508'>508</a>
+<a name='L509'></a><a href='#L509'>509</a>
+<a name='L510'></a><a href='#L510'>510</a>
+<a name='L511'></a><a href='#L511'>511</a>
+<a name='L512'></a><a href='#L512'>512</a>
+<a name='L513'></a><a href='#L513'>513</a>
+<a name='L514'></a><a href='#L514'>514</a>
+<a name='L515'></a><a href='#L515'>515</a>
+<a name='L516'></a><a href='#L516'>516</a>
+<a name='L517'></a><a href='#L517'>517</a>
+<a name='L518'></a><a href='#L518'>518</a>
+<a name='L519'></a><a href='#L519'>519</a>
+<a name='L520'></a><a href='#L520'>520</a>
+<a name='L521'></a><a href='#L521'>521</a>
+<a name='L522'></a><a href='#L522'>522</a>
+<a name='L523'></a><a href='#L523'>523</a>
+<a name='L524'></a><a href='#L524'>524</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -945,6 +961,22 @@
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -1169,7 +1201,7 @@ export class PracticeSystem {
         type,
         {
           total: deck.cache.practiceEntriesCountByQueueType[type],
-          daily: daily[type] ?? 0,
+          daily: daily.byQueueType[type],
         },
       ])
     ) as DeckPracticeStatistics;
@@ -1196,7 +1228,7 @@ export class PracticeSystem {
       getNextScheduledPracticeEntries(this.deck.id, now),
     ]);
 &nbsp;
-    if ((daily.NEW ?? 0) &lt; this.deck.newEntriesPerDay &amp;&amp; entries.NEW) {
+    if (daily.byQueueType.NEW &lt; this.deck.newEntriesPerDay &amp;&amp; entries.NEW) {
       return entries.NEW;
 <span class="branch-0 cbranch-no" title="branch not covered" >    }</span>
 <span class="cstat-no" title="statement not covered" ></span>
@@ -1204,7 +1236,7 @@ export class PracticeSystem {
 <span class="cstat-no" title="statement not covered" >      return entries.LEARN;</span>
 <span class="cstat-no" title="statement not covered" >    }</span>
 <span class="cstat-no" title="statement not covered" ></span>
-    if ((daily.REVIEW ?? 0) &lt; this.deck.<span class="branch-0 cbranch-no" title="branch not covered" >reviewsPerDay &amp;&amp; entries.REVIEW) <span class="branch-0 cbranch-no" title="branch not covered" >{</span></span>
+    if (daily.byQueueType.REVIEW &lt; this.deck.reviewsPerDay &amp;&amp; entries.REVIEW) <span class="branch-0 cbranch-no" title="branch not covered" >{</span>
 <span class="cstat-no" title="statement not covered" >      return entries.REVIEW;</span>
 <span class="cstat-no" title="statement not covered" >    }</span>
 <span class="cstat-no" title="statement not covered" ></span>
@@ -1429,29 +1461,45 @@ function sqlJsonSetByExtract(
   return q;
 }
 &nbsp;
-async function getDailyPracticeStatistics(deckId: number, startOfDay: Date) {
+export async function getDailyPracticeStatistics(
+  deckId: number,
+  startOfToday: Date
+): Promise&lt;{
+  byActionType: Record&lt;PracticeActionType, number&gt;;
+  byQueueType: Record&lt;PracticeQueueType, number&gt;;
+}&gt; {
+  // aggregate in js
   const rows = await db
-    .select({
-      queueType: T.practiceActions.queueType,
-      count: sql&lt;number&gt;`COUNT(0)`,
-    })
+    .select()
     .from(T.practiceActions)
     .where(
       E.and(
-        E.eq(T.practiceActions.deckId, deckId),
-        E.gte(T.practiceActions.createdAt, startOfDay)
+        E.eq(T.practiceActions.id, deckId),
+        E.gt(T.practiceActions.createdAt, startOfToday)
       )
-    )
-    .groupBy(T.practiceActions.queueType);
+    );
 &nbsp;
-  return objectFromMap(
-    mapGroupBy(
-      rows,
-      (row) =&gt; row.queueType,
-      ([row]) =&gt; row.count
-    )
-  );
-}
+  return {
+    byActionType: objectFromMapDefault(
+      mapGroupBy(
+        rows,
+        (row) =&gt; row.actionType,
+        (rows) =&gt; rows.length
+      ),
+      PRACTICE_ACTION_TYPES,
+      0
+    ),
+    byQueueType: objectFromMapDefault(
+      mapGroupBy(
+        rows,
+        (row) =&gt; row.queueType,
+        (rows) =&gt; rows.length
+      ),
+      PRACTICE_QUEUE_TYPES,
+      0
+    ),
+  };
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >}</span></span>
 &nbsp;
 async function getNextScheduledPracticeEntries(deckId: number, now: Date) {
   // get minimum `scheduledAt` for each `queueType`
@@ -1591,7 +1639,7 @@ function prefixSum(ls: number[]): number[] {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-04-23T05:08:45.019Z
+                at 2023-04-23T05:18:43.575Z
             </div>
         <script src="../prettify.js"></script>
         <script>
