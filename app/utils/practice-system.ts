@@ -1,6 +1,7 @@
 import { tinyassert } from "@hiogawa/utils";
 import { Temporal } from "@js-temporal/polyfill";
-import { sql } from "drizzle-orm";
+import { AnyColumn, GetColumnData, sql } from "drizzle-orm";
+import type { SQL } from "drizzle-orm/sql";
 import { difference, range } from "lodash";
 import { E, T, db, findOne } from "../db/drizzle-client.server";
 import type {
@@ -10,11 +11,12 @@ import type {
   UserTable,
 } from "../db/models";
 import {
+  PRACTICE_ACTION_TYPES,
   PRACTICE_QUEUE_TYPES,
   PracticeActionType,
   PracticeQueueType,
 } from "../db/types";
-import { mapGroupBy, objectFromMap } from "./misc";
+import { mapGroupBy, objectFromMap, objectFromMapDefault } from "./misc";
 import { fromTemporal, toInstant, toZdt } from "./temporal-utils";
 
 const QUEUE_RULES: Record<
@@ -87,7 +89,7 @@ export class PracticeSystem {
       PRACTICE_QUEUE_TYPES.map((type) => [
         type,
         {
-          total: deck.practiceEntriesCountByQueueType[type],
+          total: deck.cache.practiceEntriesCountByQueueType[type],
           daily: daily[type] ?? 0,
         },
       ])
@@ -161,9 +163,7 @@ export class PracticeSystem {
         practiceActionsCount: 0,
       }))
     );
-    await updateDeckPracticeEntriesCountByQueueType(deckId, {
-      NEW: newIds.length,
-    });
+    await updateDeckCache(deckId, { NEW: newIds.length }, {});
     return range(insertId, insertId + newIds.length);
   }
 
@@ -225,11 +225,17 @@ export class PracticeSystem {
       })
       .where(E.eq(T.practiceEntries.id, practiceEntryId));
 
-    // sql: update decks.practiceEntriesCountByQueueType
-    const queryUpdateDeck = updateDeckPracticeEntriesCountByQueueType(deckId, {
-      [queueType]: queueType !== newQueueType ? -1 : 0,
-      [newQueueType]: queueType !== newQueueType ? 1 : 0,
-    });
+    // sql: update decks.cache
+    const queryUpdateDeck = updateDeckCache(
+      deckId,
+      {
+        [queueType]: queueType !== newQueueType ? -1 : 0,
+        [newQueueType]: queueType !== newQueueType ? 1 : 0,
+      },
+      {
+        [actionType]: 1,
+      }
+    );
 
     const [[{ insertId }]] = await Promise.all([
       queryCreatePracticeAction,
@@ -240,33 +246,37 @@ export class PracticeSystem {
   }
 }
 
-async function updateDeckPracticeEntriesCountByQueueType(
+export async function updateDeckCache(
   deckId: number,
-  increments: Partial<Record<PracticeQueueType, number>>
+  byQueueType: Partial<Record<PracticeQueueType, number>>,
+  byActionType: Partial<Record<PracticeActionType, number>>
 ): Promise<void> {
-  const column = T.decks.practiceEntriesCountByQueueType;
   await db
     .update(T.decks)
     .set({
-      // force resetting `updatedAt` even if queueType = newQueueType so that we can use it as a randomMode seed
-      updatedAt: new Date(),
-      // prettier-ignore
-      practiceEntriesCountByQueueType: sql`
-        JSON_SET(${column},
-          '$."NEW"',    JSON_EXTRACT(${column}, '$."NEW"')    + ${increments.NEW ?? 0},
-          '$."LEARN"',  JSON_EXTRACT(${column}, '$."LEARN"')  + ${increments.LEARN ?? 0},
-          '$."REVIEW"', JSON_EXTRACT(${column}, '$."REVIEW"') + ${increments.REVIEW ?? 0}
+      cache: sqlJsonSetByExtract(
+        T.decks.cache,
+        ...Object.entries(byQueueType).map(
+          ([k, v]) =>
+            [
+              `$.practiceEntriesCountByQueueType.${k}`,
+              (prev: SQL) => sql`${prev} + ${v}`,
+            ] as const
+        ),
+        ...Object.entries(byActionType).map(
+          ([k, v]) =>
+            [
+              `$."practiceActionsCountByActionType"."${k}"`,
+              (prev: SQL) => sql`${prev} + ${v}`,
+            ] as const
         )
-      `,
+      ),
     })
     .where(E.eq(T.decks.id, deckId));
 }
 
-// used by "reset-counter-cache:decks.practiceEntriesCountByQueueType" in cli.ts
-export async function queryDeckPracticeEntriesCountByQueueType(
-  deckId: number
-): Promise<Record<PracticeQueueType, number>> {
-  const rows = await db
+export async function resetDeckCache(deckId: number) {
+  const rowsByQueue = await db
     .select({
       queueType: T.practiceEntries.queueType,
       count: sql<number>`COUNT(0)`,
@@ -275,14 +285,69 @@ export async function queryDeckPracticeEntriesCountByQueueType(
     .where(E.eq(T.practiceEntries.deckId, deckId))
     .groupBy(T.practiceEntries.queueType);
 
-  return Object.fromEntries([
-    ...PRACTICE_QUEUE_TYPES.map((t) => [t, 0]),
-    ...mapGroupBy(
-      rows,
-      (row) => row.queueType,
-      ([row]) => row.count
-    ),
-  ]);
+  const rowsByAction = await db
+    .select({
+      actionType: T.practiceActions.actionType,
+      count: sql<number>`COUNT(0)`,
+    })
+    .from(T.practiceActions)
+    .where(E.eq(T.practiceActions.deckId, deckId))
+    .groupBy(T.practiceActions.actionType);
+
+  await db
+    .update(T.decks)
+    .set({
+      cache: sqlJsonSetByObject(T.decks.cache, {
+        nextEntriesRandomMode: [],
+        practiceEntriesCountByQueueType: objectFromMapDefault(
+          mapGroupBy(
+            rowsByQueue,
+            (row) => row.queueType,
+            ([row]) => row.count
+          ),
+          PRACTICE_QUEUE_TYPES,
+          0
+        ),
+        practiceActionsCountByActionType: objectFromMapDefault(
+          mapGroupBy(
+            rowsByAction,
+            (row) => row.actionType,
+            ([row]) => row.count
+          ),
+          PRACTICE_ACTION_TYPES,
+          0
+        ),
+      }),
+    })
+    .where(E.eq(T.decks.id, deckId));
+}
+
+// helper for typed JSON_SET(column, path, value, ...)
+function sqlJsonSetByObject<Column extends AnyColumn>(
+  column: Column,
+  data: Partial<GetColumnData<Column>> & object
+) {
+  return sqlJsonSetByExtract(
+    column,
+    ...Object.entries(data).map(
+      ([k, v]) =>
+        [`$.${k}`, () => sql`CAST(${JSON.stringify(v)} AS JSON)`] as const
+    )
+  );
+}
+
+// helper for JSON_SET(column, path, setFn(JSON_EXTRACT(column, path)), ...)
+function sqlJsonSetByExtract(
+  jsonDoc: unknown,
+  ...updates: (readonly [path: string, setFn: (prev: SQL) => SQL])[]
+) {
+  let q = sql`JSON_SET(${jsonDoc}`;
+  for (const [path, setFn] of updates) {
+    const jsonExtract = sql`JSON_EXTRACT(${jsonDoc}, ${path})`;
+    q = sql`${q}, ${path}, ${setFn(jsonExtract)}`;
+  }
+  q = sql`${q})`;
+  return q;
 }
 
 async function getDailyPracticeStatistics(deckId: number, startOfDay: Date) {

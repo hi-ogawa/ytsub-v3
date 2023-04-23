@@ -44,5 +44,32 @@ export function mapGroupBy<T, K, V>(
 export function objectFromMap<K extends keyof any, V>(
   map: Map<K, V>
 ): Partial<Record<K, V>> {
-  return Object.fromEntries(map.entries()) as any;
+  const result: Partial<Record<K, V>> = {};
+  for (const [k, v] of map) {
+    result[k] = v;
+  }
+  return result;
+}
+
+// safely create non-Partial record by forcing to provide complete keys (cf. https://github.com/colinhacks/zod/blob/502384e56fe2b1f8173735df6c3b0d41bce04edc/src/types.ts#L3946)
+export function objectFromMapDefault<
+  K extends string,
+  Keys extends [K, ...K[]],
+  V
+>(
+  map: Map<Keys[number], V>,
+  keys: Keys,
+  defaultValue: V
+): Record<Keys[number], V> {
+  return {
+    ...defaultObject(keys, defaultValue),
+    ...objectFromMap(map),
+  };
+}
+
+export function defaultObject<K extends string, Keys extends [K, ...K[]], V>(
+  keys: Keys,
+  defaultValue: V
+): Record<Keys[number], V> {
+  return Object.fromEntries(keys.map((t) => [t, defaultValue])) as any;
 }

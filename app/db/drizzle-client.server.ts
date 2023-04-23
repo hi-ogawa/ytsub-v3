@@ -20,7 +20,7 @@ import { uninitialized } from "../utils/misc";
 import type { PaginationParams } from "../utils/pagination";
 import knexfile from "./knexfile.server";
 import type { PaginationMetadata } from "./models";
-import type { PracticeActionType, PracticeQueueType } from "./types";
+import type { DeckCache, PracticeActionType, PracticeQueueType } from "./types";
 
 //
 // schema utils
@@ -111,12 +111,13 @@ const decks = mysqlTable("decks", {
   ...timestampColumns,
   //
   name: text("name").notNull(),
-  newEntriesPerDay: int("newEntriesPerDay").notNull(),
-  reviewsPerDay: int("reviewsPerDay").notNull(),
-  easeMultiplier: float("easeMultiplier").notNull(),
-  easeBonus: float("easeBonus").notNull(),
+  newEntriesPerDay: int("newEntriesPerDay").notNull().default(DUMMY_DEFAULT),
+  reviewsPerDay: int("reviewsPerDay").notNull().default(DUMMY_DEFAULT),
+  easeMultiplier: float("easeMultiplier").notNull().default(DUMMY_DEFAULT),
+  easeBonus: float("easeBonus").notNull().default(DUMMY_DEFAULT),
   randomMode: boolean("randomMode").notNull().default(DUMMY_DEFAULT),
-  practiceEntriesCountByQueueType: json<Record<PracticeQueueType, number>>("practiceEntriesCountByQueueType").notNull().default(DUMMY_DEFAULT),
+  // cache various things to reduce repeating heavy SELECT queries
+  cache: json<DeckCache>("cache").notNull(),
 });
 
 const practiceEntries = mysqlTable("practiceEntries", {

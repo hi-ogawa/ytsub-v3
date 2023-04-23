@@ -1,6 +1,6 @@
 import { deepEqual } from "assert/strict";
 import fs from "node:fs";
-import { tinyassert } from "@hiogawa/utils";
+import { objectPick, tinyassert } from "@hiogawa/utils";
 import { cac } from "cac";
 import consola from "consola";
 import { range, zip } from "lodash";
@@ -22,8 +22,8 @@ import {
 } from "../utils/auth";
 import { exec, streamToString } from "../utils/node.server";
 import {
-  queryDeckPracticeEntriesCountByQueueType,
   queryNextPracticeEntryRandomMode,
+  resetDeckCache,
 } from "../utils/practice-system";
 import { NewVideo, fetchCaptionEntries } from "../utils/youtube";
 import { finalizeServer, initializeServer } from "./initialize-server";
@@ -512,23 +512,26 @@ cli
     });
   });
 
-cli
-  .command("reset-counter-cache:decks.practiceEntriesCountByQueueType")
-  .action(async () => {
-    const ids = await Q.decks().pluck("id");
-    for (const id of ids) {
-      const result = await queryDeckPracticeEntriesCountByQueueType(id);
-      await Q.decks()
-        .where("id", id)
-        .update("practiceEntriesCountByQueueType", JSON.stringify(result));
-    }
-  });
-
 async function printSession(username: string, password: string) {
   const user = await verifySignin({ username, password });
   const cookie = await createUserCookie(user);
   console.log(cookie);
 }
+
+//
+// resetDeckCache
+//
+
+cli.command(resetDeckCache.name).action(async () => {
+  const decks = await db.select().from(T.decks);
+  for (const deck of decks) {
+    console.log(
+      "::",
+      JSON.stringify(objectPick(deck, ["userId", "id", "name"]))
+    );
+    await resetDeckCache(deck.id);
+  }
+});
 
 //
 // main
