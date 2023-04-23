@@ -353,15 +353,6 @@ export function DeckNavBarMenuComponent() {
 export function DeckMenuComponent({ deck }: { deck: DeckTable }) {
   const items = [
     {
-      to: $R["/decks/$id"](deck),
-      children: (
-        <>
-          <span className="i-ri-book-line w-6 h-6"></span>
-          Deck
-        </>
-      ),
-    },
-    {
       to: $R["/decks/$id/practice"](deck),
       children: (
         <>
@@ -371,11 +362,29 @@ export function DeckMenuComponent({ deck }: { deck: DeckTable }) {
       ),
     },
     {
-      to: $R["/decks/$id/history-graph"](deck),
+      to: $R["/decks/$id/history"](deck),
       children: (
         <>
           <span className="i-ri-history-line w-6 h-6"></span>
           History
+        </>
+      ),
+    },
+    {
+      to: $R["/decks/$id/history-graph"](deck),
+      children: (
+        <>
+          <span className="i-ri-bar-chart-line w-6 h-6"></span>
+          Chart
+        </>
+      ),
+    },
+    {
+      to: $R["/decks/$id"](deck),
+      children: (
+        <>
+          <span className="i-ri-book-line w-6 h-6"></span>
+          Deck
         </>
       ),
     },
