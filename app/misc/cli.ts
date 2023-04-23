@@ -22,7 +22,6 @@ import {
 } from "../utils/auth";
 import { exec, streamToString } from "../utils/node.server";
 import {
-  queryDeckPracticeEntriesCountByQueueType,
   queryNextPracticeEntryRandomMode,
   resetDeckCache,
 } from "../utils/practice-system";
@@ -511,18 +510,6 @@ cli
         .onConflict("id")
         .merge(["id", "practiceActionsCount", "updatedAt"]);
     });
-  });
-
-cli
-  .command("reset-counter-cache:decks.practiceEntriesCountByQueueType")
-  .action(async () => {
-    const ids = await Q.decks().pluck("id");
-    for (const id of ids) {
-      const result = await queryDeckPracticeEntriesCountByQueueType(id);
-      await Q.decks()
-        .where("id", id)
-        .update("practiceEntriesCountByQueueType", JSON.stringify(result));
-    }
   });
 
 async function printSession(username: string, password: string) {

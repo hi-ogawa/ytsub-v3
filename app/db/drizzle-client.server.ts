@@ -111,13 +111,14 @@ const decks = mysqlTable("decks", {
   ...timestampColumns,
   //
   name: text("name").notNull(),
-  newEntriesPerDay: int("newEntriesPerDay").notNull(),
-  reviewsPerDay: int("reviewsPerDay").notNull(),
-  easeMultiplier: float("easeMultiplier").notNull(),
-  easeBonus: float("easeBonus").notNull(),
+  newEntriesPerDay: int("newEntriesPerDay").notNull().default(DUMMY_DEFAULT),
+  reviewsPerDay: int("reviewsPerDay").notNull().default(DUMMY_DEFAULT),
+  easeMultiplier: float("easeMultiplier").notNull().default(DUMMY_DEFAULT),
+  easeBonus: float("easeBonus").notNull().default(DUMMY_DEFAULT),
   randomMode: boolean("randomMode").notNull().default(DUMMY_DEFAULT),
-  // TODO: to be replaced by `cache`
-  practiceEntriesCountByQueueType: json<Record<PracticeQueueType, number>>("practiceEntriesCountByQueueType").notNull().default(DUMMY_DEFAULT),
+  // TODO: drop later
+  practiceEntriesCountByQueueType: json<DeckCache>("practiceEntriesCountByQueueType"),
+  // cache various things to avoid heavy SELECT query
   cache: json<DeckCache>("cache").notNull(),
 });
 

@@ -1,8 +1,9 @@
 import fs from "fs";
-import { UncheckedMap, objectOmit, tinyassert, uniq } from "@hiogawa/utils";
+import { UncheckedMap, objectOmit, tinyassert, uniq, range } from "@hiogawa/utils";
 import superjson from "superjson";
 import { E, T, db, findOne } from "../db/drizzle-client.server";
 import { DEFAULT_DECK_CACHE } from "../db/types";
+import { resetDeckCache } from "../utils/practice-system";
 
 //
 // export/import all data associated to single deck
@@ -150,6 +151,10 @@ async function importDeck(userId: number, data: ExportDeckData) {
     practiceActionsInsert.insertId,
     practiceActions.map((e) => e.id)
   );
+
+  for (const i of range(deckInsert.affectedRows)) {
+    await resetDeckCache(deckInsert.insertId + i);
+  }
 
   return deckInsert.insertId;
 }

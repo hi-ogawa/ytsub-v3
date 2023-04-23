@@ -89,7 +89,7 @@ export class PracticeSystem {
       PRACTICE_QUEUE_TYPES.map((type) => [
         type,
         {
-          total: deck.practiceEntriesCountByQueueType[type],
+          total: deck.cache.practiceEntriesCountByQueueType[type],
           daily: daily[type] ?? 0,
         },
       ])
@@ -163,9 +163,7 @@ export class PracticeSystem {
         practiceActionsCount: 0,
       }))
     );
-    await updateDeckPracticeEntriesCountByQueueType(deckId, {
-      NEW: newIds.length,
-    });
+    await updateDeckCache(deckId, { NEW: newIds.length }, {});
     return range(insertId, insertId + newIds.length);
   }
 
@@ -227,13 +225,8 @@ export class PracticeSystem {
       })
       .where(E.eq(T.practiceEntries.id, practiceEntryId));
 
-    // sql: update decks.practiceEntriesCountByQueueType
-    const queryUpdateDeck = updateDeckPracticeEntriesCountByQueueType(deckId, {
-      [queueType]: queueType !== newQueueType ? -1 : 0,
-      [newQueueType]: queueType !== newQueueType ? 1 : 0,
-    });
-
-    const queryUpdateDeckV2 = updateDeckCache(
+    // sql: update decks.cache
+    const queryUpdateDeck = updateDeckCache(
       deckId,
       {
         [queueType]: queueType !== newQueueType ? -1 : 0,
@@ -248,57 +241,9 @@ export class PracticeSystem {
       queryCreatePracticeAction,
       queryUpdatePracticeEntry,
       queryUpdateDeck,
-      queryUpdateDeckV2,
     ]);
     return insertId;
   }
-}
-
-// TODO: to be replaced by updateDeckCache
-async function updateDeckPracticeEntriesCountByQueueType(
-  deckId: number,
-  increments: Partial<Record<PracticeQueueType, number>>
-): Promise<void> {
-  const column = T.decks.practiceEntriesCountByQueueType;
-  await db
-    .update(T.decks)
-    .set({
-      // force resetting `updatedAt` even if queueType = newQueueType so that we can use it as a randomMode seed
-      updatedAt: new Date(),
-      // prettier-ignore
-      practiceEntriesCountByQueueType: sql`
-        JSON_SET(${column},
-          '$."NEW"',    JSON_EXTRACT(${column}, '$."NEW"')    + ${increments.NEW ?? 0},
-          '$."LEARN"',  JSON_EXTRACT(${column}, '$."LEARN"')  + ${increments.LEARN ?? 0},
-          '$."REVIEW"', JSON_EXTRACT(${column}, '$."REVIEW"') + ${increments.REVIEW ?? 0}
-        )
-      `,
-    })
-    .where(E.eq(T.decks.id, deckId));
-}
-
-// used by "reset-counter-cache:decks.practiceEntriesCountByQueueType" in cli.ts
-// TODO: to be replaced by resetDeckCache
-export async function queryDeckPracticeEntriesCountByQueueType(
-  deckId: number
-): Promise<Record<PracticeQueueType, number>> {
-  const rows = await db
-    .select({
-      queueType: T.practiceEntries.queueType,
-      count: sql<number>`COUNT(0)`,
-    })
-    .from(T.practiceEntries)
-    .where(E.eq(T.practiceEntries.deckId, deckId))
-    .groupBy(T.practiceEntries.queueType);
-
-  return Object.fromEntries([
-    ...PRACTICE_QUEUE_TYPES.map((t) => [t, 0]),
-    ...mapGroupBy(
-      rows,
-      (row) => row.queueType,
-      ([row]) => row.count
-    ),
-  ]);
 }
 
 export async function updateDeckCache(

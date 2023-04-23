@@ -2,6 +2,7 @@ import { groupBy, mapValues, range, tinyassert, uniq } from "@hiogawa/utils";
 import { beforeAll, describe, expect, it } from "vitest";
 import { E, T, TT, db, findOne } from "../db/drizzle-client.server";
 import { Q } from "../db/models";
+import { DEFAULT_DECK_CACHE } from "../db/types";
 import { importSeed } from "../misc/seed-utils";
 import { useUser, useUserVideo } from "../misc/test-helper";
 import {
@@ -22,9 +23,10 @@ describe("PracticeSystem", () => {
 
   it("basic", async () => {
     // TODO: move to `use...` helpers
-    const [deckId] = await Q.decks().insert({
-      userId: hook.user.id,
+    const [{ insertId: deckId }] = await db.insert(T.decks).values({
       name: __filename,
+      userId: hook.user.id,
+      cache: DEFAULT_DECK_CACHE,
     });
     const deck = await Q.decks().where({ id: deckId }).first();
     tinyassert(deck);
