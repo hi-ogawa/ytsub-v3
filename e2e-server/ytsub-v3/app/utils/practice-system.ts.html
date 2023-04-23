@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">69.08% </span>
+                <span class="strong">69.64% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>438/634</span>
+                <span class='fraction'>452/649</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">84.21% </span>
+                <span class="strong">82.5% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>32/38</span>
+                <span class='fraction'>33/40</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">69.08% </span>
+                <span class="strong">69.64% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>438/634</span>
+                <span class='fraction'>452/649</span>
             </div>
         
             
@@ -697,7 +697,22 @@
 <a name='L632'></a><a href='#L632'>632</a>
 <a name='L633'></a><a href='#L633'>633</a>
 <a name='L634'></a><a href='#L634'>634</a>
-<a name='L635'></a><a href='#L635'>635</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L635'></a><a href='#L635'>635</a>
+<a name='L636'></a><a href='#L636'>636</a>
+<a name='L637'></a><a href='#L637'>637</a>
+<a name='L638'></a><a href='#L638'>638</a>
+<a name='L639'></a><a href='#L639'>639</a>
+<a name='L640'></a><a href='#L640'>640</a>
+<a name='L641'></a><a href='#L641'>641</a>
+<a name='L642'></a><a href='#L642'>642</a>
+<a name='L643'></a><a href='#L643'>643</a>
+<a name='L644'></a><a href='#L644'>644</a>
+<a name='L645'></a><a href='#L645'>645</a>
+<a name='L646'></a><a href='#L646'>646</a>
+<a name='L647'></a><a href='#L647'>647</a>
+<a name='L648'></a><a href='#L648'>648</a>
+<a name='L649'></a><a href='#L649'>649</a>
+<a name='L650'></a><a href='#L650'>650</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -1208,6 +1223,21 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-yes">10x</span>
@@ -1839,20 +1869,35 @@ export async function queryNextPracticeEntryRandomModeV2(
   // choose queueType by a fixed probability
   //
 &nbsp;
-  const rowsByQueue = groupBy(rows, (row) =&gt; row.queueType);
+  const rowsByQueue = objectFromMapDefault(
+    groupBy(rows, (row) =&gt; row.queueType),
+    PRACTICE_QUEUE_TYPES,
+    []
+  );
 &nbsp;
   function getNextEntry() {
     // TODO: the size of queue should affect the probability? (e.g. what if all NEW entries are finished?)
-    const QUEUE_TYPE_WEIGHTS = [90, 8, 2];
-    const queueType =
-      PRACTICE_QUEUE_TYPES[randomChoice(rng.uniform(), QUEUE_TYPE_WEIGHTS)];
+    const queueTypeWeights: Record&lt;PracticeQueueType, number&gt; = {
+      NEW: 90,
+      LEARN: 8,
+      REVIEW: 2,
+    };
 &nbsp;
-    const queueRows = rowsByQueue.get(queueType);
-    if (queueRows?.length) {
-      return queueRows.shift();
+    // skip empty queue
+    for (const t of PRACTICE_QUEUE_TYPES) {
+      if (rowsByQueue[t].length === <span class="branch-0 cbranch-no" title="branch not covered" >0) {</span>
+<span class="cstat-no" title="statement not covered" >        queueTypeWeights[t] = 0;</span>
+      }
     }
-    // TODO: when some queues are empty, cache's benefit is reduced
-    return;
+&nbsp;
+    const queueType =
+      PRACTICE_QUEUE_TYPES[
+        randomChoice(rng.uniform(), Object.values(queueTypeWeights))
+      ];
+    const queueRows = rowsByQueue[queueType];
+    tinyassert(queueRows);
+&nbsp;
+    return queueRows.shift();
   }
 &nbsp;
   const nextEntries = range(maxCount)
@@ -1972,7 +2017,7 @@ class HashRng {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-04-23T10:49:55.601Z
+                at 2023-04-23T11:02:55.804Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>
