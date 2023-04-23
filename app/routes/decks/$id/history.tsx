@@ -136,7 +136,10 @@ export default function DefaultComponent() {
                 }}
               />
             </div>
-            <ActionStatisticsComponent deckId={deck.id} />
+            <ActionStatisticsComponent
+              deckId={deck.id}
+              currentActionType={query.actionType}
+            />
             {rows.length === 0 && <div>Empty</div>}
             {rows.map((row) => (
               <PracticeActionComponent key={row.practiceActions.id} {...row} />
@@ -152,7 +155,13 @@ export default function DefaultComponent() {
   );
 }
 
-function ActionStatisticsComponent({ deckId }: { deckId: number }) {
+function ActionStatisticsComponent({
+  deckId,
+  currentActionType,
+}: {
+  deckId: number;
+  currentActionType?: PracticeActionType;
+}) {
   const practiceStatisticsQuery = useQuery(
     trpc.decks_practiceStatistics.queryOptions({ deckId })
   );
@@ -178,16 +187,17 @@ function ActionStatisticsComponent({ deckId }: { deckId: number }) {
     </div>
   );
 
-  function renderItem(type: PracticeActionType) {
+  function renderItem(t: PracticeActionType) {
     const data = practiceStatisticsQuery.data;
     return (
       <div
         className={cls(
           "border-b border-transparent",
-          PRACTICE_ACTION_TYPE_TO_COLOR[type]
+          PRACTICE_ACTION_TYPE_TO_COLOR[t],
+          t === currentActionType && "!border-current"
         )}
       >
-        {data?.daily.byActionType[type]} | {data?.total.byActionType[type]}
+        {data?.daily.byActionType[t]} | {data?.total.byActionType[t]}
       </div>
     );
   }
