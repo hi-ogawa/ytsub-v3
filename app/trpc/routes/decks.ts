@@ -8,7 +8,10 @@ import {
 import { E, T, db, findOne } from "../../db/drizzle-client.server";
 import { DEFAULT_DECK_CACHE, Z_PRACTICE_ACTION_TYPES } from "../../db/types";
 import { importDeckJson } from "../../misc/seed-utils";
-import { PracticeSystem } from "../../utils/practice-system";
+import {
+  PracticeSystem,
+  getDailyPracticeStatistics,
+} from "../../utils/practice-system";
 import {
   Z_DATE_RANGE_TYPE,
   fromTemporal,
@@ -299,6 +302,39 @@ export const trpcRoutesDecks = {
         captionEntry: row.captionEntries,
         video: row.videos,
       } as const;
+    }),
+
+  decks_practiceStatistics: procedureBuilder
+    .use(middlewares.requireUser)
+    .input(
+      z.object({
+        deckId: z.number().int(),
+        __now: z.date().optional(), // for testing
+      })
+    )
+    .query(async ({ input, ctx }) => {
+      const deck = await findUserDeck({
+        deckId: input.deckId,
+        userId: ctx.user.id,
+      });
+      tinyassert(deck);
+
+      const now = input.__now ?? new Date();
+      const startOfToday = fromTemporal(
+        toZdt(now, ctx.user.timezone).startOfDay()
+      );
+
+      const total = {
+        byActionType: deck.cache.practiceActionsCountByActionType,
+        byQueueType: deck.cache.practiceEntriesCountByQueueType,
+      };
+
+      const daily = await getDailyPracticeStatistics(deck.id, startOfToday);
+
+      return {
+        total,
+        daily,
+      };
     }),
 };
 

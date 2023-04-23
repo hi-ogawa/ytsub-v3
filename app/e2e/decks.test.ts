@@ -53,6 +53,10 @@ test.describe("decks", () => {
     await page.getByTestId("HistoryViewSelect").selectOption({ label: "List" });
     await expect(page).toHaveURL(/\/decks\/\d+\/history$/);
     await page.getByText("Empty").click();
+    await page
+      .getByTestId("ActionStatisticsComponent")
+      .getByText("0-0")
+      .click();
 
     // go to edit page and delete deck
     await page.locator('[data-test="deck-menu-popover-reference"]').click();
