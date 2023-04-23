@@ -1,5 +1,11 @@
 import fs from "fs";
-import { UncheckedMap, objectOmit, tinyassert, uniq, range } from "@hiogawa/utils";
+import {
+  UncheckedMap,
+  objectOmit,
+  objectPick,
+  tinyassert,
+  uniq,
+} from "@hiogawa/utils";
 import superjson from "superjson";
 import { E, T, db, findOne } from "../db/drizzle-client.server";
 import { DEFAULT_DECK_CACHE } from "../db/types";
@@ -86,7 +92,16 @@ async function importDeck(userId: number, data: ExportDeckData) {
   } = data;
 
   const [deckInsert] = await db.insert(T.decks).values({
-    ...objectOmit(deck, ["id"]),
+    ...objectPick(deck, [
+      "createdAt",
+      "updatedAt",
+      "name",
+      "newEntriesPerDay",
+      "reviewsPerDay",
+      "easeMultiplier",
+      "easeBonus",
+      "randomMode",
+    ]),
     userId: user.id,
     cache: DEFAULT_DECK_CACHE,
   });
@@ -152,9 +167,7 @@ async function importDeck(userId: number, data: ExportDeckData) {
     practiceActions.map((e) => e.id)
   );
 
-  for (const i of range(deckInsert.affectedRows)) {
-    await resetDeckCache(deckInsert.insertId + i);
-  }
+  await resetDeckCache(deckInsert.insertId);
 
   return deckInsert.insertId;
 }
