@@ -491,7 +491,7 @@ async function queryNextPracticeEntryRandomModeBatch(
     const SCHEDULED_AT_BONUS_SLOPE = 0.1 / (60 * 60 * 24 * 7);
     const SCHEDULED_AT_BONUS_MAX = 0.3;
 
-    return Math.max(
+    return Math.min(
       SCHEDULED_AT_BONUS_MAX,
       SCHEDULED_AT_BONUS_SLOPE * (now.getTime() - scheduledAt.getTime())
     );
@@ -499,7 +499,7 @@ async function queryNextPracticeEntryRandomModeBatch(
 
   rows = sortBy(
     rows,
-    (row) => rng.uniform() + computeScheduledAtFactor(row.scheduledAt)
+    (row) => -(rng.uniform() + computeScheduledAtFactor(row.scheduledAt))
   );
 
   if (rows.length <= maxCount) {

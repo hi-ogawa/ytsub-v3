@@ -211,7 +211,7 @@ describe("randomMode", () => {
     `);
 
     // should pick mostly random practice entries
-    expect(uniq(entries.map((e) => e.id)).length).toMatchInlineSnapshot("143");
+    expect(uniq(entries.map((e) => e.id)).length).toMatchInlineSnapshot("200");
   });
 });
 
