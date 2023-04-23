@@ -197,7 +197,7 @@ describe("randomMode", () => {
       await system.createPracticeAction(entry, "HARD");
     }
 
-    // NEW should be picked most often
+    // NEW queue is picked most often
     const countMap = mapValues(
       groupBy(entries, (e) => e.queueType),
       (group) => group.length
@@ -210,7 +210,7 @@ describe("randomMode", () => {
       }
     `);
 
-    // should pick mostly random practice entries
+    // entries are picked uniformly
     expect(uniq(entries.map((e) => e.id)).length).toMatchInlineSnapshot("200");
   });
 });

@@ -497,6 +497,7 @@ async function queryNextPracticeEntryRandomModeBatch(
     );
   }
 
+  // score = (uniform in [0, 1]) + (scheduledAt bonust in [0, 0.3])
   rows = sortBy(
     rows,
     (row) => -(rng.uniform() + computeScheduledAtFactor(row.scheduledAt))
