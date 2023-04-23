@@ -46,11 +46,12 @@ test.describe("decks", () => {
 
     // navigate to "/decks/$id/history-graph"
     await page.locator('[data-test="deck-menu-popover-reference"]').click();
-    await page.getByRole("link", { name: "History" }).click();
+    await page.getByRole("link", { name: "Chart" }).click();
     await expect(page).toHaveURL(/\/decks\/\d+\/history-graph$/);
 
     // navigate to "/decks/$id/history"
-    await page.getByTestId("HistoryViewSelect").selectOption({ label: "List" });
+    await page.locator('[data-test="deck-menu-popover-reference"]').click();
+    await page.getByRole("link", { name: "History" }).click();
     await expect(page).toHaveURL(/\/decks\/\d+\/history$/);
     await page.getByText("Empty").click();
     await page
@@ -103,10 +104,8 @@ test.describe("decks", () => {
     await expect(page).toHaveURL(/\/decks\/\d+\?perPage=20&page=2$/);
 
     // navigate to "/decks/$id/history-graph"
-    await page.locator("data-test=deck-menu-popover-reference").click();
-    await page
-      .locator("data-test=deck-menu-popover-floating >> text=History")
-      .click();
+    await page.locator('[data-test="deck-menu-popover-reference"]').click();
+    await page.getByRole("link", { name: "Chart" }).click();
     await expect(page).toHaveURL(/\/decks\/\d+\/history-graph$/);
     await page.getByText("this week").click();
 

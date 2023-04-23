@@ -1,6 +1,5 @@
 import { DeckNavBarMenuComponent, requireUserAndDeck } from ".";
 import { Transition } from "@headlessui/react";
-import { useMatches, useNavigate } from "@remix-run/react";
 import { useQuery } from "@tanstack/react-query";
 import type { ECharts } from "echarts";
 import React from "react";
@@ -11,7 +10,6 @@ import {
   practiceHistoryChartDataToEchartsOption,
 } from "../../../components/practice-history-chart";
 import type { DeckTable } from "../../../db/models";
-import { $R } from "../../../misc/routes";
 import { trpc } from "../../../trpc/client";
 import { Controller, makeLoader } from "../../../utils/controller-utils";
 import { useDeserialize } from "../../../utils/hooks";
@@ -156,7 +154,7 @@ function NavBarTitleComponent() {
   return (
     <span>
       {deck.name}{" "}
-      <span className="text-colorTextSecondary text-sm">(history)</span>
+      <span className="text-colorTextSecondary text-sm">(chart)</span>
     </span>
   );
 }
@@ -166,45 +164,5 @@ function NavBarTitleComponent() {
 //
 
 export function DeckHistoryNavBarMenuComponent() {
-  const { deck }: LoaderData = useDeserialize(useLeafLoaderData());
-
-  return (
-    <>
-      <HistoryViewSelect deckId={deck.id} />
-      <DeckNavBarMenuComponent />
-    </>
-  );
-}
-
-function HistoryViewSelect({ deckId }: { deckId: number }) {
-  const [{ pathname }] = useMatches().slice(-1);
-  const navigate = useNavigate();
-
-  const options = [
-    {
-      to: $R["/decks/$id/history-graph"]({ id: deckId }),
-      label: "Chart",
-    },
-    {
-      to: $R["/decks/$id/history"]({ id: deckId }),
-      label: "List",
-    },
-  ];
-
-  return (
-    <select
-      data-testid="HistoryViewSelect"
-      className="antd-input py-0.5 px-1 text-sm"
-      value={pathname}
-      onChange={(e) => {
-        navigate(e.target.value);
-      }}
-    >
-      {options.map((option) => (
-        <option key={option.to} value={option.to}>
-          {option.label}
-        </option>
-      ))}
-    </select>
-  );
+  return <DeckNavBarMenuComponent />;
 }
