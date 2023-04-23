@@ -2,6 +2,7 @@ import fs from "fs";
 import { UncheckedMap, objectOmit, tinyassert, uniq } from "@hiogawa/utils";
 import superjson from "superjson";
 import { E, T, db, findOne } from "../db/drizzle-client.server";
+import { DEFAULT_DECK_CACHE } from "../db/types";
 
 //
 // export/import all data associated to single deck
@@ -86,6 +87,7 @@ async function importDeck(userId: number, data: ExportDeckData) {
   const [deckInsert] = await db.insert(T.decks).values({
     ...objectOmit(deck, ["id"]),
     userId: user.id,
+    cache: DEFAULT_DECK_CACHE,
   });
 
   const [videoInsert] = await db.insert(T.videos).values(

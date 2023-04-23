@@ -6,7 +6,7 @@ import {
   PracticeHistoryChartDataEntry,
 } from "../../components/practice-history-chart";
 import { E, T, db, findOne } from "../../db/drizzle-client.server";
-import { Z_PRACTICE_ACTION_TYPES } from "../../db/types";
+import { DEFAULT_DECK_CACHE, Z_PRACTICE_ACTION_TYPES } from "../../db/types";
 import { importDeckJson } from "../../misc/seed-utils";
 import { PracticeSystem } from "../../utils/practice-system";
 import {
@@ -104,6 +104,7 @@ export const trpcRoutesDecks = {
       const [{ insertId: deckId }] = await db.insert(T.decks).values({
         ...input,
         userId: ctx.user.id,
+        cache: DEFAULT_DECK_CACHE,
       });
       return { deckId };
     }),

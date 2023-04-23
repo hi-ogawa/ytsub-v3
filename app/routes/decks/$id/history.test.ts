@@ -1,6 +1,7 @@
 import { tinyassert } from "@hiogawa/utils";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { E, T, db } from "../../../db/drizzle-client.server";
+import { DEFAULT_DECK_CACHE } from "../../../db/types";
 import { testLoader, useUser } from "../../../misc/test-helper";
 import { loader } from "./history";
 
@@ -19,6 +20,7 @@ describe("decks/id/history.loader", () => {
       easeMultiplier: 1.5,
       easeBonus: 2,
       userId: user.data.id,
+      cache: DEFAULT_DECK_CACHE,
     });
   });
 
@@ -43,7 +45,20 @@ describe("decks/id/history.loader", () => {
       {
         "json": {
           "deck": {
-            "cache": {},
+            "cache": {
+              "nextEntriesRandomMode": [],
+              "practiceActionsCountByActionType": {
+                "AGAIN": 0,
+                "EASY": 0,
+                "GOOD": 0,
+                "HARD": 0,
+              },
+              "practiceEntriesCountByQueueType": {
+                "LEARN": 0,
+                "NEW": 0,
+                "REVIEW": 0,
+              },
+            },
             "createdAt": "...",
             "easeBonus": 2,
             "easeMultiplier": 1.5,

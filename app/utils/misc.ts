@@ -67,7 +67,7 @@ export function objectFromMapDefault<
   };
 }
 
-function defaultObject<K extends string, Keys extends [K, ...K[]], V>(
+export function defaultObject<K extends string, Keys extends [K, ...K[]], V>(
   keys: Keys,
   defaultValue: V
 ): Record<Keys[number], V> {

@@ -118,7 +118,7 @@ const decks = mysqlTable("decks", {
   randomMode: boolean("randomMode").notNull().default(DUMMY_DEFAULT),
   // TODO: to be replaced by `cache`
   practiceEntriesCountByQueueType: json<Record<PracticeQueueType, number>>("practiceEntriesCountByQueueType").notNull().default(DUMMY_DEFAULT),
-  cache: json<DeckCache>("cache").notNull().default(DUMMY_DEFAULT),
+  cache: json<DeckCache>("cache").notNull(),
 });
 
 // prettier-ignore
