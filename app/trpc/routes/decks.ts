@@ -1,4 +1,4 @@
-import { objectPick, tinyassert } from "@hiogawa/utils";
+import { tinyassert } from "@hiogawa/utils";
 import { sql } from "drizzle-orm";
 import { z } from "zod";
 import {
@@ -324,10 +324,11 @@ export const trpcRoutesDecks = {
         toZdt(now, ctx.user.timezone).startOfDay()
       );
 
-      const total = objectPick(deck.cache, [
-        "practiceActionsCountByActionType",
-        "practiceEntriesCountByQueueType",
-      ]);
+      const total = {
+        byActionType: deck.cache.practiceActionsCountByActionType,
+        byQueueType: deck.cache.practiceEntriesCountByQueueType,
+      };
+
       const daily = await getDailyPracticeStatistics(deck.id, startOfToday);
 
       return {

@@ -3,13 +3,19 @@ import {
   QueueTypeIcon,
   requireUserAndDeck,
 } from ".";
+import { Transition } from "@headlessui/react";
 import { mapOption } from "@hiogawa/utils";
 import { useLoaderData, useNavigate } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
+import { useQuery } from "@tanstack/react-query";
 import React from "react";
 import type { z } from "zod";
 import { CollapseTransition } from "../../../components/collapse";
-import { PaginationComponent, SelectWrapper } from "../../../components/misc";
+import {
+  PaginationComponent,
+  SelectWrapper,
+  transitionProps,
+} from "../../../components/misc";
 import {
   E,
   T,
@@ -18,8 +24,9 @@ import {
   toPaginationResult,
 } from "../../../db/drizzle-client.server";
 import type { DeckTable, PaginationMetadata } from "../../../db/models";
-import { PRACTICE_ACTION_TYPES } from "../../../db/types";
+import { PRACTICE_ACTION_TYPES, PracticeActionType } from "../../../db/types";
 import { $R, ROUTE_DEF } from "../../../misc/routes";
+import { trpc } from "../../../trpc/client";
 import { Controller, makeLoader } from "../../../utils/controller-utils";
 import { useDeserialize } from "../../../utils/hooks";
 import { dtf } from "../../../utils/intl";
@@ -129,6 +136,7 @@ export default function DefaultComponent() {
                 }}
               />
             </div>
+            <ActionStatisticsComponent deckId={deck.id} />
             {rows.length === 0 && <div>Empty</div>}
             {rows.map((row) => (
               <PracticeActionComponent key={row.practiceActions.id} {...row} />
@@ -142,6 +150,47 @@ export default function DefaultComponent() {
       </div>
     </>
   );
+}
+
+function ActionStatisticsComponent({ deckId }: { deckId: number }) {
+  const practiceStatisticsQuery = useQuery(
+    trpc.decks_practiceStatistics.queryOptions({ deckId })
+  );
+
+  return (
+    <div className="w-full flex items-center p-1 relative">
+      <div className="grow flex px-4">
+        <div className="flex-1" />
+        {renderItem("AGAIN")}
+        <div className="flex-1 text-center text-colorTextSecondary">-</div>
+        {renderItem("HARD")}
+        <div className="flex-1 text-center text-colorTextSecondary">-</div>
+        {renderItem("GOOD")}
+        <div className="flex-1 text-center text-colorTextSecondary">-</div>
+        {renderItem("EASY")}
+        <div className="flex-1" />
+      </div>
+      <Transition
+        show={practiceStatisticsQuery.isFetching}
+        className="duration-500 antd-body antd-spin-overlay-6"
+        {...transitionProps("opacity-0", "opacity-50")}
+      />
+    </div>
+  );
+
+  function renderItem(type: PracticeActionType) {
+    const data = practiceStatisticsQuery.data;
+    return (
+      <div
+        className={cls(
+          "border-b border-transparent",
+          PRACTICE_ACTION_TYPE_TO_COLOR[type]
+        )}
+      >
+        {data?.daily.byActionType[type]} | {data?.total.byActionType[type]}
+      </div>
+    );
+  }
 }
 
 function PracticeActionComponent(
