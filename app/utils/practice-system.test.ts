@@ -191,7 +191,7 @@ describe("randomMode", () => {
     const system = new PracticeSystem(userHook.data, deck);
 
     const entries: TT["practiceEntries"][] = [];
-    for (const i of range(100)) {
+    for (const i of range(200)) {
       system.__seed = i; // make deterministic
       const entry = await system.getNextPracticeEntry();
       tinyassert(entry);
@@ -206,14 +206,14 @@ describe("randomMode", () => {
     );
     expect(countMap).toMatchInlineSnapshot(`
       Map {
-        "NEW" => 94,
-        "LEARN" => 4,
-        "REVIEW" => 2,
+        "NEW" => 140,
+        "LEARN" => 51,
+        "REVIEW" => 9,
       }
     `);
 
     // should pick mostly random practice entries
-    expect(uniq(entries.map((e) => e.id)).length).toMatchInlineSnapshot("95");
+    expect(uniq(entries.map((e) => e.id)).length).toMatchInlineSnapshot("143");
   });
 });
 

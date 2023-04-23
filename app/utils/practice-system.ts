@@ -506,20 +506,35 @@ export async function queryNextPracticeEntryRandomModeV2(
   // choose queueType by a fixed probability
   //
 
-  const rowsByQueue = groupBy(rows, (row) => row.queueType);
+  const rowsByQueue = objectFromMapDefault(
+    groupBy(rows, (row) => row.queueType),
+    PRACTICE_QUEUE_TYPES,
+    []
+  );
 
   function getNextEntry() {
     // TODO: the size of queue should affect the probability? (e.g. what if all NEW entries are finished?)
-    const QUEUE_TYPE_WEIGHTS = [90, 8, 2];
-    const queueType =
-      PRACTICE_QUEUE_TYPES[randomChoice(rng.uniform(), QUEUE_TYPE_WEIGHTS)];
+    const queueTypeWeights: Record<PracticeQueueType, number> = {
+      NEW: 90,
+      LEARN: 8,
+      REVIEW: 2,
+    };
 
-    const queueRows = rowsByQueue.get(queueType);
-    if (queueRows?.length) {
-      return queueRows.shift();
+    // skip empty queue
+    for (const t of PRACTICE_QUEUE_TYPES) {
+      if (rowsByQueue[t].length === 0) {
+        queueTypeWeights[t] = 0;
+      }
     }
-    // TODO: when some queues are empty, cache's benefit is reduced
-    return;
+
+    const queueType =
+      PRACTICE_QUEUE_TYPES[
+        randomChoice(rng.uniform(), Object.values(queueTypeWeights))
+      ];
+    const queueRows = rowsByQueue[queueType];
+    tinyassert(queueRows);
+
+    return queueRows.shift();
   }
 
   const nextEntries = range(maxCount)
