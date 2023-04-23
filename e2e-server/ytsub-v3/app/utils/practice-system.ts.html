@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">69.98% </span>
+                <span class="strong">70.36% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>380/543</span>
+                <span class='fraction'>387/550</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">69.98% </span>
+                <span class="strong">70.36% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>380/543</span>
+                <span class='fraction'>387/550</span>
             </div>
         
             
@@ -606,7 +606,14 @@
 <a name='L541'></a><a href='#L541'>541</a>
 <a name='L542'></a><a href='#L542'>542</a>
 <a name='L543'></a><a href='#L543'>543</a>
-<a name='L544'></a><a href='#L544'>544</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L544'></a><a href='#L544'>544</a>
+<a name='L545'></a><a href='#L545'>545</a>
+<a name='L546'></a><a href='#L546'>546</a>
+<a name='L547'></a><a href='#L547'>547</a>
+<a name='L548'></a><a href='#L548'>548</a>
+<a name='L549'></a><a href='#L549'>549</a>
+<a name='L550'></a><a href='#L550'>550</a>
+<a name='L551'></a><a href='#L551'>551</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -872,6 +879,13 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -1448,16 +1462,22 @@ export async function updateDeckCache(
   await db
     .update(T.decks)
     .set({
-      cache: sqlJsonSetUpdate(
+      cache: sqlJsonSetByExtract(
         T.decks.cache,
-        ...Object.entries(byQueueType).map(([k, v]) =&gt; ({
-          path: `$.practiceEntriesCountByQueueType.${k}`,
-          set: (prev: SQL) =&gt; sql`${prev} + ${v}`,
-        })),
-        ...Object.entries(byActionType).map(([k, v]) =&gt; ({
-          path: `$."practiceActionsCountByActionType"."${k}"`,
-          set: (prev: SQL) =&gt; sql`${prev} + ${v}`,
-        }))
+        ...Object.entries(byQueueType).map(
+          ([k, v]) =&gt;
+            [
+              `$.practiceEntriesCountByQueueType.${k}`,
+              (prev: SQL) =&gt; sql`${prev} + ${v}`,
+            ] as const
+        ),
+        ...Object.entries(byActionType).map(
+          ([k, v]) =&gt;
+            [
+              `$."practiceActionsCountByActionType"."${k}"`,
+              (prev: SQL) =&gt; sql`${prev} + ${v}`,
+            ] as const
+        )
       ),
     })
     .where(E.eq(T.decks.id, deckId));
@@ -1485,7 +1505,7 @@ export async function resetDeckCache(deckId: number) {
   await db
     .update(T.decks)
     .set({
-      cache: sqlJsonSetObject(T.decks.cache, {
+      cache: sqlJsonSetByObject(T.decks.cache, {
         nextEntriesRandomMode: [],
         practiceEntriesCountByQueueType: objectFromMapDefault(
           mapGroupBy(
@@ -1510,28 +1530,29 @@ export async function resetDeckCache(deckId: number) {
     .where(E.eq(T.decks.id, deckId));
 }
 &nbsp;
-// TODO: to utils
-function sqlJsonSetObject&lt;Column extends AnyColumn&gt;(
+// helper for typed JSON_SET(column, path, value, ...)
+function sqlJsonSetByObject&lt;Column extends AnyColumn&gt;(
   column: Column,
   data: Partial&lt;GetColumnData&lt;Column&gt;&gt; &amp; object
 ) {
-  let q = sql`JSON_SET(${column}`;
-  for (const [k, v] of Object.entries(data)) {
-    const path = `$.${k}`;
-    q = sql`${q}, ${path}, CAST(${JSON.stringify(v)} AS JSON)`;
-  }
-  q = sql`${q})`;
-  return q;
+  return sqlJsonSetByExtract(
+    column,
+    ...Object.entries(data).map(
+      ([k, v]) =&gt;
+        [`$.${k}`, () =&gt; sql`CAST(${JSON.stringify(v)} AS JSON)`] as const
+    )
+  );
 }
 &nbsp;
-function sqlJsonSetUpdate(
+// helper for JSON_SET(column, path, setFn(JSON_EXTRACT(column, path)), ...)
+function sqlJsonSetByExtract(
   jsonDoc: unknown,
-  ...updates: { path: string; set: (prev: SQL) =&gt; SQL }[]
+  ...updates: (readonly [path: string, setFn: (prev: SQL) =&gt; SQL])[]
 ) {
   let q = sql`JSON_SET(${jsonDoc}`;
-  for (const { path, set } of updates) {
-    const extract = sql`JSON_EXTRACT(${jsonDoc}, ${path})`;
-    q = sql`${q}, ${path}, ${set(extract)}`;
+  for (const [path, setFn] of updates) {
+    const jsonExtract = sql`JSON_EXTRACT(${jsonDoc}, ${path})`;
+    q = sql`${q}, ${path}, ${setFn(jsonExtract)}`;
   }
   q = sql`${q})`;
   return q;
@@ -1699,7 +1720,7 @@ function prefixSum(ls: number[]): number[] {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-04-22T15:33:20.102Z
+                at 2023-04-23T00:12:39.749Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>
