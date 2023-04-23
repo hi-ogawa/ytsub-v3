@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">57.2% </span>
+                <span class="strong">55.35% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>254/444</span>
+                <span class='fraction'>248/448</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">57.2% </span>
+                <span class="strong">55.35% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>254/444</span>
+                <span class='fraction'>248/448</span>
             </div>
         
             
@@ -507,8 +507,11 @@
 <a name='L442'></a><a href='#L442'>442</a>
 <a name='L443'></a><a href='#L443'>443</a>
 <a name='L444'></a><a href='#L444'>444</a>
-<a name='L445'></a><a href='#L445'>445</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<a name='L445'></a><a href='#L445'>445</a>
+<a name='L446'></a><a href='#L446'>446</a>
+<a name='L447'></a><a href='#L447'>447</a>
+<a name='L448'></a><a href='#L448'>448</a>
+<a name='L449'></a><a href='#L449'>449</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -591,10 +594,6 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
@@ -603,7 +602,6 @@
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
@@ -675,6 +673,16 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -951,10 +959,12 @@
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" >import { Link, NavLink, useLoaderData } from "</span></span></span></span></span></span></span>@remix-run/react";
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" >import { Transition } from "</span></span></span></span></span></span></span>@headlessui/react";
+import { Link, NavLink, useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
+import { useQuery } from "@tanstack/react-query";
 import React from "react";
-import { PaginationComponent } from "../../../components/misc";
+import { PaginationComponent, transitionProps } from "../../../components/misc";
 import { PopoverSimple } from "../../../components/popover";
 import {
   E,
@@ -975,16 +985,13 @@ import type {
 } from "../../../db/models";
 import type { PracticeActionType, PracticeQueueType } from "../../../db/types";
 import { $R, R, ROUTE_DEF } from "../../../misc/routes";
+import { trpc } from "../../../trpc/client";
 import { Controller, makeLoader } from "../../../utils/controller-utils";
 import { useDeserialize } from "../../../utils/hooks";
 import { dtfDateOnly, rtf } from "../../../utils/intl";
 import { useLeafLoaderData } from "../../../utils/loader-utils";
 import { cls } from "../../../utils/misc";
 import type { PageHandle } from "../../../utils/page-handle";
-import {
-  DeckPracticeStatistics,
-  PracticeSystem,
-} from "../../../utils/practice-system";
 import { toInstant } from "../../../utils/temporal-utils";
 import { MiniPlayer } from "../../bookmarks";
 &nbsp;
@@ -1027,7 +1034,6 @@ type PracticeEntryTableExtra = PracticeEntryTable &amp; {
 &nbsp;
 interface LoaderData {
   deck: DeckTable;
-  statistics: DeckPracticeStatistics;
   pagination: PaginationMetadata;
   rows: Pick&lt;
     TT,
@@ -1036,10 +1042,7 @@ interface LoaderData {
 }
 &nbsp;
 export const loader = makeLoader(Controller, async function () {
-  const [user, deck] = await requireUserAndDeck.apply(this);
-  const system = new PracticeSystem(user, deck);
-  const now = new Date();
-  const statistics = await system.getStatistics(now);
+  const [, deck] = await requireUserAndDeck.apply(this);
 &nbsp;
   const paginationParams = ROUTE_DEF["/decks/$id"].query.safeParse(
     this.query()
@@ -1071,7 +1074,6 @@ export const loader = makeLoader(Controller, async function () {
 &nbsp;
   const res: LoaderData = {
     deck,
-    statistics,
     pagination,
     rows,
   };
@@ -1083,7 +1085,7 @@ export const loader = makeLoader(Controller, async function () {
 //
 &nbsp;
 export default <span class="fstat-no" title="function not covered" >function DefaultComponent() {</span>
-<span class="cstat-no" title="statement not covered" >  const { deck, statistics, pagination, rows }: LoaderData = useDeserialize(</span>
+<span class="cstat-no" title="statement not covered" >  const { deck, pagination, rows }: LoaderData = useDeserialize(</span>
 <span class="cstat-no" title="statement not covered" >    useLoaderData()</span>
 <span class="cstat-no" title="statement not covered" >  );</span>
 <span class="cstat-no" title="statement not covered" ></span>
@@ -1091,7 +1093,7 @@ export default <span class="fstat-no" title="function not covered" >function Def
 <span class="cstat-no" title="statement not covered" >    &lt;div className="w-full flex justify-center"&gt;</span>
 <span class="cstat-no" title="statement not covered" >      &lt;div className="h-full w-full max-w-lg"&gt;</span>
 <span class="cstat-no" title="statement not covered" >        &lt;div className="h-full flex flex-col p-2 gap-2"&gt;</span>
-<span class="cstat-no" title="statement not covered" >          &lt;DeckPracticeStatisticsComponent statistics={statistics} /&gt;</span>
+<span class="cstat-no" title="statement not covered" >          &lt;QueueStatisticsComponent deckId={deck.id} /&gt;</span>
 <span class="cstat-no" title="statement not covered" >          {rows.length === 0 &amp;&amp; &lt;div&gt;Empty&lt;/div&gt;}</span>
 <span class="cstat-no" title="statement not covered" >          {rows.map((row) =&gt; (</span>
 <span class="cstat-no" title="statement not covered" >            &lt;PracticeBookmarkEntryComponent</span>
@@ -1118,18 +1120,22 @@ export default <span class="fstat-no" title="function not covered" >function Def
 <span class="cstat-no" title="statement not covered" >  );</span>
 <span class="cstat-no" title="statement not covered" >}</span>
 &nbsp;
-export <span class="fstat-no" title="function not covered" >function DeckPracticeStatisticsComponent({</span>
-<span class="cstat-no" title="statement not covered" >  statistics,</span>
+export <span class="fstat-no" title="function not covered" >function QueueStatisticsComponent({</span>
+<span class="cstat-no" title="statement not covered" >  deckId,</span>
 <span class="cstat-no" title="statement not covered" >  currentQueueType,</span>
 <span class="cstat-no" title="statement not covered" >}: {</span>
-<span class="cstat-no" title="statement not covered" >  statistics: DeckPracticeStatistics;</span>
+<span class="cstat-no" title="statement not covered" >  deckId: number;</span>
 <span class="cstat-no" title="statement not covered" >  currentQueueType?: PracticeQueueType;</span>
 <span class="cstat-no" title="statement not covered" >}) {</span>
+<span class="cstat-no" title="statement not covered" >  const practiceStatisticsQuery = useQuery(</span>
+<span class="cstat-no" title="statement not covered" >    trpc.decks_practiceStatistics.queryOptions({ deckId })</span>
+<span class="cstat-no" title="statement not covered" >  );</span>
+<span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  return (</span>
 <span class="cstat-no" title="statement not covered" >    &lt;div className="w-full flex items-center p-2 px-4"&gt;</span>
 <span class="cstat-no" title="statement not covered" >      {/* TODO: help to explain what these numbers mean */}</span>
 <span class="cstat-no" title="statement not covered" >      &lt;div className="text-sm uppercase"&gt;Progress&lt;/div&gt;</span>
-<span class="cstat-no" title="statement not covered" >      &lt;div className="grow flex px-4"&gt;</span>
+<span class="cstat-no" title="statement not covered" >      &lt;div className="flex-1 flex px-4 relative"&gt;</span>
 <span class="cstat-no" title="statement not covered" >        &lt;div className="flex-1" /&gt;</span>
 <span class="cstat-no" title="statement not covered" >        {renderItem("NEW")}</span>
 <span class="cstat-no" title="statement not covered" >        &lt;div className="flex-1 text-center text-colorTextSecondary"&gt;-&lt;/div&gt;</span>
@@ -1137,11 +1143,17 @@ export <span class="fstat-no" title="function not covered" >function DeckPractic
 <span class="cstat-no" title="statement not covered" >        &lt;div className="flex-1 text-center text-colorTextSecondary"&gt;-&lt;/div&gt;</span>
 <span class="cstat-no" title="statement not covered" >        {renderItem("REVIEW")}</span>
 <span class="cstat-no" title="statement not covered" >        &lt;div className="flex-1" /&gt;</span>
+<span class="cstat-no" title="statement not covered" >        &lt;Transition</span>
+<span class="cstat-no" title="statement not covered" >          show={practiceStatisticsQuery.isFetching}</span>
+<span class="cstat-no" title="statement not covered" >          className="duration-500 antd-body antd-spin-overlay-6"</span>
+<span class="cstat-no" title="statement not covered" >          {...transitionProps("opacity-0", "opacity-50")}</span>
+<span class="cstat-no" title="statement not covered" >        /&gt;</span>
 <span class="cstat-no" title="statement not covered" >      &lt;/div&gt;</span>
 <span class="cstat-no" title="statement not covered" >    &lt;/div&gt;</span>
 <span class="cstat-no" title="statement not covered" >  );</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  function renderItem(type: PracticeQueueType) {</span>
+<span class="cstat-no" title="statement not covered" >    const data = practiceStatisticsQuery.data;</span>
 <span class="cstat-no" title="statement not covered" >    return (</span>
 <span class="cstat-no" title="statement not covered" >      &lt;div</span>
 <span class="cstat-no" title="statement not covered" >        className={cls(</span>
@@ -1150,7 +1162,7 @@ export <span class="fstat-no" title="function not covered" >function DeckPractic
 <span class="cstat-no" title="statement not covered" >          type === currentQueueType &amp;&amp; "!border-current"</span>
 <span class="cstat-no" title="statement not covered" >        )}</span>
 <span class="cstat-no" title="statement not covered" >      &gt;</span>
-<span class="cstat-no" title="statement not covered" >        {statistics[type].daily} | {statistics[type].total}</span>
+<span class="cstat-no" title="statement not covered" >        {data?.daily.byQueueType[type]} | {data?.total.byQueueType[type]}</span>
 <span class="cstat-no" title="statement not covered" >      &lt;/div&gt;</span>
 <span class="cstat-no" title="statement not covered" >    );</span>
 <span class="cstat-no" title="statement not covered" >  }</span>
@@ -1402,7 +1414,7 @@ export function DeckMenuComponent({ deck }: { deck: DeckTable }) {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-04-23T06:19:36.141Z
+                at 2023-04-23T06:43:46.777Z
             </div>
         <script src="../../../../../prettify.js"></script>
         <script>
