@@ -1,4 +1,4 @@
-import { tinyassert } from "@hiogawa/utils";
+import { objectPick, tinyassert } from "@hiogawa/utils";
 import { sql } from "drizzle-orm";
 import { z } from "zod";
 import {
@@ -6,15 +6,12 @@ import {
   PracticeHistoryChartDataEntry,
 } from "../../components/practice-history-chart";
 import { E, T, db, findOne } from "../../db/drizzle-client.server";
-import {
-  DEFAULT_DECK_CACHE,
-  PRACTICE_ACTION_TYPES,
-  PRACTICE_QUEUE_TYPES,
-  Z_PRACTICE_ACTION_TYPES,
-} from "../../db/types";
+import { DEFAULT_DECK_CACHE, Z_PRACTICE_ACTION_TYPES } from "../../db/types";
 import { importDeckJson } from "../../misc/seed-utils";
-import { mapGroupBy, objectFromMapDefault } from "../../utils/misc";
-import { PracticeSystem } from "../../utils/practice-system";
+import {
+  PracticeSystem,
+  getDailyPracticeStatistics,
+} from "../../utils/practice-system";
 import {
   Z_DATE_RANGE_TYPE,
   fromTemporal,
@@ -327,43 +324,15 @@ export const trpcRoutesDecks = {
         toZdt(now, ctx.user.timezone).startOfDay()
       );
 
-      const rowsToday = await db
-        .select()
-        .from(T.practiceActions)
-        .where(
-          E.and(
-            E.eq(T.practiceActions.id, deck.id),
-            E.gt(T.practiceActions.createdAt, startOfToday)
-          )
-        );
-
-      const practiceActionsCountByActionTypeToday = mapGroupBy(
-        rowsToday,
-        (row) => row.actionType,
-        (rows) => rows.length
-      );
-
-      const practiceActionsCountByQueueTypeToday = mapGroupBy(
-        rowsToday,
-        (row) => row.queueType,
-        (rows) => rows.length
-      );
+      const total = objectPick(deck.cache, [
+        "practiceActionsCountByActionType",
+        "practiceEntriesCountByQueueType",
+      ]);
+      const daily = await getDailyPracticeStatistics(deck.id, startOfToday);
 
       return {
-        practiceEntriesCountByQueueType:
-          deck.cache.practiceEntriesCountByQueueType,
-        practiceActionsCountByActionType:
-          deck.cache.practiceActionsCountByActionType,
-        practiceActionsCountByQueueTypeToday: objectFromMapDefault(
-          practiceActionsCountByQueueTypeToday,
-          PRACTICE_QUEUE_TYPES,
-          0
-        ),
-        practiceActionsCountByActionTypeToday: objectFromMapDefault(
-          practiceActionsCountByActionTypeToday,
-          PRACTICE_ACTION_TYPES,
-          0
-        ),
+        total,
+        daily,
       };
     }),
 };

@@ -90,7 +90,7 @@ export class PracticeSystem {
         type,
         {
           total: deck.cache.practiceEntriesCountByQueueType[type],
-          daily: daily[type] ?? 0,
+          daily: daily.byQueueType[type],
         },
       ])
     ) as DeckPracticeStatistics;
@@ -117,7 +117,7 @@ export class PracticeSystem {
       getNextScheduledPracticeEntries(this.deck.id, now),
     ]);
 
-    if ((daily.NEW ?? 0) < this.deck.newEntriesPerDay && entries.NEW) {
+    if (daily.byQueueType.NEW < this.deck.newEntriesPerDay && entries.NEW) {
       return entries.NEW;
     }
 
@@ -125,7 +125,7 @@ export class PracticeSystem {
       return entries.LEARN;
     }
 
-    if ((daily.REVIEW ?? 0) < this.deck.reviewsPerDay && entries.REVIEW) {
+    if (daily.byQueueType.REVIEW < this.deck.reviewsPerDay && entries.REVIEW) {
       return entries.REVIEW;
     }
 
@@ -350,28 +350,44 @@ function sqlJsonSetByExtract(
   return q;
 }
 
-async function getDailyPracticeStatistics(deckId: number, startOfDay: Date) {
+export async function getDailyPracticeStatistics(
+  deckId: number,
+  startOfToday: Date
+): Promise<{
+  byActionType: Record<PracticeActionType, number>;
+  byQueueType: Record<PracticeQueueType, number>;
+}> {
+  // aggregate in js
   const rows = await db
-    .select({
-      queueType: T.practiceActions.queueType,
-      count: sql<number>`COUNT(0)`,
-    })
+    .select()
     .from(T.practiceActions)
     .where(
       E.and(
-        E.eq(T.practiceActions.deckId, deckId),
-        E.gte(T.practiceActions.createdAt, startOfDay)
+        E.eq(T.practiceActions.id, deckId),
+        E.gt(T.practiceActions.createdAt, startOfToday)
       )
-    )
-    .groupBy(T.practiceActions.queueType);
+    );
 
-  return objectFromMap(
-    mapGroupBy(
-      rows,
-      (row) => row.queueType,
-      ([row]) => row.count
-    )
-  );
+  return {
+    byActionType: objectFromMapDefault(
+      mapGroupBy(
+        rows,
+        (row) => row.actionType,
+        (rows) => rows.length
+      ),
+      PRACTICE_ACTION_TYPES,
+      0
+    ),
+    byQueueType: objectFromMapDefault(
+      mapGroupBy(
+        rows,
+        (row) => row.queueType,
+        (rows) => rows.length
+      ),
+      PRACTICE_QUEUE_TYPES,
+      0
+    ),
+  };
 }
 
 async function getNextScheduledPracticeEntries(deckId: number, now: Date) {
