@@ -5,6 +5,7 @@ import { Q } from "../db/models";
 import { DEFAULT_DECK_CACHE } from "../db/types";
 import { importSeed } from "../misc/seed-utils";
 import { useUser, useUserVideo } from "../misc/test-helper";
+import { testTrpcClient } from "../trpc/test-helper";
 import {
   PracticeSystem,
   hashInt32,
@@ -20,6 +21,11 @@ describe("PracticeSystem", () => {
   const hook = useUserVideo({
     seed: __filename,
   });
+
+  async function getStatistics(deckId: number) {
+    const trpc = await testTrpcClient({ user: hook.user });
+    return trpc.decks_practiceStatistics({ deckId, __now: NOW });
+  }
 
   it("basic", async () => {
     // TODO: move to `use...` helpers
@@ -58,19 +64,33 @@ describe("PracticeSystem", () => {
       .where({ id: practiceEntryId })
       .first();
     tinyassert(practiceEntry);
-    expect(await system.getStatistics(NOW)).toMatchInlineSnapshot(`
+    expect(await getStatistics(deck.id)).toMatchInlineSnapshot(`
       {
-        "LEARN": {
-          "daily": 0,
-          "total": 0,
+        "daily": {
+          "byActionType": {
+            "AGAIN": 0,
+            "EASY": 0,
+            "GOOD": 0,
+            "HARD": 0,
+          },
+          "byQueueType": {
+            "LEARN": 0,
+            "NEW": 0,
+            "REVIEW": 0,
+          },
         },
-        "NEW": {
-          "daily": 0,
-          "total": 1,
-        },
-        "REVIEW": {
-          "daily": 0,
-          "total": 0,
+        "total": {
+          "byActionType": {
+            "AGAIN": 0,
+            "EASY": 0,
+            "GOOD": 0,
+            "HARD": 0,
+          },
+          "byQueueType": {
+            "LEARN": 0,
+            "NEW": 1,
+            "REVIEW": 0,
+          },
         },
       }
     `);
@@ -101,20 +121,33 @@ describe("PracticeSystem", () => {
     tinyassert(practiceEntryWithActions);
     expect(practiceEntryWithActions.practiceActionsCount).toBe(1);
 
-    const statistics = await system.getStatistics(NOW);
-    expect(statistics).toMatchInlineSnapshot(`
+    expect(await getStatistics(deck.id)).toMatchInlineSnapshot(`
       {
-        "LEARN": {
-          "daily": 0,
-          "total": 1,
+        "daily": {
+          "byActionType": {
+            "AGAIN": 0,
+            "EASY": 0,
+            "GOOD": 1,
+            "HARD": 0,
+          },
+          "byQueueType": {
+            "LEARN": 0,
+            "NEW": 1,
+            "REVIEW": 0,
+          },
         },
-        "NEW": {
-          "daily": 1,
-          "total": 0,
-        },
-        "REVIEW": {
-          "daily": 0,
-          "total": 0,
+        "total": {
+          "byActionType": {
+            "AGAIN": 0,
+            "EASY": 0,
+            "GOOD": 1,
+            "HARD": 0,
+          },
+          "byQueueType": {
+            "LEARN": 1,
+            "NEW": 0,
+            "REVIEW": 0,
+          },
         },
       }
     `);
