@@ -297,16 +297,22 @@ export async function updateDeckCache(
   await db
     .update(T.decks)
     .set({
-      cache: sqlJsonSetUpdate(
+      cache: sqlJsonSetByExtract(
         T.decks.cache,
-        ...Object.entries(byQueueType).map(([k, v]) => ({
-          path: `$.practiceEntriesCountByQueueType.${k}`,
-          set: (prev: SQL) => sql`${prev} + ${v}`,
-        })),
-        ...Object.entries(byActionType).map(([k, v]) => ({
-          path: `$."practiceActionsCountByActionType"."${k}"`,
-          set: (prev: SQL) => sql`${prev} + ${v}`,
-        }))
+        ...Object.entries(byQueueType).map(
+          ([k, v]) =>
+            [
+              `$.practiceEntriesCountByQueueType.${k}`,
+              (prev: SQL) => sql`${prev} + ${v}`,
+            ] as const
+        ),
+        ...Object.entries(byActionType).map(
+          ([k, v]) =>
+            [
+              `$."practiceActionsCountByActionType"."${k}"`,
+              (prev: SQL) => sql`${prev} + ${v}`,
+            ] as const
+        )
       ),
     })
     .where(E.eq(T.decks.id, deckId));
@@ -334,7 +340,7 @@ export async function resetDeckCache(deckId: number) {
   await db
     .update(T.decks)
     .set({
-      cache: sqlJsonSetObject(T.decks.cache, {
+      cache: sqlJsonSetByObject(T.decks.cache, {
         nextEntriesRandomMode: [],
         practiceEntriesCountByQueueType: objectFromMapDefault(
           mapGroupBy(
@@ -359,28 +365,29 @@ export async function resetDeckCache(deckId: number) {
     .where(E.eq(T.decks.id, deckId));
 }
 
-// TODO: to utils
-function sqlJsonSetObject<Column extends AnyColumn>(
+// helper for typed JSON_SET(column, path, value, ...)
+function sqlJsonSetByObject<Column extends AnyColumn>(
   column: Column,
   data: Partial<GetColumnData<Column>> & object
 ) {
-  let q = sql`JSON_SET(${column}`;
-  for (const [k, v] of Object.entries(data)) {
-    const path = `$.${k}`;
-    q = sql`${q}, ${path}, CAST(${JSON.stringify(v)} AS JSON)`;
-  }
-  q = sql`${q})`;
-  return q;
+  return sqlJsonSetByExtract(
+    column,
+    ...Object.entries(data).map(
+      ([k, v]) =>
+        [`$.${k}`, () => sql`CAST(${JSON.stringify(v)} AS JSON)`] as const
+    )
+  );
 }
 
-function sqlJsonSetUpdate(
+// helper for JSON_SET(column, path, setFn(JSON_EXTRACT(column, path)), ...)
+function sqlJsonSetByExtract(
   jsonDoc: unknown,
-  ...updates: { path: string; set: (prev: SQL) => SQL }[]
+  ...updates: (readonly [path: string, setFn: (prev: SQL) => SQL])[]
 ) {
   let q = sql`JSON_SET(${jsonDoc}`;
-  for (const { path, set } of updates) {
-    const extract = sql`JSON_EXTRACT(${jsonDoc}, ${path})`;
-    q = sql`${q}, ${path}, ${set(extract)}`;
+  for (const [path, setFn] of updates) {
+    const jsonExtract = sql`JSON_EXTRACT(${jsonDoc}, ${path})`;
+    q = sql`${q}, ${path}, ${setFn(jsonExtract)}`;
   }
   q = sql`${q})`;
   return q;
