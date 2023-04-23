@@ -74,13 +74,19 @@ const SCHEDULE_RULES: Record<
 };
 
 export class PracticeSystem {
+  __seed?: number; // for unit testing
+
   constructor(private user: UserTable, private deck: DeckTable) {}
 
   async getNextPracticeEntry(
     now: Date = new Date()
   ): Promise<PracticeEntryTable | undefined> {
     if (this.deck.randomMode) {
-      return queryNextPracticeEntryRandomModeWithCache(this.deck.id, now);
+      return queryNextPracticeEntryRandomModeWithCache(
+        this.deck.id,
+        now,
+        this.__seed
+      );
     }
 
     const [daily, entries] = await Promise.all([
@@ -418,10 +424,10 @@ async function getNextScheduledPracticeEntries(deckId: number, now: Date) {
   );
 }
 
-// TODO: invalidate cache on deck update
 export async function queryNextPracticeEntryRandomModeWithCache(
   deckId: number,
-  now: Date
+  now: Date,
+  seed: number = Date.now()
 ) {
   const deck = await findOne(
     db.select().from(T.decks).where(E.eq(T.decks.id, deckId))
@@ -440,7 +446,12 @@ export async function queryNextPracticeEntryRandomModeWithCache(
   }
 
   // rebuild cache
-  const nextEntries = await queryNextPracticeEntryRandomModeV2(deckId, now, 10);
+  const nextEntries = await queryNextPracticeEntryRandomModeV2(
+    deckId,
+    now,
+    10,
+    seed
+  );
 
   // save cache
   await db.update(T.decks).set({
@@ -455,8 +466,11 @@ export async function queryNextPracticeEntryRandomModeWithCache(
 export async function queryNextPracticeEntryRandomModeV2(
   deckId: number,
   now: Date,
-  maxCount: number
+  maxCount: number,
+  seed: number
 ): Promise<TT["practiceEntries"][]> {
+  const rng = new HashRng(seed);
+
   //
   // fetch all and randomize in js
   //
@@ -481,7 +495,7 @@ export async function queryNextPracticeEntryRandomModeV2(
 
   rows = sortBy(
     rows,
-    (row) => Math.random() + computeScheduledAtFactor(row.scheduledAt)
+    (row) => rng.uniform() + computeScheduledAtFactor(row.scheduledAt)
   );
 
   if (rows.length <= maxCount) {
@@ -498,7 +512,7 @@ export async function queryNextPracticeEntryRandomModeV2(
     // TODO: the size of queue should affect the probability? (e.g. what if all NEW entries are finished?)
     const QUEUE_TYPE_WEIGHTS = [90, 8, 2];
     const queueType =
-      PRACTICE_QUEUE_TYPES[randomChoice(Math.random(), QUEUE_TYPE_WEIGHTS)];
+      PRACTICE_QUEUE_TYPES[randomChoice(rng.uniform(), QUEUE_TYPE_WEIGHTS)];
 
     const queueRows = rowsByQueue.get(queueType);
     if (queueRows?.length) {
@@ -601,4 +615,20 @@ function prefixSum(ls: number[]): number[] {
     acc.push(acc[i] + ls[i]);
   }
   return acc;
+}
+
+class HashRng {
+  private state: number;
+
+  constructor(seed: number) {
+    this.state = hashInt32(seed);
+  }
+
+  int32(): number {
+    return (this.state = hashInt32(this.state));
+  }
+
+  uniform() {
+    return this.int32() / 2 ** 32;
+  }
 }

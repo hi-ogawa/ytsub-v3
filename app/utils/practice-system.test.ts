@@ -33,6 +33,7 @@ describe("PracticeSystem", () => {
       name: __filename,
       userId: hook.user.id,
       cache: DEFAULT_DECK_CACHE,
+      randomMode: false,
     });
     const deck = await Q.decks().where({ id: deckId }).first();
     tinyassert(deck);
@@ -155,9 +156,10 @@ describe("PracticeSystem", () => {
 
   // TODO: setup data
   it("randomMode", async () => {
-    const [deckId] = await Q.decks().insert({
-      userId: hook.user.id,
+    const [{ insertId: deckId }] = await db.insert(T.decks).values({
       name: __filename,
+      userId: hook.user.id,
+      cache: DEFAULT_DECK_CACHE,
       randomMode: true,
     });
     const deck = await Q.decks().where({ id: deckId }).first();
@@ -187,17 +189,16 @@ describe("randomMode", () => {
     );
     tinyassert(deck);
     const system = new PracticeSystem(userHook.data, deck);
+
     const entries: TT["practiceEntries"][] = [];
-    // loop practice N times
-    const n = 100;
-    deck.updatedAt = NOW; // make randomMode deterministic
-    for (const _ of range(n)) {
+    for (const i of range(100)) {
+      system.__seed = i; // make deterministic
       const entry = await system.getNextPracticeEntry();
       tinyassert(entry);
       entries.push(entry);
-      await system.createPracticeAction(entry, "GOOD");
-      deck.updatedAt = new Date(deck.updatedAt.getTime() + 1); // force mutating seed since `updateAt` is not precise enough
+      await system.createPracticeAction(entry, "HARD");
     }
+
     // NEW should be picked most often
     const countMap = mapValues(
       groupBy(entries, (e) => e.queueType),
@@ -205,13 +206,14 @@ describe("randomMode", () => {
     );
     expect(countMap).toMatchInlineSnapshot(`
       Map {
-        "NEW" => 93,
-        "LEARN" => 5,
+        "NEW" => 94,
+        "LEARN" => 4,
         "REVIEW" => 2,
       }
     `);
+
     // should pick mostly random practice entries
-    expect(uniq(entries.map((e) => e.id)).length).greaterThan(n - 5);
+    expect(uniq(entries.map((e) => e.id)).length).toMatchInlineSnapshot("95");
   });
 });
 
