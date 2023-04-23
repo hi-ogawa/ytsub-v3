@@ -93,8 +93,6 @@ async function importDeck(userId: number, data: ExportDeckData) {
 
   const [deckInsert] = await db.insert(T.decks).values({
     ...objectPick(deck, [
-      "createdAt",
-      "updatedAt",
       "name",
       "newEntriesPerDay",
       "reviewsPerDay",

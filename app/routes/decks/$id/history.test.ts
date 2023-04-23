@@ -65,11 +65,6 @@ describe("decks/id/history.loader", () => {
             "id": "...",
             "name": "test",
             "newEntriesPerDay": 20,
-            "practiceEntriesCountByQueueType": {
-              "LEARN": 0,
-              "NEW": 0,
-              "REVIEW": 0,
-            },
             "randomMode": false,
             "reviewsPerDay": 200,
             "updatedAt": "...",

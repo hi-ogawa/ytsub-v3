@@ -157,6 +157,7 @@ describe("randomMode", () => {
     const entries: TT["practiceEntries"][] = [];
     // loop practice N times
     const n = 100;
+    deck.updatedAt = NOW; // make randomMode deterministic
     for (const _ of range(n)) {
       const entry = await system.getNextPracticeEntry();
       tinyassert(entry);
@@ -171,9 +172,9 @@ describe("randomMode", () => {
     );
     expect(countMap).toMatchInlineSnapshot(`
       Map {
-        "NEW" => 88,
+        "NEW" => 93,
+        "LEARN" => 5,
         "REVIEW" => 2,
-        "LEARN" => 10,
       }
     `);
     // should pick mostly random practice entries
