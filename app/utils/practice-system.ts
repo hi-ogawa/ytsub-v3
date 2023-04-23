@@ -1,9 +1,15 @@
-import { tinyassert } from "@hiogawa/utils";
+import {
+  groupBy,
+  range,
+  sortBy,
+  tinyassert,
+  typedBoolean,
+} from "@hiogawa/utils";
 import { Temporal } from "@js-temporal/polyfill";
 import { AnyColumn, GetColumnData, sql } from "drizzle-orm";
 import type { SQL } from "drizzle-orm/sql";
-import { difference, range } from "lodash";
-import { E, T, db, findOne } from "../db/drizzle-client.server";
+import { difference } from "lodash";
+import { E, T, TT, db, findOne } from "../db/drizzle-client.server";
 import type {
   BookmarkEntryTable,
   DeckTable,
@@ -74,13 +80,7 @@ export class PracticeSystem {
     now: Date = new Date()
   ): Promise<PracticeEntryTable | undefined> {
     if (this.deck.randomMode) {
-      const { query } = queryNextPracticeEntryRandomMode(
-        this.deck.id,
-        now,
-        this.deck.updatedAt.getTime()
-      );
-      const entry = await findOne(query);
-      return entry;
+      return queryNextPracticeEntryRandomModeWithCache(this.deck.id, now);
     }
 
     const [daily, entries] = await Promise.all([
@@ -137,7 +137,7 @@ export class PracticeSystem {
         practiceActionsCount: 0,
       }))
     );
-    await updateDeckCache(deckId, { NEW: newIds.length }, {});
+    await updateDeckCache(deckId, { NEW: newIds.length }, {}, "clear");
     return range(insertId, insertId + newIds.length);
   }
 
@@ -208,7 +208,8 @@ export class PracticeSystem {
       },
       {
         [actionType]: 1,
-      }
+      },
+      "shift"
     );
 
     const [[{ insertId }]] = await Promise.all([
@@ -223,7 +224,8 @@ export class PracticeSystem {
 export async function updateDeckCache(
   deckId: number,
   byQueueType: Partial<Record<PracticeQueueType, number>>,
-  byActionType: Partial<Record<PracticeActionType, number>>
+  byActionType: Partial<Record<PracticeActionType, number>>,
+  updateNextEntries?: "shift" | "clear"
 ): Promise<void> {
   await db
     .update(T.decks)
@@ -243,7 +245,16 @@ export async function updateDeckCache(
               `$."practiceActionsCountByActionType"."${k}"`,
               (prev: SQL) => sql`${prev} + ${v}`,
             ] as const
-        )
+        ),
+        [
+          `$.nextEntriesRandomMode`,
+          (prev: SQL) =>
+            updateNextEntries === "shift"
+              ? sql`JSON_REMOVE(${prev}, '$[0]')`
+              : updateNextEntries === "clear"
+              ? sql`CAST('[]' AS JSON)`
+              : prev,
+        ]
       ),
     })
     .where(E.eq(T.decks.id, deckId));
@@ -405,6 +416,102 @@ async function getNextScheduledPracticeEntries(deckId: number, now: Date) {
       ([row]) => row
     )
   );
+}
+
+// TODO: invalidate cache on deck update
+export async function queryNextPracticeEntryRandomModeWithCache(
+  deckId: number,
+  now: Date
+) {
+  const deck = await findOne(
+    db.select().from(T.decks).where(E.eq(T.decks.id, deckId))
+  );
+  tinyassert(deck);
+
+  // pick from cache only when next id is valid
+  if (deck.cache.nextEntriesRandomMode.length > 0) {
+    const id = deck.cache.nextEntriesRandomMode[0];
+    const row = await findOne(
+      db.select().from(T.practiceEntries).where(E.eq(T.practiceEntries.id, id))
+    );
+    if (row) {
+      return row;
+    }
+  }
+
+  // rebuild cache
+  const nextEntries = await queryNextPracticeEntryRandomModeV2(deckId, now, 10);
+
+  // save cache
+  await db.update(T.decks).set({
+    cache: sqlJsonSetByObject(T.decks.cache, {
+      nextEntriesRandomMode: nextEntries.map((e) => e.id),
+    }),
+  });
+
+  return nextEntries[0];
+}
+
+export async function queryNextPracticeEntryRandomModeV2(
+  deckId: number,
+  now: Date,
+  maxCount: number
+): Promise<TT["practiceEntries"][]> {
+  //
+  // fetch all and randomize in js
+  //
+  let rows = await db
+    .select()
+    .from(T.practiceEntries)
+    .where(E.and(E.eq(T.practiceEntries.deckId, deckId)));
+
+  //
+  // sort random with scheduledAt bonus
+  //
+  function computeScheduledAtFactor(scheduledAt: Date): number {
+    // +0.1 for each week scheduled eariler
+    const SCHEDULED_AT_BONUS_SLOPE = 0.1 / (60 * 60 * 24 * 7);
+    const SCHEDULED_AT_BONUS_MAX = 0.3;
+
+    return Math.max(
+      SCHEDULED_AT_BONUS_MAX,
+      SCHEDULED_AT_BONUS_SLOPE * (now.getTime() - scheduledAt.getTime())
+    );
+  }
+
+  rows = sortBy(
+    rows,
+    (row) => Math.random() + computeScheduledAtFactor(row.scheduledAt)
+  );
+
+  if (rows.length <= maxCount) {
+    return rows;
+  }
+
+  //
+  // choose queueType by a fixed probability
+  //
+
+  const rowsByQueue = groupBy(rows, (row) => row.queueType);
+
+  function getNextEntry() {
+    // TODO: the size of queue should affect the probability? (e.g. what if all NEW entries are finished?)
+    const QUEUE_TYPE_WEIGHTS = [90, 8, 2];
+    const queueType =
+      PRACTICE_QUEUE_TYPES[randomChoice(Math.random(), QUEUE_TYPE_WEIGHTS)];
+
+    const queueRows = rowsByQueue.get(queueType);
+    if (queueRows?.length) {
+      return queueRows.shift();
+    }
+    // TODO: when some queues are empty, cache's benefit is reduced
+    return;
+  }
+
+  const nextEntries = range(maxCount)
+    .map(() => getNextEntry())
+    .filter(typedBoolean);
+  return nextEntries;
 }
 
 export function queryNextPracticeEntryRandomMode(
