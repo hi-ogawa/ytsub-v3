@@ -1,23 +1,22 @@
 import { tinyassert } from "@hiogawa/utils";
 import { Temporal } from "@js-temporal/polyfill";
-import { sql } from "drizzle-orm";
+import { AnyColumn, GetColumnData, sql } from "drizzle-orm";
+import type { SQL } from "drizzle-orm/sql";
 import { difference, range } from "lodash";
-import { client } from "../db/client.server";
 import { E, T, db, findOne } from "../db/drizzle-client.server";
-import {
+import type {
   BookmarkEntryTable,
   DeckTable,
   PracticeEntryTable,
-  Q,
   UserTable,
 } from "../db/models";
 import {
+  PRACTICE_ACTION_TYPES,
   PRACTICE_QUEUE_TYPES,
   PracticeActionType,
   PracticeQueueType,
 } from "../db/types";
-import { aggregate } from "../db/utils";
-import { fromEntries } from "./misc";
+import { mapGroupBy, objectFromMap, objectFromMapDefault } from "./misc";
 import { fromTemporal, toInstant, toZdt } from "./temporal-utils";
 
 const QUEUE_RULES: Record<
@@ -78,39 +77,29 @@ export class PracticeSystem {
 
   async getStatistics(now: Date): Promise<DeckPracticeStatistics> {
     const deckId = this.deck.id;
-    const today = fromTemporal(toZdt(now, this.user.timezone).startOfDay());
     const [deck, daily] = await Promise.all([
-      Q.decks().where("id", deckId).first(), // reload deck for simplicity
-      Q.practiceActions()
-        .select("queueType", { count: client.raw("COUNT(0)") })
-        .where({ deckId })
-        .where("createdAt", ">=", today)
-        .groupBy("queueType"),
+      findOne(db.select().from(T.decks).where(E.eq(T.decks.id, deckId))), // reload deck for simplicity (TODO: don't)
+      getDailyPracticeStatistics(
+        this.deck.id,
+        fromTemporal(toZdt(now, this.user.timezone).startOfDay())
+      ),
     ]);
     tinyassert(deck);
-    const aggDaily = aggregate(daily, "queueType");
-    return fromEntries(
+    return Object.fromEntries(
       PRACTICE_QUEUE_TYPES.map((type) => [
         type,
         {
-          total: deck.practiceEntriesCountByQueueType[type],
-          daily: aggDaily[type]?.count ?? 0,
+          total: deck.cache.practiceEntriesCountByQueueType[type],
+          daily: daily[type] ?? 0,
         },
       ])
-    );
+    ) as DeckPracticeStatistics;
   }
 
   async getNextPracticeEntry(
     now: Date = new Date()
   ): Promise<PracticeEntryTable | undefined> {
-    const {
-      id: deckId,
-      newEntriesPerDay,
-      reviewsPerDay,
-      randomMode,
-    } = this.deck;
-
-    if (randomMode) {
+    if (this.deck.randomMode) {
       const { query } = queryNextPracticeEntryRandomMode(
         this.deck.id,
         now,
@@ -120,48 +109,24 @@ export class PracticeSystem {
       return entry;
     }
 
-    const today = fromTemporal(toZdt(now, this.user.timezone).startOfDay());
-    const [actions, entries] = await Promise.all([
-      // TODO(refactor): copeid from `getStatistics`
-      Q.practiceActions()
-        .select("queueType", { count: client.raw("COUNT(0)") })
-        .where({ deckId })
-        .where("createdAt", ">=", today)
-        .groupBy("queueType"),
-      // select `practiceEntries` with minimum `scheduledAt` for each `queueType`
-      Q.practiceEntries()
-        .select("practiceEntries.*")
-        .join(
-          Q.practiceEntries()
-            .select(
-              "queueType",
-              client.raw("MIN(scheduledAt) as minScheduledAt")
-            )
-            .where({ deckId })
-            .where("scheduledAt", "<=", now)
-            .groupBy("queueType")
-            .as("subQuery"),
-          function () {
-            this.on("subQuery.queueType", "practiceEntries.queueType").on(
-              "subQuery.minScheduledAt",
-              "practiceEntries.scheduledAt"
-            );
-          }
-        ) as Promise<PracticeEntryTable[]>,
+    const [daily, entries] = await Promise.all([
+      getDailyPracticeStatistics(
+        this.deck.id,
+        fromTemporal(toZdt(now, this.user.timezone).startOfDay())
+      ),
+      getNextScheduledPracticeEntries(this.deck.id, now),
     ]);
-    const aggActions = aggregate(actions, "queueType");
-    const aggEntries = aggregate(entries, "queueType");
 
-    if ((aggActions.NEW?.count ?? 0) < newEntriesPerDay && aggEntries.NEW) {
-      return aggEntries.NEW;
+    if ((daily.NEW ?? 0) < this.deck.newEntriesPerDay && entries.NEW) {
+      return entries.NEW;
     }
 
-    if (aggEntries.LEARN) {
-      return aggEntries.LEARN;
+    if (entries.LEARN) {
+      return entries.LEARN;
     }
 
-    if ((aggActions.REVIEW?.count ?? 0) < reviewsPerDay && aggEntries.REVIEW) {
-      return aggEntries.REVIEW;
+    if ((daily.REVIEW ?? 0) < this.deck.reviewsPerDay && entries.REVIEW) {
+      return entries.REVIEW;
     }
 
     return;
@@ -174,27 +139,32 @@ export class PracticeSystem {
     const deckId = this.deck.id;
     // Prevent duplicates on applicatoin level (TODO: probably looks less surprising to do this outside...)
     const bookmarkEntryIds = bookmarkEntries.map((e) => e.id);
-    const dupIds = await Q.practiceEntries()
-      .pluck("bookmarkEntryId")
-      .where({ deckId })
-      .whereIn("bookmarkEntryId", bookmarkEntryIds);
+    const rows = await db
+      .select({ id: T.practiceEntries.bookmarkEntryId })
+      .from(T.practiceEntries)
+      .where(
+        E.and(
+          E.eq(T.practiceEntries.deckId, this.deck.id),
+          E.inArray(T.practiceEntries.bookmarkEntryId, bookmarkEntryIds)
+        )
+      );
+    const dupIds = rows.map((row) => row.id);
     const newIds = difference(bookmarkEntryIds, dupIds);
     if (newIds.length === 0) {
       return [];
     }
-    const [id] = await Q.practiceEntries().insert(
-      newIds.map((id) => ({
-        queueType: "NEW",
+    const [{ insertId }] = await db.insert(T.practiceEntries).values(
+      ...newIds.map((bookmarkEntryId) => ({
+        deckId,
+        bookmarkEntryId,
+        queueType: "NEW" as const,
         easeFactor: 1,
         scheduledAt: now,
-        deckId,
-        bookmarkEntryId: id,
+        practiceActionsCount: 0,
       }))
     );
-    await updateDeckPracticeEntriesCountByQueueType(deckId, {
-      NEW: newIds.length,
-    });
-    return range(id, id + newIds.length);
+    await updateDeckCache(deckId, { NEW: newIds.length }, {});
+    return range(insertId, insertId + newIds.length);
   }
 
   async createPracticeAction(
@@ -212,7 +182,7 @@ export class PracticeSystem {
     } = practiceEntry;
 
     // sql: create practiceAction
-    const qActions = Q.practiceActions().insert({
+    const queryCreatePracticeAction = db.insert(T.practiceActions).values({
       queueType: queueType,
       actionType,
       userId,
@@ -245,60 +215,206 @@ export class PracticeSystem {
     }
 
     // sql: update practiceEntry
-    const qEntries = Q.practiceEntries()
-      .update({
+    const queryUpdatePracticeEntry = db
+      .update(T.practiceEntries)
+      .set({
         queueType: newQueueType,
         easeFactor: newEaseFactor,
         scheduledAt: newScheduledAt,
-        practiceActionsCount: client.raw("practiceActionsCount + 1"),
+        practiceActionsCount: sql<number>`${T.practiceEntries.practiceActionsCount} + 1`,
       })
-      .where("id", practiceEntryId);
+      .where(E.eq(T.practiceEntries.id, practiceEntryId));
 
-    // sql: update decks.practiceEntriesCountByQueueType
-    const qDecks = updateDeckPracticeEntriesCountByQueueType(deckId, {
-      [queueType]: queueType !== newQueueType ? -1 : 0,
-      [newQueueType]: queueType !== newQueueType ? 1 : 0,
-    });
+    // sql: update decks.cache
+    const queryUpdateDeck = updateDeckCache(
+      deckId,
+      {
+        [queueType]: queueType !== newQueueType ? -1 : 0,
+        [newQueueType]: queueType !== newQueueType ? 1 : 0,
+      },
+      {
+        [actionType]: 1,
+      }
+    );
 
-    const [[id]] = await Promise.all([qActions, qEntries, qDecks]);
-    return id;
+    const [[{ insertId }]] = await Promise.all([
+      queryCreatePracticeAction,
+      queryUpdatePracticeEntry,
+      queryUpdateDeck,
+    ]);
+    return insertId;
   }
 }
 
-async function updateDeckPracticeEntriesCountByQueueType(
+export async function updateDeckCache(
   deckId: number,
-  increments: Partial<Record<PracticeQueueType, number>>
+  byQueueType: Partial<Record<PracticeQueueType, number>>,
+  byActionType: Partial<Record<PracticeActionType, number>>
 ): Promise<void> {
-  const column = T.decks.practiceEntriesCountByQueueType;
   await db
     .update(T.decks)
     .set({
-      // force resetting `updatedAt` even if queueType = newQueueType so that we can use it as a randomMode seed
-      updatedAt: new Date(),
-      // prettier-ignore
-      practiceEntriesCountByQueueType: sql`
-        JSON_SET(${column},
-          '$."NEW"',    JSON_EXTRACT(${column}, '$."NEW"')    + ${increments.NEW ?? 0},
-          '$."LEARN"',  JSON_EXTRACT(${column}, '$."LEARN"')  + ${increments.LEARN ?? 0},
-          '$."REVIEW"', JSON_EXTRACT(${column}, '$."REVIEW"') + ${increments.REVIEW ?? 0}
+      cache: sqlJsonSetByExtract(
+        T.decks.cache,
+        ...Object.entries(byQueueType).map(
+          ([k, v]) =>
+            [
+              `$.practiceEntriesCountByQueueType.${k}`,
+              (prev: SQL) => sql`${prev} + ${v}`,
+            ] as const
+        ),
+        ...Object.entries(byActionType).map(
+          ([k, v]) =>
+            [
+              `$."practiceActionsCountByActionType"."${k}"`,
+              (prev: SQL) => sql`${prev} + ${v}`,
+            ] as const
         )
-      `,
+      ),
     })
     .where(E.eq(T.decks.id, deckId));
 }
 
-// used by "reset-counter-cache:decks.practiceEntriesCountByQueueType" in cli.ts
-export async function queryDeckPracticeEntriesCountByQueueType(
-  deckId: number
-): Promise<Record<PracticeQueueType, number>> {
-  const query = await Q.practiceEntries()
-    .select("queueType", { count: client.raw("COUNT(0)") })
-    .where({ deckId })
-    .groupBy("queueType");
-  const aggregated = aggregate(query, "queueType");
-  return Object.fromEntries(
-    PRACTICE_QUEUE_TYPES.map((type) => [type, aggregated[type]?.count ?? 0])
-  ) as any;
+export async function resetDeckCache(deckId: number) {
+  const rowsByQueue = await db
+    .select({
+      queueType: T.practiceEntries.queueType,
+      count: sql<number>`COUNT(0)`,
+    })
+    .from(T.practiceEntries)
+    .where(E.eq(T.practiceEntries.deckId, deckId))
+    .groupBy(T.practiceEntries.queueType);
+
+  const rowsByAction = await db
+    .select({
+      actionType: T.practiceActions.actionType,
+      count: sql<number>`COUNT(0)`,
+    })
+    .from(T.practiceActions)
+    .where(E.eq(T.practiceActions.deckId, deckId))
+    .groupBy(T.practiceActions.actionType);
+
+  await db
+    .update(T.decks)
+    .set({
+      cache: sqlJsonSetByObject(T.decks.cache, {
+        nextEntriesRandomMode: [],
+        practiceEntriesCountByQueueType: objectFromMapDefault(
+          mapGroupBy(
+            rowsByQueue,
+            (row) => row.queueType,
+            ([row]) => row.count
+          ),
+          PRACTICE_QUEUE_TYPES,
+          0
+        ),
+        practiceActionsCountByActionType: objectFromMapDefault(
+          mapGroupBy(
+            rowsByAction,
+            (row) => row.actionType,
+            ([row]) => row.count
+          ),
+          PRACTICE_ACTION_TYPES,
+          0
+        ),
+      }),
+    })
+    .where(E.eq(T.decks.id, deckId));
+}
+
+// helper for typed JSON_SET(column, path, value, ...)
+function sqlJsonSetByObject<Column extends AnyColumn>(
+  column: Column,
+  data: Partial<GetColumnData<Column>> & object
+) {
+  return sqlJsonSetByExtract(
+    column,
+    ...Object.entries(data).map(
+      ([k, v]) =>
+        [`$.${k}`, () => sql`CAST(${JSON.stringify(v)} AS JSON)`] as const
+    )
+  );
+}
+
+// helper for JSON_SET(column, path, setFn(JSON_EXTRACT(column, path)), ...)
+function sqlJsonSetByExtract(
+  jsonDoc: unknown,
+  ...updates: (readonly [path: string, setFn: (prev: SQL) => SQL])[]
+) {
+  let q = sql`JSON_SET(${jsonDoc}`;
+  for (const [path, setFn] of updates) {
+    const jsonExtract = sql`JSON_EXTRACT(${jsonDoc}, ${path})`;
+    q = sql`${q}, ${path}, ${setFn(jsonExtract)}`;
+  }
+  q = sql`${q})`;
+  return q;
+}
+
+async function getDailyPracticeStatistics(deckId: number, startOfDay: Date) {
+  const rows = await db
+    .select({
+      queueType: T.practiceActions.queueType,
+      count: sql<number>`COUNT(0)`,
+    })
+    .from(T.practiceActions)
+    .where(
+      E.and(
+        E.eq(T.practiceActions.deckId, deckId),
+        E.gte(T.practiceActions.createdAt, startOfDay)
+      )
+    )
+    .groupBy(T.practiceActions.queueType);
+
+  return objectFromMap(
+    mapGroupBy(
+      rows,
+      (row) => row.queueType,
+      ([row]) => row.count
+    )
+  );
+}
+
+async function getNextScheduledPracticeEntries(deckId: number, now: Date) {
+  // get minimum `scheduledAt` for each `queueType`
+  const subQuery = db
+    .select({
+      queueType: T.practiceEntries.queueType,
+      minScheduledAt: sql<Date>`MIN(${T.practiceEntries.scheduledAt})`.as(
+        "__minScheduledAt"
+      ),
+    })
+    .from(T.practiceEntries)
+    .where(
+      E.and(
+        E.eq(T.practiceEntries.deckId, deckId),
+        E.lte(T.practiceEntries.scheduledAt, now)
+      )
+    )
+    .groupBy(T.practiceEntries.queueType)
+    .as("__subQuery");
+
+  const rows = await db
+    .select({
+      practiceEntries: T.practiceEntries,
+    })
+    .from(T.practiceEntries)
+    .innerJoin(
+      subQuery,
+      E.and(
+        E.eq(T.practiceEntries.deckId, deckId),
+        E.eq(T.practiceEntries.queueType, subQuery.queueType),
+        // workaround custom datetimeUtc
+        sql`${T.practiceEntries.scheduledAt} = ${subQuery.minScheduledAt}`
+      )
+    );
+
+  return objectFromMap(
+    mapGroupBy(
+      rows.map((row) => row.practiceEntries),
+      (row) => row.queueType,
+      ([row]) => row
+    )
+  );
 }
 
 export function queryNextPracticeEntryRandomMode(

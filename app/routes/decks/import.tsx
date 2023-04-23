@@ -4,7 +4,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { R } from "../../misc/routes";
-import { _trpc } from "../../trpc/client-internal.client";
+import { trpcClient } from "../../trpc/client-internal.client";
 import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 
@@ -36,7 +36,7 @@ function FormComponent() {
       const file = fileList?.[0];
       tinyassert(file);
       const data = await file.text();
-      await _trpc.decks_import.mutate({ data });
+      await trpcClient.decks_import.mutate({ data });
     },
     {
       onSuccess: () => {

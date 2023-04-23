@@ -5,7 +5,7 @@ import type { trpcApp } from "./server";
 // remove raw client from server bundle since it's not meant to be used on server.
 // if we even try, we would better get an error.
 
-export const _trpc = createTRPCProxyClient<typeof trpcApp>({
+export const trpcClient = createTRPCProxyClient<typeof trpcApp>({
   transformer: superjson,
   links: [
     httpLink({

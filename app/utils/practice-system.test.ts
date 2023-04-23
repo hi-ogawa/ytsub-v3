@@ -2,18 +2,19 @@ import { groupBy, mapValues, range, tinyassert, uniq } from "@hiogawa/utils";
 import { beforeAll, describe, expect, it } from "vitest";
 import { E, T, TT, db, findOne } from "../db/drizzle-client.server";
 import { Q } from "../db/models";
+import { DEFAULT_DECK_CACHE } from "../db/types";
 import { importSeed } from "../misc/seed-utils";
 import { useUser, useUserVideo } from "../misc/test-helper";
 import {
   PracticeSystem,
   hashInt32,
   queryNextPracticeEntryRandomMode,
+  resetDeckCache,
+  updateDeckCache,
 } from "./practice-system";
 
-// >>> import datetime
-// >>> datetime.datetime(year=1991, month=6, day=24, tzinfo=datetime.timezone.utc).timestamp()
-// 677721600.0
-const NOW = new Date(677721600 * 1000);
+// it doesn't matter yet but make NOW deterministic
+const NOW = new Date("2023-04-10T00:00:00Z");
 
 describe("PracticeSystem", () => {
   const hook = useUserVideo({
@@ -22,9 +23,10 @@ describe("PracticeSystem", () => {
 
   it("basic", async () => {
     // TODO: move to `use...` helpers
-    const [deckId] = await Q.decks().insert({
-      userId: hook.user.id,
+    const [{ insertId: deckId }] = await db.insert(T.decks).values({
       name: __filename,
+      userId: hook.user.id,
+      cache: DEFAULT_DECK_CACHE,
     });
     const deck = await Q.decks().where({ id: deckId }).first();
     tinyassert(deck);
@@ -155,6 +157,7 @@ describe("randomMode", () => {
     const entries: TT["practiceEntries"][] = [];
     // loop practice N times
     const n = 100;
+    deck.updatedAt = NOW; // make randomMode deterministic
     for (const _ of range(n)) {
       const entry = await system.getNextPracticeEntry();
       tinyassert(entry);
@@ -169,9 +172,9 @@ describe("randomMode", () => {
     );
     expect(countMap).toMatchInlineSnapshot(`
       Map {
-        "NEW" => 88,
+        "NEW" => 93,
+        "LEARN" => 5,
         "REVIEW" => 2,
-        "LEARN" => 10,
       }
     `);
     // should pick mostly random practice entries
@@ -220,6 +223,66 @@ describe("hashInt32", () => {
         100,
         90,
       ]
+    `);
+  });
+});
+
+describe("DeckCache", () => {
+  const userHook = useUser({
+    seed: __filename + "randomMode",
+  });
+  let deckId: number;
+
+  beforeAll(async () => {
+    await userHook.isReady;
+    deckId = await importSeed(userHook.data.id);
+  });
+
+  async function getDeck() {
+    const deck = await findOne(
+      db.select().from(T.decks).where(E.eq(T.decks.id, deckId))
+    );
+    tinyassert(deck);
+    return deck;
+  }
+
+  it("basic", async () => {
+    await resetDeckCache(deckId);
+    let deck = await getDeck();
+    expect(deck.cache).toMatchInlineSnapshot(`
+      {
+        "nextEntriesRandomMode": [],
+        "practiceActionsCountByActionType": {
+          "AGAIN": 128,
+          "EASY": 0,
+          "GOOD": 55,
+          "HARD": 64,
+        },
+        "practiceEntriesCountByQueueType": {
+          "LEARN": 187,
+          "NEW": 140,
+          "REVIEW": 13,
+        },
+      }
+    `);
+
+    await updateDeckCache(deckId, { LEARN: 1, NEW: -1 }, { GOOD: 1 });
+    deck = await getDeck();
+    expect(deck.cache).toMatchInlineSnapshot(`
+      {
+        "nextEntriesRandomMode": [],
+        "practiceActionsCountByActionType": {
+          "AGAIN": 128,
+          "EASY": 0,
+          "GOOD": 56,
+          "HARD": 64,
+        },
+        "practiceEntriesCountByQueueType": {
+          "LEARN": 188,
+          "NEW": 139,
+          "REVIEW": 13,
+        },
+      }
     `);
   });
 });

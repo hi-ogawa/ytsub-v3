@@ -11,15 +11,16 @@ import {
   mysqlTable,
   serial,
   text,
+  timestamp,
 } from "drizzle-orm/mysql-core";
 import { MySql2Database, drizzle } from "drizzle-orm/mysql2";
 import { SQL, noopDecoder } from "drizzle-orm/sql";
 import { createConnection } from "mysql2/promise";
-import { throwGetterProxy } from "../utils/misc";
+import { uninitialized } from "../utils/misc";
 import type { PaginationParams } from "../utils/pagination";
 import knexfile from "./knexfile.server";
 import type { PaginationMetadata } from "./models";
-import type { PracticeActionType, PracticeQueueType } from "./types";
+import type { DeckCache, PracticeActionType, PracticeQueueType } from "./types";
 
 //
 // schema utils
@@ -110,12 +111,13 @@ const decks = mysqlTable("decks", {
   ...timestampColumns,
   //
   name: text("name").notNull(),
-  newEntriesPerDay: int("newEntriesPerDay").notNull(),
-  reviewsPerDay: int("reviewsPerDay").notNull(),
-  easeMultiplier: float("easeMultiplier").notNull(),
-  easeBonus: float("easeBonus").notNull(),
+  newEntriesPerDay: int("newEntriesPerDay").notNull().default(DUMMY_DEFAULT),
+  reviewsPerDay: int("reviewsPerDay").notNull().default(DUMMY_DEFAULT),
+  easeMultiplier: float("easeMultiplier").notNull().default(DUMMY_DEFAULT),
+  easeBonus: float("easeBonus").notNull().default(DUMMY_DEFAULT),
   randomMode: boolean("randomMode").notNull().default(DUMMY_DEFAULT),
-  practiceEntriesCountByQueueType: json<Record<PracticeQueueType, number>>("practiceEntriesCountByQueueType").notNull().default(DUMMY_DEFAULT),
+  // cache various things to reduce repeating heavy SELECT queries
+  cache: json<DeckCache>("cache").notNull(),
 });
 
 const practiceEntries = mysqlTable("practiceEntries", {
@@ -141,6 +143,13 @@ const practiceActions = mysqlTable("practiceActions", {
   actionType: text<PracticeActionType>("actionType").notNull(),
 });
 
+const knex_migrations = mysqlTable("knex_migrations", {
+  id: serial("id").primaryKey(),
+  name: text("name"),
+  batch: int("batch"),
+  migration_time: timestamp("migration_time"),
+});
+
 // short accessor for tables
 export const T = {
   users,
@@ -150,6 +159,7 @@ export const T = {
   decks,
   practiceEntries,
   practiceActions,
+  knex_migrations,
 };
 
 export type TT = { [K in keyof typeof T]: InferModel<(typeof T)[K]> };
@@ -243,7 +253,7 @@ declare let globalThis: {
   __drizzleClient: MySql2Database;
 };
 
-export let db = throwGetterProxy as typeof globalThis.__drizzleClient;
+export let db = uninitialized as typeof globalThis.__drizzleClient;
 
 export const initializeDrizzleClient = once(async () => {
   db = globalThis.__drizzleClient ??= await inner();

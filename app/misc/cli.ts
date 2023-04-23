@@ -1,6 +1,6 @@
 import { deepEqual } from "assert/strict";
 import fs from "node:fs";
-import { tinyassert } from "@hiogawa/utils";
+import { objectPick, tinyassert } from "@hiogawa/utils";
 import { cac } from "cac";
 import consola from "consola";
 import { range, zip } from "lodash";
@@ -22,8 +22,8 @@ import {
 } from "../utils/auth";
 import { exec, streamToString } from "../utils/node.server";
 import {
-  queryDeckPracticeEntriesCountByQueueType,
   queryNextPracticeEntryRandomMode,
+  resetDeckCache,
 } from "../utils/practice-system";
 import { NewVideo, fetchCaptionEntries } from "../utils/youtube";
 import { finalizeServer, initializeServer } from "./initialize-server";
@@ -67,10 +67,16 @@ async function getSchema(options: {
       const [rows] = await client.raw(`SHOW CREATE TABLE ${name}`);
       result[name] = rows[0]["Create Table"];
     } else {
-      const [rows] = await client.raw(`DESCRIBE ${name}`);
-      result[name] = Object.fromEntries(
-        rows.map((row: any) => [row.Field, row])
-      );
+      const [fields] = await client.raw(`DESCRIBE ${name}`);
+      const [indices] = await client.raw(`SHOW INDEX FROM ${name}`);
+      result[name] = {
+        describe: Object.fromEntries(
+          fields.map((row: any) => [row.Field, row])
+        ),
+        index: Object.fromEntries(
+          indices.map((row: any) => [row.Key_name, row])
+        ),
+      };
     }
   }
   return result;
@@ -107,7 +113,7 @@ async function clieDbTestMigrations(options: {
   const downs = [];
 
   const getSchema_ = () =>
-    getSchema({ showCreateTable: true, includeKnex: false });
+    getSchema({ showCreateTable: false, includeKnex: false });
 
   console.error(":: running migrations");
   if (options.unitTest) {
@@ -134,7 +140,9 @@ async function clieDbTestMigrations(options: {
   }
 
   if (options.reversibilityTest) {
-    deepEqual(ups, downs);
+    for (const [up, down] of zip(ups, downs)) {
+      deepEqual(up, down);
+    }
     console.error(":: reversibility test success");
   }
 }
@@ -190,6 +198,40 @@ cli
       await insertVideoAndCaptionEntries(newVideo, data, userId);
     }
   });
+
+//
+// fetchCaptionEntries
+//
+
+const commandFetchCaptionEntriesArgs = z.object({
+  videoId: z.string(),
+  language1: z.string(),
+  language2: z.string(),
+  outFile: z.string(),
+});
+
+// prettier-ignore
+cli
+  .command("fetchCaptionEntries")
+  .option(`--${commandFetchCaptionEntriesArgs.keyof().enum.videoId} [string]`, "")
+  .option(`--${commandFetchCaptionEntriesArgs.keyof().enum.language1} [string]`, "")
+  .option(`--${commandFetchCaptionEntriesArgs.keyof().enum.language2} [string]`, "")
+  .option(`--${commandFetchCaptionEntriesArgs.keyof().enum.outFile} [string]`, "")
+  .action(commandFetchCaptionEntries);
+
+async function commandFetchCaptionEntries(rawArgs: unknown) {
+  const args = commandFetchCaptionEntriesArgs.parse(rawArgs);
+  const data = await fetchCaptionEntries({
+    videoId: args.videoId,
+    language1: {
+      id: args.language1,
+    },
+    language2: {
+      id: args.language2,
+    },
+  });
+  await fs.promises.writeFile(args.outFile, JSON.stringify(data, null, 2));
+}
 
 //
 // seed export/import e.g.
@@ -470,23 +512,26 @@ cli
     });
   });
 
-cli
-  .command("reset-counter-cache:decks.practiceEntriesCountByQueueType")
-  .action(async () => {
-    const ids = await Q.decks().pluck("id");
-    for (const id of ids) {
-      const result = await queryDeckPracticeEntriesCountByQueueType(id);
-      await Q.decks()
-        .where("id", id)
-        .update("practiceEntriesCountByQueueType", JSON.stringify(result));
-    }
-  });
-
 async function printSession(username: string, password: string) {
   const user = await verifySignin({ username, password });
   const cookie = await createUserCookie(user);
   console.log(cookie);
 }
+
+//
+// resetDeckCache
+//
+
+cli.command(resetDeckCache.name).action(async () => {
+  const decks = await db.select().from(T.decks);
+  for (const deck of decks) {
+    console.log(
+      "::",
+      JSON.stringify(objectPick(deck, ["userId", "id", "name"]))
+    );
+    await resetDeckCache(deck.id);
+  }
+});
 
 //
 // main

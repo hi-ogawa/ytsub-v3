@@ -1,4 +1,4 @@
-import { groupBy, mapValues, tinyassert } from "@hiogawa/utils";
+import { tinyassert } from "@hiogawa/utils";
 import { sql } from "drizzle-orm";
 import { z } from "zod";
 import {
@@ -6,8 +6,14 @@ import {
   PracticeHistoryChartDataEntry,
 } from "../../components/practice-history-chart";
 import { E, T, db, findOne } from "../../db/drizzle-client.server";
-import { PRACTICE_ACTION_TYPES, Z_PRACTICE_ACTION_TYPES } from "../../db/types";
+import {
+  DEFAULT_DECK_CACHE,
+  PRACTICE_ACTION_TYPES,
+  PRACTICE_QUEUE_TYPES,
+  Z_PRACTICE_ACTION_TYPES,
+} from "../../db/types";
 import { importDeckJson } from "../../misc/seed-utils";
+import { mapGroupBy, objectFromMapDefault } from "../../utils/misc";
 import { PracticeSystem } from "../../utils/practice-system";
 import {
   Z_DATE_RANGE_TYPE,
@@ -104,6 +110,7 @@ export const trpcRoutesDecks = {
       const [{ insertId: deckId }] = await db.insert(T.decks).values({
         ...input,
         userId: ctx.user.id,
+        cache: DEFAULT_DECK_CACHE,
       });
       return { deckId };
     }),
@@ -254,6 +261,52 @@ export const trpcRoutesDecks = {
       return Object.values(countMap);
     }),
 
+  decks_nextPracticeEntry: procedureBuilder
+    .use(middlewares.requireUser)
+    .input(
+      z.object({
+        deckId: z.number().int(),
+      })
+    )
+    .query(async ({ input, ctx }) => {
+      const deck = await findUserDeck({
+        deckId: input.deckId,
+        userId: ctx.user.id,
+      });
+      tinyassert(deck);
+      const system = new PracticeSystem(ctx.user, deck);
+
+      const now = new Date();
+      const statistics = await system.getStatistics(now); // TODO: separate endpoint?
+
+      const practiceEntry = await system.getNextPracticeEntry(now);
+      if (!practiceEntry) {
+        return { finished: true, statistics } as const;
+      }
+
+      const row = await findOne(
+        db
+          .select()
+          .from(T.bookmarkEntries)
+          .innerJoin(
+            T.captionEntries,
+            E.eq(T.captionEntries.id, T.bookmarkEntries.captionEntryId)
+          )
+          .innerJoin(T.videos, E.eq(T.videos.id, T.captionEntries.videoId))
+          .where(E.eq(T.bookmarkEntries.id, practiceEntry.bookmarkEntryId))
+      );
+      tinyassert(row);
+
+      return {
+        finished: false,
+        statistics,
+        practiceEntry,
+        bookmarkEntry: row.bookmarkEntries,
+        captionEntry: row.captionEntries,
+        video: row.videos,
+      } as const;
+    }),
+
   decks_practiceStatistics: procedureBuilder
     .use(middlewares.requireUser)
     .input(
@@ -296,36 +349,20 @@ export const trpcRoutesDecks = {
         (rows) => rows.length
       );
 
-      // TODO: cache counter in deck table column
-      // deck.practiceActionsCountByActionType
-      const rowsCountByActionType = await db
-        .select({
-          actionType: T.practiceActions.actionType,
-          count: sql<number>`COUNT(0)`,
-        })
-        .from(T.practiceActions)
-        .where(E.and(E.eq(T.practiceActions.id, deck.id)))
-        .groupBy(T.practiceActions.actionType);
-
-      const practiceActionsCountByActionType = mapGroupBy(
-        rowsCountByActionType,
-        (row) => row.actionType,
-        ([row]) => row.count
-      );
-
       return {
-        practiceEntriesCountByQueueType: deck.practiceEntriesCountByQueueType,
-        practiceActionsCountByActionType: toCountObject(
-          practiceActionsCountByActionType,
-          PRACTICE_ACTION_TYPES
-        ),
-        practiceActionsCountByQueueTypeToday: toCountObject(
+        practiceEntriesCountByQueueType:
+          deck.cache.practiceEntriesCountByQueueType,
+        practiceActionsCountByActionType:
+          deck.cache.practiceActionsCountByActionType,
+        practiceActionsCountByQueueTypeToday: objectFromMapDefault(
           practiceActionsCountByQueueTypeToday,
-          PRACTICE_ACTION_TYPES
+          PRACTICE_QUEUE_TYPES,
+          0
         ),
-        practiceActionsCountByActionTypeToday: toCountObject(
+        practiceActionsCountByActionTypeToday: objectFromMapDefault(
           practiceActionsCountByActionTypeToday,
-          PRACTICE_ACTION_TYPES
+          PRACTICE_ACTION_TYPES,
+          0
         ),
       };
     }),
@@ -342,30 +379,4 @@ function findUserDeck({ deckId, userId }: { deckId: number; userId: number }) {
       .from(T.decks)
       .where(E.and(E.eq(T.decks.id, deckId), E.eq(T.decks.userId, userId)))
   );
-}
-
-function mapGroupBy<T, K, V>(
-  ls: T[],
-  keyFn: (v: T) => K,
-  valueFn: (vs: T[]) => V
-) {
-  return mapValues(groupBy(ls, keyFn), valueFn);
-}
-
-function objectFromMapWithDefault<K extends keyof any, V>(
-  map: Map<K, V>,
-  allKeys: K[],
-  defaultValue: V
-): Record<K, V> {
-  return Object.fromEntries([
-    ...allKeys.map((t) => [t, defaultValue]),
-    ...map.entries(),
-  ]);
-}
-
-function toCountObject<K extends keyof any>(
-  map: Map<K, number>,
-  allKeys: K[]
-): Record<K, number> {
-  return objectFromMapWithDefault(map, allKeys, 0);
 }

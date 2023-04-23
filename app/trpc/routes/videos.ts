@@ -47,28 +47,51 @@ export const trpcRoutesVideos = {
     }),
 
   videos_getCaptionEntries: procedureBuilder
-    .use(middlewares.requireUser)
     .input(
       z.object({
         videoId: z.number().int(),
         index: z.number().int(),
       })
     )
-    .mutation(async ({ input, ctx }) => {
+    .mutation(async ({ input }) => {
       const found = await findOne(
         db
           .select()
           .from(T.captionEntries)
-          .innerJoin(T.videos, E.eq(T.videos.id, T.captionEntries.videoId))
           .where(
             E.and(
-              E.eq(T.videos.id, input.videoId),
-              E.eq(T.videos.userId, ctx.user.id),
+              E.eq(T.captionEntries.videoId, input.videoId),
               E.eq(T.captionEntries.index, input.index)
             )
           )
       );
       tinyassert(found);
-      return found.captionEntries;
+      return found;
+    }),
+
+  videos_getLastBookmark: procedureBuilder
+    .use(middlewares.requireUser)
+    .input(
+      z.object({
+        videoId: z.number().int(),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      const query = db
+        .select()
+        .from(T.bookmarkEntries)
+        .innerJoin(
+          T.captionEntries,
+          E.eq(T.captionEntries.id, T.bookmarkEntries.captionEntryId)
+        )
+        .where(
+          E.and(
+            E.eq(T.bookmarkEntries.videoId, input.videoId),
+            E.eq(T.bookmarkEntries.userId, ctx.user.id)
+          )
+        )
+        // TODO: also probably fine to just use E.desc(T.bookmarkEntries.createdAt)
+        .orderBy(E.desc(T.captionEntries.index));
+      return findOne(query);
     }),
 };
