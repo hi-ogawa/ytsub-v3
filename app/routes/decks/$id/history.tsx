@@ -167,7 +167,10 @@ function ActionStatisticsComponent({
   );
 
   return (
-    <div className="w-full flex items-center p-1 relative">
+    <div
+      data-testid="ActionStatisticsComponent"
+      className="w-full flex items-center p-1 relative"
+    >
       <div className="grow flex px-4">
         <div className="flex-1" />
         {renderItem("AGAIN")}
