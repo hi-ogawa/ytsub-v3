@@ -383,6 +383,7 @@ export async function getDailyPracticeStatistics(
 
 async function getNextScheduledPracticeEntries(deckId: number, now: Date) {
   // get minimum `scheduledAt` for each `queueType`
+  // TODO: queueType/scheduledAt index matters?
   const subQuery = db
     .select({
       queueType: T.practiceEntries.queueType,
@@ -424,7 +425,7 @@ async function getNextScheduledPracticeEntries(deckId: number, now: Date) {
   );
 }
 
-export async function queryNextPracticeEntryRandomModeWithCache(
+async function queryNextPracticeEntryRandomModeWithCache(
   deckId: number,
   now: Date,
   seed: number = Date.now()
@@ -446,7 +447,7 @@ export async function queryNextPracticeEntryRandomModeWithCache(
   }
 
   // rebuild cache
-  const nextEntries = await queryNextPracticeEntryRandomModeV2(
+  const nextEntries = await queryNextPracticeEntryRandomModeBatch(
     deckId,
     now,
     10,
@@ -463,7 +464,7 @@ export async function queryNextPracticeEntryRandomModeWithCache(
   return nextEntries[0];
 }
 
-export async function queryNextPracticeEntryRandomModeV2(
+async function queryNextPracticeEntryRandomModeBatch(
   deckId: number,
   now: Date,
   maxCount: number,
@@ -543,70 +544,8 @@ export async function queryNextPracticeEntryRandomModeV2(
   return nextEntries;
 }
 
-export function queryNextPracticeEntryRandomMode(
-  deckId: number,
-  now: Date,
-  seed: number
-) {
-  const randInt = hashInt32(seed);
-  const randUniform = randInt / 2 ** 32;
-
-  const RANDOM_MODE_SCORE_ALIAS = "randomModeScore";
-
-  // 0.1 bonus for a week older, up to 0.2
-  const SCHEDULED_AT_BONUS_SLOPE = 0.1 / (60 * 60 * 24 * 7);
-  const SCHEDULED_AT_BONUS_MAX = 0.2;
-
-  // choose queueType by a fixed probability
-  const QUEUE_TYPE_WEIGHT = [90, 8, 2];
-  const randQueueType =
-    PRACTICE_QUEUE_TYPES[randomChoice(randUniform, QUEUE_TYPE_WEIGHT)];
-
-  const query = db
-    .select({
-      ...T.practiceEntries,
-      // RANDOM(HASH(practiceAction) ^ seedInt)  (in [0, 1))
-      // +
-      // (scheduledAt bonus)                     (in [0, SCHEDULED_AT_BONUS_MAX])
-      // +
-      // (queueType bonus)                       (10 if randQueueType)
-      // prettier-ignore
-      [RANDOM_MODE_SCORE_ALIAS]: sql<number>`(
-        RAND(
-          CONV(
-            SUBSTRING(
-              HEX(
-                UNHEX(SHA1(${T.practiceEntries.id})) ^
-                UNHEX(SHA1(${T.practiceEntries.updatedAt})) ^
-                UNHEX(SHA1(${randInt}))
-              ),
-              1,
-              8
-            ),
-            16,
-            10
-          )
-        )
-        +
-        LEAST(${SCHEDULED_AT_BONUS_MAX}, (UNIX_TIMESTAMP(${now}) - UNIX_TIMESTAMP(scheduledAt)) * ${SCHEDULED_AT_BONUS_SLOPE})
-        +
-        10 * (${T.practiceEntries.queueType} = ${randQueueType})
-      )`.as(RANDOM_MODE_SCORE_ALIAS),
-    })
-    .from(T.practiceEntries)
-    .where(
-      E.and(
-        E.eq(T.practiceEntries.deckId, deckId),
-        E.lt(T.practiceEntries.scheduledAt, now)
-      )
-    )
-    .orderBy(E.desc(sql.raw(RANDOM_MODE_SCORE_ALIAS)));
-
-  return { query, randInt, randUniform, randQueueType };
-}
-
 // https://nullprogram.com/blog/2018/07/31/
-export function hashInt32(x: number) {
+function hashInt32(x: number) {
   x ^= x >>> 16;
   x = Math.imul(x, 0x21f0aaad);
   x ^= x >>> 15;

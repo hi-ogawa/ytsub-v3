@@ -8,8 +8,6 @@ import { useUser, useUserVideo } from "../misc/test-helper";
 import { testTrpcClient } from "../trpc/test-helper";
 import {
   PracticeSystem,
-  hashInt32,
-  queryNextPracticeEntryRandomMode,
   resetDeckCache,
   updateDeckCache,
 } from "./practice-system";
@@ -214,51 +212,6 @@ describe("randomMode", () => {
 
     // should pick mostly random practice entries
     expect(uniq(entries.map((e) => e.id)).length).toMatchInlineSnapshot("143");
-  });
-});
-
-describe("queryNextPracticeEntryRandomMode", () => {
-  const userHook = useUser({
-    seed: __filename + "randomMode",
-  });
-  let deckId: number;
-
-  beforeAll(async () => {
-    await userHook.isReady;
-    deckId = await importSeed(userHook.data.id);
-  });
-
-  it("basic", async () => {
-    const now = new Date("2023-04-10T00:00:00Z");
-    const seed = 0;
-    const rows = await queryNextPracticeEntryRandomMode(deckId, now, seed)
-      .query;
-    expect(rows.length).toMatchInlineSnapshot("339");
-  });
-});
-
-describe("hashInt32", () => {
-  it("basic", async () => {
-    const xs = range(1000).map((i) => hashInt32(i + 12345) / 2 ** 32);
-
-    const bins = range(10).map(() => 0);
-    for (const x of xs) {
-      bins[Math.floor(x * bins.length)]++;
-    }
-    expect(bins).toMatchInlineSnapshot(`
-      [
-        107,
-        91,
-        75,
-        102,
-        114,
-        102,
-        99,
-        120,
-        100,
-        90,
-      ]
-    `);
   });
 });
 
