@@ -20,7 +20,7 @@ import { uninitialized } from "../utils/misc";
 import type { PaginationParams } from "../utils/pagination";
 import knexfile from "./knexfile.server";
 import type { PaginationMetadata } from "./models";
-import type { PracticeActionType, PracticeQueueType } from "./types";
+import type { DeckCache, PracticeActionType, PracticeQueueType } from "./types";
 
 //
 // schema utils
@@ -120,13 +120,6 @@ const decks = mysqlTable("decks", {
   practiceEntriesCountByQueueType: json<Record<PracticeQueueType, number>>("practiceEntriesCountByQueueType").notNull().default(DUMMY_DEFAULT),
   cache: json<DeckCache>("cache").notNull(),
 });
-
-// prettier-ignore
-interface DeckCache {
-  nextEntriesRandomMode: { id: number }[];
-  practiceEntriesCountByQueueType: Record<PracticeQueueType, number>;
-  practiceActionsCountByActionType: Record<PracticeActionType, number>;
-}
 
 const practiceEntries = mysqlTable("practiceEntries", {
   id: serial("id").primaryKey(),

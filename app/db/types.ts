@@ -19,7 +19,6 @@ export const PRACTICE_QUEUE_TYPES = Z_PRACTICE_QUEUE_TYPES.options;
 export type PracticeActionType = z.infer<typeof Z_PRACTICE_ACTION_TYPES>;
 export type PracticeQueueType = z.infer<typeof Z_PRACTICE_QUEUE_TYPES>;
 
-// prettier-ignore
 export interface DeckCache {
   nextEntriesRandomMode: { id: number }[];
   practiceEntriesCountByQueueType: Record<PracticeQueueType, number>;
