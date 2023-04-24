@@ -20,7 +20,7 @@ export type PracticeActionType = z.infer<typeof Z_PRACTICE_ACTION_TYPES>;
 export type PracticeQueueType = z.infer<typeof Z_PRACTICE_QUEUE_TYPES>;
 
 export interface DeckCache {
-  nextEntriesRandomMode: { id: number }[];
+  nextEntriesRandomMode: number[];
   practiceEntriesCountByQueueType: Record<PracticeQueueType, number>;
   practiceActionsCountByActionType: Record<PracticeActionType, number>;
 }

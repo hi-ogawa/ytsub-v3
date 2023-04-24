@@ -21,10 +21,7 @@ import {
   verifySignin,
 } from "../utils/auth";
 import { exec, streamToString } from "../utils/node.server";
-import {
-  queryNextPracticeEntryRandomMode,
-  resetDeckCache,
-} from "../utils/practice-system";
+import { resetDeckCache } from "../utils/practice-system";
 import { NewVideo, fetchCaptionEntries } from "../utils/youtube";
 import { finalizeServer, initializeServer } from "./initialize-server";
 import { exportDeckJson, importDeckJson } from "./seed-utils";
@@ -284,41 +281,6 @@ async function commandDbSeedImport(argsRaw: unknown) {
 }
 
 //
-// debug-practice-randomMode
-//
-
-const commandDebugPracticeModeArgs = z.object({
-  deckId: z.coerce.number(),
-  now: z.coerce.date().default(new Date()),
-  seed: z.coerce.number().optional(),
-  limit: z.coerce.number().default(10),
-});
-
-cli
-  .command("debugPracticeRandomMode")
-  .option(`--${commandDebugPracticeModeArgs.keyof().enum.deckId} [string]`, "")
-  .option(`--${commandDebugPracticeModeArgs.keyof().enum.now} [string]`, "")
-  .option(`--${commandDebugPracticeModeArgs.keyof().enum.seed} [string]`, "")
-  .option(`--${commandDebugPracticeModeArgs.keyof().enum.limit} [string]`, "")
-  .action(commandDebugPracticeRandomMode);
-
-async function commandDebugPracticeRandomMode(argsRaw: unknown) {
-  const args = commandDebugPracticeModeArgs.parse(argsRaw);
-  const deck = await findOne(
-    db.select().from(T.decks).where(E.eq(T.decks.id, args.deckId))
-  );
-  tinyassert(deck);
-  const seed = args.seed ?? deck?.updatedAt.getTime();
-  const { query, ...meta } = queryNextPracticeEntryRandomMode(
-    args.deckId,
-    args.now,
-    seed
-  );
-  console.log({ seed, meta });
-  console.log(await query.limit(args.limit));
-}
-
-//
 // import-bookmark-entries
 //
 
@@ -522,7 +484,23 @@ async function printSession(username: string, password: string) {
 // resetDeckCache
 //
 
-cli.command(resetDeckCache.name).action(async () => {
+const resetDeckCacheArgs = z.object({
+  deckId: z.coerce.number().int().optional(),
+});
+
+cli
+  .command(resetDeckCache.name)
+  .option(`--${resetDeckCacheArgs.keyof().enum.deckId} [number]`, "")
+  .action(resetDeckCacheCommand);
+
+async function resetDeckCacheCommand(rawArgs: unknown) {
+  const args = resetDeckCacheArgs.parse(rawArgs);
+  if (args.deckId) {
+    console.log("::", JSON.stringify(args));
+    await resetDeckCache(args.deckId);
+    return;
+  }
+
   const decks = await db.select().from(T.decks);
   for (const deck of decks) {
     console.log(
@@ -531,7 +509,40 @@ cli.command(resetDeckCache.name).action(async () => {
     );
     await resetDeckCache(deck.id);
   }
+}
+
+//
+// debugCacheNextEntries
+//
+
+const debugCacheNextEntriesArgs = z.object({
+  deckId: z.coerce.number().int(),
 });
+
+cli
+  .command(debugCacheNextEntries.name)
+  .option(`--${debugCacheNextEntriesArgs.keyof().enum.deckId} [number]`, "")
+  .action(debugCacheNextEntries);
+
+async function debugCacheNextEntries(rawArgs: unknown) {
+  const args = debugCacheNextEntriesArgs.parse(rawArgs);
+  const deck = await findOne(
+    db.select().from(T.decks).where(E.eq(T.decks.id, args.deckId))
+  );
+  tinyassert(deck);
+
+  const ids = deck.cache.nextEntriesRandomMode;
+  console.log({ ids });
+  if (ids.length === 0) {
+    return;
+  }
+
+  const entries = await db
+    .select()
+    .from(T.practiceEntries)
+    .where(E.inArray(T.practiceEntries.id, ids));
+  console.log(entries);
+}
 
 //
 // main

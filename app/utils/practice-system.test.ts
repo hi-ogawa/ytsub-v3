@@ -1,15 +1,15 @@
-import { groupBy, mapValues, range, tinyassert, uniq } from "@hiogawa/utils";
+import { tinyassert } from "@hiogawa/utils";
 import { beforeAll, describe, expect, it } from "vitest";
-import { E, T, TT, db, findOne } from "../db/drizzle-client.server";
+import { E, T, db, findOne } from "../db/drizzle-client.server";
 import { Q } from "../db/models";
 import { DEFAULT_DECK_CACHE } from "../db/types";
 import { importSeed } from "../misc/seed-utils";
 import { useUser, useUserVideo } from "../misc/test-helper";
 import { testTrpcClient } from "../trpc/test-helper";
+import { mapGroupBy } from "./misc";
 import {
   PracticeSystem,
-  hashInt32,
-  queryNextPracticeEntryRandomMode,
+  queryNextPracticeEntryRandomModeBatch,
   resetDeckCache,
   updateDeckCache,
 } from "./practice-system";
@@ -33,6 +33,7 @@ describe("PracticeSystem", () => {
       name: __filename,
       userId: hook.user.id,
       cache: DEFAULT_DECK_CACHE,
+      randomMode: false,
     });
     const deck = await Q.decks().where({ id: deckId }).first();
     tinyassert(deck);
@@ -155,9 +156,10 @@ describe("PracticeSystem", () => {
 
   // TODO: setup data
   it("randomMode", async () => {
-    const [deckId] = await Q.decks().insert({
-      userId: hook.user.id,
+    const [{ insertId: deckId }] = await db.insert(T.decks).values({
       name: __filename,
+      userId: hook.user.id,
+      cache: DEFAULT_DECK_CACHE,
       randomMode: true,
     });
     const deck = await Q.decks().where({ id: deckId }).first();
@@ -170,7 +172,7 @@ describe("PracticeSystem", () => {
   });
 });
 
-describe("randomMode", () => {
+describe("cache.nextEntriesRandomMode", () => {
   const userHook = useUser({
     seed: __filename + "randomMode",
   });
@@ -181,41 +183,50 @@ describe("randomMode", () => {
     deckId = await importSeed(userHook.data.id);
   });
 
-  it("practice loop", async () => {
+  async function loadDeck() {
     const deck = await findOne(
       db.select().from(T.decks).where(E.eq(T.decks.id, deckId))
     );
     tinyassert(deck);
+    return deck;
+  }
+
+  it("basic", async () => {
+    // no cache initially
+    const deck = await loadDeck();
+    expect(deck.cache.nextEntriesRandomMode.length).toMatchInlineSnapshot("0");
+
+    // get next
     const system = new PracticeSystem(userHook.data, deck);
-    const entries: TT["practiceEntries"][] = [];
-    // loop practice N times
-    const n = 100;
-    deck.updatedAt = NOW; // make randomMode deterministic
-    for (const _ of range(n)) {
-      const entry = await system.getNextPracticeEntry();
-      tinyassert(entry);
-      entries.push(entry);
-      await system.createPracticeAction(entry, "GOOD");
-      deck.updatedAt = new Date(deck.updatedAt.getTime() + 1); // force mutating seed since `updateAt` is not precise enough
-    }
-    // NEW should be picked most often
-    const countMap = mapValues(
-      groupBy(entries, (e) => e.queueType),
-      (group) => group.length
+    const entry1 = await system.getNextPracticeEntry();
+    tinyassert(entry1);
+
+    // build cache
+    const deck1 = await loadDeck();
+    expect(deck1.cache.nextEntriesRandomMode.length).toMatchInlineSnapshot(
+      "10"
     );
-    expect(countMap).toMatchInlineSnapshot(`
-      Map {
-        "NEW" => 93,
-        "LEARN" => 5,
-        "REVIEW" => 2,
-      }
-    `);
-    // should pick mostly random practice entries
-    expect(uniq(entries.map((e) => e.id)).length).greaterThan(n - 5);
+    expect(deck1.cache.nextEntriesRandomMode[0]).toBe(entry1.id);
+
+    // cache shifts after action
+    await system.createPracticeAction(entry1, "HARD");
+    const deck2 = await loadDeck();
+    expect(deck2.cache.nextEntriesRandomMode.length).toMatchInlineSnapshot("9");
+    expect(deck2.cache.nextEntriesRandomMode).toEqual(
+      deck1.cache.nextEntriesRandomMode.slice(1)
+    );
+
+    // get next with cache
+    const entry2 = await system.getNextPracticeEntry();
+    tinyassert(entry2);
+    expect(deck2.cache.nextEntriesRandomMode[0]).toBe(entry2.id);
+
+    const deck3 = await loadDeck();
+    expect(deck2).toEqual(deck3);
   });
 });
 
-describe("queryNextPracticeEntryRandomMode", () => {
+describe("queryNextPracticeEntryRandomModeBatch", () => {
   const userHook = useUser({
     seed: __filename + "randomMode",
   });
@@ -227,35 +238,35 @@ describe("queryNextPracticeEntryRandomMode", () => {
   });
 
   it("basic", async () => {
-    const now = new Date("2023-04-10T00:00:00Z");
-    const seed = 0;
-    const rows = await queryNextPracticeEntryRandomMode(deckId, now, seed)
-      .query;
-    expect(rows.length).toMatchInlineSnapshot("339");
-  });
-});
+    const now = new Date("2023-04-01T00:00:00.000Z");
 
-describe("hashInt32", () => {
-  it("basic", async () => {
-    const xs = range(1000).map((i) => hashInt32(i + 12345) / 2 ** 32);
-
-    const bins = range(10).map(() => 0);
-    for (const x of xs) {
-      bins[Math.floor(x * bins.length)]++;
+    // check variation of queue type
+    async function run(count: number, seed: number) {
+      const rows = await queryNextPracticeEntryRandomModeBatch(
+        deckId,
+        now,
+        count,
+        seed
+      );
+      return mapGroupBy(
+        rows,
+        (row) => row.queueType,
+        (rows) => rows.length
+      );
     }
-    expect(bins).toMatchInlineSnapshot(`
-      [
-        107,
-        91,
-        75,
-        102,
-        114,
-        102,
-        99,
-        120,
-        100,
-        90,
-      ]
+
+    expect(await run(30, 1)).toMatchInlineSnapshot(`
+      Map {
+        "REVIEW" => 2,
+        "NEW" => 27,
+        "LEARN" => 1,
+      }
+    `);
+    expect(await run(30, 2)).toMatchInlineSnapshot(`
+      Map {
+        "NEW" => 29,
+        "REVIEW" => 1,
+      }
     `);
   });
 });
