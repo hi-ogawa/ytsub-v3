@@ -172,7 +172,7 @@ describe("PracticeSystem", () => {
   });
 });
 
-describe("randomMode", () => {
+describe("cache.nextEntriesRandomMode", () => {
   const userHook = useUser({
     seed: __filename + "randomMode",
   });
@@ -183,37 +183,46 @@ describe("randomMode", () => {
     deckId = await importSeed(userHook.data.id);
   });
 
-  it("practice loop", async () => {
+  async function loadDeck() {
     const deck = await findOne(
       db.select().from(T.decks).where(E.eq(T.decks.id, deckId))
     );
     tinyassert(deck);
+    return deck;
+  }
+
+  it("basic", async () => {
+    // no cache initially
+    const deck = await loadDeck();
+    expect(deck.cache.nextEntriesRandomMode.length).toMatchInlineSnapshot("0");
+
+    // get next
     const system = new PracticeSystem(userHook.data, deck);
+    const entry1 = await system.getNextPracticeEntry();
+    tinyassert(entry1);
 
-    const entries: TT["practiceEntries"][] = [];
-    for (const i of range(200)) {
-      system.__seed = i; // make deterministic
-      const entry = await system.getNextPracticeEntry();
-      tinyassert(entry);
-      entries.push(entry);
-      await system.createPracticeAction(entry, "HARD");
-    }
-
-    // NEW queue is picked most often
-    const countMap = mapValues(
-      groupBy(entries, (e) => e.queueType),
-      (group) => group.length
+    // build cache
+    const deck1 = await loadDeck();
+    expect(deck1.cache.nextEntriesRandomMode.length).toMatchInlineSnapshot(
+      "10"
     );
-    expect(countMap).toMatchInlineSnapshot(`
-      Map {
-        "NEW" => 140,
-        "LEARN" => 51,
-        "REVIEW" => 9,
-      }
-    `);
+    expect(deck1.cache.nextEntriesRandomMode[0]).toBe(entry1.id);
 
-    // entries are picked uniformly
-    expect(uniq(entries.map((e) => e.id)).length).toMatchInlineSnapshot("200");
+    // cache shifts after action
+    await system.createPracticeAction(entry1, "HARD");
+    const deck2 = await loadDeck();
+    expect(deck2.cache.nextEntriesRandomMode.length).toMatchInlineSnapshot("9");
+    expect(deck2.cache.nextEntriesRandomMode).toEqual(
+      deck1.cache.nextEntriesRandomMode.slice(1)
+    );
+
+    // get next with cache
+    const entry2 = await system.getNextPracticeEntry();
+    tinyassert(entry2);
+    expect(deck2.cache.nextEntriesRandomMode[0]).toBe(entry2.id);
+
+    const deck3 = await loadDeck();
+    expect(deck2).toEqual(deck3);
   });
 });
 
