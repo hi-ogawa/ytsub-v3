@@ -779,7 +779,7 @@ function NavBarMenuComponentImpl({
           </label>
           <div className="border-t my-1"></div>
           <h4>Shortcuts</h4>
-          <div className="flex gap-2 text-sm">
+          <div className="flex flex-col sm:flex-row gap-2 text-sm">
             <button
               className={cls(
                 "antd-btn antd-btn-default px-2 py-0.5",
@@ -792,7 +792,7 @@ function NavBarMenuComponentImpl({
               Go to Last Bookmark
             </button>
             <Link
-              className="antd-btn antd-btn-default px-2 py-0.5"
+              className="antd-btn antd-btn-default px-2 py-0.5 flex justify-center"
               to={$R["/videos/new"](null, { videoId: video.videoId })}
             >
               Change Languages
