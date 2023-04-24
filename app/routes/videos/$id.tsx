@@ -792,7 +792,7 @@ function NavBarMenuComponentImpl({
               Go to Last Bookmark
             </button>
             <Link
-              className="antd-btn antd-btn-default px-2 py-0.5"
+              className="antd-btn antd-btn-default px-2 py-0.5 flex justify-center"
               to={$R["/videos/new"](null, { videoId: video.videoId })}
             >
               Change Languages
