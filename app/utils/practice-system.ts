@@ -467,7 +467,7 @@ async function queryNextPracticeEntryRandomModeWithCache(
   return nextEntries[0];
 }
 
-async function queryNextPracticeEntryRandomModeBatch(
+export async function queryNextPracticeEntryRandomModeBatch(
   deckId: number,
   now: Date,
   maxCount: number,
@@ -488,16 +488,16 @@ async function queryNextPracticeEntryRandomModeBatch(
   //
   function computeScheduledAtFactor(scheduledAt: Date): number {
     // +0.1 for each week scheduled eariler
-    const SCHEDULED_AT_BONUS_SLOPE = 0.1 / (60 * 60 * 24 * 7);
-    const SCHEDULED_AT_BONUS_MAX = 0.3;
+    const BONUS_SLOPE = 0.1 / (60 * 60 * 24 * 7 * 1000);
+    const BONUS_LIMIT = 0.3;
 
     return Math.min(
-      SCHEDULED_AT_BONUS_MAX,
-      SCHEDULED_AT_BONUS_SLOPE * (now.getTime() - scheduledAt.getTime())
+      BONUS_LIMIT,
+      BONUS_SLOPE * (now.getTime() - scheduledAt.getTime())
     );
   }
 
-  // score = (uniform in [0, 1]) + (scheduledAt bonust in [0, 0.3])
+  // score = (uniform in [0, 1]) + (scheduledAt bonus in [-?, BONUS_LIMIT])
   rows = sortBy(
     rows,
     (row) => -(rng.uniform() + computeScheduledAtFactor(row.scheduledAt))

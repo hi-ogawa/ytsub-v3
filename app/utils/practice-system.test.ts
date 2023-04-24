@@ -6,8 +6,10 @@ import { DEFAULT_DECK_CACHE } from "../db/types";
 import { importSeed } from "../misc/seed-utils";
 import { useUser, useUserVideo } from "../misc/test-helper";
 import { testTrpcClient } from "../trpc/test-helper";
+import { mapGroupBy } from "./misc";
 import {
   PracticeSystem,
+  queryNextPracticeEntryRandomModeBatch,
   resetDeckCache,
   updateDeckCache,
 } from "./practice-system";
@@ -212,6 +214,51 @@ describe("randomMode", () => {
 
     // entries are picked uniformly
     expect(uniq(entries.map((e) => e.id)).length).toMatchInlineSnapshot("200");
+  });
+});
+
+describe("queryNextPracticeEntryRandomModeBatch", () => {
+  const userHook = useUser({
+    seed: __filename + "randomMode",
+  });
+  let deckId: number;
+
+  beforeAll(async () => {
+    await userHook.isReady;
+    deckId = await importSeed(userHook.data.id);
+  });
+
+  it("basic", async () => {
+    const now = new Date("2023-04-01T00:00:00.000Z");
+
+    // check variation of queue type
+    async function run(count: number, seed: number) {
+      const rows = await queryNextPracticeEntryRandomModeBatch(
+        deckId,
+        now,
+        count,
+        seed
+      );
+      return mapGroupBy(
+        rows,
+        (row) => row.queueType,
+        (rows) => rows.length
+      );
+    }
+
+    expect(await run(30, 1)).toMatchInlineSnapshot(`
+      Map {
+        "REVIEW" => 2,
+        "NEW" => 27,
+        "LEARN" => 1,
+      }
+    `);
+    expect(await run(30, 2)).toMatchInlineSnapshot(`
+      Map {
+        "NEW" => 29,
+        "REVIEW" => 1,
+      }
+    `);
   });
 });
 
