@@ -333,6 +333,38 @@ export const trpcRoutesDecks = {
         daily,
       };
     }),
+
+  decks_practiceEntryDetail: procedureBuilder
+    .use(middlewares.requireUser)
+    .input(
+      z.object({
+        practiceEntryId: z.number().int(),
+      })
+    )
+    .query(async ({ input, ctx }) => {
+      const row = await findOne(
+        db
+          .select()
+          .from(T.practiceEntries)
+          .innerJoin(
+            T.bookmarkEntries,
+            E.eq(T.bookmarkEntries.id, T.practiceEntries.bookmarkEntryId)
+          )
+          .innerJoin(
+            T.captionEntries,
+            E.eq(T.captionEntries.id, T.bookmarkEntries.captionEntryId)
+          )
+          .innerJoin(T.videos, E.eq(T.videos.id, T.captionEntries.videoId))
+          .where(
+            E.and(
+              E.eq(T.practiceEntries.id, input.practiceEntryId),
+              E.eq(T.bookmarkEntries.userId, ctx.user.id)
+            )
+          )
+      );
+      tinyassert(row);
+      return row;
+    }),
 };
 
 //

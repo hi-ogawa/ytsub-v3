@@ -51,10 +51,7 @@ export const handle: PageHandle = {
 
 interface LoaderData {
   deck: DeckTable;
-  rows: Pick<
-    TT,
-    "practiceActions" | "bookmarkEntries" | "captionEntries" | "videos"
-  >[];
+  rows: Pick<TT, "practiceActions" | "bookmarkEntries">[];
   pagination: PaginationMetadata;
   query: z.infer<(typeof ROUTE_DEF)["/decks/$id/history"]["query"]>;
 }
@@ -80,14 +77,10 @@ export const loader = makeLoader(Controller, async function () {
         T.bookmarkEntries,
         E.eq(T.bookmarkEntries.id, T.practiceEntries.bookmarkEntryId)
       )
-      .innerJoin(
-        T.captionEntries,
-        E.eq(T.captionEntries.id, T.bookmarkEntries.captionEntryId)
-      )
-      .innerJoin(T.videos, E.eq(T.videos.id, T.captionEntries.videoId))
       .where(
         E.and(
           E.eq(T.practiceActions.deckId, deck.id),
+          // TODO(perf/db): add index (deckId, actionType)
           mapOption(parsed.data.actionType, (t) =>
             E.eq(T.practiceActions.actionType, t)
           ),
@@ -207,14 +200,19 @@ function ActionStatisticsComponent({
 }
 
 function PracticeActionComponent(
-  props: Pick<
-    TT,
-    "videos" | "captionEntries" | "bookmarkEntries" | "practiceActions"
-  >
+  props: Pick<TT, "bookmarkEntries" | "practiceActions">
 ) {
   const { createdAt, actionType, queueType } = props.practiceActions;
   const [open, setOpen] = React.useState(false);
   const [autoplay, setAutoplay] = React.useState(false);
+
+  const detailQuery = useQuery({
+    ...trpc.decks_practiceEntryDetail.queryOptions({
+      practiceEntryId: props.practiceActions.practiceEntryId,
+    }),
+    enabled: open,
+    staleTime: Infinity,
+  });
 
   return (
     <div className="flex flex-col border">
@@ -247,8 +245,9 @@ function PracticeActionComponent(
           </div>
           <button
             className={cls(
-              "antd-btn antd-btn-ghost i-ri-arrow-down-s-line w-5 h-5",
-              open && "rotate-180"
+              "antd-btn antd-btn-ghost w-5 h-5",
+              detailQuery.isFetching ? "antd-spin" : "i-ri-arrow-down-s-line",
+              !detailQuery.isFetching && open && "rotate-180"
             )}
             onClick={() => {
               setAutoplay(true);
@@ -258,21 +257,23 @@ function PracticeActionComponent(
         </div>
       </div>
       <CollapseTransition
-        show={open}
+        show={open && detailQuery.isSuccess}
         className="duration-300 overflow-hidden border-t border-dashed"
       >
         <div className="p-2 pt-0">
-          <MiniPlayer
-            video={props.videos}
-            captionEntry={props.captionEntries}
-            autoplay={autoplay}
-            defaultIsRepeating={true}
-            highlight={{
-              side: props.bookmarkEntries.side,
-              offset: props.bookmarkEntries.offset,
-              length: props.bookmarkEntries.text.length,
-            }}
-          />
+          {detailQuery.isSuccess && (
+            <MiniPlayer
+              video={detailQuery.data.videos}
+              captionEntry={detailQuery.data.captionEntries}
+              autoplay={autoplay}
+              defaultIsRepeating={true}
+              highlight={{
+                side: detailQuery.data.bookmarkEntries.side,
+                offset: detailQuery.data.bookmarkEntries.offset,
+                length: detailQuery.data.bookmarkEntries.text.length,
+              }}
+            />
+          )}
         </div>
       </CollapseTransition>
     </div>
