@@ -181,7 +181,8 @@ export async function toPaginationResult<
   Q extends { execute: () => Promise<unknown> }
 >(
   query: Q,
-  { page, perPage }: PaginationParams
+  { page, perPage }: PaginationParams,
+  options?: { noJoinForCount?: boolean }
 ): Promise<[Awaited<ReturnType<Q["execute"]>>, PaginationMetadata]> {
   // hack "select config" directly
   // https://github.com/drizzle-team/drizzle-orm/blob/ffdf7d06a02afbd724eadfb61fe5b6996345d5be/drizzle-orm/src/mysql-core/dialect.ts#L186
@@ -195,7 +196,7 @@ export async function toPaginationResult<
   // aggregate count
   delete q.config.limit;
   delete q.config.offset;
-  const total = await toCountQuery(q);
+  const total = await toCountQuery(q, options);
 
   const pagination = {
     total,
@@ -208,7 +209,7 @@ export async function toPaginationResult<
 
 export async function toCountQuery<
   Q extends { execute: () => Promise<unknown> }
->(query: Q): Promise<number> {
+>(query: Q, options?: { noJoinForCount?: boolean }): Promise<number> {
   const q = query as any;
   q.config.fieldsList = [
     {
@@ -216,6 +217,9 @@ export async function toCountQuery<
       field: sql`COUNT(0)`,
     },
   ];
+  if (options?.noJoinForCount) {
+    q.config.joins = {};
+  }
   const [{ count }] = await q.execute();
   tinyassert(typeof count === "number");
   return count;

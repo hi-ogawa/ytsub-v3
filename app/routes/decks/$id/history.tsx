@@ -97,7 +97,8 @@ export const loader = makeLoader(Controller, async function () {
         )
       )
       .orderBy(E.desc(T.practiceActions.createdAt)),
-    parsed.data
+    parsed.data,
+    { noJoinForCount: true }
   );
 
   const res: LoaderData = { deck, rows, pagination, query: parsed.data };
