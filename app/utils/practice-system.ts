@@ -1,9 +1,15 @@
-import { tinyassert } from "@hiogawa/utils";
+import {
+  groupBy,
+  range,
+  sortBy,
+  tinyassert,
+  typedBoolean,
+} from "@hiogawa/utils";
 import { Temporal } from "@js-temporal/polyfill";
 import { AnyColumn, GetColumnData, sql } from "drizzle-orm";
 import type { SQL } from "drizzle-orm/sql";
-import { difference, range } from "lodash";
-import { E, T, db, findOne } from "../db/drizzle-client.server";
+import { difference } from "lodash";
+import { E, T, TT, db, findOne } from "../db/drizzle-client.server";
 import type {
   BookmarkEntryTable,
   DeckTable,
@@ -68,19 +74,19 @@ const SCHEDULE_RULES: Record<
 };
 
 export class PracticeSystem {
+  __seed?: number; // for unit testing
+
   constructor(private user: UserTable, private deck: DeckTable) {}
 
   async getNextPracticeEntry(
     now: Date = new Date()
   ): Promise<PracticeEntryTable | undefined> {
     if (this.deck.randomMode) {
-      const { query } = queryNextPracticeEntryRandomMode(
+      return queryNextPracticeEntryRandomModeWithCache(
         this.deck.id,
         now,
-        this.deck.updatedAt.getTime()
+        this.__seed
       );
-      const entry = await findOne(query);
-      return entry;
     }
 
     const [daily, entries] = await Promise.all([
@@ -137,7 +143,7 @@ export class PracticeSystem {
         practiceActionsCount: 0,
       }))
     );
-    await updateDeckCache(deckId, { NEW: newIds.length }, {});
+    await updateDeckCache(deckId, { NEW: newIds.length }, {}, "clear");
     return range(insertId, insertId + newIds.length);
   }
 
@@ -208,7 +214,8 @@ export class PracticeSystem {
       },
       {
         [actionType]: 1,
-      }
+      },
+      "shift"
     );
 
     const [[{ insertId }]] = await Promise.all([
@@ -223,7 +230,8 @@ export class PracticeSystem {
 export async function updateDeckCache(
   deckId: number,
   byQueueType: Partial<Record<PracticeQueueType, number>>,
-  byActionType: Partial<Record<PracticeActionType, number>>
+  byActionType: Partial<Record<PracticeActionType, number>>,
+  updateNextEntries?: "shift" | "clear"
 ): Promise<void> {
   await db
     .update(T.decks)
@@ -243,7 +251,16 @@ export async function updateDeckCache(
               `$."practiceActionsCountByActionType"."${k}"`,
               (prev: SQL) => sql`${prev} + ${v}`,
             ] as const
-        )
+        ),
+        [
+          `$.nextEntriesRandomMode`,
+          (prev: SQL) =>
+            updateNextEntries === "shift"
+              ? sql`JSON_REMOVE(${prev}, '$[0]')`
+              : updateNextEntries === "clear"
+              ? sql`CAST('[]' AS JSON)`
+              : prev,
+        ]
       ),
     })
     .where(E.eq(T.decks.id, deckId));
@@ -366,6 +383,7 @@ export async function getDailyPracticeStatistics(
 
 async function getNextScheduledPracticeEntries(deckId: number, now: Date) {
   // get minimum `scheduledAt` for each `queueType`
+  // TODO: queueType/scheduledAt index matters?
   const subQuery = db
     .select({
       queueType: T.practiceEntries.queueType,
@@ -407,70 +425,131 @@ async function getNextScheduledPracticeEntries(deckId: number, now: Date) {
   );
 }
 
-export function queryNextPracticeEntryRandomMode(
+async function queryNextPracticeEntryRandomModeWithCache(
   deckId: number,
   now: Date,
-  seed: number
+  seed: number = Date.now()
 ) {
-  const randInt = hashInt32(seed);
-  const randUniform = randInt / 2 ** 32;
+  const deck = await findOne(
+    db.select().from(T.decks).where(E.eq(T.decks.id, deckId))
+  );
+  tinyassert(deck);
 
-  const RANDOM_MODE_SCORE_ALIAS = "randomModeScore";
+  // pick from cache only when next id is valid
+  if (deck.cache.nextEntriesRandomMode.length > 0) {
+    const id = deck.cache.nextEntriesRandomMode[0];
+    const row = await findOne(
+      db.select().from(T.practiceEntries).where(E.eq(T.practiceEntries.id, id))
+    );
+    if (row) {
+      return row;
+    }
+  }
 
-  // 0.1 bonus for a week older, up to 0.2
-  const SCHEDULED_AT_BONUS_SLOPE = 0.1 / (60 * 60 * 24 * 7);
-  const SCHEDULED_AT_BONUS_MAX = 0.2;
+  // rebuild cache
+  const nextEntries = await queryNextPracticeEntryRandomModeBatch(
+    deckId,
+    now,
+    10,
+    seed
+  );
 
-  // choose queueType by a fixed probability
-  const QUEUE_TYPE_WEIGHT = [90, 8, 2];
-  const randQueueType =
-    PRACTICE_QUEUE_TYPES[randomChoice(randUniform, QUEUE_TYPE_WEIGHT)];
-
-  const query = db
-    .select({
-      ...T.practiceEntries,
-      // RANDOM(HASH(practiceAction) ^ seedInt)  (in [0, 1))
-      // +
-      // (scheduledAt bonus)                     (in [0, SCHEDULED_AT_BONUS_MAX])
-      // +
-      // (queueType bonus)                       (10 if randQueueType)
-      // prettier-ignore
-      [RANDOM_MODE_SCORE_ALIAS]: sql<number>`(
-        RAND(
-          CONV(
-            SUBSTRING(
-              HEX(
-                UNHEX(SHA1(${T.practiceEntries.id})) ^
-                UNHEX(SHA1(${T.practiceEntries.updatedAt})) ^
-                UNHEX(SHA1(${randInt}))
-              ),
-              1,
-              8
-            ),
-            16,
-            10
-          )
-        )
-        +
-        LEAST(${SCHEDULED_AT_BONUS_MAX}, (UNIX_TIMESTAMP(${now}) - UNIX_TIMESTAMP(scheduledAt)) * ${SCHEDULED_AT_BONUS_SLOPE})
-        +
-        10 * (${T.practiceEntries.queueType} = ${randQueueType})
-      )`.as(RANDOM_MODE_SCORE_ALIAS),
+  // save cache
+  await db
+    .update(T.decks)
+    .set({
+      cache: sqlJsonSetByObject(T.decks.cache, {
+        nextEntriesRandomMode: nextEntries.map((e) => e.id),
+      }),
     })
-    .from(T.practiceEntries)
-    .where(
-      E.and(
-        E.eq(T.practiceEntries.deckId, deckId),
-        E.lt(T.practiceEntries.scheduledAt, now)
-      )
-    )
-    .orderBy(E.desc(sql.raw(RANDOM_MODE_SCORE_ALIAS)));
+    .where(E.eq(T.decks.id, deckId));
 
-  return { query, randInt, randUniform, randQueueType };
+  return nextEntries[0];
+}
+
+export async function queryNextPracticeEntryRandomModeBatch(
+  deckId: number,
+  now: Date,
+  maxCount: number,
+  seed: number
+): Promise<TT["practiceEntries"][]> {
+  const rng = new HashRng(seed);
+
+  //
+  // fetch all and randomize in js
+  //
+  let rows = await db
+    .select()
+    .from(T.practiceEntries)
+    .where(E.and(E.eq(T.practiceEntries.deckId, deckId)));
+
+  //
+  // sort random with scheduledAt bonus
+  //
+  function computeScheduledAtFactor(scheduledAt: Date): number {
+    // +0.1 for each week scheduled eariler
+    const BONUS_SLOPE = 0.1 / (60 * 60 * 24 * 7 * 1000);
+    const BONUS_LIMIT = 0.3;
+
+    return Math.min(
+      BONUS_LIMIT,
+      BONUS_SLOPE * (now.getTime() - scheduledAt.getTime())
+    );
+  }
+
+  // score = (uniform in [0, 1]) + (scheduledAt bonus in [-?, BONUS_LIMIT])
+  rows = sortBy(
+    rows,
+    (row) => -(rng.uniform() + computeScheduledAtFactor(row.scheduledAt))
+  );
+
+  if (rows.length <= maxCount) {
+    return rows;
+  }
+
+  //
+  // choose queueType by a fixed probability
+  //
+
+  const rowsByQueue = objectFromMapDefault(
+    groupBy(rows, (row) => row.queueType),
+    PRACTICE_QUEUE_TYPES,
+    []
+  );
+
+  function getNextEntry() {
+    // TODO: the size of queue should affect the probability? (e.g. what if all NEW entries are finished?)
+    const queueTypeWeights: Record<PracticeQueueType, number> = {
+      NEW: 90,
+      LEARN: 8,
+      REVIEW: 2,
+    };
+
+    // skip empty queue
+    for (const t of PRACTICE_QUEUE_TYPES) {
+      if (rowsByQueue[t].length === 0) {
+        queueTypeWeights[t] = 0;
+      }
+    }
+
+    const queueType =
+      PRACTICE_QUEUE_TYPES[
+        randomChoice(rng.uniform(), Object.values(queueTypeWeights))
+      ];
+    const queueRows = rowsByQueue[queueType];
+    tinyassert(queueRows);
+
+    return queueRows.shift();
+  }
+
+  const nextEntries = range(maxCount)
+    .map(() => getNextEntry())
+    .filter(typedBoolean);
+  return nextEntries;
 }
 
 // https://nullprogram.com/blog/2018/07/31/
-export function hashInt32(x: number) {
+function hashInt32(x: number) {
   x ^= x >>> 16;
   x = Math.imul(x, 0x21f0aaad);
   x ^= x >>> 15;
@@ -494,4 +573,20 @@ function prefixSum(ls: number[]): number[] {
     acc.push(acc[i] + ls[i]);
   }
   return acc;
+}
+
+class HashRng {
+  private state: number;
+
+  constructor(seed: number) {
+    this.state = hashInt32(seed);
+  }
+
+  int32(): number {
+    return (this.state = hashInt32(this.state));
+  }
+
+  uniform() {
+    return this.int32() / 2 ** 32;
+  }
 }
