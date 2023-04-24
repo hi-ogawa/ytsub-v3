@@ -11,6 +11,7 @@ import { importDeckJson } from "../../misc/seed-utils";
 import {
   PracticeSystem,
   getDailyPracticeStatistics,
+  updateDeckCache,
 } from "../../utils/practice-system";
 import {
   Z_DATE_RANGE_TYPE,
@@ -124,11 +125,18 @@ export const trpcRoutesDecks = {
       })
     )
     .mutation(async ({ input, ctx }) => {
+      const deck = await findUserDeck({
+        deckId: input.id,
+        userId: ctx.user.id,
+      });
+      tinyassert(deck);
+
       const { id, ...rest } = input;
       await db
         .update(T.decks)
         .set(rest)
-        .where(E.and(E.eq(T.decks.id, id), E.eq(T.decks.userId, ctx.user.id)));
+        .where(E.and(E.eq(T.decks.id, id)));
+      await updateDeckCache(id, {}, {}, "clear");
     }),
 
   decks_destroy: procedureBuilder
