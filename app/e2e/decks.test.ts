@@ -117,6 +117,14 @@ test.describe("decks", () => {
     await page
       .getByTestId("SelectWrapper-graphType")
       .selectOption({ label: "by queue" });
+
+    // navigate to "/decks/$id/history"
+    await page.locator('[data-test="deck-menu-popover-reference"]').click();
+    await page.getByRole("link", { name: "History" }).click();
+    await page.waitForURL(/\/decks\/\d+\/history$/);
+    await page.getByText("1 / 13 (247)").click();
+    await page.getByRole("combobox").selectOption("1");
+    await page.getByText("1 / 7 (128)").click();
   });
 
   // TODO: detailed test with non randomMode?
