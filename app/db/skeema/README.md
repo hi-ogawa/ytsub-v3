@@ -12,7 +12,7 @@ we still use knex to apply migrations, but it's already useful enough during dev
 pnpm knex migrate:make some-migration
 
 # 2. diff for `up` knex migration
-pnpm skeema diff
+pnpm skeema diff --allow-unsafe
 
 # 3. apply knex migration
 pnpm knex migrate:up

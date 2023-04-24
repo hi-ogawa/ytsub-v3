@@ -9,6 +9,6 @@ CREATE TABLE `practiceEntries` (
   `bookmarkEntryId` bigint NOT NULL,
   `practiceActionsCount` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
-  KEY `practiceEntries_deckId_key` (`deckId`),
+  KEY `practiceEntries_deckId_scheduledAt_key` (`deckId`,`scheduledAt`),
   KEY `practiceEntries_bookmarkEntry_key` (`bookmarkEntryId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
