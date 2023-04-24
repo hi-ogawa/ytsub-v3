@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">39.11% </span>
+                <span class="strong">36.61% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>115/294</span>
+                <span class='fraction'>108/295</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">39.11% </span>
+                <span class="strong">36.61% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>115/294</span>
+                <span class='fraction'>108/295</span>
             </div>
         
             
@@ -357,7 +357,8 @@
 <a name='L292'></a><a href='#L292'>292</a>
 <a name='L293'></a><a href='#L293'>293</a>
 <a name='L294'></a><a href='#L294'>294</a>
-<a name='L295'></a><a href='#L295'>295</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">94x</span>
+<a name='L295'></a><a href='#L295'>295</a>
+<a name='L296'></a><a href='#L296'>296</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">92x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -421,14 +422,7 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -565,6 +559,14 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -704,10 +706,7 @@ export const handle: PageHandle = {
 &nbsp;
 interface LoaderData {
   deck: DeckTable;
-  rows: Pick&lt;
-    TT,
-    "practiceActions" | "bookmarkEntries" | "captionEntries" | "videos"
-  &gt;[];
+  rows: Pick&lt;TT, "practiceActions" | "bookmarkEntries"&gt;[];
   pagination: PaginationMetadata;
   query: z.infer&lt;(typeof ROUTE_DEF)["/decks/$id/history"]["query"]&gt;;
 }
@@ -733,14 +732,10 @@ export const loader = makeLoader(Controller, async function () {
         T.bookmarkEntries,
         E.eq(T.bookmarkEntries.id, T.practiceEntries.bookmarkEntryId)
       )
-      .innerJoin(
-        T.captionEntries,
-        E.eq(T.captionEntries.id, T.bookmarkEntries.captionEntryId)
-      )
-      .innerJoin(T.videos, E.eq(T.videos.id, T.captionEntries.videoId))
       .where(
         E.and(
           E.eq(T.practiceActions.deckId, deck.id),
+          // TODO(perf/db): add index (deckId, actionType)
           mapOption(parsed.data.actionType, (t) =&gt;
 <span class="cstat-no" title="statement not covered" >            E.eq(T.practiceActions.actionType, t)</span>
           ),
@@ -860,14 +855,19 @@ export default <span class="fstat-no" title="function not covered" >function Def
 <span class="cstat-no" title="statement not covered" >}</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >function PracticeActionComponent(</span></span>
-<span class="cstat-no" title="statement not covered" >  props: Pick&lt;</span>
-<span class="cstat-no" title="statement not covered" >    TT,</span>
-<span class="cstat-no" title="statement not covered" >    "videos" | "captionEntries" | "bookmarkEntries" | "practiceActions"</span>
-<span class="cstat-no" title="statement not covered" >  &gt;</span>
+<span class="cstat-no" title="statement not covered" >  props: Pick&lt;TT, "bookmarkEntries" | "practiceActions"&gt;</span>
 <span class="cstat-no" title="statement not covered" >) {</span>
 <span class="cstat-no" title="statement not covered" >  const { createdAt, actionType, queueType } = props.practiceActions;</span>
 <span class="cstat-no" title="statement not covered" >  const [open, setOpen] = React.useState(false);</span>
 <span class="cstat-no" title="statement not covered" >  const [autoplay, setAutoplay] = React.useState(false);</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >  const detailQuery = useQuery({</span>
+<span class="cstat-no" title="statement not covered" >    ...trpc.decks_practiceEntryDetail.queryOptions({</span>
+<span class="cstat-no" title="statement not covered" >      practiceEntryId: props.practiceActions.practiceEntryId,</span>
+<span class="cstat-no" title="statement not covered" >    }),</span>
+<span class="cstat-no" title="statement not covered" >    enabled: open,</span>
+<span class="cstat-no" title="statement not covered" >    staleTime: Infinity,</span>
+<span class="cstat-no" title="statement not covered" >  });</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  return (</span>
 <span class="cstat-no" title="statement not covered" >    &lt;div className="flex flex-col border"&gt;</span>
@@ -900,8 +900,9 @@ export default <span class="fstat-no" title="function not covered" >function Def
 <span class="cstat-no" title="statement not covered" >          &lt;/div&gt;</span>
 <span class="cstat-no" title="statement not covered" >          &lt;button</span>
 <span class="cstat-no" title="statement not covered" >            className={cls(</span>
-<span class="cstat-no" title="statement not covered" >              "antd-btn antd-btn-ghost i-ri-arrow-down-s-line w-5 h-5",</span>
-<span class="cstat-no" title="statement not covered" >              open &amp;&amp; "rotate-180"</span>
+<span class="cstat-no" title="statement not covered" >              "antd-btn antd-btn-ghost w-5 h-5",</span>
+<span class="cstat-no" title="statement not covered" >              detailQuery.isFetching ? "antd-spin" : "i-ri-arrow-down-s-line",</span>
+<span class="cstat-no" title="statement not covered" >              !detailQuery.isFetching &amp;&amp; open &amp;&amp; "rotate-180"</span>
 <span class="cstat-no" title="statement not covered" >            )}</span>
 <span class="cstat-no" title="statement not covered" >            onClick={() =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >              setAutoplay(true);</span>
@@ -911,21 +912,23 @@ export default <span class="fstat-no" title="function not covered" >function Def
 <span class="cstat-no" title="statement not covered" >        &lt;/div&gt;</span>
 <span class="cstat-no" title="statement not covered" >      &lt;/div&gt;</span>
 <span class="cstat-no" title="statement not covered" >      &lt;CollapseTransition</span>
-<span class="cstat-no" title="statement not covered" >        show={open}</span>
+<span class="cstat-no" title="statement not covered" >        show={open &amp;&amp; detailQuery.isSuccess}</span>
 <span class="cstat-no" title="statement not covered" >        className="duration-300 overflow-hidden border-t border-dashed"</span>
 <span class="cstat-no" title="statement not covered" >      &gt;</span>
 <span class="cstat-no" title="statement not covered" >        &lt;div className="p-2 pt-0"&gt;</span>
-<span class="cstat-no" title="statement not covered" >          &lt;MiniPlayer</span>
-<span class="cstat-no" title="statement not covered" >            video={props.videos}</span>
-<span class="cstat-no" title="statement not covered" >            captionEntry={props.captionEntries}</span>
-<span class="cstat-no" title="statement not covered" >            autoplay={autoplay}</span>
-<span class="cstat-no" title="statement not covered" >            defaultIsRepeating={true}</span>
-<span class="cstat-no" title="statement not covered" >            highlight={{</span>
-<span class="cstat-no" title="statement not covered" >              side: props.bookmarkEntries.side,</span>
-<span class="cstat-no" title="statement not covered" >              offset: props.bookmarkEntries.offset,</span>
-<span class="cstat-no" title="statement not covered" >              length: props.bookmarkEntries.text.length,</span>
-<span class="cstat-no" title="statement not covered" >            }}</span>
-<span class="cstat-no" title="statement not covered" >          /&gt;</span>
+<span class="cstat-no" title="statement not covered" >          {detailQuery.isSuccess &amp;&amp; (</span>
+<span class="cstat-no" title="statement not covered" >            &lt;MiniPlayer</span>
+<span class="cstat-no" title="statement not covered" >              video={detailQuery.data.videos}</span>
+<span class="cstat-no" title="statement not covered" >              captionEntry={detailQuery.data.captionEntries}</span>
+<span class="cstat-no" title="statement not covered" >              autoplay={autoplay}</span>
+<span class="cstat-no" title="statement not covered" >              defaultIsRepeating={true}</span>
+<span class="cstat-no" title="statement not covered" >              highlight={{</span>
+<span class="cstat-no" title="statement not covered" >                side: detailQuery.data.bookmarkEntries.side,</span>
+<span class="cstat-no" title="statement not covered" >                offset: detailQuery.data.bookmarkEntries.offset,</span>
+<span class="cstat-no" title="statement not covered" >                length: detailQuery.data.bookmarkEntries.text.length,</span>
+<span class="cstat-no" title="statement not covered" >              }}</span>
+<span class="cstat-no" title="statement not covered" >            /&gt;</span>
+<span class="cstat-no" title="statement not covered" >          )}</span>
 <span class="cstat-no" title="statement not covered" >        &lt;/div&gt;</span>
 <span class="cstat-no" title="statement not covered" >      &lt;/CollapseTransition&gt;</span>
 <span class="cstat-no" title="statement not covered" >    &lt;/div&gt;</span>
@@ -952,7 +955,7 @@ export default <span class="fstat-no" title="function not covered" >function Def
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-04-24T01:06:27.710Z
+                at 2023-04-24T04:16:59.658Z
             </div>
         <script src="../../../../../prettify.js"></script>
         <script>
