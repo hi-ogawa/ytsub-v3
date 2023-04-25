@@ -44,24 +44,7 @@ test.describe("decks", () => {
     await page.getByRole("button", { name: "Save" }).click();
     await page.getByText("Successfully updated a deck").click();
 
-    // navigate to "/decks/$id/history-graph"
-    await page.locator('[data-test="deck-menu-popover-reference"]').click();
-    await page.getByRole("link", { name: "Chart" }).click();
-    await expect(page).toHaveURL(/\/decks\/\d+\/history-graph$/);
-
-    // navigate to "/decks/$id/history"
-    await page.locator('[data-test="deck-menu-popover-reference"]').click();
-    await page.getByRole("link", { name: "History" }).click();
-    await expect(page).toHaveURL(/\/decks\/\d+\/history$/);
-    await page.getByText("Empty").click();
-    await page
-      .getByTestId("ActionStatisticsComponent")
-      .getByText("0-0")
-      .click();
-
-    // go to edit page and delete deck
-    await page.locator('[data-test="deck-menu-popover-reference"]').click();
-    await page.getByRole("link", { name: "Edit" }).click();
+    // delete deck
     page.once("dialog", (dialog) => dialog.accept("wrong-input"));
     await page.getByRole("button", { name: "Delete this deck" }).click();
     await page.getByText("Deletion canceled").click();
@@ -117,6 +100,18 @@ test.describe("decks", () => {
     await page
       .getByTestId("SelectWrapper-graphType")
       .selectOption({ label: "by queue" });
+
+    // navigate to "/decks/$id/history"
+    await page.locator('[data-test="deck-menu-popover-reference"]').click();
+    await page.getByRole("link", { name: "History" }).click();
+    await page.waitForURL(/\/decks\/\d+\/history$/);
+    await page.getByText("많이 울었던 사람?").click();
+    await page.getByRole("button", { name: "Load more" }).click();
+    await page.getByText("맞아?").click();
+    await page.getByRole("combobox").selectOption({ label: "GOOD" });
+    await page.getByText("네 맞아요").click();
+    await page.getByRole("button", { name: "Load more" }).click();
+    await page.getByText("특별한").click();
   });
 
   // TODO: detailed test with non randomMode?

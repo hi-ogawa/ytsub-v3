@@ -1,4 +1,4 @@
-import { tinyassert } from "@hiogawa/utils";
+import { mapOption, tinyassert } from "@hiogawa/utils";
 import { sql } from "drizzle-orm";
 import { z } from "zod";
 import {
@@ -340,6 +340,69 @@ export const trpcRoutesDecks = {
         total,
         daily,
       };
+    }),
+
+  decks_practiceActions: procedureBuilder
+    .use(middlewares.requireUser)
+    .input(
+      z.object({
+        deckId: z.number().int(),
+        actionType: Z_PRACTICE_ACTION_TYPES.optional(),
+        practiceEntryId: z.coerce.number().int().optional(),
+        cursor: z.number().int().default(0), // TODO(perf): index cursor instead of limit/offset
+      })
+    )
+    .query(async ({ input, ctx }) => {
+      const deck = await findUserDeck({
+        deckId: input.deckId,
+        userId: ctx.user.id,
+      });
+      tinyassert(deck);
+
+      const limit = 15;
+
+      // deferred join
+      const subQueryIds = db
+        .select({ id: T.practiceActions.id })
+        .from(T.practiceActions)
+        .where(
+          E.and(
+            E.eq(T.practiceActions.deckId, deck.id),
+            mapOption(input.actionType, (t) =>
+              E.eq(T.practiceActions.actionType, t)
+            ),
+            mapOption(input.practiceEntryId, (t) =>
+              E.eq(T.practiceActions.practiceEntryId, t)
+            )
+          )
+        )
+        .offset(input.cursor)
+        .limit(limit)
+        .orderBy(E.desc(T.practiceActions.createdAt))
+        .as("__subQuery_ids");
+
+      // TODO: sub query can include orphan data
+      const rows = await db
+        .select()
+        .from(T.practiceActions)
+        .innerJoin(subQueryIds, E.eq(subQueryIds.id, T.practiceActions.id))
+        .innerJoin(
+          T.practiceEntries,
+          E.eq(T.practiceEntries.id, T.practiceActions.practiceEntryId)
+        )
+        .innerJoin(
+          T.bookmarkEntries,
+          E.eq(T.bookmarkEntries.id, T.practiceEntries.bookmarkEntryId)
+        )
+        .innerJoin(
+          T.captionEntries,
+          E.eq(T.captionEntries.id, T.bookmarkEntries.captionEntryId)
+        )
+        .innerJoin(T.videos, E.eq(T.videos.id, T.captionEntries.videoId))
+        .orderBy(E.desc(T.practiceActions.createdAt));
+
+      const nextCursor = rows.length > 0 ? input.cursor + rows.length : null;
+      return { rows, nextCursor };
     }),
 };
 
