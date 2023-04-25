@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">24.06% </span>
+                <span class="strong">24.82% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>71/295</span>
+                <span class='fraction'>70/282</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">24.06% </span>
+                <span class="strong">24.82% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>71/295</span>
+                <span class='fraction'>70/282</span>
             </div>
         
             
@@ -345,21 +345,7 @@
 <a name='L280'></a><a href='#L280'>280</a>
 <a name='L281'></a><a href='#L281'>281</a>
 <a name='L282'></a><a href='#L282'>282</a>
-<a name='L283'></a><a href='#L283'>283</a>
-<a name='L284'></a><a href='#L284'>284</a>
-<a name='L285'></a><a href='#L285'>285</a>
-<a name='L286'></a><a href='#L286'>286</a>
-<a name='L287'></a><a href='#L287'>287</a>
-<a name='L288'></a><a href='#L288'>288</a>
-<a name='L289'></a><a href='#L289'>289</a>
-<a name='L290'></a><a href='#L290'>290</a>
-<a name='L291'></a><a href='#L291'>291</a>
-<a name='L292'></a><a href='#L292'>292</a>
-<a name='L293'></a><a href='#L293'>293</a>
-<a name='L294'></a><a href='#L294'>294</a>
-<a name='L295'></a><a href='#L295'>295</a>
-<a name='L296'></a><a href='#L296'>296</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">99x</span>
-<span class="cline-any cline-yes">1x</span>
+<a name='L283'></a><a href='#L283'>283</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">98x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -423,18 +409,6 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -674,7 +648,6 @@ import { trpc } from "../../../trpc/client";
 import { trpcClient } from "../../../trpc/client-internal.client";
 import { Controller, makeLoader } from "../../../utils/controller-utils";
 import { useDeserialize } from "../../../utils/hooks";
-import { useIntersectionObserver } from "../../../utils/hooks-client-utils";
 import { dtf } from "../../../utils/intl";
 import { useLeafLoaderData } from "../../../utils/loader-utils";
 import { cls } from "../../../utils/misc";
@@ -738,13 +711,6 @@ export default <span class="fstat-no" title="function not covered" >function Def
 <span class="cstat-no" title="statement not covered" >  const rows =</span>
 <span class="cstat-no" title="statement not covered" >    practiceActionsQuery.data?.pages.flatMap((res) =&gt; res.rows) ?? [];</span>
 <span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >  const loadNextRef = useIntersectionObserver((entries) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >    if (entries.some((e) =&gt; e.isIntersecting)) {</span>
-<span class="cstat-no" title="statement not covered" >      // debounce just in case?</span>
-<span class="cstat-no" title="statement not covered" >      practiceActionsQuery.fetchNextPage();</span>
-<span class="cstat-no" title="statement not covered" >    }</span>
-<span class="cstat-no" title="statement not covered" >  });</span>
-<span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  return (</span>
 <span class="cstat-no" title="statement not covered" >    &lt;&gt;</span>
 <span class="cstat-no" title="statement not covered" >      &lt;div className="w-full flex justify-center"&gt;</span>
@@ -791,11 +757,6 @@ export default <span class="fstat-no" title="function not covered" >function Def
 <span class="cstat-no" title="statement not covered" >                  Load more</span>
 <span class="cstat-no" title="statement not covered" >                &lt;/button&gt;</span>
 <span class="cstat-no" title="statement not covered" >              )}</span>
-<span class="cstat-no" title="statement not covered" >              {practiceActionsQuery.isFetchingNextPage &amp;&amp; "loading..."}</span>
-<span class="cstat-no" title="statement not covered" >              {practiceActionsQuery.hasNextPage &amp;&amp;</span>
-<span class="cstat-no" title="statement not covered" >                !practiceActionsQuery.isFetchingNextPage &amp;&amp; (</span>
-<span class="cstat-no" title="statement not covered" >                  &lt;div ref={loadNextRef}&gt;&lt;/div&gt;</span>
-<span class="cstat-no" title="statement not covered" >                )}</span>
 <span class="cstat-no" title="statement not covered" >              {/* TODO: full height? */}</span>
 <span class="cstat-no" title="statement not covered" >              &lt;Transition</span>
 <span class="cstat-no" title="statement not covered" >                show={practiceActionsQuery.isFetching}</span>
@@ -955,7 +916,7 @@ export default <span class="fstat-no" title="function not covered" >function Def
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-04-25T08:42:36.081Z
+                at 2023-04-25T12:36:08.925Z
             </div>
         <script src="../../../../../prettify.js"></script>
         <script>
