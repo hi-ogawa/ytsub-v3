@@ -117,6 +117,18 @@ test.describe("decks", () => {
     await page
       .getByTestId("SelectWrapper-graphType")
       .selectOption({ label: "by queue" });
+
+    // navigate to "/decks/$id/history"
+    await page.locator('[data-test="deck-menu-popover-reference"]').click();
+    await page.getByRole("link", { name: "History" }).click();
+    await page.waitForURL(/\/decks\/\d+\/history$/);
+    await page.getByText("많이 울었던 사람?").click();
+    await page.getByRole("button", { name: "Load more" }).click();
+    await page.getByText("맞아?").click();
+    await page.getByRole("combobox").selectOption({ label: "GOOD" });
+    await page.getByText("네 맞아요").click();
+    await page.getByRole("button", { name: "Load more" }).click();
+    await page.getByText("특별한").click();
   });
 
   // TODO: detailed test with non randomMode?
