@@ -4,29 +4,19 @@ import {
   requireUserAndDeck,
 } from ".";
 import { Transition } from "@headlessui/react";
-import { mapOption } from "@hiogawa/utils";
 import { useLoaderData, useNavigate } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import React from "react";
 import type { z } from "zod";
 import { CollapseTransition } from "../../../components/collapse";
-import {
-  PaginationComponent,
-  SelectWrapper,
-  transitionProps,
-} from "../../../components/misc";
-import {
-  E,
-  T,
-  TT,
-  db,
-  toPaginationResult,
-} from "../../../db/drizzle-client.server";
-import type { DeckTable, PaginationMetadata } from "../../../db/models";
+import { SelectWrapper, transitionProps } from "../../../components/misc";
+import type { TT } from "../../../db/drizzle-client.server";
+import type { DeckTable } from "../../../db/models";
 import { PRACTICE_ACTION_TYPES, PracticeActionType } from "../../../db/types";
 import { $R, ROUTE_DEF } from "../../../misc/routes";
 import { trpc } from "../../../trpc/client";
+import { trpcClient } from "../../../trpc/client-internal.client";
 import { Controller, makeLoader } from "../../../utils/controller-utils";
 import { useDeserialize } from "../../../utils/hooks";
 import { dtf } from "../../../utils/intl";
@@ -51,11 +41,6 @@ export const handle: PageHandle = {
 
 interface LoaderData {
   deck: DeckTable;
-  rows: Pick<
-    TT,
-    "practiceActions" | "bookmarkEntries" | "captionEntries" | "videos"
-  >[];
-  pagination: PaginationMetadata;
   query: z.infer<(typeof ROUTE_DEF)["/decks/$id/history"]["query"]>;
 }
 
@@ -68,39 +53,7 @@ export const loader = makeLoader(Controller, async function () {
     return redirect($R["/decks/$id/history"](deck));
   }
 
-  const [rows, pagination] = await toPaginationResult(
-    db
-      .select()
-      .from(T.practiceActions)
-      .innerJoin(
-        T.practiceEntries,
-        E.eq(T.practiceEntries.id, T.practiceActions.practiceEntryId)
-      )
-      .innerJoin(
-        T.bookmarkEntries,
-        E.eq(T.bookmarkEntries.id, T.practiceEntries.bookmarkEntryId)
-      )
-      .innerJoin(
-        T.captionEntries,
-        E.eq(T.captionEntries.id, T.bookmarkEntries.captionEntryId)
-      )
-      .innerJoin(T.videos, E.eq(T.videos.id, T.captionEntries.videoId))
-      .where(
-        E.and(
-          E.eq(T.practiceActions.deckId, deck.id),
-          mapOption(parsed.data.actionType, (t) =>
-            E.eq(T.practiceActions.actionType, t)
-          ),
-          mapOption(parsed.data.practiceEntryId, (t) =>
-            E.eq(T.practiceActions.practiceEntryId, t)
-          )
-        )
-      )
-      .orderBy(E.desc(T.practiceActions.createdAt)),
-    parsed.data
-  );
-
-  const res: LoaderData = { deck, rows, pagination, query: parsed.data };
+  const res: LoaderData = { deck, query: parsed.data };
   return this.serialize(res);
 });
 
@@ -109,16 +62,31 @@ export const loader = makeLoader(Controller, async function () {
 //
 
 export default function DefaultComponent() {
-  const { deck, rows, pagination, query }: LoaderData = useDeserialize(
-    useLoaderData()
-  );
+  const { deck, query }: LoaderData = useDeserialize(useLoaderData());
   const navigate = useNavigate();
+
+  const queryArgs = {
+    deckId: deck.id,
+    actionType: query.actionType,
+    practiceEntryId: query.practiceEntryId,
+  };
+  const practiceActionsQuery = useInfiniteQuery({
+    queryKey: [trpc.decks_practiceActions.queryKey, queryArgs],
+    queryFn: (context) =>
+      trpcClient.decks_practiceActions.query({
+        ...queryArgs,
+        cursor: context.pageParam,
+      }),
+    getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
+  });
+  const rows =
+    practiceActionsQuery.data?.pages.flatMap((res) => res.rows) ?? [];
 
   return (
     <>
       <div className="w-full flex justify-center">
         <div className="h-full w-full max-w-lg">
-          <div className="h-full flex flex-col p-2 gap-2">
+          <div className="h-full flex flex-col p-2 gap-2 relative">
             <div className="flex items-center gap-2 py-1">
               Filter
               <SelectWrapper
@@ -140,16 +108,34 @@ export default function DefaultComponent() {
               deckId={deck.id}
               currentActionType={query.actionType}
             />
-            {rows.length === 0 && <div>Empty</div>}
-            {rows.map((row) => (
-              <PracticeActionComponent key={row.practiceActions.id} {...row} />
-            ))}
+            <div className="flex-1 flex flex-col gap-2 relative">
+              {rows.map((row) => (
+                <PracticeActionComponent
+                  key={row.practiceActions.id}
+                  {...row}
+                />
+              ))}
+              {/* TODO: auto load on scroll? */}
+              {practiceActionsQuery.hasNextPage && (
+                <button
+                  className={cls(
+                    "antd-btn antd-btn-default p-1",
+                    practiceActionsQuery.isFetchingNextPage &&
+                      "antd-btn-loading"
+                  )}
+                  onClick={() => practiceActionsQuery.fetchNextPage()}
+                >
+                  Load more
+                </button>
+              )}
+              <Transition
+                show={practiceActionsQuery.isFetching}
+                className="duration-500 antd-body antd-spin-overlay-6"
+                {...transitionProps("opacity-0", "opacity-50")}
+              />
+            </div>
           </div>
         </div>
-      </div>
-      <div className="w-full h-8" /> {/* padding for scroll */}
-      <div className="absolute bottom-2 w-full flex justify-center">
-        <PaginationComponent pagination={pagination} />
       </div>
     </>
   );
