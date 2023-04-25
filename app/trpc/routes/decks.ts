@@ -361,6 +361,7 @@ export const trpcRoutesDecks = {
 
       const limit = 15;
 
+      // TODO: deferred join
       const rows = await db
         .select()
         .from(T.practiceActions)
