@@ -4,7 +4,6 @@ import {
   requireUserAndDeck,
 } from ".";
 import { Transition } from "@headlessui/react";
-import { once } from "@hiogawa/utils";
 import { useLoaderData, useNavigate } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
@@ -20,7 +19,6 @@ import { trpc } from "../../../trpc/client";
 import { trpcClient } from "../../../trpc/client-internal.client";
 import { Controller, makeLoader } from "../../../utils/controller-utils";
 import { useDeserialize } from "../../../utils/hooks";
-import { useIntersectionObserver } from "../../../utils/hooks-client-utils";
 import { dtf } from "../../../utils/intl";
 import { useLeafLoaderData } from "../../../utils/loader-utils";
 import { cls } from "../../../utils/misc";
@@ -80,27 +78,15 @@ export default function DefaultComponent() {
         cursor: context.pageParam,
       }),
     getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
-    keepPreviousData: true,
   });
-  const rows = practiceActionsQuery.data?.pages.flatMap((res) => res.rows);
-
-  // make sure to call `fetchNextPage` at most once for each page
-  const fetchNextPage = React.useCallback(
-    once(() => practiceActionsQuery.fetchNextPage()),
-    [practiceActionsQuery.data?.pages.length]
-  );
-
-  const fecthNextIntersectionRef = useIntersectionObserver((entries) => {
-    if (entries.some((e) => e.isIntersecting)) {
-      fetchNextPage();
-    }
-  });
+  const rows =
+    practiceActionsQuery.data?.pages.flatMap((res) => res.rows) ?? [];
 
   return (
     <>
       <div className="w-full flex justify-center">
         <div className="h-full w-full max-w-lg">
-          <div className="h-full flex flex-col p-2 gap-2">
+          <div className="h-full flex flex-col p-2 gap-2 relative">
             <div className="flex items-center gap-2 py-1">
               Filter
               <SelectWrapper
@@ -123,35 +109,31 @@ export default function DefaultComponent() {
               currentActionType={query.actionType}
             />
             <div className="flex-1 flex flex-col gap-2 relative">
-              {rows?.map((row) => (
+              {rows.map((row) => (
                 <PracticeActionComponent
                   key={row.practiceActions.id}
                   {...row}
                 />
               ))}
+              {/* TODO: auto load on scroll? */}
               {practiceActionsQuery.hasNextPage && (
-                <div className="flex justify-center">
-                  <div className="antd-spin h-8"></div>
-                </div>
+                <button
+                  className={cls(
+                    "antd-btn antd-btn-default p-1",
+                    practiceActionsQuery.isFetchingNextPage &&
+                      "antd-btn-loading"
+                  )}
+                  onClick={() => practiceActionsQuery.fetchNextPage()}
+                >
+                  Load more
+                </button>
               )}
-              {/* auto load on scroll end */}
-              {practiceActionsQuery.hasNextPage &&
-                !practiceActionsQuery.isFetching && (
-                  <div
-                    ref={fecthNextIntersectionRef}
-                    className="absolute -z-1 bottom-[100px]"
-                  ></div>
-                )}
+              {/* TODO: full height? */}
               <Transition
-                show={
-                  practiceActionsQuery.isFetching &&
-                  !practiceActionsQuery.isFetchingNextPage
-                }
-                className="absolute inset-0 duration-500 antd-body"
+                show={practiceActionsQuery.isFetching}
+                className="duration-500 antd-body antd-spin-overlay-6"
                 {...transitionProps("opacity-0", "opacity-50")}
-              >
-                <div className="mx-auto mt-[200px] antd-spin h-18"></div>
-              </Transition>
+              />
             </div>
           </div>
         </div>
@@ -248,7 +230,7 @@ function PracticeActionComponent(
             className="flex-1 text-colorTextSecondary"
             suppressHydrationWarning
           >
-            {/* TODO: format today, yesterday? */}
+            {/* format today, yesterday, ... */}
             {dtf.format(createdAt)}
           </div>
           <button
