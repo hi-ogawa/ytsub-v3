@@ -128,6 +128,7 @@ export default function DefaultComponent() {
                   Load more
                 </button>
               )}
+              {/* TODO: full height? */}
               <Transition
                 show={practiceActionsQuery.isFetching}
                 className="duration-500 antd-body antd-spin-overlay-6"
@@ -229,6 +230,7 @@ function PracticeActionComponent(
             className="flex-1 text-colorTextSecondary"
             suppressHydrationWarning
           >
+            {/* format today, yesterday, ... */}
             {dtf.format(createdAt)}
           </div>
           <button
