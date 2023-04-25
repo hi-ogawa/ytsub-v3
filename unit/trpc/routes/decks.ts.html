@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">55.82% </span>
+                <span class="strong">54.89% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>230/412</span>
+                <span class='fraction'>230/419</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">55.82% </span>
+                <span class="strong">54.89% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>230/412</span>
+                <span class='fraction'>230/419</span>
             </div>
         
             
@@ -475,7 +475,14 @@
 <a name='L410'></a><a href='#L410'>410</a>
 <a name='L411'></a><a href='#L411'>411</a>
 <a name='L412'></a><a href='#L412'>412</a>
-<a name='L413'></a><a href='#L413'>413</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L413'></a><a href='#L413'>413</a>
+<a name='L414'></a><a href='#L414'>414</a>
+<a name='L415'></a><a href='#L415'>415</a>
+<a name='L416'></a><a href='#L416'>416</a>
+<a name='L417'></a><a href='#L417'>417</a>
+<a name='L418'></a><a href='#L418'>418</a>
+<a name='L419'></a><a href='#L419'>419</a>
+<a name='L420'></a><a href='#L420'>420</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -830,6 +837,13 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -1250,23 +1264,10 @@ export const trpcRoutesDecks = {
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >      const limit = 15;</span>
 <span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >      // TODO: deferred join</span>
-<span class="cstat-no" title="statement not covered" >      const rows = await db</span>
-<span class="cstat-no" title="statement not covered" >        .select()</span>
+<span class="cstat-no" title="statement not covered" >      // deferred join</span>
+<span class="cstat-no" title="statement not covered" >      const subQueryIds = db</span>
+<span class="cstat-no" title="statement not covered" >        .select({ id: T.practiceActions.id })</span>
 <span class="cstat-no" title="statement not covered" >        .from(T.practiceActions)</span>
-<span class="cstat-no" title="statement not covered" >        .innerJoin(</span>
-<span class="cstat-no" title="statement not covered" >          T.practiceEntries,</span>
-<span class="cstat-no" title="statement not covered" >          E.eq(T.practiceEntries.id, T.practiceActions.practiceEntryId)</span>
-<span class="cstat-no" title="statement not covered" >        )</span>
-<span class="cstat-no" title="statement not covered" >        .innerJoin(</span>
-<span class="cstat-no" title="statement not covered" >          T.bookmarkEntries,</span>
-<span class="cstat-no" title="statement not covered" >          E.eq(T.bookmarkEntries.id, T.practiceEntries.bookmarkEntryId)</span>
-<span class="cstat-no" title="statement not covered" >        )</span>
-<span class="cstat-no" title="statement not covered" >        .innerJoin(</span>
-<span class="cstat-no" title="statement not covered" >          T.captionEntries,</span>
-<span class="cstat-no" title="statement not covered" >          E.eq(T.captionEntries.id, T.bookmarkEntries.captionEntryId)</span>
-<span class="cstat-no" title="statement not covered" >        )</span>
-<span class="cstat-no" title="statement not covered" >        .innerJoin(T.videos, E.eq(T.videos.id, T.captionEntries.videoId))</span>
 <span class="cstat-no" title="statement not covered" >        .where(</span>
 <span class="cstat-no" title="statement not covered" >          E.and(</span>
 <span class="cstat-no" title="statement not covered" >            E.eq(T.practiceActions.deckId, deck.id),</span>
@@ -1280,6 +1281,26 @@ export const trpcRoutesDecks = {
 <span class="cstat-no" title="statement not covered" >        )</span>
 <span class="cstat-no" title="statement not covered" >        .offset(input.cursor)</span>
 <span class="cstat-no" title="statement not covered" >        .limit(limit)</span>
+<span class="cstat-no" title="statement not covered" >        .orderBy(E.desc(T.practiceActions.createdAt))</span>
+<span class="cstat-no" title="statement not covered" >        .as("__subQuery_ids");</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >      const rows = await db</span>
+<span class="cstat-no" title="statement not covered" >        .select()</span>
+<span class="cstat-no" title="statement not covered" >        .from(T.practiceActions)</span>
+<span class="cstat-no" title="statement not covered" >        .innerJoin(subQueryIds, E.eq(subQueryIds.id, T.practiceActions.id))</span>
+<span class="cstat-no" title="statement not covered" >        .innerJoin(</span>
+<span class="cstat-no" title="statement not covered" >          T.practiceEntries,</span>
+<span class="cstat-no" title="statement not covered" >          E.eq(T.practiceEntries.id, T.practiceActions.practiceEntryId)</span>
+<span class="cstat-no" title="statement not covered" >        )</span>
+<span class="cstat-no" title="statement not covered" >        .innerJoin(</span>
+<span class="cstat-no" title="statement not covered" >          T.bookmarkEntries,</span>
+<span class="cstat-no" title="statement not covered" >          E.eq(T.bookmarkEntries.id, T.practiceEntries.bookmarkEntryId)</span>
+<span class="cstat-no" title="statement not covered" >        )</span>
+<span class="cstat-no" title="statement not covered" >        .innerJoin(</span>
+<span class="cstat-no" title="statement not covered" >          T.captionEntries,</span>
+<span class="cstat-no" title="statement not covered" >          E.eq(T.captionEntries.id, T.bookmarkEntries.captionEntryId)</span>
+<span class="cstat-no" title="statement not covered" >        )</span>
+<span class="cstat-no" title="statement not covered" >        .innerJoin(T.videos, E.eq(T.videos.id, T.captionEntries.videoId))</span>
 <span class="cstat-no" title="statement not covered" >        .orderBy(E.desc(T.practiceActions.createdAt));</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >      const nextCursor = rows.length &lt; limit ? null : input.cursor + limit;</span>
@@ -1306,7 +1327,7 @@ function findUserDeck({ deckId, userId }: { deckId: number; userId: number }) {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-04-25T04:38:19.640Z
+                at 2023-04-25T04:46:25.921Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
