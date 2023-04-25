@@ -349,7 +349,6 @@ export const trpcRoutesDecks = {
         deckId: z.number().int(),
         actionType: Z_PRACTICE_ACTION_TYPES.optional(),
         practiceEntryId: z.coerce.number().int().optional(),
-        // offset: z.number().int().default(0),
         cursor: z.number().int().default(0), // TODO(perf): index cursor instead of limit/offset
       })
     )
