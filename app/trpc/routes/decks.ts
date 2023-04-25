@@ -361,23 +361,10 @@ export const trpcRoutesDecks = {
 
       const limit = 15;
 
-      // TODO: deferred join
-      const rows = await db
-        .select()
+      // deferred join
+      const subQueryIds = db
+        .select({ id: T.practiceActions.id })
         .from(T.practiceActions)
-        .innerJoin(
-          T.practiceEntries,
-          E.eq(T.practiceEntries.id, T.practiceActions.practiceEntryId)
-        )
-        .innerJoin(
-          T.bookmarkEntries,
-          E.eq(T.bookmarkEntries.id, T.practiceEntries.bookmarkEntryId)
-        )
-        .innerJoin(
-          T.captionEntries,
-          E.eq(T.captionEntries.id, T.bookmarkEntries.captionEntryId)
-        )
-        .innerJoin(T.videos, E.eq(T.videos.id, T.captionEntries.videoId))
         .where(
           E.and(
             E.eq(T.practiceActions.deckId, deck.id),
@@ -391,6 +378,26 @@ export const trpcRoutesDecks = {
         )
         .offset(input.cursor)
         .limit(limit)
+        .orderBy(E.desc(T.practiceActions.createdAt))
+        .as("__subQuery_ids");
+
+      const rows = await db
+        .select()
+        .from(T.practiceActions)
+        .innerJoin(subQueryIds, E.eq(subQueryIds.id, T.practiceActions.id))
+        .innerJoin(
+          T.practiceEntries,
+          E.eq(T.practiceEntries.id, T.practiceActions.practiceEntryId)
+        )
+        .innerJoin(
+          T.bookmarkEntries,
+          E.eq(T.bookmarkEntries.id, T.practiceEntries.bookmarkEntryId)
+        )
+        .innerJoin(
+          T.captionEntries,
+          E.eq(T.captionEntries.id, T.bookmarkEntries.captionEntryId)
+        )
+        .innerJoin(T.videos, E.eq(T.videos.id, T.captionEntries.videoId))
         .orderBy(E.desc(T.practiceActions.createdAt));
 
       const nextCursor = rows.length < limit ? null : input.cursor + limit;
