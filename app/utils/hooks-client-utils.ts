@@ -49,3 +49,49 @@ function useRefAsCallback<T>() {
     },
   };
 }
+
+export function useIntersectionObserver(
+  callback: IntersectionObserverCallback
+) {
+  const stableCallback = useStableCallback(callback);
+
+  return useRefCallbackEffect<Element>((el) => {
+    const observer = new IntersectionObserver(stableCallback);
+    observer.observe(el);
+    return () => {
+      observer.disconnect();
+    };
+  });
+}
+
+// wrapper to create RefCallback by useEffect like api
+function useRefCallbackEffect<T>(effect: (value: T) => () => void) {
+  const effectRef = useStableRef(effect);
+  const destructorRef = React.useRef<() => void>();
+
+  const refCallback: React.RefCallback<T> = (value) => {
+    if (value) {
+      destructorRef.current = effectRef.current(value);
+    } else {
+      destructorRef.current?.();
+    }
+  };
+
+  return React.useCallback(refCallback, []);
+}
+
+// https://github.com/facebook/react/issues/14099#issuecomment-440013892
+function useStableCallback<F extends (...args: any[]) => any>(callback: F): F {
+  const ref = React.useRef(callback);
+
+  // silence SSR useLayoutEffect warning
+  const useEffect =
+    typeof window === "undefined" ? React.useEffect : React.useLayoutEffect;
+
+  useEffect(() => {
+    ref.current = callback;
+  });
+
+  // @ts-ignore
+  return React.useCallback((...args) => ref.current(...args), []);
+}
