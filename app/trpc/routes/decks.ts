@@ -381,6 +381,7 @@ export const trpcRoutesDecks = {
         .orderBy(E.desc(T.practiceActions.createdAt))
         .as("__subQuery_ids");
 
+      // TODO: sub query can include orphan data
       const rows = await db
         .select()
         .from(T.practiceActions)
@@ -400,7 +401,7 @@ export const trpcRoutesDecks = {
         .innerJoin(T.videos, E.eq(T.videos.id, T.captionEntries.videoId))
         .orderBy(E.desc(T.practiceActions.createdAt));
 
-      const nextCursor = rows.length < limit ? null : input.cursor + limit;
+      const nextCursor = rows.length > 0 ? input.cursor + rows.length : null;
       return { rows, nextCursor };
     }),
 };

@@ -78,15 +78,15 @@ export default function DefaultComponent() {
         cursor: context.pageParam,
       }),
     getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
+    keepPreviousData: true,
   });
-  const rows =
-    practiceActionsQuery.data?.pages.flatMap((res) => res.rows) ?? [];
+  const rows = practiceActionsQuery.data?.pages.flatMap((res) => res.rows);
 
   return (
     <>
       <div className="w-full flex justify-center">
         <div className="h-full w-full max-w-lg">
-          <div className="h-full flex flex-col p-2 gap-2 relative">
+          <div className="h-full flex flex-col p-2 gap-2">
             <div className="flex items-center gap-2 py-1">
               Filter
               <SelectWrapper
@@ -109,13 +109,13 @@ export default function DefaultComponent() {
               currentActionType={query.actionType}
             />
             <div className="flex-1 flex flex-col gap-2 relative">
-              {rows.map((row) => (
+              {rows?.map((row) => (
                 <PracticeActionComponent
                   key={row.practiceActions.id}
                   {...row}
                 />
               ))}
-              {/* TODO: auto load on scroll? */}
+              {/* TODO: auto load on scroll end? */}
               {practiceActionsQuery.hasNextPage && (
                 <button
                   className={cls(
@@ -128,12 +128,16 @@ export default function DefaultComponent() {
                   Load more
                 </button>
               )}
-              {/* TODO: full height? */}
               <Transition
-                show={practiceActionsQuery.isFetching}
-                className="duration-500 antd-body antd-spin-overlay-6"
+                show={
+                  practiceActionsQuery.isFetching &&
+                  !practiceActionsQuery.isFetchingNextPage
+                }
+                className="absolute inset-0 duration-500 antd-body"
                 {...transitionProps("opacity-0", "opacity-50")}
-              />
+              >
+                <div className="mx-auto mt-[200px] antd-spin h-18"></div>
+              </Transition>
             </div>
           </div>
         </div>
@@ -230,7 +234,6 @@ function PracticeActionComponent(
             className="flex-1 text-colorTextSecondary"
             suppressHydrationWarning
           >
-            {/* format today, yesterday, ... */}
             {dtf.format(createdAt)}
           </div>
           <button
