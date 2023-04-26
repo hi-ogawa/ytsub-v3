@@ -32,7 +32,7 @@ function Modal(props: {
 
   return (
     <FloatingPortal id={id}>
-      <Transition appear show={props.open}>
+      <Transition className="fixed inset-0 z-100" appear show={props.open}>
         {/* backdrop */}
         <Transition.Child
           className="transition duration-300 fixed inset-0 bg-black"
