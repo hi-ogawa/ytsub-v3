@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">19.4% </span>
+                <span class="strong">19.64% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>110/567</span>
+                <span class='fraction'>111/565</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">19.4% </span>
+                <span class="strong">19.64% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>110/567</span>
+                <span class='fraction'>111/565</span>
             </div>
         
             
@@ -628,9 +628,7 @@
 <a name='L563'></a><a href='#L563'>563</a>
 <a name='L564'></a><a href='#L564'>564</a>
 <a name='L565'></a><a href='#L565'>565</a>
-<a name='L566'></a><a href='#L566'>566</a>
-<a name='L567'></a><a href='#L567'>567</a>
-<a name='L568'></a><a href='#L568'>568</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L566'></a><a href='#L566'>566</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -671,6 +669,7 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -872,9 +871,6 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -1198,13 +1194,14 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { Transition } from "@headlessui/react";
-import { isNil, typedBoolean } from "@hiogawa/utils";
+import { isNil, sortBy } from "@hiogawa/utils";
 import { toArraySetState, useRafLoop } from "@hiogawa/utils-react";
 import { Link, NavLink, useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { omit } from "lodash";
 import React from "react";
+import { toast } from "react-hot-toast";
 import type { z } from "zod";
 import { CollapseTransition } from "../../components/collapse";
 import { PaginationComponent, transitionProps } from "../../components/misc";
@@ -1224,7 +1221,7 @@ import type {
   VideoTable,
 } from "../../db/models";
 import { $R, ROUTE_DEF } from "../../misc/routes";
-import { trpc } from "../../trpc/client";
+import { trpcClient } from "../../trpc/client-internal.client";
 import { Controller, makeLoader } from "../../utils/controller-utils";
 import { useDeserialize } from "../../utils/hooks";
 import { useLeafLoaderData } from "../../utils/loader-utils";
@@ -1454,48 +1451,12 @@ export <span class="fstat-no" title="function not covered" >function MiniPlayer(
 <span class="cstat-no" title="statement not covered" >  const [player, setPlayer] = React.useState&lt;YoutubePlayer&gt;();</span>
 <span class="cstat-no" title="statement not covered" >  const [isPlaying, setIsPlaying] = React.useState(false);</span>
 <span class="cstat-no" title="statement not covered" >  const [currentEntry, setCurrentEntry] = React.useState&lt;CaptionEntry&gt;();</span>
+<span class="cstat-no" title="statement not covered" >  const [captionEntries, setCaptionEntries] = React.useState&lt;</span>
+<span class="cstat-no" title="statement not covered" >    CaptionEntryTable[]</span>
+<span class="cstat-no" title="statement not covered" >  &gt;([initialEntry]);</span>
 <span class="cstat-no" title="statement not covered" >  const [repeatingEntries, setRepeatingEntries] = React.useState&lt;</span>
 <span class="cstat-no" title="statement not covered" >    CaptionEntry[]</span>
 <span class="cstat-no" title="statement not covered" >  &gt;(() =&gt; (defaultIsRepeating ? [initialEntry] : []));</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >  // keep track of indices and derive caption entries from query data</span>
-<span class="cstat-no" title="statement not covered" >  const [captionEntryIndices, setCaptionEntryIndices] = React.useState([</span>
-<span class="cstat-no" title="statement not covered" >    initialEntry.index,</span>
-<span class="cstat-no" title="statement not covered" >  ]);</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >  //</span>
-<span class="cstat-no" title="statement not covered" >  // fetch all caption entries on client after `loadNeighbor`</span>
-<span class="cstat-no" title="statement not covered" >  // but rely on `initialEntry` until then.</span>
-<span class="cstat-no" title="statement not covered" >  //</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >  const [queryEnabled, setQueryEnabled] = React.useState(false);</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >  const captionEntriesQuery = useQuery({</span>
-<span class="cstat-no" title="statement not covered" >    ...trpc.videos_getCaptionEntries.queryOptions({ videoId: video.id }),</span>
-<span class="cstat-no" title="statement not covered" >    enabled: queryEnabled,</span>
-<span class="cstat-no" title="statement not covered" >  });</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >  const captionEntries = React.useMemo(() =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >    const entries = captionEntriesQuery.data ?? [];</span>
-<span class="cstat-no" title="statement not covered" >    entries[initialEntry.index] = initialEntry; // trick to make `initialEntry` stable</span>
-<span class="cstat-no" title="statement not covered" >    return captionEntryIndices.map((i) =&gt; entries.at(i)).filter(typedBoolean);</span>
-<span class="cstat-no" title="statement not covered" >  }, [captionEntriesQuery.data, initialEntry, captionEntryIndices]);</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >  // auto update repeating entries</span>
-<span class="cstat-no" title="statement not covered" >  React.useEffect(() =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >    if (captionEntries.length &gt;= 2) {</span>
-<span class="cstat-no" title="statement not covered" >      setRepeatingEntries([captionEntries.at(0)!, captionEntries.at(-1)!]);</span>
-<span class="cstat-no" title="statement not covered" >    }</span>
-<span class="cstat-no" title="statement not covered" >  }, [captionEntries]);</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >  function loadNeighbor(direction: "previous" | "next") {</span>
-<span class="cstat-no" title="statement not covered" >    setQueryEnabled(true);</span>
-<span class="cstat-no" title="statement not covered" >    setCaptionEntryIndices((prev) =&gt;</span>
-<span class="cstat-no" title="statement not covered" >      direction === "previous"</span>
-<span class="cstat-no" title="statement not covered" >        ? [prev.at(0)! - 1, ...prev]</span>
-<span class="cstat-no" title="statement not covered" >        : [...prev, prev.at(-1)! + 1]</span>
-<span class="cstat-no" title="statement not covered" >    );</span>
-<span class="cstat-no" title="statement not covered" >  }</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  //</span>
 <span class="cstat-no" title="statement not covered" >  // handlers</span>
@@ -1580,25 +1541,58 @@ export <span class="fstat-no" title="function not covered" >function MiniPlayer(
 <span class="cstat-no" title="statement not covered" >    setCurrentEntry(nextEntry);</span>
 <span class="cstat-no" title="statement not covered" >  });</span>
 <span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >  const loadCaptionEntryMutation = useMutation({</span>
+<span class="cstat-no" title="statement not covered" >    mutationFn: async (direction: "previous" | "next") =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >      const index =</span>
+<span class="cstat-no" title="statement not covered" >        direction === "previous"</span>
+<span class="cstat-no" title="statement not covered" >          ? captionEntries.at(0)!.index - 1</span>
+<span class="cstat-no" title="statement not covered" >          : captionEntries.at(-1)!.index + 1;</span>
+<span class="cstat-no" title="statement not covered" >      return trpcClient.videos_getCaptionEntries.mutate({</span>
+<span class="cstat-no" title="statement not covered" >        videoId: initialEntry.videoId,</span>
+<span class="cstat-no" title="statement not covered" >        index,</span>
+<span class="cstat-no" title="statement not covered" >      });</span>
+<span class="cstat-no" title="statement not covered" >    },</span>
+<span class="cstat-no" title="statement not covered" >    onSuccess: (data) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >      let newCaptionEntries = [...captionEntries, data];</span>
+<span class="cstat-no" title="statement not covered" >      newCaptionEntries = sortBy(newCaptionEntries, (e) =&gt; e.index);</span>
+<span class="cstat-no" title="statement not covered" >      setCaptionEntries(newCaptionEntries);</span>
+<span class="cstat-no" title="statement not covered" >      if (repeatingEntries.length &gt; 0) {</span>
+<span class="cstat-no" title="statement not covered" >        setRepeatingEntries([</span>
+<span class="cstat-no" title="statement not covered" >          newCaptionEntries.at(0)!,</span>
+<span class="cstat-no" title="statement not covered" >          newCaptionEntries.at(-1)!,</span>
+<span class="cstat-no" title="statement not covered" >        ]);</span>
+<span class="cstat-no" title="statement not covered" >      }</span>
+<span class="cstat-no" title="statement not covered" >    },</span>
+<span class="cstat-no" title="statement not covered" >    onError: () =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >      toast.error("Failed to load caption");</span>
+<span class="cstat-no" title="statement not covered" >    },</span>
+<span class="cstat-no" title="statement not covered" >  });</span>
+<span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  return (</span>
 <span class="cstat-no" title="statement not covered" >    &lt;div className="w-full flex flex-col items-center p-2 gap-2"&gt;</span>
 <span class="cstat-no" title="statement not covered" >      &lt;div className="w-full flex justify-start gap-1 px-1 text-xs"&gt;</span>
 <span class="cstat-no" title="statement not covered" >        &lt;button</span>
-<span class="cstat-no" title="statement not covered" >          className="antd-btn antd-btn-ghost w-4 h-4 i-ri-upload-line"</span>
-<span class="cstat-no" title="statement not covered" >          disabled={captionEntryIndices.at(0) === 0}</span>
-<span class="cstat-no" title="statement not covered" >          onClick={() =&gt; loadNeighbor("previous")}</span>
+<span class="cstat-no" title="statement not covered" >          className={cls(</span>
+<span class="cstat-no" title="statement not covered" >            "antd-btn antd-btn-ghost w-4 h-4",</span>
+<span class="cstat-no" title="statement not covered" >            loadCaptionEntryMutation.isLoading &amp;&amp;</span>
+<span class="cstat-no" title="statement not covered" >              loadCaptionEntryMutation.variables === "previous"</span>
+<span class="cstat-no" title="statement not covered" >              ? "antd-spin"</span>
+<span class="cstat-no" title="statement not covered" >              : "i-ri-upload-line"</span>
+<span class="cstat-no" title="statement not covered" >          )}</span>
+<span class="cstat-no" title="statement not covered" >          disabled={loadCaptionEntryMutation.isLoading}</span>
+<span class="cstat-no" title="statement not covered" >          onClick={() =&gt; loadCaptionEntryMutation.mutate("previous")}</span>
 <span class="cstat-no" title="statement not covered" >        /&gt;</span>
 <span class="cstat-no" title="statement not covered" >        &lt;button</span>
-<span class="cstat-no" title="statement not covered" >          className="antd-btn antd-btn-ghost w-4 h-4 i-ri-download-line"</span>
-<span class="cstat-no" title="statement not covered" >          disabled={</span>
-<span class="cstat-no" title="statement not covered" >            captionEntryIndices.at(-1) ===</span>
-<span class="cstat-no" title="statement not covered" >            captionEntriesQuery.data?.at(-1)?.index</span>
-<span class="cstat-no" title="statement not covered" >          }</span>
-<span class="cstat-no" title="statement not covered" >          onClick={() =&gt; loadNeighbor("next")}</span>
+<span class="cstat-no" title="statement not covered" >          className={cls(</span>
+<span class="cstat-no" title="statement not covered" >            "antd-btn antd-btn-ghost w-4 h-4",</span>
+<span class="cstat-no" title="statement not covered" >            loadCaptionEntryMutation.isLoading &amp;&amp;</span>
+<span class="cstat-no" title="statement not covered" >              loadCaptionEntryMutation.variables === "next"</span>
+<span class="cstat-no" title="statement not covered" >              ? "antd-spin"</span>
+<span class="cstat-no" title="statement not covered" >              : "i-ri-download-line"</span>
+<span class="cstat-no" title="statement not covered" >          )}</span>
+<span class="cstat-no" title="statement not covered" >          disabled={loadCaptionEntryMutation.isLoading}</span>
+<span class="cstat-no" title="statement not covered" >          onClick={() =&gt; loadCaptionEntryMutation.mutate("next")}</span>
 <span class="cstat-no" title="statement not covered" >        /&gt;</span>
-<span class="cstat-no" title="statement not covered" >        {captionEntriesQuery.isFetching &amp;&amp; (</span>
-<span class="cstat-no" title="statement not covered" >          &lt;div className="antd-spin h-4"&gt;&lt;/div&gt;</span>
-<span class="cstat-no" title="statement not covered" >        )}</span>
 <span class="cstat-no" title="statement not covered" >      &lt;/div&gt;</span>
 <span class="cstat-no" title="statement not covered" >      {captionEntries.map((captionEntry) =&gt; (</span>
 <span class="cstat-no" title="statement not covered" >        &lt;CaptionEntryComponent</span>
@@ -1771,7 +1765,7 @@ export <span class="fstat-no" title="function not covered" >function BookmarksMe
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-04-26T12:51:56.085Z
+                at 2023-04-26T12:51:55.074Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
