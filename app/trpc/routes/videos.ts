@@ -50,30 +50,6 @@ export const trpcRoutesVideos = {
     .input(
       z.object({
         videoId: z.number().int(),
-        index: z.number().int(),
-      })
-    )
-    .mutation(async ({ input }) => {
-      const found = await findOne(
-        db
-          .select()
-          .from(T.captionEntries)
-          .where(
-            E.and(
-              E.eq(T.captionEntries.videoId, input.videoId),
-              E.eq(T.captionEntries.index, input.index)
-            )
-          )
-      );
-      tinyassert(found);
-      return found;
-    }),
-
-  // TODO: replace above by full caching on react-query level too
-  videos_getCaptionEntriesV2: procedureBuilder
-    .input(
-      z.object({
-        videoId: z.number().int(),
       })
     )
     .query(async ({ input, ctx }) => {

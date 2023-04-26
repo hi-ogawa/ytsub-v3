@@ -138,7 +138,7 @@ function PageComponent({
 
   // fetch caption entries on client
   const captionEntriesQuery = useQuery({
-    ...trpc.videos_getCaptionEntriesV2.queryOptions({ videoId: video.id }),
+    ...trpc.videos_getCaptionEntries.queryOptions({ videoId: video.id }),
   });
   const captionEntries = captionEntriesQuery.data ?? [];
 

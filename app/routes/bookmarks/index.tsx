@@ -272,7 +272,7 @@ export function MiniPlayer({
   const [queryEnabled, setQueryEnabled] = React.useState(false);
 
   const captionEntriesQuery = useQuery({
-    ...trpc.videos_getCaptionEntriesV2.queryOptions({ videoId: video.id }),
+    ...trpc.videos_getCaptionEntries.queryOptions({ videoId: video.id }),
     enabled: queryEnabled,
   });
 
