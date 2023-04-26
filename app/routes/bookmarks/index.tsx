@@ -1,12 +1,11 @@
 import { Transition } from "@headlessui/react";
-import { isNil, sortBy } from "@hiogawa/utils";
+import { isNil, typedBoolean } from "@hiogawa/utils";
 import { toArraySetState, useRafLoop } from "@hiogawa/utils-react";
 import { Link, NavLink, useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
-import { useMutation } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { omit } from "lodash";
 import React from "react";
-import { toast } from "react-hot-toast";
 import type { z } from "zod";
 import { CollapseTransition } from "../../components/collapse";
 import { PaginationComponent, transitionProps } from "../../components/misc";
@@ -26,7 +25,7 @@ import type {
   VideoTable,
 } from "../../db/models";
 import { $R, ROUTE_DEF } from "../../misc/routes";
-import { trpcClient } from "../../trpc/client-internal.client";
+import { trpc } from "../../trpc/client";
 import { Controller, makeLoader } from "../../utils/controller-utils";
 import { useDeserialize } from "../../utils/hooks";
 import { useLeafLoaderData } from "../../utils/loader-utils";
@@ -256,12 +255,48 @@ export function MiniPlayer({
   const [player, setPlayer] = React.useState<YoutubePlayer>();
   const [isPlaying, setIsPlaying] = React.useState(false);
   const [currentEntry, setCurrentEntry] = React.useState<CaptionEntry>();
-  const [captionEntries, setCaptionEntries] = React.useState<
-    CaptionEntryTable[]
-  >([initialEntry]);
   const [repeatingEntries, setRepeatingEntries] = React.useState<
     CaptionEntry[]
   >(() => (defaultIsRepeating ? [initialEntry] : []));
+
+  // keep track of indices and derive caption entries from query data
+  const [captionEntryIndices, setCaptionEntryIndices] = React.useState([
+    initialEntry.index,
+  ]);
+
+  //
+  // fetch all caption entries on client after `loadNeighbor`
+  // but rely on `initialEntry` until then.
+  //
+
+  const [queryEnabled, setQueryEnabled] = React.useState(false);
+
+  const captionEntriesQuery = useQuery({
+    ...trpc.videos_getCaptionEntriesV2.queryOptions({ videoId: video.id }),
+    enabled: queryEnabled,
+  });
+
+  const captionEntries = React.useMemo(() => {
+    const entries = captionEntriesQuery.data ?? [];
+    entries[initialEntry.index] = initialEntry; // trick to make `initialEntry` stable
+    return captionEntryIndices.map((i) => entries.at(i)).filter(typedBoolean);
+  }, [captionEntriesQuery.data, initialEntry, captionEntryIndices]);
+
+  // auto update repeating entries
+  React.useEffect(() => {
+    if (captionEntries.length >= 2) {
+      setRepeatingEntries([captionEntries.at(0)!, captionEntries.at(-1)!]);
+    }
+  }, [captionEntries]);
+
+  function loadNeighbor(direction: "previous" | "next") {
+    setQueryEnabled(true);
+    setCaptionEntryIndices((prev) =>
+      direction === "previous"
+        ? [prev.at(0)! - 1, ...prev]
+        : [...prev, prev.at(-1)! + 1]
+    );
+  }
 
   //
   // handlers
@@ -346,58 +381,25 @@ export function MiniPlayer({
     setCurrentEntry(nextEntry);
   });
 
-  const loadCaptionEntryMutation = useMutation({
-    mutationFn: async (direction: "previous" | "next") => {
-      const index =
-        direction === "previous"
-          ? captionEntries.at(0)!.index - 1
-          : captionEntries.at(-1)!.index + 1;
-      return trpcClient.videos_getCaptionEntries.mutate({
-        videoId: initialEntry.videoId,
-        index,
-      });
-    },
-    onSuccess: (data) => {
-      let newCaptionEntries = [...captionEntries, data];
-      newCaptionEntries = sortBy(newCaptionEntries, (e) => e.index);
-      setCaptionEntries(newCaptionEntries);
-      if (repeatingEntries.length > 0) {
-        setRepeatingEntries([
-          newCaptionEntries.at(0)!,
-          newCaptionEntries.at(-1)!,
-        ]);
-      }
-    },
-    onError: () => {
-      toast.error("Failed to load caption");
-    },
-  });
-
   return (
     <div className="w-full flex flex-col items-center p-2 gap-2">
       <div className="w-full flex justify-start gap-1 px-1 text-xs">
         <button
-          className={cls(
-            "antd-btn antd-btn-ghost w-4 h-4",
-            loadCaptionEntryMutation.isLoading &&
-              loadCaptionEntryMutation.variables === "previous"
-              ? "antd-spin"
-              : "i-ri-upload-line"
-          )}
-          disabled={loadCaptionEntryMutation.isLoading}
-          onClick={() => loadCaptionEntryMutation.mutate("previous")}
+          className="antd-btn antd-btn-ghost w-4 h-4 i-ri-upload-line"
+          disabled={captionEntryIndices.at(0) === 0}
+          onClick={() => loadNeighbor("previous")}
         />
         <button
-          className={cls(
-            "antd-btn antd-btn-ghost w-4 h-4",
-            loadCaptionEntryMutation.isLoading &&
-              loadCaptionEntryMutation.variables === "next"
-              ? "antd-spin"
-              : "i-ri-download-line"
-          )}
-          disabled={loadCaptionEntryMutation.isLoading}
-          onClick={() => loadCaptionEntryMutation.mutate("next")}
+          className="antd-btn antd-btn-ghost w-4 h-4 i-ri-download-line"
+          disabled={
+            captionEntryIndices.at(-1) ===
+            captionEntriesQuery.data?.at(-1)?.index
+          }
+          onClick={() => loadNeighbor("next")}
         />
+        {captionEntriesQuery.isFetching && (
+          <div className="antd-spin h-4"></div>
+        )}
       </div>
       {captionEntries.map((captionEntry) => (
         <CaptionEntryComponent
