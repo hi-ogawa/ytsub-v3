@@ -4,7 +4,7 @@ import { isNil } from "@hiogawa/utils";
 import { toArraySetState, useRafLoop } from "@hiogawa/utils-react";
 import { Form, Link, useLoaderData, useNavigate } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   VirtualItem,
   Virtualizer,
@@ -18,12 +18,8 @@ import { z } from "zod";
 import { transitionProps } from "../../components/misc";
 import { useModal } from "../../components/modal";
 import { PopoverSimple } from "../../components/popover";
-import {
-  CaptionEntryTable,
-  UserTable,
-  VideoTable,
-  getVideoAndCaptionEntries,
-} from "../../db/models";
+import { E, T, db, findOne } from "../../db/drizzle-client.server";
+import type { CaptionEntryTable, UserTable, VideoTable } from "../../db/models";
 import { $R, R, ROUTE_DEF } from "../../misc/routes";
 import { trpc } from "../../trpc/client";
 import { Controller, makeLoader } from "../../utils/controller-utils";
@@ -52,7 +48,6 @@ export const handle: PageHandle = {
 
 type LoaderData = {
   video: VideoTable;
-  captionEntries: CaptionEntryTable[];
   query: z.infer<(typeof ROUTE_DEF)["/videos/$id"]["query"]>;
 };
 
@@ -62,10 +57,12 @@ export const loader = makeLoader(Controller, async function () {
   );
   const parsedQuery = ROUTE_DEF["/videos/$id"].query.safeParse(this.query());
   if (parsedParams.success && parsedQuery.success) {
-    const data = await getVideoAndCaptionEntries(parsedParams.data.id);
-    if (data) {
+    const video = await findOne(
+      db.select().from(T.videos).where(E.eq(T.videos.id, parsedParams.data.id))
+    );
+    if (video) {
       const loaderData: LoaderData = {
-        ...data,
+        video,
         query: parsedQuery.data,
       };
       return this.serialize(loaderData);
@@ -130,7 +127,6 @@ interface BookmarkState {
 
 function PageComponent({
   video,
-  captionEntries,
   currentUser,
   query: params,
 }: LoaderData & { currentUser?: UserTable }) {
@@ -139,6 +135,12 @@ function PageComponent({
   const [repeatingEntries, setRepeatingEntries, toggleRepeatingEntries] =
     useRepeatingEntries();
   React.useEffect(() => () => setRepeatingEntries([]), []); // clear state on page navigation
+
+  // fetch caption entries on client
+  const captionEntriesQuery = useQuery({
+    ...trpc.videos_getCaptionEntriesV2.queryOptions({ videoId: video.id }),
+  });
+  const captionEntries = captionEntriesQuery.data ?? [];
 
   //
   // state
@@ -273,7 +275,7 @@ function PageComponent({
         behavior: "auto",
       });
     }
-  }, [params.index]);
+  }, [params.index, captionEntries[0]]);
 
   useDocumentEvent("selectionchange", () => {
     const selection = document.getSelection();
@@ -321,16 +323,25 @@ function PageComponent({
         </>
       }
       subtitles={
-        <CaptionEntriesComponent
-          virtualizer={virtualizer}
-          entries={captionEntries}
-          currentEntry={currentEntry}
-          repeatingEntries={repeatingEntries}
-          onClickEntryPlay={onClickEntryPlay}
-          onClickEntryRepeat={(entry) => toggleRepeatingEntries(entry)}
-          isPlaying={isPlaying}
-          focusedIndex={params.index}
-        />
+        <>
+          {captionEntries.length > 0 && (
+            <CaptionEntriesComponent
+              virtualizer={virtualizer}
+              entries={captionEntries}
+              currentEntry={currentEntry}
+              repeatingEntries={repeatingEntries}
+              onClickEntryPlay={onClickEntryPlay}
+              onClickEntryRepeat={(entry) => toggleRepeatingEntries(entry)}
+              isPlaying={isPlaying}
+              focusedIndex={params.index}
+            />
+          )}
+          <Transition
+            show={captionEntriesQuery.isLoading}
+            className="duration-500 antd-body antd-spin-overlay-10"
+            {...transitionProps("opacity-0", "opacity-50")}
+          />
+        </>
       }
       bookmarkActions={
         currentUser &&
