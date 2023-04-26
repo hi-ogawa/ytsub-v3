@@ -111,7 +111,7 @@ async function fetchCaptionEntriesFixture(): ReturnType<
   return JSON.parse(raw);
 }
 
-export function useVideo(userHook?: ReturnType<typeof useUser>) {
+function useVideo(userHook?: ReturnType<typeof useUser>) {
   let result: { video: VideoTable; captionEntries: CaptionEntryTable[] };
 
   beforeAll(async () => {
