@@ -88,7 +88,8 @@ jobs:
       - run: make db/reset/dev
       - name: install skeema
         run: |
-          curl -LO https://github.com/skeema/skeema/releases/latest/download/skeema_amd64.deb
+          # TODO: update to latest
+          curl -LO https://github.com/skeema/skeema/releases/download/v1.9.0/skeema_amd64.deb
           sudo apt install ./skeema_amd64.deb
       - run: pnpm skeema diff
       - run: pnpm skeema lint
