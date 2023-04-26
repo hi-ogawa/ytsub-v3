@@ -119,7 +119,10 @@ function Root() {
           menu={handle.navBarMenu?.()}
         />
         <div className="flex-[1_0_0] flex flex-col" data-test="main">
-          <div className="w-full flex-[1_0_0] h-full overflow-y-auto">
+          <div
+            className="w-full flex-[1_0_0] h-full overflow-y-auto"
+            data-testid="main-scroll"
+          >
             <Outlet />
           </div>
         </div>
