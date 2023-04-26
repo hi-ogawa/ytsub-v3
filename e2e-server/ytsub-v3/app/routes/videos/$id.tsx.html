@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">13.8% </span>
+                <span class="strong">13.21% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>114/826</span>
+                <span class='fraction'>111/840</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">13.8% </span>
+                <span class="strong">13.21% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>114/826</span>
+                <span class='fraction'>111/840</span>
             </div>
         
             
@@ -889,12 +889,21 @@
 <a name='L824'></a><a href='#L824'>824</a>
 <a name='L825'></a><a href='#L825'>825</a>
 <a name='L826'></a><a href='#L826'>826</a>
-<a name='L827'></a><a href='#L827'>827</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<a name='L827'></a><a href='#L827'>827</a>
+<a name='L828'></a><a href='#L828'>828</a>
+<a name='L829'></a><a href='#L829'>829</a>
+<a name='L830'></a><a href='#L830'>830</a>
+<a name='L831'></a><a href='#L831'>831</a>
+<a name='L832'></a><a href='#L832'>832</a>
+<a name='L833'></a><a href='#L833'>833</a>
+<a name='L834'></a><a href='#L834'>834</a>
+<a name='L835'></a><a href='#L835'>835</a>
+<a name='L836'></a><a href='#L836'>836</a>
+<a name='L837'></a><a href='#L837'>837</a>
+<a name='L838'></a><a href='#L838'>838</a>
+<a name='L839'></a><a href='#L839'>839</a>
+<a name='L840'></a><a href='#L840'>840</a>
+<a name='L841'></a><a href='#L841'>841</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -962,6 +971,8 @@
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -1019,6 +1030,23 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -1721,7 +1749,7 @@ import { isNil } from "@hiogawa/utils";
 import { toArraySetState, useRafLoop } from "@hiogawa/utils-react";
 import { Form, Link, useLoaderData, useNavigate } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   VirtualItem,
   Virtualizer,
@@ -1735,12 +1763,8 @@ import { z } from "zod";
 import { transitionProps } from "../../components/misc";
 import { useModal } from "../../components/modal";
 import { PopoverSimple } from "../../components/popover";
-import {
-  CaptionEntryTable,
-  UserTable,
-  VideoTable,
-  getVideoAndCaptionEntries,
-} from "../../db/models";
+import { E, T, db, findOne } from "../../db/drizzle-client.server";
+import type { CaptionEntryTable, UserTable, VideoTable } from "../../db/models";
 import { $R, R, ROUTE_DEF } from "../../misc/routes";
 import { trpc } from "../../trpc/client";
 import { Controller, makeLoader } from "../../utils/controller-utils";
@@ -1769,7 +1793,6 @@ export const handle: PageHandle = {
 &nbsp;
 type LoaderData = {
   video: VideoTable;
-  captionEntries: CaptionEntryTable[];
   query: z.infer&lt;(typeof ROUTE_DEF)["/videos/$id"]["query"]&gt;;
 };
 &nbsp;
@@ -1779,10 +1802,12 @@ export const loader = makeLoader(Controller, async function () {
   );
   const parsedQuery = ROUTE_DEF["/videos/$id"].query.safeParse(this.query());
   if (parsedParams.success &amp;&amp; parsedQuery.success) {
-    const data = await getVideoAndCaptionEntries(parsedParams.data.id);
-    if (data) {
+    const video = await findOne(
+      db.select().from(T.videos).where(E.eq(T.videos.id, parsedParams.data.id))
+    );
+    if (video) {
       const loaderData: LoaderData = {
-        ...data,
+        video,
         query: parsedQuery.data,
       };
       return this.serialize(loaderData);
@@ -1847,15 +1872,23 @@ interface BookmarkState {
 &nbsp;
 <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >function PageComponent({</span></span>
 <span class="cstat-no" title="statement not covered" >  video,</span>
-<span class="cstat-no" title="statement not covered" >  captionEntries,</span>
 <span class="cstat-no" title="statement not covered" >  currentUser,</span>
-<span class="cstat-no" title="statement not covered" >  query: params,</span>
+<span class="cstat-no" title="statement not covered" >  query,</span>
 <span class="cstat-no" title="statement not covered" >}: LoaderData &amp; { currentUser?: UserTable }) {</span>
 <span class="cstat-no" title="statement not covered" >  const [autoScrollState] = useAutoScrollState();</span>
 <span class="cstat-no" title="statement not covered" >  const autoScroll = autoScrollState.includes(video.id);</span>
 <span class="cstat-no" title="statement not covered" >  const [repeatingEntries, setRepeatingEntries, toggleRepeatingEntries] =</span>
 <span class="cstat-no" title="statement not covered" >    useRepeatingEntries();</span>
 <span class="cstat-no" title="statement not covered" >  React.useEffect(() =&gt; () =&gt; setRepeatingEntries([]), []); // clear state on page navigation</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >  // fetch caption entries on client</span>
+<span class="cstat-no" title="statement not covered" >  const captionEntriesQuery = useQuery({</span>
+<span class="cstat-no" title="statement not covered" >    ...trpc.videos_getCaptionEntries.queryOptions({ videoId: video.id }),</span>
+<span class="cstat-no" title="statement not covered" >  });</span>
+<span class="cstat-no" title="statement not covered" >  const captionEntries = React.useMemo(</span>
+<span class="cstat-no" title="statement not covered" >    () =&gt; captionEntriesQuery.data ?? [],</span>
+<span class="cstat-no" title="statement not covered" >    [captionEntriesQuery.data]</span>
+<span class="cstat-no" title="statement not covered" >  );</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  //</span>
 <span class="cstat-no" title="statement not covered" >  // state</span>
@@ -1983,14 +2016,14 @@ interface BookmarkState {
 <span class="cstat-no" title="statement not covered" >  //</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  React.useEffect(() =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >    if (!isNil(params.index)) {</span>
+<span class="cstat-no" title="statement not covered" >    if (!isNil(query.index) &amp;&amp; query.index &lt; captionEntries.length) {</span>
 <span class="cstat-no" title="statement not covered" >      // smooth scroll ends up wrong positions due to over-estimation by `estimateSize`.</span>
-<span class="cstat-no" title="statement not covered" >      virtualizer.scrollToIndex(params.index, {</span>
+<span class="cstat-no" title="statement not covered" >      virtualizer.scrollToIndex(query.index, {</span>
 <span class="cstat-no" title="statement not covered" >        align: "center",</span>
 <span class="cstat-no" title="statement not covered" >        behavior: "auto",</span>
 <span class="cstat-no" title="statement not covered" >      });</span>
 <span class="cstat-no" title="statement not covered" >    }</span>
-<span class="cstat-no" title="statement not covered" >  }, [params.index]);</span>
+<span class="cstat-no" title="statement not covered" >  }, [query.index, captionEntries]);</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  useDocumentEvent("selectionchange", () =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >    const selection = document.getSelection();</span>
@@ -2038,16 +2071,25 @@ interface BookmarkState {
 <span class="cstat-no" title="statement not covered" >        &lt;/&gt;</span>
 <span class="cstat-no" title="statement not covered" >      }</span>
 <span class="cstat-no" title="statement not covered" >      subtitles={</span>
-<span class="cstat-no" title="statement not covered" >        &lt;CaptionEntriesComponent</span>
-<span class="cstat-no" title="statement not covered" >          virtualizer={virtualizer}</span>
-<span class="cstat-no" title="statement not covered" >          entries={captionEntries}</span>
-<span class="cstat-no" title="statement not covered" >          currentEntry={currentEntry}</span>
-<span class="cstat-no" title="statement not covered" >          repeatingEntries={repeatingEntries}</span>
-<span class="cstat-no" title="statement not covered" >          onClickEntryPlay={onClickEntryPlay}</span>
-<span class="cstat-no" title="statement not covered" >          onClickEntryRepeat={(entry) =&gt; toggleRepeatingEntries(entry)}</span>
-<span class="cstat-no" title="statement not covered" >          isPlaying={isPlaying}</span>
-<span class="cstat-no" title="statement not covered" >          focusedIndex={params.index}</span>
-<span class="cstat-no" title="statement not covered" >        /&gt;</span>
+<span class="cstat-no" title="statement not covered" >        &lt;&gt;</span>
+<span class="cstat-no" title="statement not covered" >          {captionEntries.length &gt; 0 &amp;&amp; (</span>
+<span class="cstat-no" title="statement not covered" >            &lt;CaptionEntriesComponent</span>
+<span class="cstat-no" title="statement not covered" >              virtualizer={virtualizer}</span>
+<span class="cstat-no" title="statement not covered" >              entries={captionEntries}</span>
+<span class="cstat-no" title="statement not covered" >              currentEntry={currentEntry}</span>
+<span class="cstat-no" title="statement not covered" >              repeatingEntries={repeatingEntries}</span>
+<span class="cstat-no" title="statement not covered" >              onClickEntryPlay={onClickEntryPlay}</span>
+<span class="cstat-no" title="statement not covered" >              onClickEntryRepeat={(entry) =&gt; toggleRepeatingEntries(entry)}</span>
+<span class="cstat-no" title="statement not covered" >              isPlaying={isPlaying}</span>
+<span class="cstat-no" title="statement not covered" >              focusedIndex={query.index}</span>
+<span class="cstat-no" title="statement not covered" >            /&gt;</span>
+<span class="cstat-no" title="statement not covered" >          )}</span>
+<span class="cstat-no" title="statement not covered" >          &lt;Transition</span>
+<span class="cstat-no" title="statement not covered" >            show={captionEntriesQuery.isLoading}</span>
+<span class="cstat-no" title="statement not covered" >            className="duration-500 antd-body antd-spin-overlay-10"</span>
+<span class="cstat-no" title="statement not covered" >            {...transitionProps("opacity-0", "opacity-50")}</span>
+<span class="cstat-no" title="statement not covered" >          /&gt;</span>
+<span class="cstat-no" title="statement not covered" >        &lt;/&gt;</span>
 <span class="cstat-no" title="statement not covered" >      }</span>
 <span class="cstat-no" title="statement not covered" >      bookmarkActions={</span>
 <span class="cstat-no" title="statement not covered" >        currentUser &amp;&amp;</span>
@@ -2548,7 +2590,7 @@ const autoScrollStorageAtom = atomWithStorage(
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-04-26T05:01:05.760Z
+                at 2023-04-26T12:32:26.958Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>
