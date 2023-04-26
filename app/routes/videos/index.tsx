@@ -54,7 +54,7 @@ export async function getVideosLoaderData(
       .select()
       .from(T.videos)
       .where(userId ? E.eq(T.videos.userId, userId) : E.isNull(T.videos.userId))
-      .orderBy(E.desc(T.videos.updatedAt)),
+      .orderBy(E.desc(T.videos.updatedAt), E.desc(T.videos.id)),
     paginationParams
   );
   return { videos, pagination };
