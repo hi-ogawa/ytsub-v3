@@ -4,7 +4,6 @@ import {
   requireUserAndDeck,
 } from ".";
 import { Transition } from "@headlessui/react";
-import { once } from "@hiogawa/utils";
 import { useLoaderData, useNavigate } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
@@ -84,15 +83,9 @@ export default function DefaultComponent() {
   });
   const rows = practiceActionsQuery.data?.pages.flatMap((res) => res.rows);
 
-  // make sure to call `fetchNextPage` at most once for each page
-  const fetchNextPage = React.useCallback(
-    once(() => practiceActionsQuery.fetchNextPage()),
-    [practiceActionsQuery.data?.pages.length]
-  );
-
   const fecthNextIntersectionRef = useIntersectionObserver((entries) => {
     if (entries.some((e) => e.isIntersecting)) {
-      fetchNextPage();
+      practiceActionsQuery.fetchNextPage();
     }
   });
 
