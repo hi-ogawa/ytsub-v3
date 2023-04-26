@@ -128,7 +128,7 @@ interface BookmarkState {
 function PageComponent({
   video,
   currentUser,
-  query: params,
+  query,
 }: LoaderData & { currentUser?: UserTable }) {
   const [autoScrollState] = useAutoScrollState();
   const autoScroll = autoScrollState.includes(video.id);
@@ -140,7 +140,10 @@ function PageComponent({
   const captionEntriesQuery = useQuery({
     ...trpc.videos_getCaptionEntries.queryOptions({ videoId: video.id }),
   });
-  const captionEntries = captionEntriesQuery.data ?? [];
+  const captionEntries = React.useMemo(
+    () => captionEntriesQuery.data ?? [],
+    [captionEntriesQuery.data]
+  );
 
   //
   // state
@@ -268,14 +271,14 @@ function PageComponent({
   //
 
   React.useEffect(() => {
-    if (!isNil(params.index)) {
+    if (!isNil(query.index) && query.index < captionEntries.length) {
       // smooth scroll ends up wrong positions due to over-estimation by `estimateSize`.
-      virtualizer.scrollToIndex(params.index, {
+      virtualizer.scrollToIndex(query.index, {
         align: "center",
         behavior: "auto",
       });
     }
-  }, [params.index, captionEntries[0]]);
+  }, [query.index, captionEntries]);
 
   useDocumentEvent("selectionchange", () => {
     const selection = document.getSelection();
@@ -333,7 +336,7 @@ function PageComponent({
               onClickEntryPlay={onClickEntryPlay}
               onClickEntryRepeat={(entry) => toggleRepeatingEntries(entry)}
               isPlaying={isPlaying}
-              focusedIndex={params.index}
+              focusedIndex={query.index}
             />
           )}
           <Transition
