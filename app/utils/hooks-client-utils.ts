@@ -67,7 +67,7 @@ function useRefCallbackEffect<T>(effect: (value: T) => () => void) {
 function useStableCallback<F extends (...args: any[]) => any>(callback: F): F {
   const ref = React.useRef(callback);
 
-  // silence SSR useLayoutEffect warning
+  // silence SSR useLayoutEffect warning until https://github.com/facebook/react/pull/26395
   const useEffect =
     typeof window === "undefined" ? React.useEffect : React.useLayoutEffect;
 
