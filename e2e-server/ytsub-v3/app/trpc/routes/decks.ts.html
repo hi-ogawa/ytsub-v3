@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">99.76% </span>
+                <span class="strong">95% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>419/420</span>
+                <span class='fraction'>399/420</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">83.33% </span>
+                <span class="strong">82.6% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>20/24</span>
+                <span class='fraction'>19/23</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">99.76% </span>
+                <span class="strong">95% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>419/420</span>
+                <span class='fraction'>399/420</span>
             </div>
         
             
@@ -555,26 +555,26 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -895,14 +895,14 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">12x</span>
-<span class="cline-any cline-yes">12x</span>
-<span class="cline-any cline-yes">12x</span>
-<span class="cline-any cline-yes">12x</span>
-<span class="cline-any cline-yes">12x</span>
-<span class="cline-any cline-yes">12x</span>
-<span class="cline-any cline-yes">12x</span>
-<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { mapOption, tinyassert } from "@hiogawa/utils";
 import { sql } from "drizzle-orm";
 import { z } from "zod";
@@ -975,26 +975,26 @@ export const trpcRoutesDecks = {
       })
     )
     .mutation(async ({ input, ctx }) =&gt; {
-      const deck = await findUserDeck({
-        deckId: input.deckId,
-        userId: ctx.user.id,
-      });
-      tinyassert(deck);
-&nbsp;
-      const practiceEntry = await findOne(
-        db
-          .select()
-          .from(T.practiceEntries)
-          .where(E.eq(T.practiceEntries.id, input.practiceEntryId))
-      );
-      tinyassert(practiceEntry);
-&nbsp;
-      const system = new PracticeSystem(ctx.user, deck);
-      await system.createPracticeAction(
-        practiceEntry,
-        input.actionType,
-        new Date()
-      );
+<span class="cstat-no" title="statement not covered" >      const deck = await findUserDeck({</span>
+<span class="cstat-no" title="statement not covered" >        deckId: input.deckId,</span>
+<span class="cstat-no" title="statement not covered" >        userId: ctx.user.id,</span>
+<span class="cstat-no" title="statement not covered" >      });</span>
+<span class="cstat-no" title="statement not covered" >      tinyassert(deck);</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >      const practiceEntry = await findOne(</span>
+<span class="cstat-no" title="statement not covered" >        db</span>
+<span class="cstat-no" title="statement not covered" >          .select()</span>
+<span class="cstat-no" title="statement not covered" >          .from(T.practiceEntries)</span>
+<span class="cstat-no" title="statement not covered" >          .where(E.eq(T.practiceEntries.id, input.practiceEntryId))</span>
+<span class="cstat-no" title="statement not covered" >      );</span>
+<span class="cstat-no" title="statement not covered" >      tinyassert(practiceEntry);</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >      const system = new PracticeSystem(ctx.user, deck);</span>
+<span class="cstat-no" title="statement not covered" >      await system.createPracticeAction(</span>
+<span class="cstat-no" title="statement not covered" >        practiceEntry,</span>
+<span class="cstat-no" title="statement not covered" >        input.actionType,</span>
+<span class="cstat-no" title="statement not covered" >        new Date()</span>
+<span class="cstat-no" title="statement not covered" >      );</span>
     }),
 &nbsp;
   decks_create: procedureBuilder
@@ -1330,7 +1330,7 @@ function findUserDeck({ deckId, userId }: { deckId: number; userId: number }) {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-04-26T04:16:27.400Z
+                at 2023-04-26T04:18:55.738Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>
