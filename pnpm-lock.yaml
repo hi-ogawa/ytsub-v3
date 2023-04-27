@@ -25,8 +25,8 @@ dependencies:
     specifier: 1.4.2-pre.4
     version: 1.4.2-pre.4
   '@hiogawa/utils-react':
-    specifier: ^1.2.0
-    version: 1.2.0(react@18.2.0)
+    specifier: 1.2.1-pre.4
+    version: 1.2.1-pre.4(react@18.2.0)
   '@js-temporal/polyfill':
     specifier: ^0.4.3
     version: 0.4.3
@@ -2065,8 +2065,8 @@ packages:
       unocss: 0.50.6(vite@4.2.0)
     dev: true
 
-  /@hiogawa/utils-react@1.2.0(react@18.2.0):
-    resolution: {integrity: sha512-hQZhYgJDs6Lw3wMoriKNk1eZnnR+WK+Ef2LUo7XXJFug7w+Mu7RRr0YL8WtCoXymH3izVGJ15udHYkCLmKdfjg==}
+  /@hiogawa/utils-react@1.2.1-pre.4(react@18.2.0):
+    resolution: {integrity: sha512-/apCDXNbjIxXyWvrEg/ZGLFcI+wWXhxMMFx12CmjM1SXsHxHAL9iMJBuS/eVgq8e+4Uqap0TSHbbyrga0cz52g==}
     peerDependencies:
       react: '*'
     dependencies:
@@ -4810,6 +4810,7 @@ packages:
 
   /graceful-fs@4.2.11:
     resolution: {integrity: sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ==}
+    dev: true
 
   /graceful-fs@4.2.9:
     resolution: {integrity: sha512-NtNxqUcXgpW2iMrfqSfR73Glt39K+BLwWsPs94yR63v45T0Wbej7eRmL5cWfwEgqXnmjQp3zaJTshdRW/qC2ZQ==}
@@ -5388,14 +5389,14 @@ packages:
   /jsonfile@4.0.0:
     resolution: {integrity: sha1-h3Gq4HmbZAdrdmQPygWPnBDjPss=}
     optionalDependencies:
-      graceful-fs: 4.2.11
+      graceful-fs: 4.2.9
 
   /jsonfile@6.1.0:
     resolution: {integrity: sha512-5dgndWOriYSm5cnYaJNhalLNDKOqFwyDB/rr1E9ZsGciGvKPs8R2xYGCacuf3z6K1YKDz182fd+fY3cn3pMqXQ==}
     dependencies:
       universalify: 2.0.0
     optionalDependencies:
-      graceful-fs: 4.2.11
+      graceful-fs: 4.2.9
 
   /keyv@4.5.2:
     resolution: {integrity: sha512-5MHbFaKn8cNSmVW7BYnijeAVlE4cYA/SVkifVgrh7yotnfhKmjuXpDKjrABLnT0SfHWV21P8ow07OGfRrNDg8g==}

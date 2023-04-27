@@ -19,6 +19,7 @@ import { trpc } from "../../../trpc/client";
 import { trpcClient } from "../../../trpc/client-internal.client";
 import { Controller, makeLoader } from "../../../utils/controller-utils";
 import { useDeserialize } from "../../../utils/hooks";
+import { useIntersectionObserver } from "../../../utils/hooks-client-utils";
 import { dtf } from "../../../utils/intl";
 import { useLeafLoaderData } from "../../../utils/loader-utils";
 import { cls } from "../../../utils/misc";
@@ -82,6 +83,12 @@ export default function DefaultComponent() {
   });
   const rows = practiceActionsQuery.data?.pages.flatMap((res) => res.rows);
 
+  const fecthNextIntersectionRef = useIntersectionObserver((entries) => {
+    if (entries.some((e) => e.isIntersecting)) {
+      practiceActionsQuery.fetchNextPage();
+    }
+  });
+
   return (
     <>
       <div className="w-full flex justify-center">
@@ -115,19 +122,19 @@ export default function DefaultComponent() {
                   {...row}
                 />
               ))}
-              {/* TODO: auto load on scroll end? */}
               {practiceActionsQuery.hasNextPage && (
-                <button
-                  className={cls(
-                    "antd-btn antd-btn-default p-1",
-                    practiceActionsQuery.isFetchingNextPage &&
-                      "antd-btn-loading"
-                  )}
-                  onClick={() => practiceActionsQuery.fetchNextPage()}
-                >
-                  Load more
-                </button>
+                <div className="flex justify-center">
+                  <div className="antd-spin h-8"></div>
+                </div>
               )}
+              {/* auto load on scroll end */}
+              {practiceActionsQuery.hasNextPage &&
+                !practiceActionsQuery.isFetching && (
+                  <div
+                    ref={fecthNextIntersectionRef}
+                    className="absolute -z-1 bottom-[100px]"
+                  ></div>
+                )}
               <Transition
                 show={
                   practiceActionsQuery.isFetching &&
@@ -234,6 +241,7 @@ function PracticeActionComponent(
             className="flex-1 text-colorTextSecondary"
             suppressHydrationWarning
           >
+            {/* TODO: format today, yesterday? */}
             {dtf.format(createdAt)}
           </div>
           <button

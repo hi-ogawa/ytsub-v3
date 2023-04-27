@@ -1,51 +1,47 @@
-import { useStableRef } from "@hiogawa/utils-react";
+import { useRefCallbackEffect, useStableCallback } from "@hiogawa/utils-react";
 import React from "react";
+
+function documentEventEffect<K extends keyof DocumentEventMap>(
+  type: K,
+  handler: (e: DocumentEventMap[K]) => void
+) {
+  document.addEventListener(type, handler);
+  return () => {
+    document.removeEventListener(type, handler);
+  };
+}
 
 export function useDocumentEvent<K extends keyof DocumentEventMap>(
   type: K,
   handler: (e: DocumentEventMap[K]) => void
 ) {
-  const handlerRef = useStableRef(handler);
+  const stableHanlder = useStableCallback(handler);
 
-  React.useEffect(() => {
-    const handler = (e: DocumentEventMap[K]) => {
-      handlerRef.current(e);
-    };
-    document.addEventListener(type, handler);
+  React.useEffect(() => documentEventEffect(type, stableHanlder), []);
+}
+
+export function useClickOutside(callback: (e: PointerEvent) => void) {
+  const stableCallback = useStableCallback(callback);
+
+  return useRefCallbackEffect<Element>((el) =>
+    documentEventEffect("pointerdown", (e) => {
+      if (e.target instanceof Node && el.contains(e.target)) {
+        stableCallback(e);
+      }
+    })
+  );
+}
+
+export function useIntersectionObserver(
+  callback: IntersectionObserverCallback
+) {
+  const stableCallback = useStableCallback(callback);
+
+  return useRefCallbackEffect<Element>((el) => {
+    const observer = new IntersectionObserver(stableCallback);
+    observer.observe(el);
     return () => {
-      document.removeEventListener(type, handler);
+      observer.disconnect();
     };
   });
-}
-
-export function useClickOutside(callback: () => void) {
-  const callbackRef = useStableRef(callback);
-  const elRef = useRefAsCallback<Element>();
-
-  // cf. https://github.com/floating-ui/floating-ui/blob/09a3ce259fc35d9c936ad469051ab6ea602a1249/packages/react/src/hooks/useDismiss.ts#L84
-  useDocumentEvent("pointerdown", (e) => {
-    if (
-      elRef.current &&
-      e.target instanceof Element &&
-      !elRef.current.contains(e.target)
-    ) {
-      callbackRef.current();
-    }
-  });
-
-  return elRef.callback;
-}
-
-// small typing convenience since jsx `ref={...}` is generous for callback variance
-function useRefAsCallback<T>() {
-  const ref = React.useRef<T>();
-  const refCallback: React.RefCallback<T> = (el) => {
-    ref.current = el ?? undefined;
-  };
-  return {
-    callback: React.useCallback(refCallback, []),
-    get current() {
-      return ref.current;
-    },
-  };
 }
