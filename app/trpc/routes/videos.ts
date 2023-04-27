@@ -50,23 +50,22 @@ export const trpcRoutesVideos = {
     .input(
       z.object({
         videoId: z.number().int(),
-        index: z.number().int(),
       })
     )
-    .mutation(async ({ input }) => {
-      const found = await findOne(
-        db
-          .select()
-          .from(T.captionEntries)
-          .where(
-            E.and(
-              E.eq(T.captionEntries.videoId, input.videoId),
-              E.eq(T.captionEntries.index, input.index)
-            )
-          )
+    .query(async ({ input, ctx }) => {
+      const video = await findOne(
+        db.select().from(T.videos).where(E.eq(T.videos.id, input.videoId))
       );
-      tinyassert(found);
-      return found;
+      tinyassert(video);
+
+      const rows = await db
+        .select()
+        .from(T.captionEntries)
+        .where(E.eq(T.captionEntries.videoId, input.videoId))
+        .orderBy(T.captionEntries.index);
+      // not fully immutable since videos can be deleted
+      ctx.cacheResponse();
+      return rows;
     }),
 
   videos_getLastBookmark: procedureBuilder
