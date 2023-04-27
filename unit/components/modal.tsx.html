@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">18.36% </span>
+                <span class="strong">19.79% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>18/98</span>
+                <span class='fraction'>19/96</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">18.36% </span>
+                <span class="strong">19.79% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>18/98</span>
+                <span class='fraction'>19/96</span>
             </div>
         
             
@@ -159,9 +159,7 @@
 <a name='L94'></a><a href='#L94'>94</a>
 <a name='L95'></a><a href='#L95'>95</a>
 <a name='L96'></a><a href='#L96'>96</a>
-<a name='L97'></a><a href='#L97'>97</a>
-<a name='L98'></a><a href='#L98'>98</a>
-<a name='L99'></a><a href='#L99'>99</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L97'></a><a href='#L97'>97</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -234,9 +232,7 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -268,7 +264,7 @@
 } from "@floating-ui/react";
 import { Transition } from "@headlessui/react";
 import { tinyassert } from "@hiogawa/utils";
-import { useStableRef } from "@hiogawa/utils-react";
+import { atom, useAtom } from "jotai";
 import React from "react";
 import { RemoveScroll } from "react-remove-scroll";
 import { cls } from "../utils/misc";
@@ -331,23 +327,21 @@ import { cls } from "../utils/misc";
 <span class="cstat-no" title="statement not covered" >  );</span>
 <span class="cstat-no" title="statement not covered" >}</span>
 &nbsp;
+// it feels like a huge hack but it works so conveniently
 export <span class="fstat-no" title="function not covered" >function useModal(defaultOpen?: boolean) {</span>
-<span class="cstat-no" title="statement not covered" >  const [open, setOpen] = React.useState(defaultOpen ?? false);</span>
-<span class="cstat-no" title="statement not covered" >  const openRef = useStableRef(open); // pass stable ref to Wrapper</span>
+<span class="cstat-no" title="statement not covered" >  // create jotai-atom on the fly to communicate with Wrapper component</span>
+<span class="cstat-no" title="statement not covered" >  const [openAtom] = React.useState(() =&gt; atom(defaultOpen ?? false));</span>
+<span class="cstat-no" title="statement not covered" >  const [open, setOpen] = useAtom(openAtom);</span>
 <span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >  // define Wrapper component on the fly</span>
 <span class="cstat-no" title="statement not covered" >  const [Wrapper] = React.useState(</span>
 <span class="cstat-no" title="statement not covered" >    () =&gt;</span>
 <span class="cstat-no" title="statement not covered" >      function Wrapper(props: {</span>
 <span class="cstat-no" title="statement not covered" >        className?: string;</span>
 <span class="cstat-no" title="statement not covered" >        children: React.ReactNode;</span>
 <span class="cstat-no" title="statement not covered" >      }) {</span>
-<span class="cstat-no" title="statement not covered" >        return (</span>
-<span class="cstat-no" title="statement not covered" >          &lt;Modal</span>
-<span class="cstat-no" title="statement not covered" >            open={openRef.current}</span>
-<span class="cstat-no" title="statement not covered" >            onClose={() =&gt; setOpen(false)}</span>
-<span class="cstat-no" title="statement not covered" >            {...props}</span>
-<span class="cstat-no" title="statement not covered" >          /&gt;</span>
-<span class="cstat-no" title="statement not covered" >        );</span>
+<span class="cstat-no" title="statement not covered" >        const [open] = useAtom(openAtom);</span>
+<span class="cstat-no" title="statement not covered" >        return &lt;Modal open={open} onClose={() =&gt; setOpen(false)} {...props} /&gt;;</span>
 <span class="cstat-no" title="statement not covered" >      }</span>
 <span class="cstat-no" title="statement not covered" >  );</span>
 <span class="cstat-no" title="statement not covered" ></span>
@@ -364,7 +358,7 @@ export <span class="fstat-no" title="function not covered" >function useModal(de
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-04-27T00:39:38.800Z
+                at 2023-04-27T03:27:30.134Z
             </div>
         <script src="../prettify.js"></script>
         <script>

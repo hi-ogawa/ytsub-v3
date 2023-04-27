@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">15.68% </span>
+                <span class="strong">19.14% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>8/51</span>
+                <span class='fraction'>9/47</span>
             </div>
         
             
@@ -39,14 +39,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/5</span>
+                <span class='fraction'>0/7</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">15.68% </span>
+                <span class="strong">19.14% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>8/51</span>
+                <span class='fraction'>9/47</span>
             </div>
         
             
@@ -110,20 +110,9 @@
 <a name='L45'></a><a href='#L45'>45</a>
 <a name='L46'></a><a href='#L46'>46</a>
 <a name='L47'></a><a href='#L47'>47</a>
-<a name='L48'></a><a href='#L48'>48</a>
-<a name='L49'></a><a href='#L49'>49</a>
-<a name='L50'></a><a href='#L50'>50</a>
-<a name='L51'></a><a href='#L51'>51</a>
-<a name='L52'></a><a href='#L52'>52</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L48'></a><a href='#L48'>48</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -141,6 +130,9 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -165,57 +157,53 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { useStableRef } from "@hiogawa/utils-react";
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { useRefCallbackEffect, useStableCallback } from "@hiogawa/utils-react";
 import React from "react";
+&nbsp;
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >function documentEventEffect&lt;K extends keyof DocumentEventMap&gt;(</span></span>
+<span class="cstat-no" title="statement not covered" >  type: K,</span>
+<span class="cstat-no" title="statement not covered" >  handler: (e: DocumentEventMap[K]) =&gt; void</span>
+<span class="cstat-no" title="statement not covered" >) {</span>
+<span class="cstat-no" title="statement not covered" >  document.addEventListener(type, handler);</span>
+<span class="cstat-no" title="statement not covered" >  return () =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >    document.removeEventListener(type, handler);</span>
+<span class="cstat-no" title="statement not covered" >  };</span>
+<span class="cstat-no" title="statement not covered" >}</span>
 &nbsp;
 export <span class="fstat-no" title="function not covered" >function useDocumentEvent&lt;K extends keyof DocumentEventMap&gt;(</span>
 <span class="cstat-no" title="statement not covered" >  type: K,</span>
 <span class="cstat-no" title="statement not covered" >  handler: (e: DocumentEventMap[K]) =&gt; void</span>
 <span class="cstat-no" title="statement not covered" >) {</span>
-<span class="cstat-no" title="statement not covered" >  const handlerRef = useStableRef(handler);</span>
+<span class="cstat-no" title="statement not covered" >  const stableHanlder = useStableCallback(handler);</span>
 <span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >  React.useEffect(() =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >    const handler = (e: DocumentEventMap[K]) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >      handlerRef.current(e);</span>
-<span class="cstat-no" title="statement not covered" >    };</span>
-<span class="cstat-no" title="statement not covered" >    document.addEventListener(type, handler);</span>
+<span class="cstat-no" title="statement not covered" >  React.useEffect(() =&gt; documentEventEffect(type, stableHanlder), []);</span>
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >}</span></span>
+&nbsp;
+export <span class="fstat-no" title="function not covered" >function useClickOutside(callback: (e: PointerEvent) =&gt; void) {</span>
+<span class="cstat-no" title="statement not covered" >  const stableCallback = useStableCallback(callback);</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >  return useRefCallbackEffect&lt;Element&gt;((el) =&gt;</span>
+<span class="cstat-no" title="statement not covered" >    documentEventEffect("pointerdown", (e) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >      if (e.target instanceof Node &amp;&amp; el.contains(e.target)) {</span>
+<span class="cstat-no" title="statement not covered" >        stableCallback(e);</span>
+<span class="cstat-no" title="statement not covered" >      }</span>
+<span class="cstat-no" title="statement not covered" >    })</span>
+<span class="cstat-no" title="statement not covered" >  );</span>
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >}</span></span>
+&nbsp;
+export <span class="fstat-no" title="function not covered" >function useIntersectionObserver(</span>
+<span class="cstat-no" title="statement not covered" >  callback: IntersectionObserverCallback</span>
+<span class="cstat-no" title="statement not covered" >) {</span>
+<span class="cstat-no" title="statement not covered" >  const stableCallback = useStableCallback(callback);</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >  return useRefCallbackEffect&lt;Element&gt;((el) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >    const observer = new IntersectionObserver(stableCallback);</span>
+<span class="cstat-no" title="statement not covered" >    observer.observe(el);</span>
 <span class="cstat-no" title="statement not covered" >    return () =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >      document.removeEventListener(type, handler);</span>
+<span class="cstat-no" title="statement not covered" >      observer.disconnect();</span>
 <span class="cstat-no" title="statement not covered" >    };</span>
 <span class="cstat-no" title="statement not covered" >  });</span>
 <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >}</span></span>
-&nbsp;
-export <span class="fstat-no" title="function not covered" >function useClickOutside(callback: () =&gt; void) {</span>
-<span class="cstat-no" title="statement not covered" >  const callbackRef = useStableRef(callback);</span>
-<span class="cstat-no" title="statement not covered" >  const elRef = useRefAsCallback&lt;Element&gt;();</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >  // cf. https://github.com/floating-ui/floating-ui/blob/09a3ce259fc35d9c936ad469051ab6ea602a1249/packages/react/src/hooks/useDismiss.ts#L84</span>
-<span class="cstat-no" title="statement not covered" >  useDocumentEvent("pointerdown", (e) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >    if (</span>
-<span class="cstat-no" title="statement not covered" >      elRef.current &amp;&amp;</span>
-<span class="cstat-no" title="statement not covered" >      e.target instanceof Element &amp;&amp;</span>
-<span class="cstat-no" title="statement not covered" >      !elRef.current.contains(e.target)</span>
-<span class="cstat-no" title="statement not covered" >    ) {</span>
-<span class="cstat-no" title="statement not covered" >      callbackRef.current();</span>
-<span class="cstat-no" title="statement not covered" >    }</span>
-<span class="cstat-no" title="statement not covered" >  });</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >  return elRef.callback;</span>
-<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >}</span></span>
-&nbsp;
-// small typing convenience since jsx `ref={...}` is generous for callback variance
-<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >function useRefAsCallback&lt;T&gt;() {</span></span>
-<span class="cstat-no" title="statement not covered" >  const ref = React.useRef&lt;T&gt;();</span>
-<span class="cstat-no" title="statement not covered" >  const refCallback: React.RefCallback&lt;T&gt; = (el) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >    ref.current = el ?? undefined;</span>
-<span class="cstat-no" title="statement not covered" >  };</span>
-<span class="cstat-no" title="statement not covered" >  return {</span>
-<span class="cstat-no" title="statement not covered" >    callback: React.useCallback(refCallback, []),</span>
-<span class="cstat-no" title="statement not covered" >    get current() {</span>
-<span class="cstat-no" title="statement not covered" >      return ref.current;</span>
-<span class="cstat-no" title="statement not covered" >    },</span>
-<span class="cstat-no" title="statement not covered" >  };</span>
-<span class="cstat-no" title="statement not covered" >}</span>
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -223,7 +211,7 @@ export <span class="fstat-no" title="function not covered" >function useClickOut
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-04-27T00:39:38.800Z
+                at 2023-04-27T03:27:30.134Z
             </div>
         <script src="../prettify.js"></script>
         <script>
