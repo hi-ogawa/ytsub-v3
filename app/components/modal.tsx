@@ -7,7 +7,7 @@ import {
 } from "@floating-ui/react";
 import { Transition } from "@headlessui/react";
 import { tinyassert } from "@hiogawa/utils";
-import { useStableRef } from "@hiogawa/utils-react";
+import { atom, useAtom } from "jotai";
 import React from "react";
 import { RemoveScroll } from "react-remove-scroll";
 import { cls } from "../utils/misc";
@@ -70,23 +70,21 @@ function Modal(props: {
   );
 }
 
+// it feels like a huge hack but it works so conveniently
 export function useModal(defaultOpen?: boolean) {
-  const [open, setOpen] = React.useState(defaultOpen ?? false);
-  const openRef = useStableRef(open); // pass stable ref to Wrapper
+  // create jotai-atom on the fly to communicate with Wrapper component
+  const [openAtom] = React.useState(() => atom(defaultOpen ?? false));
+  const [open, setOpen] = useAtom(openAtom);
 
+  // define Wrapper component on the fly
   const [Wrapper] = React.useState(
     () =>
       function Wrapper(props: {
         className?: string;
         children: React.ReactNode;
       }) {
-        return (
-          <Modal
-            open={openRef.current}
-            onClose={() => setOpen(false)}
-            {...props}
-          />
-        );
+        const [open] = useAtom(openAtom);
+        return <Modal open={open} onClose={() => setOpen(false)} {...props} />;
       }
   );
 
