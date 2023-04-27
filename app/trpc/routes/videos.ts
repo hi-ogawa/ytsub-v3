@@ -63,6 +63,7 @@ export const trpcRoutesVideos = {
         .from(T.captionEntries)
         .where(E.eq(T.captionEntries.videoId, input.videoId))
         .orderBy(T.captionEntries.index);
+      // not fully immutable since videos can be deleted
       ctx.cacheResponse();
       return rows;
     }),
