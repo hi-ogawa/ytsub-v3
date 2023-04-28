@@ -1,11 +1,7 @@
 import { Transition } from "@headlessui/react";
 import { Link } from "@remix-run/react";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import React from "react";
 import type { PaginationMetadata, VideoTable } from "../db/models";
 import { $R } from "../misc/routes";
-import { useDocumentEvent } from "../utils/hooks-client-utils";
 import { cls } from "../utils/misc";
 import { toNewPages } from "../utils/pagination";
 import { toQuery } from "../utils/url-data";
@@ -174,37 +170,6 @@ export function PaginationComponent({
         <span className="i-ri-rewind-mini-fill w-5 h-5 rotate-[180deg]"></span>
       </Link>
     </div>
-  );
-}
-
-export function QueryClientWrapper({ children }: React.PropsWithChildren) {
-  const [queryClient] = React.useState(
-    () =>
-      new QueryClient({
-        defaultOptions: {
-          queries: {
-            retry: false,
-            refetchOnWindowFocus: false,
-            refetchOnReconnect: false,
-          },
-        },
-      })
-  );
-
-  const [showDevtools, setShowDevtools] = React.useState(false);
-
-  // alt + shift + q to toggle
-  useDocumentEvent("keyup", (e) => {
-    if (e.altKey && e.key === "Q") {
-      setShowDevtools((prev) => !prev);
-    }
-  });
-
-  return (
-    <QueryClientProvider client={queryClient}>
-      {children}
-      {showDevtools && <ReactQueryDevtools />}
-    </QueryClientProvider>
   );
 }
 
