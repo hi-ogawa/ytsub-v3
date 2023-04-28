@@ -16,7 +16,6 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { Toaster, toast } from "react-hot-toast";
 import { Drawer } from "./components/drawer";
-import { QueryClientWrapper } from "./components/misc";
 import { PopoverSimple } from "./components/popover";
 import { ThemeSelect } from "./components/theme-select";
 import { TopProgressBarRemix } from "./components/top-progress-bar";
@@ -32,6 +31,7 @@ import { useFlashMessages } from "./utils/flash-message-hook";
 import { RootLoaderData, useRootLoaderData } from "./utils/loader-utils";
 import { cls } from "./utils/misc";
 import type { PageHandle } from "./utils/page-handle";
+import { QueryClientWrapper } from "./utils/react-query-utils";
 
 export const links: LinksFunction = () => {
   // prettier-ignore
