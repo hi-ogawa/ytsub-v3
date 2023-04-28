@@ -641,7 +641,7 @@ function HighlightText({
   return (
     <>
       {t1}
-      <span className="underline">{t2}</span>
+      <span className="border-b border-colorTextSecondary pb-0.2">{t2}</span>
       {t3}
     </>
   );
