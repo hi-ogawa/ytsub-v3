@@ -20,7 +20,7 @@ import { trpcClient } from "../../../trpc/client-internal.client";
 import { Controller, makeLoader } from "../../../utils/controller-utils";
 import { useDeserialize } from "../../../utils/hooks";
 import { useIntersectionObserver } from "../../../utils/hooks-client-utils";
-import { dtf } from "../../../utils/intl";
+import { formatRelativeDate } from "../../../utils/intl";
 import { useLeafLoaderData } from "../../../utils/loader-utils";
 import { cls } from "../../../utils/misc";
 import type { PageHandle } from "../../../utils/page-handle";
@@ -241,8 +241,7 @@ function PracticeActionComponent(
             className="flex-1 text-colorTextSecondary"
             suppressHydrationWarning
           >
-            {/* TODO: format today, yesterday? */}
-            {dtf.format(createdAt)}
+            {formatRelativeDate(createdAt)}
           </div>
           <button
             className={cls(
