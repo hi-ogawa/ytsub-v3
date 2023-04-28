@@ -549,7 +549,7 @@ export function CaptionEntryComponent({
   return (
     <div
       className={cls(
-        "w-full flex flex-col p-1 px-2 gap-1 text-xs",
+        "w-full flex flex-col p-1 px-2 gap-1",
         border && "border",
         border && isEntryPlaying && "ring-2 ring-colorPrimaryBorder",
         border && isCurrentEntry && "border-colorPrimary",
@@ -560,7 +560,7 @@ export function CaptionEntryComponent({
       ref={virtualizer?.measureElement}
       data-index={virtualItem?.index}
     >
-      <div className="flex items-center text-colorTextSecondary gap-2">
+      <div className="flex items-center text-colorTextSecondary gap-2 text-xs">
         {isFocused && (
           <span className="i-ri-bookmark-line w-3 h-3 text-colorPrimary" />
         )}
@@ -596,7 +596,7 @@ export function CaptionEntryComponent({
         />
       </div>
       <div
-        className="flex cursor-pointer"
+        className="flex cursor-pointer text-sm"
         onClick={() => onClickEntryPlay(entry, true)}
       >
         <div className={`flex-1 pr-2 border-r ${BOOKMARKABLE_CLASSNAME}`}>
@@ -641,7 +641,7 @@ function HighlightText({
   return (
     <>
       {t1}
-      <span className="underline">{t2}</span>
+      <span className="border-b border-colorTextSecondary">{t2}</span>
       {t3}
     </>
   );
