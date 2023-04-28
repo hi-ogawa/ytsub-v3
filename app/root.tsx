@@ -147,6 +147,7 @@ function Navbar({
   return (
     <header className="w-full h-12 flex-none bg-primary text-primary-content flex items-center p-2 px-6 gap-4 shadow-md shadow-black/[0.05] dark:shadow-black/[0.7] z-1">
       <button
+        data-testid="Navbar-drawer-button"
         className="antd-btn antd-btn-ghost i-ri-menu-line w-6 h-6"
         onClick={() => setDrawerOpen(!drawerOpen)}
       />
