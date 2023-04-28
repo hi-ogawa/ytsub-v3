@@ -8,4 +8,7 @@ password=password
 port=3306
 schema=ytsub_development
 user=root
+# TODO: migrate bigint
 allow-auto-inc=int unsigned, bigint unsigned, bigint
+# TODO: rename captionEntries.index
+lint-reserved-word=ignore
