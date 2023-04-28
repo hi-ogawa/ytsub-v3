@@ -119,7 +119,10 @@ function Root() {
           menu={handle.navBarMenu?.()}
         />
         <div className="flex-[1_0_0] flex flex-col" data-test="main">
-          <div className="w-full flex-[1_0_0] h-full overflow-y-auto">
+          <div
+            className="w-full flex-[1_0_0] h-full overflow-y-auto"
+            data-testid="main-scroll"
+          >
             <Outlet />
           </div>
         </div>
@@ -144,6 +147,7 @@ function Navbar({
   return (
     <header className="w-full h-12 flex-none bg-primary text-primary-content flex items-center p-2 px-6 gap-4 shadow-md shadow-black/[0.05] dark:shadow-black/[0.7] z-1">
       <button
+        data-testid="Navbar-drawer-button"
         className="antd-btn antd-btn-ghost i-ri-menu-line w-6 h-6"
         onClick={() => setDrawerOpen(!drawerOpen)}
       />

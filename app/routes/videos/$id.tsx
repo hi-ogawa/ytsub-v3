@@ -4,7 +4,7 @@ import { isNil } from "@hiogawa/utils";
 import { toArraySetState, useRafLoop } from "@hiogawa/utils-react";
 import { Form, Link, useLoaderData, useNavigate } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   VirtualItem,
   Virtualizer,
@@ -18,12 +18,8 @@ import { z } from "zod";
 import { transitionProps } from "../../components/misc";
 import { useModal } from "../../components/modal";
 import { PopoverSimple } from "../../components/popover";
-import {
-  CaptionEntryTable,
-  UserTable,
-  VideoTable,
-  getVideoAndCaptionEntries,
-} from "../../db/models";
+import { E, T, db, findOne } from "../../db/drizzle-client.server";
+import type { CaptionEntryTable, UserTable, VideoTable } from "../../db/models";
 import { $R, R, ROUTE_DEF } from "../../misc/routes";
 import { trpc } from "../../trpc/client";
 import { Controller, makeLoader } from "../../utils/controller-utils";
@@ -52,7 +48,6 @@ export const handle: PageHandle = {
 
 type LoaderData = {
   video: VideoTable;
-  captionEntries: CaptionEntryTable[];
   query: z.infer<(typeof ROUTE_DEF)["/videos/$id"]["query"]>;
 };
 
@@ -62,10 +57,12 @@ export const loader = makeLoader(Controller, async function () {
   );
   const parsedQuery = ROUTE_DEF["/videos/$id"].query.safeParse(this.query());
   if (parsedParams.success && parsedQuery.success) {
-    const data = await getVideoAndCaptionEntries(parsedParams.data.id);
-    if (data) {
+    const video = await findOne(
+      db.select().from(T.videos).where(E.eq(T.videos.id, parsedParams.data.id))
+    );
+    if (video) {
       const loaderData: LoaderData = {
-        ...data,
+        video,
         query: parsedQuery.data,
       };
       return this.serialize(loaderData);
@@ -130,15 +127,23 @@ interface BookmarkState {
 
 function PageComponent({
   video,
-  captionEntries,
   currentUser,
-  query: params,
+  query,
 }: LoaderData & { currentUser?: UserTable }) {
   const [autoScrollState] = useAutoScrollState();
   const autoScroll = autoScrollState.includes(video.id);
   const [repeatingEntries, setRepeatingEntries, toggleRepeatingEntries] =
     useRepeatingEntries();
   React.useEffect(() => () => setRepeatingEntries([]), []); // clear state on page navigation
+
+  // fetch caption entries on client
+  const captionEntriesQuery = useQuery({
+    ...trpc.videos_getCaptionEntries.queryOptions({ videoId: video.id }),
+  });
+  const captionEntries = React.useMemo(
+    () => captionEntriesQuery.data ?? [],
+    [captionEntriesQuery.data]
+  );
 
   //
   // state
@@ -266,14 +271,14 @@ function PageComponent({
   //
 
   React.useEffect(() => {
-    if (!isNil(params.index)) {
+    if (!isNil(query.index) && query.index < captionEntries.length) {
       // smooth scroll ends up wrong positions due to over-estimation by `estimateSize`.
-      virtualizer.scrollToIndex(params.index, {
+      virtualizer.scrollToIndex(query.index, {
         align: "center",
         behavior: "auto",
       });
     }
-  }, [params.index]);
+  }, [query.index, captionEntries]);
 
   useDocumentEvent("selectionchange", () => {
     const selection = document.getSelection();
@@ -321,16 +326,25 @@ function PageComponent({
         </>
       }
       subtitles={
-        <CaptionEntriesComponent
-          virtualizer={virtualizer}
-          entries={captionEntries}
-          currentEntry={currentEntry}
-          repeatingEntries={repeatingEntries}
-          onClickEntryPlay={onClickEntryPlay}
-          onClickEntryRepeat={(entry) => toggleRepeatingEntries(entry)}
-          isPlaying={isPlaying}
-          focusedIndex={params.index}
-        />
+        <>
+          {captionEntries.length > 0 && (
+            <CaptionEntriesComponent
+              virtualizer={virtualizer}
+              entries={captionEntries}
+              currentEntry={currentEntry}
+              repeatingEntries={repeatingEntries}
+              onClickEntryPlay={onClickEntryPlay}
+              onClickEntryRepeat={(entry) => toggleRepeatingEntries(entry)}
+              isPlaying={isPlaying}
+              focusedIndex={query.index}
+            />
+          )}
+          <Transition
+            show={captionEntriesQuery.isLoading}
+            className="duration-500 antd-body antd-spin-overlay-10"
+            {...transitionProps("opacity-0", "opacity-50")}
+          />
+        </>
       }
       bookmarkActions={
         currentUser &&
@@ -535,7 +549,7 @@ export function CaptionEntryComponent({
   return (
     <div
       className={cls(
-        "w-full flex flex-col p-1 px-2 gap-1 text-xs",
+        "w-full flex flex-col p-1 px-2 gap-1",
         border && "border",
         border && isEntryPlaying && "ring-2 ring-colorPrimaryBorder",
         border && isCurrentEntry && "border-colorPrimary",
@@ -546,7 +560,7 @@ export function CaptionEntryComponent({
       ref={virtualizer?.measureElement}
       data-index={virtualItem?.index}
     >
-      <div className="flex items-center text-colorTextSecondary gap-2">
+      <div className="flex items-center text-colorTextSecondary gap-2 text-xs">
         {isFocused && (
           <span className="i-ri-bookmark-line w-3 h-3 text-colorPrimary" />
         )}
@@ -582,7 +596,7 @@ export function CaptionEntryComponent({
         />
       </div>
       <div
-        className="flex cursor-pointer"
+        className="flex cursor-pointer text-sm"
         onClick={() => onClickEntryPlay(entry, true)}
       >
         <div className={`flex-1 pr-2 border-r ${BOOKMARKABLE_CLASSNAME}`}>
@@ -627,7 +641,7 @@ function HighlightText({
   return (
     <>
       {t1}
-      <span className="underline">{t2}</span>
+      <span className="border-b border-colorTextSecondary">{t2}</span>
       {t3}
     </>
   );

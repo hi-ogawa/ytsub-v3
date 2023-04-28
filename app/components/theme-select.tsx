@@ -1,32 +1,24 @@
 import React from "react";
+import { capitalize } from "../utils/misc";
+import { SelectWrapper } from "./misc";
 
 // based on https://github.com/hi-ogawa/unocss-preset-antd/blob/eb3a4cfe1474bc4236c5d4007c1e9f962eaa4df5/packages/app/src/components/theme-select-button.tsx
 
-const THEME_OPTIONS = [
-  ["system", "System"],
-  ["dark", "Dark"],
-  ["light", "Light"],
-] as const;
+const THEME_OPTIONS = ["system", "dark", "light"];
 
-// TODO: NoSSR
+// TODO: client only
 export function ThemeSelect() {
   const [theme, setTheme] = useTheme();
   return (
     <label className="flex items-center gap-2">
       Theme
-      <select
-        className="antd-input px-1 py-0.5"
+      <SelectWrapper
+        className="antd-input p-1"
+        options={THEME_OPTIONS}
         value={theme}
-        onChange={(e) => {
-          setTheme(e.target.value);
-        }}
-      >
-        {THEME_OPTIONS.map(([t, label]) => (
-          <option key={t} value={t}>
-            {label}
-          </option>
-        ))}
-      </select>
+        labelFn={(v) => capitalize(v)}
+        onChange={(selected) => setTheme(selected)}
+      />
     </label>
   );
 }

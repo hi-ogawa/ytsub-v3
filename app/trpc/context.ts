@@ -10,6 +10,7 @@ export type TrpcAppContext = {
   session: Session;
   resHeaders: Headers; // for testing
   commitSession: () => Promise<void>;
+  cacheResponse: () => void;
   user?: TT["users"];
 };
 
@@ -23,6 +24,10 @@ export const createTrpcAppContext = async ({
     resHeaders,
     commitSession: async () => {
       resHeaders.set("set-cookie", await sessionStore.commitSession(session));
+    },
+    cacheResponse: () => {
+      // full cache only on CDN (cf. https://vercel.com/docs/concepts/functions/serverless-functions/edge-caching)
+      resHeaders.set("cache-control", "public, max-age=0, s-max-age=31536000");
     },
   };
 };
