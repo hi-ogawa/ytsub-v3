@@ -73,3 +73,7 @@ export function defaultObject<K extends string, Keys extends [K, ...K[]], V>(
 ): Record<Keys[number], V> {
   return Object.fromEntries(keys.map((t) => [t, defaultValue])) as any;
 }
+
+export function capitalize(s: string): string {
+  return s.slice(0, 1).toUpperCase() + s.slice(1);
+}
