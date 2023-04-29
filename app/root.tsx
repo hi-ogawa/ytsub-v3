@@ -14,7 +14,7 @@ import type { LinksFunction } from "@remix-run/server-runtime";
 import { useMutation } from "@tanstack/react-query";
 import React from "react";
 import { useForm } from "react-hook-form";
-import { Toaster, toast } from "react-hot-toast";
+import { Toaster } from "react-hot-toast";
 import { Drawer } from "./components/drawer";
 import { PopoverSimple } from "./components/popover";
 import { ThemeSelect } from "./components/theme-select";
@@ -84,12 +84,6 @@ export default function DefaultComponent() {
           toastOptions={{
             className: "!bg-colorBgElevated !text-colorText",
           }}
-        />
-        {/* escape hatch to close all toasts for e2e test (cf. forceDismissToast in helper.ts) */}
-        <button
-          data-test="forceDismissToast"
-          hidden
-          onClick={() => toast.dismiss()}
         />
         <Compose elements={[<QueryClientWrapper />, <Root />]} />
       </body>
