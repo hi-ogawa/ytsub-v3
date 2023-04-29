@@ -3,6 +3,11 @@ import { Temporal, toTemporalInstant } from "@js-temporal/polyfill";
 import { z } from "zod";
 import { assertUnreachable } from "./misc";
 
+export function getSystemTimezone() {
+  const id = Temporal.Now.zonedDateTimeISO().timeZone.id;
+  return id ?? "Etc/GMT";
+}
+
 export function toZdt(date: Date, timezone: string): Temporal.ZonedDateTime {
   return toTemporalInstant.apply(date).toZonedDateTimeISO(timezone);
 }

@@ -27,7 +27,7 @@ import { $R, R, ROUTE_DEF } from "../../../misc/routes";
 import { trpc } from "../../../trpc/client";
 import { Controller, makeLoader } from "../../../utils/controller-utils";
 import { useDeserialize } from "../../../utils/hooks";
-import { intl, intlFormat } from "../../../utils/intl";
+import { intl, intlWrapper } from "../../../utils/intl";
 import { useLeafLoaderData } from "../../../utils/loader-utils";
 import { cls } from "../../../utils/misc";
 import type { PageHandle } from "../../../utils/page-handle";
@@ -270,7 +270,7 @@ function PracticeBookmarkEntryComponent({
             to={$R["/decks/$id/history"](deck, { practiceEntryId })}
             className="hover:underline"
           >
-            {intlFormat(
+            {intlWrapper(
               "Answered {actionsCount, plural, =0 {none} =1 {once} other {# times}}",
               { actionsCount }
             )}

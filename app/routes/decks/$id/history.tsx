@@ -238,7 +238,7 @@ function PracticeActionComponent(
             {actionType}
           </div>
           <div
-            className="flex-1 text-colorTextSecondary"
+            className="flex-1 text-colorTextSecondary capitalize"
             suppressHydrationWarning
           >
             {formatRelativeDate(createdAt)}
