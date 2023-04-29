@@ -10,7 +10,7 @@ import {
   createBookmarkHistoryChartOption,
 } from "../../components/practice-history-chart";
 import { trpc } from "../../trpc/client";
-import { createLoaderTrpc } from "../../trpc/remix-utils";
+import { createLoaderTrpc } from "../../trpc/remix-utils.server";
 import { useClickOutside } from "../../utils/hooks-client-utils";
 import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
