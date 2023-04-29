@@ -46,10 +46,10 @@ function useTheme() {
 
 export function injectThemeScript(markup: string): string {
   // patch @remix/dev to use raw loader for ".html"
-  const indexHtml = require("../../index.html");
-  tinyassert(typeof indexHtml === "string");
+  const viteIndexHtml = require("../../index.html");
+  tinyassert(typeof viteIndexHtml === "string");
 
-  const themeScript = indexHtml.match(/<script>(.*?)<\/script>/ms)?.[1];
+  const themeScript = viteIndexHtml.match(/<script>(.*?)<\/script>/ms)?.[1];
   tinyassert(themeScript);
 
   return markup.replace(MARKER_ThemeScriptPlaceholder, themeScript);
