@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">27.45% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>123/448</span>
+                <span class='fraction'>120/437</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">10% </span>
+                <span class="strong">11.11% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>2/20</span>
+                <span class='fraction'>2/18</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">27.45% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>123/448</span>
+                <span class='fraction'>120/437</span>
             </div>
         
             
@@ -500,18 +500,7 @@
 <a name='L435'></a><a href='#L435'>435</a>
 <a name='L436'></a><a href='#L436'>436</a>
 <a name='L437'></a><a href='#L437'>437</a>
-<a name='L438'></a><a href='#L438'>438</a>
-<a name='L439'></a><a href='#L439'>439</a>
-<a name='L440'></a><a href='#L440'>440</a>
-<a name='L441'></a><a href='#L441'>441</a>
-<a name='L442'></a><a href='#L442'>442</a>
-<a name='L443'></a><a href='#L443'>443</a>
-<a name='L444'></a><a href='#L444'>444</a>
-<a name='L445'></a><a href='#L445'>445</a>
-<a name='L446'></a><a href='#L446'>446</a>
-<a name='L447'></a><a href='#L447'>447</a>
-<a name='L448'></a><a href='#L448'>448</a>
-<a name='L449'></a><a href='#L449'>449</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L438'></a><a href='#L438'>438</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -549,7 +538,6 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -739,7 +727,6 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -815,10 +802,6 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -831,12 +814,7 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -988,11 +966,10 @@ import { $R, R, ROUTE_DEF } from "../../../misc/routes";
 import { trpc } from "../../../trpc/client";
 import { Controller, makeLoader } from "../../../utils/controller-utils";
 import { useDeserialize } from "../../../utils/hooks";
-import { dtfDateOnly, rtf } from "../../../utils/intl";
+import { intl, intlFormat } from "../../../utils/intl";
 import { useLeafLoaderData } from "../../../utils/loader-utils";
 import { cls } from "../../../utils/misc";
 import type { PageHandle } from "../../../utils/page-handle";
-import { toInstant } from "../../../utils/temporal-utils";
 import { MiniPlayer } from "../../bookmarks";
 &nbsp;
 export const handle: PageHandle = {
@@ -1232,11 +1209,19 @@ export const PRACTICE_ACTION_TYPE_TO_COLOR = {
 <span class="cstat-no" title="statement not covered" >            to={$R["/decks/$id/history"](deck, { practiceEntryId })}</span>
 <span class="cstat-no" title="statement not covered" >            className="hover:underline"</span>
 <span class="cstat-no" title="statement not covered" >          &gt;</span>
-<span class="cstat-no" title="statement not covered" >            Answered {formatCount(actionsCount)}</span>
+<span class="cstat-no" title="statement not covered" >            {intlFormat(</span>
+<span class="cstat-no" title="statement not covered" >              "Answered {actionsCount, plural, =0 {none} =1 {once} other {# times}}",</span>
+<span class="cstat-no" title="statement not covered" >              { actionsCount }</span>
+<span class="cstat-no" title="statement not covered" >            )}</span>
 <span class="cstat-no" title="statement not covered" >          &lt;/Link&gt;</span>
 <span class="cstat-no" title="statement not covered" >          {"⋅"}</span>
 <span class="cstat-no" title="statement not covered" >          &lt;div suppressHydrationWarning&gt;</span>
-<span class="cstat-no" title="statement not covered" >            Scheduled {formatScheduledAt(practiceEntry.scheduledAt, new Date())}</span>
+<span class="cstat-no" title="statement not covered" >            Scheduled at{" "}</span>
+<span class="cstat-no" title="statement not covered" >            {intl.formatDate(practiceEntry.scheduledAt, {</span>
+<span class="cstat-no" title="statement not covered" >              dateStyle: "medium",</span>
+<span class="cstat-no" title="statement not covered" >              timeStyle: "medium",</span>
+<span class="cstat-no" title="statement not covered" >              hour12: false,</span>
+<span class="cstat-no" title="statement not covered" >            })}</span>
 <span class="cstat-no" title="statement not covered" >          &lt;/div&gt;</span>
 <span class="cstat-no" title="statement not covered" >          &lt;div className="absolute right-0 bottom-0 flex"&gt;</span>
 <span class="cstat-no" title="statement not covered" >            &lt;button</span>
@@ -1278,24 +1263,6 @@ export <span class="fstat-no" title="function not covered" >function QueueTypeIc
 <span class="cstat-no" title="statement not covered" >    /&gt;</span>
 <span class="cstat-no" title="statement not covered" >  );</span>
 <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >}</span></span>
-&nbsp;
-<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >function formatCount(n: number): string {</span></span>
-<span class="cstat-no" title="statement not covered" >  if (n === 1) return "once";</span>
-<span class="cstat-no" title="statement not covered" >  return `${n} times`;</span>
-<span class="cstat-no" title="statement not covered" >}</span>
-&nbsp;
-<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >function formatScheduledAt(date: Date, now: Date): string | undefined {</span></span>
-<span class="cstat-no" title="statement not covered" >  const duration = toInstant(date).since(toInstant(now));</span>
-<span class="cstat-no" title="statement not covered" >  if (duration.sign &lt;= 0) {</span>
-<span class="cstat-no" title="statement not covered" >    return "at " + dtfDateOnly.format(date);</span>
-<span class="cstat-no" title="statement not covered" >  }</span>
-<span class="cstat-no" title="statement not covered" >  for (const unit of ["days", "hours", "minutes"] as const) {</span>
-<span class="cstat-no" title="statement not covered" >    if (duration[unit] &gt; 0) {</span>
-<span class="cstat-no" title="statement not covered" >      return rtf.format(duration[unit], unit);</span>
-<span class="cstat-no" title="statement not covered" >    }</span>
-<span class="cstat-no" title="statement not covered" >  }</span>
-<span class="cstat-no" title="statement not covered" >  return rtf.format(duration.total({ unit: "seconds" }), "seconds");</span>
-<span class="cstat-no" title="statement not covered" >}</span>
 &nbsp;
 //
 // NavBarTitleComponent
@@ -1414,7 +1381,7 @@ export <span class="fstat-no" title="function not covered" >function DeckMenuCom
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-04-28T14:44:57.822Z
+                at 2023-04-29T02:54:57.057Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>
