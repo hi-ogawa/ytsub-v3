@@ -4,11 +4,6 @@ export function fromRequestQuery(request: Request): any {
   return fromQuery(new URL(request.url).search);
 }
 
-export async function fromRequestForm(request: Request): Promise<any> {
-  // Assuming "content-type" is "application/x-www-form-urlencoded"
-  return fromQuery(await request.text());
-}
-
 function fromQuery(query: string): any {
   return qs.parse(query, { allowDots: true, ignoreQueryPrefix: true });
 }

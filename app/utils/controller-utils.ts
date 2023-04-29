@@ -11,7 +11,7 @@ import { R } from "../misc/routes";
 import { getSessionUser, getSessionUserId } from "./auth";
 import { FlashMessage, pushFlashMessage } from "./flash-message";
 import { getRequestSession, setResponseSession } from "./session.server";
-import { fromRequestForm, fromRequestQuery } from "./url-data";
+import { fromRequestQuery } from "./url-data";
 
 //
 // Implementing controller-style request handler (as in Rails controller)
@@ -79,10 +79,6 @@ export class Controller {
   // TODO(typing): unknown
   query(): any {
     return fromRequestQuery(this.request);
-  }
-
-  async form(): Promise<any> {
-    return fromRequestForm(this.request);
   }
 
   currentUserId(): number | undefined {
