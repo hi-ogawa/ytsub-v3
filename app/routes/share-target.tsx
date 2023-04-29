@@ -1,21 +1,15 @@
-import { redirect } from "@remix-run/server-runtime";
-import { $R } from "../misc/routes";
-import { Controller, makeLoader } from "../utils/controller-utils";
+import { tinyassert } from "@hiogawa/utils";
+import type { LoaderFunction } from "@remix-run/server-runtime";
+import { $R, ROUTE_DEF } from "../misc/routes";
+import { createLoaderTrpc } from "../trpc/remix-utils.server";
 import { parseVideoId } from "../utils/youtube";
 
-// see manifest.json
-const SHARE_TARGET_TEXT = "share-target-text";
-
-export const loader = makeLoader(Controller, function () {
-  const shareTargetText = new URL(this.request.url).searchParams.get(
-    SHARE_TARGET_TEXT
-  );
-  if (shareTargetText) {
-    const videoId = parseVideoId(shareTargetText);
-    if (videoId) {
-      return $R["/videos/new"](null, { videoId });
-    }
-  }
-  this.flash({ variant: "error", content: "Failed to handle share" });
-  return redirect($R["/"]());
-});
+export const loader: LoaderFunction = async (args) => {
+  const { ctx } = await createLoaderTrpc(args);
+  return ctx.redirectOnError(() => {
+    const query = ROUTE_DEF["/share-target"].query.parse(ctx.query);
+    const videoId = parseVideoId(query["share-target-text"]);
+    tinyassert(videoId);
+    return ctx.redirect($R["/videos/new"](null, { videoId }));
+  });
+};

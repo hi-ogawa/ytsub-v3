@@ -24,6 +24,11 @@ const Z_PAGINATION_QUERY = z.object({
 
 export const ROUTE_DEF = {
   "/": {},
+  "/share-target": {
+    query: z.object({
+      "share-target-text": z.string(),
+    }),
+  },
   "/videos": {},
   "/videos/new": {
     query: z.object({

@@ -28,3 +28,18 @@ test("theme", async ({ page }) => {
     )
   ).toBe("rgb(255, 255, 255)");
 });
+
+test.describe("/share-target", () => {
+  test("basic", async ({ page }) => {
+    const query = new URLSearchParams({
+      "share-target-text": "https://youtu.be/quCP2lvtWXA",
+    });
+    await page.goto("/share-target?" + query);
+    await expect(page.getByLabel("Author")).toHaveValue("IVE");
+  });
+
+  test("error", async ({ page }) => {
+    await page.goto("/share-target");
+    await page.getByText("Invalid request").click();
+  });
+});
