@@ -47,11 +47,3 @@ export function useUserE2E(
     },
   };
 }
-
-// force dismissing toasts since they can interfere with interactions.
-// ts-prune-ignore-next
-export async function forceDismissToast(page: Page) {
-  await page
-    .locator("data-test=forceDismissToast")
-    .evaluate((node: HTMLElement) => node.click());
-}
