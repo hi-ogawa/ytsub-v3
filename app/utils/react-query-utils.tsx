@@ -25,13 +25,15 @@ export function QueryClientWrapper({ children }: React.PropsWithChildren) {
 }
 
 function createQueryClient() {
-  const queryClient = new QueryClient();
-
-  // default staleTime = 0, cacheTime = 5 min
-  queryClient.defaultQueryOptions({
-    retry: false,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      // default staleTime = 0, cacheTime = 5 min
+      queries: {
+        retry: false,
+        refetchOnWindowFocus: false,
+        refetchOnReconnect: false,
+      },
+    },
   });
 
   queryClient.setQueryDefaults([trpc.videos_getCaptionEntries.queryKey], {
