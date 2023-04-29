@@ -9,7 +9,7 @@ import { trpc } from "../../../trpc/client";
 import { Controller, makeLoader } from "../../../utils/controller-utils";
 import { toastInfo } from "../../../utils/flash-message-hook";
 import { useDeserialize } from "../../../utils/hooks";
-import { dtf } from "../../../utils/intl";
+import { intl } from "../../../utils/intl";
 import { cls } from "../../../utils/misc";
 import type { PageHandle } from "../../../utils/page-handle";
 
@@ -121,7 +121,11 @@ function DefaultComponentInner() {
             className="antd-input p-1"
             readOnly
             disabled
-            value={dtf.format(deck.createdAt)}
+            value={intl.formatDate(deck.createdAt, {
+              dateStyle: "long",
+              timeStyle: "long",
+              hour12: false,
+            })}
           />
         </label>
         <button

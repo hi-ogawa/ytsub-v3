@@ -27,11 +27,10 @@ import { $R, R, ROUTE_DEF } from "../../../misc/routes";
 import { trpc } from "../../../trpc/client";
 import { Controller, makeLoader } from "../../../utils/controller-utils";
 import { useDeserialize } from "../../../utils/hooks";
-import { dtfDateOnly, rtf } from "../../../utils/intl";
+import { intl, intlWrapper } from "../../../utils/intl";
 import { useLeafLoaderData } from "../../../utils/loader-utils";
 import { cls } from "../../../utils/misc";
 import type { PageHandle } from "../../../utils/page-handle";
-import { toInstant } from "../../../utils/temporal-utils";
 import { MiniPlayer } from "../../bookmarks";
 
 export const handle: PageHandle = {
@@ -271,11 +270,19 @@ function PracticeBookmarkEntryComponent({
             to={$R["/decks/$id/history"](deck, { practiceEntryId })}
             className="hover:underline"
           >
-            Answered {formatCount(actionsCount)}
+            {intlWrapper(
+              "Answered {actionsCount, plural, =0 {none} =1 {once} other {# times}}",
+              { actionsCount }
+            )}
           </Link>
           {"⋅"}
           <div suppressHydrationWarning>
-            Scheduled {formatScheduledAt(practiceEntry.scheduledAt, new Date())}
+            Scheduled at{" "}
+            {intl.formatDate(practiceEntry.scheduledAt, {
+              dateStyle: "medium",
+              timeStyle: "medium",
+              hour12: false,
+            })}
           </div>
           <div className="absolute right-0 bottom-0 flex">
             <button
@@ -316,24 +323,6 @@ export function QueueTypeIcon({ queueType }: { queueType: PracticeQueueType }) {
       )}
     />
   );
-}
-
-function formatCount(n: number): string {
-  if (n === 1) return "once";
-  return `${n} times`;
-}
-
-function formatScheduledAt(date: Date, now: Date): string | undefined {
-  const duration = toInstant(date).since(toInstant(now));
-  if (duration.sign <= 0) {
-    return "at " + dtfDateOnly.format(date);
-  }
-  for (const unit of ["days", "hours", "minutes"] as const) {
-    if (duration[unit] > 0) {
-      return rtf.format(duration[unit], unit);
-    }
-  }
-  return rtf.format(duration.total({ unit: "seconds" }), "seconds");
 }
 
 //

@@ -1,47 +1,40 @@
-import { capitalize } from "lodash";
-import { toInstant, toZdt } from "./temporal-utils";
+import { createIntl } from "@formatjs/intl";
+import { tinyassert } from "@hiogawa/utils";
+import { getSystemTimezone, toInstant, toZdt } from "./temporal-utils";
 
-// TODO(refactor)
-// should do something with temporal-utils (e.g. dealing with default/system timezone)
-// or probably just use format-js
+export let intl = createIntl({ locale: "en", timeZone: getSystemTimezone() });
 
-export const dtf = new Intl.DateTimeFormat("en-US", {
-  dateStyle: "long",
-  timeStyle: "long",
-  hour12: false,
-});
+// for testing
+export function mockTimezone(timeZone: string) {
+  intl = createIntl({ locale: "en", timeZone });
+}
 
-export const dtfDateOnly = new Intl.DateTimeFormat("en-US", {
-  dateStyle: "long",
-});
-
-export const rtf = new Intl.RelativeTimeFormat("en-US");
+// quick wrapper to inline everything
+export function intlWrapper(
+  defaultMessage: string,
+  values?: Record<string, any>
+) {
+  return intl.$t({ defaultMessage, id: defaultMessage }, values);
+}
 
 // DateTimeFormat with a special formatting for certain dates e.g. "today", "yesterday", ...
 export function formatRelativeDate(
   date: Date,
-  // for testing
-  now: Date = new Date(),
-  timeZone?: string
+  now: Date = new Date() // for testing
 ): string {
-  const dtf = new Intl.DateTimeFormat("en-US", {
-    dateStyle: "long",
-    timeStyle: "medium",
-    hour12: false,
-    timeZone,
-  });
-  const rtf = new Intl.RelativeTimeFormat("en-US", { numeric: "auto" });
+  tinyassert(intl.timeZone);
+  const startOfToday = toZdt(now, intl.timeZone).startOfDay();
+  const days = Math.floor(
+    toInstant(date).since(startOfToday.toInstant()).total("days")
+  );
 
-  const startOfToday = toZdt(now, dtf.resolvedOptions().timeZone).startOfDay();
-  const days = toInstant(date).since(startOfToday.toInstant()).total("days");
-  const daysIntegral = Math.floor(days);
-
-  let result = dtf.format(date);
-  if (Math.abs(daysIntegral) < 2) {
-    result = result.replace(
-      /^.*at/,
-      capitalize(rtf.format(daysIntegral, "days")) + " at"
-    );
-  }
-  return result;
+  return [
+    Math.abs(days) < 2
+      ? intl.formatRelativeTime(days, "days", { numeric: "auto" })
+      : intl.formatDate(date, {
+          dateStyle: "medium",
+          hour12: false,
+        }),
+    intl.formatTime(date, { timeStyle: "medium", hour12: false }),
+  ].join(", ");
 }
