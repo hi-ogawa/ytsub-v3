@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">44.68% </span>
+                <span class="strong">40% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>21/47</span>
+                <span class='fraction'>16/40</span>
             </div>
         
             
@@ -39,14 +39,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/1</span>
+                <span class='fraction'>0/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">44.68% </span>
+                <span class="strong">40% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>21/47</span>
+                <span class='fraction'>16/40</span>
             </div>
         
             
@@ -103,14 +103,7 @@
 <a name='L38'></a><a href='#L38'>38</a>
 <a name='L39'></a><a href='#L39'>39</a>
 <a name='L40'></a><a href='#L40'>40</a>
-<a name='L41'></a><a href='#L41'>41</a>
-<a name='L42'></a><a href='#L42'>42</a>
-<a name='L43'></a><a href='#L43'>43</a>
-<a name='L44'></a><a href='#L44'>44</a>
-<a name='L45'></a><a href='#L45'>45</a>
-<a name='L46'></a><a href='#L46'>46</a>
-<a name='L47'></a><a href='#L47'>47</a>
-<a name='L48'></a><a href='#L48'>48</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L41'></a><a href='#L41'>41</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -123,11 +116,11 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -150,59 +143,45 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { capitalize } from "lodash";
-import { toInstant, toZdt } from "./temporal-utils";
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { createIntl } from "@formatjs/intl";
+import { tinyassert } from "@hiogawa/utils";
+import { getSystemTimezone, toInstant, toZdt } from "./temporal-utils";
 &nbsp;
-// TODO(refactor)
-// should do something with temporal-utils (e.g. dealing with default/system timezone)
-// or probably just use format-js
+export let intl = createIntl({ locale: "en", timeZone: getSystemTimezone() });
 &nbsp;
-export const dtf = new Intl.DateTimeFormat("en-US", {
-  dateStyle: "long",
-  timeStyle: "long",
-  hour12: false,
-});
+// for testing
+export function mockTimezone(timeZone: string) {
+  intl = createIntl({ locale: "en", timeZone });
+}
 &nbsp;
-export const dtfDateOnly = new Intl.DateTimeFormat("en-US", {
-  dateStyle: "long",
-});
-&nbsp;
-export const rtf = new Intl.RelativeTimeFormat("en-US");
+// quick wrapper to inline everything
+export <span class="fstat-no" title="function not covered" >function intlWrapper(</span>
+<span class="cstat-no" title="statement not covered" >  defaultMessage: string,</span>
+<span class="cstat-no" title="statement not covered" >  values?: Record&lt;string, any&gt;</span>
+<span class="cstat-no" title="statement not covered" >) {</span>
+<span class="cstat-no" title="statement not covered" >  return intl.$t({ defaultMessage, id: defaultMessage }, values);</span>
+<span class="cstat-no" title="statement not covered" >}</span>
 &nbsp;
 // DateTimeFormat with a special formatting for certain dates e.g. "today", "yesterday", ...
 export <span class="fstat-no" title="function not covered" >function formatRelativeDate(</span>
 <span class="cstat-no" title="statement not covered" >  date: Date,</span>
-<span class="cstat-no" title="statement not covered" >  // for testing</span>
-<span class="cstat-no" title="statement not covered" >  now: Date = new Date(),</span>
-<span class="cstat-no" title="statement not covered" >  timeZone?: string</span>
+<span class="cstat-no" title="statement not covered" >  now: Date = new Date() // for testing</span>
 <span class="cstat-no" title="statement not covered" >): string {</span>
-<span class="cstat-no" title="statement not covered" >  const dtf = new Intl.DateTimeFormat("en-US", {</span>
-<span class="cstat-no" title="statement not covered" >    dateStyle: "long",</span>
-<span class="cstat-no" title="statement not covered" >    timeStyle: "medium",</span>
-<span class="cstat-no" title="statement not covered" >    hour12: false,</span>
-<span class="cstat-no" title="statement not covered" >    timeZone,</span>
-<span class="cstat-no" title="statement not covered" >  });</span>
-<span class="cstat-no" title="statement not covered" >  const rtf = new Intl.RelativeTimeFormat("en-US", { numeric: "auto" });</span>
+<span class="cstat-no" title="statement not covered" >  tinyassert(intl.timeZone);</span>
+<span class="cstat-no" title="statement not covered" >  const startOfToday = toZdt(now, intl.timeZone).startOfDay();</span>
+<span class="cstat-no" title="statement not covered" >  const days = Math.floor(</span>
+<span class="cstat-no" title="statement not covered" >    toInstant(date).since(startOfToday.toInstant()).total("days")</span>
+<span class="cstat-no" title="statement not covered" >  );</span>
 <span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >  const startOfToday = toZdt(now, dtf.resolvedOptions().timeZone).startOfDay();</span>
-<span class="cstat-no" title="statement not covered" >  const days = toInstant(date).since(startOfToday.toInstant()).total("days");</span>
-<span class="cstat-no" title="statement not covered" >  const daysIntegral = Math.floor(days);</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >  let result = dtf.format(date);</span>
-<span class="cstat-no" title="statement not covered" >  if (Math.abs(daysIntegral) &lt; 2) {</span>
-<span class="cstat-no" title="statement not covered" >    result = result.replace(</span>
-<span class="cstat-no" title="statement not covered" >      /^.*at/,</span>
-<span class="cstat-no" title="statement not covered" >      capitalize(rtf.format(daysIntegral, "days")) + " at"</span>
-<span class="cstat-no" title="statement not covered" >    );</span>
-<span class="cstat-no" title="statement not covered" >  }</span>
-<span class="cstat-no" title="statement not covered" >  return result;</span>
+<span class="cstat-no" title="statement not covered" >  return [</span>
+<span class="cstat-no" title="statement not covered" >    Math.abs(days) &lt; 2</span>
+<span class="cstat-no" title="statement not covered" >      ? intl.formatRelativeTime(days, "days", { numeric: "auto" })</span>
+<span class="cstat-no" title="statement not covered" >      : intl.formatDate(date, {</span>
+<span class="cstat-no" title="statement not covered" >          dateStyle: "medium",</span>
+<span class="cstat-no" title="statement not covered" >          hour12: false,</span>
+<span class="cstat-no" title="statement not covered" >        }),</span>
+<span class="cstat-no" title="statement not covered" >    intl.formatTime(date, { timeStyle: "medium", hour12: false }),</span>
+<span class="cstat-no" title="statement not covered" >  ].join(", ");</span>
 <span class="cstat-no" title="statement not covered" >}</span>
 &nbsp;</pre></td></tr></table></pre>
 
@@ -211,7 +190,7 @@ export <span class="fstat-no" title="function not covered" >function formatRelat
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-04-29T05:02:35.074Z
+                at 2023-04-29T05:04:52.175Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

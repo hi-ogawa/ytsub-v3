@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">87.5% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>47/47</span>
+                <span class='fraction'>35/40</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>3/3</span>
+                <span class='fraction'>6/6</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">40% </span>
+                <span class="strong">57.14% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>2/5</span>
+                <span class='fraction'>4/7</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">87.5% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>47/47</span>
+                <span class='fraction'>35/40</span>
             </div>
         
             
@@ -103,14 +103,7 @@
 <a name='L38'></a><a href='#L38'>38</a>
 <a name='L39'></a><a href='#L39'>39</a>
 <a name='L40'></a><a href='#L40'>40</a>
-<a name='L41'></a><a href='#L41'>41</a>
-<a name='L42'></a><a href='#L42'>42</a>
-<a name='L43'></a><a href='#L43'>43</a>
-<a name='L44'></a><a href='#L44'>44</a>
-<a name='L45'></a><a href='#L45'>45</a>
-<a name='L46'></a><a href='#L46'>46</a>
-<a name='L47'></a><a href='#L47'>47</a>
-<a name='L48'></a><a href='#L48'>48</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L41'></a><a href='#L41'>41</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -123,22 +116,14 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-yes">7x</span>
@@ -151,58 +136,52 @@
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { capitalize } from "lodash";
-import { toInstant, toZdt } from "./temporal-utils";
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { createIntl } from "@formatjs/intl";
+import { tinyassert } from "@hiogawa/utils";
+import { getSystemTimezone, toInstant, toZdt } from "./temporal-utils";
 &nbsp;
-// TODO(refactor)
-// should do something with temporal-utils (e.g. dealing with default/system timezone)
-// or probably just use format-js
+export let intl = createIntl({ locale: "en", timeZone: getSystemTimezone() }<span class="fstat-no" title="function not covered" >);</span>
 &nbsp;
-export const dtf = new Intl.DateTimeFormat("en-US", {
-  dateStyle: "long",
-  timeStyle: "long",
-  hour12: false,
-}<span class="fstat-no" title="function not covered" >);</span>
+// for testing
+export function mockTimezone(timeZone: string) {
+  intl = createIntl({ locale: "en", timeZone });
+}
 &nbsp;
-export const dtfDateOnly = new Intl.DateTimeFormat("en-US", {
-  dateStyle: "long",
-}<span class="fstat-no" title="function not covered" >);</span>
-&nbsp;
-export const rtf = new Intl.RelativeTimeFormat("en-US"<span class="fstat-no" title="function not covered" >);</span>
+// quick wrapper to inline everything
+export <span class="fstat-no" title="function not covered" >function intlWrapper(</span>
+<span class="cstat-no" title="statement not covered" >  defaultMessage: string,</span>
+<span class="cstat-no" title="statement not covered" >  values?: Record&lt;string, any&gt;</span>
+<span class="cstat-no" title="statement not covered" >) {</span>
+<span class="cstat-no" title="statement not covered" >  return intl.$t({ defaultMessage, id: defaultMessage }, values);</span>
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >}</span></span>
 &nbsp;
 // DateTimeFormat with a special formatting for certain dates e.g. "today", "yesterday", ...
 export function formatRelativeDate(
   date: Date,
-  // for testing
-  now: Date = new Date(),
-  timeZone?: string
+  now: Date = new Date() // for testing
 ): string {
-  const dtf = new Intl.DateTimeFormat("en-US", {
-    dateStyle: "long",
-    timeStyle: "medium",
-    hour12: false,
-    timeZone,
-  });
-  const rtf = new Intl.RelativeTimeFormat("en-US", { numeric: "auto" });
+  tinyassert(intl.timeZone);
+  const startOfToday = toZdt(now, intl.timeZone).startOfDay();
+  const days = Math.floor(
+    toInstant(date).since(startOfToday.toInstant()).total("days")
+  );
 &nbsp;
-  const startOfToday = toZdt(now, dtf.resolvedOptions().timeZone).startOfDay();
-  const days = toInstant(date).since(startOfToday.toInstant()).total("days");
-  const daysIntegral = Math.floor(days);
-&nbsp;
-  let result = dtf.format(date);
-  if (Math.abs(daysIntegral) &lt; 2) {
-    result = result.replace(
-      /^.*at/,
-      capitalize(rtf.format(daysIntegral, "days")) + " at"
-    );
-  }
-  return result;
+  return [
+    Math.abs(days) &lt; 2
+      ? intl.formatRelativeTime(days, "days", { numeric: "auto" })
+      : intl.formatDate(date, {
+          dateStyle: "medium",
+          hour12: false,
+        }),
+    intl.formatTime(date, { timeStyle: "medium", hour12: false }),
+  ].join(", ");
 }
 &nbsp;</pre></td></tr></table></pre>
 
@@ -211,7 +190,7 @@ export function formatRelativeDate(
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-04-29T05:01:10.960Z
+                at 2023-04-29T05:02:58.648Z
             </div>
         <script src="../prettify.js"></script>
         <script>
