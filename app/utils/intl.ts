@@ -2,21 +2,15 @@ import { createIntl, createIntlCache } from "@formatjs/intl";
 import { capitalize } from "lodash";
 import { toInstant, toZdt } from "./temporal-utils";
 
-// TODO(refactor)
-// should do something with temporal-utils (e.g. dealing with default/system timezone)
-// or probably just use format-js
+// TODO: how to mock timeZone for deterministic test?
+export const intl = createIntl({ locale: "en" }, createIntlCache());
 
-export const dtf = new Intl.DateTimeFormat("en-US", {
-  dateStyle: "long",
-  timeStyle: "long",
-  hour12: false,
-});
-
-export const dtfDateOnly = new Intl.DateTimeFormat("en-US", {
-  dateStyle: "long",
-});
-
-export const rtf = new Intl.RelativeTimeFormat("en-US");
+export function intlFormat(
+  defaultMessage: string,
+  values?: Record<string, any>
+) {
+  return intl.formatMessage({ defaultMessage, id: defaultMessage }, values);
+}
 
 // DateTimeFormat with a special formatting for certain dates e.g. "today", "yesterday", ...
 export function formatRelativeDate(
@@ -45,14 +39,4 @@ export function formatRelativeDate(
     );
   }
   return result;
-}
-
-// TODO: how to mock timeZone for deterministic test?
-export const intl = createIntl({ locale: "en" }, createIntlCache());
-
-export function intlFormat(
-  defaultMessage: string,
-  values?: Record<string, any>
-) {
-  return intl.formatMessage({ defaultMessage, id: defaultMessage }, values);
 }

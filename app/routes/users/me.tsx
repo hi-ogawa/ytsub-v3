@@ -12,7 +12,7 @@ import {
   deserialize,
   makeLoader,
 } from "../../utils/controller-utils";
-import { dtf } from "../../utils/intl";
+import { intl } from "../../utils/intl";
 import {
   FILTERED_LANGUAGE_CODES,
   languageCodeToName,
@@ -91,7 +91,11 @@ export default function DefaultComponent() {
                 className="antd-input p-1"
                 disabled
                 readOnly
-                value={dtf.format(currentUser.createdAt)}
+                value={intl.formatDate(currentUser.createdAt, {
+                  dateStyle: "long",
+                  timeStyle: "long",
+                  hour12: false,
+                })}
               />
             </label>
             <label className="flex flex-col gap-1">

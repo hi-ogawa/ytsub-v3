@@ -25,7 +25,7 @@ import { trpc } from "../../trpc/client";
 import { Controller, makeLoader } from "../../utils/controller-utils";
 import { useDeserialize } from "../../utils/hooks";
 import { useDocumentEvent } from "../../utils/hooks-client-utils";
-import { dtf } from "../../utils/intl";
+import { intl } from "../../utils/intl";
 import { useLeafLoaderData, useRootLoaderData } from "../../utils/loader-utils";
 import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
@@ -779,7 +779,11 @@ function NavBarMenuComponentImpl({
               type="text"
               className="antd-input p-1 bg-colorBgContainerDisabled"
               readOnly
-              value={dtf.format(video.createdAt)}
+              value={intl.formatDate(video.createdAt, {
+                dateStyle: "long",
+                timeStyle: "long",
+                hour12: false,
+              })}
             />
           </label>
           <label className="flex flex-col gap-1">
