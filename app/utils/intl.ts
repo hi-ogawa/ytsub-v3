@@ -1,3 +1,4 @@
+import { createIntl, createIntlCache } from "@formatjs/intl";
 import { capitalize } from "lodash";
 import { toInstant, toZdt } from "./temporal-utils";
 
@@ -44,4 +45,14 @@ export function formatRelativeDate(
     );
   }
   return result;
+}
+
+// TODO: how to mock timeZone for deterministic test?
+export const intl = createIntl({ locale: "en" }, createIntlCache());
+
+export function intlFormat(
+  defaultMessage: string,
+  values?: Record<string, any>
+) {
+  return intl.formatMessage({ defaultMessage, id: defaultMessage }, values);
 }
