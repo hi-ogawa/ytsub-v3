@@ -3,7 +3,7 @@ import { tinyassert } from "@hiogawa/utils";
 import { isNil } from "@hiogawa/utils";
 import { toArraySetState, useRafLoop } from "@hiogawa/utils-react";
 import { Form, Link, useLoaderData, useNavigate } from "@remix-run/react";
-import { redirect } from "@remix-run/server-runtime";
+import type { LoaderFunction } from "@remix-run/server-runtime";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   VirtualItem,
@@ -20,9 +20,9 @@ import { useModal } from "../../components/modal";
 import { PopoverSimple } from "../../components/popover";
 import { E, T, db, findOne } from "../../db/drizzle-client.server";
 import type { CaptionEntryTable, UserTable, VideoTable } from "../../db/models";
-import { $R, R, ROUTE_DEF } from "../../misc/routes";
+import { $R, ROUTE_DEF } from "../../misc/routes";
 import { trpc } from "../../trpc/client";
-import { Controller, makeLoader } from "../../utils/controller-utils";
+import { createLoaderTrpc } from "../../trpc/remix-utils.server";
 import { useDeserialize } from "../../utils/hooks";
 import { useDocumentEvent } from "../../utils/hooks-client-utils";
 import { intl } from "../../utils/intl";
@@ -51,29 +51,22 @@ type LoaderData = {
   query: z.infer<(typeof ROUTE_DEF)["/videos/$id"]["query"]>;
 };
 
-export const loader = makeLoader(Controller, async function () {
-  const parsedParams = ROUTE_DEF["/videos/$id"].params.safeParse(
-    this.args.params
-  );
-  const parsedQuery = ROUTE_DEF["/videos/$id"].query.safeParse(this.query());
-  if (parsedParams.success && parsedQuery.success) {
+export const loader: LoaderFunction = async (args) => {
+  const { ctx } = await createLoaderTrpc(args);
+  return ctx.redirectOnError(async () => {
+    const params = ROUTE_DEF["/videos/$id"].params.parse(ctx.req.params);
+    const query = ROUTE_DEF["/videos/$id"].query.parse(ctx.req.query);
     const video = await findOne(
-      db.select().from(T.videos).where(E.eq(T.videos.id, parsedParams.data.id))
+      db.select().from(T.videos).where(E.eq(T.videos.id, params.id))
     );
-    if (video) {
-      const loaderData: LoaderData = {
-        video,
-        query: parsedQuery.data,
-      };
-      return this.serialize(loaderData);
-    }
-  }
-  this.flash({
-    content: "Invalid Request",
-    variant: "error",
+    tinyassert(video);
+    const loaderData: LoaderData = {
+      video,
+      query,
+    };
+    return ctx.serialize(loaderData);
   });
-  return redirect(R["/"]);
-});
+};
 
 //
 // component
