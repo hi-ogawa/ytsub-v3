@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">13.15% </span>
+                <span class="strong">13.14% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>111/844</span>
+                <span class='fraction'>110/837</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">75% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>3/4</span>
+                <span class='fraction'>4/4</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">10% </span>
+                <span class="strong">14.28% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>2/20</span>
+                <span class='fraction'>3/21</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">13.15% </span>
+                <span class="strong">13.14% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>111/844</span>
+                <span class='fraction'>110/837</span>
             </div>
         
             
@@ -900,14 +900,7 @@
 <a name='L835'></a><a href='#L835'>835</a>
 <a name='L836'></a><a href='#L836'>836</a>
 <a name='L837'></a><a href='#L837'>837</a>
-<a name='L838'></a><a href='#L838'>838</a>
-<a name='L839'></a><a href='#L839'>839</a>
-<a name='L840'></a><a href='#L840'>840</a>
-<a name='L841'></a><a href='#L841'>841</a>
-<a name='L842'></a><a href='#L842'>842</a>
-<a name='L843'></a><a href='#L843'>843</a>
-<a name='L844'></a><a href='#L844'>844</a>
-<a name='L845'></a><a href='#L845'>845</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L838'></a><a href='#L838'>838</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -976,13 +969,6 @@
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -1756,7 +1742,7 @@ import { tinyassert } from "@hiogawa/utils";
 import { isNil } from "@hiogawa/utils";
 import { toArraySetState, useRafLoop } from "@hiogawa/utils-react";
 import { Form, Link, useLoaderData, useNavigate } from "@remix-run/react";
-import { redirect } from "@remix-run/server-runtime";
+import type { LoaderFunction } from "@remix-run/server-runtime";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   VirtualItem,
@@ -1773,9 +1759,9 @@ import { useModal } from "../../components/modal";
 import { PopoverSimple } from "../../components/popover";
 import { E, T, db, findOne } from "../../db/drizzle-client.server";
 import type { CaptionEntryTable, UserTable, VideoTable } from "../../db/models";
-import { $R, R, ROUTE_DEF } from "../../misc/routes";
+import { $R, ROUTE_DEF } from "../../misc/routes";
 import { trpc } from "../../trpc/client";
-import { Controller, makeLoader } from "../../utils/controller-utils";
+import { createLoaderTrpc } from "../../trpc/remix-utils.server";
 import { useDeserialize } from "../../utils/hooks";
 import { useDocumentEvent } from "../../utils/hooks-client-utils";
 import { intl } from "../../utils/intl";
@@ -1804,29 +1790,22 @@ type LoaderData = {
   query: z.infer&lt;(typeof ROUTE_DEF)["/videos/$id"]["query"]&gt;;
 };
 &nbsp;
-export const loader = makeLoader(Controller, async function () {
-  const parsedParams = ROUTE_DEF["/videos/$id"].params.safeParse(
-    this.args.params
-  );
-  const parsedQuery = ROUTE_DEF["/videos/$id"].query.safeParse(this.query());
-  if (parsedParams.success &amp;&amp; parsedQuery.success) {
+export const loader: LoaderFunction = async (args) =&gt; {
+  const { ctx } = await createLoaderTrpc(args);
+  return ctx.redirectOnError(async () =&gt; {
+    const params = ROUTE_DEF["/videos/$id"].params.parse(ctx.req.params);
+    const query = ROUTE_DEF["/videos/$id"].query.parse(ctx.req.query);
     const video = await findOne(
-      db.select().from(T.videos).where(E.eq(T.videos.id, parsedParams.data.id))
+      db.select().from(T.videos).where(E.eq(T.videos.id, params.id))
     );
-    if (video) {
-      const loaderData: LoaderData = {
-        video,
-        query: parsedQuery.data,
-      };
-      return this.serialize(loaderData);
-    }
-<span class="branch-0 cbranch-no" title="branch not covered" >  }</span>
-<span class="cstat-no" title="statement not covered" >  this.flash({</span>
-<span class="cstat-no" title="statement not covered" >    content: "Invalid Request",</span>
-<span class="cstat-no" title="statement not covered" >    variant: "error",</span>
-<span class="cstat-no" title="statement not covered" >  });</span>
-<span class="cstat-no" title="statement not covered" >  return redirect(R["/"]);</span>
-<span class="cstat-no" title="statement not covered" >});</span>
+    tinyassert(video);
+    const loaderData: LoaderData = {
+      video,
+      query,
+    };
+    return ctx.serialize(loaderData);
+  });
+};
 &nbsp;
 //
 // component
@@ -2602,7 +2581,7 @@ const autoScrollStorageAtom = atomWithStorage(
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-04-29T11:02:41.104Z
+                at 2023-04-29T11:41:54.341Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>
