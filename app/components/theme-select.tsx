@@ -1,3 +1,4 @@
+import { tinyassert } from "@hiogawa/utils";
 import React from "react";
 import { capitalize } from "../utils/misc";
 import { SelectWrapper } from "./misc";
@@ -42,3 +43,25 @@ function useTheme() {
 
   return [theme, setThemeWrapper] as const;
 }
+
+export function injectThemeScript(markup: string): string {
+  // patch @remix/dev to use raw loader for ".html"
+  const indexHtml = require("../../index.html");
+  tinyassert(typeof indexHtml === "string");
+
+  const themeScript = indexHtml.match(/<script>(.*?)<\/script>/ms)?.[1];
+  tinyassert(themeScript);
+
+  return markup.replace(MARKER_ThemeScriptPlaceholder, themeScript);
+}
+
+export function ThemeScriptPlaceholder() {
+  return (
+    <script
+      dangerouslySetInnerHTML={{ __html: MARKER_ThemeScriptPlaceholder }}
+      suppressHydrationWarning
+    />
+  );
+}
+
+const MARKER_ThemeScriptPlaceholder = "@@__ThemeScriptPlaceholder@@";

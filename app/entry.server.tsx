@@ -1,6 +1,7 @@
 import { RemixServer } from "@remix-run/react";
 import type { HandleDocumentRequestFunction } from "@remix-run/server-runtime";
 import { renderToString } from "react-dom/server";
+import { injectThemeScript } from "./components/theme-select";
 import { injectInitializeServer } from "./misc/initialize-server";
 import { injectConfigScript } from "./utils/config";
 
@@ -17,6 +18,7 @@ const handler: HandleDocumentRequestFunction = (
     <RemixServer context={remixContext} url={request.url} />
   );
   markup = injectConfigScript(markup);
+  markup = injectThemeScript(markup);
   responseHeaders.set("content-type", "text/html");
   return new Response("<!DOCTYPE html>" + markup, {
     status: responseStatusCode,
