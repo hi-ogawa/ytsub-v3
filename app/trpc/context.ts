@@ -1,6 +1,7 @@
 import { tinyassert } from "@hiogawa/utils";
 import { DataFunctionArgs, redirect } from "@remix-run/server-runtime";
 import type { FetchCreateContextFnOptions } from "@trpc/server/adapters/fetch";
+import { serialize } from "superjson";
 import type { TT } from "../db/drizzle-client.server";
 import { $R } from "../misc/routes";
 import { getSessionUser } from "../utils/auth";
@@ -59,15 +60,30 @@ export const createTrpcAppContext = async ({
       return user;
     },
 
-    loaderParams: () => {
-      tinyassert(loaderArgs);
-      return loaderArgs.params;
+    req: {
+      get params() {
+        tinyassert(loaderArgs);
+        return loaderArgs.params;
+      },
+
+      get query() {
+        return Object.fromEntries(
+          new URLSearchParams(new URL(req.url).search).entries()
+        );
+      },
     },
 
-    loaderQuery: () => {
-      return Object.fromEntries(
-        new URLSearchParams(new URL(req.url).search).entries()
-      );
+    async redirectOnError<T>(f: () => T, url?: string) {
+      try {
+        return await f();
+      } catch (e) {
+        await ctx.flash({ content: "Invalid request", variant: "error" });
+        throw ctx.redirect(url ?? $R["/"]());
+      }
+    },
+
+    serialize(data: unknown): unknown {
+      return serialize(data);
     },
 
     //

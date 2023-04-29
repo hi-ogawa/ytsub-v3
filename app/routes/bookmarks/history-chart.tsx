@@ -22,8 +22,8 @@ import { BookmarksMenuItems } from "./index";
 //
 
 export const loader: LoaderFunction = async (args) => {
-  const trpc = await createLoaderTrpc(args);
-  await trpc.ctx.requireUser();
+  const { ctx } = await createLoaderTrpc(args);
+  await ctx.requireUser();
   return null;
 };
 

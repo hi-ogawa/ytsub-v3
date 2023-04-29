@@ -2,7 +2,7 @@ import { Transition } from "@headlessui/react";
 import { isNil, typedBoolean } from "@hiogawa/utils";
 import { toArraySetState, useRafLoop } from "@hiogawa/utils-react";
 import { Link, NavLink, useLoaderData } from "@remix-run/react";
-import { redirect } from "@remix-run/server-runtime";
+import type { LoaderFunction } from "@remix-run/server-runtime";
 import { useQuery } from "@tanstack/react-query";
 import { omit } from "lodash";
 import React from "react";
@@ -26,7 +26,7 @@ import type {
 } from "../../db/models";
 import { $R, ROUTE_DEF } from "../../misc/routes";
 import { trpc } from "../../trpc/client";
-import { Controller, makeLoader } from "../../utils/controller-utils";
+import { createLoaderTrpc } from "../../trpc/remix-utils.server";
 import { useDeserialize } from "../../utils/hooks";
 import { useLeafLoaderData } from "../../utils/loader-utils";
 import { cls } from "../../utils/misc";
@@ -47,23 +47,13 @@ interface LoaderData {
   request: z.infer<(typeof ROUTE_DEF)["/bookmarks"]["query"]>;
 }
 
-export const loader = makeLoader(Controller, async function () {
-  const user = await this.currentUser();
-  if (!user) {
-    this.flash({
-      content: "Signin required.",
-      variant: "error",
-    });
-    return redirect($R["/users/signin"]());
-  }
+export const loader: LoaderFunction = async (args) => {
+  const { ctx } = await createLoaderTrpc(args);
+  const user = await ctx.requireUser();
 
-  const parsed = ROUTE_DEF["/bookmarks"].query.safeParse(this.query());
-  if (!parsed.success) {
-    this.flash({ content: "invalid parameters", variant: "error" });
-    return redirect($R["/bookmarks"]());
-  }
-
-  const request = parsed.data;
+  const request = await ctx.redirectOnError(() =>
+    ROUTE_DEF["/bookmarks"].query.parse(ctx.req.query)
+  );
 
   let query = db
     .select()
@@ -110,8 +100,8 @@ export const loader = makeLoader(Controller, async function () {
     pagination,
     request,
   };
-  return this.serialize(loaderData);
-});
+  return ctx.serialize(loaderData);
+};
 
 export default function DefaultComponent() {
   const data: LoaderData = useDeserialize(useLoaderData());
