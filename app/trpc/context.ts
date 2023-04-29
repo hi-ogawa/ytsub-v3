@@ -59,12 +59,12 @@ export const createTrpcAppContext = async ({
       return user;
     },
 
-    get loaderParams() {
+    loaderParams: () => {
       tinyassert(loaderArgs);
       return loaderArgs.params;
     },
 
-    get loaderQuery() {
+    loaderQuery: () => {
       return Object.fromEntries(
         new URLSearchParams(new URL(req.url).search).entries()
       );
