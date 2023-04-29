@@ -78,7 +78,7 @@ export function capitalize(s: string): string {
   return s.slice(0, 1).toUpperCase() + s.slice(1);
 }
 
-// `undefined as T | undefined` without `as`
+// shortcut for `undefined as T | undefined`
 export function none<T>(): T | undefined {
   return undefined;
 }
