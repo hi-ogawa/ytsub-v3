@@ -40,3 +40,11 @@ test.describe("bookmarks", () => {
     await page.getByText("케플러 대박 기원").click();
   });
 });
+
+test.describe("/bookmarks/history-chart", () => {
+  test("requires login", async ({ page }) => {
+    await page.goto("/bookmarks/history-chart");
+    await page.getByText("Signin required").click();
+    await page.waitForURL("/users/signin");
+  });
+});

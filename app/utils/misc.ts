@@ -77,3 +77,8 @@ export function defaultObject<K extends string, Keys extends [K, ...K[]], V>(
 export function capitalize(s: string): string {
   return s.slice(0, 1).toUpperCase() + s.slice(1);
 }
+
+// `undefined as T | undefined` without `as`
+export function none<T>(): T | undefined {
+  return undefined;
+}
