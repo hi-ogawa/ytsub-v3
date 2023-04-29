@@ -17,7 +17,7 @@ import { useForm } from "react-hook-form";
 import { Toaster } from "react-hot-toast";
 import { Drawer } from "./components/drawer";
 import { PopoverSimple } from "./components/popover";
-import { ThemeSelect } from "./components/theme-select";
+import { ThemeScriptPlaceholder, ThemeSelect } from "./components/theme-select";
 import { TopProgressBarRemix } from "./components/top-progress-bar";
 import type { UserTable } from "./db/models";
 import { $R, R } from "./misc/routes";
@@ -74,8 +74,8 @@ export default function DefaultComponent() {
         <Meta />
         <Links />
         <ConfigPlaceholder />
+        <ThemeScriptPlaceholder />
         <HideRecaptchaBadge />
-        <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }}></script>
       </head>
       <body className="h-full">
         {/* TODO: default position="top" is fine? */}
@@ -90,10 +90,6 @@ export default function DefaultComponent() {
     </html>
   );
 }
-
-// copied from index.html via
-//   node -e 'console.log(fs.readFileSync("./index.html", "utf-8").match(/<script>(.*?)<\/script>/sm)[1].replaceAll(/\/\/.*/g, "").replaceAll("\n", " ").trim())'
-const THEME_SCRIPT = `(() => {         const STORAGE_KEY = "ytsub:theme";         const DEFAULT_THEME = "system";         const prefersDark = window.matchMedia("(prefers-color-scheme: dark)");          function getTheme() {           return window.localStorage.getItem(STORAGE_KEY) || DEFAULT_THEME;         }          function setTheme(config) {           window.localStorage.setItem(STORAGE_KEY, config);           applyTheme();         }          function applyTheme() {           const theme = getTheme();           const derived = theme === "system" ? (prefersDark.matches ? "dark" : "light") : theme;           disableTransitions(() => {             document.documentElement.classList.remove("dark", "light");             document.documentElement.classList.add(derived);           });         }                   function disableTransitions(callback) {           const el = document.createElement("style");           el.innerHTML = "* { transition: none !important; }";           document.head.appendChild(el);           callback();           window.getComputedStyle(document.documentElement).transition;            document.head.removeChild(el);         }          function initTheme() {           applyTheme();           prefersDark.addEventListener("change", applyTheme);           Object.assign(globalThis, { __theme: { setTheme, getTheme } });         }          initTheme();       })();`;
 
 function Root() {
   const data = useRootLoaderData();
