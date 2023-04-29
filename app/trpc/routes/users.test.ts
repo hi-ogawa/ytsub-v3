@@ -3,7 +3,6 @@ import { beforeEach, describe, expect, it } from "vitest";
 import { T, db } from "../../db/drizzle-client.server";
 import { useUser } from "../../misc/test-helper";
 import { findByUsername, getSessionUser } from "../../utils/auth";
-import { getResponseSession } from "../../utils/session.server";
 import { trpc } from "../client";
 import { testTrpcClient, testTrpcClientWithContext } from "../test-helper";
 
@@ -19,7 +18,7 @@ describe(trpc.users_signin.mutationKey, () => {
 
       // check session cookie in response header
       const sessionUser = await getSessionUser(
-        await getResponseSession({ headers: trpc.ctx.resHeaders })
+        await trpc.ctx.__getRepsonseSession()
       );
       expect(sessionUser).toEqual(userHook.data);
     });
@@ -73,7 +72,7 @@ describe(trpc.users_signout.mutationKey, () => {
 
       // check session cookie in response header
       const sessionUser = await getSessionUser(
-        await getResponseSession({ headers: trpc.ctx.resHeaders })
+        await trpc.ctx.__getRepsonseSession()
       );
       expect(sessionUser).toBeUndefined();
     });
@@ -119,7 +118,7 @@ describe(trpc.users_register.mutationKey, () => {
 
       // check session cookie in response header
       const sessionUser = await getSessionUser(
-        await getResponseSession({ headers: trpc.ctx.resHeaders })
+        await trpc.ctx.__getRepsonseSession()
       );
       expect(sessionUser).toEqual(found);
     });
