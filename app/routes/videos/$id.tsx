@@ -54,8 +54,8 @@ type LoaderData = {
 export const loader: LoaderFunction = async (args) => {
   const { ctx } = await createLoaderTrpc(args);
   return ctx.redirectOnError(async () => {
-    const params = ROUTE_DEF["/videos/$id"].params.parse(ctx.req.params);
-    const query = ROUTE_DEF["/videos/$id"].query.parse(ctx.req.query);
+    const params = ROUTE_DEF["/videos/$id"].params.parse(ctx.params);
+    const query = ROUTE_DEF["/videos/$id"].query.parse(ctx.query);
     const video = await findOne(
       db.select().from(T.videos).where(E.eq(T.videos.id, params.id))
     );

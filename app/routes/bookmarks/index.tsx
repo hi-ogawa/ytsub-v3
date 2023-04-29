@@ -52,7 +52,7 @@ export const loader: LoaderFunction = async (args) => {
   const user = await ctx.requireUser();
 
   const request = await ctx.redirectOnError(() =>
-    ROUTE_DEF["/bookmarks"].query.parse(ctx.req.query)
+    ROUTE_DEF["/bookmarks"].query.parse(ctx.query)
   );
 
   let query = db

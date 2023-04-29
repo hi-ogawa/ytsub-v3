@@ -42,6 +42,12 @@ export const createTrpcAppContext = async ({
     // for remix loader
     //
 
+    params: loaderArgs?.params,
+
+    query: Object.fromEntries(
+      new URLSearchParams(new URL(req.url).search).entries()
+    ),
+
     flash: async (message: FlashMessage) => {
       pushFlashMessage(ctx.session, message);
       await ctx.commitSession();
@@ -58,19 +64,6 @@ export const createTrpcAppContext = async ({
         throw ctx.redirect($R["/users/signin"]());
       }
       return user;
-    },
-
-    req: {
-      get params() {
-        tinyassert(loaderArgs);
-        return loaderArgs.params;
-      },
-
-      get query() {
-        return Object.fromEntries(
-          new URLSearchParams(new URL(req.url).search).entries()
-        );
-      },
     },
 
     async redirectOnError<T>(f: () => T, url?: string) {
