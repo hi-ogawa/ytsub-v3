@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">95% </span>
+                <span class="strong">92% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>57/60</span>
+                <span class='fraction'>69/75</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">83.33% </span>
+                <span class="strong">71.42% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>5/6</span>
+                <span class='fraction'>5/7</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">95% </span>
+                <span class="strong">92% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>57/60</span>
+                <span class='fraction'>69/75</span>
             </div>
         
             
@@ -123,7 +123,24 @@
 <a name='L58'></a><a href='#L58'>58</a>
 <a name='L59'></a><a href='#L59'>59</a>
 <a name='L60'></a><a href='#L60'>60</a>
-<a name='L61'></a><a href='#L61'>61</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L61'></a><a href='#L61'>61</a>
+<a name='L62'></a><a href='#L62'>62</a>
+<a name='L63'></a><a href='#L63'>63</a>
+<a name='L64'></a><a href='#L64'>64</a>
+<a name='L65'></a><a href='#L65'>65</a>
+<a name='L66'></a><a href='#L66'>66</a>
+<a name='L67'></a><a href='#L67'>67</a>
+<a name='L68'></a><a href='#L68'>68</a>
+<a name='L69'></a><a href='#L69'>69</a>
+<a name='L70'></a><a href='#L70'>70</a>
+<a name='L71'></a><a href='#L71'>71</a>
+<a name='L72'></a><a href='#L72'>72</a>
+<a name='L73'></a><a href='#L73'>73</a>
+<a name='L74'></a><a href='#L74'>74</a>
+<a name='L75'></a><a href='#L75'>75</a>
+<a name='L76'></a><a href='#L76'>76</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -149,10 +166,21 @@
 <span class="cline-any cline-yes">20x</span>
 <span class="cline-any cline-yes">20x</span>
 <span class="cline-any cline-yes">20x</span>
+<span class="cline-any cline-yes">20x</span>
+<span class="cline-any cline-yes">20x</span>
+<span class="cline-any cline-yes">20x</span>
+<span class="cline-any cline-yes">20x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">20x</span>
 <span class="cline-any cline-yes">20x</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">20x</span>
 <span class="cline-any cline-yes">20x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -160,6 +188,8 @@
 <span class="cline-any cline-yes">20x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">20x</span>
+<span class="cline-any cline-yes">20x</span>
 <span class="cline-any cline-yes">20x</span>
 <span class="cline-any cline-yes">20x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -188,6 +218,7 @@ import type { Session } from "@remix-run/server-runtime";
 import type { FetchCreateContextFnOptions } from "@trpc/server/adapters/fetch";
 import type { TT } from "../db/drizzle-client.server";
 import { getSessionUser } from "../utils/auth";
+import { FlashMessage, pushFlashMessage } from "../utils/flash-message";
 import {
   getRequestSession,
   getResponseSession,
@@ -197,6 +228,7 @@ import { middlewareFactory } from "./factory";
 &nbsp;
 export type TrpcAppContext = {
   session: Session;
+  flash: (message: FlashMessage) =&gt; Promise&lt;void&gt;;
   commitSession: () =&gt; Promise&lt;void&gt;;
   cacheResponse: () =&gt; void;
   __getRepsonseSession: () =&gt; Promise&lt;Session&gt;; // for testing
@@ -207,12 +239,23 @@ export const createTrpcAppContext = async ({
   req,
   resHeaders,
 }: FetchCreateContextFnOptions): Promise&lt;TrpcAppContext&gt; =&gt; {
-  const session = await getRequestSession(req);
-  return {
-    session,
+  const ctx: TrpcAppContext = {
+    session: await getRequestSession(req),
+&nbsp;
+    user: undefined,
+&nbsp;
+    flash: <span class="fstat-no" title="function not covered" >async (message) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >      pushFlashMessage(ctx.session, message);</span>
+<span class="cstat-no" title="statement not covered" >      await ctx.commitSession();</span>
+<span class="cstat-no" title="statement not covered" >    },</span>
+&nbsp;
     commitSession: async () =&gt; {
-      resHeaders.set("set-cookie", await sessionStore.commitSession(session));
+      resHeaders.set(
+        "set-cookie",
+        await sessionStore.commitSession(ctx.session)
+      );
     },
+&nbsp;
     cacheResponse: <span class="fstat-no" title="function not covered" >() =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >      // full cache only on CDN (cf. https://vercel.com/docs/concepts/functions/serverless-functions/edge-caching)</span>
 <span class="cstat-no" title="statement not covered" >      resHeaders.set("cache-control", "public, max-age=0, s-max-age=31536000");</span>
@@ -221,6 +264,8 @@ export const createTrpcAppContext = async ({
       return getResponseSession({ headers: resHeaders });
     },
   };
+&nbsp;
+  return ctx;
 };
 &nbsp;
 //
@@ -250,7 +295,7 @@ export const middlewares = { requireUser, currentUser };
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-04-29T09:05:34.881Z
+                at 2023-04-29T09:05:59.648Z
             </div>
         <script src="../prettify.js"></script>
         <script>
