@@ -42,9 +42,17 @@ test.describe("bookmarks", () => {
 });
 
 test.describe("/bookmarks/history-chart", () => {
+  const userHook = useUserE2E(test, { seed: __filename });
+
   test("requires login", async ({ page }) => {
     await page.goto("/bookmarks/history-chart");
     await page.getByText("Signin required").click();
     await page.waitForURL("/users/signin");
+  });
+
+  test("basic", async ({ page }) => {
+    await userHook.signin(page);
+    await page.goto("/bookmarks/history-chart");
+    await page.getByText("this week").click();
   });
 });
