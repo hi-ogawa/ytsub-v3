@@ -22,7 +22,7 @@ export function formatRelativeDate(
   date: Date,
   now: Date = new Date() // for testing
 ): string {
-  tinyassert(intl.timeZone)
+  tinyassert(intl.timeZone);
   const startOfToday = toZdt(now, intl.timeZone).startOfDay();
   const days = Math.floor(
     toInstant(date).since(startOfToday.toInstant()).total("days")
