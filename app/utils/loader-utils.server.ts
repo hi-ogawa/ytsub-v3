@@ -27,10 +27,6 @@ export function makeLoader(
   };
 }
 
-//
-// extending the idea of trpc context for remix loader
-//
-
 export type LoaderContext = Awaited<ReturnType<typeof createLoaderContext>>;
 
 async function createLoaderContext(loaderArgs: DataFunctionArgs) {
