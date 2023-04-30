@@ -1,4 +1,5 @@
-import { useLoaderData, useNavigate } from "@remix-run/react";
+import { tinyassert, wrapPromise } from "@hiogawa/utils";
+import { useNavigate } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
@@ -6,11 +7,13 @@ import { toast } from "react-hot-toast";
 import type { UserTable } from "../../db/models";
 import { $R, R, ROUTE_DEF } from "../../misc/routes";
 import { trpc } from "../../trpc/client";
-import { Controller, makeLoader } from "../../utils/controller-utils";
 import { toastInfo } from "../../utils/flash-message-hook";
-import { useDeserialize } from "../../utils/hooks";
 import { isLanguageCode } from "../../utils/language";
-import { useRootLoaderData } from "../../utils/loader-utils";
+import {
+  makeLoaderV2,
+  useDeLoaderData,
+  useRootLoaderData,
+} from "../../utils/loader-utils";
 import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 import type { CaptionConfig, VideoMetadata } from "../../utils/types";
@@ -30,34 +33,26 @@ type LoaderData = {
   userCaptionConfigs?: { language1?: CaptionConfig; language2?: CaptionConfig };
 };
 
-export const loader = makeLoader(Controller, async function () {
-  const parsed = ROUTE_DEF["/videos/new"].query.safeParse(this.query());
-  if (parsed.success) {
-    const videoId = parseVideoId(parsed.data.videoId);
-    if (videoId) {
-      const user = await this.currentUser();
-      try {
-        const videoMetadata = await fetchVideoMetadata(videoId);
-        const loaderData: LoaderData = {
-          videoMetadata,
-          userCaptionConfigs:
-            user && findUserCaptionConfigs(videoMetadata, user),
-        };
-        return this.serialize(loaderData);
-      } catch (e) {
-        this.flash({
-          content: `Failed to load a video`,
-          variant: "error",
-        });
-        return redirect(R["/"]);
-      }
-    }
+export const loader = makeLoaderV2(async ({ ctx }) => {
+  const query = ROUTE_DEF["/videos/new"].query.parse(ctx.query);
+  const videoId = parseVideoId(query.videoId);
+  tinyassert(videoId);
+  const user = await ctx.currentUser();
+  const result = await wrapPromise(fetchVideoMetadata(videoId));
+  if (!result.ok) {
+    // either invalid videoId or youtube api failure
+    await ctx.flash({
+      content: `Failed to load a video`,
+      variant: "error",
+    });
+    return redirect(R["/"]);
   }
-  this.flash({
-    content: "Invalid input",
-    variant: "error",
-  });
-  return redirect(R["/"]);
+  const videoMetadata = result.value;
+  const loaderData: LoaderData = {
+    videoMetadata,
+    userCaptionConfigs: user && findUserCaptionConfigs(videoMetadata, user),
+  };
+  return loaderData;
 });
 
 function findUserCaptionConfigs(videoMetadata: VideoMetadata, user: UserTable) {
@@ -85,9 +80,7 @@ export const handle: PageHandle = {
 
 export default function DefaultComponent() {
   const { currentUser } = useRootLoaderData();
-  const { videoMetadata, userCaptionConfigs }: LoaderData = useDeserialize(
-    useLoaderData()
-  );
+  const { videoMetadata, userCaptionConfigs } = useDeLoaderData() as LoaderData;
 
   const navigate = useNavigate();
 
