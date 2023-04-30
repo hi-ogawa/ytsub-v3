@@ -9,8 +9,8 @@ import { toast } from "react-hot-toast";
 import { $R, R } from "../../misc/routes";
 import { trpc } from "../../trpc/client";
 import { publicConfig } from "../../utils/config";
-import { Controller, makeLoader } from "../../utils/controller-utils";
 import { loadScript } from "../../utils/dom-utils";
+import { makeLoaderV2 } from "../../utils/loader-utils";
 import { uninitialized, usePromiseQueryOpitons } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 
@@ -22,10 +22,10 @@ export const handle: PageHandle = {
 // loader
 //
 
-export const loader = makeLoader(Controller, async function () {
-  const user = await this.currentUser();
+export const loader = makeLoaderV2(async ({ ctx }) => {
+  const user = await ctx.currentUser();
   if (user) {
-    this.flash({
+    ctx.flash({
       content: `Already signed in as '${user.username}'`,
       variant: "error",
     });

@@ -1,22 +1,16 @@
-import { useLoaderData, useNavigate } from "@remix-run/react";
-import { redirect } from "@remix-run/server-runtime";
+import { useNavigate } from "@remix-run/react";
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { PopoverSimple } from "../../components/popover";
 import type { UserTable } from "../../db/models";
-import { R } from "../../misc/routes";
 import { trpc } from "../../trpc/client";
-import {
-  Controller,
-  deserialize,
-  makeLoader,
-} from "../../utils/controller-utils";
 import { intl } from "../../utils/intl";
 import {
   FILTERED_LANGUAGE_CODES,
   languageCodeToName,
 } from "../../utils/language";
+import { makeLoaderV2, useDeLeafLoaderData } from "../../utils/loader-utils";
 import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 
@@ -28,12 +22,9 @@ export const handle: PageHandle = {
 // loader
 //
 
-export const loader = makeLoader(Controller, async function () {
-  const user = await this.currentUser();
-  if (user) {
-    return this.serialize(user);
-  }
-  return redirect(R["/users/signin"]);
+export const loader = makeLoaderV2(async ({ ctx }) => {
+  const user = await ctx.requireUser();
+  return user;
 });
 
 //
@@ -41,7 +32,7 @@ export const loader = makeLoader(Controller, async function () {
 //
 
 export default function DefaultComponent() {
-  const currentUser: UserTable = deserialize(useLoaderData());
+  const currentUser = useDeLeafLoaderData() as UserTable;
 
   const navigate = useNavigate();
 
