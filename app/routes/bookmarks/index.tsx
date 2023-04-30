@@ -25,10 +25,10 @@ import type {
 import { $R, ROUTE_DEF } from "../../misc/routes";
 import { trpc } from "../../trpc/client";
 import {
-  makeLoader,
   useLeafLoaderData,
   useLoaderDataExtra,
 } from "../../utils/loader-utils";
+import { makeLoader } from "../../utils/loader-utils.server";
 import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 import type { CaptionEntry } from "../../utils/types";

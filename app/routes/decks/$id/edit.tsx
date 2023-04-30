@@ -9,7 +9,8 @@ import { trpc } from "../../../trpc/client";
 import { toastInfo } from "../../../utils/flash-message-hook";
 import { intl } from "../../../utils/intl";
 import { requireUserAndDeckV2 } from "../../../utils/loader-deck-utils";
-import { makeLoader, useLoaderDataExtra } from "../../../utils/loader-utils";
+import { useLoaderDataExtra } from "../../../utils/loader-utils";
+import { makeLoader } from "../../../utils/loader-utils.server";
 import { cls } from "../../../utils/misc";
 import type { PageHandle } from "../../../utils/page-handle";
 

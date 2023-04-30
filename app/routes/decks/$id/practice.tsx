@@ -14,10 +14,10 @@ import { PRACTICE_ACTION_TYPES, PracticeActionType } from "../../../db/types";
 import { trpc } from "../../../trpc/client";
 import { requireUserAndDeckV2 } from "../../../utils/loader-deck-utils";
 import {
-  makeLoader,
   useLeafLoaderData,
   useLoaderDataExtra,
 } from "../../../utils/loader-utils";
+import { makeLoader } from "../../../utils/loader-utils.server";
 import { cls } from "../../../utils/misc";
 import type { PageHandle } from "../../../utils/page-handle";
 import { BookmarkEntryComponent } from "../../bookmarks";

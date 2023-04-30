@@ -10,10 +10,10 @@ import { trpc } from "../../trpc/client";
 import { toastInfo } from "../../utils/flash-message-hook";
 import { isLanguageCode } from "../../utils/language";
 import {
-  makeLoader,
   useLoaderDataExtra,
   useRootLoaderData,
 } from "../../utils/loader-utils";
+import { makeLoader } from "../../utils/loader-utils.server";
 import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 import type { CaptionConfig, VideoMetadata } from "../../utils/types";

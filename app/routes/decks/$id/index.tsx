@@ -25,10 +25,10 @@ import { trpc } from "../../../trpc/client";
 import { intl, intlWrapper } from "../../../utils/intl";
 import { requireUserAndDeckV2 } from "../../../utils/loader-deck-utils";
 import {
-  makeLoader,
   useLeafLoaderData,
   useLoaderDataExtra,
 } from "../../../utils/loader-utils";
+import { makeLoader } from "../../../utils/loader-utils.server";
 import { cls } from "../../../utils/misc";
 import type { PageHandle } from "../../../utils/page-handle";
 import { MiniPlayer } from "../../bookmarks";

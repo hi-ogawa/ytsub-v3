@@ -14,7 +14,7 @@ import {
   pushFlashMessage,
 } from "./flash-message";
 
-export function makeLoaderImpl(
+export function makeLoader(
   inner: (args: { ctx: LoaderContext }) => unknown
 ): LoaderFunction {
   return async (loaderArgs) => {

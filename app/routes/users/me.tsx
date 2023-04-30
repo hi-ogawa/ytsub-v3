@@ -10,7 +10,8 @@ import {
   FILTERED_LANGUAGE_CODES,
   languageCodeToName,
 } from "../../utils/language";
-import { makeLoader, useLeafLoaderData } from "../../utils/loader-utils";
+import { useLeafLoaderData } from "../../utils/loader-utils";
+import { makeLoader } from "../../utils/loader-utils.server";
 import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 

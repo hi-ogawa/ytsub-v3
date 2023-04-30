@@ -2,7 +2,8 @@ import { Link } from "@remix-run/react";
 import { E, T, db } from "../../db/drizzle-client.server";
 import type { DeckTable } from "../../db/models";
 import { $R } from "../../misc/routes";
-import { makeLoader, useLoaderDataExtra } from "../../utils/loader-utils";
+import { useLoaderDataExtra } from "../../utils/loader-utils";
+import { makeLoader } from "../../utils/loader-utils.server";
 import type { PageHandle } from "../../utils/page-handle";
 import { DeckMenuComponent } from "./$id";
 

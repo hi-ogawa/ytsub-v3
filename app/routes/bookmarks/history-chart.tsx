@@ -10,7 +10,7 @@ import {
 } from "../../components/practice-history-chart";
 import { trpc } from "../../trpc/client";
 import { useClickOutside } from "../../utils/hooks-client-utils";
-import { makeLoader } from "../../utils/loader-utils";
+import { makeLoader } from "../../utils/loader-utils.server";
 import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 import { DateRangeType, formatDateRange } from "../../utils/temporal-utils";

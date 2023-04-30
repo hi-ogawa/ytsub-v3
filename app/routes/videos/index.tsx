@@ -19,10 +19,10 @@ import { R } from "../../misc/routes";
 import { trpc } from "../../trpc/client";
 import { toastInfo } from "../../utils/flash-message-hook";
 import {
-  makeLoader,
   useLoaderDataExtra,
   useRootLoaderData,
 } from "../../utils/loader-utils";
+import { makeLoader } from "../../utils/loader-utils.server";
 import type { PageHandle } from "../../utils/page-handle";
 import {
   PAGINATION_PARAMS_SCHEMA,

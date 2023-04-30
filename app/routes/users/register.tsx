@@ -10,7 +10,7 @@ import { $R, R } from "../../misc/routes";
 import { trpc } from "../../trpc/client";
 import { publicConfig } from "../../utils/config";
 import { loadScript } from "../../utils/dom-utils";
-import { makeLoader } from "../../utils/loader-utils";
+import { makeLoader } from "../../utils/loader-utils.server";
 import { uninitialized, usePromiseQueryOpitons } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 

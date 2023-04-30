@@ -1,7 +1,7 @@
 import { tinyassert } from "@hiogawa/utils";
 import { redirect } from "@remix-run/server-runtime";
 import { $R, ROUTE_DEF } from "../misc/routes";
-import { makeLoader } from "../utils/loader-utils";
+import { makeLoader } from "../utils/loader-utils.server";
 import { parseVideoId } from "../utils/youtube";
 
 export const loader = /* @__PURE__ */ makeLoader(async ({ ctx }) => {
