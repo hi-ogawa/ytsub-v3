@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">95.58% </span>
+                <span class="strong">95.34% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>173/181</span>
+                <span class='fraction'>164/172</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">66.66% </span>
+                <span class="strong">62.5% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>12/18</span>
+                <span class='fraction'>10/16</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">95.58% </span>
+                <span class="strong">95.34% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>173/181</span>
+                <span class='fraction'>164/172</span>
             </div>
         
             
@@ -235,22 +235,7 @@
 <a name='L170'></a><a href='#L170'>170</a>
 <a name='L171'></a><a href='#L171'>171</a>
 <a name='L172'></a><a href='#L172'>172</a>
-<a name='L173'></a><a href='#L173'>173</a>
-<a name='L174'></a><a href='#L174'>174</a>
-<a name='L175'></a><a href='#L175'>175</a>
-<a name='L176'></a><a href='#L176'>176</a>
-<a name='L177'></a><a href='#L177'>177</a>
-<a name='L178'></a><a href='#L178'>178</a>
-<a name='L179'></a><a href='#L179'>179</a>
-<a name='L180'></a><a href='#L180'>180</a>
-<a name='L181'></a><a href='#L181'>181</a>
-<a name='L182'></a><a href='#L182'>182</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<a name='L173'></a><a href='#L173'>173</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -276,11 +261,8 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -425,25 +407,19 @@
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { useLoaderData, useNavigate } from "@remix-run/react";
-import { redirect } from "@remix-run/server-runtime";
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { useNavigate } from "@remix-run/react";
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { PopoverSimple } from "../../components/popover";
 import type { UserTable } from "../../db/models";
-import { R } from "../../misc/routes";
 import { trpc } from "../../trpc/client";
-import {
-  Controller,
-  deserialize,
-  makeLoader,
-} from "../../utils/controller-utils";
 import { intl } from "../../utils/intl";
 import {
   FILTERED_LANGUAGE_CODES,
   languageCodeToName,
 } from "../../utils/language";
+import { makeLoaderV2, useDeLeafLoaderData } from "../../utils/loader-utils";
 import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 &nbsp;
@@ -455,12 +431,9 @@ export const handle: PageHandle = {
 // loader
 //
 &nbsp;
-export const loader = makeLoader(Controller, async function () {
-  const user = await this.currentUser();
-  if (user) {
-    return this.serialize(user);
-  }
-  return redirect(R["/users/signin"]);
+export const loader = makeLoaderV2(async ({ ctx }) =&gt; {
+  const user = await ctx.requireUser();
+  return user;
 });
 &nbsp;
 //
@@ -468,7 +441,7 @@ export const loader = makeLoader(Controller, async function () {
 //
 &nbsp;
 export default function DefaultComponent() {
-  const currentUser: UserTable = deserialize(useLoaderData());
+  const currentUser = useDeLeafLoaderData() as UserTable;
 &nbsp;
   const navigate = useNavigate();
 &nbsp;
@@ -613,7 +586,7 @@ function LanguageSelectOptions() {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-04-30T08:41:53.014Z
+                at 2023-04-30T08:56:32.591Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>
