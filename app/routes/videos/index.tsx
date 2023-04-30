@@ -61,7 +61,7 @@ export async function getVideosLoaderData(
   return { videos, pagination };
 }
 
-export const loader = makeLoader(async ({ ctx }) => {
+export const loader = /* @__PURE__ */ makeLoader(async ({ ctx }) => {
   const user = await ctx.requireUser();
   const query = PAGINATION_PARAMS_SCHEMA.parse(ctx.query);
   const loaderData: VideosLoaderData = await getVideosLoaderData(

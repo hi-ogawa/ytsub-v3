@@ -20,7 +20,7 @@ import { BookmarksMenuItems } from "./index";
 // loader
 //
 
-export const loader = makeLoader(async ({ ctx }) => {
+export const loader = /* @__PURE__ */ makeLoader(async ({ ctx }) => {
   await ctx.requireUser();
   return null;
 });

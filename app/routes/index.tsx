@@ -11,7 +11,7 @@ export const handle: PageHandle = {
   navBarTitle: () => "Examples",
 };
 
-export const loader = makeLoader(async ({ ctx }) => {
+export const loader = /* @__PURE__ */ makeLoader(async ({ ctx }) => {
   const query = PAGINATION_PARAMS_SCHEMA.parse(ctx.query);
   const loaderData: VideosLoaderData = await getVideosLoaderData(query);
   return loaderData;

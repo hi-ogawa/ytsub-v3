@@ -19,7 +19,7 @@ interface DecksLoaderData {
   decks: DeckTable[];
 }
 
-export const loader = makeLoader(async ({ ctx }) => {
+export const loader = /* @__PURE__ */ makeLoader(async ({ ctx }) => {
   const user = await ctx.requireUser();
   const decks = await db
     .select()
