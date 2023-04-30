@@ -1,6 +1,7 @@
 import {
   DataFunctionArgs,
   LoaderFunction,
+  json,
   redirect,
 } from "@remix-run/server-runtime";
 import { serialize } from "superjson";
@@ -13,9 +14,16 @@ export function makeLoaderImpl(
   inner: (args: { ctx: LoaderContext }) => unknown
 ): LoaderFunction {
   return async (loaderArgs) => {
-    // TODO: wrap with `superjson.serialize` by default.
     const ctx = await createLoaderContext(loaderArgs);
-    return ctx.redirectOnError(() => inner({ ctx }));
+    return ctx.redirectOnError(async () => {
+      let res = await inner({ ctx });
+      if (!(res instanceof Response)) {
+        // wrap all raw data by superjson.serialize
+        // TODO: companion consumer hook useDeLoaderData?
+        res = json(serialize(res));
+      }
+      return res;
+    });
   };
 }
 
@@ -71,10 +79,6 @@ async function createLoaderContext(loaderArgs: DataFunctionArgs) {
         await ctx.flash({ content: "Invalid request", variant: "error" });
         throw ctx.redirect(url ?? $R["/"]());
       }
-    },
-
-    serialize(data: unknown): unknown {
-      return serialize(data);
     },
   };
 

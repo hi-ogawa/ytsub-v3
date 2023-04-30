@@ -95,7 +95,7 @@ export const loader = makeLoaderV2(async ({ ctx }) => {
     pagination,
     request,
   };
-  return ctx.serialize(loaderData);
+  return loaderData;
 });
 
 export default function DefaultComponent() {

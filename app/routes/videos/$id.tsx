@@ -64,7 +64,7 @@ export const loader = makeLoaderV2(async ({ ctx }) => {
     video,
     query,
   };
-  return ctx.serialize(loaderData);
+  return loaderData;
 });
 
 //
