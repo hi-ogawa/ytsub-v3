@@ -17,11 +17,10 @@ export function makeLoaderImpl(
     const ctx = await createLoaderContext(loaderArgs);
     return ctx.redirectOnError(async () => {
       let res = await inner({ ctx });
-      if (!(res instanceof Response)) {
-        // wrap all raw data by superjson.serialize
-        res = json(serialize(res));
+      if (res instanceof Response) {
+        return res;
       }
-      return res;
+      return json(serialize(res));
     });
   };
 }
