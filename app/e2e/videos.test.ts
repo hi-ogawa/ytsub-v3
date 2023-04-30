@@ -99,7 +99,9 @@ test("anonymouse: / => /videos/new => /videos/id", async ({ page }) => {
   await page.getByPlaceholder("Enter Video ID or URL").press("Enter");
 
   // navigated to /vides/new
-  await page.waitForURL("/videos/new?videoId=4gXmClk8rKI");
+  await page.waitForURL(
+    "/videos/new?videoId=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3D4gXmClk8rKI"
+  );
   await expect(page.getByLabel("Title")).toHaveValue(
     "fromis_9 (프로미스나인) 'DM' Official MV"
   );
