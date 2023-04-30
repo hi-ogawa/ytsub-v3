@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">11.66% </span>
+                <span class="strong">11.41% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>65/557</span>
+                <span class='fraction'>63/552</span>
             </div>
         
             
@@ -39,14 +39,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/16</span>
+                <span class='fraction'>0/15</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">11.66% </span>
+                <span class="strong">11.41% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>65/557</span>
+                <span class='fraction'>63/552</span>
             </div>
         
             
@@ -615,14 +615,7 @@
 <a name='L550'></a><a href='#L550'>550</a>
 <a name='L551'></a><a href='#L551'>551</a>
 <a name='L552'></a><a href='#L552'>552</a>
-<a name='L553'></a><a href='#L553'>553</a>
-<a name='L554'></a><a href='#L554'>554</a>
-<a name='L555'></a><a href='#L555'>555</a>
-<a name='L556'></a><a href='#L556'>556</a>
-<a name='L557'></a><a href='#L557'>557</a>
-<a name='L558'></a><a href='#L558'>558</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<a name='L553'></a><a href='#L553'>553</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -670,9 +663,6 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -1181,7 +1171,6 @@
 import { isNil, typedBoolean } from "@hiogawa/utils";
 import { toArraySetState, useRafLoop } from "@hiogawa/utils-react";
 import { Link, NavLink, useLoaderData } from "@remix-run/react";
-import type { LoaderFunction } from "@remix-run/server-runtime";
 import { useQuery } from "@tanstack/react-query";
 import { omit } from "lodash";
 import React from "react";
@@ -1205,9 +1194,8 @@ import type {
 } from "../../db/models";
 import { $R, ROUTE_DEF } from "../../misc/routes";
 import { trpc } from "../../trpc/client";
-import { createLoaderTrpc } from "../../trpc/remix-utils.server";
 import { useDeserialize } from "../../utils/hooks";
-import { useLeafLoaderData } from "../../utils/loader-utils";
+import { makeLoaderV2, useLeafLoaderData } from "../../utils/loader-utils";
 import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 import type { CaptionEntry } from "../../utils/types";
@@ -1226,13 +1214,10 @@ interface LoaderData {
   request: z.infer&lt;(typeof ROUTE_DEF)["/bookmarks"]["query"]&gt;;
 }
 &nbsp;
-export const loader: LoaderFunction = <span class="fstat-no" title="function not covered" >async (args) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >  const { ctx } = await createLoaderTrpc(args);</span>
+export const loader = makeLoaderV2(async ({ ctx }) =&gt; {
 <span class="cstat-no" title="statement not covered" >  const user = await ctx.requireUser();</span>
 <span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >  const request = await ctx.redirectOnError(() =&gt;</span>
-<span class="cstat-no" title="statement not covered" >    ROUTE_DEF["/bookmarks"].query.parse(ctx.query)</span>
-<span class="cstat-no" title="statement not covered" >  );</span>
+<span class="cstat-no" title="statement not covered" >  const request = ROUTE_DEF["/bookmarks"].query.parse(ctx.query);</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  let query = db</span>
 <span class="cstat-no" title="statement not covered" >    .select()</span>
@@ -1280,7 +1265,7 @@ export const loader: LoaderFunction = <span class="fstat-no" title="function not
 <span class="cstat-no" title="statement not covered" >    request,</span>
 <span class="cstat-no" title="statement not covered" >  };</span>
 <span class="cstat-no" title="statement not covered" >  return ctx.serialize(loaderData);</span>
-<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >};</span></span>
+<span class="cstat-no" title="statement not covered" >}<span class="fstat-no" title="function not covered" >);</span></span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >export default function DefaultComponent() {</span></span>
 <span class="cstat-no" title="statement not covered" >  const data: LoaderData = useDeserialize(useLoaderData());</span>
@@ -1741,7 +1726,7 @@ export <span class="fstat-no" title="function not covered" >function BookmarksMe
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-04-30T06:57:59.830Z
+                at 2023-04-30T07:02:37.271Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
