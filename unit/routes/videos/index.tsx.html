@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">28.97% </span>
+                <span class="strong">29.15% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>82/283</span>
+                <span class='fraction'>79/271</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">50% </span>
+                <span class="strong">75% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>3/6</span>
+                <span class='fraction'>3/4</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">28.97% </span>
+                <span class="strong">29.15% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>82/283</span>
+                <span class='fraction'>79/271</span>
             </div>
         
             
@@ -334,19 +334,8 @@
 <a name='L269'></a><a href='#L269'>269</a>
 <a name='L270'></a><a href='#L270'>270</a>
 <a name='L271'></a><a href='#L271'>271</a>
-<a name='L272'></a><a href='#L272'>272</a>
-<a name='L273'></a><a href='#L273'>273</a>
-<a name='L274'></a><a href='#L274'>274</a>
-<a name='L275'></a><a href='#L275'>275</a>
-<a name='L276'></a><a href='#L276'>276</a>
-<a name='L277'></a><a href='#L277'>277</a>
-<a name='L278'></a><a href='#L278'>278</a>
-<a name='L279'></a><a href='#L279'>279</a>
-<a name='L280'></a><a href='#L280'>280</a>
-<a name='L281'></a><a href='#L281'>281</a>
-<a name='L282'></a><a href='#L282'>282</a>
-<a name='L283'></a><a href='#L283'>283</a>
-<a name='L284'></a><a href='#L284'>284</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L272'></a><a href='#L272'>272</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -410,19 +399,6 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -630,8 +606,7 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { Transition } from "@headlessui/react";
-import { useLoaderData, useNavigate } from "@remix-run/react";
-import { redirect } from "@remix-run/server-runtime";
+import { useNavigate } from "@remix-run/react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import {
@@ -649,10 +624,12 @@ import type {
 } from "../../db/models";
 import { R } from "../../misc/routes";
 import { trpc } from "../../trpc/client";
-import { Controller, makeLoader } from "../../utils/controller-utils";
 import { toastInfo } from "../../utils/flash-message-hook";
-import { useDeserialize } from "../../utils/hooks";
-import { useRootLoaderData } from "../../utils/loader-utils";
+import {
+  makeLoaderV2,
+  useDeLoaderData,
+  useRootLoaderData,
+} from "../../utils/loader-utils";
 import type { PageHandle } from "../../utils/page-handle";
 import {
   PAGINATION_PARAMS_SCHEMA,
@@ -691,27 +668,14 @@ export async function getVideosLoaderData(
   return { videos, pagination };
 <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >}</span></span>
 &nbsp;
-export const loader = makeLoader(Controller, async function () {
-  const user = await this.currentUser();
-  if (!user) <span class="branch-0 cbranch-no" title="branch not covered" >{</span>
-<span class="cstat-no" title="statement not covered" >    this.flash({</span>
-<span class="cstat-no" title="statement not covered" >      content: "Signin required.",</span>
-<span class="cstat-no" title="statement not covered" >      variant: "error",</span>
-<span class="cstat-no" title="statement not covered" >    });</span>
-<span class="cstat-no" title="statement not covered" >    return redirect(R["/users/signin"]);</span>
-<span class="cstat-no" title="statement not covered" >  }</span>
-&nbsp;
-  const parsed = PAGINATION_PARAMS_SCHEMA.safeParse(this.query());
-  if (!parsed.success) <span class="branch-0 cbranch-no" title="branch not covered" >{</span>
-<span class="cstat-no" title="statement not covered" >    this.flash({ content: "invalid parameters", variant: "error" });</span>
-<span class="cstat-no" title="statement not covered" >    return redirect(R["/bookmarks"]);</span>
-<span class="cstat-no" title="statement not covered" >  }</span>
-&nbsp;
-  const data: VideosLoaderData = await getVideosLoaderData(
-    parsed.data,
+export const loader = makeLoaderV2(async ({ ctx }) =&gt; {
+  const user = await ctx.requireUser();
+  const query = PAGINATION_PARAMS_SCHEMA.parse(ctx.query);
+  const loaderData: VideosLoaderData = await getVideosLoaderData(
+    query,
     user.id
   );
-  return this.serialize(data);
+  return loaderData;
 });
 &nbsp;
 //
@@ -720,7 +684,7 @@ export const loader = makeLoader(Controller, async function () {
 &nbsp;
 <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >export default function DefaultComponent() {</span></span>
 <span class="cstat-no" title="statement not covered" >  const { currentUser } = useRootLoaderData();</span>
-<span class="cstat-no" title="statement not covered" >  const data: VideosLoaderData = useDeserialize(useLoaderData());</span>
+<span class="cstat-no" title="statement not covered" >  const data = useDeLoaderData() as VideosLoaderData;</span>
 <span class="cstat-no" title="statement not covered" >  return &lt;VideoListComponent {...data} currentUser={currentUser} /&gt;;</span>
 <span class="cstat-no" title="statement not covered" >}</span>
 &nbsp;
@@ -919,7 +883,7 @@ export <span class="fstat-no" title="function not covered" >function VideoListCo
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-04-30T09:18:52.073Z
+                at 2023-04-30T10:58:41.512Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

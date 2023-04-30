@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">89.34% </span>
+                <span class="strong">91.56% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>218/244</span>
+                <span class='fraction'>217/237</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">60% </span>
+                <span class="strong">62.5% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>15/25</span>
+                <span class='fraction'>15/24</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">89.34% </span>
+                <span class="strong">91.56% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>218/244</span>
+                <span class='fraction'>217/237</span>
             </div>
         
             
@@ -300,14 +300,18 @@
 <a name='L235'></a><a href='#L235'>235</a>
 <a name='L236'></a><a href='#L236'>236</a>
 <a name='L237'></a><a href='#L237'>237</a>
-<a name='L238'></a><a href='#L238'>238</a>
-<a name='L239'></a><a href='#L239'>239</a>
-<a name='L240'></a><a href='#L240'>240</a>
-<a name='L241'></a><a href='#L241'>241</a>
-<a name='L242'></a><a href='#L242'>242</a>
-<a name='L243'></a><a href='#L243'>243</a>
-<a name='L244'></a><a href='#L244'>244</a>
-<a name='L245'></a><a href='#L245'>245</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L238'></a><a href='#L238'>238</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -349,22 +353,6 @@
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -393,8 +381,6 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
@@ -551,7 +537,8 @@
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { useLoaderData, useNavigate } from "@remix-run/react";
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { tinyassert, wrapPromise } from "@hiogawa/utils";
+import { useNavigate } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
@@ -559,11 +546,13 @@ import { toast } from "react-hot-toast";
 import type { UserTable } from "../../db/models";
 import { $R, R, ROUTE_DEF } from "../../misc/routes";
 import { trpc } from "../../trpc/client";
-import { Controller, makeLoader } from "../../utils/controller-utils";
 import { toastInfo } from "../../utils/flash-message-hook";
-import { useDeserialize } from "../../utils/hooks";
 import { isLanguageCode } from "../../utils/language";
-import { useRootLoaderData } from "../../utils/loader-utils";
+import {
+  makeLoaderV2,
+  useDeLoaderData,
+  useRootLoaderData,
+} from "../../utils/loader-utils";
 import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 import type { CaptionConfig, VideoMetadata } from "../../utils/types";
@@ -583,34 +572,26 @@ type LoaderData = {
   userCaptionConfigs?: { language1?: CaptionConfig; language2?: CaptionConfig };
 };
 &nbsp;
-export const loader = makeLoader(Controller, async function () {
-  const parsed = ROUTE_DEF["/videos/new"].query.safeParse(this.query());
-  if (parsed.success) {
-    const videoId = parseVideoId(parsed.data.videoId);
-    if (videoId) {
-      const user = await this.currentUser();
-      try {
-        const videoMetadata = await fetchVideoMetadata(videoId);
-        const loaderData: LoaderData = {
-          videoMetadata,
-          userCaptionConfigs:
-            user &amp;&amp; findUserCaptionConfigs(videoMetadata, user),
-        };
-        return this.serialize(loaderData);
-<span class="branch-0 cbranch-no" title="branch not covered" >      } catch (e) {</span>
-<span class="cstat-no" title="statement not covered" >        this.flash({</span>
-<span class="cstat-no" title="statement not covered" >          content: `Failed to load a video`,</span>
-<span class="cstat-no" title="statement not covered" >          variant: "error",</span>
-<span class="cstat-no" title="statement not covered" >        });</span>
-<span class="cstat-no" title="statement not covered" >        return redirect(R["/"]);</span>
-<span class="cstat-no" title="statement not covered" >      }</span>
-    }
+export const loader = makeLoaderV2(async ({ ctx }) =&gt; {
+  const query = ROUTE_DEF["/videos/new"].query.parse(ctx.query);
+  const videoId = parseVideoId(query.videoId);
+  tinyassert(videoId);
+  const user = await ctx.currentUser();
+  const result = await wrapPromise(fetchVideoMetadata(videoId));
+  if (!result.ok) {
+    // either invalid videoId or youtube api failure
+    await ctx.flash({
+      content: `Failed to load a video`,
+      variant: "error",
+    });
+    return redirect(R["/"]);
   }
-  this.flash({
-    content: "Invalid input",
-    variant: "error",
-  });
-  return redirect(R["/"]);
+  const videoMetadata = result.value;
+  const loaderData: LoaderData = {
+    videoMetadata,
+    userCaptionConfigs: user &amp;&amp; findUserCaptionConfigs(videoMetadata, user),
+  };
+  return loaderData;
 });
 &nbsp;
 function findUserCaptionConfigs(videoMetadata: VideoMetadata, user: UserTable) {
@@ -638,9 +619,7 @@ export const handle: PageHandle = {
 &nbsp;
 export default function DefaultComponent() {
   const { currentUser } = useRootLoaderData();
-  const { videoMetadata, userCaptionConfigs }: LoaderData = useDeserialize(
-    useLoaderData()
-  );
+  const { videoMetadata, userCaptionConfigs } = useDeLoaderData() as LoaderData;
 &nbsp;
   const navigate = useNavigate();
 &nbsp;
@@ -802,7 +781,7 @@ function LanguageSelectComponent({
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-04-30T09:20:42.976Z
+                at 2023-04-30T11:00:20.259Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>
