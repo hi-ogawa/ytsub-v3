@@ -82,9 +82,9 @@ async function createLoaderContext(loaderArgs: DataFunctionArgs) {
         if (error instanceof Response) {
           res = error;
         } else {
-          // root redirection as default error handling
-          if (reqUrl.password + reqUrl.search === destUrl) {
-            throw new Error("TODO: redirectOnError (infinite redirection?)"); // but avoid infinite rediction
+          // root redirection as default error handling unless infinite redirection
+          if (reqUrl.pathname + reqUrl.search === destUrl) {
+            throw new Error("redirectOnError (infinite redirection detected)");
           }
           await ctx.flash({ content: "Invalid request", variant: "error" });
           res = redirect(destUrl);
