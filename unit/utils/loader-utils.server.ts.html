@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for utils/loader-builder.server.ts</title>
+    <title>Code coverage report for utils/loader-utils.server.ts</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../prettify.css" />
     <link rel="stylesheet" href="../base.css" />
@@ -19,34 +19,34 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../index.html">All files</a> / <a href="index.html">utils</a> loader-builder.server.ts</h1>
+        <h1><a href="../index.html">All files</a> / <a href="index.html">utils</a> loader-utils.server.ts</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">94.28% </span>
+                <span class="strong">48.64% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>33/35</span>
+                <span class='fraction'>18/37</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/0</span>
+                <span class='fraction'>2/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">66.66% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/2</span>
+                <span class='fraction'>2/3</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">94.28% </span>
+                <span class="strong">48.64% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>33/35</span>
+                <span class='fraction'>18/37</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line high'></div>
+    <div class='status-line low'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -98,19 +98,22 @@
 <a name='L33'></a><a href='#L33'>33</a>
 <a name='L34'></a><a href='#L34'>34</a>
 <a name='L35'></a><a href='#L35'>35</a>
-<a name='L36'></a><a href='#L36'>36</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L36'></a><a href='#L36'>36</a>
+<a name='L37'></a><a href='#L37'>37</a>
+<a name='L38'></a><a href='#L38'>38</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -120,54 +123,57 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import type { DataFunctionArgs } from "@remix-run/server-runtime";
-// import { createTrpcAppContext } from "./context";
-// import { trpcApp } from "./server";
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import type {
+  DataFunctionArgs,
+  LoaderFunction,
+} from "@remix-run/server-runtime";
+import { createTrpcAppContext } from "../trpc/context";
 &nbsp;
-// // cf. testTrpcClientWithContext
-// export async function createLoaderTrpc(loaderArgs: DataFunctionArgs) {
-//   const ctx = await createTrpcAppContext({
-//     req: loaderArgs.request,
-//     resHeaders: new Headers(),
-//     loaderArgs: loaderArgs,
-//   });
-//   const caller = trpcApp.createCaller(ctx);
-//   return { caller, ctx };
-// }
+export function makeLoaderV2(
+  inner: (args: { ctx: LoaderContext }) =&gt; unknown
+): LoaderFunction {
+  return async (loaderArgs) =&gt; {
+<span class="cstat-no" title="statement not covered" >    const ctx = await createLoaderContext(loaderArgs);</span>
+<span class="cstat-no" title="statement not covered" >    return ctx.redirectOnError(() =&gt; inner({ ctx }));</span>
+<span class="cstat-no" title="statement not covered" >  };</span>
+}
 &nbsp;
-// withLoaderWrapper
-// export async function makeLoader() {
-// }
+//
+// extending the idea of trpc context for remix loader
+//
 &nbsp;
-export function __loaderBuilderImpl&lt;T&gt;(f: T): T <span class="fstat-no" title="function not covered" >{</span>
-<span class="cstat-no" title="statement not covered" >  return f;</span>
-<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >}</span></span>
+export type LoaderContext = Awaited&lt;ReturnType&lt;typeof createLoaderContext&gt;&gt;;
 &nbsp;
-// .input(z.object({ params, query })).loader({ query, params, ctx })
-&nbsp;
-/*
-&nbsp;
-export const loader =
-  looderBuilder
-  .input(ROUTE_DEF["/videos/$id"])
-  .query(({ input: { query, params } }) =&gt; {
-&nbsp;
-});
-&nbsp;
-*/
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >async function createLoaderContext(loaderArgs: DataFunctionArgs) {</span></span>
+<span class="cstat-no" title="statement not covered" >  const { request: req } = loaderArgs;</span>
+<span class="cstat-no" title="statement not covered" >  const resHeaders = new Headers();</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >  const trpcCtx = await createTrpcAppContext({</span>
+<span class="cstat-no" title="statement not covered" >    req,</span>
+<span class="cstat-no" title="statement not covered" >    resHeaders,</span>
+<span class="cstat-no" title="statement not covered" >  });</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >  const ctx = {</span>
+<span class="cstat-no" title="statement not covered" >    ...trpcCtx,</span>
+<span class="cstat-no" title="statement not covered" >    params: loaderArgs.params,</span>
+<span class="cstat-no" title="statement not covered" >  };</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >  return ctx;</span>
+<span class="cstat-no" title="statement not covered" >}</span>
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -175,7 +181,7 @@ export const loader =
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-04-30T02:14:06.110Z
+                at 2023-04-30T06:37:36.931Z
             </div>
         <script src="../prettify.js"></script>
         <script>
