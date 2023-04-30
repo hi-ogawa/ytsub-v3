@@ -39,7 +39,7 @@ export const createTrpcAppContext = async ({
     },
 
     //
-    // for remix loader
+    // for remix loader (TODO: move to makeLoaderV2)
     //
 
     params: loaderArgs?.params,

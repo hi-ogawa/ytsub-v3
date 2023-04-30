@@ -3,7 +3,6 @@ import { tinyassert } from "@hiogawa/utils";
 import { isNil } from "@hiogawa/utils";
 import { toArraySetState, useRafLoop } from "@hiogawa/utils-react";
 import { Form, Link, useLoaderData, useNavigate } from "@remix-run/react";
-import type { LoaderFunction } from "@remix-run/server-runtime";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   VirtualItem,
@@ -22,11 +21,14 @@ import { E, T, db, findOne } from "../../db/drizzle-client.server";
 import type { CaptionEntryTable, UserTable, VideoTable } from "../../db/models";
 import { $R, ROUTE_DEF } from "../../misc/routes";
 import { trpc } from "../../trpc/client";
-import { createLoaderTrpc } from "../../trpc/remix-utils.server";
 import { useDeserialize } from "../../utils/hooks";
 import { useDocumentEvent } from "../../utils/hooks-client-utils";
 import { intl } from "../../utils/intl";
-import { useLeafLoaderData, useRootLoaderData } from "../../utils/loader-utils";
+import {
+  makeLoaderV2,
+  useLeafLoaderData,
+  useRootLoaderData,
+} from "../../utils/loader-utils";
 import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 import type { CaptionEntry } from "../../utils/types";
@@ -51,22 +53,19 @@ type LoaderData = {
   query: z.infer<(typeof ROUTE_DEF)["/videos/$id"]["query"]>;
 };
 
-export const loader: LoaderFunction = async (args) => {
-  const { ctx } = await createLoaderTrpc(args);
-  return ctx.redirectOnError(async () => {
-    const params = ROUTE_DEF["/videos/$id"].params.parse(ctx.params);
-    const query = ROUTE_DEF["/videos/$id"].query.parse(ctx.query);
-    const video = await findOne(
-      db.select().from(T.videos).where(E.eq(T.videos.id, params.id))
-    );
-    tinyassert(video);
-    const loaderData: LoaderData = {
-      video,
-      query,
-    };
-    return ctx.serialize(loaderData);
-  });
-};
+export const loader = makeLoaderV2(async ({ ctx }) => {
+  const params = ROUTE_DEF["/videos/$id"].params.parse(ctx.params);
+  const query = ROUTE_DEF["/videos/$id"].query.parse(ctx.query);
+  const video = await findOne(
+    db.select().from(T.videos).where(E.eq(T.videos.id, params.id))
+  );
+  tinyassert(video);
+  const loaderData: LoaderData = {
+    video,
+    query,
+  };
+  return ctx.serialize(loaderData);
+});
 
 //
 // component
