@@ -15,8 +15,14 @@ export function useRootLoaderData(): RootLoaderData {
   return React.useMemo(() => deserialize(data), [data]);
 }
 
-export function useDeLeafLoaderData(): unknown {
+export function useLeafLoaderData(): unknown {
   const [{ data }] = useMatches().slice(-1);
+  return React.useMemo(() => deserialize(data), [data]);
+}
+
+// superjson.deserialize wrapper
+export function useLoaderDataExtra(): unknown {
+  const data = useLoaderData();
   return React.useMemo(() => deserialize(data), [data]);
 }
 
@@ -29,9 +35,3 @@ export const makeLoader = (
     ? makeLoaderImpl
     : () => {}
 ) as typeof makeLoaderImpl;
-
-// companion for makeLoader with auto superjson.serialize
-export function useDeLoaderData(): unknown {
-  const data = useLoaderData();
-  return React.useMemo(() => deserialize(data), [data]);
-}

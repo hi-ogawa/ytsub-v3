@@ -9,7 +9,7 @@ import { trpc } from "../../../trpc/client";
 import { toastInfo } from "../../../utils/flash-message-hook";
 import { intl } from "../../../utils/intl";
 import { requireUserAndDeckV2 } from "../../../utils/loader-deck-utils";
-import { makeLoader, useDeLoaderData } from "../../../utils/loader-utils";
+import { makeLoader, useLoaderDataExtra } from "../../../utils/loader-utils";
 import { cls } from "../../../utils/misc";
 import type { PageHandle } from "../../../utils/page-handle";
 
@@ -45,7 +45,7 @@ export default function DefaultComponent() {
 }
 
 function DefaultComponentInner() {
-  const { deck } = useDeLoaderData() as LoaderData;
+  const { deck } = useLoaderDataExtra() as LoaderData;
 
   const form = useForm({ defaultValues: deck });
 

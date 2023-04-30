@@ -1,4 +1,4 @@
-import { makeLoader, useDeLoaderData } from "../utils/loader-utils";
+import { makeLoader, useLoaderDataExtra } from "../utils/loader-utils";
 import type { PageHandle } from "../utils/page-handle";
 import { PAGINATION_PARAMS_SCHEMA } from "../utils/pagination";
 import {
@@ -18,6 +18,6 @@ export const loader = makeLoader(async ({ ctx }) => {
 });
 
 export default function DefaultComponent() {
-  const data = useDeLoaderData() as VideosLoaderData;
+  const data = useLoaderDataExtra() as VideosLoaderData;
   return <VideoListComponent {...data} />;
 }

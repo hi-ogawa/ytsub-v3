@@ -15,8 +15,8 @@ import { trpc } from "../../../trpc/client";
 import { requireUserAndDeckV2 } from "../../../utils/loader-deck-utils";
 import {
   makeLoader,
-  useDeLeafLoaderData,
-  useDeLoaderData,
+  useLeafLoaderData,
+  useLoaderDataExtra,
 } from "../../../utils/loader-utils";
 import { cls } from "../../../utils/misc";
 import type { PageHandle } from "../../../utils/page-handle";
@@ -47,7 +47,7 @@ export const loader = makeLoader(async ({ ctx }) => {
 //
 
 export default function DefaultComponent() {
-  const { deck } = useDeLoaderData() as LoaderData;
+  const { deck } = useLoaderDataExtra() as LoaderData;
 
   const nextPracticeQuery = useQuery({
     ...trpc.decks_nextPracticeEntry.queryOptions({
@@ -182,7 +182,7 @@ function PracticeComponent({
 //
 
 function NavBarTitleComponent() {
-  const { deck } = useDeLeafLoaderData() as LoaderData;
+  const { deck } = useLeafLoaderData() as LoaderData;
   return (
     <span>
       {deck.name}{" "}

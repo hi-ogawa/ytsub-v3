@@ -25,8 +25,8 @@ import { useDocumentEvent } from "../../utils/hooks-client-utils";
 import { intl } from "../../utils/intl";
 import {
   makeLoader,
-  useDeLeafLoaderData,
-  useDeLoaderData,
+  useLeafLoaderData,
+  useLoaderDataExtra,
   useRootLoaderData,
 } from "../../utils/loader-utils";
 import { cls } from "../../utils/misc";
@@ -73,7 +73,7 @@ export const loader = makeLoader(async ({ ctx }) => {
 
 export default function DeafultComponent() {
   const { currentUser } = useRootLoaderData();
-  const data = useDeLoaderData() as LoaderData;
+  const data = useLoaderDataExtra() as LoaderData;
   return <PageComponent currentUser={currentUser} {...data} />;
 }
 
@@ -641,7 +641,7 @@ function HighlightText({
 
 function NavBarMenuComponent() {
   const { currentUser } = useRootLoaderData();
-  const { video } = useDeLeafLoaderData() as LoaderData;
+  const { video } = useLeafLoaderData() as LoaderData;
   return <NavBarMenuComponentImpl user={currentUser} video={video} />;
 }
 

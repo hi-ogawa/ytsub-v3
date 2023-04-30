@@ -20,7 +20,7 @@ import { trpc } from "../../trpc/client";
 import { toastInfo } from "../../utils/flash-message-hook";
 import {
   makeLoader,
-  useDeLoaderData,
+  useLoaderDataExtra,
   useRootLoaderData,
 } from "../../utils/loader-utils";
 import type { PageHandle } from "../../utils/page-handle";
@@ -77,7 +77,7 @@ export const loader = makeLoader(async ({ ctx }) => {
 
 export default function DefaultComponent() {
   const { currentUser } = useRootLoaderData();
-  const data = useDeLoaderData() as VideosLoaderData;
+  const data = useLoaderDataExtra() as VideosLoaderData;
   return <VideoListComponent {...data} currentUser={currentUser} />;
 }
 

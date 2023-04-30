@@ -2,7 +2,7 @@ import { Link } from "@remix-run/react";
 import { E, T, db } from "../../db/drizzle-client.server";
 import type { DeckTable } from "../../db/models";
 import { $R } from "../../misc/routes";
-import { makeLoader, useDeLoaderData } from "../../utils/loader-utils";
+import { makeLoader, useLoaderDataExtra } from "../../utils/loader-utils";
 import type { PageHandle } from "../../utils/page-handle";
 import { DeckMenuComponent } from "./$id";
 
@@ -35,7 +35,7 @@ export const loader = makeLoader(async ({ ctx }) => {
 //
 
 export default function DefaultComponent() {
-  const data = useDeLoaderData() as DecksLoaderData;
+  const data = useLoaderDataExtra() as DecksLoaderData;
   const { decks } = data;
   return (
     <div className="w-full flex justify-center">

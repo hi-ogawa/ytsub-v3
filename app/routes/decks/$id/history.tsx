@@ -17,8 +17,8 @@ import { formatRelativeDate } from "../../../utils/intl";
 import { requireUserAndDeckV2 } from "../../../utils/loader-deck-utils";
 import {
   makeLoader,
-  useDeLeafLoaderData,
-  useDeLoaderData,
+  useLeafLoaderData,
+  useLoaderDataExtra,
 } from "../../../utils/loader-utils";
 import { cls } from "../../../utils/misc";
 import type { PageHandle } from "../../../utils/page-handle";
@@ -56,7 +56,7 @@ export const loader = makeLoader(async ({ ctx }) => {
 //
 
 export default function DefaultComponent() {
-  const { deck, query } = useDeLoaderData() as LoaderData;
+  const { deck, query } = useLoaderDataExtra() as LoaderData;
   const navigate = useNavigate();
 
   const queryArgs = {
@@ -275,7 +275,7 @@ function PracticeActionComponent(
 //
 
 function NavBarTitleComponent() {
-  const { deck } = useDeLeafLoaderData() as LoaderData;
+  const { deck } = useLeafLoaderData() as LoaderData;
   return (
     <span>
       {deck.name}{" "}

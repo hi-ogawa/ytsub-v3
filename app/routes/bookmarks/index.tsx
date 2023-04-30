@@ -26,8 +26,8 @@ import { $R, ROUTE_DEF } from "../../misc/routes";
 import { trpc } from "../../trpc/client";
 import {
   makeLoader,
-  useDeLeafLoaderData,
-  useDeLoaderData,
+  useLeafLoaderData,
+  useLoaderDataExtra,
 } from "../../utils/loader-utils";
 import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
@@ -95,7 +95,7 @@ export const loader = makeLoader(async ({ ctx }) => {
 });
 
 export default function DefaultComponent() {
-  const data = useDeLoaderData() as LoaderData;
+  const data = useLoaderDataExtra() as LoaderData;
   return <ComponentImpl {...data} />;
 }
 
@@ -415,7 +415,7 @@ export function MiniPlayer({
 //
 
 function NavBarMenuComponent() {
-  const { request } = useDeLeafLoaderData() as LoaderData;
+  const { request } = useLeafLoaderData() as LoaderData;
   const videoSelectModal = useModal();
   const deckSelectModal = useModal();
 

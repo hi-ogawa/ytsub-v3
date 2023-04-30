@@ -15,8 +15,8 @@ import { useClickOutside } from "../../../utils/hooks-client-utils";
 import { requireUserAndDeckV2 } from "../../../utils/loader-deck-utils";
 import {
   makeLoader,
-  useDeLeafLoaderData,
-  useDeLoaderData,
+  useLeafLoaderData,
+  useLoaderDataExtra,
 } from "../../../utils/loader-utils";
 import { cls } from "../../../utils/misc";
 import type { PageHandle } from "../../../utils/page-handle";
@@ -50,7 +50,7 @@ export const loader = makeLoader(async ({ ctx }) => {
 //
 
 export default function DefaultComponent() {
-  const { deck } = useDeLoaderData() as LoaderData;
+  const { deck } = useLoaderDataExtra() as LoaderData;
 
   const [instance, setInstance] = React.useState<ECharts>();
 
@@ -153,7 +153,7 @@ export default function DefaultComponent() {
 //
 
 function NavBarTitleComponent() {
-  const { deck } = useDeLeafLoaderData() as LoaderData;
+  const { deck } = useLeafLoaderData() as LoaderData;
   return (
     <span>
       {deck.name}{" "}

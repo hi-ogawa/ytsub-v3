@@ -10,7 +10,7 @@ import {
   FILTERED_LANGUAGE_CODES,
   languageCodeToName,
 } from "../../utils/language";
-import { makeLoader, useDeLeafLoaderData } from "../../utils/loader-utils";
+import { makeLoader, useLeafLoaderData } from "../../utils/loader-utils";
 import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 
@@ -32,7 +32,7 @@ export const loader = makeLoader(async ({ ctx }) => {
 //
 
 export default function DefaultComponent() {
-  const currentUser = useDeLeafLoaderData() as UserTable;
+  const currentUser = useLeafLoaderData() as UserTable;
 
   const navigate = useNavigate();
 

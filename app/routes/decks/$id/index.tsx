@@ -26,8 +26,8 @@ import { intl, intlWrapper } from "../../../utils/intl";
 import { requireUserAndDeckV2 } from "../../../utils/loader-deck-utils";
 import {
   makeLoader,
-  useDeLeafLoaderData,
-  useDeLoaderData,
+  useLeafLoaderData,
+  useLoaderDataExtra,
 } from "../../../utils/loader-utils";
 import { cls } from "../../../utils/misc";
 import type { PageHandle } from "../../../utils/page-handle";
@@ -89,7 +89,7 @@ export const loader = makeLoader(async ({ ctx }) => {
 //
 
 export default function DefaultComponent() {
-  const { deck, pagination, rows } = useDeLoaderData() as LoaderData;
+  const { deck, pagination, rows } = useLoaderDataExtra() as LoaderData;
 
   const content = (
     <div className="w-full flex justify-center">
@@ -294,7 +294,7 @@ export function QueueTypeIcon({ queueType }: { queueType: PracticeQueueType }) {
 //
 
 function NavBarTitleComponent() {
-  const { deck } = useDeLeafLoaderData() as LoaderData;
+  const { deck } = useLeafLoaderData() as LoaderData;
   return <>{deck.name}</>;
 }
 
@@ -303,7 +303,7 @@ function NavBarTitleComponent() {
 //
 
 export function DeckNavBarMenuComponent() {
-  const { deck } = useDeLeafLoaderData() as LoaderData;
+  const { deck } = useLeafLoaderData() as LoaderData;
   return <DeckMenuComponent deck={deck} />;
 }
 

@@ -11,7 +11,7 @@ import { toastInfo } from "../../utils/flash-message-hook";
 import { isLanguageCode } from "../../utils/language";
 import {
   makeLoader,
-  useDeLoaderData,
+  useLoaderDataExtra,
   useRootLoaderData,
 } from "../../utils/loader-utils";
 import { cls } from "../../utils/misc";
@@ -80,7 +80,8 @@ export const handle: PageHandle = {
 
 export default function DefaultComponent() {
   const { currentUser } = useRootLoaderData();
-  const { videoMetadata, userCaptionConfigs } = useDeLoaderData() as LoaderData;
+  const { videoMetadata, userCaptionConfigs } =
+    useLoaderDataExtra() as LoaderData;
 
   const navigate = useNavigate();
 
