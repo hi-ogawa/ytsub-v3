@@ -8,7 +8,11 @@ import { serialize } from "superjson";
 import { $R } from "../misc/routes";
 import { createTrpcAppContext } from "../trpc/context";
 import { getSessionUser } from "./auth";
-import { FlashMessage, pushFlashMessage } from "./flash-message";
+import {
+  FlashMessage,
+  getFlashMessages,
+  pushFlashMessage,
+} from "./flash-message";
 
 export function makeLoaderImpl(
   inner: (args: { ctx: LoaderContext }) => unknown
@@ -16,11 +20,9 @@ export function makeLoaderImpl(
   return async (loaderArgs) => {
     const ctx = await createLoaderContext(loaderArgs);
     return ctx.redirectOnError(async () => {
-      let res = await inner({ ctx });
-      if (res instanceof Response) {
-        return res;
-      }
-      return json(serialize(res));
+      let resRaw = await inner({ ctx });
+      const res = resRaw instanceof Response ? resRaw : json(serialize(resRaw));
+      return ctx.__finalizeResponse(res);
     });
   };
 }
@@ -54,8 +56,10 @@ async function createLoaderContext(loaderArgs: DataFunctionArgs) {
       await ctx.commitSession();
     },
 
-    redirect: (url: string) => {
-      return redirect(url, { headers: resHeaders });
+    getFlashMessages: async () => {
+      const flashMessages = getFlashMessages(ctx.session);
+      await ctx.commitSession();
+      return flashMessages;
     },
 
     currentUser: () => {
@@ -66,7 +70,7 @@ async function createLoaderContext(loaderArgs: DataFunctionArgs) {
       const user = await ctx.currentUser();
       if (!user) {
         await ctx.flash({ content: "Signin required", variant: "error" });
-        throw ctx.redirect($R["/users/signin"]());
+        throw redirect($R["/users/signin"]());
       }
       return user;
     },
@@ -74,15 +78,30 @@ async function createLoaderContext(loaderArgs: DataFunctionArgs) {
     async redirectOnError<T>(f: () => T, url?: string) {
       try {
         return await f();
-      } catch (e) {
-        if (e instanceof Response) {
-          throw e;
+      } catch (error) {
+        let res: Response;
+        if (error instanceof Response) {
+          res = error;
+        } else {
+          // root redirection as default error handling
+          await ctx.flash({ content: "Invalid request", variant: "error" });
+          res = redirect(url ?? $R["/"]());
         }
-        await ctx.flash({ content: "Invalid request", variant: "error" });
-        throw ctx.redirect(url ?? $R["/"]());
+        throw ctx.__finalizeResponse(res);
       }
+    },
+
+    __finalizeResponse: (res: Response): Response => {
+      mergeHeaders(res.headers, resHeaders);
+      return res;
     },
   };
 
   return ctx;
+}
+
+function mergeHeaders(dst: Headers, src: Headers) {
+  src.forEach((value, key) => {
+    dst.set(key, value);
+  });
 }

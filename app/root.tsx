@@ -25,7 +25,6 @@ import { HideRecaptchaBadge } from "./routes/users/register";
 import { trpc } from "./trpc/client";
 import { publicConfig } from "./utils/config";
 import { ConfigPlaceholder } from "./utils/config-placeholder";
-import { getFlashMessages } from "./utils/flash-message";
 import { useFlashMessages } from "./utils/flash-message-hook";
 import {
   RootLoaderData,
@@ -52,7 +51,7 @@ export const links: LinksFunction = () => {
 export const loader = makeLoaderV2(async ({ ctx }) => {
   const loaderData: RootLoaderData = {
     currentUser: await ctx.currentUser(),
-    flashMessages: getFlashMessages(ctx.session),
+    flashMessages: await ctx.getFlashMessages(),
   };
   return loaderData;
 });

@@ -1,5 +1,7 @@
 import type { Session } from "@remix-run/server-runtime";
 
+// TODO: refactor
+
 const KEY = "flash-messages";
 
 export interface FlashMessage {
