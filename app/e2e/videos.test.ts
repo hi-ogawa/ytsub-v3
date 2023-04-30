@@ -93,7 +93,9 @@ test("anonymouse: / => /videos/new => /videos/id", async ({ page }) => {
 
   // input videoId
   await page.getByRole("button").click();
-  await page.getByPlaceholder("Enter Video ID or URL").fill("4gXmClk8rKI");
+  await page
+    .getByPlaceholder("Enter Video ID or URL")
+    .fill("https://www.youtube.com/watch?v=4gXmClk8rKI");
   await page.getByPlaceholder("Enter Video ID or URL").press("Enter");
 
   // navigated to /vides/new
@@ -117,8 +119,11 @@ test("anonymouse: / => /videos/new => /videos/id", async ({ page }) => {
 
 test("invalid videoId input", async ({ page }) => {
   await page.goto("/");
-  await page.getByRole("button").click();
-  await page.getByPlaceholder("Enter Video ID or URL").fill("xxx");
+  await page.getByTestId("Navbar-drawer-button").click();
+  await page.getByPlaceholder("Enter Video ID or URL").click();
+  await page
+    .getByPlaceholder("Enter Video ID or URL")
+    .fill("https://www.youtube.com/watch?v=4gXmClk8rXX");
   await page.getByPlaceholder("Enter Video ID or URL").press("Enter");
-  await page.getByText("Invalid input").click();
+  await page.getByText("Failed to load a video").click();
 });

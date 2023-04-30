@@ -57,7 +57,9 @@ async function createLoaderContext(loaderArgs: DataFunctionArgs) {
 
     getFlashMessages: async () => {
       const flashMessages = getFlashMessages(ctx.session);
-      await ctx.commitSession();
+      if (flashMessages.length > 0) {
+        await ctx.commitSession();
+      }
       return flashMessages;
     },
 
