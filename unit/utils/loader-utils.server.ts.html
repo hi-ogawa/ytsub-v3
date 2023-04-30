@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">23.52% </span>
+                <span class="strong">22.72% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>20/85</span>
+                <span class='fraction'>20/88</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">23.52% </span>
+                <span class="strong">22.72% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>20/85</span>
+                <span class='fraction'>20/88</span>
             </div>
         
             
@@ -148,7 +148,10 @@
 <a name='L83'></a><a href='#L83'>83</a>
 <a name='L84'></a><a href='#L84'>84</a>
 <a name='L85'></a><a href='#L85'>85</a>
-<a name='L86'></a><a href='#L86'>86</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L86'></a><a href='#L86'>86</a>
+<a name='L87'></a><a href='#L87'>87</a>
+<a name='L88'></a><a href='#L88'>88</a>
+<a name='L89'></a><a href='#L89'>89</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -174,14 +177,17 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -252,11 +258,10 @@ export <span class="fstat-no" title="function not covered" >function makeLoaderI
 <span class="cstat-no" title="statement not covered" >    const ctx = await createLoaderContext(loaderArgs);</span>
 <span class="cstat-no" title="statement not covered" >    return ctx.redirectOnError(async () =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >      let res = await inner({ ctx });</span>
-<span class="cstat-no" title="statement not covered" >      if (!(res instanceof Response)) {</span>
-<span class="cstat-no" title="statement not covered" >        // wrap all raw data by superjson.serialize</span>
-<span class="cstat-no" title="statement not covered" >        res = json(serialize(res));</span>
+<span class="cstat-no" title="statement not covered" >      if (res instanceof Response) {</span>
+<span class="cstat-no" title="statement not covered" >        return res;</span>
 <span class="cstat-no" title="statement not covered" >      }</span>
-<span class="cstat-no" title="statement not covered" >      return res;</span>
+<span class="cstat-no" title="statement not covered" >      return json(serialize(res));</span>
 <span class="cstat-no" title="statement not covered" >    });</span>
 <span class="cstat-no" title="statement not covered" >  };</span>
 <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >}</span></span>
@@ -294,8 +299,12 @@ export type LoaderContext = Awaited&lt;ReturnType&lt;typeof createLoaderContext&
 <span class="cstat-no" title="statement not covered" >      return redirect(url, { headers: resHeaders });</span>
 <span class="cstat-no" title="statement not covered" >    },</span>
 <span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >    currentUser: () =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >      return getSessionUser(ctx.session);</span>
+<span class="cstat-no" title="statement not covered" >    },</span>
+<span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >    requireUser: async () =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >      const user = await getSessionUser(ctx.session);</span>
+<span class="cstat-no" title="statement not covered" >      const user = await ctx.currentUser();</span>
 <span class="cstat-no" title="statement not covered" >      if (!user) {</span>
 <span class="cstat-no" title="statement not covered" >        await ctx.flash({ content: "Signin required", variant: "error" });</span>
 <span class="cstat-no" title="statement not covered" >        throw ctx.redirect($R["/users/signin"]());</span>
@@ -325,7 +334,7 @@ export type LoaderContext = Awaited&lt;ReturnType&lt;typeof createLoaderContext&
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-04-30T07:26:17.040Z
+                at 2023-04-30T07:34:49.636Z
             </div>
         <script src="../prettify.js"></script>
         <script>
