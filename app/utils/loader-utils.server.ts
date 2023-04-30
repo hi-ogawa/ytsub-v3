@@ -84,6 +84,7 @@ async function createLoaderContext(loaderArgs: DataFunctionArgs) {
           res = error;
         } else {
           // root redirection as default error handling
+          // TODO: this can cause infinite redirection for root
           await ctx.flash({ content: "Invalid request", variant: "error" });
           res = redirect(url ?? $R["/"]());
         }
