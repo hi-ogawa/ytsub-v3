@@ -1,6 +1,5 @@
 import { Transition } from "@headlessui/react";
-import { Link, NavLink, useLoaderData } from "@remix-run/react";
-import { redirect } from "@remix-run/server-runtime";
+import { Link, NavLink } from "@remix-run/react";
 import { useQuery } from "@tanstack/react-query";
 import React from "react";
 import { PaginationComponent, transitionProps } from "../../../components/misc";
@@ -10,7 +9,6 @@ import {
   T,
   TT,
   db,
-  findOne,
   toPaginationResult,
 } from "../../../db/drizzle-client.server";
 import type {
@@ -19,17 +17,18 @@ import type {
   DeckTable,
   PaginationMetadata,
   PracticeEntryTable,
-  UserTable,
   VideoTable,
 } from "../../../db/models";
 import type { PracticeActionType, PracticeQueueType } from "../../../db/types";
-import { $R, R, ROUTE_DEF } from "../../../misc/routes";
+import { $R, ROUTE_DEF } from "../../../misc/routes";
 import { trpc } from "../../../trpc/client";
-import type { Controller } from "../../../utils/controller-utils";
-import { useDeserialize } from "../../../utils/hooks";
 import { intl, intlWrapper } from "../../../utils/intl";
 import { requireUserAndDeckV2 } from "../../../utils/loader-deck-utils";
-import { makeLoaderV2, useLeafLoaderData } from "../../../utils/loader-utils";
+import {
+  makeLoaderV2,
+  useDeLeafLoaderData,
+  useDeLoaderData,
+} from "../../../utils/loader-utils";
 import { cls } from "../../../utils/misc";
 import type { PageHandle } from "../../../utils/page-handle";
 import { MiniPlayer } from "../../bookmarks";
@@ -38,30 +37,6 @@ export const handle: PageHandle = {
   navBarTitle: () => <NavBarTitleComponent />,
   navBarMenu: () => <DeckNavBarMenuComponent />,
 };
-
-export async function requireUserAndDeck(
-  this: Controller
-): Promise<[UserTable, DeckTable]> {
-  const userId = this.currentUserId();
-  if (userId) {
-    const parsed = ROUTE_DEF["/decks/$id"].params.safeParse(this.args.params);
-    if (parsed.success) {
-      const { id } = parsed.data;
-      const found = await findOne(
-        db
-          .select()
-          .from(T.users)
-          .innerJoin(T.decks, E.eq(T.decks.userId, T.users.id))
-          .where(E.and(E.eq(T.users.id, userId), E.eq(T.decks.id, id)))
-      );
-      if (found) {
-        return [found.users, found.decks];
-      }
-    }
-  }
-  this.flash({ content: "Deck not found", variant: "error" });
-  throw redirect(R["/decks"]);
-}
 
 //
 // loader
@@ -114,9 +89,7 @@ export const loader = makeLoaderV2(async ({ ctx }) => {
 //
 
 export default function DefaultComponent() {
-  const { deck, pagination, rows }: LoaderData = useDeserialize(
-    useLoaderData()
-  );
+  const { deck, pagination, rows } = useDeLoaderData() as LoaderData;
 
   const content = (
     <div className="w-full flex justify-center">
@@ -321,7 +294,7 @@ export function QueueTypeIcon({ queueType }: { queueType: PracticeQueueType }) {
 //
 
 function NavBarTitleComponent() {
-  const { deck }: LoaderData = useDeserialize(useLeafLoaderData());
+  const { deck } = useDeLeafLoaderData() as LoaderData;
   return <>{deck.name}</>;
 }
 
@@ -330,7 +303,7 @@ function NavBarTitleComponent() {
 //
 
 export function DeckNavBarMenuComponent() {
-  const { deck }: LoaderData = useDeserialize(useLeafLoaderData());
+  const { deck } = useDeLeafLoaderData() as LoaderData;
   return <DeckMenuComponent deck={deck} />;
 }
 

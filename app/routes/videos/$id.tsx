@@ -21,13 +21,12 @@ import { E, T, db, findOne } from "../../db/drizzle-client.server";
 import type { CaptionEntryTable, UserTable, VideoTable } from "../../db/models";
 import { $R, ROUTE_DEF } from "../../misc/routes";
 import { trpc } from "../../trpc/client";
-import { useDeserialize } from "../../utils/hooks";
 import { useDocumentEvent } from "../../utils/hooks-client-utils";
 import { intl } from "../../utils/intl";
 import {
   makeLoaderV2,
+  useDeLeafLoaderData,
   useDeLoaderData,
-  useLeafLoaderData,
   useRootLoaderData,
 } from "../../utils/loader-utils";
 import { cls } from "../../utils/misc";
@@ -642,7 +641,7 @@ function HighlightText({
 
 function NavBarMenuComponent() {
   const { currentUser } = useRootLoaderData();
-  const { video }: LoaderData = useDeserialize(useLeafLoaderData());
+  const { video } = useDeLeafLoaderData() as LoaderData;
   return <NavBarMenuComponentImpl user={currentUser} video={video} />;
 }
 

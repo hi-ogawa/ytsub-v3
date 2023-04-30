@@ -12,14 +12,13 @@ import { PRACTICE_ACTION_TYPES, PracticeActionType } from "../../../db/types";
 import { $R, ROUTE_DEF } from "../../../misc/routes";
 import { trpc } from "../../../trpc/client";
 import { trpcClient } from "../../../trpc/client-internal.client";
-import { useDeserialize } from "../../../utils/hooks";
 import { useIntersectionObserver } from "../../../utils/hooks-client-utils";
 import { formatRelativeDate } from "../../../utils/intl";
 import { requireUserAndDeckV2 } from "../../../utils/loader-deck-utils";
 import {
   makeLoaderV2,
+  useDeLeafLoaderData,
   useDeLoaderData,
-  useLeafLoaderData,
 } from "../../../utils/loader-utils";
 import { cls } from "../../../utils/misc";
 import type { PageHandle } from "../../../utils/page-handle";
@@ -276,7 +275,7 @@ function PracticeActionComponent(
 //
 
 function NavBarTitleComponent() {
-  const { deck }: LoaderData = useDeserialize(useLeafLoaderData());
+  const { deck } = useDeLeafLoaderData() as LoaderData;
   return (
     <span>
       {deck.name}{" "}

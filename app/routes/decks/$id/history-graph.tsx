@@ -11,13 +11,12 @@ import {
 } from "../../../components/practice-history-chart";
 import type { DeckTable } from "../../../db/models";
 import { trpc } from "../../../trpc/client";
-import { useDeserialize } from "../../../utils/hooks";
 import { useClickOutside } from "../../../utils/hooks-client-utils";
 import { requireUserAndDeckV2 } from "../../../utils/loader-deck-utils";
 import {
   makeLoaderV2,
+  useDeLeafLoaderData,
   useDeLoaderData,
-  useLeafLoaderData,
 } from "../../../utils/loader-utils";
 import { cls } from "../../../utils/misc";
 import type { PageHandle } from "../../../utils/page-handle";
@@ -154,7 +153,7 @@ export default function DefaultComponent() {
 //
 
 function NavBarTitleComponent() {
-  const { deck }: LoaderData = useDeserialize(useLeafLoaderData());
+  const { deck } = useDeLeafLoaderData() as LoaderData;
   return (
     <span>
       {deck.name}{" "}

@@ -1,7 +1,7 @@
 import { Transition } from "@headlessui/react";
 import { isNil, typedBoolean } from "@hiogawa/utils";
 import { toArraySetState, useRafLoop } from "@hiogawa/utils-react";
-import { Link, NavLink, useLoaderData } from "@remix-run/react";
+import { Link, NavLink } from "@remix-run/react";
 import { useQuery } from "@tanstack/react-query";
 import { omit } from "lodash";
 import React from "react";
@@ -25,8 +25,11 @@ import type {
 } from "../../db/models";
 import { $R, ROUTE_DEF } from "../../misc/routes";
 import { trpc } from "../../trpc/client";
-import { useDeserialize } from "../../utils/hooks";
-import { makeLoaderV2, useLeafLoaderData } from "../../utils/loader-utils";
+import {
+  makeLoaderV2,
+  useDeLeafLoaderData,
+  useDeLoaderData,
+} from "../../utils/loader-utils";
 import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 import type { CaptionEntry } from "../../utils/types";
@@ -99,7 +102,7 @@ export const loader = makeLoaderV2(async ({ ctx }) => {
 });
 
 export default function DefaultComponent() {
-  const data: LoaderData = useDeserialize(useLoaderData());
+  const data = useDeLoaderData() as LoaderData;
   return <ComponentImpl {...data} />;
 }
 
@@ -422,7 +425,7 @@ export function MiniPlayer({
 //
 
 function NavBarMenuComponent() {
-  const { request }: LoaderData = useDeserialize(useLeafLoaderData());
+  const { request } = useDeLeafLoaderData() as LoaderData;
   const videoSelectModal = useModal();
   const deckSelectModal = useModal();
 

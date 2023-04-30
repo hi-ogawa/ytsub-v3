@@ -15,9 +15,9 @@ export function useRootLoaderData(): RootLoaderData {
   return React.useMemo(() => deserialize(data), [data]);
 }
 
-export function useLeafLoaderData(): any {
+export function useDeLeafLoaderData(): unknown {
   const [{ data }] = useMatches().slice(-1);
-  return data;
+  return React.useMemo(() => deserialize(data), [data]);
 }
 
 // hide server only HOR (higher order function) on client budnle.
