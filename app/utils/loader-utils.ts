@@ -24,7 +24,8 @@ export function useDeLeafLoaderData(): unknown {
 // the same could be achieved by magic "PURE" comment on caller side.
 // TODO: but unless we do explicit `PURE`, then esbuild cannot tree-shake inner loader function?
 export const makeLoaderV2 = (
-  typeof window === "undefined" || process.env["VITEST"]
+  typeof window === "undefined" ||
+  (typeof process !== "undefined" && process.env["VITEST"])
     ? makeLoaderImpl
     : () => {}
 ) as typeof makeLoaderImpl;
