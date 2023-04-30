@@ -12,7 +12,7 @@ import {
 import type { DeckTable } from "../../../db/models";
 import { trpc } from "../../../trpc/client";
 import { useClickOutside } from "../../../utils/hooks-client-utils";
-import { requireUserAndDeckV2 } from "../../../utils/loader-deck-utils";
+import { requireUserAndDeck } from "../../../utils/loader-deck-utils";
 import {
   useLeafLoaderData,
   useLoaderDataExtra,
@@ -40,7 +40,7 @@ interface LoaderData {
 }
 
 export const loader = /* @__PURE__ */ makeLoader(async ({ ctx }) => {
-  const { deck } = await requireUserAndDeckV2(ctx);
+  const { deck } = await requireUserAndDeck(ctx);
   const loaderData: LoaderData = { deck };
   return loaderData;
 });

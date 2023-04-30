@@ -23,7 +23,7 @@ import type { PracticeActionType, PracticeQueueType } from "../../../db/types";
 import { $R, ROUTE_DEF } from "../../../misc/routes";
 import { trpc } from "../../../trpc/client";
 import { intl, intlWrapper } from "../../../utils/intl";
-import { requireUserAndDeckV2 } from "../../../utils/loader-deck-utils";
+import { requireUserAndDeck } from "../../../utils/loader-deck-utils";
 import {
   useLeafLoaderData,
   useLoaderDataExtra,
@@ -56,7 +56,7 @@ interface LoaderData {
 }
 
 export const loader = /* @__PURE__ */ makeLoader(async ({ ctx }) => {
-  const { deck } = await requireUserAndDeckV2(ctx);
+  const { deck } = await requireUserAndDeck(ctx);
   const reqQuery = ROUTE_DEF["/decks/$id"].query.parse(ctx.query);
 
   const baseQuery = db

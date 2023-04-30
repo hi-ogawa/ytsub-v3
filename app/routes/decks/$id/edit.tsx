@@ -8,7 +8,7 @@ import { $R, R } from "../../../misc/routes";
 import { trpc } from "../../../trpc/client";
 import { toastInfo } from "../../../utils/flash-message-hook";
 import { intl } from "../../../utils/intl";
-import { requireUserAndDeckV2 } from "../../../utils/loader-deck-utils";
+import { requireUserAndDeck } from "../../../utils/loader-deck-utils";
 import { useLoaderDataExtra } from "../../../utils/loader-utils";
 import { makeLoader } from "../../../utils/loader-utils.server";
 import { cls } from "../../../utils/misc";
@@ -28,7 +28,7 @@ interface LoaderData {
 }
 
 export const loader = /* @__PURE__ */ makeLoader(async ({ ctx }) => {
-  const { deck } = await requireUserAndDeckV2(ctx);
+  const { deck } = await requireUserAndDeck(ctx);
   const loaderData: LoaderData = { deck };
   return loaderData;
 });

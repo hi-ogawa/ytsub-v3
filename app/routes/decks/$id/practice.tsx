@@ -12,7 +12,7 @@ import type {
 } from "../../../db/models";
 import { PRACTICE_ACTION_TYPES, PracticeActionType } from "../../../db/types";
 import { trpc } from "../../../trpc/client";
-import { requireUserAndDeckV2 } from "../../../utils/loader-deck-utils";
+import { requireUserAndDeck } from "../../../utils/loader-deck-utils";
 import {
   useLeafLoaderData,
   useLoaderDataExtra,
@@ -37,7 +37,7 @@ interface LoaderData {
 }
 
 export const loader = /* @__PURE__ */ makeLoader(async ({ ctx }) => {
-  const { deck } = await requireUserAndDeckV2(ctx);
+  const { deck } = await requireUserAndDeck(ctx);
   const loaderData: LoaderData = { deck };
   return loaderData;
 });

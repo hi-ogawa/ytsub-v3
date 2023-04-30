@@ -14,7 +14,7 @@ import { trpc } from "../../../trpc/client";
 import { trpcClient } from "../../../trpc/client-internal.client";
 import { useIntersectionObserver } from "../../../utils/hooks-client-utils";
 import { formatRelativeDate } from "../../../utils/intl";
-import { requireUserAndDeckV2 } from "../../../utils/loader-deck-utils";
+import { requireUserAndDeck } from "../../../utils/loader-deck-utils";
 import {
   useLeafLoaderData,
   useLoaderDataExtra,
@@ -44,7 +44,7 @@ interface LoaderData {
 }
 
 export const loader = /* @__PURE__ */ makeLoader(async ({ ctx }) => {
-  const { deck } = await requireUserAndDeckV2(ctx);
+  const { deck } = await requireUserAndDeck(ctx);
   const query = ROUTE_DEF["/decks/$id/history"].query.parse(ctx.query);
 
   const loaderData: LoaderData = { deck, query };

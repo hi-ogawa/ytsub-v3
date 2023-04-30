@@ -3,7 +3,7 @@ import { E, T, db, findOne } from "../db/drizzle-client.server";
 import { ROUTE_DEF } from "../misc/routes";
 import type { LoaderContext } from "./loader-utils.server";
 
-export async function requireUserAndDeckV2(ctx: LoaderContext) {
+export async function requireUserAndDeck(ctx: LoaderContext) {
   const user = await ctx.requireUser();
   const params = ROUTE_DEF["/decks/$id"].params.parse(ctx.params);
   const found = await findOne(
