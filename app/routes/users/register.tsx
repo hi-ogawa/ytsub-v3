@@ -22,7 +22,7 @@ export const handle: PageHandle = {
 // loader
 //
 
-export const loader = /* @__PURE__ */ makeLoader(async ({ ctx }) => {
+export const loader = makeLoader(async ({ ctx }) => {
   const user = await ctx.currentUser();
   if (user) {
     await ctx.flash({

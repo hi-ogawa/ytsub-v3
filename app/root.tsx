@@ -45,7 +45,7 @@ export const links: LinksFunction = () => {
 // loader
 //
 
-export const loader = /* @__PURE__ */ makeLoader(async ({ ctx }) => {
+export const loader = makeLoader(async ({ ctx }) => {
   const loaderData: RootLoaderData = {
     currentUser: await ctx.currentUser(),
     flashMessages: await ctx.getFlashMessages(),
