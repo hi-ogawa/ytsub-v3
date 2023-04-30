@@ -22,6 +22,7 @@ export function useDeLeafLoaderData(): unknown {
 
 // hide server only HOR (higher order function) on client budnle.
 // the same could be achieved by magic "PURE" comment on caller side.
+// TODO: do something for unit test with `window`?
 export const makeLoaderV2 = (
   typeof window === "undefined" ? makeLoaderImpl : () => {}
 ) as typeof makeLoaderImpl;
