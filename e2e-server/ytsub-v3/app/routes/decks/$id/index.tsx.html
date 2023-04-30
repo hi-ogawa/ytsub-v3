@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">55.37% </span>
+                <span class="strong">50.7% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>237/428</span>
+                <span class='fraction'>217/428</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">87.5% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>7/8</span>
+                <span class='fraction'>6/6</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">22.72% </span>
+                <span class="strong">18.18% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>5/22</span>
+                <span class='fraction'>4/22</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">55.37% </span>
+                <span class="strong">50.7% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>237/428</span>
+                <span class='fraction'>217/428</span>
             </div>
         
             
@@ -532,26 +532,26 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -960,26 +960,26 @@ export const handle: PageHandle = {
   navBarMenu: <span class="fstat-no" title="function not covered" >() =&gt; &lt;DeckNavBarMenuComponent /&gt;,</span>
 };
 &nbsp;
-export async function requireUserAndDeck(
-  this: Controller
-): Promise&lt;[UserTable, DeckTable]&gt; {
-  const userId = this.currentUserId();
-  if (userId) {
-    const parsed = ROUTE_DEF["/decks/$id"].params.safeParse(this.args.params);
-    if (parsed.success) {
-      const { id } = parsed.data;
-      const found = await findOne(
-        db
-          .select()
-          .from(T.users)
-          .innerJoin(T.decks, E.eq(T.decks.userId, T.users.id))
-          .where(E.and(E.eq(T.users.id, userId), E.eq(T.decks.id, id)))
-      );
-      if (found) {
-        return [found.users, found.decks];
-      }
-    }
-<span class="branch-0 cbranch-no" title="branch not covered" >  }</span>
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >export async function requireUserAndDeck(</span></span>
+<span class="cstat-no" title="statement not covered" >  this: Controller</span>
+<span class="cstat-no" title="statement not covered" >): Promise&lt;[UserTable, DeckTable]&gt; {</span>
+<span class="cstat-no" title="statement not covered" >  const userId = this.currentUserId();</span>
+<span class="cstat-no" title="statement not covered" >  if (userId) {</span>
+<span class="cstat-no" title="statement not covered" >    const parsed = ROUTE_DEF["/decks/$id"].params.safeParse(this.args.params);</span>
+<span class="cstat-no" title="statement not covered" >    if (parsed.success) {</span>
+<span class="cstat-no" title="statement not covered" >      const { id } = parsed.data;</span>
+<span class="cstat-no" title="statement not covered" >      const found = await findOne(</span>
+<span class="cstat-no" title="statement not covered" >        db</span>
+<span class="cstat-no" title="statement not covered" >          .select()</span>
+<span class="cstat-no" title="statement not covered" >          .from(T.users)</span>
+<span class="cstat-no" title="statement not covered" >          .innerJoin(T.decks, E.eq(T.decks.userId, T.users.id))</span>
+<span class="cstat-no" title="statement not covered" >          .where(E.and(E.eq(T.users.id, userId), E.eq(T.decks.id, id)))</span>
+<span class="cstat-no" title="statement not covered" >      );</span>
+<span class="cstat-no" title="statement not covered" >      if (found) {</span>
+<span class="cstat-no" title="statement not covered" >        return [found.users, found.decks];</span>
+<span class="cstat-no" title="statement not covered" >      }</span>
+<span class="cstat-no" title="statement not covered" >    }</span>
+<span class="cstat-no" title="statement not covered" >  }</span>
 <span class="cstat-no" title="statement not covered" >  this.flash({ content: "Deck not found", variant: "error" });</span>
 <span class="cstat-no" title="statement not covered" >  throw redirect(R["/decks"]);</span>
 <span class="cstat-no" title="statement not covered" >}</span>
@@ -1354,7 +1354,7 @@ export function DeckMenuComponent({ deck }: { deck: DeckTable }) {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-04-30T08:28:35.630Z
+                at 2023-04-30T08:33:53.891Z
             </div>
         <script src="../../../../../prettify.js"></script>
         <script>

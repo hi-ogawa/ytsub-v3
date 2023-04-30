@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">24.31% </span>
+                <span class="strong">23.07% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>71/292</span>
+                <span class='fraction'>66/286</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">75% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>3/4</span>
+                <span class='fraction'>3/3</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">24.31% </span>
+                <span class="strong">23.07% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>71/292</span>
+                <span class='fraction'>66/286</span>
             </div>
         
             
@@ -349,14 +349,7 @@
 <a name='L284'></a><a href='#L284'>284</a>
 <a name='L285'></a><a href='#L285'>285</a>
 <a name='L286'></a><a href='#L286'>286</a>
-<a name='L287'></a><a href='#L287'>287</a>
-<a name='L288'></a><a href='#L288'>288</a>
-<a name='L289'></a><a href='#L289'>289</a>
-<a name='L290'></a><a href='#L290'>290</a>
-<a name='L291'></a><a href='#L291'>291</a>
-<a name='L292'></a><a href='#L292'>292</a>
-<a name='L293'></a><a href='#L293'>293</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">113x</span>
-<span class="cline-any cline-yes">1x</span>
+<a name='L287'></a><a href='#L287'>287</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">113x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -404,11 +397,6 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
@@ -647,14 +635,9 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="fstat-no" title="function not covered" >import {</span>
-  PRACTICE_ACTION_TYPE_TO_COLOR,
-  QueueTypeIcon,
-  requireUserAndDeck,
-} from ".";
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="fstat-no" title="function not covered" >import { PRACTICE_ACTION_TYPE_TO_COLOR, QueueTypeIcon } from ".";</span>
 import { Transition } from "@headlessui/react";
-import { useLoaderData, useNavigate } from "@remix-run/react";
-import { redirect } from "@remix-run/server-runtime";
+import { useNavigate } from "@remix-run/react";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import React from "react";
 import type { z } from "zod";
@@ -666,11 +649,15 @@ import { PRACTICE_ACTION_TYPES, PracticeActionType } from "../../../db/types";
 import { $R, ROUTE_DEF } from "../../../misc/routes";
 import { trpc } from "../../../trpc/client";
 import { trpcClient } from "../../../trpc/client-internal.client";
-import { Controller, makeLoader } from "../../../utils/controller-utils";
 import { useDeserialize } from "../../../utils/hooks";
 import { useIntersectionObserver } from "../../../utils/hooks-client-utils";
 import { formatRelativeDate } from "../../../utils/intl";
-import { useLeafLoaderData } from "../../../utils/loader-utils";
+import { requireUserAndDeckV2 } from "../../../utils/loader-deck-utils";
+import {
+  makeLoaderV2,
+  useDeLoaderData,
+  useLeafLoaderData,
+} from "../../../utils/loader-utils";
 import { cls } from "../../../utils/misc";
 import type { PageHandle } from "../../../utils/page-handle";
 import { MiniPlayer } from "../../bookmarks";
@@ -694,17 +681,12 @@ interface LoaderData {
   query: z.infer&lt;(typeof ROUTE_DEF)["/decks/$id/history"]["query"]&gt;;
 }
 &nbsp;
-export const loader = makeLoader(Controller, async function () {
-  const [, deck] = await requireUserAndDeck.apply(this);
+export const loader = makeLoaderV2(async ({ ctx }) =&gt; {
+  const { deck } = await requireUserAndDeckV2(ctx);
+  const query = ROUTE_DEF["/decks/$id/history"].query.parse(ctx.query);
 &nbsp;
-  const parsed = ROUTE_DEF["/decks/$id/history"].query.safeParse(this.query());
-  if (!parsed.success) {
-<span class="branch-0 cbranch-no" title="branch not covered" >    this.flash({ content: "invalid parameters", variant: "error" });</span>
-<span class="cstat-no" title="statement not covered" >    return redirect($R["/decks/$id/history"](deck));</span>
-  }
-&nbsp;
-  const res: LoaderData = { deck, query: parsed.data };
-  return this.serialize(res);
+  const loaderData: LoaderData = { deck, query };
+  return loaderData;
 });
 &nbsp;
 //
@@ -712,7 +694,7 @@ export const loader = makeLoader(Controller, async function () {
 //
 &nbsp;
 export default <span class="fstat-no" title="function not covered" >function DefaultComponent() {</span>
-<span class="cstat-no" title="statement not covered" >  const { deck, query }: LoaderData = useDeserialize(useLoaderData());</span>
+<span class="cstat-no" title="statement not covered" >  const { deck, query } = useDeLoaderData() as LoaderData;</span>
 <span class="cstat-no" title="statement not covered" >  const navigate = useNavigate();</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  const queryArgs = {</span>
@@ -946,7 +928,7 @@ export default <span class="fstat-no" title="function not covered" >function Def
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-04-30T08:28:35.630Z
+                at 2023-04-30T08:33:53.891Z
             </div>
         <script src="../../../../../prettify.js"></script>
         <script>

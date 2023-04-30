@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">35.71% </span>
+                <span class="strong">37.2% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>60/168</span>
+                <span class='fraction'>64/172</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">35.71% </span>
+                <span class="strong">37.2% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>60/168</span>
+                <span class='fraction'>64/172</span>
             </div>
         
             
@@ -231,7 +231,11 @@
 <a name='L166'></a><a href='#L166'>166</a>
 <a name='L167'></a><a href='#L167'>167</a>
 <a name='L168'></a><a href='#L168'>168</a>
-<a name='L169'></a><a href='#L169'>169</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">112x</span>
+<a name='L169'></a><a href='#L169'>169</a>
+<a name='L170'></a><a href='#L170'>170</a>
+<a name='L171'></a><a href='#L171'>171</a>
+<a name='L172'></a><a href='#L172'>172</a>
+<a name='L173'></a><a href='#L173'>173</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">112x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -280,6 +284,10 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -399,7 +407,7 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" >import { DeckNavBarMenuComponent, requireUserAndDeck } from ".";</span></span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" >import { DeckNavBarMenuComponent } from ".";</span></span>
 import { Transition } from "@headlessui/react";
 import { useQuery } from "@tanstack/react-query";
 import type { ECharts } from "echarts";
@@ -412,10 +420,14 @@ import {
 } from "../../../components/practice-history-chart";
 import type { DeckTable } from "../../../db/models";
 import { trpc } from "../../../trpc/client";
-import { Controller, makeLoader } from "../../../utils/controller-utils";
 import { useDeserialize } from "../../../utils/hooks";
 import { useClickOutside } from "../../../utils/hooks-client-utils";
-import { useLeafLoaderData } from "../../../utils/loader-utils";
+import { requireUserAndDeckV2 } from "../../../utils/loader-deck-utils";
+import {
+  makeLoaderV2,
+  useDeLoaderData,
+  useLeafLoaderData,
+} from "../../../utils/loader-utils";
 import { cls } from "../../../utils/misc";
 import type { PageHandle } from "../../../utils/page-handle";
 import { DateRangeType, formatDateRange } from "../../../utils/temporal-utils";
@@ -437,10 +449,10 @@ interface LoaderData {
   deck: DeckTable;
 }
 &nbsp;
-export const loader = makeLoader(Controller, async function () {
-  const [, deck] = await requireUserAndDeck.apply(this);
+export const loader = makeLoaderV2(async ({ ctx }) =&gt; {
+  const { deck } = await requireUserAndDeckV2(ctx);
   const loaderData: LoaderData = { deck };
-  return this.serialize(loaderData);
+  return loaderData;
 });
 &nbsp;
 //
@@ -448,7 +460,7 @@ export const loader = makeLoader(Controller, async function () {
 //
 &nbsp;
 export default <span class="fstat-no" title="function not covered" >function DefaultComponent() {</span>
-<span class="cstat-no" title="statement not covered" >  const { deck }: LoaderData = useDeserialize(useLeafLoaderData());</span>
+<span class="cstat-no" title="statement not covered" >  const { deck } = useDeLoaderData() as LoaderData;</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  const [instance, setInstance] = React.useState&lt;ECharts&gt;();</span>
 <span class="cstat-no" title="statement not covered" ></span>
@@ -574,7 +586,7 @@ export <span class="fstat-no" title="function not covered" >function DeckHistory
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-04-30T08:28:35.630Z
+                at 2023-04-30T08:33:53.891Z
             </div>
         <script src="../../../../../prettify.js"></script>
         <script>
