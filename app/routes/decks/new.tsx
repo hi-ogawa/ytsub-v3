@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { $R } from "../../misc/routes";
 import { trpc } from "../../trpc/client";
-import { Controller, makeLoader } from "../../utils/controller-utils";
+import { makeLoaderV2 } from "../../utils/loader-utils";
 import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 
@@ -16,8 +16,8 @@ export const handle: PageHandle = {
 // loader
 //
 
-export const loader = makeLoader(Controller, async function () {
-  await this.requireUser();
+export const loader = makeLoaderV2(async ({ ctx }) => {
+  await ctx.requireUser();
   return null;
 });
 
