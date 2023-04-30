@@ -36,7 +36,7 @@ interface LoaderData {
   deck: DeckTable;
 }
 
-export const loader = /* @__PURE__ */ makeLoader(async ({ ctx }) => {
+export const loader = makeLoader(async ({ ctx }) => {
   const { deck } = await requireUserAndDeck(ctx);
   const loaderData: LoaderData = { deck };
   return loaderData;

@@ -43,7 +43,7 @@ interface LoaderData {
   query: z.infer<(typeof ROUTE_DEF)["/decks/$id/history"]["query"]>;
 }
 
-export const loader = /* @__PURE__ */ makeLoader(async ({ ctx }) => {
+export const loader = makeLoader(async ({ ctx }) => {
   const { deck } = await requireUserAndDeck(ctx);
   const query = ROUTE_DEF["/decks/$id/history"].query.parse(ctx.query);
 

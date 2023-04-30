@@ -46,7 +46,7 @@ interface LoaderData {
   request: z.infer<(typeof ROUTE_DEF)["/bookmarks"]["query"]>;
 }
 
-export const loader = /* @__PURE__ */ makeLoader(async ({ ctx }) => {
+export const loader = makeLoader(async ({ ctx }) => {
   const user = await ctx.requireUser();
 
   const request = ROUTE_DEF["/bookmarks"].query.parse(ctx.query);

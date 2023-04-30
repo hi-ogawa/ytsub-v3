@@ -55,7 +55,7 @@ interface LoaderData {
   >[];
 }
 
-export const loader = /* @__PURE__ */ makeLoader(async ({ ctx }) => {
+export const loader = makeLoader(async ({ ctx }) => {
   const { deck } = await requireUserAndDeck(ctx);
   const reqQuery = ROUTE_DEF["/decks/$id"].query.parse(ctx.query);
 
