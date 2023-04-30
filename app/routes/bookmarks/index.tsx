@@ -3,7 +3,6 @@ import { isNil, mapOption, typedBoolean } from "@hiogawa/utils";
 import { toArraySetState, useRafLoop } from "@hiogawa/utils-react";
 import { Link, NavLink } from "@remix-run/react";
 import { useQuery } from "@tanstack/react-query";
-import { omit } from "lodash";
 import React from "react";
 import type { z } from "zod";
 import { CollapseTransition } from "../../components/collapse";
@@ -33,7 +32,6 @@ import {
 import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 import type { CaptionEntry } from "../../utils/types";
-import { toQuery } from "../../utils/url-data";
 import { YoutubePlayer, usePlayerLoader } from "../../utils/youtube";
 import { CaptionEntryComponent, findCurrentEntry } from "../videos/$id";
 
@@ -137,10 +135,7 @@ function ComponentImpl(props: LoaderData) {
       </div>
       <div className="w-full h-8" /> {/* padding for scroll */}
       <div className="absolute bottom-2 w-full flex justify-center">
-        <PaginationComponent
-          pagination={props.pagination}
-          query={toQuery(omit(props.request, ["page", "perPage"]))}
-        />
+        <PaginationComponent pagination={props.pagination} />
       </div>
     </>
   );
