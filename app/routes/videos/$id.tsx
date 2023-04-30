@@ -2,7 +2,7 @@ import { Transition } from "@headlessui/react";
 import { tinyassert } from "@hiogawa/utils";
 import { isNil } from "@hiogawa/utils";
 import { toArraySetState, useRafLoop } from "@hiogawa/utils-react";
-import { Form, Link, useLoaderData, useNavigate } from "@remix-run/react";
+import { Form, Link, useNavigate } from "@remix-run/react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   VirtualItem,
@@ -26,6 +26,7 @@ import { useDocumentEvent } from "../../utils/hooks-client-utils";
 import { intl } from "../../utils/intl";
 import {
   makeLoaderV2,
+  useDeLoaderData,
   useLeafLoaderData,
   useRootLoaderData,
 } from "../../utils/loader-utils";
@@ -73,7 +74,7 @@ export const loader = makeLoaderV2(async ({ ctx }) => {
 
 export default function DeafultComponent() {
   const { currentUser } = useRootLoaderData();
-  const data: LoaderData = useDeserialize(useLoaderData());
+  const data = useDeLoaderData() as LoaderData;
   return <PageComponent currentUser={currentUser} {...data} />;
 }
 

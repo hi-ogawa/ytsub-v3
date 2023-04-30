@@ -19,7 +19,6 @@ export function makeLoaderImpl(
       let res = await inner({ ctx });
       if (!(res instanceof Response)) {
         // wrap all raw data by superjson.serialize
-        // TODO: companion consumer hook useDeLoaderData?
         res = json(serialize(res));
       }
       return res;
