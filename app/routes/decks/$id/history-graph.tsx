@@ -1,4 +1,4 @@
-import { DeckNavBarMenuComponent, requireUserAndDeck } from ".";
+import { DeckNavBarMenuComponent } from ".";
 import { Transition } from "@headlessui/react";
 import { useQuery } from "@tanstack/react-query";
 import type { ECharts } from "echarts";
@@ -11,10 +11,14 @@ import {
 } from "../../../components/practice-history-chart";
 import type { DeckTable } from "../../../db/models";
 import { trpc } from "../../../trpc/client";
-import { Controller, makeLoader } from "../../../utils/controller-utils";
 import { useDeserialize } from "../../../utils/hooks";
 import { useClickOutside } from "../../../utils/hooks-client-utils";
-import { useLeafLoaderData } from "../../../utils/loader-utils";
+import { requireUserAndDeckV2 } from "../../../utils/loader-deck-utils";
+import {
+  makeLoaderV2,
+  useDeLoaderData,
+  useLeafLoaderData,
+} from "../../../utils/loader-utils";
 import { cls } from "../../../utils/misc";
 import type { PageHandle } from "../../../utils/page-handle";
 import { DateRangeType, formatDateRange } from "../../../utils/temporal-utils";
@@ -36,10 +40,10 @@ interface LoaderData {
   deck: DeckTable;
 }
 
-export const loader = makeLoader(Controller, async function () {
-  const [, deck] = await requireUserAndDeck.apply(this);
+export const loader = makeLoaderV2(async ({ ctx }) => {
+  const { deck } = await requireUserAndDeckV2(ctx);
   const loaderData: LoaderData = { deck };
-  return this.serialize(loaderData);
+  return loaderData;
 });
 
 //
@@ -47,7 +51,7 @@ export const loader = makeLoader(Controller, async function () {
 //
 
 export default function DefaultComponent() {
-  const { deck }: LoaderData = useDeserialize(useLeafLoaderData());
+  const { deck } = useDeLoaderData() as LoaderData;
 
   const [instance, setInstance] = React.useState<ECharts>();
 
