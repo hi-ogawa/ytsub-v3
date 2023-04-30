@@ -11,14 +11,15 @@ index a3f7dc36d245afb8176208b0f75bbd03bdec4cfb..0d6a63e8408dac14b19734cb74de2583
    ".avif": "file",
    ".css": "file",
 diff --git a/dist/compiler/plugins/browserRouteModulesPlugin.js b/dist/compiler/plugins/browserRouteModulesPlugin.js
-index dc3f4123e715338a0ac2893725a8eb58f44b7578..ce5b12bf158bc0c7082f5241702086c67d487eae 100644
+index dc3f4123e715338a0ac2893725a8eb58f44b7578..b9339ee7ed04ed6bdf040f2dbcc81d032aba6f86 100644
 --- a/dist/compiler/plugins/browserRouteModulesPlugin.js
 +++ b/dist/compiler/plugins/browserRouteModulesPlugin.js
-@@ -46,6 +46,21 @@ function browserRouteModulesPlugin(config, suffixMatcher) {
+@@ -46,6 +46,22 @@ function browserRouteModulesPlugin(config, suffixMatcher) {
            namespace: "browser-route-module"
          };
        });
 +      build.onLoad({
++        // match only route file import
 +        namespace: "file",
 +        filter: new RegExp(Object.values(config.routes).map(({ file }) => `${config.appDirectory}/${file}`.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join("|"))
 +      }, async args => {
@@ -26,7 +27,7 @@ index dc3f4123e715338a0ac2893725a8eb58f44b7578..ce5b12bf158bc0c7082f5241702086c6
 +        var path = require('node:path');
 +        var loaders = require('../loaders.js');
 +        let contents = await fs.promises.readFile(args.path, "utf8");
-+        contents = contents.replace("export const loader =", "export const loader = /* @__PURE__ */");
++        contents = contents.replace("= makeLoader", "= /* @__PURE__ */ makeLoader");
 +        return {
 +          contents,
 +          loader: loaders.getLoaderForFile(args.path),
