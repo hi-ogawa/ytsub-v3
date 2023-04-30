@@ -30,10 +30,3 @@ export async function getResponseSession(
 ): Promise<Session> {
   return sessionStore.getSession(response.headers.get("set-cookie"));
 }
-
-export async function setResponseSession(
-  response: Response,
-  session: Session
-): Promise<void> {
-  response.headers.set("set-cookie", await sessionStore.commitSession(session));
-}

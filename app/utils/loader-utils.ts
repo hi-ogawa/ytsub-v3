@@ -22,9 +22,11 @@ export function useDeLeafLoaderData(): unknown {
 
 // hide server only HOR (higher order function) on client budnle.
 // the same could be achieved by magic "PURE" comment on caller side.
-// TODO: do something for unit test with `window`?
+// TODO: but unless we do explicit `PURE`, then esbuild cannot tree-shake inner loader function?
 export const makeLoaderV2 = (
-  typeof window === "undefined" ? makeLoaderImpl : () => {}
+  typeof window === "undefined" || process.env["VITEST"]
+    ? makeLoaderImpl
+    : () => {}
 ) as typeof makeLoaderImpl;
 
 // companion for makeLoader with auto superjson.serialize
