@@ -1,5 +1,5 @@
 import { Transition } from "@headlessui/react";
-import { isNil, typedBoolean } from "@hiogawa/utils";
+import { isNil, mapOption, typedBoolean } from "@hiogawa/utils";
 import { toArraySetState, useRafLoop } from "@hiogawa/utils-react";
 import { Link, NavLink } from "@remix-run/react";
 import { useQuery } from "@tanstack/react-query";
@@ -76,14 +76,9 @@ export const loader = makeLoaderV2(async ({ ctx }) => {
       .where(
         E.and(
           E.eq(T.bookmarkEntries.userId, user.id),
-          request.videoId
-            ? E.eq(T.bookmarkEntries.videoId, request.videoId)
-            : undefined,
-          request.deckId ? E.eq(T.decks.id, request.deckId) : undefined,
-          // TODO(perf): fulltext index? avoid count?
-          request.q
-            ? E.like(T.bookmarkEntries.text, `%${request.q}%`)
-            : undefined
+          mapOption(request.videoId, (v) => E.eq(T.bookmarkEntries.videoId, v)),
+          mapOption(request.deckId, (v) => E.eq(T.decks.id, v)),
+          mapOption(request.q, (v) => E.like(T.bookmarkEntries.text, `%${v}%`))
         )
       )
       .orderBy(
