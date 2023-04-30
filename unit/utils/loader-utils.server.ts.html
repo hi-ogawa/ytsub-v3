@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">23.17% </span>
+                <span class="strong">23.25% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>19/82</span>
+                <span class='fraction'>20/86</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">23.17% </span>
+                <span class="strong">23.25% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>19/82</span>
+                <span class='fraction'>20/86</span>
             </div>
         
             
@@ -145,26 +145,16 @@
 <a name='L80'></a><a href='#L80'>80</a>
 <a name='L81'></a><a href='#L81'>81</a>
 <a name='L82'></a><a href='#L82'>82</a>
-<a name='L83'></a><a href='#L83'>83</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L83'></a><a href='#L83'>83</a>
+<a name='L84'></a><a href='#L84'>84</a>
+<a name='L85'></a><a href='#L85'>85</a>
+<a name='L86'></a><a href='#L86'>86</a>
+<a name='L87'></a><a href='#L87'>87</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -176,6 +166,24 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -230,6 +238,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import {
   DataFunctionArgs,
   LoaderFunction,
+  json,
   redirect,
 } from "@remix-run/server-runtime";
 import { serialize } from "superjson";
@@ -242,9 +251,16 @@ export <span class="fstat-no" title="function not covered" >function makeLoaderI
 <span class="cstat-no" title="statement not covered" >  inner: (args: { ctx: LoaderContext }) =&gt; unknown</span>
 <span class="cstat-no" title="statement not covered" >): LoaderFunction {</span>
 <span class="cstat-no" title="statement not covered" >  return async (loaderArgs) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >    // TODO: wrap with `superjson.serialize` by default.</span>
 <span class="cstat-no" title="statement not covered" >    const ctx = await createLoaderContext(loaderArgs);</span>
-<span class="cstat-no" title="statement not covered" >    return ctx.redirectOnError(() =&gt; inner({ ctx }));</span>
+<span class="cstat-no" title="statement not covered" >    return ctx.redirectOnError(async () =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >      let res = await inner({ ctx });</span>
+<span class="cstat-no" title="statement not covered" >      if (!(res instanceof Response)) {</span>
+<span class="cstat-no" title="statement not covered" >        // wrap all raw data by superjson.serialize</span>
+<span class="cstat-no" title="statement not covered" >        // TODO: companion consumer hook useDeLoaderData?</span>
+<span class="cstat-no" title="statement not covered" >        res = json(serialize(res));</span>
+<span class="cstat-no" title="statement not covered" >      }</span>
+<span class="cstat-no" title="statement not covered" >      return res;</span>
+<span class="cstat-no" title="statement not covered" >    });</span>
 <span class="cstat-no" title="statement not covered" >  };</span>
 <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >}</span></span>
 &nbsp;
@@ -301,10 +317,6 @@ export type LoaderContext = Awaited&lt;ReturnType&lt;typeof createLoaderContext&
 <span class="cstat-no" title="statement not covered" >        throw ctx.redirect(url ?? $R["/"]());</span>
 <span class="cstat-no" title="statement not covered" >      }</span>
 <span class="cstat-no" title="statement not covered" >    },</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >    serialize(data: unknown): unknown {</span>
-<span class="cstat-no" title="statement not covered" >      return serialize(data);</span>
-<span class="cstat-no" title="statement not covered" >    },</span>
 <span class="cstat-no" title="statement not covered" >  };</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  return ctx;</span>
@@ -316,7 +328,7 @@ export type LoaderContext = Awaited&lt;ReturnType&lt;typeof createLoaderContext&
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-04-30T07:07:33.015Z
+                at 2023-04-30T07:15:51.130Z
             </div>
         <script src="../prettify.js"></script>
         <script>
