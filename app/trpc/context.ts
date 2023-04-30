@@ -1,11 +1,7 @@
 import { tinyassert } from "@hiogawa/utils";
-import { DataFunctionArgs, redirect } from "@remix-run/server-runtime";
 import type { FetchCreateContextFnOptions } from "@trpc/server/adapters/fetch";
-import { serialize } from "superjson";
 import type { TT } from "../db/drizzle-client.server";
-import { $R } from "../misc/routes";
 import { getSessionUser } from "../utils/auth";
-import { FlashMessage, pushFlashMessage } from "../utils/flash-message";
 import { none } from "../utils/misc";
 import {
   getRequestSession,
@@ -19,8 +15,7 @@ export type TrpcAppContext = Awaited<ReturnType<typeof createTrpcAppContext>>;
 export const createTrpcAppContext = async ({
   req,
   resHeaders,
-  loaderArgs,
-}: FetchCreateContextFnOptions & { loaderArgs?: DataFunctionArgs }) => {
+}: FetchCreateContextFnOptions) => {
   const ctx = {
     session: await getRequestSession(req),
 
@@ -38,54 +33,7 @@ export const createTrpcAppContext = async ({
       resHeaders.set("cache-control", "public, max-age=0, s-max-age=31536000");
     },
 
-    //
-    // for remix loader (TODO: move to makeLoaderV2)
-    //
-
-    params: loaderArgs?.params,
-
-    query: Object.fromEntries(
-      new URLSearchParams(new URL(req.url).search).entries()
-    ),
-
-    flash: async (message: FlashMessage) => {
-      pushFlashMessage(ctx.session, message);
-      await ctx.commitSession();
-    },
-
-    redirect: (url: string) => {
-      return redirect(url, { headers: resHeaders });
-    },
-
-    requireUser: async () => {
-      const user = await getSessionUser(ctx.session);
-      if (!user) {
-        await ctx.flash({ content: "Signin required", variant: "error" });
-        throw ctx.redirect($R["/users/signin"]());
-      }
-      return user;
-    },
-
-    async redirectOnError<T>(f: () => T, url?: string) {
-      try {
-        return await f();
-      } catch (e) {
-        if (e instanceof Response) {
-          throw e;
-        }
-        await ctx.flash({ content: "Invalid request", variant: "error" });
-        throw ctx.redirect(url ?? $R["/"]());
-      }
-    },
-
-    serialize(data: unknown): unknown {
-      return serialize(data);
-    },
-
-    //
     // for testing
-    //
-
     __getRepsonseSession: () => {
       return getResponseSession({ headers: resHeaders });
     },
