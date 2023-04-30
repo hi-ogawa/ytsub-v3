@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for ytsub-v3/app/utils/config-placeholder.tsx</title>
+    <title>Code coverage report for ytsub-v3/app/utils/loader-deck-utils.ts</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../../../prettify.css" />
     <link rel="stylesheet" href="../../../base.css" />
@@ -19,13 +19,13 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../../../index.html">All files</a> / <a href="index.html">ytsub-v3/app/utils</a> config-placeholder.tsx</h1>
+        <h1><a href="../../../index.html">All files</a> / <a href="index.html">ytsub-v3/app/utils</a> loader-deck-utils.ts</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>16/16</span>
+                <span class='fraction'>21/21</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>16/16</span>
+                <span class='fraction'>21/21</span>
             </div>
         
             
@@ -79,37 +79,52 @@
 <a name='L14'></a><a href='#L14'>14</a>
 <a name='L15'></a><a href='#L15'>15</a>
 <a name='L16'></a><a href='#L16'>16</a>
-<a name='L17'></a><a href='#L17'>17</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L17'></a><a href='#L17'>17</a>
+<a name='L18'></a><a href='#L18'>18</a>
+<a name='L19'></a><a href='#L19'>19</a>
+<a name='L20'></a><a href='#L20'>20</a>
+<a name='L21'></a><a href='#L21'>21</a>
+<a name='L22'></a><a href='#L22'>22</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">29x</span>
-<span class="cline-any cline-yes">29x</span>
-<span class="cline-any cline-yes">29x</span>
-<span class="cline-any cline-yes">29x</span>
-<span class="cline-any cline-yes">29x</span>
-<span class="cline-any cline-yes">29x</span>
-<span class="cline-any cline-yes">29x</span>
-<span class="cline-any cline-yes">29x</span>
-<span class="cline-any cline-yes">29x</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { CONFIG_SCRIPT_ID, CONFIG_SCRIPT_PLACEHOLDER } from "./config";
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { tinyassert } from "@hiogawa/utils";
+import { E, T, db, findOne } from "../db/drizzle-client.server";
+import { ROUTE_DEF } from "../misc/routes";
+import type { LoaderContext } from "./loader-utils.server";
 &nbsp;
-// split from config.ts to workaround playwright transpilation
-&nbsp;
-// modified by server (injectConfigScript)
-// read by client (initializeConfigClient)
-export function ConfigPlaceholder() {
-  return (
-    &lt;script
-      id={CONFIG_SCRIPT_ID}
-      type="application/json"
-      dangerouslySetInnerHTML={{ __html: CONFIG_SCRIPT_PLACEHOLDER }}
-      suppressHydrationWarning
-    /&gt;
+export async function requireUserAndDeckV2(ctx: LoaderContext) {
+  const user = await ctx.requireUser();
+  const params = ROUTE_DEF["/decks/$id"].params.parse(ctx.params);
+  const found = await findOne(
+    db
+      .select()
+      .from(T.users)
+      .innerJoin(T.decks, E.eq(T.decks.userId, T.users.id))
+      .where(E.and(E.eq(T.users.id, user.id), E.eq(T.decks.id, params.id)))
   );
+  tinyassert(found);
+  return {
+    user: found.users,
+    deck: found.decks,
+  };
 }
 &nbsp;</pre></td></tr></table></pre>
 

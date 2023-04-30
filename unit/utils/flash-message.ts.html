@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">95% </span>
+                <span class="strong">63.63% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>19/20</span>
+                <span class='fraction'>14/22</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>3/3</span>
+                <span class='fraction'>0/0</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">75% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>3/4</span>
+                <span class='fraction'>0/4</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">95% </span>
+                <span class="strong">63.63% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>19/20</span>
+                <span class='fraction'>14/22</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line high'></div>
+    <div class='status-line medium'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -83,14 +83,9 @@
 <a name='L18'></a><a href='#L18'>18</a>
 <a name='L19'></a><a href='#L19'>19</a>
 <a name='L20'></a><a href='#L20'>20</a>
-<a name='L21'></a><a href='#L21'>21</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<a name='L21'></a><a href='#L21'>21</a>
+<a name='L22'></a><a href='#L22'>22</a>
+<a name='L23'></a><a href='#L23'>23</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -103,7 +98,18 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import type { Session } from "@remix-run/server-runtime";
+&nbsp;
+// TODO: refactor
 &nbsp;
 const KEY = "flash-messages";
 &nbsp;
@@ -112,16 +118,16 @@ export interface FlashMessage {
   variant?: "success" | "error" | "info";
 }
 &nbsp;
-export function pushFlashMessage(
-  session: Session,
-  flashMessage: FlashMessage
-): void {
-  const current = getFlashMessages(session);
-  session.flash(KEY, [...current, flashMessage]);
-}
+export <span class="fstat-no" title="function not covered" >function pushFlashMessage(</span>
+<span class="cstat-no" title="statement not covered" >  session: Session,</span>
+<span class="cstat-no" title="statement not covered" >  flashMessage: FlashMessage</span>
+<span class="cstat-no" title="statement not covered" >): void {</span>
+<span class="cstat-no" title="statement not covered" >  const current = getFlashMessages(session);</span>
+<span class="cstat-no" title="statement not covered" >  session.flash(KEY, [...current, flashMessage]);</span>
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >}</span></span>
 &nbsp;
-export function getFlashMessages(session: Session): FlashMessage[] {
-  return session.get(KEY) ?? [];
+export <span class="fstat-no" title="function not covered" >function getFlashMessages(session: Session): FlashMessage[] {</span>
+<span class="cstat-no" title="statement not covered" >  return session.get(KEY) ?? [];</span>
 <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >}</span></span>
 &nbsp;</pre></td></tr></table></pre>
 
@@ -130,7 +136,7 @@ export function getFlashMessages(session: Session): FlashMessage[] {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-04-30T07:34:49.636Z
+                at 2023-04-30T08:26:41.884Z
             </div>
         <script src="../prettify.js"></script>
         <script>
