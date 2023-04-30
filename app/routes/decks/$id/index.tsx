@@ -25,10 +25,11 @@ import type {
 import type { PracticeActionType, PracticeQueueType } from "../../../db/types";
 import { $R, R, ROUTE_DEF } from "../../../misc/routes";
 import { trpc } from "../../../trpc/client";
-import { Controller, makeLoader } from "../../../utils/controller-utils";
+import type { Controller } from "../../../utils/controller-utils";
 import { useDeserialize } from "../../../utils/hooks";
 import { intl, intlWrapper } from "../../../utils/intl";
-import { useLeafLoaderData } from "../../../utils/loader-utils";
+import { requireUserAndDeckV2 } from "../../../utils/loader-deck-utils";
+import { makeLoaderV2, useLeafLoaderData } from "../../../utils/loader-utils";
 import { cls } from "../../../utils/misc";
 import type { PageHandle } from "../../../utils/page-handle";
 import { MiniPlayer } from "../../bookmarks";
@@ -79,16 +80,9 @@ interface LoaderData {
   >[];
 }
 
-export const loader = makeLoader(Controller, async function () {
-  const [, deck] = await requireUserAndDeck.apply(this);
-
-  const paginationParams = ROUTE_DEF["/decks/$id"].query.safeParse(
-    this.query()
-  );
-  if (!paginationParams.success) {
-    this.flash({ content: "invalid parameters", variant: "error" });
-    return redirect($R["/decks/$id"](deck));
-  }
+export const loader = makeLoaderV2(async ({ ctx }) => {
+  const { deck } = await requireUserAndDeckV2(ctx);
+  const reqQuery = ROUTE_DEF["/decks/$id"].query.parse(ctx.query);
 
   const baseQuery = db
     .select()
@@ -105,17 +99,14 @@ export const loader = makeLoader(Controller, async function () {
     .where(E.eq(T.practiceEntries.deckId, deck.id))
     .orderBy(E.asc(T.practiceEntries.createdAt));
 
-  const [rows, pagination] = await toPaginationResult(
-    baseQuery,
-    paginationParams.data
-  );
+  const [rows, pagination] = await toPaginationResult(baseQuery, reqQuery);
 
-  const res: LoaderData = {
+  const loaderData: LoaderData = {
     deck,
     pagination,
     rows,
   };
-  return this.serialize(res);
+  return loaderData;
 });
 
 //
