@@ -25,7 +25,7 @@ export const handle: PageHandle = {
 export const loader = makeLoaderV2(async ({ ctx }) => {
   const user = await ctx.currentUser();
   if (user) {
-    ctx.flash({
+    await ctx.flash({
       content: `Already signed in as '${user.username}'`,
       variant: "error",
     });
