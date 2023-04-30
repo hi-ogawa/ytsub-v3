@@ -1,4 +1,4 @@
-import { DeckNavBarMenuComponent, requireUserAndDeck } from ".";
+import { DeckNavBarMenuComponent } from ".";
 import { useLoaderData, useNavigate } from "@remix-run/react";
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
@@ -6,10 +6,11 @@ import { toast } from "react-hot-toast";
 import type { DeckTable } from "../../../db/models";
 import { $R, R } from "../../../misc/routes";
 import { trpc } from "../../../trpc/client";
-import { Controller, makeLoader } from "../../../utils/controller-utils";
 import { toastInfo } from "../../../utils/flash-message-hook";
 import { useDeserialize } from "../../../utils/hooks";
 import { intl } from "../../../utils/intl";
+import { requireUserAndDeckV2 } from "../../../utils/loader-deck-utils";
+import { makeLoaderV2 } from "../../../utils/loader-utils";
 import { cls } from "../../../utils/misc";
 import type { PageHandle } from "../../../utils/page-handle";
 
@@ -26,10 +27,10 @@ interface LoaderData {
   deck: DeckTable;
 }
 
-export const loader = makeLoader(Controller, async function () {
-  const [, deck] = await requireUserAndDeck.apply(this);
-  const data: LoaderData = { deck };
-  return this.serialize(data);
+export const loader = makeLoaderV2(async ({ ctx }) => {
+  const { deck } = await requireUserAndDeckV2(ctx);
+  const loaderData: LoaderData = { deck };
+  return loaderData;
 });
 
 //
