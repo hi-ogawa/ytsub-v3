@@ -9,7 +9,7 @@ import { trpc } from "../../../trpc/client";
 import { toastInfo } from "../../../utils/flash-message-hook";
 import { intl } from "../../../utils/intl";
 import { requireUserAndDeckV2 } from "../../../utils/loader-deck-utils";
-import { makeLoaderV2, useDeLoaderData } from "../../../utils/loader-utils";
+import { makeLoader, useDeLoaderData } from "../../../utils/loader-utils";
 import { cls } from "../../../utils/misc";
 import type { PageHandle } from "../../../utils/page-handle";
 
@@ -26,7 +26,7 @@ interface LoaderData {
   deck: DeckTable;
 }
 
-export const loader = makeLoaderV2(async ({ ctx }) => {
+export const loader = makeLoader(async ({ ctx }) => {
   const { deck } = await requireUserAndDeckV2(ctx);
   const loaderData: LoaderData = { deck };
   return loaderData;

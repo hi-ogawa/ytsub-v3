@@ -10,7 +10,7 @@ import {
   FILTERED_LANGUAGE_CODES,
   languageCodeToName,
 } from "../../utils/language";
-import { makeLoaderV2, useDeLeafLoaderData } from "../../utils/loader-utils";
+import { makeLoader, useDeLeafLoaderData } from "../../utils/loader-utils";
 import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 
@@ -22,7 +22,7 @@ export const handle: PageHandle = {
 // loader
 //
 
-export const loader = makeLoaderV2(async ({ ctx }) => {
+export const loader = makeLoader(async ({ ctx }) => {
   const user = await ctx.requireUser();
   return user;
 });

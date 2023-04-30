@@ -2,7 +2,7 @@ import { Link } from "@remix-run/react";
 import { E, T, db } from "../../db/drizzle-client.server";
 import type { DeckTable } from "../../db/models";
 import { $R } from "../../misc/routes";
-import { makeLoaderV2, useDeLoaderData } from "../../utils/loader-utils";
+import { makeLoader, useDeLoaderData } from "../../utils/loader-utils";
 import type { PageHandle } from "../../utils/page-handle";
 import { DeckMenuComponent } from "./$id";
 
@@ -19,7 +19,7 @@ interface DecksLoaderData {
   decks: DeckTable[];
 }
 
-export const loader = makeLoaderV2(async ({ ctx }) => {
+export const loader = makeLoader(async ({ ctx }) => {
   const user = await ctx.requireUser();
   const decks = await db
     .select()

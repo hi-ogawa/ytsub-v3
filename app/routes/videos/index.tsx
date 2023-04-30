@@ -19,7 +19,7 @@ import { R } from "../../misc/routes";
 import { trpc } from "../../trpc/client";
 import { toastInfo } from "../../utils/flash-message-hook";
 import {
-  makeLoaderV2,
+  makeLoader,
   useDeLoaderData,
   useRootLoaderData,
 } from "../../utils/loader-utils";
@@ -61,7 +61,7 @@ export async function getVideosLoaderData(
   return { videos, pagination };
 }
 
-export const loader = makeLoaderV2(async ({ ctx }) => {
+export const loader = makeLoader(async ({ ctx }) => {
   const user = await ctx.requireUser();
   const query = PAGINATION_PARAMS_SCHEMA.parse(ctx.query);
   const loaderData: VideosLoaderData = await getVideosLoaderData(

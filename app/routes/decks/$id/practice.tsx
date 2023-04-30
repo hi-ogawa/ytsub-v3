@@ -14,7 +14,7 @@ import { PRACTICE_ACTION_TYPES, PracticeActionType } from "../../../db/types";
 import { trpc } from "../../../trpc/client";
 import { requireUserAndDeckV2 } from "../../../utils/loader-deck-utils";
 import {
-  makeLoaderV2,
+  makeLoader,
   useDeLeafLoaderData,
   useDeLoaderData,
 } from "../../../utils/loader-utils";
@@ -36,7 +36,7 @@ interface LoaderData {
   deck: DeckTable;
 }
 
-export const loader = makeLoaderV2(async ({ ctx }) => {
+export const loader = makeLoader(async ({ ctx }) => {
   const { deck } = await requireUserAndDeckV2(ctx);
   const loaderData: LoaderData = { deck };
   return loaderData;

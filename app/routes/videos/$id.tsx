@@ -24,7 +24,7 @@ import { trpc } from "../../trpc/client";
 import { useDocumentEvent } from "../../utils/hooks-client-utils";
 import { intl } from "../../utils/intl";
 import {
-  makeLoaderV2,
+  makeLoader,
   useDeLeafLoaderData,
   useDeLoaderData,
   useRootLoaderData,
@@ -53,7 +53,7 @@ type LoaderData = {
   query: z.infer<(typeof ROUTE_DEF)["/videos/$id"]["query"]>;
 };
 
-export const loader = makeLoaderV2(async ({ ctx }) => {
+export const loader = makeLoader(async ({ ctx }) => {
   const params = ROUTE_DEF["/videos/$id"].params.parse(ctx.params);
   const query = ROUTE_DEF["/videos/$id"].query.parse(ctx.query);
   const video = await findOne(

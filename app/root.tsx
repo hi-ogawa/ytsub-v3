@@ -28,7 +28,7 @@ import { ConfigPlaceholder } from "./utils/config-placeholder";
 import { useFlashMessages } from "./utils/flash-message-hook";
 import {
   RootLoaderData,
-  makeLoaderV2,
+  makeLoader,
   useRootLoaderData,
 } from "./utils/loader-utils";
 import { cls } from "./utils/misc";
@@ -48,7 +48,7 @@ export const links: LinksFunction = () => {
 // loader
 //
 
-export const loader = makeLoaderV2(async ({ ctx }) => {
+export const loader = makeLoader(async ({ ctx }) => {
   const loaderData: RootLoaderData = {
     currentUser: await ctx.currentUser(),
     flashMessages: await ctx.getFlashMessages(),

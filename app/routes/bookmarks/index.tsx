@@ -25,7 +25,7 @@ import type {
 import { $R, ROUTE_DEF } from "../../misc/routes";
 import { trpc } from "../../trpc/client";
 import {
-  makeLoaderV2,
+  makeLoader,
   useDeLeafLoaderData,
   useDeLoaderData,
 } from "../../utils/loader-utils";
@@ -46,7 +46,7 @@ interface LoaderData {
   request: z.infer<(typeof ROUTE_DEF)["/bookmarks"]["query"]>;
 }
 
-export const loader = makeLoaderV2(async ({ ctx }) => {
+export const loader = makeLoader(async ({ ctx }) => {
   const user = await ctx.requireUser();
 
   const request = ROUTE_DEF["/bookmarks"].query.parse(ctx.query);

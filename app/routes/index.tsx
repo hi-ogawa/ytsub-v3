@@ -1,4 +1,4 @@
-import { makeLoaderV2, useDeLoaderData } from "../utils/loader-utils";
+import { makeLoader, useDeLoaderData } from "../utils/loader-utils";
 import type { PageHandle } from "../utils/page-handle";
 import { PAGINATION_PARAMS_SCHEMA } from "../utils/pagination";
 import {
@@ -11,7 +11,7 @@ export const handle: PageHandle = {
   navBarTitle: () => "Examples",
 };
 
-export const loader = makeLoaderV2(async ({ ctx }) => {
+export const loader = makeLoader(async ({ ctx }) => {
   const query = PAGINATION_PARAMS_SCHEMA.parse(ctx.query);
   const loaderData: VideosLoaderData = await getVideosLoaderData(query);
   return loaderData;

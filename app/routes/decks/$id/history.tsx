@@ -16,7 +16,7 @@ import { useIntersectionObserver } from "../../../utils/hooks-client-utils";
 import { formatRelativeDate } from "../../../utils/intl";
 import { requireUserAndDeckV2 } from "../../../utils/loader-deck-utils";
 import {
-  makeLoaderV2,
+  makeLoader,
   useDeLeafLoaderData,
   useDeLoaderData,
 } from "../../../utils/loader-utils";
@@ -43,7 +43,7 @@ interface LoaderData {
   query: z.infer<(typeof ROUTE_DEF)["/decks/$id/history"]["query"]>;
 }
 
-export const loader = makeLoaderV2(async ({ ctx }) => {
+export const loader = makeLoader(async ({ ctx }) => {
   const { deck } = await requireUserAndDeckV2(ctx);
   const query = ROUTE_DEF["/decks/$id/history"].query.parse(ctx.query);
 

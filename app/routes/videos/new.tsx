@@ -10,7 +10,7 @@ import { trpc } from "../../trpc/client";
 import { toastInfo } from "../../utils/flash-message-hook";
 import { isLanguageCode } from "../../utils/language";
 import {
-  makeLoaderV2,
+  makeLoader,
   useDeLoaderData,
   useRootLoaderData,
 } from "../../utils/loader-utils";
@@ -33,7 +33,7 @@ type LoaderData = {
   userCaptionConfigs?: { language1?: CaptionConfig; language2?: CaptionConfig };
 };
 
-export const loader = makeLoaderV2(async ({ ctx }) => {
+export const loader = makeLoader(async ({ ctx }) => {
   const query = ROUTE_DEF["/videos/new"].query.parse(ctx.query);
   const videoId = parseVideoId(query.videoId);
   tinyassert(videoId);

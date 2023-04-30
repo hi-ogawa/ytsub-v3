@@ -10,7 +10,7 @@ import {
 } from "../../components/practice-history-chart";
 import { trpc } from "../../trpc/client";
 import { useClickOutside } from "../../utils/hooks-client-utils";
-import { makeLoaderV2 } from "../../utils/loader-utils";
+import { makeLoader } from "../../utils/loader-utils";
 import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 import { DateRangeType, formatDateRange } from "../../utils/temporal-utils";
@@ -20,7 +20,7 @@ import { BookmarksMenuItems } from "./index";
 // loader
 //
 
-export const loader = makeLoaderV2(async ({ ctx }) => {
+export const loader = makeLoader(async ({ ctx }) => {
   await ctx.requireUser();
   return null;
 });

@@ -10,7 +10,7 @@ import { $R, R } from "../../misc/routes";
 import { trpc } from "../../trpc/client";
 import { publicConfig } from "../../utils/config";
 import { loadScript } from "../../utils/dom-utils";
-import { makeLoaderV2 } from "../../utils/loader-utils";
+import { makeLoader } from "../../utils/loader-utils";
 import { uninitialized, usePromiseQueryOpitons } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 
@@ -22,7 +22,7 @@ export const handle: PageHandle = {
 // loader
 //
 
-export const loader = makeLoaderV2(async ({ ctx }) => {
+export const loader = makeLoader(async ({ ctx }) => {
   const user = await ctx.currentUser();
   if (user) {
     await ctx.flash({
