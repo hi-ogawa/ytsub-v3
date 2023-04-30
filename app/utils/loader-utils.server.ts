@@ -36,6 +36,7 @@ export type LoaderContext = Awaited<ReturnType<typeof createLoaderContext>>;
 async function createLoaderContext(loaderArgs: DataFunctionArgs) {
   const { request: req } = loaderArgs;
   const resHeaders = new Headers();
+  const reqUrl = new URL(req.url);
 
   const trpcCtx = await createTrpcAppContext({
     req,
@@ -47,9 +48,7 @@ async function createLoaderContext(loaderArgs: DataFunctionArgs) {
 
     params: loaderArgs.params,
 
-    query: Object.fromEntries(
-      new URLSearchParams(new URL(req.url).search).entries()
-    ),
+    query: Object.fromEntries(reqUrl.searchParams.entries()),
 
     flash: async (message: FlashMessage) => {
       pushFlashMessage(ctx.session, message);
@@ -75,7 +74,7 @@ async function createLoaderContext(loaderArgs: DataFunctionArgs) {
       return user;
     },
 
-    async redirectOnError<T>(f: () => T, url?: string) {
+    async redirectOnError<T>(f: () => T, destUrl: string = $R["/"]()) {
       try {
         return await f();
       } catch (error) {
@@ -84,9 +83,11 @@ async function createLoaderContext(loaderArgs: DataFunctionArgs) {
           res = error;
         } else {
           // root redirection as default error handling
-          // TODO: this can cause infinite redirection for root
+          if (reqUrl.password + reqUrl.search === destUrl) {
+            throw new Error("TODO: redirectOnError (infinite redirection?)"); // but avoid infinite rediction
+          }
           await ctx.flash({ content: "Invalid request", variant: "error" });
-          res = redirect(url ?? $R["/"]());
+          res = redirect(destUrl);
         }
         throw ctx.__finalizeResponse(res);
       }
