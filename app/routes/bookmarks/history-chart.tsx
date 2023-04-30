@@ -1,5 +1,4 @@
 import { Transition } from "@headlessui/react";
-import type { LoaderFunction } from "@remix-run/server-runtime";
 import { useQuery } from "@tanstack/react-query";
 import React from "react";
 import { useForm } from "react-hook-form";
@@ -10,8 +9,8 @@ import {
   createBookmarkHistoryChartOption,
 } from "../../components/practice-history-chart";
 import { trpc } from "../../trpc/client";
-import { createLoaderTrpc } from "../../trpc/remix-utils.server";
 import { useClickOutside } from "../../utils/hooks-client-utils";
+import { makeLoaderV2 } from "../../utils/loader-utils";
 import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 import { DateRangeType, formatDateRange } from "../../utils/temporal-utils";
@@ -21,11 +20,10 @@ import { BookmarksMenuItems } from "./index";
 // loader
 //
 
-export const loader: LoaderFunction = async (args) => {
-  const { ctx } = await createLoaderTrpc(args);
+export const loader = makeLoaderV2(async ({ ctx }) => {
   await ctx.requireUser();
   return null;
-};
+});
 
 //
 // handle

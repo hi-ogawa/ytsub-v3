@@ -70,6 +70,9 @@ export const createTrpcAppContext = async ({
       try {
         return await f();
       } catch (e) {
+        if (e instanceof Response) {
+          throw e;
+        }
         await ctx.flash({ content: "Invalid request", variant: "error" });
         throw ctx.redirect(url ?? $R["/"]());
       }

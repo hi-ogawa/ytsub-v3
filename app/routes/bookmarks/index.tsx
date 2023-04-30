@@ -2,7 +2,6 @@ import { Transition } from "@headlessui/react";
 import { isNil, typedBoolean } from "@hiogawa/utils";
 import { toArraySetState, useRafLoop } from "@hiogawa/utils-react";
 import { Link, NavLink, useLoaderData } from "@remix-run/react";
-import type { LoaderFunction } from "@remix-run/server-runtime";
 import { useQuery } from "@tanstack/react-query";
 import { omit } from "lodash";
 import React from "react";
@@ -26,9 +25,8 @@ import type {
 } from "../../db/models";
 import { $R, ROUTE_DEF } from "../../misc/routes";
 import { trpc } from "../../trpc/client";
-import { createLoaderTrpc } from "../../trpc/remix-utils.server";
 import { useDeserialize } from "../../utils/hooks";
-import { useLeafLoaderData } from "../../utils/loader-utils";
+import { makeLoaderV2, useLeafLoaderData } from "../../utils/loader-utils";
 import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 import type { CaptionEntry } from "../../utils/types";
@@ -47,13 +45,10 @@ interface LoaderData {
   request: z.infer<(typeof ROUTE_DEF)["/bookmarks"]["query"]>;
 }
 
-export const loader: LoaderFunction = async (args) => {
-  const { ctx } = await createLoaderTrpc(args);
+export const loader = makeLoaderV2(async ({ ctx }) => {
   const user = await ctx.requireUser();
 
-  const request = await ctx.redirectOnError(() =>
-    ROUTE_DEF["/bookmarks"].query.parse(ctx.query)
-  );
+  const request = ROUTE_DEF["/bookmarks"].query.parse(ctx.query);
 
   let query = db
     .select()
@@ -101,7 +96,7 @@ export const loader: LoaderFunction = async (args) => {
     request,
   };
   return ctx.serialize(loaderData);
-};
+});
 
 export default function DefaultComponent() {
   const data: LoaderData = useDeserialize(useLoaderData());
