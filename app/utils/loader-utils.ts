@@ -3,7 +3,6 @@ import React from "react";
 import { deserialize } from "superjson";
 import type { UserTable } from "../db/models";
 import type { FlashMessage } from "./flash-message";
-import { useDeserialize } from "./hooks";
 import { makeLoaderImpl } from "./loader-utils.server";
 
 export interface RootLoaderData {
@@ -13,7 +12,7 @@ export interface RootLoaderData {
 
 export function useRootLoaderData(): RootLoaderData {
   const [{ data }] = useMatches();
-  return useDeserialize(data);
+  return React.useMemo(() => deserialize(data), [data]);
 }
 
 export function useLeafLoaderData(): any {

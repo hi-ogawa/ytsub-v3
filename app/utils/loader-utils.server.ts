@@ -58,8 +58,12 @@ async function createLoaderContext(loaderArgs: DataFunctionArgs) {
       return redirect(url, { headers: resHeaders });
     },
 
+    currentUser: () => {
+      return getSessionUser(ctx.session);
+    },
+
     requireUser: async () => {
-      const user = await getSessionUser(ctx.session);
+      const user = await ctx.currentUser();
       if (!user) {
         await ctx.flash({ content: "Signin required", variant: "error" });
         throw ctx.redirect($R["/users/signin"]());

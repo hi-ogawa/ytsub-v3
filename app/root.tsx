@@ -25,10 +25,13 @@ import { HideRecaptchaBadge } from "./routes/users/register";
 import { trpc } from "./trpc/client";
 import { publicConfig } from "./utils/config";
 import { ConfigPlaceholder } from "./utils/config-placeholder";
-import { Controller, makeLoader } from "./utils/controller-utils";
 import { getFlashMessages } from "./utils/flash-message";
 import { useFlashMessages } from "./utils/flash-message-hook";
-import { RootLoaderData, useRootLoaderData } from "./utils/loader-utils";
+import {
+  RootLoaderData,
+  makeLoaderV2,
+  useRootLoaderData,
+} from "./utils/loader-utils";
 import { cls } from "./utils/misc";
 import type { PageHandle } from "./utils/page-handle";
 import { QueryClientWrapper } from "./utils/react-query-utils";
@@ -46,12 +49,12 @@ export const links: LinksFunction = () => {
 // loader
 //
 
-export const loader = makeLoader(Controller, async function () {
-  const data: RootLoaderData = {
-    currentUser: await this.currentUser(),
-    flashMessages: getFlashMessages(this.session),
+export const loader = makeLoaderV2(async ({ ctx }) => {
+  const loaderData: RootLoaderData = {
+    currentUser: await ctx.currentUser(),
+    flashMessages: getFlashMessages(ctx.session),
   };
-  return this.serialize(data);
+  return loaderData;
 });
 
 //
