@@ -127,8 +127,8 @@ function VideoComponentExtra({
       toast.success("Successfully deleted a video");
       navigate(R["/videos"]); // refetch
     },
-    onError: () => {
-      toast.error("Failed to delete a video");
+    onError: (e) => {
+      toast.error(e instanceof Error ? e.message : "Failed to delete a video");
     },
   });
   const modal = useModal();
