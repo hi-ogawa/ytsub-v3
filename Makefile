@@ -34,10 +34,10 @@ db/seed: db/seed-download
 
 db/seed-download:
 	@# https://github.com/hi-ogawa/ytsub-v3/pull/214
-	wget -c -P misc/db/export https://github.com/hi-ogawa/ytsub-v3/files/11132552/ytsub-deck-export--Korean.txt
-	wget -c -P misc/db/export https://github.com/hi-ogawa/ytsub-v3/files/11132553/ytsub-deck-export--French.txt
+	wget --retry-on-http-error=503 -c -P misc/db/export https://github.com/hi-ogawa/ytsub-v3/files/11132552/ytsub-deck-export--Korean.txt
+	wget --retry-on-http-error=503 -c -P misc/db/export https://github.com/hi-ogawa/ytsub-v3/files/11132553/ytsub-deck-export--French.txt
 	@# https://github.com/hi-ogawa/ytsub-v3/pull/290
-	wget -c -P misc/fixture https://github.com/hi-ogawa/ytsub-v3/files/11279701/fetchCaptionEntries-EnPYXckiUVg-fr-en.txt
+	wget --retry-on-http-error=503 -c -P misc/fixture https://github.com/hi-ogawa/ytsub-v3/files/11279701/fetchCaptionEntries-EnPYXckiUVg-fr-en.txt
 
 db/dump:
 	docker-compose exec -T mysql mysqldump -uroot -ppassword ytsub_development | gzip -c > "misc/db/dump/$$(date '+%Y_%m_%d_%H_%M_%S').sql.gz"
