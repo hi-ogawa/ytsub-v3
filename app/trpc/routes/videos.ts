@@ -39,10 +39,21 @@ export const trpcRoutesVideos = {
       );
       tinyassert(video);
 
+      // TODO: support deleting videos with associated bookmarkEntries and practiceEntries
+      const found = await findOne(
+        db
+          .select()
+          .from(T.bookmarkEntries)
+          .where(E.eq(T.bookmarkEntries.videoId, id))
+      );
+      tinyassert(
+        !found,
+        "You cannot delete a video when it has associated bookmarks."
+      );
+
       await Promise.all([
         db.delete(T.videos).where(E.eq(T.videos.id, id)),
         db.delete(T.captionEntries).where(E.eq(T.captionEntries.videoId, id)),
-        db.delete(T.bookmarkEntries).where(E.eq(T.bookmarkEntries.videoId, id)),
       ]);
     }),
 
