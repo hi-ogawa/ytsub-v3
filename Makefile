@@ -84,6 +84,9 @@ db/log/enable:
 db/log/disable:
 	docker-compose exec -T mysql mysql -uroot -ppassword -e "SET global general_log = 0;"
 
+db/console/dev:
+	docker-compose exec mysql mysql -uroot -ppassword ytsub_development
+
 #
 # docker
 #
