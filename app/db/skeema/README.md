@@ -23,7 +23,7 @@ git stash
 # 5. diff for `down` knex migration
 pnpm skeema diff --allow-unsafe
 
-# 6. restore skeema/yyy.sql
+# 6. restore skeema/some-table.sql
 git stash pop
 ```
 
