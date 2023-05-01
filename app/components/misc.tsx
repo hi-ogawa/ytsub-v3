@@ -137,33 +137,39 @@ export function PaginationComponent({
       data-test="pagination"
       className="antd-floating flex items-center gap-2 px-2 py-1"
     >
-      <Link {...linkProps(page > 1 && { page: 1 })}>
+      <Link
+        className="antd-btn antd-btn-ghost flex items-center aria-disabled:pointer-events-none aria-disabled:opacity-50"
+        aria-disabled={page <= 1}
+        to={"?" + mergeQuery({ page: 1 })}
+      >
         <span className="i-ri-rewind-mini-fill w-5 h-5"></span>
       </Link>
-      <Link {...linkProps(page > 1 && { page: page - 1 })}>
+      <Link
+        className="antd-btn antd-btn-ghost flex items-center aria-disabled:pointer-events-none aria-disabled:opacity-50"
+        aria-disabled={page <= 1}
+        to={"?" + mergeQuery({ page: page - 1 })}
+      >
         <span className="i-ri-play-mini-fill w-4 h-4 rotate-[180deg]"></span>
       </Link>
       <span className="text-sm">
         {page} / {totalPage} ({total})
       </span>
-      <Link {...linkProps(page < totalPage && { page: page + 1 })}>
+      <Link
+        className="antd-btn antd-btn-ghost flex items-center aria-disabled:pointer-events-none aria-disabled:opacity-50"
+        aria-disabled={page >= totalPage}
+        to={"?" + mergeQuery({ page: page + 1 })}
+      >
         <span className="i-ri-play-mini-fill w-4 h-4"></span>
       </Link>
-      <Link {...linkProps(page < totalPage && { page: totalPage })}>
+      <Link
+        className="antd-btn antd-btn-ghost flex items-center aria-disabled:pointer-events-none aria-disabled:opacity-50"
+        aria-disabled={page >= totalPage}
+        to={"?" + mergeQuery({ page: totalPage })}
+      >
         <span className="i-ri-rewind-mini-fill w-5 h-5 rotate-[180deg]"></span>
       </Link>
     </div>
   );
-
-  function linkProps(query: Record<string, unknown> | false) {
-    return {
-      className: cls(
-        "antd-btn antd-btn-ghost flex items-center",
-        !query && "pointer-events-none opacity-50"
-      ),
-      to: query ? "?" + mergeQuery(query) : "",
-    };
-  }
 }
 
 function useMergeUrlQuery() {
