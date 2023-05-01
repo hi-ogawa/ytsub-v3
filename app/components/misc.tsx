@@ -3,7 +3,6 @@ import { Link, useSearchParams } from "@remix-run/react";
 import type { PaginationMetadata, VideoTable } from "../db/models";
 import { $R } from "../misc/routes";
 import { cls } from "../utils/misc";
-import { toNewPages } from "../utils/pagination";
 import { parseVssId, toThumbnail } from "../utils/youtube";
 import { PopoverSimple } from "./popover";
 
@@ -133,43 +132,38 @@ export function PaginationComponent({
 }) {
   const mergeQuery = useMergeUrlQuery();
   const { page, totalPage, total } = pagination;
-  const { first, previous, next, last } = toNewPages(pagination);
   return (
     <div
       data-test="pagination"
       className="antd-floating flex items-center gap-2 px-2 py-1"
     >
-      <Link
-        className="antd-btn antd-btn-ghost flex items-center"
-        to={"?" + mergeQuery(first)}
-      >
+      <Link {...linkProps(page > 1 && { page: 1 })}>
         <span className="i-ri-rewind-mini-fill w-5 h-5"></span>
       </Link>
-      <Link
-        className="antd-btn antd-btn-ghost flex items-center"
-        // TODO: disable
-        to={"?" + mergeQuery(previous ?? {})}
-      >
+      <Link {...linkProps(page > 1 && { page: page - 1 })}>
         <span className="i-ri-play-mini-fill w-4 h-4 rotate-[180deg]"></span>
       </Link>
       <span className="text-sm">
         {page} / {totalPage} ({total})
       </span>
-      <Link
-        className="antd-btn antd-btn-ghost flex items-center"
-        // TODO: disable
-        to={"?" + mergeQuery(next ?? {})}
-      >
+      <Link {...linkProps(page < totalPage && { page: page + 1 })}>
         <span className="i-ri-play-mini-fill w-4 h-4"></span>
       </Link>
-      <Link
-        className="antd-btn antd-btn-ghost flex items-center"
-        to={"?" + mergeQuery(last)}
-      >
+      <Link {...linkProps(page < totalPage && { page: totalPage })}>
         <span className="i-ri-rewind-mini-fill w-5 h-5 rotate-[180deg]"></span>
       </Link>
     </div>
   );
+
+  function linkProps(query: Record<string, unknown> | false) {
+    return {
+      className: cls(
+        "antd-btn antd-btn-ghost flex items-center",
+        !query && "pointer-events-none opacity-50"
+      ),
+      to: query ? "?" + mergeQuery(query) : "",
+    };
+  }
 }
 
 function useMergeUrlQuery() {
