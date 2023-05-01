@@ -6,12 +6,13 @@ import { useUserE2E } from "./helper";
 
 test.describe("decks", () => {
   const user = useUserE2E(test, { seed: __filename });
+  let deckId: number;
 
   test.beforeEach(async () => {
     await user.isReady;
     await db.delete(T.videos).where(E.eq(T.videos.userId, user.data.id));
     await db.delete(T.decks).where(E.eq(T.decks.userId, user.data.id));
-    await importSeed(user.data.id);
+    deckId = await importSeed(user.data.id);
   });
 
   test("decks => new-deck => edit-deck => delete-deck", async ({ page }) => {
@@ -80,16 +81,32 @@ test.describe("decks", () => {
     // nagivate to "/decks/$id"
     await page.locator('[data-test="deck-menu-popover-reference"]').click();
     await page.getByRole("link", { name: "Deck" }).click();
-    await expect(page).toHaveURL(/\/decks\/\d+$/);
+    await page.waitForURL(`/decks/${deckId}`);
 
     // navigate pagination
-    await page.locator("data-test=pagination >> a >> nth=2").click();
-    await expect(page).toHaveURL(/\/decks\/\d+\?perPage=20&page=2$/);
+    await page
+      .locator('[data-test="pagination"]')
+      .getByRole("link")
+      .nth(2)
+      .click();
+    await page.waitForURL(`/decks/${deckId}?page=2`);
+    await page
+      .locator('[data-test="pagination"]')
+      .getByRole("link")
+      .nth(2)
+      .click();
+    await page.waitForURL(`/decks/${deckId}?page=3`);
+    await page
+      .locator('[data-test="pagination"]')
+      .getByRole("link")
+      .first()
+      .click();
+    await page.waitForURL(`/decks/${deckId}?page=1`);
 
     // navigate to "/decks/$id/history-graph"
     await page.locator('[data-test="deck-menu-popover-reference"]').click();
     await page.getByRole("link", { name: "Chart" }).click();
-    await expect(page).toHaveURL(/\/decks\/\d+\/history-graph$/);
+    await page.waitForURL(`/decks/${deckId}/history-graph`);
     await page.getByText("this week").click();
 
     // change graph options
@@ -106,7 +123,7 @@ test.describe("decks", () => {
     //
     await page.locator('[data-test="deck-menu-popover-reference"]').click();
     await page.getByRole("link", { name: "History" }).click();
-    await page.waitForURL(/\/decks\/\d+\/history$/);
+    await page.waitForURL(`/decks/${deckId}/history`);
 
     // first entry
     await page.getByText("많이 울었던 사람?").click();

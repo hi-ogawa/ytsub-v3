@@ -3,7 +3,6 @@ import { Link, useSearchParams } from "@remix-run/react";
 import type { PaginationMetadata, VideoTable } from "../db/models";
 import { $R } from "../misc/routes";
 import { cls } from "../utils/misc";
-import { toNewPages } from "../utils/pagination";
 import { parseVssId, toThumbnail } from "../utils/youtube";
 import { PopoverSimple } from "./popover";
 
@@ -133,22 +132,22 @@ export function PaginationComponent({
 }) {
   const mergeQuery = useMergeUrlQuery();
   const { page, totalPage, total } = pagination;
-  const { first, previous, next, last } = toNewPages(pagination);
   return (
     <div
       data-test="pagination"
       className="antd-floating flex items-center gap-2 px-2 py-1"
     >
       <Link
-        className="antd-btn antd-btn-ghost flex items-center"
-        to={"?" + mergeQuery(first)}
+        className="antd-btn antd-btn-ghost flex items-center aria-disabled:pointer-events-none aria-disabled:opacity-50"
+        aria-disabled={page <= 1}
+        to={"?" + mergeQuery({ page: 1 })}
       >
         <span className="i-ri-rewind-mini-fill w-5 h-5"></span>
       </Link>
       <Link
-        className="antd-btn antd-btn-ghost flex items-center"
-        // TODO: disable
-        to={"?" + mergeQuery(previous ?? {})}
+        className="antd-btn antd-btn-ghost flex items-center aria-disabled:pointer-events-none aria-disabled:opacity-50"
+        aria-disabled={page <= 1}
+        to={"?" + mergeQuery({ page: page - 1 })}
       >
         <span className="i-ri-play-mini-fill w-4 h-4 rotate-[180deg]"></span>
       </Link>
@@ -156,15 +155,16 @@ export function PaginationComponent({
         {page} / {totalPage} ({total})
       </span>
       <Link
-        className="antd-btn antd-btn-ghost flex items-center"
-        // TODO: disable
-        to={"?" + mergeQuery(next ?? {})}
+        className="antd-btn antd-btn-ghost flex items-center aria-disabled:pointer-events-none aria-disabled:opacity-50"
+        aria-disabled={page >= totalPage}
+        to={"?" + mergeQuery({ page: page + 1 })}
       >
         <span className="i-ri-play-mini-fill w-4 h-4"></span>
       </Link>
       <Link
-        className="antd-btn antd-btn-ghost flex items-center"
-        to={"?" + mergeQuery(last)}
+        className="antd-btn antd-btn-ghost flex items-center aria-disabled:pointer-events-none aria-disabled:opacity-50"
+        aria-disabled={page >= totalPage}
+        to={"?" + mergeQuery({ page: totalPage })}
       >
         <span className="i-ri-rewind-mini-fill w-5 h-5 rotate-[180deg]"></span>
       </Link>
