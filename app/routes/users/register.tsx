@@ -1,9 +1,8 @@
-import { newPromiseWithResolvers, tinyassert } from "@hiogawa/utils";
+import { newPromiseWithResolvers, once, tinyassert } from "@hiogawa/utils";
 import { Temporal } from "@js-temporal/polyfill";
 import { Link } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { once } from "lodash";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { $R, R } from "../../misc/routes";

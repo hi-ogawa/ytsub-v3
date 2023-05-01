@@ -1,3 +1,4 @@
+import { range } from "@hiogawa/utils";
 import { groupBy, mapValues, tinyassert } from "@hiogawa/utils";
 
 export function createGetProxy(
@@ -81,4 +82,13 @@ export function capitalize(s: string): string {
 // shortcut for `undefined as T | undefined`
 export function none<T>(): T | undefined {
   return undefined;
+}
+
+export function zip<T1, T2>(ls1: T1[], ls2: T2[]): [T1, T2][] {
+  return range(Math.min(ls1.length, ls2.length)).map((i) => [ls1[i], ls2[i]]);
+}
+
+export function difference<T>(ls1: T[], ls2: T[]): T[] {
+  const exclude = new Set(ls2);
+  return ls1.filter((e) => !exclude.has(e));
 }

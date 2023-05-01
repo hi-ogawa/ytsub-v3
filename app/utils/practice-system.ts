@@ -8,7 +8,6 @@ import {
 import { Temporal } from "@js-temporal/polyfill";
 import { AnyColumn, GetColumnData, sql } from "drizzle-orm";
 import type { SQL } from "drizzle-orm/sql";
-import { difference } from "lodash";
 import { E, T, TT, db, findOne } from "../db/drizzle-client.server";
 import type {
   BookmarkEntryTable,
@@ -22,7 +21,12 @@ import {
   PracticeActionType,
   PracticeQueueType,
 } from "../db/types";
-import { mapGroupBy, objectFromMap, objectFromMapDefault } from "./misc";
+import {
+  difference,
+  mapGroupBy,
+  objectFromMap,
+  objectFromMapDefault,
+} from "./misc";
 import { fromTemporal, toInstant, toZdt } from "./temporal-utils";
 
 const QUEUE_RULES: Record<

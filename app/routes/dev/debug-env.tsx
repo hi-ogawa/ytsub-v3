@@ -1,5 +1,5 @@
+import { sortBy } from "@hiogawa/utils";
 import { LoaderFunction, json } from "@remix-run/server-runtime";
-import { fromPairs, sortBy, toPairs } from "lodash";
 import { verifyPassword } from "../../utils/auth";
 
 // npm run console
@@ -17,5 +17,7 @@ export const loader: LoaderFunction = async ({ request }) => {
       },
     });
   }
-  return json(fromPairs(sortBy(toPairs(process.env), ([k]) => k)));
+  return json(
+    Object.fromEntries(sortBy(Object.entries(process.env), ([k]) => k))
+  );
 };

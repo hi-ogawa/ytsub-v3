@@ -1,5 +1,5 @@
+import { once } from "@hiogawa/utils";
 import { installGlobals } from "@remix-run/node";
-import { once } from "lodash";
 import { client, initializeKnexClient } from "../db/client.server";
 import {
   finalizeDrizzleClient,
