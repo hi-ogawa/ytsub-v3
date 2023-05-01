@@ -75,6 +75,15 @@ db/migrate/dev:
 db/migrate/test:
 	NODE_ENV=test pnpm knex migrate:latest
 
+db/log/view:
+	docker-compose exec mysql tail -f /var/lib/mysql/__general.log
+
+db/log/enable:
+	docker-compose exec -T mysql mysql -uroot -ppassword -e "SET global log_output = 'FILE'; SET global general_log_file='/var/lib/mysql/__general.log'; SET global general_log = 1;"
+
+db/log/disable:
+	docker-compose exec -T mysql mysql -uroot -ppassword -e "SET global general_log = 0;"
+
 #
 # docker
 #
