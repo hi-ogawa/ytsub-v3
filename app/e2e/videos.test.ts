@@ -1,5 +1,6 @@
 import { expect } from "@playwright/test";
 import { E, T, db } from "../db/drizzle-client.server";
+import { importSeed } from "../misc/seed-utils";
 import { test } from "./coverage";
 import { useUserE2E } from "./helper";
 
@@ -128,4 +129,29 @@ test("invalid videoId input", async ({ page }) => {
     .fill("https://www.youtube.com/watch?v=4gXmClk8rXX");
   await page.getByPlaceholder("Enter Video ID or URL").press("Enter");
   await page.getByText("Failed to load a video").click();
+});
+
+test.describe("videos deletion", () => {
+  const userHook = useUserE2E(test, { seed: __filename + "videos deletion" });
+
+  test.beforeAll(async () => {
+    await userHook.isReady;
+    await importSeed(userHook.data.id);
+  });
+
+  test("error", async ({ page }) => {
+    await userHook.signin(page);
+    await page.goto("/videos");
+    await page
+      .locator('[data-test="video-component-popover-button"]')
+      .nth(0)
+      .click();
+    page.once("dialog", (dialog) => {
+      dialog.accept();
+    });
+    await page.locator('[data-test="video-delete-form"]').click();
+    await page
+      .getByText("You cannot delete a video when it has associated bookmarks.")
+      .click();
+  });
 });

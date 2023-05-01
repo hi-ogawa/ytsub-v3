@@ -48,7 +48,7 @@ export const trpcRoutesVideos = {
       );
       tinyassert(
         !found,
-        "You cannot delete videos when you have associated bookmarks."
+        "You cannot delete a video when it has associated bookmarks."
       );
 
       await Promise.all([
