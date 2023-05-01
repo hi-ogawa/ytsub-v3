@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">74.76% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>80/107</span>
+                <span class='fraction'>107/107</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">87.5% </span>
+                <span class="strong">80% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>7/8</span>
+                <span class='fraction'>8/10</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">74.76% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>80/107</span>
+                <span class='fraction'>107/107</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line medium'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -200,33 +200,33 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -307,33 +307,33 @@ export const trpcRoutesVideos = {
       })
     )
     .mutation(async ({ input, ctx }) =&gt; {
-<span class="cstat-no" title="statement not covered" >      const id = input.videoId;</span>
-<span class="cstat-no" title="statement not covered" >      const userId = ctx.user.id;</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >      const video = await findOne(</span>
-<span class="cstat-no" title="statement not covered" >        db</span>
-<span class="cstat-no" title="statement not covered" >          .select()</span>
-<span class="cstat-no" title="statement not covered" >          .from(T.videos)</span>
-<span class="cstat-no" title="statement not covered" >          .where(E.and(E.eq(T.videos.id, id), E.eq(T.videos.userId, userId)))</span>
-<span class="cstat-no" title="statement not covered" >      );</span>
-<span class="cstat-no" title="statement not covered" >      tinyassert(video);</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >      // TODO: support deleting videos with associated bookmarkEntries and practiceEntries</span>
-<span class="cstat-no" title="statement not covered" >      const found = await findOne(</span>
-<span class="cstat-no" title="statement not covered" >        db</span>
-<span class="cstat-no" title="statement not covered" >          .select()</span>
-<span class="cstat-no" title="statement not covered" >          .from(T.bookmarkEntries)</span>
-<span class="cstat-no" title="statement not covered" >          .where(E.eq(T.bookmarkEntries.videoId, id))</span>
-<span class="cstat-no" title="statement not covered" >      );</span>
-<span class="cstat-no" title="statement not covered" >      tinyassert(</span>
-<span class="cstat-no" title="statement not covered" >        !found,</span>
-<span class="cstat-no" title="statement not covered" >        "You cannot delete videos when you have associated bookmarks."</span>
-<span class="cstat-no" title="statement not covered" >      );</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >      await Promise.all([</span>
-<span class="cstat-no" title="statement not covered" >        db.delete(T.videos).where(E.eq(T.videos.id, id)),</span>
-<span class="cstat-no" title="statement not covered" >        db.delete(T.captionEntries).where(E.eq(T.captionEntries.videoId, id)),</span>
-<span class="cstat-no" title="statement not covered" >      ]);</span>
+      const id = input.videoId;
+      const userId = ctx.user.id;
+&nbsp;
+      const video = await findOne(
+        db
+          .select()
+          .from(T.videos)
+          .where(E.and(E.eq(T.videos.id, id), E.eq(T.videos.userId, userId)))
+      );
+      tinyassert(video);
+&nbsp;
+      // TODO: support deleting videos with associated bookmarkEntries and practiceEntries
+      const found = await findOne(
+        db
+          .select()
+          .from(T.bookmarkEntries)
+          .where(E.eq(T.bookmarkEntries.videoId, id))
+      );
+      tinyassert(
+        !found,
+        "You cannot delete a video when it has associated bookmarks."
+      );
+&nbsp;
+      await Promise.all([
+        db.delete(T.videos).where(E.eq(T.videos.id, id)),
+        db.delete(T.captionEntries).where(E.eq(T.captionEntries.videoId, id)),
+      ]<span class="branch-0 cbranch-no" title="branch not covered" >);</span>
     }),
 &nbsp;
   videos_getCaptionEntries: procedureBuilder
@@ -391,7 +391,7 @@ export const trpcRoutesVideos = {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-05-01T14:31:29.851Z
+                at 2023-05-01T14:43:04.884Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>
