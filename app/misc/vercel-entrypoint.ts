@@ -1,5 +1,5 @@
 import type { IncomingMessage, ServerResponse } from "node:http";
-import { tinyassert } from "@hiogawa/utils";
+import { tinyassert, typedBoolean } from "@hiogawa/utils";
 import * as build from "@remix-run/dev/server-build";
 import { createRequestHandler } from "@remix-run/express";
 
@@ -34,8 +34,9 @@ export default async function vercelEntrypoint(
 
   res2.append = (k: unknown, v: unknown) => {
     tinyassert(typeof k === "string");
-    tinyassert(Array.isArray(v));
-    res.setHeader(k, v);
+    tinyassert(typeof v === "string");
+    const vs = [res.getHeader(k), v].flat().filter(typedBoolean).map(String);
+    res.setHeader(k, vs);
   };
 
   let error: unknown;
