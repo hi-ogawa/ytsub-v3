@@ -1,7 +1,11 @@
-import { newPromiseWithResolvers, tinyassert } from "@hiogawa/utils";
+import {
+  newPromiseWithResolvers,
+  once,
+  sortBy,
+  tinyassert,
+} from "@hiogawa/utils";
 import { UseMutationOptions, useMutation } from "@tanstack/react-query";
 import { XMLParser } from "fast-xml-parser";
-import { maxBy, once } from "lodash";
 import React from "react";
 import { z } from "zod";
 import { loadScript } from "./dom-utils";
@@ -234,7 +238,9 @@ function mergeTtmlEntries(
       text2 = candidates.map(([e2]) => e2.text).join("");
     } else if (isects.length > 0) {
       // Or take maximum overlap
-      text2 = maxBy(isects, ([, isect]) => isect)![0].text;
+      const found = sortBy(isects, ([, isect]) => isect).at(-1);
+      tinyassert(found);
+      text2 = found[0].text;
     }
     return {
       index,

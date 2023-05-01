@@ -1,9 +1,8 @@
 import { deepEqual } from "assert/strict";
 import fs from "node:fs";
-import { objectPick, tinyassert } from "@hiogawa/utils";
+import { objectPick, range, tinyassert } from "@hiogawa/utils";
 import { cac } from "cac";
 import consola from "consola";
-import { range, zip } from "lodash";
 import { z } from "zod";
 import { client } from "../db/client.server";
 import { E, T, db, findOne } from "../db/drizzle-client.server";
@@ -20,6 +19,7 @@ import {
   toPasswordHash,
   verifySignin,
 } from "../utils/auth";
+import { zip } from "../utils/misc";
 import { exec, streamToString } from "../utils/node.server";
 import { resetDeckCache } from "../utils/practice-system";
 import { NewVideo, fetchCaptionEntries } from "../utils/youtube";
