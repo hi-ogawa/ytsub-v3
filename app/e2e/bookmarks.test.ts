@@ -39,4 +39,27 @@ test.describe("bookmarks", () => {
     await page.getByRole("button", { name: "Go to Last Bookmark" }).click();
     await page.getByText("케플러 대박 기원").click();
   });
+
+  test("invalid", async ({ page }) => {
+    await user.signin(page);
+    await page.goto("/bookmarks?order=xxx");
+    await page.getByText("Invalid request").click();
+    await page.waitForURL("/");
+  });
+});
+
+test.describe("/bookmarks/history-chart", () => {
+  const userHook = useUserE2E(test, { seed: __filename });
+
+  test("requires login", async ({ page }) => {
+    await page.goto("/bookmarks/history-chart");
+    await page.getByText("Signin required").click();
+    await page.waitForURL("/users/signin");
+  });
+
+  test("basic", async ({ page }) => {
+    await userHook.signin(page);
+    await page.goto("/bookmarks/history-chart");
+    await page.getByText("this week").click();
+  });
 });

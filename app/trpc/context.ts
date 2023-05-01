@@ -1,8 +1,8 @@
 import { tinyassert } from "@hiogawa/utils";
-import type { Session } from "@remix-run/server-runtime";
 import type { FetchCreateContextFnOptions } from "@trpc/server/adapters/fetch";
 import type { TT } from "../db/drizzle-client.server";
 import { getSessionUser } from "../utils/auth";
+import { none } from "../utils/misc";
 import {
   getRequestSession,
   getResponseSession,
@@ -10,32 +10,36 @@ import {
 } from "../utils/session.server";
 import { middlewareFactory } from "./factory";
 
-export type TrpcAppContext = {
-  session: Session;
-  commitSession: () => Promise<void>;
-  cacheResponse: () => void;
-  __getRepsonseSession: () => Promise<Session>; // for testing
-  user?: TT["users"];
-};
+export type TrpcAppContext = Awaited<ReturnType<typeof createTrpcAppContext>>;
 
 export const createTrpcAppContext = async ({
   req,
   resHeaders,
-}: FetchCreateContextFnOptions): Promise<TrpcAppContext> => {
-  const session = await getRequestSession(req);
-  return {
-    session,
+}: FetchCreateContextFnOptions) => {
+  const ctx = {
+    session: await getRequestSession(req),
+
+    user: none<TT["users"]>(),
+
     commitSession: async () => {
-      resHeaders.set("set-cookie", await sessionStore.commitSession(session));
+      resHeaders.set(
+        "set-cookie",
+        await sessionStore.commitSession(ctx.session)
+      );
     },
+
     cacheResponse: () => {
       // full cache only on CDN (cf. https://vercel.com/docs/concepts/functions/serverless-functions/edge-caching)
       resHeaders.set("cache-control", "public, max-age=0, s-max-age=31536000");
     },
+
+    // for testing
     __getRepsonseSession: () => {
       return getResponseSession({ headers: resHeaders });
     },
   };
+
+  return ctx;
 };
 
 //

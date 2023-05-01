@@ -1,11 +1,6 @@
-import {
-  PRACTICE_ACTION_TYPE_TO_COLOR,
-  QueueTypeIcon,
-  requireUserAndDeck,
-} from ".";
+import { PRACTICE_ACTION_TYPE_TO_COLOR, QueueTypeIcon } from ".";
 import { Transition } from "@headlessui/react";
-import { useLoaderData, useNavigate } from "@remix-run/react";
-import { redirect } from "@remix-run/server-runtime";
+import { useNavigate } from "@remix-run/react";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import React from "react";
 import type { z } from "zod";
@@ -17,11 +12,14 @@ import { PRACTICE_ACTION_TYPES, PracticeActionType } from "../../../db/types";
 import { $R, ROUTE_DEF } from "../../../misc/routes";
 import { trpc } from "../../../trpc/client";
 import { trpcClient } from "../../../trpc/client-internal.client";
-import { Controller, makeLoader } from "../../../utils/controller-utils";
-import { useDeserialize } from "../../../utils/hooks";
 import { useIntersectionObserver } from "../../../utils/hooks-client-utils";
 import { formatRelativeDate } from "../../../utils/intl";
-import { useLeafLoaderData } from "../../../utils/loader-utils";
+import { requireUserAndDeck } from "../../../utils/loader-deck-utils";
+import {
+  useLeafLoaderData,
+  useLoaderDataExtra,
+} from "../../../utils/loader-utils";
+import { makeLoader } from "../../../utils/loader-utils.server";
 import { cls } from "../../../utils/misc";
 import type { PageHandle } from "../../../utils/page-handle";
 import { MiniPlayer } from "../../bookmarks";
@@ -45,17 +43,12 @@ interface LoaderData {
   query: z.infer<(typeof ROUTE_DEF)["/decks/$id/history"]["query"]>;
 }
 
-export const loader = makeLoader(Controller, async function () {
-  const [, deck] = await requireUserAndDeck.apply(this);
+export const loader = makeLoader(async ({ ctx }) => {
+  const { deck } = await requireUserAndDeck(ctx);
+  const query = ROUTE_DEF["/decks/$id/history"].query.parse(ctx.query);
 
-  const parsed = ROUTE_DEF["/decks/$id/history"].query.safeParse(this.query());
-  if (!parsed.success) {
-    this.flash({ content: "invalid parameters", variant: "error" });
-    return redirect($R["/decks/$id/history"](deck));
-  }
-
-  const res: LoaderData = { deck, query: parsed.data };
-  return this.serialize(res);
+  const loaderData: LoaderData = { deck, query };
+  return loaderData;
 });
 
 //
@@ -63,7 +56,7 @@ export const loader = makeLoader(Controller, async function () {
 //
 
 export default function DefaultComponent() {
-  const { deck, query }: LoaderData = useDeserialize(useLoaderData());
+  const { deck, query } = useLoaderDataExtra() as LoaderData;
   const navigate = useNavigate();
 
   const queryArgs = {
@@ -282,7 +275,7 @@ function PracticeActionComponent(
 //
 
 function NavBarTitleComponent() {
-  const { deck }: LoaderData = useDeserialize(useLeafLoaderData());
+  const { deck } = useLeafLoaderData() as LoaderData;
   return (
     <span>
       {deck.name}{" "}

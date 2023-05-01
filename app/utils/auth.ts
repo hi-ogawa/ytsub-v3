@@ -94,7 +94,7 @@ export function signoutSession(session: Session): void {
   session.unset(SESSION_USER_KEY);
 }
 
-export function getSessionUserId(session: Session): number | undefined {
+function getSessionUserId(session: Session): number | undefined {
   const id: unknown = session.get(SESSION_USER_KEY);
   return typeof id === "number" ? id : undefined;
 }

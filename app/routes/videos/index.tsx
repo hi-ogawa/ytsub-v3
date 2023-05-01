@@ -1,6 +1,5 @@
 import { Transition } from "@headlessui/react";
-import { useLoaderData, useNavigate } from "@remix-run/react";
-import { redirect } from "@remix-run/server-runtime";
+import { useNavigate } from "@remix-run/react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import {
@@ -18,10 +17,12 @@ import type {
 } from "../../db/models";
 import { R } from "../../misc/routes";
 import { trpc } from "../../trpc/client";
-import { Controller, makeLoader } from "../../utils/controller-utils";
 import { toastInfo } from "../../utils/flash-message-hook";
-import { useDeserialize } from "../../utils/hooks";
-import { useRootLoaderData } from "../../utils/loader-utils";
+import {
+  useLoaderDataExtra,
+  useRootLoaderData,
+} from "../../utils/loader-utils";
+import { makeLoader } from "../../utils/loader-utils.server";
 import type { PageHandle } from "../../utils/page-handle";
 import {
   PAGINATION_PARAMS_SCHEMA,
@@ -60,27 +61,14 @@ export async function getVideosLoaderData(
   return { videos, pagination };
 }
 
-export const loader = makeLoader(Controller, async function () {
-  const user = await this.currentUser();
-  if (!user) {
-    this.flash({
-      content: "Signin required.",
-      variant: "error",
-    });
-    return redirect(R["/users/signin"]);
-  }
-
-  const parsed = PAGINATION_PARAMS_SCHEMA.safeParse(this.query());
-  if (!parsed.success) {
-    this.flash({ content: "invalid parameters", variant: "error" });
-    return redirect(R["/bookmarks"]);
-  }
-
-  const data: VideosLoaderData = await getVideosLoaderData(
-    parsed.data,
+export const loader = makeLoader(async ({ ctx }) => {
+  const user = await ctx.requireUser();
+  const query = PAGINATION_PARAMS_SCHEMA.parse(ctx.query);
+  const loaderData: VideosLoaderData = await getVideosLoaderData(
+    query,
     user.id
   );
-  return this.serialize(data);
+  return loaderData;
 });
 
 //
@@ -89,7 +77,7 @@ export const loader = makeLoader(Controller, async function () {
 
 export default function DefaultComponent() {
   const { currentUser } = useRootLoaderData();
-  const data: VideosLoaderData = useDeserialize(useLoaderData());
+  const data = useLoaderDataExtra() as VideosLoaderData;
   return <VideoListComponent {...data} currentUser={currentUser} />;
 }
 

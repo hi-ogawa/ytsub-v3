@@ -2,8 +2,7 @@ import { Transition } from "@headlessui/react";
 import { tinyassert } from "@hiogawa/utils";
 import { isNil } from "@hiogawa/utils";
 import { toArraySetState, useRafLoop } from "@hiogawa/utils-react";
-import { Form, Link, useLoaderData, useNavigate } from "@remix-run/react";
-import { redirect } from "@remix-run/server-runtime";
+import { Form, Link, useNavigate } from "@remix-run/react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   VirtualItem,
@@ -20,13 +19,16 @@ import { useModal } from "../../components/modal";
 import { PopoverSimple } from "../../components/popover";
 import { E, T, db, findOne } from "../../db/drizzle-client.server";
 import type { CaptionEntryTable, UserTable, VideoTable } from "../../db/models";
-import { $R, R, ROUTE_DEF } from "../../misc/routes";
+import { $R, ROUTE_DEF } from "../../misc/routes";
 import { trpc } from "../../trpc/client";
-import { Controller, makeLoader } from "../../utils/controller-utils";
-import { useDeserialize } from "../../utils/hooks";
 import { useDocumentEvent } from "../../utils/hooks-client-utils";
 import { intl } from "../../utils/intl";
-import { useLeafLoaderData, useRootLoaderData } from "../../utils/loader-utils";
+import {
+  useLeafLoaderData,
+  useLoaderDataExtra,
+  useRootLoaderData,
+} from "../../utils/loader-utils";
+import { makeLoader } from "../../utils/loader-utils.server";
 import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 import type { CaptionEntry } from "../../utils/types";
@@ -51,28 +53,18 @@ type LoaderData = {
   query: z.infer<(typeof ROUTE_DEF)["/videos/$id"]["query"]>;
 };
 
-export const loader = makeLoader(Controller, async function () {
-  const parsedParams = ROUTE_DEF["/videos/$id"].params.safeParse(
-    this.args.params
+export const loader = makeLoader(async ({ ctx }) => {
+  const params = ROUTE_DEF["/videos/$id"].params.parse(ctx.params);
+  const query = ROUTE_DEF["/videos/$id"].query.parse(ctx.query);
+  const video = await findOne(
+    db.select().from(T.videos).where(E.eq(T.videos.id, params.id))
   );
-  const parsedQuery = ROUTE_DEF["/videos/$id"].query.safeParse(this.query());
-  if (parsedParams.success && parsedQuery.success) {
-    const video = await findOne(
-      db.select().from(T.videos).where(E.eq(T.videos.id, parsedParams.data.id))
-    );
-    if (video) {
-      const loaderData: LoaderData = {
-        video,
-        query: parsedQuery.data,
-      };
-      return this.serialize(loaderData);
-    }
-  }
-  this.flash({
-    content: "Invalid Request",
-    variant: "error",
-  });
-  return redirect(R["/"]);
+  tinyassert(video);
+  const loaderData: LoaderData = {
+    video,
+    query,
+  };
+  return loaderData;
 });
 
 //
@@ -81,7 +73,7 @@ export const loader = makeLoader(Controller, async function () {
 
 export default function DeafultComponent() {
   const { currentUser } = useRootLoaderData();
-  const data: LoaderData = useDeserialize(useLoaderData());
+  const data = useLoaderDataExtra() as LoaderData;
   return <PageComponent currentUser={currentUser} {...data} />;
 }
 
@@ -649,7 +641,7 @@ function HighlightText({
 
 function NavBarMenuComponent() {
   const { currentUser } = useRootLoaderData();
-  const { video }: LoaderData = useDeserialize(useLeafLoaderData());
+  const { video } = useLeafLoaderData() as LoaderData;
   return <NavBarMenuComponentImpl user={currentUser} video={video} />;
 }
 

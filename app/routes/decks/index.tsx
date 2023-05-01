@@ -1,9 +1,9 @@
-import { Link, useLoaderData } from "@remix-run/react";
+import { Link } from "@remix-run/react";
 import { E, T, db } from "../../db/drizzle-client.server";
 import type { DeckTable } from "../../db/models";
 import { $R } from "../../misc/routes";
-import { Controller, makeLoader } from "../../utils/controller-utils";
-import { useDeserialize } from "../../utils/hooks";
+import { useLoaderDataExtra } from "../../utils/loader-utils";
+import { makeLoader } from "../../utils/loader-utils.server";
 import type { PageHandle } from "../../utils/page-handle";
 import { DeckMenuComponent } from "./$id";
 
@@ -16,20 +16,19 @@ export const handle: PageHandle = {
 // loader
 //
 
-// TODO: more data (e.g. deck statistics, etc...)
 interface DecksLoaderData {
   decks: DeckTable[];
 }
 
-export const loader = makeLoader(Controller, async function () {
-  const user = await this.requireUser();
+export const loader = makeLoader(async ({ ctx }) => {
+  const user = await ctx.requireUser();
   const decks = await db
     .select()
     .from(T.decks)
     .where(E.eq(T.decks.userId, user.id))
     .orderBy(E.desc(T.decks.createdAt));
   const loaderData: DecksLoaderData = { decks };
-  return this.serialize(loaderData);
+  return loaderData;
 });
 
 //
@@ -37,7 +36,7 @@ export const loader = makeLoader(Controller, async function () {
 //
 
 export default function DefaultComponent() {
-  const data: DecksLoaderData = useDeserialize(useLoaderData());
+  const data = useLoaderDataExtra() as DecksLoaderData;
   const { decks } = data;
   return (
     <div className="w-full flex justify-center">

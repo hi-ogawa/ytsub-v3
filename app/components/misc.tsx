@@ -1,10 +1,9 @@
 import { Transition } from "@headlessui/react";
-import { Link } from "@remix-run/react";
+import { Link, useSearchParams } from "@remix-run/react";
 import type { PaginationMetadata, VideoTable } from "../db/models";
 import { $R } from "../misc/routes";
 import { cls } from "../utils/misc";
 import { toNewPages } from "../utils/pagination";
-import { toQuery } from "../utils/url-data";
 import { parseVssId, toThumbnail } from "../utils/youtube";
 import { PopoverSimple } from "./popover";
 
@@ -128,15 +127,13 @@ export function transitionProps(from: string, to: string) {
 }
 
 export function PaginationComponent({
-  query = "",
   pagination,
 }: {
-  query?: string;
   pagination: PaginationMetadata;
 }) {
+  const mergeQuery = useMergeUrlQuery();
   const { page, totalPage, total } = pagination;
   const { first, previous, next, last } = toNewPages(pagination);
-  if (query) query += "&";
   return (
     <div
       data-test="pagination"
@@ -144,13 +141,14 @@ export function PaginationComponent({
     >
       <Link
         className="antd-btn antd-btn-ghost flex items-center"
-        to={"?" + query + toQuery(first)}
+        to={"?" + mergeQuery(first)}
       >
         <span className="i-ri-rewind-mini-fill w-5 h-5"></span>
       </Link>
       <Link
         className="antd-btn antd-btn-ghost flex items-center"
-        to={"?" + query + toQuery(previous)}
+        // TODO: disable
+        to={"?" + mergeQuery(previous ?? {})}
       >
         <span className="i-ri-play-mini-fill w-4 h-4 rotate-[180deg]"></span>
       </Link>
@@ -159,18 +157,32 @@ export function PaginationComponent({
       </span>
       <Link
         className="antd-btn antd-btn-ghost flex items-center"
-        to={"?" + query + toQuery(next)}
+        // TODO: disable
+        to={"?" + mergeQuery(next ?? {})}
       >
         <span className="i-ri-play-mini-fill w-4 h-4"></span>
       </Link>
       <Link
         className="antd-btn antd-btn-ghost flex items-center"
-        to={"?" + query + toQuery(last)}
+        to={"?" + mergeQuery(last)}
       >
         <span className="i-ri-rewind-mini-fill w-5 h-5 rotate-[180deg]"></span>
       </Link>
     </div>
   );
+}
+
+function useMergeUrlQuery() {
+  const [params] = useSearchParams();
+
+  return (query: Record<string, unknown>) => {
+    return new URLSearchParams(
+      Object.fromEntries([
+        ...params.entries(),
+        ...Object.entries(query).map(([k, v]) => [k, String(v)] as const),
+      ])
+    );
+  };
 }
 
 //

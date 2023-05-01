@@ -20,7 +20,7 @@ export async function testTrpcClientWithContext(options?: {
   }
   const ctx = await createTrpcAppContext({
     req,
-    resHeaders: new Response().headers,
+    resHeaders: new Headers(),
   });
   const caller = trpcApp.createCaller(ctx);
   return { caller, ctx };

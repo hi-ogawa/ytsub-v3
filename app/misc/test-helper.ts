@@ -11,58 +11,42 @@ import {
   insertVideoAndCaptionEntries,
 } from "../db/models";
 import { createUserCookie } from "../utils/auth";
-import { toQuery } from "../utils/url-data";
 import type { NewVideo, fetchCaptionEntries } from "../utils/youtube";
 import { useUserImpl } from "./test-helper-common";
-
-const DUMMY_URL = "http://localhost:3000";
 
 export function testLoader(
   loader: LoaderFunction,
   {
-    method,
     query,
-    form,
-    json,
-    params = {},
+    params,
     transform,
   }: {
-    method?: "GET" | "POST" | "DELETE";
-    query?: any;
-    form?: any;
-    params?: Record<string, string>;
-    json?: unknown;
+    query?: Record<string, unknown>;
+    params?: Record<string, unknown>;
     transform?: (request: Request) => Request;
   } = {}
 ) {
-  let url = DUMMY_URL;
+  let url = "http://localhost:3000"; // dummy url
   if (query) {
-    url += "/?" + toQuery(query);
+    url += "?" + new URLSearchParams(stringifyValues(query));
   }
-  let request = new Request(url, { method: method ?? "GET" });
-  if (json) {
-    request = new Request(url, {
-      method: method ?? "POST",
-      body: JSON.stringify(json),
-    });
-  }
-  if (form) {
-    request = new Request(url, {
-      method: method ?? "POST",
-      body: toQuery(form),
-      headers: {
-        "content-type": "application/x-www-form-urlencoded",
-      },
-    });
-  }
+  let request = new Request(url);
   if (transform) {
     request = transform(request);
   }
   return loader({
     request,
     context: {},
-    params,
+    params: stringifyValues(params ?? {}),
   });
+}
+
+function stringifyValues(
+  data: Record<string, unknown>
+): Record<string, string> {
+  return Object.fromEntries(
+    Object.entries(data).map(([k, v]) => [k, String(v)])
+  );
 }
 
 export function useUser(...args: Parameters<typeof useUserImpl>) {

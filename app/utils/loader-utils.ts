@@ -1,7 +1,8 @@
-import { useMatches } from "@remix-run/react";
+import { useLoaderData, useMatches } from "@remix-run/react";
+import React from "react";
+import { deserialize } from "superjson";
 import type { UserTable } from "../db/models";
 import type { FlashMessage } from "./flash-message";
-import { useDeserialize } from "./hooks";
 
 export interface RootLoaderData {
   currentUser?: UserTable;
@@ -10,10 +11,16 @@ export interface RootLoaderData {
 
 export function useRootLoaderData(): RootLoaderData {
   const [{ data }] = useMatches();
-  return useDeserialize(data);
+  return React.useMemo(() => deserialize(data), [data]);
 }
 
-export function useLeafLoaderData(): any {
+export function useLeafLoaderData(): unknown {
   const [{ data }] = useMatches().slice(-1);
-  return data;
+  return React.useMemo(() => deserialize(data), [data]);
+}
+
+// superjson.deserialize wrapper
+export function useLoaderDataExtra(): unknown {
+  const data = useLoaderData();
+  return React.useMemo(() => deserialize(data), [data]);
 }

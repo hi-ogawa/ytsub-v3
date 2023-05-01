@@ -1,5 +1,4 @@
 import { Transition } from "@headlessui/react";
-import { useLoaderData } from "@remix-run/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import React from "react";
 import { toast } from "react-hot-toast";
@@ -13,17 +12,16 @@ import type {
 } from "../../../db/models";
 import { PRACTICE_ACTION_TYPES, PracticeActionType } from "../../../db/types";
 import { trpc } from "../../../trpc/client";
-import { Controller, makeLoader } from "../../../utils/controller-utils";
-import { useDeserialize } from "../../../utils/hooks";
-import { useLeafLoaderData } from "../../../utils/loader-utils";
+import { requireUserAndDeck } from "../../../utils/loader-deck-utils";
+import {
+  useLeafLoaderData,
+  useLoaderDataExtra,
+} from "../../../utils/loader-utils";
+import { makeLoader } from "../../../utils/loader-utils.server";
 import { cls } from "../../../utils/misc";
 import type { PageHandle } from "../../../utils/page-handle";
 import { BookmarkEntryComponent } from "../../bookmarks";
-import {
-  DeckNavBarMenuComponent,
-  QueueStatisticsComponent,
-  requireUserAndDeck,
-} from "./index";
+import { DeckNavBarMenuComponent, QueueStatisticsComponent } from "./index";
 
 export const handle: PageHandle = {
   navBarTitle: () => <NavBarTitleComponent />,
@@ -38,10 +36,10 @@ interface LoaderData {
   deck: DeckTable;
 }
 
-export const loader = makeLoader(Controller, async function () {
-  const [, deck] = await requireUserAndDeck.apply(this);
-  const res: LoaderData = { deck };
-  return this.serialize(res);
+export const loader = makeLoader(async ({ ctx }) => {
+  const { deck } = await requireUserAndDeck(ctx);
+  const loaderData: LoaderData = { deck };
+  return loaderData;
 });
 
 //
@@ -49,7 +47,7 @@ export const loader = makeLoader(Controller, async function () {
 //
 
 export default function DefaultComponent() {
-  const { deck }: LoaderData = useDeserialize(useLoaderData());
+  const { deck } = useLoaderDataExtra() as LoaderData;
 
   const nextPracticeQuery = useQuery({
     ...trpc.decks_nextPracticeEntry.queryOptions({
@@ -184,7 +182,7 @@ function PracticeComponent({
 //
 
 function NavBarTitleComponent() {
-  const { deck }: LoaderData = useDeserialize(useLeafLoaderData());
+  const { deck } = useLeafLoaderData() as LoaderData;
   return (
     <span>
       {deck.name}{" "}

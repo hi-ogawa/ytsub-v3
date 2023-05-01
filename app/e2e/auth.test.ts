@@ -29,14 +29,14 @@ test("/users/register", async ({ page }) => {
   await page.waitForSelector(`"Successfully registered"`);
 });
 
-test.describe(() => {
+test.describe("/users/signin", () => {
   const password = "password";
   const user = useUserE2E(test, {
     password,
     seed: __filename + "/users/signin",
   });
 
-  test("/users/signin", async ({ page }) => {
+  test("basic", async ({ page }) => {
     await page.goto("/");
 
     // navigate to signin
@@ -51,6 +51,15 @@ test.describe(() => {
     // navigate to root
     await expect(page).toHaveURL("/");
     await page.getByText("Successfully signed in").click();
+  });
+
+  test("error", async ({ page }) => {
+    await user.signin(page);
+    await page.goto("/users/signin");
+    await page.waitForURL("/users/me");
+    await page
+      .getByText(`Already signed in as '${user.data.username}'`)
+      .click();
   });
 });
 

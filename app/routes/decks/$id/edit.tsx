@@ -1,15 +1,16 @@
-import { DeckNavBarMenuComponent, requireUserAndDeck } from ".";
-import { useLoaderData, useNavigate } from "@remix-run/react";
+import { DeckNavBarMenuComponent } from ".";
+import { useNavigate } from "@remix-run/react";
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import type { DeckTable } from "../../../db/models";
 import { $R, R } from "../../../misc/routes";
 import { trpc } from "../../../trpc/client";
-import { Controller, makeLoader } from "../../../utils/controller-utils";
 import { toastInfo } from "../../../utils/flash-message-hook";
-import { useDeserialize } from "../../../utils/hooks";
 import { intl } from "../../../utils/intl";
+import { requireUserAndDeck } from "../../../utils/loader-deck-utils";
+import { useLoaderDataExtra } from "../../../utils/loader-utils";
+import { makeLoader } from "../../../utils/loader-utils.server";
 import { cls } from "../../../utils/misc";
 import type { PageHandle } from "../../../utils/page-handle";
 
@@ -26,10 +27,10 @@ interface LoaderData {
   deck: DeckTable;
 }
 
-export const loader = makeLoader(Controller, async function () {
-  const [, deck] = await requireUserAndDeck.apply(this);
-  const data: LoaderData = { deck };
-  return this.serialize(data);
+export const loader = makeLoader(async ({ ctx }) => {
+  const { deck } = await requireUserAndDeck(ctx);
+  const loaderData: LoaderData = { deck };
+  return loaderData;
 });
 
 //
@@ -45,7 +46,7 @@ export default function DefaultComponent() {
 }
 
 function DefaultComponentInner() {
-  const { deck }: LoaderData = useDeserialize(useLoaderData());
+  const { deck } = useLoaderDataExtra() as LoaderData;
 
   const form = useForm({ defaultValues: deck });
 

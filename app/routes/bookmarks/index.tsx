@@ -1,10 +1,8 @@
 import { Transition } from "@headlessui/react";
-import { isNil, typedBoolean } from "@hiogawa/utils";
+import { isNil, mapOption, typedBoolean } from "@hiogawa/utils";
 import { toArraySetState, useRafLoop } from "@hiogawa/utils-react";
-import { Link, NavLink, useLoaderData } from "@remix-run/react";
-import { redirect } from "@remix-run/server-runtime";
+import { Link, NavLink } from "@remix-run/react";
 import { useQuery } from "@tanstack/react-query";
-import { omit } from "lodash";
 import React from "react";
 import type { z } from "zod";
 import { CollapseTransition } from "../../components/collapse";
@@ -26,13 +24,14 @@ import type {
 } from "../../db/models";
 import { $R, ROUTE_DEF } from "../../misc/routes";
 import { trpc } from "../../trpc/client";
-import { Controller, makeLoader } from "../../utils/controller-utils";
-import { useDeserialize } from "../../utils/hooks";
-import { useLeafLoaderData } from "../../utils/loader-utils";
+import {
+  useLeafLoaderData,
+  useLoaderDataExtra,
+} from "../../utils/loader-utils";
+import { makeLoader } from "../../utils/loader-utils.server";
 import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 import type { CaptionEntry } from "../../utils/types";
-import { toQuery } from "../../utils/url-data";
 import { YoutubePlayer, usePlayerLoader } from "../../utils/youtube";
 import { CaptionEntryComponent, findCurrentEntry } from "../videos/$id";
 
@@ -47,23 +46,10 @@ interface LoaderData {
   request: z.infer<(typeof ROUTE_DEF)["/bookmarks"]["query"]>;
 }
 
-export const loader = makeLoader(Controller, async function () {
-  const user = await this.currentUser();
-  if (!user) {
-    this.flash({
-      content: "Signin required.",
-      variant: "error",
-    });
-    return redirect($R["/users/signin"]());
-  }
+export const loader = makeLoader(async ({ ctx }) => {
+  const user = await ctx.requireUser();
 
-  const parsed = ROUTE_DEF["/bookmarks"].query.safeParse(this.query());
-  if (!parsed.success) {
-    this.flash({ content: "invalid parameters", variant: "error" });
-    return redirect($R["/bookmarks"]());
-  }
-
-  const request = parsed.data;
+  const request = ROUTE_DEF["/bookmarks"].query.parse(ctx.query);
 
   let query = db
     .select()
@@ -88,14 +74,9 @@ export const loader = makeLoader(Controller, async function () {
       .where(
         E.and(
           E.eq(T.bookmarkEntries.userId, user.id),
-          request.videoId
-            ? E.eq(T.bookmarkEntries.videoId, request.videoId)
-            : undefined,
-          request.deckId ? E.eq(T.decks.id, request.deckId) : undefined,
-          // TODO(perf): fulltext index? avoid count?
-          request.q
-            ? E.like(T.bookmarkEntries.text, `%${request.q}%`)
-            : undefined
+          mapOption(request.videoId, (v) => E.eq(T.bookmarkEntries.videoId, v)),
+          mapOption(request.deckId, (v) => E.eq(T.decks.id, v)),
+          mapOption(request.q, (v) => E.like(T.bookmarkEntries.text, `%${v}%`))
         )
       )
       .orderBy(
@@ -110,11 +91,11 @@ export const loader = makeLoader(Controller, async function () {
     pagination,
     request,
   };
-  return this.serialize(loaderData);
+  return loaderData;
 });
 
 export default function DefaultComponent() {
-  const data: LoaderData = useDeserialize(useLoaderData());
+  const data = useLoaderDataExtra() as LoaderData;
   return <ComponentImpl {...data} />;
 }
 
@@ -154,10 +135,7 @@ function ComponentImpl(props: LoaderData) {
       </div>
       <div className="w-full h-8" /> {/* padding for scroll */}
       <div className="absolute bottom-2 w-full flex justify-center">
-        <PaginationComponent
-          pagination={props.pagination}
-          query={toQuery(omit(props.request, ["page", "perPage"]))}
-        />
+        <PaginationComponent pagination={props.pagination} />
       </div>
     </>
   );
@@ -437,7 +415,7 @@ export function MiniPlayer({
 //
 
 function NavBarMenuComponent() {
-  const { request }: LoaderData = useDeserialize(useLeafLoaderData());
+  const { request } = useLeafLoaderData() as LoaderData;
   const videoSelectModal = useModal();
   const deckSelectModal = useModal();
 

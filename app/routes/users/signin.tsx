@@ -1,11 +1,8 @@
 import { Link } from "@remix-run/react";
-import { redirect } from "@remix-run/server-runtime";
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
-import { $R, R } from "../../misc/routes";
+import { $R } from "../../misc/routes";
 import { trpc } from "../../trpc/client";
-import { getSessionUser } from "../../utils/auth";
-import { Controller, makeLoader } from "../../utils/controller-utils";
 import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 
@@ -13,21 +10,8 @@ export const handle: PageHandle = {
   navBarTitle: () => "Sign in",
 };
 
-//
-// loader
-//
-
-export const loader = makeLoader(Controller, async function () {
-  const user = await getSessionUser(this.session);
-  if (user) {
-    this.flash({
-      content: `Already signed in as '${user.username}'`,
-      variant: "error",
-    });
-    return redirect(R["/users/me"]);
-  }
-  return null;
-});
+// completely reuse /users/register loader
+export { loader } from "./register";
 
 //
 // component

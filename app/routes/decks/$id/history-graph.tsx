@@ -1,4 +1,4 @@
-import { DeckNavBarMenuComponent, requireUserAndDeck } from ".";
+import { DeckNavBarMenuComponent } from ".";
 import { Transition } from "@headlessui/react";
 import { useQuery } from "@tanstack/react-query";
 import type { ECharts } from "echarts";
@@ -11,10 +11,13 @@ import {
 } from "../../../components/practice-history-chart";
 import type { DeckTable } from "../../../db/models";
 import { trpc } from "../../../trpc/client";
-import { Controller, makeLoader } from "../../../utils/controller-utils";
-import { useDeserialize } from "../../../utils/hooks";
 import { useClickOutside } from "../../../utils/hooks-client-utils";
-import { useLeafLoaderData } from "../../../utils/loader-utils";
+import { requireUserAndDeck } from "../../../utils/loader-deck-utils";
+import {
+  useLeafLoaderData,
+  useLoaderDataExtra,
+} from "../../../utils/loader-utils";
+import { makeLoader } from "../../../utils/loader-utils.server";
 import { cls } from "../../../utils/misc";
 import type { PageHandle } from "../../../utils/page-handle";
 import { DateRangeType, formatDateRange } from "../../../utils/temporal-utils";
@@ -36,10 +39,10 @@ interface LoaderData {
   deck: DeckTable;
 }
 
-export const loader = makeLoader(Controller, async function () {
-  const [, deck] = await requireUserAndDeck.apply(this);
+export const loader = makeLoader(async ({ ctx }) => {
+  const { deck } = await requireUserAndDeck(ctx);
   const loaderData: LoaderData = { deck };
-  return this.serialize(loaderData);
+  return loaderData;
 });
 
 //
@@ -47,7 +50,7 @@ export const loader = makeLoader(Controller, async function () {
 //
 
 export default function DefaultComponent() {
-  const { deck }: LoaderData = useDeserialize(useLeafLoaderData());
+  const { deck } = useLoaderDataExtra() as LoaderData;
 
   const [instance, setInstance] = React.useState<ECharts>();
 
@@ -150,7 +153,7 @@ export default function DefaultComponent() {
 //
 
 function NavBarTitleComponent() {
-  const { deck }: LoaderData = useDeserialize(useLeafLoaderData());
+  const { deck } = useLeafLoaderData() as LoaderData;
   return (
     <span>
       {deck.name}{" "}
