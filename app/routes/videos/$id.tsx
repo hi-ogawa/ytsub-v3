@@ -727,7 +727,7 @@ function NavBarMenuComponent() {
             />
           }
           floating={(context) => (
-            <ul className="flex flex-col gap-2 p-2 w-[200px] text-sm">
+            <ul className="flex flex-col gap-2 p-2 w-[190px] text-sm">
               <li>
                 <button
                   className="w-full antd-menu-item p-2 flex"
@@ -742,7 +742,7 @@ function NavBarMenuComponent() {
                   disabled={!currentUser}
                   onClick={() => setHighlightBookmark((prev) => !prev)}
                 >
-                  Highlight bookmarks
+                  Show bookmarks
                   {highlightBookmark && (
                     <span className="i-ri-check-line w-5 h-5"></span>
                   )}
