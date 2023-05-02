@@ -1,7 +1,7 @@
 import { expect } from "@playwright/test";
 import { E, T, db } from "../db/drizzle-client.server";
 import { importSeed } from "../misc/seed-utils";
-import { reTemplate } from "../utils/misc";
+import { regExpRaw } from "../utils/misc";
 import { test } from "./coverage";
 import { useUserE2E } from "./helper";
 
@@ -33,7 +33,7 @@ test.describe("videos-signed-in", () => {
     //
     // play video in "/videos/$id"
     //
-    await page.waitForURL(reTemplate`/videos/\d+$`);
+    await page.waitForURL(regExpRaw`/videos/\d+$`);
 
     // select text
     await page.getByText("잠깐 밖으로 나올래").evaluate((el) => {
@@ -103,7 +103,7 @@ test.describe("videos-signed-in", () => {
     await page.locator('[data-test="caption-entry-component__video-link"]').click();
 
     // back to the video
-    await page.waitForURL(reTemplate`/videos/\d+\?index=1$`);
+    await page.waitForURL(regExpRaw`/videos/\d+\?index=1$`);
   });
 });
 

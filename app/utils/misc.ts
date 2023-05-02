@@ -1,5 +1,4 @@
-import { range } from "@hiogawa/utils";
-import { groupBy, mapValues, tinyassert } from "@hiogawa/utils";
+import { groupBy, mapValues, range, tinyassert } from "@hiogawa/utils";
 
 export function createGetProxy(
   propHandler: (prop: string | symbol) => unknown
@@ -96,8 +95,8 @@ export function difference<T>(ls1: T[], ls2: T[]): T[] {
   return ls1.filter((e) => !exclude.has(e));
 }
 
-// not sure if it's any useful. just a little experiment
-export function reTemplate(
+// new RegExp(String.raw`...`) with only inner strings are escaped
+export function regExpRaw(
   { raw }: TemplateStringsArray,
   ...params: string[]
 ): RegExp {
