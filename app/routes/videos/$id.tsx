@@ -13,7 +13,7 @@ import { atom, useAtom } from "jotai";
 import { atomWithStorage } from "jotai/utils";
 import React from "react";
 import toast from "react-hot-toast";
-import type { z } from "zod";
+import { z } from "zod";
 import { transitionProps } from "../../components/misc";
 import { useModal } from "../../components/modal";
 import { PopoverSimple } from "../../components/popover";
@@ -29,7 +29,7 @@ import {
   useRootLoaderData,
 } from "../../utils/loader-utils";
 import { makeLoader } from "../../utils/loader-utils.server";
-import { cls, findAncestorElement, zip } from "../../utils/misc";
+import { cls, zip } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 import type { CaptionEntry } from "../../utils/types";
 import {
@@ -556,7 +556,7 @@ export function CaptionEntryComponent({
         isActualLast && "mb-1.5"
       )}
       ref={virtualizer?.measureElement}
-      data-index={virtualItem?.index} // required for virtualizer
+      {...{ [BOOKMARK_DATA_ATTR["data-index"]]: virtualItem?.index }}
     >
       <div className="flex items-center text-colorTextSecondary gap-2 text-xs">
         {isFocused && (
@@ -597,13 +597,19 @@ export function CaptionEntryComponent({
         className="flex cursor-pointer text-sm"
         onClick={() => onClickEntryPlay(entry, true)}
       >
-        <div className="flex-1 pr-2 border-r" data-side="0">
+        <div
+          className="flex-1 pr-2 border-r"
+          {...{ [BOOKMARK_DATA_ATTR["data-side"]]: "0" }}
+        >
           <HighlightText
             text={text1}
             highlights={bookmarkEntries?.filter((e) => e.side === 0) ?? []}
           />
         </div>
-        <div className="flex-1 pl-2" data-side="1">
+        <div
+          className="flex-1 pl-2"
+          {...{ [BOOKMARK_DATA_ATTR["data-side"]]: "1" }}
+        >
           <HighlightText
             text={text2}
             highlights={bookmarkEntries?.filter((e) => e.side === 1) ?? []}
@@ -630,8 +636,8 @@ function HighlightText({
       {partitions.map(([highlight, [start, end]]) => (
         <span
           key={start}
-          data-offset={start}
           className={cls(highlight && "text-colorPrimaryText")}
+          {...{ [BOOKMARK_DATA_ATTR["data-offset"]]: start }}
         >
           {text.slice(start, end)}
         </span>
@@ -652,6 +658,12 @@ export function partitionRanges(
   ]);
 }
 
+const BOOKMARK_DATA_ATTR = z.enum([
+  "data-index", // this is used for virtualizer too
+  "data-side",
+  "data-offset",
+]).enum;
+
 // desperate DOM manipulation to find selected data for new bookmark creation
 // TODO: make type-safe data attributes
 function extractBookmarkSelection(
@@ -660,38 +672,38 @@ function extractBookmarkSelection(
   // skip empty selection
   const text = selection.toString();
   if (!text.trim()) return;
-
-  // manipulate on Range
   if (selection.rangeCount === 0) return;
 
+  // manipulate on Range
   const selectionRange = selection.getRangeAt(0);
   if (selectionRange.collapsed) return;
 
   const { startContainer, startOffset, endContainer } = selectionRange;
 
-  // check text node selection
-  if (startContainer.nodeType !== document.TEXT_NODE) return;
+  // check selection is text node
+  if (
+    startContainer.nodeType !== document.TEXT_NODE ||
+    endContainer.nodeType !== document.TEXT_NODE
+  )
+    return;
 
-  // find closest element when selected from text node
+  // check "data-offset" element
   const startEl = startContainer.parentElement;
-  const dataOffset = startEl?.getAttribute("data-offset");
-  if (!startEl || !dataOffset) return;
+  const endEl = endContainer.parentElement;
+  const dataOffset = startEl?.getAttribute(BOOKMARK_DATA_ATTR["data-offset"]);
+  if (!startEl || !endEl || !dataOffset) return;
 
-  // find data attributes from ancestor
-  const dataIndexEl = findAncestorElement(
-    startEl,
-    (el) => !!el.getAttribute("data-index")
-  );
-  const dataSideEl = findAncestorElement(
-    startEl,
-    (el) => !!el.getAttribute("data-side")
-  );
-  const dataIndex = dataIndexEl?.getAttribute("data-index");
-  const dataSide = dataSideEl?.getAttribute("data-side");
-  if (!dataIndexEl || !dataSideEl || !dataIndex || !dataSide) return;
+  // check start/end are contained in "data-side" element
+  const dataSideEl = startEl.parentElement;
+  const dataSide = dataSideEl?.getAttribute(BOOKMARK_DATA_ATTR["data-side"]);
+  if (!dataSideEl || !dataSide || startEl.parentElement !== endEl.parentElement)
+    return;
 
-  // check both ends are contained in the same caption entry
-  if (!dataSideEl.contains(endContainer)) return;
+  // check "data-index" element
+  const dataIndexEl = dataSideEl.parentElement?.parentElement;
+  const dataIndex = dataIndexEl?.getAttribute(BOOKMARK_DATA_ATTR["data-index"]);
+  console.log({ startEl, endEl, dataSideEl, dataIndexEl });
+  if (!dataIndexEl || !dataIndex) return;
 
   return {
     captionEntryIndex: Number(dataIndex),

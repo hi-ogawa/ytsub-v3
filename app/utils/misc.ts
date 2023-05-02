@@ -96,28 +96,6 @@ export function difference<T>(ls1: T[], ls2: T[]): T[] {
   return ls1.filter((e) => !exclude.has(e));
 }
 
-function findNext<T>(
-  start: T,
-  check: (value: T) => boolean,
-  next: (value: T) => T | undefined
-): T | undefined {
-  let current: T | undefined = start;
-  while (current) {
-    if (check(current)) {
-      return current;
-    }
-    current = next(current);
-  }
-  return;
-}
-
-export function findAncestorElement(
-  el: Element,
-  check: (el: Element) => boolean
-): Element | undefined {
-  return findNext(el, check, (el) => el.parentElement ?? undefined);
-}
-
 // not sure if it's any useful. just a little experiment
 export function reTemplate(
   { raw }: TemplateStringsArray,
