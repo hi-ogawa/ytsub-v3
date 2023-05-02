@@ -665,7 +665,6 @@ const BOOKMARK_DATA_ATTR = z.enum([
 ]).enum;
 
 // desperate DOM manipulation to find selected data for new bookmark creation
-// TODO: make type-safe data attributes
 function extractBookmarkSelection(
   selection: Selection
 ): BookmarkSelection | undefined {
