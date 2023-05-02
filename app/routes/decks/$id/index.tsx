@@ -263,13 +263,9 @@ function PracticeBookmarkEntryComponent({
         <MiniPlayer
           video={video}
           captionEntry={captionEntry}
+          bookmarkEntries={[bookmarkEntry]}
           autoplay={false}
           defaultIsRepeating={false}
-          highlight={{
-            side: bookmarkEntry.side,
-            offset: bookmarkEntry.offset,
-            length: bookmarkEntry.text.length,
-          }}
         />
       )}
     </div>

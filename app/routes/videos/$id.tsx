@@ -1,5 +1,5 @@
 import { Transition } from "@headlessui/react";
-import { groupBy, tinyassert } from "@hiogawa/utils";
+import { groupBy, sortBy, tinyassert, uniq } from "@hiogawa/utils";
 import { isNil } from "@hiogawa/utils";
 import { toArraySetState, useRafLoop } from "@hiogawa/utils-react";
 import { Link, useNavigate } from "@remix-run/react";
@@ -29,7 +29,7 @@ import {
   useRootLoaderData,
 } from "../../utils/loader-utils";
 import { makeLoader } from "../../utils/loader-utils.server";
-import { cls } from "../../utils/misc";
+import { cls, zip } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 import type { CaptionEntry } from "../../utils/types";
 import {
@@ -162,14 +162,6 @@ function PageComponent({
     enabled: highlightBookmarkEnabled,
   });
 
-  const bookmarkEntries = React.useMemo(
-    () =>
-      highlightBookmarkEnabled && bookmarkEntriesQuery.isSuccess
-        ? bookmarkEntriesQuery.data
-        : [],
-    [highlightBookmarkEnabled, bookmarkEntriesQuery.data]
-  );
-
   const queryClient = useQueryClient();
 
   const newBookmarkMutation = useMutation({
@@ -179,7 +171,7 @@ function PageComponent({
 
       // mutate query cache instead of refetch
       queryClient.setQueryData(bookmarkEntriesQueryOptions.queryKey, (prev) => [
-        ...(prev as typeof bookmarkEntries),
+        ...(prev as TT["bookmarkEntries"][]),
         newBookmark,
       ]);
     },
@@ -352,7 +344,11 @@ function PageComponent({
             <CaptionEntriesComponent
               virtualizer={virtualizer}
               entries={captionEntries}
-              bookmarkEntries={bookmarkEntries}
+              bookmarkEntries={
+                highlightBookmarkEnabled && bookmarkEntriesQuery.isSuccess
+                  ? bookmarkEntriesQuery.data
+                  : []
+              }
               currentEntry={currentEntry}
               repeatingEntries={repeatingEntries}
               onClickEntryPlay={onClickEntryPlay}
@@ -533,22 +529,11 @@ function CaptionEntriesComponent({
 
   function renderItem(item: VirtualItem) {
     const entry = entries[item.index];
-
-    // TODO: merge multiple bookmarks under single caption entry?
-    const bookmarkEntry = bookmarkEntryMap.get(entry.id)?.at(0);
-
     return (
       <CaptionEntryComponent
         key={item.key}
         entry={entry}
-        highlight={
-          bookmarkEntry && {
-            side: bookmarkEntry.side,
-            offset: bookmarkEntry.offset,
-            length: bookmarkEntry.text.length,
-            className: "text-colorPrimaryText",
-          }
-        }
+        bookmarkEntries={bookmarkEntryMap.get(entry.id)}
         isFocused={focusedIndex === item.index}
         virtualItem={item}
         // workaround disappearing bottom margin (paddingEnd option doesn't seem to work)
@@ -569,7 +554,7 @@ export function CaptionEntryComponent({
   isFocused,
   videoId,
   border = true,
-  highlight,
+  bookmarkEntries,
   // virtualized list
   virtualizer,
   virtualItem,
@@ -584,12 +569,7 @@ export function CaptionEntryComponent({
   isFocused?: boolean;
   videoId?: number;
   border?: boolean;
-  highlight?: {
-    side: number;
-    offset: number;
-    length: number;
-    className?: string;
-  };
+  bookmarkEntries?: TT["bookmarkEntries"][];
   // virtualized list
   virtualizer?: Virtualizer<HTMLDivElement, Element>;
   virtualItem?: VirtualItem;
@@ -656,28 +636,16 @@ export function CaptionEntryComponent({
         onClick={() => onClickEntryPlay(entry, true)}
       >
         <div className={`flex-1 pr-2 border-r ${BOOKMARKABLE_CLASSNAME}`}>
-          {highlight?.side === 0 ? (
-            <HighlightText
-              text={text1}
-              offset={highlight.offset}
-              length={highlight.length}
-              className={highlight.className}
-            />
-          ) : (
-            text1
-          )}
+          <HighlightText
+            text={text1}
+            highlights={bookmarkEntries?.filter((e) => e.side === 0) ?? []}
+          />
         </div>
         <div className={`flex-1 pl-2 ${BOOKMARKABLE_CLASSNAME}`}>
-          {highlight?.side === 1 ? (
-            <HighlightText
-              text={text2}
-              offset={highlight.offset}
-              length={highlight.length}
-              className={highlight.className}
-            />
-          ) : (
-            text2
-          )}
+          <HighlightText
+            text={text2}
+            highlights={bookmarkEntries?.filter((e) => e.side === 1) ?? []}
+          />
         </div>
       </div>
     </div>
@@ -686,27 +654,35 @@ export function CaptionEntryComponent({
 
 function HighlightText({
   text,
-  offset,
-  length,
-  className,
+  highlights,
 }: {
   text: string;
-  offset: number;
-  length: number;
-  className?: string;
+  highlights: { offset: number; text: string }[];
 }) {
-  const t1 = text.slice(0, offset);
-  const t2 = text.slice(offset, offset + length);
-  const t3 = text.slice(offset + length);
+  const partitions = partitionRanges(
+    text.length,
+    highlights.map((h) => [h.offset, h.offset + h.text.length])
+  );
   return (
     <>
-      {t1}
-      <span className={className ?? "border-b border-colorTextSecondary"}>
-        {t2}
-      </span>
-      {t3}
+      {partitions.map(([highlight, [start, end]]) => (
+        <span key={start} className={cls(highlight && "text-colorPrimaryText")}>
+          {text.slice(start, end)}
+        </span>
+      ))}
     </>
   );
+}
+
+export function partitionRanges(
+  total: number,
+  ranges: [number, number][]
+): [boolean, [number, number]][] {
+  const boundaries = uniq(sortBy(ranges.flat().concat([0, total]), (x) => x));
+  return zip(boundaries, boundaries.slice(1)).map((a) => [
+    ranges.some((b) => b[0] <= a[0] && a[1] <= b[1]),
+    a,
+  ]);
 }
 
 function NavBarMenuComponent() {

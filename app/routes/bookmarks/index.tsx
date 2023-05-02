@@ -190,13 +190,9 @@ export function BookmarkEntryComponent({
         <MiniPlayer
           video={video}
           captionEntry={captionEntry}
+          bookmarkEntries={[bookmarkEntry]}
           autoplay={autoplay}
           defaultIsRepeating={autoplay}
-          highlight={{
-            side: bookmarkEntry.side,
-            offset: bookmarkEntry.offset,
-            length: bookmarkEntry.text.length,
-          }}
         />
       </CollapseTransition>
     </div>
@@ -207,15 +203,15 @@ export function BookmarkEntryComponent({
 export function MiniPlayer({
   video,
   captionEntry: initialEntry,
+  bookmarkEntries,
   autoplay,
   defaultIsRepeating,
-  highlight,
 }: {
   video: VideoTable;
   captionEntry: CaptionEntryTable;
+  bookmarkEntries?: TT["bookmarkEntries"][];
   autoplay: boolean;
   defaultIsRepeating: boolean;
-  highlight: { side: number; offset: number; length: number };
 }) {
   const [player, setPlayer] = React.useState<YoutubePlayer>();
   const [isPlaying, setIsPlaying] = React.useState(false);
@@ -370,13 +366,13 @@ export function MiniPlayer({
         <CaptionEntryComponent
           key={captionEntry.id}
           entry={captionEntry}
+          bookmarkEntries={bookmarkEntries}
           currentEntry={currentEntry}
           repeatingEntries={repeatingEntries}
           onClickEntryPlay={onClickEntryPlay}
           onClickEntryRepeat={toArraySetState(setRepeatingEntries).toggle}
           isPlaying={isPlaying}
           videoId={video.id}
-          highlight={captionEntry === initialEntry ? highlight : undefined}
           isFocused={captionEntry === initialEntry}
         />
       ))}
