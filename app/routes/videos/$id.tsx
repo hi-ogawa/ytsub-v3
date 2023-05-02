@@ -137,16 +137,19 @@ function PageComponent({
     [captionEntriesQuery.data]
   );
 
-  // TODO: add toggle to menu
-  // TODO: spinner somehow
+  // fetch all bookmark entries associated to this video
+  const [highlightBookmark] = useAtom(highlightBookmarkStorageAtom);
+  const highlightBookmarkEnabled = highlightBookmark && Boolean(currentUser);
   const bookmarkEntriesQuery = useQuery({
     ...trpc.videos_getBookmarkEntries.queryOptions({ videoId: video.id }),
-    // TODO: login only
-    enabled: true,
+    enabled: highlightBookmarkEnabled,
   });
   const bookmarkEntries = React.useMemo(
-    () => bookmarkEntriesQuery.data ?? [],
-    [bookmarkEntriesQuery.data]
+    () =>
+      highlightBookmarkEnabled && bookmarkEntriesQuery.isSuccess
+        ? bookmarkEntriesQuery.data
+        : [],
+    [highlightBookmarkEnabled, bookmarkEntriesQuery.data]
   );
 
   //
@@ -165,8 +168,7 @@ function PageComponent({
     ...trpc.bookmarks_create.mutationOptions(),
     onSuccess: () => {
       toast.success("Bookmark success");
-      // it might be expensive to fetch everything all the time (for example, I have about 250 bookmarks for 20 min video)
-      // we could mutate queryCache instead.
+      // TODO(perf): mutate query cache instead of refetch
       bookmarkEntriesQuery.refetch();
     },
     onError: () => {
@@ -696,9 +698,13 @@ function HighlightText({
 }
 
 function NavBarMenuComponent() {
+  const { currentUser } = useRootLoaderData();
   const { video } = useLeafLoaderData() as LoaderData;
   const [autoScrollState, toggleAutoScrollState] = useAutoScrollState();
   const [repeatingEntries, setRepeatingEntries] = useRepeatingEntries();
+  const [highlightBookmark, setHighlightBookmark] = useAtom(
+    highlightBookmarkStorageAtom
+  );
   const modal = useModal();
 
   const navigate = useNavigate();
@@ -733,13 +739,25 @@ function NavBarMenuComponent() {
             />
           }
           floating={(context) => (
-            <ul className="flex flex-col gap-2 p-2 w-[180px] text-sm">
+            <ul className="flex flex-col gap-2 p-2 w-[200px] text-sm">
               <li>
                 <button
                   className="w-full antd-menu-item p-2 flex"
                   onClick={() => modal.setOpen(true)}
                 >
                   Details
+                </button>
+              </li>
+              <li>
+                <button
+                  className="w-full antd-menu-item p-2 flex gap-2"
+                  disabled={!currentUser}
+                  onClick={() => setHighlightBookmark((prev) => !prev)}
+                >
+                  Highlight bookmarks
+                  {highlightBookmark && (
+                    <span className="i-ri-check-line w-5 h-5"></span>
+                  )}
                 </button>
               </li>
               <li>
@@ -851,7 +869,7 @@ function useRepeatingEntries() {
 }
 
 const autoScrollStorageAtom = atomWithStorage(
-  "video-subtitle-auto-scroll",
+  "ytsub:video-subtitle-auto-scroll",
   Array<number>()
 );
 
@@ -859,3 +877,8 @@ function useAutoScrollState() {
   const [state, setState] = useAtom(autoScrollStorageAtom);
   return [state, toArraySetState(setState).toggle] as const;
 }
+
+const highlightBookmarkStorageAtom = atomWithStorage(
+  "ytsub:video-highlight-bookmark",
+  false
+);
