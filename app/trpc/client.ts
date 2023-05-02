@@ -1,3 +1,4 @@
+import type { GetNextPageParamFunction } from "@tanstack/react-query";
 import type { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
 import { createGetProxy } from "../utils/misc";
 import { trpcClient } from "./client-internal.client";
@@ -16,6 +17,17 @@ type ReactQueryIntegration = {
     queryOptions: (input: Inputs[K]) => {
       queryKey: unknown[];
       queryFn: () => Promise<Outputs[K]>;
+    };
+    infiniteQueryOptions: (
+      input: Inputs[K],
+      options: {
+        getNextPageParam: GetNextPageParamFunction<Outputs[K]>;
+        setPageParam: (input: Inputs[K], pageParam: unknown) => Inputs[K];
+      }
+    ) => {
+      queryKey: unknown[];
+      queryFn: (context: unknown) => Promise<Outputs[K]>;
+      getNextPageParam: any;
     };
     mutationKey: K;
     mutationOptions: () => {
@@ -36,6 +48,13 @@ export const trpc =
         return (input: unknown) => ({
           queryKey: [k, input],
           queryFn: () => (trpcClient as any)[k].query(input),
+        })
+      }
+      if (prop === "infiniteQueryOptions") {
+        return (input: unknown, options: any) => ({
+          queryKey: [k, input],
+          queryFn: ({ pageParam }: any) => (trpcClient as any)[k].query(options.setPageParam(input, pageParam)),
+          getNextPageParam: options.getNextPageParam,
         })
       }
       if (prop === "mutationOptions") {

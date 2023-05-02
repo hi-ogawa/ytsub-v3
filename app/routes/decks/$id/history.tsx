@@ -11,7 +11,6 @@ import type { DeckTable } from "../../../db/models";
 import { PRACTICE_ACTION_TYPES, PracticeActionType } from "../../../db/types";
 import { $R, ROUTE_DEF } from "../../../misc/routes";
 import { trpc } from "../../../trpc/client";
-import { trpcClient } from "../../../trpc/client-internal.client";
 import { useIntersectionObserver } from "../../../utils/hooks-client-utils";
 import { formatRelativeDate } from "../../../utils/intl";
 import { requireUserAndDeck } from "../../../utils/loader-deck-utils";
@@ -59,19 +58,21 @@ export default function DefaultComponent() {
   const { deck, query } = useLoaderDataExtra() as LoaderData;
   const navigate = useNavigate();
 
-  const queryArgs = {
-    deckId: deck.id,
-    actionType: query.actionType,
-    practiceEntryId: query.practiceEntryId,
-  };
   const practiceActionsQuery = useInfiniteQuery({
-    queryKey: [trpc.decks_practiceActions.queryKey, queryArgs],
-    queryFn: (context) =>
-      trpcClient.decks_practiceActions.query({
-        ...queryArgs,
-        cursor: context.pageParam,
-      }),
-    getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
+    ...trpc.decks_practiceActions.infiniteQueryOptions(
+      {
+        deckId: deck.id,
+        actionType: query.actionType,
+        practiceEntryId: query.practiceEntryId,
+      },
+      {
+        getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
+        setPageParam: (input, pageParam) => ({
+          ...input,
+          cursor: pageParam as any,
+        }),
+      }
+    ),
     keepPreviousData: true,
   });
   const rows = practiceActionsQuery.data?.pages.flatMap((res) => res.rows);
