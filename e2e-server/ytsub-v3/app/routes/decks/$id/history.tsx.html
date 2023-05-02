@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">22.8% </span>
+                <span class="strong">22.64% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>65/285</span>
+                <span class='fraction'>65/287</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">22.8% </span>
+                <span class="strong">22.64% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>65/285</span>
+                <span class='fraction'>65/287</span>
             </div>
         
             
@@ -348,7 +348,9 @@
 <a name='L283'></a><a href='#L283'>283</a>
 <a name='L284'></a><a href='#L284'>284</a>
 <a name='L285'></a><a href='#L285'>285</a>
-<a name='L286'></a><a href='#L286'>286</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">121x</span>
+<a name='L286'></a><a href='#L286'>286</a>
+<a name='L287'></a><a href='#L287'>287</a>
+<a name='L288'></a><a href='#L288'>288</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">123x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -406,6 +408,8 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -694,19 +698,21 @@ export default <span class="fstat-no" title="function not covered" >function Def
 <span class="cstat-no" title="statement not covered" >  const { deck, query } = useLoaderDataExtra() as LoaderData;</span>
 <span class="cstat-no" title="statement not covered" >  const navigate = useNavigate();</span>
 <span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >  const queryArgs = {</span>
-<span class="cstat-no" title="statement not covered" >    deckId: deck.id,</span>
-<span class="cstat-no" title="statement not covered" >    actionType: query.actionType,</span>
-<span class="cstat-no" title="statement not covered" >    practiceEntryId: query.practiceEntryId,</span>
-<span class="cstat-no" title="statement not covered" >  };</span>
 <span class="cstat-no" title="statement not covered" >  const practiceActionsQuery = useInfiniteQuery({</span>
-<span class="cstat-no" title="statement not covered" >    queryKey: [trpc.decks_practiceActions.queryKey, queryArgs],</span>
-<span class="cstat-no" title="statement not covered" >    queryFn: (context) =&gt;</span>
-<span class="cstat-no" title="statement not covered" >      trpcClient.decks_practiceActions.query({</span>
-<span class="cstat-no" title="statement not covered" >        ...queryArgs,</span>
-<span class="cstat-no" title="statement not covered" >        cursor: context.pageParam,</span>
-<span class="cstat-no" title="statement not covered" >      }),</span>
-<span class="cstat-no" title="statement not covered" >    getNextPageParam: (lastPage) =&gt; lastPage.nextCursor ?? undefined,</span>
+<span class="cstat-no" title="statement not covered" >    ...trpc.decks_practiceActions.infiniteQueryOptions(</span>
+<span class="cstat-no" title="statement not covered" >      {</span>
+<span class="cstat-no" title="statement not covered" >        deckId: deck.id,</span>
+<span class="cstat-no" title="statement not covered" >        actionType: query.actionType,</span>
+<span class="cstat-no" title="statement not covered" >        practiceEntryId: query.practiceEntryId,</span>
+<span class="cstat-no" title="statement not covered" >      },</span>
+<span class="cstat-no" title="statement not covered" >      {</span>
+<span class="cstat-no" title="statement not covered" >        getNextPageParam: (lastPage) =&gt; lastPage.nextCursor ?? undefined,</span>
+<span class="cstat-no" title="statement not covered" >        setPageParam: (input, pageParam) =&gt; ({</span>
+<span class="cstat-no" title="statement not covered" >          ...input,</span>
+<span class="cstat-no" title="statement not covered" >          cursor: pageParam as any,</span>
+<span class="cstat-no" title="statement not covered" >        }),</span>
+<span class="cstat-no" title="statement not covered" >      }</span>
+<span class="cstat-no" title="statement not covered" >    ),</span>
 <span class="cstat-no" title="statement not covered" >    keepPreviousData: true,</span>
 <span class="cstat-no" title="statement not covered" >  });</span>
 <span class="cstat-no" title="statement not covered" >  const rows = practiceActionsQuery.data?.pages.flatMap((res) =&gt; res.rows);</span>
@@ -925,7 +931,7 @@ export default <span class="fstat-no" title="function not covered" >function Def
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-05-01T14:58:59.584Z
+                at 2023-05-02T01:25:08.679Z
             </div>
         <script src="../../../../../prettify.js"></script>
         <script>

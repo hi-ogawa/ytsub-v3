@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">96% </span>
+                <span class="strong">88.4% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>48/50</span>
+                <span class='fraction'>61/69</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">90.9% </span>
+                <span class="strong">84.61% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>10/11</span>
+                <span class='fraction'>11/13</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">60% </span>
+                <span class="strong">50% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>3/5</span>
+                <span class='fraction'>3/6</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">96% </span>
+                <span class="strong">88.4% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>48/50</span>
+                <span class='fraction'>61/69</span>
             </div>
         
             
@@ -113,7 +113,38 @@
 <a name='L48'></a><a href='#L48'>48</a>
 <a name='L49'></a><a href='#L49'>49</a>
 <a name='L50'></a><a href='#L50'>50</a>
-<a name='L51'></a><a href='#L51'>51</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L51'></a><a href='#L51'>51</a>
+<a name='L52'></a><a href='#L52'>52</a>
+<a name='L53'></a><a href='#L53'>53</a>
+<a name='L54'></a><a href='#L54'>54</a>
+<a name='L55'></a><a href='#L55'>55</a>
+<a name='L56'></a><a href='#L56'>56</a>
+<a name='L57'></a><a href='#L57'>57</a>
+<a name='L58'></a><a href='#L58'>58</a>
+<a name='L59'></a><a href='#L59'>59</a>
+<a name='L60'></a><a href='#L60'>60</a>
+<a name='L61'></a><a href='#L61'>61</a>
+<a name='L62'></a><a href='#L62'>62</a>
+<a name='L63'></a><a href='#L63'>63</a>
+<a name='L64'></a><a href='#L64'>64</a>
+<a name='L65'></a><a href='#L65'>65</a>
+<a name='L66'></a><a href='#L66'>66</a>
+<a name='L67'></a><a href='#L67'>67</a>
+<a name='L68'></a><a href='#L68'>68</a>
+<a name='L69'></a><a href='#L69'>69</a>
+<a name='L70'></a><a href='#L70'>70</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -153,6 +184,13 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -163,7 +201,8 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import type { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import type { GetNextPageParamFunction } from "@tanstack/react-query";
+import type { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
 import { createGetProxy } from "../utils/misc";
 import { trpcClient } from "./client-internal.client";
 import type { trpcApp } from "./server";
@@ -181,6 +220,17 @@ type ReactQueryIntegration = {
     queryOptions: (input: Inputs[K]) =&gt; {
       queryKey: unknown[];
       queryFn: () =&gt; Promise&lt;Outputs[K]&gt;;
+    };
+    infiniteQueryOptions: (
+      input: Inputs[K],
+      options: {
+        getNextPageParam: GetNextPageParamFunction&lt;Outputs[K]&gt;;
+        setPageParam: (input: Inputs[K], pageParam: unknown) =&gt; Inputs[K];
+      }
+    ) =&gt; {
+      queryKey: unknown[];
+      queryFn: (context: unknown) =&gt; Promise&lt;Outputs[K]&gt;;
+      getNextPageParam: any;
     };
     mutationKey: K;
     mutationOptions: () =&gt; {
@@ -203,6 +253,13 @@ export const trpc =
           queryFn: <span class="fstat-no" title="function not covered" >() =&gt; (trpcClient as any)[k].query(input),</span>
         })
       }
+      if (prop === "infiniteQueryOptions") <span class="branch-0 cbranch-no" title="branch not covered" >{</span>
+<span class="cstat-no" title="statement not covered" >        return <span class="fstat-no" title="function not covered" >(input: unknown, options: any) =&gt; ({</span></span>
+<span class="cstat-no" title="statement not covered" >          queryKey: [k, input],</span>
+<span class="cstat-no" title="statement not covered" >          queryFn: ({ pageParam }: any) =&gt; (trpcClient as any)[k].query(options.setPageParam(input, pageParam)),</span>
+<span class="cstat-no" title="statement not covered" >          getNextPageParam: options.getNextPageParam,</span>
+<span class="cstat-no" title="statement not covered" >        })</span>
+<span class="cstat-no" title="statement not covered" >      }</span>
       if (prop === "mutationOptions") {
         return () =&gt; ({
           mutationKey: [k],
@@ -220,7 +277,7 @@ export const trpc =
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-05-01T14:57:18.938Z
+                at 2023-05-02T01:23:30.258Z
             </div>
         <script src="../prettify.js"></script>
         <script>
