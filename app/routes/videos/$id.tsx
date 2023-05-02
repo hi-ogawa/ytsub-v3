@@ -614,7 +614,45 @@ export function CaptionEntryComponent({
   );
 }
 
-// ad-hoc DOM manipulation to find selected data for new bookmark creation
+function HighlightText({
+  text,
+  highlights,
+}: {
+  text: string;
+  highlights: { offset: number; text: string }[];
+}) {
+  const partitions = partitionRanges(
+    text.length,
+    highlights.map((h) => [h.offset, h.offset + h.text.length])
+  );
+  return (
+    <>
+      {partitions.map(([highlight, [start, end]]) => (
+        <span
+          key={start}
+          data-offset={start}
+          className={cls(highlight && "text-colorPrimaryText")}
+        >
+          {text.slice(start, end)}
+        </span>
+      ))}
+    </>
+  );
+}
+
+// export for testing
+export function partitionRanges(
+  total: number,
+  ranges: [number, number][]
+): [boolean, [number, number]][] {
+  const boundaries = uniq(sortBy(ranges.flat().concat([0, total]), (x) => x));
+  return zip(boundaries, boundaries.slice(1)).map((a) => [
+    ranges.some((b) => b[0] <= a[0] && a[1] <= b[1]),
+    a,
+  ]);
+}
+
+// desperate DOM manipulation to find selected data for new bookmark creation
 // TODO: make type-safe data attributes
 function extractBookmarkSelection(
   selection: Selection
@@ -663,42 +701,9 @@ function extractBookmarkSelection(
   };
 }
 
-function HighlightText({
-  text,
-  highlights,
-}: {
-  text: string;
-  highlights: { offset: number; text: string }[];
-}) {
-  const partitions = partitionRanges(
-    text.length,
-    highlights.map((h) => [h.offset, h.offset + h.text.length])
-  );
-  return (
-    <>
-      {partitions.map(([highlight, [start, end]]) => (
-        <span
-          key={start}
-          data-offset={start}
-          className={cls(highlight && "text-colorPrimaryText")}
-        >
-          {text.slice(start, end)}
-        </span>
-      ))}
-    </>
-  );
-}
-
-export function partitionRanges(
-  total: number,
-  ranges: [number, number][]
-): [boolean, [number, number]][] {
-  const boundaries = uniq(sortBy(ranges.flat().concat([0, total]), (x) => x));
-  return zip(boundaries, boundaries.slice(1)).map((a) => [
-    ranges.some((b) => b[0] <= a[0] && a[1] <= b[1]),
-    a,
-  ]);
-}
+//
+// NavBarMenuComponent
+//
 
 function NavBarMenuComponent() {
   const { currentUser } = useRootLoaderData();
