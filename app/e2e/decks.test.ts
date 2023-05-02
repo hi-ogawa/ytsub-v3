@@ -1,19 +1,10 @@
 import { expect } from "@playwright/test";
-import { E, T, db } from "../db/drizzle-client.server";
 import { DEFAULT_SEED_FILE, importSeed } from "../misc/seed-utils";
 import { test } from "./coverage";
 import { useUserE2E } from "./helper";
 
-test.describe("decks", () => {
+test.describe("decks-empty", () => {
   const user = useUserE2E(test, { seed: __filename });
-  let deckId: number;
-
-  test.beforeEach(async () => {
-    await user.isReady;
-    await db.delete(T.videos).where(E.eq(T.videos.userId, user.data.id));
-    await db.delete(T.decks).where(E.eq(T.decks.userId, user.data.id));
-    deckId = await importSeed(user.data.id);
-  });
 
   test("decks => new-deck => edit-deck => delete-deck", async ({ page }) => {
     await user.signin(page);
@@ -53,6 +44,16 @@ test.describe("decks", () => {
     await page.getByRole("button", { name: "Delete this deck" }).click();
     await page.getByText("Successfully deleted a deck").click();
     await expect(page).toHaveURL("/decks");
+  });
+});
+
+test.describe("decks-seed", () => {
+  const user = useUserE2E(test, { seed: __filename });
+  let deckId: number;
+
+  test.beforeAll(async () => {
+    await user.isReady;
+    deckId = await importSeed(user.data.id);
   });
 
   test("videos => add-to-deck", async ({ page }) => {
