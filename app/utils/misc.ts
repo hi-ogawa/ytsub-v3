@@ -84,7 +84,10 @@ export function none<T>(): T | undefined {
   return undefined;
 }
 
-export function zip<T1, T2>(ls1: T1[], ls2: T2[]): [T1, T2][] {
+export function zip<T1, T2>(
+  ls1: readonly T1[],
+  ls2: readonly T2[]
+): [T1, T2][] {
   return range(Math.min(ls1.length, ls2.length)).map((i) => [ls1[i], ls2[i]]);
 }
 
@@ -113,4 +116,19 @@ export function findAncestorElement(
   check: (el: Element) => boolean
 ): Element | undefined {
   return findNext(el, check, (el) => el.parentElement ?? undefined);
+}
+
+// not sure if it's any useful. just a little experiment
+export function reTemplate(
+  { raw }: TemplateStringsArray,
+  ...params: string[]
+): RegExp {
+  tinyassert(raw.length === params.length + 1);
+  return new RegExp(
+    [...zip(raw, params.map(escapeRegExp)), raw.slice(-1)].flat().join("")
+  );
+}
+
+function escapeRegExp(s: string): string {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
