@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">12.78% </span>
+                <span class="strong">12.61% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>113/884</span>
+                <span class='fraction'>113/896</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">12.78% </span>
+                <span class="strong">12.61% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>113/884</span>
+                <span class='fraction'>113/896</span>
             </div>
         
             
@@ -947,7 +947,19 @@
 <a name='L882'></a><a href='#L882'>882</a>
 <a name='L883'></a><a href='#L883'>883</a>
 <a name='L884'></a><a href='#L884'>884</a>
-<a name='L885'></a><a href='#L885'>885</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L885'></a><a href='#L885'>885</a>
+<a name='L886'></a><a href='#L886'>886</a>
+<a name='L887'></a><a href='#L887'>887</a>
+<a name='L888'></a><a href='#L888'>888</a>
+<a name='L889'></a><a href='#L889'>889</a>
+<a name='L890'></a><a href='#L890'>890</a>
+<a name='L891'></a><a href='#L891'>891</a>
+<a name='L892'></a><a href='#L892'>892</a>
+<a name='L893'></a><a href='#L893'>893</a>
+<a name='L894'></a><a href='#L894'>894</a>
+<a name='L895'></a><a href='#L895'>895</a>
+<a name='L896'></a><a href='#L896'>896</a>
+<a name='L897'></a><a href='#L897'>897</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -1066,6 +1078,18 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -1836,7 +1860,7 @@ import { groupBy, tinyassert } from "@hiogawa/utils";
 import { isNil } from "@hiogawa/utils";
 import { toArraySetState, useRafLoop } from "@hiogawa/utils-react";
 import { Link, useNavigate } from "@remix-run/react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   VirtualItem,
   Virtualizer,
@@ -1970,21 +1994,6 @@ interface BookmarkState {
 <span class="cstat-no" title="statement not covered" >    [captionEntriesQuery.data]</span>
 <span class="cstat-no" title="statement not covered" >  );</span>
 <span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >  // fetch all bookmark entries associated to this video</span>
-<span class="cstat-no" title="statement not covered" >  const [highlightBookmark] = useAtom(highlightBookmarkStorageAtom);</span>
-<span class="cstat-no" title="statement not covered" >  const highlightBookmarkEnabled = highlightBookmark &amp;&amp; Boolean(currentUser);</span>
-<span class="cstat-no" title="statement not covered" >  const bookmarkEntriesQuery = useQuery({</span>
-<span class="cstat-no" title="statement not covered" >    ...trpc.videos_getBookmarkEntries.queryOptions({ videoId: video.id }),</span>
-<span class="cstat-no" title="statement not covered" >    enabled: highlightBookmarkEnabled,</span>
-<span class="cstat-no" title="statement not covered" >  });</span>
-<span class="cstat-no" title="statement not covered" >  const bookmarkEntries = React.useMemo(</span>
-<span class="cstat-no" title="statement not covered" >    () =&gt;</span>
-<span class="cstat-no" title="statement not covered" >      highlightBookmarkEnabled &amp;&amp; bookmarkEntriesQuery.isSuccess</span>
-<span class="cstat-no" title="statement not covered" >        ? bookmarkEntriesQuery.data</span>
-<span class="cstat-no" title="statement not covered" >        : [],</span>
-<span class="cstat-no" title="statement not covered" >    [highlightBookmarkEnabled, bookmarkEntriesQuery.data]</span>
-<span class="cstat-no" title="statement not covered" >  );</span>
-<span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  //</span>
 <span class="cstat-no" title="statement not covered" >  // state</span>
 <span class="cstat-no" title="statement not covered" >  //</span>
@@ -1997,12 +2006,39 @@ interface BookmarkState {
 <span class="cstat-no" title="statement not covered" >  //</span>
 <span class="cstat-no" title="statement not covered" >  // query</span>
 <span class="cstat-no" title="statement not covered" >  //</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >  // fetch all bookmark entries associated to this video</span>
+<span class="cstat-no" title="statement not covered" >  const [highlightBookmark] = useAtom(highlightBookmarkStorageAtom);</span>
+<span class="cstat-no" title="statement not covered" >  const highlightBookmarkEnabled = highlightBookmark &amp;&amp; Boolean(currentUser);</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >  const bookmarkEntriesQueryOptions =</span>
+<span class="cstat-no" title="statement not covered" >    trpc.videos_getBookmarkEntries.queryOptions({ videoId: video.id });</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >  const bookmarkEntriesQuery = useQuery({</span>
+<span class="cstat-no" title="statement not covered" >    ...bookmarkEntriesQueryOptions,</span>
+<span class="cstat-no" title="statement not covered" >    enabled: highlightBookmarkEnabled,</span>
+<span class="cstat-no" title="statement not covered" >  });</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >  const bookmarkEntries = React.useMemo(</span>
+<span class="cstat-no" title="statement not covered" >    () =&gt;</span>
+<span class="cstat-no" title="statement not covered" >      highlightBookmarkEnabled &amp;&amp; bookmarkEntriesQuery.isSuccess</span>
+<span class="cstat-no" title="statement not covered" >        ? bookmarkEntriesQuery.data</span>
+<span class="cstat-no" title="statement not covered" >        : [],</span>
+<span class="cstat-no" title="statement not covered" >    [highlightBookmarkEnabled, bookmarkEntriesQuery.data]</span>
+<span class="cstat-no" title="statement not covered" >  );</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >  const queryClient = useQueryClient();</span>
+<span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  const newBookmarkMutation = useMutation({</span>
 <span class="cstat-no" title="statement not covered" >    ...trpc.bookmarks_create.mutationOptions(),</span>
-<span class="cstat-no" title="statement not covered" >    onSuccess: () =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >    onSuccess: (newBookmark) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >      toast.success("Bookmark success");</span>
-<span class="cstat-no" title="statement not covered" >      // TODO(perf): mutate query cache instead of refetch</span>
-<span class="cstat-no" title="statement not covered" >      bookmarkEntriesQuery.refetch();</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >      // mutate query cache instead of refetch</span>
+<span class="cstat-no" title="statement not covered" >      queryClient.setQueryData(bookmarkEntriesQueryOptions.queryKey, (prev) =&gt; [</span>
+<span class="cstat-no" title="statement not covered" >        ...(prev as typeof bookmarkEntries),</span>
+<span class="cstat-no" title="statement not covered" >        newBookmark,</span>
+<span class="cstat-no" title="statement not covered" >      ]);</span>
 <span class="cstat-no" title="statement not covered" >    },</span>
 <span class="cstat-no" title="statement not covered" >    onError: () =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >      toast.error("Bookmark failed");</span>
@@ -2722,7 +2758,7 @@ const highlightBookmarkStorageAtom = atomWithStorage(
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-05-02T04:40:37.224Z
+                at 2023-05-02T04:57:42.367Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>
