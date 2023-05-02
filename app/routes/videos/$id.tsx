@@ -521,7 +521,6 @@ function CaptionEntriesComponent({
     const entry = entries[item.index];
 
     // TODO: merge multiple bookmarks under single caption entry?
-    // TODO: better highlight style? (not just underline)
     const bookmarkEntry = bookmarkEntryMap.get(entry.id)?.at(0);
 
     return (
@@ -533,6 +532,7 @@ function CaptionEntriesComponent({
             side: bookmarkEntry.side,
             offset: bookmarkEntry.offset,
             length: bookmarkEntry.text.length,
+            className: "text-colorPrimaryText",
           }
         }
         isFocused={focusedIndex === item.index}
@@ -570,7 +570,12 @@ export function CaptionEntryComponent({
   isFocused?: boolean;
   videoId?: number;
   border?: boolean;
-  highlight?: { side: number; offset: number; length: number };
+  highlight?: {
+    side: number;
+    offset: number;
+    length: number;
+    className?: string;
+  };
   // virtualized list
   virtualizer?: Virtualizer<HTMLDivElement, Element>;
   virtualItem?: VirtualItem;
@@ -642,6 +647,7 @@ export function CaptionEntryComponent({
               text={text1}
               offset={highlight.offset}
               length={highlight.length}
+              className={highlight.className}
             />
           ) : (
             text1
@@ -653,6 +659,7 @@ export function CaptionEntryComponent({
               text={text2}
               offset={highlight.offset}
               length={highlight.length}
+              className={highlight.className}
             />
           ) : (
             text2
@@ -667,10 +674,12 @@ function HighlightText({
   text,
   offset,
   length,
+  className,
 }: {
   text: string;
   offset: number;
   length: number;
+  className?: string;
 }) {
   const t1 = text.slice(0, offset);
   const t2 = text.slice(offset, offset + length);
@@ -678,7 +687,9 @@ function HighlightText({
   return (
     <>
       {t1}
-      <span className="border-b border-colorTextSecondary">{t2}</span>
+      <span className={className ?? "border-b border-colorTextSecondary"}>
+        {t2}
+      </span>
       {t3}
     </>
   );
