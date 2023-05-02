@@ -50,17 +50,15 @@ export const loader = makeLoader(async ({ ctx }) => {
 
   const request = ROUTE_DEF["/bookmarks"].query.parse(ctx.query);
 
-  let query = db
-    .select()
-    .from(T.bookmarkEntries)
-    .innerJoin(T.videos, E.eq(T.videos.id, T.bookmarkEntries.videoId))
-    .innerJoin(
-      T.captionEntries,
-      E.eq(T.captionEntries.id, T.bookmarkEntries.captionEntryId)
-    );
-
   const [rows, pagination] = await toPaginationResult(
-    query
+    db
+      .select()
+      .from(T.bookmarkEntries)
+      .innerJoin(T.videos, E.eq(T.videos.id, T.bookmarkEntries.videoId))
+      .innerJoin(
+        T.captionEntries,
+        E.eq(T.captionEntries.id, T.bookmarkEntries.captionEntryId)
+      )
       .where(
         E.and(
           E.eq(T.bookmarkEntries.userId, user.id),
