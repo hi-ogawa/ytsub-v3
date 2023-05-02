@@ -59,22 +59,12 @@ export const loader = makeLoader(async ({ ctx }) => {
       E.eq(T.captionEntries.id, T.bookmarkEntries.captionEntryId)
     );
 
-  if (request.deckId) {
-    query = query
-      .innerJoin(
-        T.practiceEntries,
-        E.eq(T.practiceEntries.bookmarkEntryId, T.bookmarkEntries.id)
-      )
-      .innerJoin(T.decks, E.eq(T.decks.id, T.practiceEntries.deckId));
-  }
-
   const [rows, pagination] = await toPaginationResult(
     query
       .where(
         E.and(
           E.eq(T.bookmarkEntries.userId, user.id),
           mapOption(request.videoId, (v) => E.eq(T.bookmarkEntries.videoId, v)),
-          mapOption(request.deckId, (v) => E.eq(T.decks.id, v)),
           mapOption(request.q, (v) => E.like(T.bookmarkEntries.text, `%${v}%`))
         )
       )
@@ -415,9 +405,7 @@ export function MiniPlayer({
 
 function NavBarMenuComponent() {
   const { request } = useLeafLoaderData() as LoaderData;
-  const isFilterActive = [request.videoId, request.deckId, request.q].some(
-    Boolean
-  );
+  const isFilterActive = [request.videoId, request.q].some(Boolean);
 
   return (
     <>
