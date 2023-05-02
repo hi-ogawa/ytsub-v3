@@ -619,6 +619,11 @@ export function CaptionEntryComponent({
 function extractBookmarkSelection(
   selection: Selection
 ): BookmarkSelection | undefined {
+  // skip empty selection
+  const text = selection.toString();
+  if (!text.trim()) return;
+
+  // manipulate on Range
   if (selection.rangeCount === 0) return;
 
   const selectionRange = selection.getRangeAt(0);
@@ -626,15 +631,15 @@ function extractBookmarkSelection(
 
   const { startContainer, startOffset, endContainer } = selectionRange;
 
-  // find closest element when selected from text node
-  // TODO: it looks like it's always text node
-  const startEl =
-    startContainer instanceof Element
-      ? startContainer
-      : startContainer.parentElement;
-  if (!startEl) return;
+  // check text node selection
+  if (startContainer.nodeType !== document.TEXT_NODE) return;
 
-  // find closest "data-xxx" ancestor
+  // find closest element when selected from text node
+  const startEl = startContainer.parentElement;
+  const dataOffset = startEl?.getAttribute("data-offset");
+  if (!startEl || !dataOffset) return;
+
+  // find data attributes from ancestor
   const dataIndexEl = findAncestorElement(
     startEl,
     (el) => !!el.getAttribute("data-index")
@@ -643,28 +648,17 @@ function extractBookmarkSelection(
     startEl,
     (el) => !!el.getAttribute("data-side")
   );
-  if (!dataIndexEl || !dataSideEl) return;
+  const dataIndex = dataIndexEl?.getAttribute("data-index");
+  const dataSide = dataSideEl?.getAttribute("data-side");
+  if (!dataIndexEl || !dataSideEl || !dataIndex || !dataSide) return;
 
-  // check both ends are contained
+  // check both ends are contained in the same caption entry
   if (!dataSideEl.contains(endContainer)) return;
-
-  // find data attributes
-  const dataIndex = dataIndexEl.getAttribute("data-index");
-  const dataSide = dataSideEl.getAttribute("data-side");
-  const dataOffset = startEl.getAttribute("data-offset");
-  if (!dataIndex || !dataSide || !dataOffset) return;
-
-  // extra offset when selection is started within text node
-  const extraOffset =
-    startContainer.nodeType === document.TEXT_NODE ? startOffset : 0;
-
-  const text = selection.toString();
-  if (!text.trim()) return;
 
   return {
     captionEntryIndex: Number(dataIndex),
     side: Number(dataSide),
-    offset: Number(dataOffset) + extraOffset,
+    offset: Number(dataOffset) + startOffset,
     text,
   };
 }
