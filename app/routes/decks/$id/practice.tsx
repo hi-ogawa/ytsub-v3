@@ -5,10 +5,8 @@ import { toast } from "react-hot-toast";
 import { transitionProps } from "../../../components/misc";
 import type {
   BookmarkEntryTable,
-  CaptionEntryTable,
   DeckTable,
   PracticeEntryTable,
-  VideoTable,
 } from "../../../db/models";
 import { PRACTICE_ACTION_TYPES, PracticeActionType } from "../../../db/types";
 import { trpc } from "../../../trpc/client";
@@ -83,8 +81,6 @@ export default function DefaultComponent() {
                   deck={deck}
                   practiceEntry={nextPracticeQuery.data.practiceEntry}
                   bookmarkEntry={nextPracticeQuery.data.bookmarkEntry}
-                  captionEntry={nextPracticeQuery.data.captionEntry}
-                  video={nextPracticeQuery.data.video}
                   loadNext={() => refetch()}
                   isLoadingNext={nextPracticeQuery.isFetching}
                 />
@@ -107,16 +103,12 @@ function PracticeComponent({
   deck,
   practiceEntry,
   bookmarkEntry,
-  captionEntry,
-  video,
   loadNext,
   isLoadingNext,
 }: {
   deck: DeckTable;
   practiceEntry: PracticeEntryTable;
   bookmarkEntry: BookmarkEntryTable;
-  captionEntry: CaptionEntryTable;
-  video: VideoTable;
   loadNext: () => void;
   isLoadingNext: boolean;
 }) {
@@ -142,10 +134,7 @@ function PracticeComponent({
         <BookmarkEntryComponent
           // force remount when going next practice
           key={practiceEntry.id}
-          video={video}
-          captionEntry={captionEntry}
           bookmarkEntry={bookmarkEntry}
-          showAutoplay
           isLoading={isLoading}
         />
       </div>

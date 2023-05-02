@@ -124,10 +124,7 @@ function ComponentImpl(props: LoaderData) {
             {props.rows.map((row) => (
               <BookmarkEntryComponent
                 key={row.bookmarkEntries.id}
-                video={row.videos}
-                captionEntry={row.captionEntries}
                 bookmarkEntry={row.bookmarkEntries}
-                showAutoplay
               />
             ))}
           </div>
@@ -142,16 +139,10 @@ function ComponentImpl(props: LoaderData) {
 }
 
 export function BookmarkEntryComponent({
-  video,
-  captionEntry,
   bookmarkEntry,
-  showAutoplay,
   isLoading,
 }: {
-  video: VideoTable;
-  captionEntry: CaptionEntryTable;
   bookmarkEntry: BookmarkEntryTable;
-  showAutoplay?: boolean; // TODO: always true?
   isLoading?: boolean; // for /decks/$id/practice
 }) {
   let [open, setOpen] = React.useState(false);
@@ -161,6 +152,11 @@ export function BookmarkEntryComponent({
     setAutoplay(true);
     setOpen(!open);
   }
+
+  const detailQuery = useQuery({
+    ...trpc.bookmarks_detail.queryOptions({ bookmarkId: bookmarkEntry.id }),
+    enabled: open,
+  });
 
   return (
     <div className="border flex flex-col" data-test="bookmark-entry">
@@ -184,33 +180,31 @@ export function BookmarkEntryComponent({
         >
           {bookmarkEntry.text}
         </div>
-        {showAutoplay && (
-          <button
-            className={cls(
-              "antd-btn antd-btn-ghost w-5 h-5",
-              isLoading ? "antd-spin" : "i-ri-play-line"
-            )}
-            onClick={onClickAutoPlay}
-          />
-        )}
-        {/* TODO: ability to delete */}
         <button
-          className="antd-btn antd-btn-ghost i-ri-close-line w-5 h-5 hidden"
-          onClick={() => {}}
+          className={cls(
+            "antd-btn antd-btn-ghost w-5 h-5",
+            detailQuery.isLoading || isLoading ? "antd-spin" : "i-ri-play-line"
+          )}
+          onClick={onClickAutoPlay}
         />
       </div>
-      <CollapseTransition show={open} className="duration-300 overflow-hidden">
-        <MiniPlayer
-          video={video}
-          captionEntry={captionEntry}
-          autoplay={autoplay}
-          defaultIsRepeating={autoplay}
-          highlight={{
-            side: bookmarkEntry.side,
-            offset: bookmarkEntry.offset,
-            length: bookmarkEntry.text.length,
-          }}
-        />
+      <CollapseTransition
+        show={open || detailQuery.isFetching}
+        className="duration-300 overflow-hidden"
+      >
+        {detailQuery.isSuccess && (
+          <MiniPlayer
+            video={detailQuery.data.videos}
+            captionEntry={detailQuery.data.captionEntries}
+            autoplay={autoplay}
+            defaultIsRepeating={autoplay}
+            highlight={{
+              side: bookmarkEntry.side,
+              offset: bookmarkEntry.offset,
+              length: bookmarkEntry.text.length,
+            }}
+          />
+        )}
       </CollapseTransition>
     </div>
   );

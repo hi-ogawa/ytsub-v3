@@ -95,4 +95,33 @@ export const trpcRoutesBookmarks = {
 
       return Object.values(countMap);
     }),
+
+  bookmarks_detail: procedureBuilder
+    .use(middlewares.requireUser)
+    .input(
+      z.object({
+        bookmarkId: z.number().int(),
+      })
+    )
+    .query(async ({ input, ctx }) => {
+      const row = await findOne(
+        db
+          .select()
+          .from(T.bookmarkEntries)
+          .innerJoin(
+            T.captionEntries,
+            E.eq(T.captionEntries.id, T.bookmarkEntries.captionEntryId)
+          )
+          .innerJoin(T.videos, E.eq(T.videos.id, T.captionEntries.videoId))
+          .where(
+            E.and(
+              E.eq(T.bookmarkEntries.id, input.bookmarkId),
+              E.eq(T.bookmarkEntries.userId, ctx.user.id)
+            )
+          )
+      );
+      tinyassert(row);
+      ctx.cacheResponse();
+      return row;
+    }),
 };

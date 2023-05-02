@@ -41,5 +41,10 @@ function createQueryClient() {
     cacheTime: Infinity,
   });
 
+  queryClient.setQueryDefaults([trpc.bookmarks_detail.queryKey], {
+    staleTime: Infinity,
+    cacheTime: Infinity,
+  });
+
   return queryClient;
 }
