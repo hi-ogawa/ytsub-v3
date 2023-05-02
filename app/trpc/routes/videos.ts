@@ -100,8 +100,6 @@ export const trpcRoutesVideos = {
       );
       tinyassert(video);
 
-      // TODO(perf): db index?
-      // TODO: order
       const rows = await db
         .select()
         .from(T.bookmarkEntries)
