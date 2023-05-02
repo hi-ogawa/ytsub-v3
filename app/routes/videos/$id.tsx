@@ -2,7 +2,7 @@ import { Transition } from "@headlessui/react";
 import { tinyassert } from "@hiogawa/utils";
 import { isNil } from "@hiogawa/utils";
 import { toArraySetState, useRafLoop } from "@hiogawa/utils-react";
-import { Form, Link, useNavigate } from "@remix-run/react";
+import { Link, useNavigate } from "@remix-run/react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   VirtualItem,
@@ -640,18 +640,7 @@ function HighlightText({
 }
 
 function NavBarMenuComponent() {
-  const { currentUser } = useRootLoaderData();
   const { video } = useLeafLoaderData() as LoaderData;
-  return <NavBarMenuComponentImpl user={currentUser} video={video} />;
-}
-
-function NavBarMenuComponentImpl({
-  user,
-  video,
-}: {
-  user?: UserTable;
-  video: VideoTable;
-}) {
   const [autoScrollState, toggleAutoScrollState] = useAutoScrollState();
   const [repeatingEntries, setRepeatingEntries] = useRepeatingEntries();
   const modal = useModal();
@@ -678,26 +667,6 @@ function NavBarMenuComponentImpl({
 
   return (
     <>
-      {user && user.id !== video.userId && (
-        <Form
-          method="post"
-          action={$R["/videos/new"]()}
-          className="flex items-center"
-        >
-          {/* prettier-ignore */}
-          <>
-            <input readOnly hidden name="videoId" value={video.videoId} />
-            <input readOnly hidden name="language1.id" value={video.language1_id} />
-            <input readOnly hidden name="language1.translation" value={video.language1_translation ?? ""} />
-            <input readOnly hidden name="language2.id" value={video.language2_id} />
-            <input readOnly hidden name="language2.translation" value={video.language2_translation ?? ""} />
-          </>
-          <button
-            type="submit"
-            className="antd-btn antd-btn-ghost i-ri-save-line w-6 h-6"
-          />
-        </Form>
-      )}
       <div className="flex items-center">
         <PopoverSimple
           placement="bottom-end"

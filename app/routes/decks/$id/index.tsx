@@ -346,15 +346,6 @@ export function DeckMenuComponent({ deck }: { deck: DeckTable }) {
       ),
     },
     {
-      to: $R["/bookmarks"](null, { deckId: deck.id }),
-      children: (
-        <>
-          <span className="i-ri-bookmark-line w-6 h-6"></span>
-          Bookmarks{" "}
-        </>
-      ),
-    },
-    {
       to: $R["/decks/$id/edit"](deck),
       children: (
         <>
