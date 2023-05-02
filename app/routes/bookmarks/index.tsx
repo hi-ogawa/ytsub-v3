@@ -366,13 +366,15 @@ export function MiniPlayer({
         <CaptionEntryComponent
           key={captionEntry.id}
           entry={captionEntry}
-          bookmarkEntries={bookmarkEntries}
           currentEntry={currentEntry}
           repeatingEntries={repeatingEntries}
           onClickEntryPlay={onClickEntryPlay}
           onClickEntryRepeat={toArraySetState(setRepeatingEntries).toggle}
           isPlaying={isPlaying}
           videoId={video.id}
+          bookmarkEntries={
+            captionEntry === initialEntry ? bookmarkEntries : undefined
+          }
           isFocused={captionEntry === initialEntry}
         />
       ))}
