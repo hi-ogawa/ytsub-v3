@@ -3,7 +3,7 @@ import { groupBy, tinyassert } from "@hiogawa/utils";
 import { isNil } from "@hiogawa/utils";
 import { toArraySetState, useRafLoop } from "@hiogawa/utils-react";
 import { Link, useNavigate } from "@remix-run/react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   VirtualItem,
   Virtualizer,
@@ -137,21 +137,6 @@ function PageComponent({
     [captionEntriesQuery.data]
   );
 
-  // fetch all bookmark entries associated to this video
-  const [highlightBookmark] = useAtom(highlightBookmarkStorageAtom);
-  const highlightBookmarkEnabled = highlightBookmark && Boolean(currentUser);
-  const bookmarkEntriesQuery = useQuery({
-    ...trpc.videos_getBookmarkEntries.queryOptions({ videoId: video.id }),
-    enabled: highlightBookmarkEnabled,
-  });
-  const bookmarkEntries = React.useMemo(
-    () =>
-      highlightBookmarkEnabled && bookmarkEntriesQuery.isSuccess
-        ? bookmarkEntriesQuery.data
-        : [],
-    [highlightBookmarkEnabled, bookmarkEntriesQuery.data]
-  );
-
   //
   // state
   //
@@ -164,12 +149,39 @@ function PageComponent({
   //
   // query
   //
+
+  // fetch all bookmark entries associated to this video
+  const [highlightBookmark] = useAtom(highlightBookmarkStorageAtom);
+  const highlightBookmarkEnabled = highlightBookmark && Boolean(currentUser);
+
+  const bookmarkEntriesQueryOptions =
+    trpc.videos_getBookmarkEntries.queryOptions({ videoId: video.id });
+
+  const bookmarkEntriesQuery = useQuery({
+    ...bookmarkEntriesQueryOptions,
+    enabled: highlightBookmarkEnabled,
+  });
+
+  const bookmarkEntries = React.useMemo(
+    () =>
+      highlightBookmarkEnabled && bookmarkEntriesQuery.isSuccess
+        ? bookmarkEntriesQuery.data
+        : [],
+    [highlightBookmarkEnabled, bookmarkEntriesQuery.data]
+  );
+
+  const queryClient = useQueryClient();
+
   const newBookmarkMutation = useMutation({
     ...trpc.bookmarks_create.mutationOptions(),
-    onSuccess: () => {
+    onSuccess: (newBookmark) => {
       toast.success("Bookmark success");
-      // TODO(perf): mutate query cache instead of refetch
-      bookmarkEntriesQuery.refetch();
+
+      // mutate query cache instead of refetch
+      queryClient.setQueryData(bookmarkEntriesQueryOptions.queryKey, (prev) => [
+        ...(prev as typeof bookmarkEntries),
+        newBookmark,
+      ]);
     },
     onError: () => {
       toast.error("Bookmark failed");

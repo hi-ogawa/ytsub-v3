@@ -40,7 +40,7 @@ export const trpcRoutesBookmarks = {
       tinyassert(found, "not found");
 
       // insert with counter cache increment
-      await db.insert(T.bookmarkEntries).values({
+      const [{ insertId }] = await db.insert(T.bookmarkEntries).values({
         ...input,
         userId: ctx.user.id,
       });
@@ -50,6 +50,15 @@ export const trpcRoutesBookmarks = {
           bookmarkEntriesCount: sql`${T.videos.bookmarkEntriesCount} + 1`,
         })
         .where(E.eq(T.videos.id, input.videoId));
+
+      const row = await findOne(
+        db
+          .select()
+          .from(T.bookmarkEntries)
+          .where(E.eq(T.bookmarkEntries.id, insertId))
+      );
+      tinyassert(row);
+      return row;
     }),
 
   bookmarks_historyChart: procedureBuilder
