@@ -727,7 +727,7 @@ function NavBarMenuComponent() {
             />
           }
           floating={(context) => (
-            <ul className="flex flex-col gap-2 p-2 w-[190px] text-sm">
+            <ul className="flex flex-col gap-2 p-2 w-[180px] text-sm">
               <li>
                 <button
                   className="w-full antd-menu-item p-2 flex"
