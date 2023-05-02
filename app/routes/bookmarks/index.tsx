@@ -1,5 +1,5 @@
 import { Transition } from "@headlessui/react";
-import { isNil, mapOption, typedBoolean } from "@hiogawa/utils";
+import { mapOption, typedBoolean } from "@hiogawa/utils";
 import { toArraySetState, useRafLoop } from "@hiogawa/utils-react";
 import { Link, NavLink } from "@remix-run/react";
 import { useQuery } from "@tanstack/react-query";
@@ -7,7 +7,6 @@ import React from "react";
 import type { z } from "zod";
 import { CollapseTransition } from "../../components/collapse";
 import { PaginationComponent, transitionProps } from "../../components/misc";
-import { useModal } from "../../components/modal";
 import { PopoverSimple } from "../../components/popover";
 import {
   E,
@@ -416,10 +415,9 @@ export function MiniPlayer({
 
 function NavBarMenuComponent() {
   const { request } = useLeafLoaderData() as LoaderData;
-  const videoSelectModal = useModal();
-  const deckSelectModal = useModal();
-
-  const isFilterActive = !isNil(request.videoId ?? request.deckId);
+  const isFilterActive = [request.videoId, request.deckId, request.q].some(
+    Boolean
+  );
 
   return (
     <>
@@ -439,24 +437,6 @@ function NavBarMenuComponent() {
               <BookmarksMenuItems
                 onClickItem={() => context.onOpenChange(false)}
               />
-              <li>
-                <button
-                  className="w-full antd-menu-item flex items-center gap-2 p-2"
-                  onClick={() => videoSelectModal.setOpen(true)}
-                >
-                  <span className="i-ri-vidicon-line w-5 h-5"></span>
-                  Select Video
-                </button>
-              </li>
-              <li>
-                <button
-                  className="w-full antd-menu-item flex items-center gap-2 p-2"
-                  onClick={() => deckSelectModal.setOpen(true)}
-                >
-                  <span className="i-ri-book-line w-5 h-5"></span>
-                  Select Deck
-                </button>
-              </li>
               <li className={cls(!isFilterActive && "hidden")}>
                 <Link
                   className="w-full antd-menu-item flex items-center gap-2 p-2"
@@ -471,29 +451,7 @@ function NavBarMenuComponent() {
           )}
         />
       </div>
-      <videoSelectModal.Wrapper>
-        <VideoSelectComponent />
-      </videoSelectModal.Wrapper>
-      <deckSelectModal.Wrapper>
-        <DeckSelectComponent />
-      </deckSelectModal.Wrapper>
     </>
-  );
-}
-
-function VideoSelectComponent() {
-  return (
-    <div className="border shadow-xl rounded-xl bg-base-100 p-4 flex flex-col gap-2">
-      <div className="text-lg">TODO</div>
-    </div>
-  );
-}
-
-function DeckSelectComponent() {
-  return (
-    <div className="border shadow-xl rounded-xl bg-base-100 p-4 flex flex-col gap-2">
-      <div className="text-lg">TODO</div>
-    </div>
   );
 }
 
