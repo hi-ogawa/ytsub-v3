@@ -1,5 +1,5 @@
 import { Transition } from "@headlessui/react";
-import { tinyassert } from "@hiogawa/utils";
+import { groupBy, tinyassert } from "@hiogawa/utils";
 import { isNil } from "@hiogawa/utils";
 import { toArraySetState, useRafLoop } from "@hiogawa/utils-react";
 import { Link, useNavigate } from "@remix-run/react";
@@ -17,7 +17,7 @@ import { z } from "zod";
 import { transitionProps } from "../../components/misc";
 import { useModal } from "../../components/modal";
 import { PopoverSimple } from "../../components/popover";
-import { E, T, db, findOne } from "../../db/drizzle-client.server";
+import { E, T, TT, db, findOne } from "../../db/drizzle-client.server";
 import type { CaptionEntryTable, UserTable, VideoTable } from "../../db/models";
 import { $R, ROUTE_DEF } from "../../misc/routes";
 import { trpc } from "../../trpc/client";
@@ -137,6 +137,18 @@ function PageComponent({
     [captionEntriesQuery.data]
   );
 
+  // TODO: add toggle to menu
+  // TODO: spinner somehow
+  const bookmarkEntriesQuery = useQuery({
+    ...trpc.videos_getBookmarkEntries.queryOptions({ videoId: video.id }),
+    // TODO: login only
+    enabled: true,
+  });
+  const bookmarkEntries = React.useMemo(
+    () => bookmarkEntriesQuery.data ?? [],
+    [bookmarkEntriesQuery.data]
+  );
+
   //
   // state
   //
@@ -153,6 +165,9 @@ function PageComponent({
     ...trpc.bookmarks_create.mutationOptions(),
     onSuccess: () => {
       toast.success("Bookmark success");
+      // it might be expensive to fetch everything all the time (for example, I have about 250 bookmarks for 20 min video)
+      // we could mutate queryCache instead.
+      bookmarkEntriesQuery.refetch();
     },
     onError: () => {
       toast.error("Bookmark failed");
@@ -323,6 +338,7 @@ function PageComponent({
             <CaptionEntriesComponent
               virtualizer={virtualizer}
               entries={captionEntries}
+              bookmarkEntries={bookmarkEntries}
               currentEntry={currentEntry}
               repeatingEntries={repeatingEntries}
               onClickEntryPlay={onClickEntryPlay}
@@ -452,19 +468,27 @@ function PlayerComponent({
 
 function CaptionEntriesComponent({
   entries,
+  bookmarkEntries,
   focusedIndex,
   ...props
 }: {
-  entries: CaptionEntry[];
+  entries: TT["captionEntries"][];
+  bookmarkEntries: TT["bookmarkEntries"][];
+  focusedIndex?: number;
   currentEntry?: CaptionEntry;
   repeatingEntries: CaptionEntry[];
   onClickEntryPlay: (entry: CaptionEntry, toggle: boolean) => void;
   onClickEntryRepeat: (entry: CaptionEntry) => void;
   isPlaying: boolean;
-  focusedIndex?: number;
   virtualizer: Virtualizer<HTMLDivElement, Element>;
 }) {
   const virtualItems = props.virtualizer.getVirtualItems();
+
+  const bookmarkEntryMap = React.useMemo(
+    () => groupBy(bookmarkEntries, (row) => row.captionEntryId),
+    [bookmarkEntries]
+  );
+
   return (
     <div
       className="flex flex-col"
@@ -484,20 +508,41 @@ function CaptionEntriesComponent({
           transform: `translateY(${virtualItems[0].start}px)`,
         }}
       >
-        {virtualItems.map((item) => (
-          <CaptionEntryComponent
-            key={item.key}
-            entry={entries[item.index]}
-            isFocused={focusedIndex === item.index}
-            virtualItem={item}
-            // workaround disappearing bottom margin (paddingEnd option doesn't seem to work)
-            isActualLast={item.index === entries.length - 1}
-            {...props}
-          />
-        ))}
+        {virtualItems.map((item) => renderItem(item))}
       </div>
     </div>
   );
+
+  //
+  // helpers
+  //
+
+  function renderItem(item: VirtualItem) {
+    const entry = entries[item.index];
+
+    // TODO: merge multiple bookmarks under single caption entry?
+    // TODO: better highlight style? (not just underline)
+    const bookmarkEntry = bookmarkEntryMap.get(entry.id)?.at(0);
+
+    return (
+      <CaptionEntryComponent
+        key={item.key}
+        entry={entry}
+        highlight={
+          bookmarkEntry && {
+            side: bookmarkEntry.side,
+            offset: bookmarkEntry.offset,
+            length: bookmarkEntry.text.length,
+          }
+        }
+        isFocused={focusedIndex === item.index}
+        virtualItem={item}
+        // workaround disappearing bottom margin (paddingEnd option doesn't seem to work)
+        isActualLast={item.index === entries.length - 1}
+        {...props}
+      />
+    );
+  }
 }
 
 export function CaptionEntryComponent({
