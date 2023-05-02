@@ -92,3 +92,25 @@ export function difference<T>(ls1: T[], ls2: T[]): T[] {
   const exclude = new Set(ls2);
   return ls1.filter((e) => !exclude.has(e));
 }
+
+function findNext<T>(
+  start: T,
+  check: (value: T) => boolean,
+  next: (value: T) => T | undefined
+): T | undefined {
+  let current: T | undefined = start;
+  while (current) {
+    if (check(current)) {
+      return current;
+    }
+    current = next(current);
+  }
+  return;
+}
+
+export function findAncestorElement(
+  el: Element,
+  check: (el: Element) => boolean
+): Element | undefined {
+  return findNext(el, check, (el) => el.parentElement ?? undefined);
+}

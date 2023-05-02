@@ -13,12 +13,12 @@ import { atom, useAtom } from "jotai";
 import { atomWithStorage } from "jotai/utils";
 import React from "react";
 import toast from "react-hot-toast";
-import { z } from "zod";
+import type { z } from "zod";
 import { transitionProps } from "../../components/misc";
 import { useModal } from "../../components/modal";
 import { PopoverSimple } from "../../components/popover";
 import { E, T, TT, db, findOne } from "../../db/drizzle-client.server";
-import type { CaptionEntryTable, UserTable, VideoTable } from "../../db/models";
+import type { UserTable, VideoTable } from "../../db/models";
 import { $R, ROUTE_DEF } from "../../misc/routes";
 import { trpc } from "../../trpc/client";
 import { useDocumentEvent } from "../../utils/hooks-client-utils";
@@ -29,7 +29,7 @@ import {
   useRootLoaderData,
 } from "../../utils/loader-utils";
 import { makeLoader } from "../../utils/loader-utils.server";
-import { cls, zip } from "../../utils/misc";
+import { cls, findAncestorElement, zip } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 import type { CaptionEntry } from "../../utils/types";
 import {
@@ -89,32 +89,11 @@ export function findCurrentEntry(
   return;
 }
 
-// adhoc routines to derive `BookmarkState` by probing dom tree
-function findSelectionEntryIndex(selection: Selection): number {
-  const isValid =
-    selection.toString().trim() &&
-    selection.anchorNode &&
-    selection.anchorNode === selection.focusNode &&
-    selection.anchorNode.nodeType === document.TEXT_NODE &&
-    selection.anchorNode.parentElement?.classList?.contains(
-      BOOKMARKABLE_CLASSNAME
-    );
-  if (!isValid) return -1;
-  const textElement = selection.getRangeAt(0).startContainer;
-  const entryNode = textElement.parentElement?.parentElement?.parentElement;
-  tinyassert(entryNode);
-  const dataIndex = entryNode.getAttribute("data-index");
-  const index = z.coerce.number().int().parse(dataIndex);
-  return index;
-}
-
-const BOOKMARKABLE_CLASSNAME = "--bookmarkable--";
-
-interface BookmarkState {
-  captionEntry: CaptionEntryTable;
-  text: string;
-  side: 0 | 1; // 0 | 1
+interface BookmarkSelection {
+  captionEntryIndex: number;
+  side: number;
   offset: number;
+  text: string;
 }
 
 function PageComponent({
@@ -144,7 +123,7 @@ function PageComponent({
   const [player, setPlayer] = React.useState<YoutubePlayer>();
   const [isPlaying, setIsPlaying] = React.useState(false);
   const [currentEntry, setCurrentEntry] = React.useState<CaptionEntry>();
-  const [bookmarkState, setBookmarkState] = React.useState<BookmarkState>();
+  const [bookmarkState, setBookmarkState] = React.useState<BookmarkSelection>();
 
   //
   // query
@@ -266,7 +245,7 @@ function PageComponent({
     if (!bookmarkState) return;
     newBookmarkMutation.mutate({
       videoId: video.id,
-      captionEntryId: bookmarkState.captionEntry.id,
+      captionEntryId: captionEntries[bookmarkState.captionEntryIndex].id,
       text: bookmarkState.text,
       side: bookmarkState.side,
       offset: bookmarkState.offset,
@@ -294,25 +273,8 @@ function PageComponent({
   }, [query.index, captionEntries]);
 
   useDocumentEvent("selectionchange", () => {
-    const selection = document.getSelection();
-    let newBookmarkState: BookmarkState | undefined = undefined;
-    if (selection) {
-      const index = findSelectionEntryIndex(selection);
-      if (index >= 0) {
-        const el = selection.anchorNode!.parentNode!;
-        const side = Array.from(el.parentNode!.children).findIndex(
-          (c) => c === el
-        );
-        tinyassert(side === 0 || side === 1);
-        newBookmarkState = {
-          captionEntry: captionEntries[index],
-          text: selection.toString(),
-          side: side,
-          offset: selection.anchorOffset,
-        };
-      }
-    }
-    setBookmarkState(newBookmarkState);
+    const selection = document.getSelection() ?? undefined;
+    setBookmarkState(selection && extractBookmarkSelection(selection));
   });
 
   //
@@ -594,7 +556,7 @@ export function CaptionEntryComponent({
         isActualLast && "mb-1.5"
       )}
       ref={virtualizer?.measureElement}
-      data-index={virtualItem?.index}
+      data-index={virtualItem?.index} // required for virtualizer
     >
       <div className="flex items-center text-colorTextSecondary gap-2 text-xs">
         {isFocused && (
@@ -635,13 +597,13 @@ export function CaptionEntryComponent({
         className="flex cursor-pointer text-sm"
         onClick={() => onClickEntryPlay(entry, true)}
       >
-        <div className={`flex-1 pr-2 border-r ${BOOKMARKABLE_CLASSNAME}`}>
+        <div className="flex-1 pr-2 border-r" data-side="0">
           <HighlightText
             text={text1}
             highlights={bookmarkEntries?.filter((e) => e.side === 0) ?? []}
           />
         </div>
-        <div className={`flex-1 pl-2 ${BOOKMARKABLE_CLASSNAME}`}>
+        <div className="flex-1 pl-2" data-side="1">
           <HighlightText
             text={text2}
             highlights={bookmarkEntries?.filter((e) => e.side === 1) ?? []}
@@ -650,6 +612,61 @@ export function CaptionEntryComponent({
       </div>
     </div>
   );
+}
+
+// ad-hoc DOM manipulation to find selected data for new bookmark creation
+// TODO: make type-safe data attributes
+function extractBookmarkSelection(
+  selection: Selection
+): BookmarkSelection | undefined {
+  if (selection.rangeCount === 0) return;
+
+  const selectionRange = selection.getRangeAt(0);
+  if (selectionRange.collapsed) return;
+
+  const { startContainer, startOffset, endContainer } = selectionRange;
+
+  // find closest element when selected from text node
+  // TODO: it looks like it's always text node
+  const startEl =
+    startContainer instanceof Element
+      ? startContainer
+      : startContainer.parentElement;
+  if (!startEl) return;
+
+  // find closest "data-xxx" ancestor
+  const dataIndexEl = findAncestorElement(
+    startEl,
+    (el) => !!el.getAttribute("data-index")
+  );
+  const dataSideEl = findAncestorElement(
+    startEl,
+    (el) => !!el.getAttribute("data-side")
+  );
+  if (!dataIndexEl || !dataSideEl) return;
+
+  // check both ends are contained
+  if (!dataSideEl.contains(endContainer)) return;
+
+  // find data attributes
+  const dataIndex = dataIndexEl.getAttribute("data-index");
+  const dataSide = dataSideEl.getAttribute("data-side");
+  const dataOffset = startEl.getAttribute("data-offset");
+  if (!dataIndex || !dataSide || !dataOffset) return;
+
+  // extra offset when selection is started within text node
+  const extraOffset =
+    startContainer.nodeType === document.TEXT_NODE ? startOffset : 0;
+
+  const text = selection.toString();
+  if (!text.trim()) return;
+
+  return {
+    captionEntryIndex: Number(dataIndex),
+    side: Number(dataSide),
+    offset: Number(dataOffset) + extraOffset,
+    text,
+  };
 }
 
 function HighlightText({
@@ -666,7 +683,11 @@ function HighlightText({
   return (
     <>
       {partitions.map(([highlight, [start, end]]) => (
-        <span key={start} className={cls(highlight && "text-colorPrimaryText")}>
+        <span
+          key={start}
+          data-offset={start}
+          className={cls(highlight && "text-colorPrimaryText")}
+        >
           {text.slice(start, end)}
         </span>
       ))}

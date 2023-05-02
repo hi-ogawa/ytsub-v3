@@ -19,7 +19,7 @@ export const trpcRoutesBookmarks = {
         videoId: z.number().int(),
         captionEntryId: z.number().int(),
         text: z.string().nonempty(),
-        side: z.union([z.literal(0), z.literal(1)]),
+        side: z.number().refine((v) => v === 0 || v === 1),
         offset: z.number().int(),
       })
     )
