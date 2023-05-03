@@ -1,22 +1,22 @@
 import { PRACTICE_ACTION_TYPE_TO_COLOR, QueueTypeIcon } from ".";
 import { Transition } from "@headlessui/react";
-import { useNavigate } from "@remix-run/react";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import React from "react";
-import type { z } from "zod";
 import { CollapseTransition } from "../../../components/collapse";
 import { SelectWrapper, transitionProps } from "../../../components/misc";
 import type { TT } from "../../../db/drizzle-client.server";
 import type { DeckTable } from "../../../db/models";
 import { PRACTICE_ACTION_TYPES, PracticeActionType } from "../../../db/types";
-import { $R, ROUTE_DEF } from "../../../misc/routes";
+import { ROUTE_DEF } from "../../../misc/routes";
 import { trpc } from "../../../trpc/client";
 import { useIntersectionObserver } from "../../../utils/hooks-client-utils";
 import { formatRelativeDate } from "../../../utils/intl";
 import { requireUserAndDeck } from "../../../utils/loader-deck-utils";
 import {
+  disableUrlQueryRevalidation,
   useLeafLoaderData,
   useLoaderDataExtra,
+  useTypedUrlQuery,
 } from "../../../utils/loader-utils";
 import { makeLoader } from "../../../utils/loader-utils.server";
 import { cls } from "../../../utils/misc";
@@ -39,32 +39,33 @@ export const handle: PageHandle = {
 
 interface LoaderData {
   deck: DeckTable;
-  query: z.infer<(typeof ROUTE_DEF)["/decks/$id/history"]["query"]>;
 }
 
-// TODO: tweak shouldRevalidate
 export const loader = makeLoader(async ({ ctx }) => {
   const { deck } = await requireUserAndDeck(ctx);
-  const query = ROUTE_DEF["/decks/$id/history"].query.parse(ctx.query);
-
-  const loaderData: LoaderData = { deck, query };
+  const loaderData: LoaderData = { deck };
   return loaderData;
 });
+
+export const shouldRevalidate = disableUrlQueryRevalidation;
 
 //
 // DefaultComponent
 //
 
 export default function DefaultComponent() {
-  const { deck, query } = useLoaderDataExtra() as LoaderData;
-  const navigate = useNavigate();
+  const { deck } = useLoaderDataExtra() as LoaderData;
+
+  const [urlQuery, setUrlQuery] = useTypedUrlQuery(
+    ROUTE_DEF["/decks/$id/history"].query
+  );
 
   const practiceActionsQuery = useInfiniteQuery({
     ...trpc.decks_practiceActions.infiniteQueryOptions(
       {
         deckId: deck.id,
-        actionType: query.actionType,
-        practiceEntryId: query.practiceEntryId,
+        actionType: urlQuery?.actionType,
+        practiceEntryId: urlQuery?.practiceEntryId,
       },
       {
         getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
@@ -94,21 +95,14 @@ export default function DefaultComponent() {
               <SelectWrapper
                 className="antd-input p-1"
                 options={[undefined, ...PRACTICE_ACTION_TYPES]}
-                value={query.actionType}
+                value={urlQuery?.actionType}
                 labelFn={(v) => v ?? "Select..."}
-                onChange={(actionType) => {
-                  navigate(
-                    $R["/decks/$id/history"](
-                      { id: deck.id },
-                      actionType ? { actionType } : {}
-                    )
-                  );
-                }}
+                onChange={(actionType) => setUrlQuery({ actionType })}
               />
             </div>
             <ActionStatisticsComponent
               deckId={deck.id}
-              currentActionType={query.actionType}
+              currentActionType={urlQuery?.actionType}
             />
             <div className="flex-1 flex flex-col gap-2 relative">
               {rows?.map((row) => (

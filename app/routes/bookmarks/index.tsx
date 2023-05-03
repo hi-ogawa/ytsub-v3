@@ -1,10 +1,10 @@
 import { Transition } from "@headlessui/react";
 import { typedBoolean } from "@hiogawa/utils";
 import { toArraySetState, useRafLoop } from "@hiogawa/utils-react";
-import { Link, NavLink } from "@remix-run/react";
+import { NavLink } from "@remix-run/react";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import React from "react";
-import type { z } from "zod";
+import { useForm } from "react-hook-form";
 import { CollapseTransition } from "../../components/collapse";
 import { transitionProps } from "../../components/misc";
 import { PopoverSimple } from "../../components/popover";
@@ -17,8 +17,8 @@ import type {
 import { $R, ROUTE_DEF } from "../../misc/routes";
 import { trpc } from "../../trpc/client";
 import {
-  useLeafLoaderData,
-  useLoaderDataExtra,
+  disableUrlQueryRevalidation,
+  useTypedUrlQuery,
 } from "../../utils/loader-utils";
 import { makeLoader } from "../../utils/loader-utils.server";
 import { cls } from "../../utils/misc";
@@ -36,29 +36,27 @@ export const handle: PageHandle = {
 // loader
 //
 
-interface LoaderData {
-  query: z.infer<(typeof ROUTE_DEF)["/bookmarks"]["query"]>;
-}
-
-// TODO: tweak shouldRevalidate
 export const loader = makeLoader(async ({ ctx }) => {
   await ctx.requireUser();
-  const query = ROUTE_DEF["/bookmarks"].query.parse(ctx.query);
-  const loaderData: LoaderData = { query };
-  return loaderData;
+  return null;
 });
+
+export const shouldRevalidate = disableUrlQueryRevalidation;
 
 //
 // component
 //
 
 export default function DefaultComponent() {
-  const { query } = useLoaderDataExtra() as LoaderData;
+  const [urlQuery, setUrlQuery] = useTypedUrlQuery(
+    ROUTE_DEF["/bookmarks"].query
+  );
+  const form = useForm({ defaultValues: urlQuery });
 
   const bookmarkEntriesQuery = useInfiniteQuery({
     ...trpc.bookmarks_index.infiniteQueryOptions(
       {
-        q: query.q,
+        q: urlQuery?.q,
       },
       {
         getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
@@ -78,16 +76,18 @@ export default function DefaultComponent() {
         <div className="h-full w-full max-w-lg">
           <div className="h-full flex flex-col p-2 gap-2 relative">
             <div className="flex py-1">
-              {/* TODO: client navigation */}
-              <form>
+              <form
+                onSubmit={form.handleSubmit((data) =>
+                  setUrlQuery({ q: data.q ? data.q : undefined })
+                )}
+              >
                 <label className="relative flex items-center">
                   <span className="absolute text-colorTextSecondary ml-2 i-ri-search-line w-4 h-4"></span>
                   <input
                     className="antd-input pl-7 py-0.5"
-                    name={ROUTE_DEF["/bookmarks"].query.keyof().enum.q}
                     type="text"
                     placeholder="Search text..."
-                    defaultValue={query.q}
+                    {...form.register("q")}
                   />
                 </label>
               </form>
@@ -113,7 +113,10 @@ export default function DefaultComponent() {
               </button>
             )}
             <Transition
-              show={bookmarkEntriesQuery.isInitialLoading}
+              show={
+                bookmarkEntriesQuery.isInitialLoading ||
+                bookmarkEntriesQuery.isPreviousData
+              }
               className="absolute inset-0 duration-500 antd-body"
               {...transitionProps("opacity-0", "opacity-50")}
             >
@@ -398,9 +401,6 @@ export function MiniPlayer({
 //
 
 function NavBarMenuComponent() {
-  const { query } = useLeafLoaderData() as LoaderData;
-  const isFilterActive = Boolean(query.q);
-
   return (
     <>
       <div className="flex items-center">
@@ -409,8 +409,7 @@ function NavBarMenuComponent() {
           reference={
             <button
               className={cls(
-                "antd-btn antd-btn-ghost i-ri-more-2-line w-6 h-6",
-                isFilterActive && "text-colorPrimary"
+                "antd-btn antd-btn-ghost i-ri-more-2-line w-6 h-6"
               )}
             />
           }
@@ -419,16 +418,6 @@ function NavBarMenuComponent() {
               <BookmarksMenuItems
                 onClickItem={() => context.onOpenChange(false)}
               />
-              <li className={cls(!isFilterActive && "hidden")}>
-                <Link
-                  className="w-full antd-menu-item flex items-center gap-2 p-2"
-                  to={$R["/bookmarks"]()}
-                  onClick={() => context.onOpenChange(false)}
-                >
-                  <span className="i-ri-close-line w-5 h-5"></span>
-                  Clear Filter
-                </Link>
-              </li>
             </ul>
           )}
         />
