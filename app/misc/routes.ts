@@ -87,7 +87,6 @@ export const ROUTE_DEF = {
       graphType: z.enum(["action", "queue"]).default("action"),
       rangeType: z.enum(["week", "month"]).default("week"),
       page: z.coerce.number().int().optional().default(0), // 0 => this week/month, 1 => last week/month, ...
-      now: z.coerce.date().optional(), // for testing
     }),
   },
   "/decks/$id/export": {

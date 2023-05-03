@@ -3,24 +3,26 @@ import { Transition } from "@headlessui/react";
 import { useQuery } from "@tanstack/react-query";
 import type { ECharts } from "echarts";
 import React from "react";
-import { useForm } from "react-hook-form";
 import { SelectWrapper, transitionProps } from "../../../components/misc";
 import {
   EchartsComponent,
   practiceHistoryChartDataToEchartsOption,
 } from "../../../components/practice-history-chart";
 import type { DeckTable } from "../../../db/models";
+import { ROUTE_DEF } from "../../../misc/routes";
 import { trpc } from "../../../trpc/client";
 import { useClickOutside } from "../../../utils/hooks-client-utils";
 import { requireUserAndDeck } from "../../../utils/loader-deck-utils";
 import {
+  disableUrlQueryRevalidation,
   useLeafLoaderData,
   useLoaderDataExtra,
+  useTypedUrlQuery,
 } from "../../../utils/loader-utils";
 import { makeLoader } from "../../../utils/loader-utils.server";
 import { cls } from "../../../utils/misc";
 import type { PageHandle } from "../../../utils/page-handle";
-import { DateRangeType, formatDateRange } from "../../../utils/temporal-utils";
+import { formatDateRange } from "../../../utils/temporal-utils";
 
 //
 // handle
@@ -45,6 +47,8 @@ export const loader = makeLoader(async ({ ctx }) => {
   return loaderData;
 });
 
+export const shouldRevalidate = disableUrlQueryRevalidation;
+
 //
 // DefaultComponent
 //
@@ -58,19 +62,14 @@ export default function DefaultComponent() {
     instance?.dispatchAction({ type: "hideTip" });
   });
 
-  // TODO: use url query
-  const form = useForm<{
-    rangeType: DateRangeType;
-    graphType: "action" | "queue";
-    page: number;
-  }>({
-    defaultValues: {
-      rangeType: "week",
-      graphType: "action",
-      page: 0,
-    },
-  });
-  const params = form.watch();
+  const [urlQuery, setUrlQuery] = useTypedUrlQuery(
+    ROUTE_DEF["/decks/$id/history-graph"].query
+  );
+  const params = urlQuery ?? {
+    rangeType: "week",
+    graphType: "action",
+    page: 0,
+  };
 
   const historyChartQuery = useQuery({
     ...trpc.decks_practiceHistoryChart.queryOptions({
@@ -94,7 +93,7 @@ export default function DefaultComponent() {
                 params.graphType
               )}
               optionDeps={historyChartQuery.data}
-              // TODO: workaround tooltip bugs when switching series
+              // workaround tooltip bugs when switching series
               key={params.graphType}
             />
           )}
@@ -108,7 +107,7 @@ export default function DefaultComponent() {
           <div className="flex items-center gap-2 px-2 py-1">
             <button
               className="antd-btn antd-btn-ghost i-ri-play-mini-fill w-4 h-4 rotate-[180deg]"
-              onClick={() => form.setValue("page", params.page + 1)}
+              onClick={() => setUrlQuery({ page: params.page + 1 })}
             />
             <div className="text-sm px-2">
               {formatDateRange(params.rangeType, params.page)}
@@ -119,7 +118,7 @@ export default function DefaultComponent() {
                 params.page === 0 &&
                   "text-colorTextDisabled pointer-events-none"
               )}
-              onClick={() => form.setValue("page", params.page - 1)}
+              onClick={() => setUrlQuery({ page: params.page - 1 })}
             />
           </div>
           <div className="flex justify-center items-center gap-2">
@@ -129,10 +128,7 @@ export default function DefaultComponent() {
               options={["week", "month"] as const}
               labelFn={(value) => `by ${value}`}
               value={params.rangeType}
-              onChange={(rangeType) => {
-                form.setValue("rangeType", rangeType);
-                form.setValue("page", 0);
-              }}
+              onChange={(rangeType) => setUrlQuery({ rangeType, page: 0 })}
             />
             <SelectWrapper
               data-testid="SelectWrapper-graphType"
@@ -140,7 +136,7 @@ export default function DefaultComponent() {
               options={["action", "queue"] as const}
               labelFn={(value) => `by ${value}`}
               value={params.graphType}
-              onChange={(graphType) => form.setValue("graphType", graphType)}
+              onChange={(graphType) => setUrlQuery({ graphType })}
             />
           </div>
         </div>
