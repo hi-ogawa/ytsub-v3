@@ -2,6 +2,7 @@ import {
   ShouldRevalidateFunction,
   useLoaderData,
   useMatches,
+  useSearchParams,
 } from "@remix-run/react";
 import React from "react";
 import { deserialize } from "superjson";
@@ -35,3 +36,28 @@ export const disableUrlQueryRevalidation: ShouldRevalidateFunction = (args) => {
   }
   return args.defaultShouldRevalidate;
 };
+
+// Record<string, unknown> based wrapper for useSearchParams
+export function useUrlQuery() {
+  const [params, setParams] = useSearchParams();
+
+  const query = Object.fromEntries(params.entries());
+
+  const toParams = (newQuery: Record<string, unknown>) => {
+    const prev = { ...query };
+    for (const [k, v] of Object.entries(newQuery)) {
+      if (typeof v === "undefined") {
+        delete prev[k];
+      } else {
+        prev[k] = String(v);
+      }
+    }
+    return new URLSearchParams(prev);
+  };
+
+  const setQuery = (newQuery: Record<string, unknown>) => {
+    setParams(toParams(newQuery));
+  };
+
+  return [query, setQuery, toParams] as const;
+}
