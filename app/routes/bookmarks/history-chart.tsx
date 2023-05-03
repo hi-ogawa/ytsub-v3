@@ -43,6 +43,7 @@ export const handle: PageHandle = {
 //
 
 export default function PageComponent() {
+  // TODO: use url query
   const form = useForm<{
     rangeType: DateRangeType;
     page: number;

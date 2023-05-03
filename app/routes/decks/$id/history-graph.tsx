@@ -58,6 +58,7 @@ export default function DefaultComponent() {
     instance?.dispatchAction({ type: "hideTip" });
   });
 
+  // TODO: use url query
   const form = useForm<{
     rangeType: DateRangeType;
     graphType: "action" | "queue";
