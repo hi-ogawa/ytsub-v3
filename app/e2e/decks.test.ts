@@ -75,6 +75,7 @@ test.describe("decks-seed", () => {
     await page.getByText("Added 0 to a deck").click();
   });
 
+  // prettier-ignore
   test("show-deck => pagination => deck-history", async ({ page }) => {
     await user.signin(page);
     await page.goto("/decks");
@@ -114,10 +115,12 @@ test.describe("decks-seed", () => {
     await page
       .getByTestId("SelectWrapper-rangeType")
       .selectOption({ label: "by month" });
+    await page.waitForURL(`/decks/${deckId}/history-graph?rangeType=month`);
     await page.getByText("this month").click();
     await page
       .getByTestId("SelectWrapper-graphType")
       .selectOption({ label: "by queue" });
+    await page.waitForURL(`/decks/${deckId}/history-graph?rangeType=month&graphType=queue`);
 
     //
     // /decks/$id/history

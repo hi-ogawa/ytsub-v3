@@ -1,19 +1,20 @@
 import { Transition } from "@headlessui/react";
 import { useQuery } from "@tanstack/react-query";
 import React from "react";
-import { useForm } from "react-hook-form";
 import { SelectWrapper, transitionProps } from "../../components/misc";
 import { PopoverSimple } from "../../components/popover";
 import {
   EchartsComponent,
   createBookmarkHistoryChartOption,
 } from "../../components/practice-history-chart";
+import { ROUTE_DEF } from "../../misc/routes";
 import { trpc } from "../../trpc/client";
 import { useClickOutside } from "../../utils/hooks-client-utils";
+import { useTypedUrlQuery } from "../../utils/loader-utils";
 import { makeLoader } from "../../utils/loader-utils.server";
 import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
-import { DateRangeType, formatDateRange } from "../../utils/temporal-utils";
+import { formatDateRange } from "../../utils/temporal-utils";
 import { BookmarksMenuItems } from "./index";
 
 //
@@ -43,17 +44,13 @@ export const handle: PageHandle = {
 //
 
 export default function PageComponent() {
-  // TODO: use url query
-  const form = useForm<{
-    rangeType: DateRangeType;
-    page: number;
-  }>({
-    defaultValues: {
-      rangeType: "week",
-      page: 0,
-    },
-  });
-  const params = form.watch();
+  const [urlQuery, setUrlQuery] = useTypedUrlQuery(
+    ROUTE_DEF["/bookmarks/history-chart"].query
+  );
+  const params = urlQuery ?? {
+    rangeType: "week",
+    page: 0,
+  };
 
   const historyChartQuery = useQuery({
     ...trpc.bookmarks_historyChart.queryOptions(params),
@@ -89,7 +86,7 @@ export default function PageComponent() {
           <div className="flex items-center gap-2 px-2 py-1">
             <button
               className="antd-btn antd-btn-ghost i-ri-play-mini-fill w-4 h-4 rotate-[180deg]"
-              onClick={() => form.setValue("page", params.page + 1)}
+              onClick={() => setUrlQuery({ page: params.page + 1 })}
             />
             <div className="text-sm px-2">
               {formatDateRange(params.rangeType, params.page)}
@@ -100,7 +97,7 @@ export default function PageComponent() {
                 params.page === 0 &&
                   "text-colorTextDisabled pointer-events-none"
               )}
-              onClick={() => form.setValue("page", params.page - 1)}
+              onClick={() => setUrlQuery({ page: params.page - 1 })}
             />
           </div>
           <div className="flex justify-center items-center gap-2">
@@ -110,10 +107,9 @@ export default function PageComponent() {
               options={["week", "month"] as const}
               labelFn={(value) => `by ${value}`}
               value={params.rangeType}
-              onChange={(rangeType) => {
-                form.setValue("rangeType", rangeType);
-                form.setValue("page", 0);
-              }}
+              onChange={(rangeType) =>
+                setUrlQuery({ rangeType, page: undefined })
+              }
             />
           </div>
         </div>

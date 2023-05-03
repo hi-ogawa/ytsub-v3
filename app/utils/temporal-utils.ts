@@ -1,6 +1,6 @@
 import { tinyassert, wrapError } from "@hiogawa/utils";
 import { Temporal, toTemporalInstant } from "@js-temporal/polyfill";
-import { z } from "zod";
+import type { DateRangeType } from "../misc/routes";
 import { assertUnreachable } from "./misc";
 
 export function getSystemTimezone() {
@@ -23,9 +23,6 @@ export function fromTemporal(t: { epochMilliseconds: number }): Date {
 export function isValidTimezone(timezone: string) {
   return wrapError(() => Temporal.Now.zonedDateTimeISO(timezone)).ok;
 }
-
-export const Z_DATE_RANGE_TYPE = z.enum(["week", "month"]);
-export type DateRangeType = z.infer<typeof Z_DATE_RANGE_TYPE>;
 
 export function getZonedDateRange(
   now: Temporal.ZonedDateTime,
