@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">9.67% </span>
+                <span class="strong">10.24% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>21/217</span>
+                <span class='fraction'>21/205</span>
             </div>
         
             
@@ -39,14 +39,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/9</span>
+                <span class='fraction'>0/8</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">9.67% </span>
+                <span class="strong">10.24% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>21/217</span>
+                <span class='fraction'>21/205</span>
             </div>
         
             
@@ -268,19 +268,8 @@
 <a name='L203'></a><a href='#L203'>203</a>
 <a name='L204'></a><a href='#L204'>204</a>
 <a name='L205'></a><a href='#L205'>205</a>
-<a name='L206'></a><a href='#L206'>206</a>
-<a name='L207'></a><a href='#L207'>207</a>
-<a name='L208'></a><a href='#L208'>208</a>
-<a name='L209'></a><a href='#L209'>209</a>
-<a name='L210'></a><a href='#L210'>210</a>
-<a name='L211'></a><a href='#L211'>211</a>
-<a name='L212'></a><a href='#L212'>212</a>
-<a name='L213'></a><a href='#L213'>213</a>
-<a name='L214'></a><a href='#L214'>214</a>
-<a name='L215'></a><a href='#L215'>215</a>
-<a name='L216'></a><a href='#L216'>216</a>
-<a name='L217'></a><a href='#L217'>217</a>
-<a name='L218'></a><a href='#L218'>218</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L206'></a><a href='#L206'>206</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -438,19 +427,6 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -498,9 +474,10 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { Transition } from "@headlessui/react";
-import { Link, useSearchParams } from "@remix-run/react";
+import { Link } from "@remix-run/react";
 import type { PaginationMetadata, VideoTable } from "../db/models";
-import { $R } from "../misc/routes";
+import { $R, Z_PAGINATION_QUERY } from "../misc/routes";
+import { useTypedUrlQuery } from "../utils/loader-utils";
 import { cls } from "../utils/misc";
 import { parseVssId, toThumbnail } from "../utils/youtube";
 import { PopoverSimple } from "./popover";
@@ -626,7 +603,7 @@ export <span class="fstat-no" title="function not covered" >function PaginationC
 <span class="cstat-no" title="statement not covered" >}: {</span>
 <span class="cstat-no" title="statement not covered" >  pagination: PaginationMetadata;</span>
 <span class="cstat-no" title="statement not covered" >}) {</span>
-<span class="cstat-no" title="statement not covered" >  const mergeQuery = useMergeUrlQuery();</span>
+<span class="cstat-no" title="statement not covered" >  const [, , toParams] = useTypedUrlQuery(Z_PAGINATION_QUERY);</span>
 <span class="cstat-no" title="statement not covered" >  const { page, totalPage, total } = pagination;</span>
 <span class="cstat-no" title="statement not covered" >  return (</span>
 <span class="cstat-no" title="statement not covered" >    &lt;div</span>
@@ -636,14 +613,14 @@ export <span class="fstat-no" title="function not covered" >function PaginationC
 <span class="cstat-no" title="statement not covered" >      &lt;Link</span>
 <span class="cstat-no" title="statement not covered" >        className="antd-btn antd-btn-ghost flex items-center aria-disabled:pointer-events-none aria-disabled:opacity-50"</span>
 <span class="cstat-no" title="statement not covered" >        aria-disabled={page &lt;= 1}</span>
-<span class="cstat-no" title="statement not covered" >        to={"?" + mergeQuery({ page: 1 })}</span>
+<span class="cstat-no" title="statement not covered" >        to={"?" + toParams({ page: undefined })}</span>
 <span class="cstat-no" title="statement not covered" >      &gt;</span>
 <span class="cstat-no" title="statement not covered" >        &lt;span className="i-ri-rewind-mini-fill w-5 h-5"&gt;&lt;/span&gt;</span>
 <span class="cstat-no" title="statement not covered" >      &lt;/Link&gt;</span>
 <span class="cstat-no" title="statement not covered" >      &lt;Link</span>
 <span class="cstat-no" title="statement not covered" >        className="antd-btn antd-btn-ghost flex items-center aria-disabled:pointer-events-none aria-disabled:opacity-50"</span>
 <span class="cstat-no" title="statement not covered" >        aria-disabled={page &lt;= 1}</span>
-<span class="cstat-no" title="statement not covered" >        to={"?" + mergeQuery({ page: page - 1 })}</span>
+<span class="cstat-no" title="statement not covered" >        to={"?" + toParams({ page: page - 1 })}</span>
 <span class="cstat-no" title="statement not covered" >      &gt;</span>
 <span class="cstat-no" title="statement not covered" >        &lt;span className="i-ri-play-mini-fill w-4 h-4 rotate-[180deg]"&gt;&lt;/span&gt;</span>
 <span class="cstat-no" title="statement not covered" >      &lt;/Link&gt;</span>
@@ -653,33 +630,20 @@ export <span class="fstat-no" title="function not covered" >function PaginationC
 <span class="cstat-no" title="statement not covered" >      &lt;Link</span>
 <span class="cstat-no" title="statement not covered" >        className="antd-btn antd-btn-ghost flex items-center aria-disabled:pointer-events-none aria-disabled:opacity-50"</span>
 <span class="cstat-no" title="statement not covered" >        aria-disabled={page &gt;= totalPage}</span>
-<span class="cstat-no" title="statement not covered" >        to={"?" + mergeQuery({ page: page + 1 })}</span>
+<span class="cstat-no" title="statement not covered" >        to={"?" + toParams({ page: page + 1 })}</span>
 <span class="cstat-no" title="statement not covered" >      &gt;</span>
 <span class="cstat-no" title="statement not covered" >        &lt;span className="i-ri-play-mini-fill w-4 h-4"&gt;&lt;/span&gt;</span>
 <span class="cstat-no" title="statement not covered" >      &lt;/Link&gt;</span>
 <span class="cstat-no" title="statement not covered" >      &lt;Link</span>
 <span class="cstat-no" title="statement not covered" >        className="antd-btn antd-btn-ghost flex items-center aria-disabled:pointer-events-none aria-disabled:opacity-50"</span>
 <span class="cstat-no" title="statement not covered" >        aria-disabled={page &gt;= totalPage}</span>
-<span class="cstat-no" title="statement not covered" >        to={"?" + mergeQuery({ page: totalPage })}</span>
+<span class="cstat-no" title="statement not covered" >        to={"?" + toParams({ page: totalPage })}</span>
 <span class="cstat-no" title="statement not covered" >      &gt;</span>
 <span class="cstat-no" title="statement not covered" >        &lt;span className="i-ri-rewind-mini-fill w-5 h-5 rotate-[180deg]"&gt;&lt;/span&gt;</span>
 <span class="cstat-no" title="statement not covered" >      &lt;/Link&gt;</span>
 <span class="cstat-no" title="statement not covered" >    &lt;/div&gt;</span>
 <span class="cstat-no" title="statement not covered" >  );</span>
 <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >}</span></span>
-&nbsp;
-<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >function useMergeUrlQuery() {</span></span>
-<span class="cstat-no" title="statement not covered" >  const [params] = useSearchParams();</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >  return (query: Record&lt;string, unknown&gt;) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >    return new URLSearchParams(</span>
-<span class="cstat-no" title="statement not covered" >      Object.fromEntries([</span>
-<span class="cstat-no" title="statement not covered" >        ...params.entries(),</span>
-<span class="cstat-no" title="statement not covered" >        ...Object.entries(query).map(([k, v]) =&gt; [k, String(v)] as const),</span>
-<span class="cstat-no" title="statement not covered" >      ])</span>
-<span class="cstat-no" title="statement not covered" >    );</span>
-<span class="cstat-no" title="statement not covered" >  };</span>
-<span class="cstat-no" title="statement not covered" >}</span>
 &nbsp;
 //
 // simple select input wrapper with convenient typing
@@ -721,7 +685,7 @@ export <span class="fstat-no" title="function not covered" >function SelectWrapp
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-05-03T09:17:57.307Z
+                at 2023-05-03T09:27:27.296Z
             </div>
         <script src="../prettify.js"></script>
         <script>

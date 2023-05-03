@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">13.21% </span>
+                <span class="strong">13.43% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>120/908</span>
+                <span class='fraction'>122/908</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">10% </span>
+                <span class="strong">9.52% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>2/20</span>
+                <span class='fraction'>2/21</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">13.21% </span>
+                <span class="strong">13.43% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>120/908</span>
+                <span class='fraction'>122/908</span>
             </div>
         
             
@@ -1015,6 +1015,8 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -1026,34 +1028,6 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -1069,7 +1043,33 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -1905,9 +1905,11 @@ import { trpc } from "../../trpc/client";
 import { useDocumentEvent } from "../../utils/hooks-client-utils";
 import { intl } from "../../utils/intl";
 import {
+  disableUrlQueryRevalidation,
   useLeafLoaderData,
   useLoaderDataExtra,
   useRootLoaderData,
+  useTypedUrlQuery,
 } from "../../utils/loader-utils";
 import { makeLoader } from "../../utils/loader-utils.server";
 import { cls, zip } from "../../utils/misc";
@@ -1931,23 +1933,19 @@ export const handle: PageHandle = {
 &nbsp;
 type LoaderData = {
   video: VideoTable;
-  query: z.infer&lt;(typeof ROUTE_DEF)["/videos/$id"]["query"]&gt;;
 };
 &nbsp;
-// TODO: tweak shouldRevalidate
 export const loader = makeLoader(async ({ ctx }) =&gt; {
 <span class="cstat-no" title="statement not covered" >  const params = ROUTE_DEF["/videos/$id"].params.parse(ctx.params);</span>
-<span class="cstat-no" title="statement not covered" >  const query = ROUTE_DEF["/videos/$id"].query.parse(ctx.query);</span>
 <span class="cstat-no" title="statement not covered" >  const video = await findOne(</span>
 <span class="cstat-no" title="statement not covered" >    db.select().from(T.videos).where(E.eq(T.videos.id, params.id))</span>
 <span class="cstat-no" title="statement not covered" >  );</span>
 <span class="cstat-no" title="statement not covered" >  tinyassert(video);</span>
-<span class="cstat-no" title="statement not covered" >  const loaderData: LoaderData = {</span>
-<span class="cstat-no" title="statement not covered" >    video,</span>
-<span class="cstat-no" title="statement not covered" >    query,</span>
-<span class="cstat-no" title="statement not covered" >  };</span>
+<span class="cstat-no" title="statement not covered" >  const loaderData: LoaderData = { video };</span>
 <span class="cstat-no" title="statement not covered" >  return loaderData;</span>
 <span class="cstat-no" title="statement not covered" >}<span class="fstat-no" title="function not covered" >);</span></span>
+&nbsp;
+export const shouldRevalidate = <span class="fstat-no" title="function not covered" >disableUrlQueryRevalidation;</span>
 &nbsp;
 //
 // component
@@ -1981,7 +1979,6 @@ interface BookmarkSelection {
 <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >function PageComponent({</span></span>
 <span class="cstat-no" title="statement not covered" >  video,</span>
 <span class="cstat-no" title="statement not covered" >  currentUser,</span>
-<span class="cstat-no" title="statement not covered" >  query,</span>
 <span class="cstat-no" title="statement not covered" >}: LoaderData &amp; { currentUser?: UserTable }) {</span>
 <span class="cstat-no" title="statement not covered" >  const [autoScrollState] = useAutoScrollState();</span>
 <span class="cstat-no" title="statement not covered" >  const autoScroll = autoScrollState.includes(video.id);</span>
@@ -2146,15 +2143,18 @@ interface BookmarkSelection {
 <span class="cstat-no" title="statement not covered" >  // effects</span>
 <span class="cstat-no" title="statement not covered" >  //</span>
 <span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >  const [urlQuery] = useTypedUrlQuery(ROUTE_DEF["/videos/$id"].query);</span>
+<span class="cstat-no" title="statement not covered" >  const focusedIndex = urlQuery?.index;</span>
+<span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  React.useEffect(() =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >    if (!isNil(query.index) &amp;&amp; query.index &lt; captionEntries.length) {</span>
+<span class="cstat-no" title="statement not covered" >    if (!isNil(focusedIndex) &amp;&amp; focusedIndex &lt; captionEntries.length) {</span>
 <span class="cstat-no" title="statement not covered" >      // smooth scroll ends up wrong positions due to over-estimation by `estimateSize`.</span>
-<span class="cstat-no" title="statement not covered" >      virtualizer.scrollToIndex(query.index, {</span>
+<span class="cstat-no" title="statement not covered" >      virtualizer.scrollToIndex(focusedIndex, {</span>
 <span class="cstat-no" title="statement not covered" >        align: "center",</span>
 <span class="cstat-no" title="statement not covered" >        behavior: "auto",</span>
 <span class="cstat-no" title="statement not covered" >      });</span>
 <span class="cstat-no" title="statement not covered" >    }</span>
-<span class="cstat-no" title="statement not covered" >  }, [query.index, captionEntries]);</span>
+<span class="cstat-no" title="statement not covered" >  }, [focusedIndex, captionEntries]);</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  useDocumentEvent("selectionchange", () =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >    const selection = document.getSelection() ?? undefined;</span>
@@ -2200,7 +2200,7 @@ interface BookmarkSelection {
 <span class="cstat-no" title="statement not covered" >              onClickEntryPlay={onClickEntryPlay}</span>
 <span class="cstat-no" title="statement not covered" >              onClickEntryRepeat={(entry) =&gt; toggleRepeatingEntries(entry)}</span>
 <span class="cstat-no" title="statement not covered" >              isPlaying={isPlaying}</span>
-<span class="cstat-no" title="statement not covered" >              focusedIndex={query.index}</span>
+<span class="cstat-no" title="statement not covered" >              focusedIndex={focusedIndex}</span>
 <span class="cstat-no" title="statement not covered" >            /&gt;</span>
 <span class="cstat-no" title="statement not covered" >          )}</span>
 <span class="cstat-no" title="statement not covered" >          &lt;Transition</span>
@@ -2794,7 +2794,7 @@ const highlightBookmarkStorageAtom = atomWithStorage(
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-05-03T09:17:57.307Z
+                at 2023-05-03T09:27:27.296Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
