@@ -701,7 +701,6 @@ function extractBookmarkSelection(
   // check "data-index" element
   const dataIndexEl = dataSideEl.parentElement?.parentElement;
   const dataIndex = dataIndexEl?.getAttribute(BOOKMARK_DATA_ATTR["data-index"]);
-  console.log({ startEl, endEl, dataSideEl, dataIndexEl });
   if (!dataIndexEl || !dataIndex) return;
 
   return {
