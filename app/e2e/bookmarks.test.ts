@@ -57,9 +57,19 @@ test.describe("/bookmarks/history-chart", () => {
     await page.waitForURL("/users/signin");
   });
 
+  // prettier-ignore
   test("basic", async ({ page }) => {
     await userHook.signin(page);
     await page.goto("/bookmarks/history-chart");
     await page.getByText("this week").click();
+    await page.getByRole('button').nth(3).click();
+    await page.waitForURL(`/bookmarks/history-chart?page=1`);
+    await page.getByText("last week").click();
+    await page.getByTestId('SelectWrapper-rangeType').selectOption({ label: "by month" });
+    await page.waitForURL(`/bookmarks/history-chart?rangeType=month`);
+    await page.getByText('this month').click();
+    await page.getByRole('button').nth(3).click();
+    await page.getByText('last month').click();
+    await page.waitForURL(`/bookmarks/history-chart?rangeType=month?page=1`);
   });
 });

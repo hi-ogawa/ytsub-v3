@@ -46,7 +46,12 @@ export const ROUTE_DEF = {
       q: z.string().optional(),
     }),
   },
-  "/bookmarks/history-chart": {},
+  "/bookmarks/history-chart": {
+    query: z.object({
+      rangeType: z.enum(["week", "month"]).default("week"),
+      page: z.coerce.number().int().optional().default(0),
+    }),
+  },
   "/users/me": {},
   "/users/register": {},
   "/users/signin": {},
