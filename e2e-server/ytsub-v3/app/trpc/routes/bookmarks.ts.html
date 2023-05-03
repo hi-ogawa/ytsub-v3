@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">79.35% </span>
+                <span class="strong">98.06% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>123/155</span>
+                <span class='fraction'>152/155</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">87.5% </span>
+                <span class="strong">83.33% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>7/8</span>
+                <span class='fraction'>10/12</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">79.35% </span>
+                <span class="strong">98.06% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>123/155</span>
+                <span class='fraction'>152/155</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line medium'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -291,38 +291,38 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -446,38 +446,38 @@ export const trpcRoutesBookmarks = {
       })
     )
     .query(async ({ input, ctx }) =&gt; {
-<span class="cstat-no" title="statement not covered" >      const timezone = ctx.user.timezone;</span>
-<span class="cstat-no" title="statement not covered" >      const now = input.__now ?? new Date();</span>
-<span class="cstat-no" title="statement not covered" >      const dateRange = getZonedDateRange(</span>
-<span class="cstat-no" title="statement not covered" >        toZdt(now, timezone),</span>
-<span class="cstat-no" title="statement not covered" >        input.rangeType,</span>
-<span class="cstat-no" title="statement not covered" >        input.page</span>
-<span class="cstat-no" title="statement not covered" >      );</span>
-<span class="cstat-no" title="statement not covered" >      const dates = dateRange.dates.map((d) =&gt; d.toPlainDate().toString());</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >      // aggregate in js</span>
-<span class="cstat-no" title="statement not covered" >      const rows = await db</span>
-<span class="cstat-no" title="statement not covered" >        .select()</span>
-<span class="cstat-no" title="statement not covered" >        .from(T.bookmarkEntries)</span>
-<span class="cstat-no" title="statement not covered" >        .where(</span>
-<span class="cstat-no" title="statement not covered" >          E.and(</span>
-<span class="cstat-no" title="statement not covered" >            E.eq(T.bookmarkEntries.userId, ctx.user.id),</span>
-<span class="cstat-no" title="statement not covered" >            E.gt(T.bookmarkEntries.createdAt, fromTemporal(dateRange.begin)),</span>
-<span class="cstat-no" title="statement not covered" >            E.lt(T.bookmarkEntries.createdAt, fromTemporal(dateRange.end))</span>
-<span class="cstat-no" title="statement not covered" >          )</span>
-<span class="cstat-no" title="statement not covered" >        );</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >      const countMap = Object.fromEntries(</span>
-<span class="cstat-no" title="statement not covered" >        dates.map((date) =&gt; [date, { date, total: 0 }])</span>
-<span class="cstat-no" title="statement not covered" >      );</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >      // TODO: group by video? language?</span>
-<span class="cstat-no" title="statement not covered" >      for (const row of rows) {</span>
+      const timezone = ctx.user.timezone;
+      const now = input.__now ?? new Date();
+      const dateRange = getZonedDateRange(
+        toZdt(now, timezone),
+        input.rangeType,
+        input.page
+      );
+      const dates = dateRange.dates.map((d) =&gt; d.toPlainDate().toString());
+&nbsp;
+      // aggregate in js
+      const rows = await db
+        .select()
+        .from(T.bookmarkEntries)
+        .where(
+          E.and(
+            E.eq(T.bookmarkEntries.userId, ctx.user.id),
+            E.gt(T.bookmarkEntries.createdAt, fromTemporal(dateRange.begin)),
+            E.lt(T.bookmarkEntries.createdAt, fromTemporal(dateRange.end))
+          )
+        );
+&nbsp;
+      const countMap = Object.fromEntries(
+        dates.map((date) =&gt; [date, { date, total: 0 }])
+      );
+&nbsp;
+      // TODO: group by video? language?
+      for (const row of rows) <span class="branch-0 cbranch-no" title="branch not covered" >{</span>
 <span class="cstat-no" title="statement not covered" >        const date = toZdt(row.createdAt, timezone).toPlainDate().toString();</span>
 <span class="cstat-no" title="statement not covered" >        countMap[date].total++;</span>
 <span class="cstat-no" title="statement not covered" >      }</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >      return Object.values(countMap);</span>
+&nbsp;
+      return Object.values(countMap);
     }),
 &nbsp;
   bookmarks_index: procedureBuilder
@@ -535,7 +535,7 @@ export const trpcRoutesBookmarks = {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-05-03T09:49:41.713Z
+                at 2023-05-03T09:52:37.309Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>
