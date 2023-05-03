@@ -1,9 +1,9 @@
 import { Transition } from "@headlessui/react";
-import { tinyassert } from "@hiogawa/utils";
+import { groupBy, sortBy, tinyassert, uniq } from "@hiogawa/utils";
 import { isNil } from "@hiogawa/utils";
 import { toArraySetState, useRafLoop } from "@hiogawa/utils-react";
 import { Link, useNavigate } from "@remix-run/react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   VirtualItem,
   Virtualizer,
@@ -17,8 +17,8 @@ import { z } from "zod";
 import { transitionProps } from "../../components/misc";
 import { useModal } from "../../components/modal";
 import { PopoverSimple } from "../../components/popover";
-import { E, T, db, findOne } from "../../db/drizzle-client.server";
-import type { CaptionEntryTable, UserTable, VideoTable } from "../../db/models";
+import { E, T, TT, db, findOne } from "../../db/drizzle-client.server";
+import type { UserTable, VideoTable } from "../../db/models";
 import { $R, ROUTE_DEF } from "../../misc/routes";
 import { trpc } from "../../trpc/client";
 import { useDocumentEvent } from "../../utils/hooks-client-utils";
@@ -29,7 +29,7 @@ import {
   useRootLoaderData,
 } from "../../utils/loader-utils";
 import { makeLoader } from "../../utils/loader-utils.server";
-import { cls } from "../../utils/misc";
+import { cls, zip } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 import type { CaptionEntry } from "../../utils/types";
 import {
@@ -90,32 +90,11 @@ export function findCurrentEntry(
   return;
 }
 
-// adhoc routines to derive `BookmarkState` by probing dom tree
-function findSelectionEntryIndex(selection: Selection): number {
-  const isValid =
-    selection.toString().trim() &&
-    selection.anchorNode &&
-    selection.anchorNode === selection.focusNode &&
-    selection.anchorNode.nodeType === document.TEXT_NODE &&
-    selection.anchorNode.parentElement?.classList?.contains(
-      BOOKMARKABLE_CLASSNAME
-    );
-  if (!isValid) return -1;
-  const textElement = selection.getRangeAt(0).startContainer;
-  const entryNode = textElement.parentElement?.parentElement?.parentElement;
-  tinyassert(entryNode);
-  const dataIndex = entryNode.getAttribute("data-index");
-  const index = z.coerce.number().int().parse(dataIndex);
-  return index;
-}
-
-const BOOKMARKABLE_CLASSNAME = "--bookmarkable--";
-
-interface BookmarkState {
-  captionEntry: CaptionEntryTable;
-  text: string;
-  side: 0 | 1; // 0 | 1
+interface BookmarkSelection {
+  captionEntryIndex: number;
+  side: number;
   offset: number;
+  text: string;
 }
 
 function PageComponent({
@@ -145,15 +124,38 @@ function PageComponent({
   const [player, setPlayer] = React.useState<YoutubePlayer>();
   const [isPlaying, setIsPlaying] = React.useState(false);
   const [currentEntry, setCurrentEntry] = React.useState<CaptionEntry>();
-  const [bookmarkState, setBookmarkState] = React.useState<BookmarkState>();
+  const [bookmarkState, setBookmarkState] = React.useState<BookmarkSelection>();
 
   //
   // query
   //
+
+  // fetch all bookmark entries associated to this video
+  const [highlightBookmark] = useAtom(highlightBookmarkStorageAtom);
+  const highlightBookmarkEnabled = highlightBookmark && Boolean(currentUser);
+
+  const bookmarkEntriesQueryOptions =
+    trpc.videos_getBookmarkEntries.queryOptions({ videoId: video.id });
+
+  const bookmarkEntriesQuery = useQuery({
+    ...bookmarkEntriesQueryOptions,
+    enabled: highlightBookmarkEnabled,
+  });
+
+  const queryClient = useQueryClient();
+
   const newBookmarkMutation = useMutation({
     ...trpc.bookmarks_create.mutationOptions(),
-    onSuccess: () => {
+    onSuccess: (newBookmark) => {
       toast.success("Bookmark success");
+
+      if (highlightBookmarkEnabled) {
+        // mutate query cache instead of refetch
+        queryClient.setQueryData(
+          bookmarkEntriesQueryOptions.queryKey,
+          (prev) => [...(prev as TT["bookmarkEntries"][]), newBookmark]
+        );
+      }
     },
     onError: () => {
       toast.error("Bookmark failed");
@@ -246,7 +248,7 @@ function PageComponent({
     if (!bookmarkState) return;
     newBookmarkMutation.mutate({
       videoId: video.id,
-      captionEntryId: bookmarkState.captionEntry.id,
+      captionEntryId: captionEntries[bookmarkState.captionEntryIndex].id,
       text: bookmarkState.text,
       side: bookmarkState.side,
       offset: bookmarkState.offset,
@@ -274,25 +276,8 @@ function PageComponent({
   }, [query.index, captionEntries]);
 
   useDocumentEvent("selectionchange", () => {
-    const selection = document.getSelection();
-    let newBookmarkState: BookmarkState | undefined = undefined;
-    if (selection) {
-      const index = findSelectionEntryIndex(selection);
-      if (index >= 0) {
-        const el = selection.anchorNode!.parentNode!;
-        const side = Array.from(el.parentNode!.children).findIndex(
-          (c) => c === el
-        );
-        tinyassert(side === 0 || side === 1);
-        newBookmarkState = {
-          captionEntry: captionEntries[index],
-          text: selection.toString(),
-          side: side,
-          offset: selection.anchorOffset,
-        };
-      }
-    }
-    setBookmarkState(newBookmarkState);
+    const selection = document.getSelection() ?? undefined;
+    setBookmarkState(selection && extractBookmarkSelection(selection));
   });
 
   //
@@ -324,6 +309,11 @@ function PageComponent({
             <CaptionEntriesComponent
               virtualizer={virtualizer}
               entries={captionEntries}
+              bookmarkEntries={
+                highlightBookmarkEnabled && bookmarkEntriesQuery.isSuccess
+                  ? bookmarkEntriesQuery.data
+                  : []
+              }
               currentEntry={currentEntry}
               repeatingEntries={repeatingEntries}
               onClickEntryPlay={onClickEntryPlay}
@@ -333,7 +323,10 @@ function PageComponent({
             />
           )}
           <Transition
-            show={captionEntriesQuery.isLoading}
+            show={
+              captionEntriesQuery.isLoading ||
+              bookmarkEntriesQuery.isInitialLoading
+            }
             className="duration-500 antd-body antd-spin-overlay-10"
             {...transitionProps("opacity-0", "opacity-50")}
           />
@@ -453,19 +446,27 @@ function PlayerComponent({
 
 function CaptionEntriesComponent({
   entries,
+  bookmarkEntries,
   focusedIndex,
   ...props
 }: {
-  entries: CaptionEntry[];
+  entries: TT["captionEntries"][];
+  bookmarkEntries: TT["bookmarkEntries"][];
+  focusedIndex?: number;
   currentEntry?: CaptionEntry;
   repeatingEntries: CaptionEntry[];
   onClickEntryPlay: (entry: CaptionEntry, toggle: boolean) => void;
   onClickEntryRepeat: (entry: CaptionEntry) => void;
   isPlaying: boolean;
-  focusedIndex?: number;
   virtualizer: Virtualizer<HTMLDivElement, Element>;
 }) {
   const virtualItems = props.virtualizer.getVirtualItems();
+
+  const bookmarkEntryMap = React.useMemo(
+    () => groupBy(bookmarkEntries, (row) => row.captionEntryId),
+    [bookmarkEntries]
+  );
+
   return (
     <div
       className="flex flex-col"
@@ -485,20 +486,30 @@ function CaptionEntriesComponent({
           transform: `translateY(${virtualItems[0].start}px)`,
         }}
       >
-        {virtualItems.map((item) => (
-          <CaptionEntryComponent
-            key={item.key}
-            entry={entries[item.index]}
-            isFocused={focusedIndex === item.index}
-            virtualItem={item}
-            // workaround disappearing bottom margin (paddingEnd option doesn't seem to work)
-            isActualLast={item.index === entries.length - 1}
-            {...props}
-          />
-        ))}
+        {virtualItems.map((item) => renderItem(item))}
       </div>
     </div>
   );
+
+  //
+  // helpers
+  //
+
+  function renderItem(item: VirtualItem) {
+    const entry = entries[item.index];
+    return (
+      <CaptionEntryComponent
+        key={item.key}
+        entry={entry}
+        bookmarkEntries={bookmarkEntryMap.get(entry.id)}
+        isFocused={focusedIndex === item.index}
+        virtualItem={item}
+        // workaround disappearing bottom margin (paddingEnd option doesn't seem to work)
+        isActualLast={item.index === entries.length - 1}
+        {...props}
+      />
+    );
+  }
 }
 
 export function CaptionEntryComponent({
@@ -511,7 +522,7 @@ export function CaptionEntryComponent({
   isFocused,
   videoId,
   border = true,
-  highlight,
+  bookmarkEntries,
   // virtualized list
   virtualizer,
   virtualItem,
@@ -526,7 +537,7 @@ export function CaptionEntryComponent({
   isFocused?: boolean;
   videoId?: number;
   border?: boolean;
-  highlight?: { side: number; offset: number; length: number };
+  bookmarkEntries?: TT["bookmarkEntries"][];
   // virtualized list
   virtualizer?: Virtualizer<HTMLDivElement, Element>;
   virtualItem?: VirtualItem;
@@ -551,7 +562,7 @@ export function CaptionEntryComponent({
         isActualLast && "mb-1.5"
       )}
       ref={virtualizer?.measureElement}
-      data-index={virtualItem?.index}
+      {...{ [BOOKMARK_DATA_ATTR["data-index"]]: virtualItem?.index }}
     >
       <div className="flex items-center text-colorTextSecondary gap-2 text-xs">
         {isFocused && (
@@ -592,27 +603,23 @@ export function CaptionEntryComponent({
         className="flex cursor-pointer text-sm"
         onClick={() => onClickEntryPlay(entry, true)}
       >
-        <div className={`flex-1 pr-2 border-r ${BOOKMARKABLE_CLASSNAME}`}>
-          {highlight?.side === 0 ? (
-            <HighlightText
-              text={text1}
-              offset={highlight.offset}
-              length={highlight.length}
-            />
-          ) : (
-            text1
-          )}
+        <div
+          className="flex-1 pr-2 border-r"
+          {...{ [BOOKMARK_DATA_ATTR["data-side"]]: "0" }}
+        >
+          <HighlightText
+            text={text1}
+            highlights={bookmarkEntries?.filter((e) => e.side === 0) ?? []}
+          />
         </div>
-        <div className={`flex-1 pl-2 ${BOOKMARKABLE_CLASSNAME}`}>
-          {highlight?.side === 1 ? (
-            <HighlightText
-              text={text2}
-              offset={highlight.offset}
-              length={highlight.length}
-            />
-          ) : (
-            text2
-          )}
+        <div
+          className="flex-1 pl-2"
+          {...{ [BOOKMARK_DATA_ATTR["data-side"]]: "1" }}
+        >
+          <HighlightText
+            text={text2}
+            highlights={bookmarkEntries?.filter((e) => e.side === 1) ?? []}
+          />
         </div>
       </div>
     </div>
@@ -621,29 +628,107 @@ export function CaptionEntryComponent({
 
 function HighlightText({
   text,
-  offset,
-  length,
+  highlights,
 }: {
   text: string;
-  offset: number;
-  length: number;
+  highlights: { offset: number; text: string }[];
 }) {
-  const t1 = text.slice(0, offset);
-  const t2 = text.slice(offset, offset + length);
-  const t3 = text.slice(offset + length);
+  const partitions = partitionRanges(
+    text.length,
+    highlights.map((h) => [h.offset, h.offset + h.text.length])
+  );
   return (
     <>
-      {t1}
-      <span className="border-b border-colorTextSecondary">{t2}</span>
-      {t3}
+      {partitions.map(([highlight, [start, end]]) => (
+        <span
+          key={start}
+          className={cls(highlight && "text-colorPrimaryText")}
+          {...{ [BOOKMARK_DATA_ATTR["data-offset"]]: start }}
+        >
+          {text.slice(start, end)}
+        </span>
+      ))}
     </>
   );
 }
 
+// export for testing
+export function partitionRanges(
+  total: number,
+  ranges: [number, number][]
+): [boolean, [number, number]][] {
+  const boundaries = uniq(sortBy(ranges.flat().concat([0, total]), (x) => x));
+  return zip(boundaries, boundaries.slice(1)).map((a) => [
+    ranges.some((b) => b[0] <= a[0] && a[1] <= b[1]),
+    a,
+  ]);
+}
+
+const BOOKMARK_DATA_ATTR = z.enum([
+  "data-index", // this is used for virtualizer too
+  "data-side",
+  "data-offset",
+]).enum;
+
+// desperate DOM manipulation to find selected data for new bookmark creation
+function extractBookmarkSelection(
+  selection: Selection
+): BookmarkSelection | undefined {
+  // skip empty selection
+  const text = selection.toString();
+  if (!text.trim()) return;
+  if (selection.rangeCount === 0) return;
+
+  // manipulate on Range
+  const selectionRange = selection.getRangeAt(0);
+  if (selectionRange.collapsed) return;
+
+  const { startContainer, startOffset, endContainer } = selectionRange;
+
+  // check selection is text node
+  if (
+    startContainer.nodeType !== document.TEXT_NODE ||
+    endContainer.nodeType !== document.TEXT_NODE
+  )
+    return;
+
+  // check "data-offset" element
+  const startEl = startContainer.parentElement;
+  const endEl = endContainer.parentElement;
+  const dataOffset = startEl?.getAttribute(BOOKMARK_DATA_ATTR["data-offset"]);
+  if (!startEl || !endEl || !dataOffset) return;
+
+  // check start/end are contained in "data-side" element
+  const dataSideEl = startEl.parentElement;
+  const dataSide = dataSideEl?.getAttribute(BOOKMARK_DATA_ATTR["data-side"]);
+  if (!dataSideEl || !dataSide || startEl.parentElement !== endEl.parentElement)
+    return;
+
+  // check "data-index" element
+  const dataIndexEl = dataSideEl.parentElement?.parentElement;
+  const dataIndex = dataIndexEl?.getAttribute(BOOKMARK_DATA_ATTR["data-index"]);
+  if (!dataIndexEl || !dataIndex) return;
+
+  return {
+    captionEntryIndex: Number(dataIndex),
+    side: Number(dataSide),
+    offset: Number(dataOffset) + startOffset,
+    text,
+  };
+}
+
+//
+// NavBarMenuComponent
+//
+
 function NavBarMenuComponent() {
+  const { currentUser } = useRootLoaderData();
   const { video } = useLeafLoaderData() as LoaderData;
   const [autoScrollState, toggleAutoScrollState] = useAutoScrollState();
   const [repeatingEntries, setRepeatingEntries] = useRepeatingEntries();
+  const [highlightBookmark, setHighlightBookmark] = useAtom(
+    highlightBookmarkStorageAtom
+  );
   const modal = useModal();
 
   const navigate = useNavigate();
@@ -685,6 +770,18 @@ function NavBarMenuComponent() {
                   onClick={() => modal.setOpen(true)}
                 >
                   Details
+                </button>
+              </li>
+              <li>
+                <button
+                  className="w-full antd-menu-item p-2 flex gap-2"
+                  disabled={!currentUser}
+                  onClick={() => setHighlightBookmark((prev) => !prev)}
+                >
+                  Show bookmarks
+                  {highlightBookmark && (
+                    <span className="i-ri-check-line w-5 h-5"></span>
+                  )}
                 </button>
               </li>
               <li>
@@ -796,7 +893,7 @@ function useRepeatingEntries() {
 }
 
 const autoScrollStorageAtom = atomWithStorage(
-  "video-subtitle-auto-scroll",
+  "ytsub:video-subtitle-auto-scroll",
   Array<number>()
 );
 
@@ -804,3 +901,8 @@ function useAutoScrollState() {
   const [state, setState] = useAtom(autoScrollStorageAtom);
   return [state, toArraySetState(setState).toggle] as const;
 }
+
+const highlightBookmarkStorageAtom = atomWithStorage(
+  "ytsub:video-highlight-bookmark",
+  false
+);

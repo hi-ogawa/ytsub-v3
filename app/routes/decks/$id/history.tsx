@@ -258,13 +258,9 @@ function PracticeActionComponent(
           <MiniPlayer
             video={props.videos}
             captionEntry={props.captionEntries}
+            bookmarkEntries={[props.bookmarkEntries]}
             autoplay={autoplay}
             defaultIsRepeating={true}
-            highlight={{
-              side: props.bookmarkEntries.side,
-              offset: props.bookmarkEntries.offset,
-              length: props.bookmarkEntries.text.length,
-            }}
           />
         </div>
       </CollapseTransition>

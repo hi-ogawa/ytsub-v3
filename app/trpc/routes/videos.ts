@@ -79,6 +79,39 @@ export const trpcRoutesVideos = {
       return rows;
     }),
 
+  videos_getBookmarkEntries: procedureBuilder
+    .use(middlewares.requireUser)
+    .input(
+      z.object({
+        videoId: z.number().int(),
+      })
+    )
+    .query(async ({ input, ctx }) => {
+      const video = await findOne(
+        db
+          .select()
+          .from(T.videos)
+          .where(
+            E.and(
+              E.eq(T.videos.id, input.videoId),
+              E.eq(T.videos.userId, ctx.user.id)
+            )
+          )
+      );
+      tinyassert(video);
+
+      const rows = await db
+        .select()
+        .from(T.bookmarkEntries)
+        .where(
+          E.and(
+            E.eq(T.bookmarkEntries.userId, ctx.user.id),
+            E.eq(T.bookmarkEntries.videoId, input.videoId)
+          )
+        );
+      return rows;
+    }),
+
   videos_getLastBookmark: procedureBuilder
     .use(middlewares.requireUser)
     .input(
