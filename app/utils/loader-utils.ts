@@ -1,4 +1,8 @@
-import { useLoaderData, useMatches } from "@remix-run/react";
+import {
+  ShouldRevalidateFunction,
+  useLoaderData,
+  useMatches,
+} from "@remix-run/react";
 import React from "react";
 import { deserialize } from "superjson";
 import type { UserTable } from "../db/models";
@@ -24,3 +28,10 @@ export function useLoaderDataExtra(): unknown {
   const data = useLoaderData();
   return React.useMemo(() => deserialize(data), [data]);
 }
+
+export const disableUrlQueryRevalidation: ShouldRevalidateFunction = (args) => {
+  if (args.nextUrl.pathname === args.currentUrl.pathname) {
+    return false;
+  }
+  return args.defaultShouldRevalidate;
+};

@@ -24,6 +24,7 @@ import { trpc } from "../../trpc/client";
 import { useDocumentEvent } from "../../utils/hooks-client-utils";
 import { intl } from "../../utils/intl";
 import {
+  disableUrlQueryRevalidation,
   useLeafLoaderData,
   useLoaderDataExtra,
   useRootLoaderData,
@@ -67,6 +68,8 @@ export const loader = makeLoader(async ({ ctx }) => {
   };
   return loaderData;
 });
+
+export const shouldRevalidate = disableUrlQueryRevalidation;
 
 //
 // component
