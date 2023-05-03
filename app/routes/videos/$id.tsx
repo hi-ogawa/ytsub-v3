@@ -1,5 +1,5 @@
 import { Transition } from "@headlessui/react";
-import { groupBy, sortBy, tinyassert, uniq } from "@hiogawa/utils";
+import { groupBy, sortBy, tinyassert, uniq, zip } from "@hiogawa/utils";
 import { isNil } from "@hiogawa/utils";
 import { toArraySetState, useRafLoop } from "@hiogawa/utils-react";
 import { Link, useNavigate } from "@remix-run/react";
@@ -31,7 +31,7 @@ import {
   useTypedUrlQuery,
 } from "../../utils/loader-utils";
 import { makeLoader } from "../../utils/loader-utils.server";
-import { cls, zip } from "../../utils/misc";
+import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 import type { CaptionEntry } from "../../utils/types";
 import {

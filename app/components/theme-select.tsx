@@ -1,6 +1,5 @@
-import { tinyassert } from "@hiogawa/utils";
+import { capitalize, tinyassert } from "@hiogawa/utils";
 import React from "react";
-import { capitalize } from "../utils/misc";
 import { SelectWrapper } from "./misc";
 
 // based on https://github.com/hi-ogawa/unocss-preset-antd/blob/eb3a4cfe1474bc4236c5d4007c1e9f962eaa4df5/packages/app/src/components/theme-select-button.tsx

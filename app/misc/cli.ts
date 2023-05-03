@@ -1,6 +1,6 @@
 import { deepEqual } from "assert/strict";
 import fs from "node:fs";
-import { objectPick, range, tinyassert } from "@hiogawa/utils";
+import { objectPick, range, tinyassert, zip } from "@hiogawa/utils";
 import { cac } from "cac";
 import consola from "consola";
 import { z } from "zod";
@@ -19,7 +19,6 @@ import {
   toPasswordHash,
   verifySignin,
 } from "../utils/auth";
-import { zip } from "../utils/misc";
 import { exec, streamToString } from "../utils/node.server";
 import { resetDeckCache } from "../utils/practice-system";
 import { NewVideo, fetchCaptionEntries } from "../utils/youtube";

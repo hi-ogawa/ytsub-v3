@@ -1,4 +1,4 @@
-import { tinyassert } from "@hiogawa/utils";
+import { mapGroupBy, tinyassert } from "@hiogawa/utils";
 import { beforeAll, describe, expect, it } from "vitest";
 import { E, T, db, findOne } from "../db/drizzle-client.server";
 import { Q } from "../db/models";
@@ -6,7 +6,6 @@ import { DEFAULT_DECK_CACHE } from "../db/types";
 import { importSeed } from "../misc/seed-utils";
 import { useUser, useUserVideo } from "../misc/test-helper";
 import { testTrpcClient } from "../trpc/test-helper";
-import { mapGroupBy } from "./misc";
 import {
   PracticeSystem,
   queryNextPracticeEntryRandomModeBatch,
