@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">36.62% </span>
+                <span class="strong">39.28% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>63/172</span>
+                <span class='fraction'>66/168</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">22.22% </span>
+                <span class="strong">20% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>2/9</span>
+                <span class='fraction'>2/10</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">36.62% </span>
+                <span class="strong">39.28% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>63/172</span>
+                <span class='fraction'>66/168</span>
             </div>
         
             
@@ -231,11 +231,7 @@
 <a name='L166'></a><a href='#L166'>166</a>
 <a name='L167'></a><a href='#L167'>167</a>
 <a name='L168'></a><a href='#L168'>168</a>
-<a name='L169'></a><a href='#L169'>169</a>
-<a name='L170'></a><a href='#L170'>170</a>
-<a name='L171'></a><a href='#L171'>171</a>
-<a name='L172'></a><a href='#L172'>172</a>
-<a name='L173'></a><a href='#L173'>173</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">127x</span>
+<a name='L169'></a><a href='#L169'>169</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -287,14 +283,10 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -407,29 +399,31 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" >import { DeckNavBarMenuComponent } from ".";</span></span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" >import { DeckNavBarMenuComponent } from ".";</span></span></span></span>
 import { Transition } from "@headlessui/react";
 import { useQuery } from "@tanstack/react-query";
 import type { ECharts } from "echarts";
 import React from "react";
-import { useForm } from "react-hook-form";
 import { SelectWrapper, transitionProps } from "../../../components/misc";
 import {
   EchartsComponent,
   practiceHistoryChartDataToEchartsOption,
 } from "../../../components/practice-history-chart";
 import type { DeckTable } from "../../../db/models";
+import { ROUTE_DEF } from "../../../misc/routes";
 import { trpc } from "../../../trpc/client";
 import { useClickOutside } from "../../../utils/hooks-client-utils";
 import { requireUserAndDeck } from "../../../utils/loader-deck-utils";
 import {
+  disableUrlQueryRevalidation,
   useLeafLoaderData,
   useLoaderDataExtra,
+  useTypedUrlQuery,
 } from "../../../utils/loader-utils";
 import { makeLoader } from "../../../utils/loader-utils.server";
 import { cls } from "../../../utils/misc";
 import type { PageHandle } from "../../../utils/page-handle";
-import { DateRangeType, formatDateRange } from "../../../utils/temporal-utils";
+import { formatDateRange } from "../../../utils/temporal-utils";
 &nbsp;
 //
 // handle
@@ -454,6 +448,8 @@ export const loader = makeLoader(async ({ ctx }) =&gt; {
   return loaderData;
 });
 &nbsp;
+export const shouldRevalidate = disableUrlQueryRevalidation;
+&nbsp;
 //
 // DefaultComponent
 //
@@ -467,19 +463,14 @@ export default <span class="fstat-no" title="function not covered" >function Def
 <span class="cstat-no" title="statement not covered" >    instance?.dispatchAction({ type: "hideTip" });</span>
 <span class="cstat-no" title="statement not covered" >  });</span>
 <span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >  // TODO: use url query</span>
-<span class="cstat-no" title="statement not covered" >  const form = useForm&lt;{</span>
-<span class="cstat-no" title="statement not covered" >    rangeType: DateRangeType;</span>
-<span class="cstat-no" title="statement not covered" >    graphType: "action" | "queue";</span>
-<span class="cstat-no" title="statement not covered" >    page: number;</span>
-<span class="cstat-no" title="statement not covered" >  }&gt;({</span>
-<span class="cstat-no" title="statement not covered" >    defaultValues: {</span>
-<span class="cstat-no" title="statement not covered" >      rangeType: "week",</span>
-<span class="cstat-no" title="statement not covered" >      graphType: "action",</span>
-<span class="cstat-no" title="statement not covered" >      page: 0,</span>
-<span class="cstat-no" title="statement not covered" >    },</span>
-<span class="cstat-no" title="statement not covered" >  });</span>
-<span class="cstat-no" title="statement not covered" >  const params = form.watch();</span>
+<span class="cstat-no" title="statement not covered" >  const [urlQuery, setUrlQuery] = useTypedUrlQuery(</span>
+<span class="cstat-no" title="statement not covered" >    ROUTE_DEF["/decks/$id/history-graph"].query</span>
+<span class="cstat-no" title="statement not covered" >  );</span>
+<span class="cstat-no" title="statement not covered" >  const params = urlQuery ?? {</span>
+<span class="cstat-no" title="statement not covered" >    rangeType: "week",</span>
+<span class="cstat-no" title="statement not covered" >    graphType: "action",</span>
+<span class="cstat-no" title="statement not covered" >    page: 0,</span>
+<span class="cstat-no" title="statement not covered" >  };</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  const historyChartQuery = useQuery({</span>
 <span class="cstat-no" title="statement not covered" >    ...trpc.decks_practiceHistoryChart.queryOptions({</span>
@@ -503,7 +494,7 @@ export default <span class="fstat-no" title="function not covered" >function Def
 <span class="cstat-no" title="statement not covered" >                params.graphType</span>
 <span class="cstat-no" title="statement not covered" >              )}</span>
 <span class="cstat-no" title="statement not covered" >              optionDeps={historyChartQuery.data}</span>
-<span class="cstat-no" title="statement not covered" >              // TODO: workaround tooltip bugs when switching series</span>
+<span class="cstat-no" title="statement not covered" >              // workaround tooltip bugs when switching series</span>
 <span class="cstat-no" title="statement not covered" >              key={params.graphType}</span>
 <span class="cstat-no" title="statement not covered" >            /&gt;</span>
 <span class="cstat-no" title="statement not covered" >          )}</span>
@@ -517,7 +508,7 @@ export default <span class="fstat-no" title="function not covered" >function Def
 <span class="cstat-no" title="statement not covered" >          &lt;div className="flex items-center gap-2 px-2 py-1"&gt;</span>
 <span class="cstat-no" title="statement not covered" >            &lt;button</span>
 <span class="cstat-no" title="statement not covered" >              className="antd-btn antd-btn-ghost i-ri-play-mini-fill w-4 h-4 rotate-[180deg]"</span>
-<span class="cstat-no" title="statement not covered" >              onClick={() =&gt; form.setValue("page", params.page + 1)}</span>
+<span class="cstat-no" title="statement not covered" >              onClick={() =&gt; setUrlQuery({ page: params.page + 1 })}</span>
 <span class="cstat-no" title="statement not covered" >            /&gt;</span>
 <span class="cstat-no" title="statement not covered" >            &lt;div className="text-sm px-2"&gt;</span>
 <span class="cstat-no" title="statement not covered" >              {formatDateRange(params.rangeType, params.page)}</span>
@@ -528,7 +519,7 @@ export default <span class="fstat-no" title="function not covered" >function Def
 <span class="cstat-no" title="statement not covered" >                params.page === 0 &amp;&amp;</span>
 <span class="cstat-no" title="statement not covered" >                  "text-colorTextDisabled pointer-events-none"</span>
 <span class="cstat-no" title="statement not covered" >              )}</span>
-<span class="cstat-no" title="statement not covered" >              onClick={() =&gt; form.setValue("page", params.page - 1)}</span>
+<span class="cstat-no" title="statement not covered" >              onClick={() =&gt; setUrlQuery({ page: params.page - 1 })}</span>
 <span class="cstat-no" title="statement not covered" >            /&gt;</span>
 <span class="cstat-no" title="statement not covered" >          &lt;/div&gt;</span>
 <span class="cstat-no" title="statement not covered" >          &lt;div className="flex justify-center items-center gap-2"&gt;</span>
@@ -538,10 +529,7 @@ export default <span class="fstat-no" title="function not covered" >function Def
 <span class="cstat-no" title="statement not covered" >              options={["week", "month"] as const}</span>
 <span class="cstat-no" title="statement not covered" >              labelFn={(value) =&gt; `by ${value}`}</span>
 <span class="cstat-no" title="statement not covered" >              value={params.rangeType}</span>
-<span class="cstat-no" title="statement not covered" >              onChange={(rangeType) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >                form.setValue("rangeType", rangeType);</span>
-<span class="cstat-no" title="statement not covered" >                form.setValue("page", 0);</span>
-<span class="cstat-no" title="statement not covered" >              }}</span>
+<span class="cstat-no" title="statement not covered" >              onChange={(rangeType) =&gt; setUrlQuery({ rangeType, page: 0 })}</span>
 <span class="cstat-no" title="statement not covered" >            /&gt;</span>
 <span class="cstat-no" title="statement not covered" >            &lt;SelectWrapper</span>
 <span class="cstat-no" title="statement not covered" >              data-testid="SelectWrapper-graphType"</span>
@@ -549,7 +537,7 @@ export default <span class="fstat-no" title="function not covered" >function Def
 <span class="cstat-no" title="statement not covered" >              options={["action", "queue"] as const}</span>
 <span class="cstat-no" title="statement not covered" >              labelFn={(value) =&gt; `by ${value}`}</span>
 <span class="cstat-no" title="statement not covered" >              value={params.graphType}</span>
-<span class="cstat-no" title="statement not covered" >              onChange={(graphType) =&gt; form.setValue("graphType", graphType)}</span>
+<span class="cstat-no" title="statement not covered" >              onChange={(graphType) =&gt; setUrlQuery({ graphType })}</span>
 <span class="cstat-no" title="statement not covered" >            /&gt;</span>
 <span class="cstat-no" title="statement not covered" >          &lt;/div&gt;</span>
 <span class="cstat-no" title="statement not covered" >        &lt;/div&gt;</span>
@@ -586,7 +574,7 @@ export <span class="fstat-no" title="function not covered" >function DeckHistory
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-05-03T10:09:35.033Z
+                at 2023-05-03T10:11:26.402Z
             </div>
         <script src="../../../../../prettify.js"></script>
         <script>
