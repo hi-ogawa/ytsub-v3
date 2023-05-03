@@ -148,11 +148,13 @@ function PageComponent({
     onSuccess: (newBookmark) => {
       toast.success("Bookmark success");
 
-      // mutate query cache instead of refetch
-      queryClient.setQueryData(bookmarkEntriesQueryOptions.queryKey, (prev) => [
-        ...(prev as TT["bookmarkEntries"][]),
-        newBookmark,
-      ]);
+      if (highlightBookmarkEnabled) {
+        // mutate query cache instead of refetch
+        queryClient.setQueryData(
+          bookmarkEntriesQueryOptions.queryKey,
+          (prev) => [...(prev as TT["bookmarkEntries"][]), newBookmark]
+        );
+      }
     },
     onError: () => {
       toast.error("Bookmark failed");
