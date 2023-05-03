@@ -62,7 +62,6 @@ export const loader = makeLoader(async ({ ctx }) => {
       .where(
         E.and(
           E.eq(T.bookmarkEntries.userId, user.id),
-          mapOption(request.videoId, (v) => E.eq(T.bookmarkEntries.videoId, v)),
           mapOption(request.q, (v) => E.like(T.bookmarkEntries.text, `%${v}%`))
         )
       )
@@ -403,7 +402,7 @@ export function MiniPlayer({
 
 function NavBarMenuComponent() {
   const { request } = useLeafLoaderData() as LoaderData;
-  const isFilterActive = [request.videoId, request.q].some(Boolean);
+  const isFilterActive = Boolean(request.q);
 
   return (
     <>
