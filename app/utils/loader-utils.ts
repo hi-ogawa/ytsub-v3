@@ -41,7 +41,10 @@ export const disableUrlQueryRevalidation: ShouldRevalidateFunction = (args) => {
 export function useUrlQuery() {
   const [params, setParams] = useSearchParams();
 
-  const query = Object.fromEntries(params.entries());
+  const query = React.useMemo(
+    () => Object.fromEntries(params.entries()),
+    [params]
+  );
 
   const toParams = (newQuery: Record<string, unknown>) => {
     const prev = { ...query };

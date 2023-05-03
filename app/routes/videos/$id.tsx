@@ -1,5 +1,12 @@
 import { Transition } from "@headlessui/react";
-import { groupBy, sortBy, tinyassert, uniq } from "@hiogawa/utils";
+import {
+  groupBy,
+  okToOption,
+  sortBy,
+  tinyassert,
+  uniq,
+  wrapError,
+} from "@hiogawa/utils";
 import { isNil } from "@hiogawa/utils";
 import { toArraySetState, useRafLoop } from "@hiogawa/utils-react";
 import { Link, useNavigate } from "@remix-run/react";
@@ -28,6 +35,7 @@ import {
   useLeafLoaderData,
   useLoaderDataExtra,
   useRootLoaderData,
+  useUrlQuery,
 } from "../../utils/loader-utils";
 import { makeLoader } from "../../utils/loader-utils.server";
 import { cls, zip } from "../../utils/misc";
@@ -51,21 +59,15 @@ export const handle: PageHandle = {
 
 type LoaderData = {
   video: VideoTable;
-  query: z.infer<(typeof ROUTE_DEF)["/videos/$id"]["query"]>;
 };
 
-// TODO: tweak shouldRevalidate
 export const loader = makeLoader(async ({ ctx }) => {
   const params = ROUTE_DEF["/videos/$id"].params.parse(ctx.params);
-  const query = ROUTE_DEF["/videos/$id"].query.parse(ctx.query);
   const video = await findOne(
     db.select().from(T.videos).where(E.eq(T.videos.id, params.id))
   );
   tinyassert(video);
-  const loaderData: LoaderData = {
-    video,
-    query,
-  };
+  const loaderData: LoaderData = { video };
   return loaderData;
 });
 
@@ -103,7 +105,6 @@ interface BookmarkSelection {
 function PageComponent({
   video,
   currentUser,
-  query,
 }: LoaderData & { currentUser?: UserTable }) {
   const [autoScrollState] = useAutoScrollState();
   const autoScroll = autoScrollState.includes(video.id);
@@ -268,15 +269,22 @@ function PageComponent({
   // effects
   //
 
+  // TODO(refactor): typed variant of useUrlQuery (useTypedUrlQuery?)
+  const focusedIndex = okToOption(
+    wrapError(() => ROUTE_DEF["/videos/$id"].query.parse(useUrlQuery()[0]))
+  )?.index;
+
+  ROUTE_DEF["/videos/$id"].query.shape.index;
+
   React.useEffect(() => {
-    if (!isNil(query.index) && query.index < captionEntries.length) {
+    if (!isNil(focusedIndex) && focusedIndex < captionEntries.length) {
       // smooth scroll ends up wrong positions due to over-estimation by `estimateSize`.
-      virtualizer.scrollToIndex(query.index, {
+      virtualizer.scrollToIndex(focusedIndex, {
         align: "center",
         behavior: "auto",
       });
     }
-  }, [query.index, captionEntries]);
+  }, [focusedIndex, captionEntries]);
 
   useDocumentEvent("selectionchange", () => {
     const selection = document.getSelection() ?? undefined;
@@ -322,7 +330,7 @@ function PageComponent({
               onClickEntryPlay={onClickEntryPlay}
               onClickEntryRepeat={(entry) => toggleRepeatingEntries(entry)}
               isPlaying={isPlaying}
-              focusedIndex={query.index}
+              focusedIndex={focusedIndex}
             />
           )}
           <Transition
