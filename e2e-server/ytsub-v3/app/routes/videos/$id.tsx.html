@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">13.71% </span>
+                <span class="strong">14.02% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>124/904</span>
+                <span class='fraction'>129/920</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">13.71% </span>
+                <span class="strong">14.02% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>124/904</span>
+                <span class='fraction'>129/920</span>
             </div>
         
             
@@ -967,7 +967,28 @@
 <a name='L902'></a><a href='#L902'>902</a>
 <a name='L903'></a><a href='#L903'>903</a>
 <a name='L904'></a><a href='#L904'>904</a>
-<a name='L905'></a><a href='#L905'>905</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L905'></a><a href='#L905'>905</a>
+<a name='L906'></a><a href='#L906'>906</a>
+<a name='L907'></a><a href='#L907'>907</a>
+<a name='L908'></a><a href='#L908'>908</a>
+<a name='L909'></a><a href='#L909'>909</a>
+<a name='L910'></a><a href='#L910'>910</a>
+<a name='L911'></a><a href='#L911'>911</a>
+<a name='L912'></a><a href='#L912'>912</a>
+<a name='L913'></a><a href='#L913'>913</a>
+<a name='L914'></a><a href='#L914'>914</a>
+<a name='L915'></a><a href='#L915'>915</a>
+<a name='L916'></a><a href='#L916'>916</a>
+<a name='L917'></a><a href='#L917'>917</a>
+<a name='L918'></a><a href='#L918'>918</a>
+<a name='L919'></a><a href='#L919'>919</a>
+<a name='L920'></a><a href='#L920'>920</a>
+<a name='L921'></a><a href='#L921'>921</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -1686,6 +1707,17 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -1876,7 +1908,12 @@ import { groupBy, sortBy, tinyassert, uniq } from "@hiogawa/utils";
 import { isNil } from "@hiogawa/utils";
 import { toArraySetState, useRafLoop } from "@hiogawa/utils-react";
 import { Link, useNavigate } from "@remix-run/react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  useIsFetching,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import {
   VirtualItem,
   Virtualizer,
@@ -2595,9 +2632,6 @@ const BOOKMARK_DATA_ATTR = z.enum([
 <span class="cstat-no" title="statement not covered" >  const { video } = useLeafLoaderData() as LoaderData;</span>
 <span class="cstat-no" title="statement not covered" >  const [autoScrollState, toggleAutoScrollState] = useAutoScrollState();</span>
 <span class="cstat-no" title="statement not covered" >  const [repeatingEntries, setRepeatingEntries] = useRepeatingEntries();</span>
-<span class="cstat-no" title="statement not covered" >  const [highlightBookmark, setHighlightBookmark] = useAtom(</span>
-<span class="cstat-no" title="statement not covered" >    highlightBookmarkStorageAtom</span>
-<span class="cstat-no" title="statement not covered" >  );</span>
 <span class="cstat-no" title="statement not covered" >  const modal = useModal();</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  const navigate = useNavigate();</span>
@@ -2618,6 +2652,13 @@ const BOOKMARK_DATA_ATTR = z.enum([
 <span class="cstat-no" title="statement not covered" >        toast.error("No bookmark is found");</span>
 <span class="cstat-no" title="statement not covered" >      }</span>
 <span class="cstat-no" title="statement not covered" >    },</span>
+<span class="cstat-no" title="statement not covered" >  });</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >  const [highlightBookmark, setHighlightBookmark] = useAtom(</span>
+<span class="cstat-no" title="statement not covered" >    highlightBookmarkStorageAtom</span>
+<span class="cstat-no" title="statement not covered" >  );</span>
+<span class="cstat-no" title="statement not covered" >  const isFetchingBookmarkEntries = useIsFetching({</span>
+<span class="cstat-no" title="statement not covered" >    queryKey: [trpc.videos_getBookmarkEntries.queryKey],</span>
 <span class="cstat-no" title="statement not covered" >  });</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  return (</span>
@@ -2649,7 +2690,14 @@ const BOOKMARK_DATA_ATTR = z.enum([
 <span class="cstat-no" title="statement not covered" >                &gt;</span>
 <span class="cstat-no" title="statement not covered" >                  Show bookmarks</span>
 <span class="cstat-no" title="statement not covered" >                  {highlightBookmark &amp;&amp; (</span>
-<span class="cstat-no" title="statement not covered" >                    &lt;span className="i-ri-check-line w-5 h-5"&gt;&lt;/span&gt;</span>
+<span class="cstat-no" title="statement not covered" >                    &lt;span</span>
+<span class="cstat-no" title="statement not covered" >                      className={cls(</span>
+<span class="cstat-no" title="statement not covered" >                        "w-5 h-5",</span>
+<span class="cstat-no" title="statement not covered" >                        isFetchingBookmarkEntries</span>
+<span class="cstat-no" title="statement not covered" >                          ? "antd-spin"</span>
+<span class="cstat-no" title="statement not covered" >                          : "i-ri-check-line"</span>
+<span class="cstat-no" title="statement not covered" >                      )}</span>
+<span class="cstat-no" title="statement not covered" >                    &gt;&lt;/span&gt;</span>
 <span class="cstat-no" title="statement not covered" >                  )}</span>
 <span class="cstat-no" title="statement not covered" >                &lt;/button&gt;</span>
 <span class="cstat-no" title="statement not covered" >              &lt;/li&gt;</span>
@@ -2782,7 +2830,7 @@ const highlightBookmarkStorageAtom = atomWithStorage(
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-05-03T00:45:03.435Z
+                at 2023-05-03T01:33:41.071Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>
