@@ -140,7 +140,7 @@ export const trpcRoutesBookmarks = {
         )
         .orderBy(E.desc(T.bookmarkEntries.createdAt));
 
-      const nextCursor = rows.length > 0 ? input.cursor + limit : null;
+      const nextCursor = rows.length === limit ? input.cursor + limit : null;
       return { rows, nextCursor };
     }),
 };
