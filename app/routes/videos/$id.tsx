@@ -3,7 +3,12 @@ import { groupBy, sortBy, tinyassert, uniq } from "@hiogawa/utils";
 import { isNil } from "@hiogawa/utils";
 import { toArraySetState, useRafLoop } from "@hiogawa/utils-react";
 import { Link, useNavigate } from "@remix-run/react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  useIsFetching,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import {
   VirtualItem,
   Virtualizer,
@@ -722,9 +727,6 @@ function NavBarMenuComponent() {
   const { video } = useLeafLoaderData() as LoaderData;
   const [autoScrollState, toggleAutoScrollState] = useAutoScrollState();
   const [repeatingEntries, setRepeatingEntries] = useRepeatingEntries();
-  const [highlightBookmark, setHighlightBookmark] = useAtom(
-    highlightBookmarkStorageAtom
-  );
   const modal = useModal();
 
   const navigate = useNavigate();
@@ -745,6 +747,13 @@ function NavBarMenuComponent() {
         toast.error("No bookmark is found");
       }
     },
+  });
+
+  const [highlightBookmark, setHighlightBookmark] = useAtom(
+    highlightBookmarkStorageAtom
+  );
+  const isFetchingBookmarkEntries = useIsFetching({
+    queryKey: [trpc.videos_getBookmarkEntries.queryKey],
   });
 
   return (
@@ -776,7 +785,14 @@ function NavBarMenuComponent() {
                 >
                   Show bookmarks
                   {highlightBookmark && (
-                    <span className="i-ri-check-line w-5 h-5"></span>
+                    <span
+                      className={cls(
+                        "w-5 h-5",
+                        isFetchingBookmarkEntries
+                          ? "antd-spin"
+                          : "i-ri-check-line"
+                      )}
+                    ></span>
                   )}
                 </button>
               </li>
