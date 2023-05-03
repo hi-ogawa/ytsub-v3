@@ -545,6 +545,69 @@ async function debugCacheNextEntries(rawArgs: unknown) {
 }
 
 //
+// fixBookmarkEntriesOffset
+//
+
+const fixBookmarkEntriesOffsetArgs = z.object({
+  update: z.boolean().default(false),
+});
+
+cli
+  .command(fixBookmarkEntriesOffset.name)
+  .option(`--${fixBookmarkEntriesOffsetArgs.keyof().enum.update} [boolean]`, "")
+  .action(fixBookmarkEntriesOffset);
+
+async function fixBookmarkEntriesOffset(rawArgs: unknown) {
+  const args = fixBookmarkEntriesOffsetArgs.parse(rawArgs);
+  const rows = await db
+    .select()
+    .from(T.bookmarkEntries)
+    .innerJoin(
+      T.captionEntries,
+      E.eq(T.captionEntries.id, T.bookmarkEntries.captionEntryId)
+    );
+
+  const stats = {
+    total: 0,
+    fixable: 0,
+  };
+
+  for (const row of rows) {
+    const { id, text, offset, side } = row.bookmarkEntries;
+    const captionText = [row.captionEntries.text1, row.captionEntries.text2][
+      side
+    ];
+
+    const textByOffset = captionText.slice(offset).slice(0, text.length);
+    if (textByOffset !== text) {
+      const newOffset = offset - text.length;
+      const textByNewOffset = captionText
+        .slice(newOffset)
+        .slice(0, text.length);
+
+      const fixable = textByNewOffset === text;
+      stats.total++;
+      stats.fixable += Number(fixable);
+
+      console.log(
+        fixable ? "[ok]" : "[no]",
+        { text, textByOffset, textByNewOffset },
+        row
+      );
+
+      if (args.update) {
+        await db
+          .update(T.bookmarkEntries)
+          .set({ offset: newOffset })
+          .where(E.eq(T.bookmarkEntries.id, id));
+      }
+    }
+  }
+
+  console.log({ stats });
+}
+
+//
 // main
 //
 

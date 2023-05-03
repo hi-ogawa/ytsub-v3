@@ -64,7 +64,8 @@ test.describe("videos-signed-in", () => {
 
     await page.getByText("잠깐 밖으로 나올래").evaluate((el) => {
       const selection = window.getSelection();
-      selection?.setBaseAndExtent(el.childNodes[1].childNodes[0], 2, el.childNodes[3].childNodes[0], 1);
+      // dragging in reverse direction
+      selection?.setBaseAndExtent(el.childNodes[3].childNodes[0], 1, el.childNodes[1].childNodes[0], 2);
     });
     await page.getByTestId("toast-remove").evaluate((el: any) => el.click());
     await page.locator('[data-test="new-bookmark-button"]').click();
