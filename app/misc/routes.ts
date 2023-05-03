@@ -44,7 +44,6 @@ export const ROUTE_DEF = {
   "/bookmarks": {
     query: z
       .object({
-        order: z.enum(["createdAt", "caption"]).default("createdAt"),
         q: z.string().optional(),
       })
       .merge(Z_PAGINATION_QUERY),

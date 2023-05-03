@@ -65,11 +65,7 @@ export const loader = makeLoader(async ({ ctx }) => {
           mapOption(request.q, (v) => E.like(T.bookmarkEntries.text, `%${v}%`))
         )
       )
-      .orderBy(
-        request.order === "caption"
-          ? E.asc(T.captionEntries.index)
-          : E.desc(T.bookmarkEntries.createdAt)
-      ),
+      .orderBy(E.desc(T.bookmarkEntries.createdAt)),
     request
   );
   const loaderData: LoaderData = {
