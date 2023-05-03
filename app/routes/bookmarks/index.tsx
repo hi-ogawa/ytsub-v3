@@ -8,6 +8,7 @@ import type { z } from "zod";
 import { CollapseTransition } from "../../components/collapse";
 import { transitionProps } from "../../components/misc";
 import { PopoverSimple } from "../../components/popover";
+import type { TT } from "../../db/drizzle-client.server";
 import type {
   BookmarkEntryTable,
   CaptionEntryTable,
