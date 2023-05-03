@@ -1,12 +1,5 @@
 import { Transition } from "@headlessui/react";
-import {
-  groupBy,
-  okToOption,
-  sortBy,
-  tinyassert,
-  uniq,
-  wrapError,
-} from "@hiogawa/utils";
+import { groupBy, sortBy, tinyassert, uniq } from "@hiogawa/utils";
 import { isNil } from "@hiogawa/utils";
 import { toArraySetState, useRafLoop } from "@hiogawa/utils-react";
 import { Link, useNavigate } from "@remix-run/react";
@@ -35,7 +28,7 @@ import {
   useLeafLoaderData,
   useLoaderDataExtra,
   useRootLoaderData,
-  useUrlQuery,
+  useTypedUrlQuery,
 } from "../../utils/loader-utils";
 import { makeLoader } from "../../utils/loader-utils.server";
 import { cls, zip } from "../../utils/misc";
@@ -269,12 +262,8 @@ function PageComponent({
   // effects
   //
 
-  // TODO(refactor): typed variant of useUrlQuery (useTypedUrlQuery?)
-  const focusedIndex = okToOption(
-    wrapError(() => ROUTE_DEF["/videos/$id"].query.parse(useUrlQuery()[0]))
-  )?.index;
-
-  ROUTE_DEF["/videos/$id"].query.shape.index;
+  const [urlQuery] = useTypedUrlQuery(ROUTE_DEF["/videos/$id"].query);
+  const focusedIndex = urlQuery?.index;
 
   React.useEffect(() => {
     if (!isNil(focusedIndex) && focusedIndex < captionEntries.length) {

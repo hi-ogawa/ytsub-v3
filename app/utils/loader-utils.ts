@@ -6,6 +6,7 @@ import {
 } from "@remix-run/react";
 import React from "react";
 import { deserialize } from "superjson";
+import type { z } from "zod";
 import type { UserTable } from "../db/models";
 import type { FlashMessage } from "./flash-message";
 
@@ -63,4 +64,19 @@ export function useUrlQuery() {
   };
 
   return [query, setQuery, toParams] as const;
+}
+
+export function useTypedUrlQuery<S extends z.AnyZodObject>(schema: S) {
+  const [query, setQuery] = useUrlQuery();
+
+  const parsed = React.useMemo(() => schema.safeParse(query), [query]);
+  const typedQuery: z.infer<S> | undefined = parsed.success
+    ? parsed.data
+    : undefined;
+
+  const setTypedQuery = (newTypedQuery: z.infer<S>) => {
+    setQuery(newTypedQuery);
+  };
+
+  return [typedQuery, setTypedQuery] as const;
 }
