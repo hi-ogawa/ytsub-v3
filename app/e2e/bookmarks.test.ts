@@ -13,8 +13,8 @@ test.describe("bookmarks", () => {
   test("load-more", async ({ page }) => {
     await user.signin(page);
     await page.goto("/bookmarks");
-    await page.getByRole('button', { name: 'Load more' }).click();
-    await page.getByText('오늘 재밌게 촬영한 것 같습니다').click();
+    await page.getByRole("button", { name: "Load more" }).click();
+    await page.getByText("오늘 재밌게 촬영한 것 같습니다").click();
   });
 
   test("search", async ({ page }) => {
