@@ -102,7 +102,7 @@ test.describe("decks-seed", () => {
       .getByRole("link")
       .first()
       .click();
-    await page.waitForURL(`/decks/${deckId}?page=1`);
+    await page.waitForURL(`/decks/${deckId}`);
 
     // navigate to "/decks/$id/history-graph"
     await page.locator('[data-test="deck-menu-popover-reference"]').click();
