@@ -42,11 +42,9 @@ export const ROUTE_DEF = {
     }),
   },
   "/bookmarks": {
-    query: z
-      .object({
-        q: z.string().optional(),
-      })
-      .merge(Z_PAGINATION_QUERY),
+    query: z.object({
+      q: z.string().optional(),
+    }),
   },
   "/bookmarks/history-chart": {},
   "/users/me": {},
@@ -78,12 +76,10 @@ export const ROUTE_DEF = {
   },
   "/decks/$id/history": {
     params: Z_ID_PARAMS,
-    query: z
-      .object({
-        actionType: Z_PRACTICE_ACTION_TYPES.optional(),
-        practiceEntryId: z.coerce.number().int().optional(),
-      })
-      .merge(Z_PAGINATION_QUERY),
+    query: z.object({
+      actionType: Z_PRACTICE_ACTION_TYPES.optional(),
+      practiceEntryId: z.coerce.number().int().optional(),
+    }),
   },
   "/decks/$id/history-graph": {
     params: Z_ID_PARAMS,

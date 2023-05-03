@@ -4,6 +4,7 @@ import { toArraySetState, useRafLoop } from "@hiogawa/utils-react";
 import { NavLink } from "@remix-run/react";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import React from "react";
+import { useForm } from "react-hook-form";
 import { CollapseTransition } from "../../components/collapse";
 import { transitionProps } from "../../components/misc";
 import { PopoverSimple } from "../../components/popover";
@@ -47,7 +48,10 @@ export const shouldRevalidate = disableUrlQueryRevalidation;
 //
 
 export default function DefaultComponent() {
-  const [urlQuery] = useTypedUrlQuery(ROUTE_DEF["/bookmarks"].query);
+  const [urlQuery, setUrlQuery] = useTypedUrlQuery(
+    ROUTE_DEF["/bookmarks"].query
+  );
+  const form = useForm({ defaultValues: urlQuery });
 
   const bookmarkEntriesQuery = useInfiniteQuery({
     ...trpc.bookmarks_index.infiniteQueryOptions(
@@ -72,16 +76,18 @@ export default function DefaultComponent() {
         <div className="h-full w-full max-w-lg">
           <div className="h-full flex flex-col p-2 gap-2 relative">
             <div className="flex py-1">
-              {/* TODO: client navigation */}
-              <form>
+              <form
+                onSubmit={form.handleSubmit((data) =>
+                  setUrlQuery({ q: data.q ? data.q : undefined })
+                )}
+              >
                 <label className="relative flex items-center">
                   <span className="absolute text-colorTextSecondary ml-2 i-ri-search-line w-4 h-4"></span>
                   <input
                     className="antd-input pl-7 py-0.5"
-                    name={ROUTE_DEF["/bookmarks"].query.keyof().enum.q}
                     type="text"
                     placeholder="Search text..."
-                    defaultValue={urlQuery?.q}
+                    {...form.register("q")}
                   />
                 </label>
               </form>
@@ -107,7 +113,10 @@ export default function DefaultComponent() {
               </button>
             )}
             <Transition
-              show={bookmarkEntriesQuery.isInitialLoading}
+              show={
+                bookmarkEntriesQuery.isInitialLoading ||
+                bookmarkEntriesQuery.isPreviousData
+              }
               className="absolute inset-0 duration-500 antd-body"
               {...transitionProps("opacity-0", "opacity-50")}
             >
