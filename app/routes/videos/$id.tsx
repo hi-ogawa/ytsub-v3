@@ -322,7 +322,10 @@ function PageComponent({
             />
           )}
           <Transition
-            show={captionEntriesQuery.isLoading}
+            show={
+              captionEntriesQuery.isLoading ||
+              bookmarkEntriesQuery.isInitialLoading
+            }
             className="duration-500 antd-body antd-spin-overlay-10"
             {...transitionProps("opacity-0", "opacity-50")}
           />
