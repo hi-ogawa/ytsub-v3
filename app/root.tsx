@@ -14,7 +14,7 @@ import type { LinksFunction } from "@remix-run/server-runtime";
 import { useMutation } from "@tanstack/react-query";
 import React from "react";
 import { useForm } from "react-hook-form";
-import { Toaster } from "react-hot-toast";
+import { Toaster, toast } from "react-hot-toast";
 import { Drawer } from "./components/drawer";
 import { PopoverSimple } from "./components/popover";
 import { ThemeScriptPlaceholder, ThemeSelect } from "./components/theme-select";
@@ -82,6 +82,13 @@ export default function DefaultComponent() {
           position="bottom-left"
           toastOptions={{
             className: "!bg-colorBgElevated !text-colorText",
+          }}
+        />
+        <button
+          className="hidden"
+          data-testid="toast-remove"
+          onClick={() => {
+            toast.remove();
           }}
         />
         <Compose elements={[<QueryClientWrapper />, <Root />]} />

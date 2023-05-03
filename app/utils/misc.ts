@@ -1,5 +1,4 @@
-import { range } from "@hiogawa/utils";
-import { groupBy, mapValues, tinyassert } from "@hiogawa/utils";
+import { groupBy, mapValues, range, tinyassert } from "@hiogawa/utils";
 
 export function createGetProxy(
   propHandler: (prop: string | symbol) => unknown
@@ -84,11 +83,29 @@ export function none<T>(): T | undefined {
   return undefined;
 }
 
-export function zip<T1, T2>(ls1: T1[], ls2: T2[]): [T1, T2][] {
+export function zip<T1, T2>(
+  ls1: readonly T1[],
+  ls2: readonly T2[]
+): [T1, T2][] {
   return range(Math.min(ls1.length, ls2.length)).map((i) => [ls1[i], ls2[i]]);
 }
 
 export function difference<T>(ls1: T[], ls2: T[]): T[] {
   const exclude = new Set(ls2);
   return ls1.filter((e) => !exclude.has(e));
+}
+
+// new RegExp(String.raw`...`) with only inner strings are escaped
+export function regExpRaw(
+  { raw }: TemplateStringsArray,
+  ...params: string[]
+): RegExp {
+  tinyassert(raw.length === params.length + 1);
+  return new RegExp(
+    [...zip(raw, params.map(escapeRegExp)), raw.slice(-1)].flat().join("")
+  );
+}
+
+function escapeRegExp(s: string): string {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }

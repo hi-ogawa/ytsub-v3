@@ -19,7 +19,7 @@ export const trpcRoutesBookmarks = {
         videoId: z.number().int(),
         captionEntryId: z.number().int(),
         text: z.string().nonempty(),
-        side: z.union([z.literal(0), z.literal(1)]),
+        side: z.number().refine((v) => v === 0 || v === 1),
         offset: z.number().int(),
       })
     )
@@ -40,7 +40,7 @@ export const trpcRoutesBookmarks = {
       tinyassert(found, "not found");
 
       // insert with counter cache increment
-      await db.insert(T.bookmarkEntries).values({
+      const [{ insertId }] = await db.insert(T.bookmarkEntries).values({
         ...input,
         userId: ctx.user.id,
       });
@@ -50,6 +50,15 @@ export const trpcRoutesBookmarks = {
           bookmarkEntriesCount: sql`${T.videos.bookmarkEntriesCount} + 1`,
         })
         .where(E.eq(T.videos.id, input.videoId));
+
+      const row = await findOne(
+        db
+          .select()
+          .from(T.bookmarkEntries)
+          .where(E.eq(T.bookmarkEntries.id, insertId))
+      );
+      tinyassert(row);
+      return row;
     }),
 
   bookmarks_historyChart: procedureBuilder
