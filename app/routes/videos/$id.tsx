@@ -53,6 +53,7 @@ type LoaderData = {
   query: z.infer<(typeof ROUTE_DEF)["/videos/$id"]["query"]>;
 };
 
+// TODO: tweak shouldRevalidate
 export const loader = makeLoader(async ({ ctx }) => {
   const params = ROUTE_DEF["/videos/$id"].params.parse(ctx.params);
   const query = ROUTE_DEF["/videos/$id"].query.parse(ctx.query);

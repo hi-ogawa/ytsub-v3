@@ -1,24 +1,17 @@
 import { Transition } from "@headlessui/react";
-import { mapOption, typedBoolean } from "@hiogawa/utils";
+import { typedBoolean } from "@hiogawa/utils";
 import { toArraySetState, useRafLoop } from "@hiogawa/utils-react";
 import { Link, NavLink } from "@remix-run/react";
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import React from "react";
 import type { z } from "zod";
 import { CollapseTransition } from "../../components/collapse";
-import { PaginationComponent, transitionProps } from "../../components/misc";
+import { transitionProps } from "../../components/misc";
 import { PopoverSimple } from "../../components/popover";
-import {
-  E,
-  T,
-  TT,
-  db,
-  toPaginationResult,
-} from "../../db/drizzle-client.server";
+import type { TT } from "../../db/drizzle-client.server";
 import type {
   BookmarkEntryTable,
   CaptionEntryTable,
-  PaginationMetadata,
   VideoTable,
 } from "../../db/models";
 import { $R, ROUTE_DEF } from "../../misc/routes";
@@ -39,60 +32,53 @@ export const handle: PageHandle = {
   navBarMenu: () => <NavBarMenuComponent />,
 };
 
+//
+// loader
+//
+
 interface LoaderData {
-  rows: Pick<TT, "bookmarkEntries" | "videos" | "captionEntries">[];
-  pagination: PaginationMetadata;
-  request: z.infer<(typeof ROUTE_DEF)["/bookmarks"]["query"]>;
+  query: z.infer<(typeof ROUTE_DEF)["/bookmarks"]["query"]>;
 }
 
+// TODO: tweak shouldRevalidate
 export const loader = makeLoader(async ({ ctx }) => {
-  const user = await ctx.requireUser();
-
-  const request = ROUTE_DEF["/bookmarks"].query.parse(ctx.query);
-
-  const [rows, pagination] = await toPaginationResult(
-    db
-      .select()
-      .from(T.bookmarkEntries)
-      .innerJoin(T.videos, E.eq(T.videos.id, T.bookmarkEntries.videoId))
-      .innerJoin(
-        T.captionEntries,
-        E.eq(T.captionEntries.id, T.bookmarkEntries.captionEntryId)
-      )
-      .where(
-        E.and(
-          E.eq(T.bookmarkEntries.userId, user.id),
-          mapOption(request.videoId, (v) => E.eq(T.bookmarkEntries.videoId, v)),
-          mapOption(request.q, (v) => E.like(T.bookmarkEntries.text, `%${v}%`))
-        )
-      )
-      .orderBy(
-        request.order === "caption"
-          ? E.asc(T.captionEntries.index)
-          : E.desc(T.bookmarkEntries.createdAt)
-      ),
-    request
-  );
-  const loaderData: LoaderData = {
-    rows,
-    pagination,
-    request,
-  };
+  await ctx.requireUser();
+  const query = ROUTE_DEF["/bookmarks"].query.parse(ctx.query);
+  const loaderData: LoaderData = { query };
   return loaderData;
 });
 
-export default function DefaultComponent() {
-  const data = useLoaderDataExtra() as LoaderData;
-  return <ComponentImpl {...data} />;
-}
+//
+// component
+//
 
-function ComponentImpl(props: LoaderData) {
+export default function DefaultComponent() {
+  const { query } = useLoaderDataExtra() as LoaderData;
+
+  const bookmarkEntriesQuery = useInfiniteQuery({
+    ...trpc.bookmarks_index.infiniteQueryOptions(
+      {
+        q: query.q,
+      },
+      {
+        getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
+        setPageParam: (input, pageParam) => ({
+          ...input,
+          cursor: pageParam as any,
+        }),
+      }
+    ),
+    keepPreviousData: true,
+  });
+  const rows = bookmarkEntriesQuery.data?.pages.flatMap((page) => page.rows);
+
   return (
     <>
       <div className="w-full flex justify-center">
         <div className="h-full w-full max-w-lg">
-          <div className="h-full flex flex-col p-2 gap-2">
+          <div className="h-full flex flex-col p-2 gap-2 relative">
             <div className="flex py-1">
+              {/* TODO: client navigation */}
               <form>
                 <label className="relative flex items-center">
                   <span className="absolute text-colorTextSecondary ml-2 i-ri-search-line w-4 h-4"></span>
@@ -101,14 +87,12 @@ function ComponentImpl(props: LoaderData) {
                     name={ROUTE_DEF["/bookmarks"].query.keyof().enum.q}
                     type="text"
                     placeholder="Search text..."
-                    defaultValue={props.request.q}
+                    defaultValue={query.q}
                   />
                 </label>
               </form>
             </div>
-            {/* TODO: CTA when empty */}
-            {props.rows.length === 0 && <div>Empty</div>}
-            {props.rows.map((row) => (
+            {rows?.map((row) => (
               <BookmarkEntryComponent
                 key={row.bookmarkEntries.id}
                 video={row.videos}
@@ -117,12 +101,26 @@ function ComponentImpl(props: LoaderData) {
                 showAutoplay
               />
             ))}
+            {bookmarkEntriesQuery.hasNextPage && (
+              <button
+                className={cls(
+                  "antd-btn antd-btn-default p-1 text-sm",
+                  bookmarkEntriesQuery.isFetchingNextPage && "antd-btn-loading"
+                )}
+                onClick={() => bookmarkEntriesQuery.fetchNextPage()}
+              >
+                Load more
+              </button>
+            )}
+            <Transition
+              show={bookmarkEntriesQuery.isInitialLoading}
+              className="absolute inset-0 duration-500 antd-body"
+              {...transitionProps("opacity-0", "opacity-50")}
+            >
+              <div className="mx-auto mt-[200px] antd-spin h-18"></div>
+            </Transition>
           </div>
         </div>
-      </div>
-      <div className="w-full h-8" /> {/* padding for scroll */}
-      <div className="absolute bottom-2 w-full flex justify-center">
-        <PaginationComponent pagination={props.pagination} />
       </div>
     </>
   );
@@ -400,8 +398,8 @@ export function MiniPlayer({
 //
 
 function NavBarMenuComponent() {
-  const { request } = useLeafLoaderData() as LoaderData;
-  const isFilterActive = [request.videoId, request.q].some(Boolean);
+  const { query } = useLeafLoaderData() as LoaderData;
+  const isFilterActive = Boolean(query.q);
 
   return (
     <>

@@ -60,15 +60,12 @@ export function VideoComponent({
           </div>
         </div>
         {bookmarkEntriesCount !== undefined && (
-          <Link
-            to={$R["/bookmarks"](null, { videoId: video.id, order: "caption" })}
-            className="absolute right-1 top-1 px-1 py-0.5 bg-black/75 text-white text-xs font-bold"
-          >
+          <div className="absolute right-1 top-1 px-1 py-0.5 bg-black/75 text-white text-xs font-bold">
             <div className="flex justify-center items-center gap-1">
               <div>{bookmarkEntriesCount}</div>
               <span className="i-ri-bookmark-line w-3 h-3"></span>
             </div>
-          </Link>
+          </div>
         )}
       </div>
       <div className="grow p-2 flex flex-col relative text-sm">
