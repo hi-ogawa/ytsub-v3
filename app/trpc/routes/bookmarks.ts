@@ -1,4 +1,4 @@
-import { tinyassert } from "@hiogawa/utils";
+import { mapOption, tinyassert } from "@hiogawa/utils";
 import { sql } from "drizzle-orm";
 import { z } from "zod";
 import { E, T, db, findOne } from "../../db/drizzle-client.server";
@@ -94,5 +94,53 @@ export const trpcRoutesBookmarks = {
       }
 
       return Object.values(countMap);
+    }),
+
+  bookmarks_index: procedureBuilder
+    .use(middlewares.requireUser)
+    .input(
+      z.object({
+        q: z.string().optional(),
+        cursor: z.number().int().default(0),
+      })
+    )
+    .query(async ({ input, ctx }) => {
+      const limit = 15;
+
+      // deferred join
+      const subQueryIds = db
+        .select({ id: T.bookmarkEntries.id })
+        .from(T.bookmarkEntries)
+        .where(
+          E.and(
+            E.eq(T.bookmarkEntries.userId, ctx.user.id),
+            // TODO: index
+            mapOption(input.q, (v) => E.like(T.bookmarkEntries.text, `%${v}%`))
+          )
+        )
+        .orderBy(E.desc(T.bookmarkEntries.createdAt))
+        .offset(input.cursor)
+        .limit(limit)
+        .as("__subQueryIds");
+
+      const rows = await db
+        .select()
+        .from(T.bookmarkEntries)
+        .innerJoin(subQueryIds, E.eq(subQueryIds.id, T.bookmarkEntries.id))
+        .innerJoin(T.videos, E.eq(T.videos.id, T.bookmarkEntries.videoId))
+        .innerJoin(
+          T.captionEntries,
+          E.eq(T.captionEntries.id, T.bookmarkEntries.captionEntryId)
+        )
+        .where(
+          E.and(
+            E.eq(T.bookmarkEntries.userId, ctx.user.id),
+            mapOption(input.q, (v) => E.like(T.bookmarkEntries.text, `%${v}%`))
+          )
+        )
+        .orderBy(E.desc(T.bookmarkEntries.createdAt));
+
+      const nextCursor = rows.length > 0 ? input.cursor + limit : null;
+      return { rows, nextCursor };
     }),
 };
