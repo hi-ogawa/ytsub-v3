@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">22.96% </span>
+                <span class="strong">22.38% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>65/283</span>
+                <span class='fraction'>62/277</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">22.22% </span>
+                <span class="strong">20% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>2/9</span>
+                <span class='fraction'>2/10</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">22.96% </span>
+                <span class="strong">22.38% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>65/283</span>
+                <span class='fraction'>62/277</span>
             </div>
         
             
@@ -340,13 +340,7 @@
 <a name='L275'></a><a href='#L275'>275</a>
 <a name='L276'></a><a href='#L276'>276</a>
 <a name='L277'></a><a href='#L277'>277</a>
-<a name='L278'></a><a href='#L278'>278</a>
-<a name='L279'></a><a href='#L279'>279</a>
-<a name='L280'></a><a href='#L280'>280</a>
-<a name='L281'></a><a href='#L281'>281</a>
-<a name='L282'></a><a href='#L282'>282</a>
-<a name='L283'></a><a href='#L283'>283</a>
-<a name='L284'></a><a href='#L284'>284</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">129x</span>
+<a name='L278'></a><a href='#L278'>278</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -392,22 +386,16 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -629,25 +617,25 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="fstat-no" title="function not covered" >import { PRACTICE_ACTION_TYPE_TO_COLOR, QueueTypeIcon } from ".";</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" >import { PRACTICE_ACTION_TYPE_TO_COLOR, QueueTypeIcon } from ".";</span></span></span>
 import { Transition } from "@headlessui/react";
-import { useNavigate } from "@remix-run/react";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import React from "react";
-import type { z } from "zod";
 import { CollapseTransition } from "../../../components/collapse";
 import { SelectWrapper, transitionProps } from "../../../components/misc";
 import type { TT } from "../../../db/drizzle-client.server";
 import type { DeckTable } from "../../../db/models";
 import { PRACTICE_ACTION_TYPES, PracticeActionType } from "../../../db/types";
-import { $R, ROUTE_DEF } from "../../../misc/routes";
+import { ROUTE_DEF } from "../../../misc/routes";
 import { trpc } from "../../../trpc/client";
 import { useIntersectionObserver } from "../../../utils/hooks-client-utils";
 import { formatRelativeDate } from "../../../utils/intl";
 import { requireUserAndDeck } from "../../../utils/loader-deck-utils";
 import {
+  disableUrlQueryRevalidation,
   useLeafLoaderData,
   useLoaderDataExtra,
+  useTypedUrlQuery,
 } from "../../../utils/loader-utils";
 import { makeLoader } from "../../../utils/loader-utils.server";
 import { cls } from "../../../utils/misc";
@@ -670,32 +658,33 @@ export const handle: PageHandle = {
 &nbsp;
 interface LoaderData {
   deck: DeckTable;
-  query: z.infer&lt;(typeof ROUTE_DEF)["/decks/$id/history"]["query"]&gt;;
 }
 &nbsp;
-// TODO: tweak shouldRevalidate
 export const loader = makeLoader(async ({ ctx }) =&gt; {
   const { deck } = await requireUserAndDeck(ctx);
-  const query = ROUTE_DEF["/decks/$id/history"].query.parse(ctx.query);
-&nbsp;
-  const loaderData: LoaderData = { deck, query };
+  const loaderData: LoaderData = { deck };
   return loaderData;
 });
+&nbsp;
+export const shouldRevalidate = disableUrlQueryRevalidation;
 &nbsp;
 //
 // DefaultComponent
 //
 &nbsp;
 export default <span class="fstat-no" title="function not covered" >function DefaultComponent() {</span>
-<span class="cstat-no" title="statement not covered" >  const { deck, query } = useLoaderDataExtra() as LoaderData;</span>
-<span class="cstat-no" title="statement not covered" >  const navigate = useNavigate();</span>
+<span class="cstat-no" title="statement not covered" >  const { deck } = useLoaderDataExtra() as LoaderData;</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >  const [urlQuery, setUrlQuery] = useTypedUrlQuery(</span>
+<span class="cstat-no" title="statement not covered" >    ROUTE_DEF["/decks/$id/history"].query</span>
+<span class="cstat-no" title="statement not covered" >  );</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  const practiceActionsQuery = useInfiniteQuery({</span>
 <span class="cstat-no" title="statement not covered" >    ...trpc.decks_practiceActions.infiniteQueryOptions(</span>
 <span class="cstat-no" title="statement not covered" >      {</span>
 <span class="cstat-no" title="statement not covered" >        deckId: deck.id,</span>
-<span class="cstat-no" title="statement not covered" >        actionType: query.actionType,</span>
-<span class="cstat-no" title="statement not covered" >        practiceEntryId: query.practiceEntryId,</span>
+<span class="cstat-no" title="statement not covered" >        actionType: urlQuery?.actionType,</span>
+<span class="cstat-no" title="statement not covered" >        practiceEntryId: urlQuery?.practiceEntryId,</span>
 <span class="cstat-no" title="statement not covered" >      },</span>
 <span class="cstat-no" title="statement not covered" >      {</span>
 <span class="cstat-no" title="statement not covered" >        getNextPageParam: (lastPage) =&gt; lastPage.nextCursor ?? undefined,</span>
@@ -725,21 +714,14 @@ export default <span class="fstat-no" title="function not covered" >function Def
 <span class="cstat-no" title="statement not covered" >              &lt;SelectWrapper</span>
 <span class="cstat-no" title="statement not covered" >                className="antd-input p-1"</span>
 <span class="cstat-no" title="statement not covered" >                options={[undefined, ...PRACTICE_ACTION_TYPES]}</span>
-<span class="cstat-no" title="statement not covered" >                value={query.actionType}</span>
+<span class="cstat-no" title="statement not covered" >                value={urlQuery?.actionType}</span>
 <span class="cstat-no" title="statement not covered" >                labelFn={(v) =&gt; v ?? "Select..."}</span>
-<span class="cstat-no" title="statement not covered" >                onChange={(actionType) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >                  navigate(</span>
-<span class="cstat-no" title="statement not covered" >                    $R["/decks/$id/history"](</span>
-<span class="cstat-no" title="statement not covered" >                      { id: deck.id },</span>
-<span class="cstat-no" title="statement not covered" >                      actionType ? { actionType } : {}</span>
-<span class="cstat-no" title="statement not covered" >                    )</span>
-<span class="cstat-no" title="statement not covered" >                  );</span>
-<span class="cstat-no" title="statement not covered" >                }}</span>
+<span class="cstat-no" title="statement not covered" >                onChange={(actionType) =&gt; setUrlQuery({ actionType })}</span>
 <span class="cstat-no" title="statement not covered" >              /&gt;</span>
 <span class="cstat-no" title="statement not covered" >            &lt;/div&gt;</span>
 <span class="cstat-no" title="statement not covered" >            &lt;ActionStatisticsComponent</span>
 <span class="cstat-no" title="statement not covered" >              deckId={deck.id}</span>
-<span class="cstat-no" title="statement not covered" >              currentActionType={query.actionType}</span>
+<span class="cstat-no" title="statement not covered" >              currentActionType={urlQuery?.actionType}</span>
 <span class="cstat-no" title="statement not covered" >            /&gt;</span>
 <span class="cstat-no" title="statement not covered" >            &lt;div className="flex-1 flex flex-col gap-2 relative"&gt;</span>
 <span class="cstat-no" title="statement not covered" >              {rows?.map((row) =&gt; (</span>
@@ -919,7 +901,7 @@ export default <span class="fstat-no" title="function not covered" >function Def
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-05-03T09:29:38.685Z
+                at 2023-05-03T09:36:54.863Z
             </div>
         <script src="../../../../../prettify.js"></script>
         <script>
