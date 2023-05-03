@@ -22,6 +22,9 @@ export const Z_PAGINATION_QUERY = z.object({
   perPage: z.coerce.number().int().optional().default(20),
 });
 
+export const Z_DATE_RANGE_TYPE = z.enum(["week", "month"]);
+export type DateRangeType = z.infer<typeof Z_DATE_RANGE_TYPE>;
+
 export const ROUTE_DEF = {
   "/": {},
   "/share-target": {
@@ -48,7 +51,7 @@ export const ROUTE_DEF = {
   },
   "/bookmarks/history-chart": {
     query: z.object({
-      rangeType: z.enum(["week", "month"]).default("week"),
+      rangeType: Z_DATE_RANGE_TYPE.default("week"),
       page: z.coerce.number().int().optional().default(0),
     }),
   },
@@ -90,7 +93,7 @@ export const ROUTE_DEF = {
     params: Z_ID_PARAMS,
     query: z.object({
       graphType: z.enum(["action", "queue"]).default("action"),
-      rangeType: z.enum(["week", "month"]).default("week"),
+      rangeType: Z_DATE_RANGE_TYPE.default("week"),
       page: z.coerce.number().int().optional().default(0), // 0 => this week/month, 1 => last week/month, ...
     }),
   },
