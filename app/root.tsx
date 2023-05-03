@@ -26,11 +26,7 @@ import { trpc } from "./trpc/client";
 import { publicConfig } from "./utils/config";
 import { ConfigPlaceholder } from "./utils/config-placeholder";
 import { useFlashMessages } from "./utils/flash-message-hook";
-import {
-  RootLoaderData,
-  disableUrlQueryRevalidation,
-  useRootLoaderData,
-} from "./utils/loader-utils";
+import { RootLoaderData, useRootLoaderData } from "./utils/loader-utils";
 import { makeLoader } from "./utils/loader-utils.server";
 import { cls } from "./utils/misc";
 import type { PageHandle } from "./utils/page-handle";
@@ -52,12 +48,11 @@ export const links: LinksFunction = () => {
 export const loader = makeLoader(async ({ ctx }) => {
   const loaderData: RootLoaderData = {
     currentUser: await ctx.currentUser(),
+    // TODO: revalidation of root loader is required only for reloading flash message, which sounds so odd, so please think about a different approach.
     flashMessages: await ctx.getFlashMessages(),
   };
   return loaderData;
 });
-
-export const shouldRevalidate = disableUrlQueryRevalidation;
 
 //
 // component
