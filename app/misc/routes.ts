@@ -17,7 +17,7 @@ const Z_ID_PARAMS = z.object({
   id: z.coerce.number().int(),
 });
 
-const Z_PAGINATION_QUERY = z.object({
+export const Z_PAGINATION_QUERY = z.object({
   page: z.coerce.number().int().optional().default(1),
   perPage: z.coerce.number().int().optional().default(20),
 });

@@ -1,8 +1,8 @@
 import { Transition } from "@headlessui/react";
 import { Link } from "@remix-run/react";
 import type { PaginationMetadata, VideoTable } from "../db/models";
-import { $R } from "../misc/routes";
-import { useUrlQuery } from "../utils/loader-utils";
+import { $R, Z_PAGINATION_QUERY } from "../misc/routes";
+import { useTypedUrlQuery } from "../utils/loader-utils";
 import { cls } from "../utils/misc";
 import { parseVssId, toThumbnail } from "../utils/youtube";
 import { PopoverSimple } from "./popover";
@@ -128,7 +128,7 @@ export function PaginationComponent({
 }: {
   pagination: PaginationMetadata;
 }) {
-  const [, , toParams] = useUrlQuery();
+  const [, , toParams] = useTypedUrlQuery(Z_PAGINATION_QUERY);
   const { page, totalPage, total } = pagination;
   return (
     <div

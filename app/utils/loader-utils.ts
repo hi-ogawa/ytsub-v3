@@ -67,16 +67,22 @@ export function useUrlQuery() {
 }
 
 export function useTypedUrlQuery<S extends z.AnyZodObject>(schema: S) {
-  const [query, setQuery] = useUrlQuery();
+  const [query, setQuery, toParams] = useUrlQuery();
+
+  type Input = z.input<S>;
 
   const parsed = React.useMemo(() => schema.safeParse(query), [query]);
-  const typedQuery: z.infer<S> | undefined = parsed.success
+  const typedQuery: Input | undefined = parsed.success
     ? parsed.data
     : undefined;
 
-  const setTypedQuery = (newTypedQuery: z.infer<S>) => {
+  const setTypedQuery = (newTypedQuery: Input) => {
     setQuery(newTypedQuery);
   };
 
-  return [typedQuery, setTypedQuery] as const;
+  const toTypedParams = (newTypedQuery: Input) => {
+    return toParams(newTypedQuery);
+  };
+
+  return [typedQuery, setTypedQuery, toTypedParams] as const;
 }
