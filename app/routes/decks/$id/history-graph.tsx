@@ -128,7 +128,9 @@ export default function DefaultComponent() {
               options={["week", "month"] as const}
               labelFn={(value) => `by ${value}`}
               value={params.rangeType}
-              onChange={(rangeType) => setUrlQuery({ rangeType, page: 0 })}
+              onChange={(rangeType) =>
+                setUrlQuery({ rangeType, page: undefined })
+              }
             />
             <SelectWrapper
               data-testid="SelectWrapper-graphType"
