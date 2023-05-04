@@ -74,7 +74,7 @@
     "zod": "^3.21.4"
   },
   "devDependencies": {
-    "@hiogawa/isort-ts": "1.0.1",
+    "@hiogawa/isort-ts": "1.0.2-pre.0",
     "@hiogawa/unocss-preset-antd": "2.2.1-pre.2",
     "@iconify-json/ri": "^1.1.7",
     "@playwright/test": "^1.31.2",
