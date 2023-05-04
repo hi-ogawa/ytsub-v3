@@ -1,7 +1,7 @@
-import { PRACTICE_ACTION_TYPE_TO_COLOR, QueueTypeIcon } from ".";
 import { Transition } from "@headlessui/react";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import React from "react";
+import { PRACTICE_ACTION_TYPE_TO_COLOR, QueueTypeIcon } from ".";
 import { CollapseTransition } from "../../../components/collapse";
 import { SelectWrapper, transitionProps } from "../../../components/misc";
 import type { TT } from "../../../db/drizzle-client.server";

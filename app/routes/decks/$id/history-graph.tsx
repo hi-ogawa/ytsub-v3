@@ -1,8 +1,8 @@
-import { DeckNavBarMenuComponent } from ".";
 import { Transition } from "@headlessui/react";
 import { useQuery } from "@tanstack/react-query";
 import type { ECharts } from "echarts";
 import React from "react";
+import { DeckNavBarMenuComponent } from ".";
 import { SelectWrapper, transitionProps } from "../../../components/misc";
 import {
   EchartsComponent,
