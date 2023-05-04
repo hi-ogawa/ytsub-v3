@@ -5,7 +5,7 @@ import {
   PRACTICE_HISTORY_DATASET_KEYS,
   PracticeHistoryChartDataEntry,
 } from "../../components/practice-history-chart";
-import { E, T, db, findOne, selectOne } from "../../db/drizzle-client.server";
+import { E, T, db, limitOne, selectOne } from "../../db/drizzle-client.server";
 import { DEFAULT_DECK_CACHE, Z_PRACTICE_ACTION_TYPES } from "../../db/types";
 import { Z_DATE_RANGE_TYPE } from "../../misc/routes";
 import { importDeckJson } from "../../misc/seed-utils";
@@ -285,7 +285,7 @@ export const trpcRoutesDecks = {
         return { finished: true } as const;
       }
 
-      const row = await findOne(
+      const row = await limitOne(
         db
           .select()
           .from(T.bookmarkEntries)

@@ -177,7 +177,7 @@ export type TT = { [K in keyof typeof T]: InferModel<(typeof T)[K]> };
 // re-export expressions since eq, isNull etc.. sounds too general
 export { E };
 
-export async function findOne<
+export async function limitOne<
   Q extends { limit: (i: number) => Promise<any[]> }
 >(query: Q): Promise<Awaited<ReturnType<Q["limit"]>>[0] | undefined> {
   return (await query.limit(1)).at(0);
@@ -197,12 +197,12 @@ export async function selectOne<SomeTable extends Table>(
   table: SomeTable,
   ...whereClauses: SQL[]
 ) {
-  return db
-    .select()
-    .from(table)
-    .where(E.and(...whereClauses))
-    .limit(1)
-    .then((rows) => rows.at(0));
+  return limitOne(
+    db
+      .select()
+      .from(table)
+      .where(E.and(...whereClauses))
+  );
 }
 
 export async function toPaginationResult<

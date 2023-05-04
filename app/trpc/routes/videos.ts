@@ -1,6 +1,6 @@
 import { tinyassert } from "@hiogawa/utils";
 import { z } from "zod";
-import { E, T, db, findOne, selectOne } from "../../db/drizzle-client.server";
+import { E, T, db, limitOne, selectOne } from "../../db/drizzle-client.server";
 import { filterNewVideo, insertVideoAndCaptionEntries } from "../../db/models";
 import { Z_NEW_VIDEO, fetchCaptionEntries } from "../../utils/youtube";
 import { middlewares } from "../context";
@@ -121,7 +121,7 @@ export const trpcRoutesVideos = {
         )
         // TODO: also probably fine to just use E.desc(T.bookmarkEntries.createdAt)
         .orderBy(E.desc(T.captionEntries.index));
-      return findOne(query);
+      return limitOne(query);
     }),
 };
 

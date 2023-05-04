@@ -1,7 +1,7 @@
 import { mapOption, tinyassert } from "@hiogawa/utils";
 import { sql } from "drizzle-orm";
 import { z } from "zod";
-import { E, T, db, findOne, selectOne } from "../../db/drizzle-client.server";
+import { E, T, db, limitOne, selectOne } from "../../db/drizzle-client.server";
 import { Z_DATE_RANGE_TYPE } from "../../misc/routes";
 import {
   fromTemporal,
@@ -24,7 +24,7 @@ export const trpcRoutesBookmarks = {
       })
     )
     .mutation(async ({ input, ctx }) => {
-      const found = await findOne(
+      const found = await limitOne(
         db
           .select()
           .from(T.captionEntries)
