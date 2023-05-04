@@ -1,7 +1,7 @@
 import path from "node:path";
+import { hashString } from "@hiogawa/utils";
 import { Page, test as testDefault } from "@playwright/test";
 import fse from "fs-extra";
-import { sha256 } from "../utils/auth";
 
 // cf.
 // - https://playwright.dev/docs/test-fixtures#overriding-fixtures
@@ -33,7 +33,7 @@ export const test = testDefault.extend({
     // - https://nodejs.org/dist/latest-v16.x/docs/api/cli.html#node_v8_coveragedir
     let entries = await page.coverage.stopJSCoverage();
     entries = entries.map(preprocessCoverageEntry);
-    const id = sha256([testInfo.file, ...testInfo.titlePath].join("@"), "hex");
+    const id = hashString([testInfo.file, ...testInfo.titlePath].join("@"));
     const outfile = path.resolve("coverage", "e2e-client", "tmp", id + ".json");
     await fse.ensureDir(path.dirname(outfile));
     await fse.writeFile(outfile, JSON.stringify({ result: entries }));

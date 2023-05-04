@@ -12,15 +12,12 @@ export const PASSWORD_MAX_LENGTH = 128;
 const DEFAULT_TIMEZONE = "+00:00";
 const BCRYPT_ROUNDS = 10;
 
-export function sha256(
-  password: string,
-  encoding: "base64" | "hex" = "base64"
-): string {
+function sha256(password: string): string {
   return crypto
     .createHash("sha256")
     .update(password, "utf8")
     .digest()
-    .toString(encoding);
+    .toString("base64");
 }
 
 export async function toPasswordHash(password: string): Promise<string> {

@@ -1,5 +1,5 @@
+import { hashString } from "@hiogawa/utils";
 import { expect } from "@playwright/test";
-import { sha256 } from "../utils/auth";
 import { test } from "./coverage";
 import { useUserE2E } from "./helper";
 
@@ -17,7 +17,7 @@ test("/users/register", async ({ page }) => {
   // submit form
   // prettier-ignore
   {
-    const username = "user-" + sha256(__filename + "/users/register", "hex").slice(0, 8);
+    const username = "user-" + hashString(__filename + "/users/register").slice(0, 8);
     await page.locator('data-test=register-form >> input[name=username]').fill(username);
     await page.locator('data-test=register-form >> input[name=password]').fill('password');
     await page.locator('data-test=register-form >> input[name=passwordConfirmation]').fill('password');
