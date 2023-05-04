@@ -1,4 +1,5 @@
 import {
+  HashRng,
   difference,
   groupBy,
   mapGroupBy,
@@ -501,7 +502,7 @@ export async function queryNextPracticeEntryRandomModeBatch(
   // score = (uniform in [0, 1]) + (scheduledAt bonus in [-?, BONUS_LIMIT])
   rows = sortBy(
     rows,
-    (row) => -(rng.uniform() + computeScheduledAtFactor(row.scheduledAt))
+    (row) => -(rng.float() + computeScheduledAtFactor(row.scheduledAt))
   );
 
   if (rows.length <= maxCount) {
@@ -535,7 +536,7 @@ export async function queryNextPracticeEntryRandomModeBatch(
 
     const queueType =
       PRACTICE_QUEUE_TYPES[
-        randomChoice(rng.uniform(), Object.values(queueTypeWeights))
+        randomChoice(rng.float(), Object.values(queueTypeWeights))
       ];
     const queueRows = rowsByQueue[queueType];
     tinyassert(queueRows);
@@ -547,16 +548,6 @@ export async function queryNextPracticeEntryRandomModeBatch(
     .map(() => getNextEntry())
     .filter(typedBoolean);
   return nextEntries;
-}
-
-// https://nullprogram.com/blog/2018/07/31/
-function hashInt32(x: number) {
-  x ^= x >>> 16;
-  x = Math.imul(x, 0x21f0aaad);
-  x ^= x >>> 15;
-  x = Math.imul(x, 0xd35a2d97);
-  x ^= x >>> 15;
-  return x >>> 0;
 }
 
 function randomChoice(uniform: number, weights: number[]): number {
@@ -574,20 +565,4 @@ function prefixSum(ls: number[]): number[] {
     acc.push(acc[i] + ls[i]);
   }
   return acc;
-}
-
-class HashRng {
-  private state: number;
-
-  constructor(seed: number) {
-    this.state = hashInt32(seed);
-  }
-
-  int32(): number {
-    return (this.state = hashInt32(this.state));
-  }
-
-  uniform() {
-    return this.int32() / 2 ** 32;
-  }
 }

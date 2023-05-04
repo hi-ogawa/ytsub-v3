@@ -263,8 +263,8 @@ describe("queryNextPracticeEntryRandomModeBatch", () => {
     `);
     expect(await run(30, 2)).toMatchInlineSnapshot(`
       Map {
-        "NEW" => 29,
-        "REVIEW" => 1,
+        "NEW" => 27,
+        "LEARN" => 3,
       }
     `);
   });
