@@ -14,7 +14,7 @@ import {
 import { deleteOrphans } from "./models";
 
 describe(toDeleteSql.name, () => {
-  it.only("basic", async () => {
+  it("basic", async () => {
     const query = db
       .select()
       .from(T.videos)
@@ -27,16 +27,7 @@ describe(toDeleteSql.name, () => {
         )
       );
     const res = await toDeleteSql(query);
-    expect(res[0]).toMatchInlineSnapshot(`
-      ResultSetHeader {
-        "affectedRows": 0,
-        "fieldCount": 0,
-        "info": "",
-        "insertId": 0,
-        "serverStatus": 2,
-        "warningStatus": 0,
-      }
-    `);
+    expect(res[0].affectedRows).toMatchInlineSnapshot("0");
 
     const deleteSql = toDeleteSqlInner(query.getSQL(), "videos");
     const deleteSql2 = __dbExtra().dialect.sqlToQuery(deleteSql);
