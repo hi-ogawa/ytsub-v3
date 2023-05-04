@@ -300,7 +300,7 @@ cli
         .where(E.not(E.eq(T.users.username, onlyUsername)));
       if (options.deleteAnonymousVideos) {
         // delete anonymous videos
-        await Q.videos().delete().where("userId", null);
+        await db.delete(T.videos).where(E.isNull(T.videos.userId));
       }
       await deleteOrphans();
       // rename to "dev"
