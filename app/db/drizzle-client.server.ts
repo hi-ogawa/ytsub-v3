@@ -19,9 +19,8 @@ import { SQL } from "drizzle-orm/sql";
 import type { Connection } from "mysql2";
 import { createConnection } from "mysql2/promise";
 import { uninitialized } from "../utils/misc";
-import type { PaginationParams } from "../utils/pagination";
+import type { PaginationMetadata, PaginationParams } from "../utils/pagination";
 import knexfile from "./knexfile.server";
-import type { PaginationMetadata } from "./models";
 import type { DeckCache, PracticeActionType, PracticeQueueType } from "./types";
 
 //

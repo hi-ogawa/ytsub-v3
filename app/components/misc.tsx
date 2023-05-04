@@ -1,9 +1,10 @@
 import { Transition } from "@headlessui/react";
 import { Link } from "@remix-run/react";
-import type { PaginationMetadata, VideoTable } from "../db/models";
+import type { VideoTable } from "../db/models";
 import { $R, Z_PAGINATION_QUERY } from "../misc/routes";
 import { useTypedUrlQuery } from "../utils/loader-utils";
 import { cls } from "../utils/misc";
+import type { PaginationMetadata } from "../utils/pagination";
 import { parseVssId, toThumbnail } from "../utils/youtube";
 import { PopoverSimple } from "./popover";
 
