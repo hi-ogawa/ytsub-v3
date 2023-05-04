@@ -283,112 +283,8 @@ async function commandDbSeedImport(argsRaw: unknown) {
 }
 
 //
-// import-bookmark-entries
+// clean-data
 //
-
-const OLD_BOOKMARK_ENTRY_SCHEMA = z.object({
-  watchParameters: z.object({
-    videoId: z.string(),
-    captions: z.array(
-      z.object({
-        id: z.string(),
-        translation: z.string().optional(),
-      })
-    ),
-  }),
-  captionEntry: z.object({
-    begin: z.number(),
-    end: z.number(),
-    text1: z.string(),
-    text2: z.string(),
-  }),
-  bookmarkText: z.string(),
-});
-
-type OldBookamrkEntry = z.infer<typeof OLD_BOOKMARK_ENTRY_SCHEMA>;
-
-async function importBookmarkEntry(
-  old: OldBookamrkEntry,
-  userId: number
-): Promise<[boolean, string]> {
-  const {
-    watchParameters: {
-      videoId,
-      captions: [language1, language2],
-    },
-    captionEntry: { begin },
-    bookmarkText,
-  } = old;
-
-  const video = await findOne(
-    filterNewVideo({ videoId, language1, language2 }, userId)
-  );
-  if (!video) return [false, "Video not found"];
-
-  const captionEntry = await Q.captionEntries()
-    .where({ videoId: video.id })
-    .where(client.raw("abs(begin - ?) < 0.1", begin))
-    .first();
-  if (!captionEntry) return [false, "CaptionEntry not found"];
-
-  if (
-    !captionEntry.text1.includes(bookmarkText) &&
-    !captionEntry.text2.includes(bookmarkText)
-  ) {
-    return [false, "Bookmark text not match"];
-  }
-
-  let side: number;
-  let offset: number;
-  if (captionEntry.text1.includes(bookmarkText)) {
-    side = 0;
-    offset = captionEntry.text1.indexOf(bookmarkText);
-  } else {
-    side = 1;
-    offset = captionEntry.text2.indexOf(bookmarkText);
-  }
-
-  const found = await Q.bookmarkEntries()
-    .where({
-      userId,
-      videoId: video.id,
-      captionEntryId: captionEntry.id,
-      side,
-      offset,
-      text: bookmarkText,
-    })
-    .first();
-  if (found) {
-    return [false, "Bookmark already exists"];
-  }
-
-  const [id] = await Q.bookmarkEntries().insert({
-    userId,
-    videoId: video.id,
-    captionEntryId: captionEntry.id,
-    side,
-    offset,
-    text: bookmarkText,
-  });
-  return [true, `Success (id = ${id})`];
-}
-
-cli
-  .command("import-bookmark-entries <username>")
-  .action(async (username: string) => {
-    const user = await selectOne(T.users, E.eq(T.users.username, username));
-    tinyassert(user);
-
-    const input = await streamToString(process.stdin);
-    const olds = z.array(OLD_BOOKMARK_ENTRY_SCHEMA).parse(JSON.parse(input));
-    for (const old of olds) {
-      console.log(
-        `:: importing (${old.watchParameters.videoId}) ${old.bookmarkText}`
-      );
-      const [ok, message] = await importBookmarkEntry(old, user.id);
-      console.error(ok ? "✔" : "✘", message, ok ? "" : JSON.stringify(old));
-    }
-  });
 
 cli
   .command("clean-data <only-username>")
@@ -414,6 +310,10 @@ cli
         .where(E.eq(T.users.username, onlyUsername));
     }
   );
+
+//
+// reset-counter-cache:videos.bookmarkEntriesCount
+//
 
 cli
   .command("reset-counter-cache:videos.bookmarkEntriesCount")
@@ -443,6 +343,10 @@ cli
         .merge(["id", "bookmarkEntriesCount", "updatedAt"]);
     });
   });
+
+//
+// reset-counter-cache:practiceEntries.practiceActionsCount
+//
 
 cli
   .command("reset-counter-cache:practiceEntries.practiceActionsCount")
