@@ -12,7 +12,7 @@ import {
   toDeleteSql,
   toDeleteSqlInner,
 } from "./drizzle-client.server";
-import { deleteOrphans } from "./models";
+import { deleteOrphans } from "./helper";
 
 describe(toDeleteSql.name, () => {
   it("basic", async () => {

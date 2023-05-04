@@ -17,7 +17,7 @@ import {
   deleteOrphans,
   filterNewVideo,
   insertVideoAndCaptionEntries,
-} from "../db/models";
+} from "../db/helper";
 import {
   createUserCookie,
   findByUsername,

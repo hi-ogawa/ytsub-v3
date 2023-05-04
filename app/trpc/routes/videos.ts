@@ -1,7 +1,7 @@
 import { tinyassert } from "@hiogawa/utils";
 import { z } from "zod";
 import { E, T, db, limitOne, selectOne } from "../../db/drizzle-client.server";
-import { filterNewVideo, insertVideoAndCaptionEntries } from "../../db/models";
+import { filterNewVideo, insertVideoAndCaptionEntries } from "../../db/helper";
 import { Z_NEW_VIDEO, fetchCaptionEntries } from "../../utils/youtube";
 import { middlewares } from "../context";
 import { procedureBuilder } from "../factory";
