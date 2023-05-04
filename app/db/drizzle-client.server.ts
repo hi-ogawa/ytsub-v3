@@ -181,7 +181,6 @@ export async function findOne<
   return (await query.limit(1)).at(0);
 }
 
-// ts-prune-ignore-next
 export async function selectMany<SomeTable extends Table>(
   table: SomeTable,
   ...whereClauses: SQL[]
