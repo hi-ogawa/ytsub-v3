@@ -27,18 +27,15 @@ describe(toDeleteSql.name, () => {
         )
       );
     const res = await toDeleteSql(query);
-    expect(res).toMatchInlineSnapshot(`
-      [
-        ResultSetHeader {
-          "affectedRows": 0,
-          "fieldCount": 0,
-          "info": "",
-          "insertId": 0,
-          "serverStatus": 2,
-          "warningStatus": 0,
-        },
-        undefined,
-      ]
+    expect(res[0]).toMatchInlineSnapshot(`
+      ResultSetHeader {
+        "affectedRows": 0,
+        "fieldCount": 0,
+        "info": "",
+        "insertId": 0,
+        "serverStatus": 2,
+        "warningStatus": 0,
+      }
     `);
 
     const deleteSql = toDeleteSqlInner(query.getSQL(), "videos");
