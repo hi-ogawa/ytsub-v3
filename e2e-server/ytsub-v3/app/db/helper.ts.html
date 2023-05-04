@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for ytsub-v3/app/db/models.ts</title>
+    <title>Code coverage report for ytsub-v3/app/db/helper.ts</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../../../prettify.css" />
     <link rel="stylesheet" href="../../../base.css" />
@@ -19,13 +19,13 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../../../index.html">All files</a> / <a href="index.html">ytsub-v3/app/db</a> models.ts</h1>
+        <h1><a href="../../../index.html">All files</a> / <a href="index.html">ytsub-v3/app/db</a> helper.ts</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">98.84% </span>
+                <span class="strong">98.69% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>171/173</span>
+                <span class='fraction'>151/153</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">98.84% </span>
+                <span class="strong">98.69% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>171/173</span>
+                <span class='fraction'>151/153</span>
             </div>
         
             
@@ -216,40 +216,7 @@
 <a name='L151'></a><a href='#L151'>151</a>
 <a name='L152'></a><a href='#L152'>152</a>
 <a name='L153'></a><a href='#L153'>153</a>
-<a name='L154'></a><a href='#L154'>154</a>
-<a name='L155'></a><a href='#L155'>155</a>
-<a name='L156'></a><a href='#L156'>156</a>
-<a name='L157'></a><a href='#L157'>157</a>
-<a name='L158'></a><a href='#L158'>158</a>
-<a name='L159'></a><a href='#L159'>159</a>
-<a name='L160'></a><a href='#L160'>160</a>
-<a name='L161'></a><a href='#L161'>161</a>
-<a name='L162'></a><a href='#L162'>162</a>
-<a name='L163'></a><a href='#L163'>163</a>
-<a name='L164'></a><a href='#L164'>164</a>
-<a name='L165'></a><a href='#L165'>165</a>
-<a name='L166'></a><a href='#L166'>166</a>
-<a name='L167'></a><a href='#L167'>167</a>
-<a name='L168'></a><a href='#L168'>168</a>
-<a name='L169'></a><a href='#L169'>169</a>
-<a name='L170'></a><a href='#L170'>170</a>
-<a name='L171'></a><a href='#L171'>171</a>
-<a name='L172'></a><a href='#L172'>172</a>
-<a name='L173'></a><a href='#L173'>173</a>
-<a name='L174'></a><a href='#L174'>174</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<a name='L154'></a><a href='#L154'>154</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -386,13 +353,6 @@
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -412,19 +372,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import type { CaptionEntry, VideoMetadata } from "../utils/types";
 import type { NewVideo } from "../utils/youtube";
 import { E, T, TT, db, selectOne, toDeleteSql } from "./drizzle-client.server";
-&nbsp;
-// TODO: organize code
-&nbsp;
-export type UserTable = TT["users"];
-export type VideoTable = TT["videos"];
-export type CaptionEntryTable = TT["captionEntries"];
-export type BookmarkEntryTable = TT["bookmarkEntries"];
-export type DeckTable = TT["decks"];
-export type PracticeEntryTable = TT["practiceEntries"];
-&nbsp;
-//
-// Helper queries
-//
 &nbsp;
 export async function truncateAll(): Promise&lt;void&gt; {
   for (const table of Object.values(T)) {
@@ -563,7 +510,7 @@ export async function insertVideoAndCaptionEntries(
 export async function getVideoAndCaptionEntries(
   id: number
 ): Promise&lt;
-  { video: VideoTable; captionEntries: CaptionEntryTable[] } | undefined
+  { video: TT["videos"]; captionEntries: TT["captionEntries"][] } | undefined
 &gt; {
   const video = await selectOne(T.videos, E.eq(T.videos.id, id));
   if (video) {
@@ -575,13 +522,6 @@ export async function getVideoAndCaptionEntries(
   }
   return;
 }
-&nbsp;
-export interface PaginationMetadata {
-  total: number;
-  totalPage: number;
-  page: number;
-  perPage: number;
-}
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -589,7 +529,7 @@ export interface PaginationMetadata {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-05-04T09:53:14.981Z
+                at 2023-05-04T09:59:31.614Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>
