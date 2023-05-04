@@ -248,6 +248,7 @@ export async function toCountQuery<
 }
 
 // just for experiment and not actually used yet
+// TODO: can we rely on sub query?
 export function toDeleteQueryInner(sql: SQL, tableName: string): SQL {
   // replace
   //   select ... from
