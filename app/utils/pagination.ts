@@ -6,3 +6,8 @@ export const PAGINATION_PARAMS_SCHEMA = z.object({
 });
 
 export type PaginationParams = z.infer<typeof PAGINATION_PARAMS_SCHEMA>;
+
+export type PaginationMetadata = PaginationParams & {
+  total: number;
+  totalPage: number;
+};

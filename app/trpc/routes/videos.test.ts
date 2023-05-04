@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { E, T, db } from "../../db/drizzle-client.server";
+import { E, T, selectMany } from "../../db/drizzle-client.server";
 import { useUserVideo } from "../../misc/test-helper";
 import { trpc } from "../client";
 import { testTrpcClient } from "../test-helper";
@@ -10,7 +10,7 @@ describe(trpc.videos_destroy.mutationKey, () => {
   });
 
   function getVideos() {
-    return db.select().from(T.videos).where(E.eq(T.videos.id, hook.video.id));
+    return selectMany(T.videos, E.eq(T.videos.id, hook.video.id));
   }
 
   it("basic", async () => {

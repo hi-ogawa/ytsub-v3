@@ -83,6 +83,7 @@ jobs:
           cache: pnpm
       - run: pnpm i
       - run: make docker/up db/recreate
+      - run: pnpm knex migrate:status # initialize knex migration management tables
       - run: pnpm cli db:test-migrations --unit-test
       - run: pnpm cli db:test-migrations --reversibility-test
       - run: make db/reset/dev

@@ -7,7 +7,7 @@ import {
   uniq,
 } from "@hiogawa/utils";
 import superjson from "superjson";
-import { E, T, db, findOne } from "../db/drizzle-client.server";
+import { E, T, db, selectOne } from "../db/drizzle-client.server";
 import { DEFAULT_DECK_CACHE } from "../db/types";
 import { resetDeckCache } from "../utils/practice-system";
 
@@ -28,9 +28,7 @@ export async function importDeckJson(userId: number, dataJson: any) {
 }
 
 async function exportDeck(id: number) {
-  const deck = await findOne(
-    db.select().from(T.decks).where(E.eq(T.decks.id, id))
-  );
+  const deck = await selectOne(T.decks, E.eq(T.decks.id, id));
   tinyassert(deck);
 
   const practiceEntries = await db
@@ -77,9 +75,7 @@ async function exportDeck(id: number) {
 }
 
 async function importDeck(userId: number, data: ExportDeckData) {
-  const user = await findOne(
-    db.select().from(T.users).where(E.eq(T.users.id, userId))
-  );
+  const user = await selectOne(T.users, E.eq(T.users.id, userId));
   tinyassert(user);
 
   const {

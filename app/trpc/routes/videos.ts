@@ -1,7 +1,7 @@
 import { tinyassert } from "@hiogawa/utils";
 import { z } from "zod";
-import { E, T, db, findOne } from "../../db/drizzle-client.server";
-import { filterNewVideo, insertVideoAndCaptionEntries } from "../../db/models";
+import { E, T, db, limitOne, selectOne } from "../../db/drizzle-client.server";
+import { filterNewVideo, insertVideoAndCaptionEntries } from "../../db/helper";
 import { Z_NEW_VIDEO, fetchCaptionEntries } from "../../utils/youtube";
 import { middlewares } from "../context";
 import { procedureBuilder } from "../factory";
@@ -28,23 +28,16 @@ export const trpcRoutesVideos = {
       })
     )
     .mutation(async ({ input, ctx }) => {
-      const id = input.videoId;
-      const userId = ctx.user.id;
-
-      const video = await findOne(
-        db
-          .select()
-          .from(T.videos)
-          .where(E.and(E.eq(T.videos.id, id), E.eq(T.videos.userId, userId)))
-      );
+      const video = await findUserVideo({
+        videoId: input.videoId,
+        userId: ctx.user.id,
+      });
       tinyassert(video);
 
       // TODO: support deleting videos with associated bookmarkEntries and practiceEntries
-      const found = await findOne(
-        db
-          .select()
-          .from(T.bookmarkEntries)
-          .where(E.eq(T.bookmarkEntries.videoId, id))
+      const found = await selectOne(
+        T.bookmarkEntries,
+        E.eq(T.bookmarkEntries.videoId, input.videoId)
       );
       tinyassert(
         !found,
@@ -52,8 +45,10 @@ export const trpcRoutesVideos = {
       );
 
       await Promise.all([
-        db.delete(T.videos).where(E.eq(T.videos.id, id)),
-        db.delete(T.captionEntries).where(E.eq(T.captionEntries.videoId, id)),
+        db.delete(T.videos).where(E.eq(T.videos.id, input.videoId)),
+        db
+          .delete(T.captionEntries)
+          .where(E.eq(T.captionEntries.videoId, input.videoId)),
       ]);
     }),
 
@@ -64,9 +59,7 @@ export const trpcRoutesVideos = {
       })
     )
     .query(async ({ input, ctx }) => {
-      const video = await findOne(
-        db.select().from(T.videos).where(E.eq(T.videos.id, input.videoId))
-      );
+      const video = await selectOne(T.videos, E.eq(T.videos.id, input.videoId));
       tinyassert(video);
 
       const rows = await db
@@ -87,17 +80,10 @@ export const trpcRoutesVideos = {
       })
     )
     .query(async ({ input, ctx }) => {
-      const video = await findOne(
-        db
-          .select()
-          .from(T.videos)
-          .where(
-            E.and(
-              E.eq(T.videos.id, input.videoId),
-              E.eq(T.videos.userId, ctx.user.id)
-            )
-          )
-      );
+      const video = await findUserVideo({
+        videoId: input.videoId,
+        userId: ctx.user.id,
+      });
       tinyassert(video);
 
       const rows = await db
@@ -135,6 +121,24 @@ export const trpcRoutesVideos = {
         )
         // TODO: also probably fine to just use E.desc(T.bookmarkEntries.createdAt)
         .orderBy(E.desc(T.captionEntries.index));
-      return findOne(query);
+      return limitOne(query);
     }),
 };
+
+//
+// utils
+//
+
+function findUserVideo({
+  videoId,
+  userId,
+}: {
+  videoId: number;
+  userId: number;
+}) {
+  return selectOne(
+    T.videos,
+    E.eq(T.videos.id, videoId),
+    E.eq(T.videos.userId, userId)
+  );
+}

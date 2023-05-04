@@ -1,8 +1,9 @@
-import { once, tinyassert } from "@hiogawa/utils";
+import { difference, once, tinyassert } from "@hiogawa/utils";
 import { sql } from "drizzle-orm";
 import * as E from "drizzle-orm/expressions";
 import {
   InferModel,
+  MySqlDialect,
   boolean,
   customType,
   float,
@@ -13,13 +14,13 @@ import {
   text,
   timestamp,
 } from "drizzle-orm/mysql-core";
-import { MySql2Database, drizzle } from "drizzle-orm/mysql2";
-import { SQL, noopDecoder } from "drizzle-orm/sql";
+import { MySql2Database, MySql2Session, drizzle } from "drizzle-orm/mysql2";
+import { SQL } from "drizzle-orm/sql";
+import type { Connection } from "mysql2";
 import { createConnection } from "mysql2/promise";
 import { uninitialized } from "../utils/misc";
-import type { PaginationParams } from "../utils/pagination";
+import type { PaginationMetadata, PaginationParams } from "../utils/pagination";
 import knexfile from "./knexfile.server";
-import type { PaginationMetadata } from "./models";
 import type { DeckCache, PracticeActionType, PracticeQueueType } from "./types";
 
 //
@@ -162,19 +163,45 @@ export const T = {
   knex_migrations,
 };
 
+type TableName = keyof typeof T;
+
+type Table = (typeof T)[TableName];
+
 export type TT = { [K in keyof typeof T]: InferModel<(typeof T)[K]> };
 
 //
-// utils
+// utils (TODO: move to db/helper.ts?)
 //
 
 // re-export expressions since eq, isNull etc.. sounds too general
 export { E };
 
-export async function findOne<
+export async function limitOne<
   Q extends { limit: (i: number) => Promise<any[]> }
 >(query: Q): Promise<Awaited<ReturnType<Q["limit"]>>[0] | undefined> {
   return (await query.limit(1)).at(0);
+}
+
+export async function selectMany<SomeTable extends Table>(
+  table: SomeTable,
+  ...whereClauses: SQL[]
+) {
+  return db
+    .select()
+    .from(table)
+    .where(E.and(...whereClauses));
+}
+
+export async function selectOne<SomeTable extends Table>(
+  table: SomeTable,
+  ...whereClauses: SQL[]
+) {
+  return limitOne(
+    db
+      .select()
+      .from(table)
+      .where(E.and(...whereClauses))
+  );
 }
 
 export async function toPaginationResult<
@@ -195,7 +222,7 @@ export async function toPaginationResult<
   // aggregate count
   delete q.config.limit;
   delete q.config.offset;
-  const total = await toCountQuery(q);
+  const total = await toCountSql(q);
 
   const pagination = {
     total,
@@ -206,9 +233,9 @@ export async function toPaginationResult<
   return [rows, pagination];
 }
 
-export async function toCountQuery<
-  Q extends { execute: () => Promise<unknown> }
->(query: Q): Promise<number> {
+export async function toCountSql<Q extends { execute: () => Promise<unknown> }>(
+  query: Q
+): Promise<number> {
   const q = query as any;
   q.config.fieldsList = [
     {
@@ -221,8 +248,8 @@ export async function toCountQuery<
   return count;
 }
 
-// just for experiment and not actually used yet
-export function toDeleteQueryInner(sql: SQL, tableName: string): SQL {
+// a little hack to make DELETE query based on SELECT since drizzle doesn't support complicated DELETE query with JOIN.
+export function toDeleteSqlInner(sql: SQL, tableName: string): SQL {
   // replace
   //   select ... from
   // with
@@ -231,17 +258,59 @@ export function toDeleteQueryInner(sql: SQL, tableName: string): SQL {
   tinyassert(c1 === "select ");
   tinyassert(c2 instanceof SQL);
   tinyassert(c3 === " from ");
-  sql.queryChunks.splice(1, 2, " delete `", tableName, "`.* ");
-  sql.mapWith(noopDecoder);
+  sql.queryChunks.splice(1, 2, " delete `", tableName, "` ");
   return sql;
 }
 
-export async function toDeleteQuery<Q extends { getSQL: () => SQL }>(
-  select: Q
-) {
+export async function toDeleteSql<Q extends { getSQL: () => SQL }>(select: Q) {
   const tableName = (select as any).tableName;
   tinyassert(typeof tableName === "string");
-  await db.execute(toDeleteQueryInner(select.getSQL(), tableName));
+  return await db.execute(toDeleteSqlInner(select.getSQL(), tableName));
+}
+
+export function dbRaw(...args: Parameters<typeof sql>) {
+  return db.execute(sql(...args));
+}
+
+export async function dbShowTables(): Promise<string[]> {
+  const [rows]: any = await dbRaw`SHOW TABLES`;
+  return rows.map((row: any) => Object.values(row)[0]);
+}
+
+// used to check knex migrations up/down reversibility
+export async function dbGetSchema(): Promise<Record<string, any>> {
+  const names = await dbShowTables();
+  const result: Record<string, any> = {};
+  for (const name of names) {
+    const [fields]: any = await dbRaw`DESCRIBE ${sql.raw(name)}`;
+    const [indices]: any = await dbRaw`SHOW INDEX FROM ${sql.raw(name)}`;
+    result[name] = {
+      describe: Object.fromEntries(fields.map((row: any) => [row.Field, row])),
+      index: Object.fromEntries(indices.map((row: any) => [row.Key_name, row])),
+    };
+  }
+  return result;
+}
+
+// equilvalent of `knex migrate:status` cli
+export async function dbGetMigrationStatus() {
+  const rows = await db.select().from(T.knex_migrations);
+
+  const fs = await import("fs");
+  const config = knexfile();
+  const files = await fs.promises.readdir(config.migrations.directory);
+  files.sort();
+
+  const completedFiles = rows.map((row) => row.name);
+  const pendingFiles = difference(files, completedFiles);
+  const brokenFiles = difference(completedFiles, files);
+
+  return {
+    rows,
+    completedFiles,
+    pendingFiles,
+    brokenFiles,
+  };
 }
 
 //
@@ -260,7 +329,7 @@ export const initializeDrizzleClient = once(async () => {
 
   async function inner() {
     const config = knexfile();
-    const connection = await createConnection(config.connection as any);
+    const connection = await createConnection(config.connection);
     return drizzle(connection, {
       logger: process.env["DEBUG"]?.includes("drizzle"), // enable query logging by DEBUG=drizzle
     });
@@ -268,5 +337,13 @@ export const initializeDrizzleClient = once(async () => {
 });
 
 export async function finalizeDrizzleClient() {
-  (db as any).session.client.destroy();
+  __dbExtra().connection.destroy();
+}
+
+export function __dbExtra() {
+  return {
+    connection: (db as any).session.client as Connection,
+    session: (db as any).session as MySql2Session,
+    dialect: (db as any).dialect as MySqlDialect,
+  };
 }

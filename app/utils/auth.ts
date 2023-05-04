@@ -1,7 +1,7 @@
 import { isNil, tinyassert } from "@hiogawa/utils";
 import type { Session } from "@remix-run/server-runtime";
 import bcrypt from "bcryptjs";
-import { E, T, db, findOne } from "../db/drizzle-client.server";
+import { E, T, db, selectOne } from "../db/drizzle-client.server";
 import type { UserTable } from "../db/models";
 import { AppError } from "./errors";
 import { crypto } from "./node.server";
@@ -61,9 +61,7 @@ export async function register({
 export async function findByUsername(
   username: string
 ): Promise<UserTable | undefined> {
-  return findOne(
-    db.select().from(T.users).where(E.eq(T.users.username, username))
-  );
+  return selectOne(T.users, E.eq(T.users.username, username));
 }
 
 export async function verifySignin(data: {
@@ -101,7 +99,7 @@ export async function getSessionUser(
 ): Promise<UserTable | undefined> {
   const id = getSessionUserId(session);
   if (!isNil(id)) {
-    return findOne(db.select().from(T.users).where(E.eq(T.users.id, id)));
+    return selectOne(T.users, E.eq(T.users.id, id));
   }
   return;
 }

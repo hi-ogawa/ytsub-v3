@@ -1,7 +1,5 @@
 import { sql } from "drizzle-orm";
-import { client } from "../db/client.server";
-import { E, T, db } from "../db/drizzle-client.server";
-import { Q } from "../db/models";
+import { E, T, db, dbRaw } from "../db/drizzle-client.server";
 import { initializeServer } from "./initialize-server";
 
 /*
@@ -16,11 +14,10 @@ $ pnpm console
 async function main() {
   await initializeServer();
   Object.assign(globalThis, {
-    client,
-    Q,
     T,
     E,
     db,
+    dbRaw,
     sql,
   });
 }
