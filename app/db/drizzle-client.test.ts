@@ -7,11 +7,11 @@ import {
   db,
   selectMany,
   selectOne,
-  toDeleteQuery,
-  toDeleteQueryInner,
+  toDeleteSql,
+  toDeleteSqlInner,
 } from "./drizzle-client.server";
 
-describe("toDeleteQueryInner", () => {
+describe(toDeleteSqlInner.name, () => {
   it("basic", async () => {
     const query = db
       .select()
@@ -25,14 +25,14 @@ describe("toDeleteQueryInner", () => {
           E.isNotNull(T.videos.userId) // not delete "anonymouse" videos
         )
       );
-    const res = await toDeleteQuery(query);
+    const res = await toDeleteSql(query);
     expect(res).toMatchInlineSnapshot("undefined");
 
-    const deleteSql = toDeleteQueryInner(query.getSQL(), "videos");
+    const deleteSql = toDeleteSqlInner(query.getSQL(), "videos");
     expect((db as any).dialect.sqlToQuery(deleteSql)).toMatchInlineSnapshot(`
       {
         "params": [],
-        "sql": " delete \`videos\`.*  from \`videos\` left join \`users\`  on \`users\`.\`id\` = \`videos\`.\`userId\` where (FALSE and \`users\`.\`id\` is null and \`videos\`.\`userId\` is not null)",
+        "sql": " delete \`videos\`  from \`videos\` left join \`users\`  on \`users\`.\`id\` = \`videos\`.\`userId\` where (FALSE and \`users\`.\`id\` is null and \`videos\`.\`userId\` is not null)",
         "typings": [],
       }
     `);

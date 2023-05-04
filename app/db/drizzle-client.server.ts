@@ -221,7 +221,7 @@ export async function toPaginationResult<
   // aggregate count
   delete q.config.limit;
   delete q.config.offset;
-  const total = await toCountQuery(q);
+  const total = await toCountSql(q);
 
   const pagination = {
     total,
@@ -232,9 +232,9 @@ export async function toPaginationResult<
   return [rows, pagination];
 }
 
-export async function toCountQuery<
-  Q extends { execute: () => Promise<unknown> }
->(query: Q): Promise<number> {
+export async function toCountSql<Q extends { execute: () => Promise<unknown> }>(
+  query: Q
+): Promise<number> {
   const q = query as any;
   q.config.fieldsList = [
     {
@@ -247,9 +247,8 @@ export async function toCountQuery<
   return count;
 }
 
-// just for experiment and not actually used yet
-// TODO: can we rely on sub query?
-export function toDeleteQueryInner(sql: SQL, tableName: string): SQL {
+// a little hack to generate DELETE query based on SELECT since drizzle doesn't support complicated DELETE query with JOIN.
+export function toDeleteSqlInner(sql: SQL, tableName: string): SQL {
   // replace
   //   select ... from
   // with
@@ -258,17 +257,15 @@ export function toDeleteQueryInner(sql: SQL, tableName: string): SQL {
   tinyassert(c1 === "select ");
   tinyassert(c2 instanceof SQL);
   tinyassert(c3 === " from ");
-  sql.queryChunks.splice(1, 2, " delete `", tableName, "`.* ");
+  sql.queryChunks.splice(1, 2, " delete `", tableName, "` ");
   sql.mapWith(noopDecoder);
   return sql;
 }
 
-export async function toDeleteQuery<Q extends { getSQL: () => SQL }>(
-  select: Q
-) {
+export async function toDeleteSql<Q extends { getSQL: () => SQL }>(select: Q) {
   const tableName = (select as any).tableName;
   tinyassert(typeof tableName === "string");
-  await db.execute(toDeleteQueryInner(select.getSQL(), tableName));
+  await db.execute(toDeleteSqlInner(select.getSQL(), tableName));
 }
 
 //

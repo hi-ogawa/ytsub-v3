@@ -1,7 +1,6 @@
 import type { CaptionEntry, VideoMetadata } from "../utils/types";
 import type { NewVideo } from "../utils/youtube";
-import { client } from "./client.server";
-import { E, T, TT, db, selectOne } from "./drizzle-client.server";
+import { E, T, TT, db, selectOne, toDeleteSql } from "./drizzle-client.server";
 
 // TODO: organize code
 
@@ -11,17 +10,6 @@ export type CaptionEntryTable = TT["captionEntries"];
 export type BookmarkEntryTable = TT["bookmarkEntries"];
 export type DeckTable = TT["decks"];
 export type PracticeEntryTable = TT["practiceEntries"];
-type PracticeActionTable = TT["practiceActions"];
-
-// TODO: rewrite `deleteOrphans` with drizzle so that we can remove this legacy `Q`
-const Q = {
-  videos: () => client<VideoTable>("videos"),
-  captionEntries: () => client<CaptionEntryTable>("captionEntries"),
-  bookmarkEntries: () => client<BookmarkEntryTable>("bookmarkEntries"),
-  decks: () => client<DeckTable>("decks"),
-  practiceEntries: () => client<PracticeEntryTable>("practiceEntries"),
-  practiceActions: () => client<PracticeActionTable>("practiceActions"),
-};
 
 //
 // Helper queries
@@ -35,39 +23,70 @@ export async function truncateAll(): Promise<void> {
 
 // no "FOREIGN KEY" constraint https://docs.planetscale.com/learn/operating-without-foreign-key-constraints#cleaning-up-orphaned-rows
 export async function deleteOrphans(): Promise<void> {
-  await Q.videos()
-    .delete()
-    .leftJoin("users", "users.id", "videos.userId")
-    .where("users.id", null)
-    .whereNot("videos.userId", null) // not delete "anonymous" videos
-    .whereNot("videos.id", null);
-  await Q.captionEntries()
-    .delete()
-    .leftJoin("videos", "videos.id", "captionEntries.videoId")
-    .where("videos.id", null);
-  await Q.bookmarkEntries()
-    .delete()
-    .leftJoin(
-      "captionEntries",
-      "captionEntries.id",
-      "bookmarkEntries.captionEntryId"
-    )
-    .where("captionEntries.id", null);
-  await Q.decks()
-    .delete()
-    .leftJoin("users", "users.id", "decks.userId")
-    .where("users.id", null)
-    .whereNot("decks.id", null);
-  await Q.practiceEntries()
-    .delete()
-    .leftJoin("decks", "decks.id", "practiceEntries.deckId")
-    .where("decks.id", null)
-    .whereNot("practiceEntries.id", null);
-  await Q.practiceActions()
-    .delete()
-    .leftJoin("users", "users.id", "practiceActions.userId")
-    .where("users.id", null)
-    .whereNot("practiceActions.id", null);
+  // users -> videos
+  await toDeleteSql(
+    db
+      .select()
+      .from(T.videos)
+      .leftJoin(T.users, E.eq(T.users.id, T.videos.userId))
+      .where(
+        E.and(
+          E.isNull(T.users.id as any),
+          E.isNotNull(T.videos.userId as any) // keep "anonymous" videos
+        )
+      )
+  );
+
+  // videos -> captionEntries
+  await toDeleteSql(
+    db
+      .select()
+      .from(T.captionEntries)
+      .leftJoin(T.videos, E.eq(T.videos.id, T.captionEntries.videoId))
+      .where(E.isNull(T.videos.id as any))
+  );
+
+  // captionEntries -> bookmarkEntries
+  await toDeleteSql(
+    db
+      .select()
+      .from(T.bookmarkEntries)
+      .leftJoin(
+        T.captionEntries,
+        E.eq(T.captionEntries.id, T.bookmarkEntries.captionEntryId)
+      )
+      .where(E.isNull(T.captionEntries.id as any))
+  );
+
+  // users -> decks
+  await toDeleteSql(
+    db
+      .select()
+      .from(T.decks)
+      .leftJoin(T.users, E.eq(T.users.id, T.decks.userId))
+      .where(E.isNull(T.users.id as any))
+  );
+
+  // decks -> practiceEntries
+  await toDeleteSql(
+    db
+      .select()
+      .from(T.practiceEntries)
+      .leftJoin(T.decks, E.eq(T.decks.id, T.practiceEntries.deckId))
+      .where(E.isNull(T.decks.id as any))
+  );
+
+  // practiceEntries -> practiceActions
+  await toDeleteSql(
+    db
+      .select()
+      .from(T.practiceActions)
+      .leftJoin(
+        T.practiceEntries,
+        E.eq(T.practiceEntries.id, T.practiceActions.practiceEntryId)
+      )
+      .where(E.isNull(T.practiceEntries.id as any))
+  );
 }
 
 export function filterNewVideo(
