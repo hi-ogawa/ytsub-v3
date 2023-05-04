@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">57.85% </span>
+                <span class="strong">65.27% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>81/140</span>
+                <span class='fraction'>94/144</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>2/2</span>
+                <span class='fraction'>3/3</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>1/1</span>
+                <span class='fraction'>2/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">57.85% </span>
+                <span class="strong">65.27% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>81/140</span>
+                <span class='fraction'>94/144</span>
             </div>
         
             
@@ -203,7 +203,11 @@
 <a name='L138'></a><a href='#L138'>138</a>
 <a name='L139'></a><a href='#L139'>139</a>
 <a name='L140'></a><a href='#L140'>140</a>
-<a name='L141'></a><a href='#L141'>141</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L141'></a><a href='#L141'>141</a>
+<a name='L142'></a><a href='#L142'>142</a>
+<a name='L143'></a><a href='#L143'>143</a>
+<a name='L144'></a><a href='#L144'>144</a>
+<a name='L145'></a><a href='#L145'>145</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -264,13 +268,6 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -292,13 +289,6 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -343,9 +333,27 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { tinyassert } from "@hiogawa/utils";
 import { z } from "zod";
-import { E, T, db, findOne } from "../../db/drizzle-client.server";
+import { E, T, db, findOne, selectOne } from "../../db/drizzle-client.server";
 import { filterNewVideo, insertVideoAndCaptionEntries } from "../../db/models";
 import { Z_NEW_VIDEO, fetchCaptionEntries } from "../../utils/youtube";
 import { middlewares } from "../context";
@@ -373,23 +381,16 @@ export const trpcRoutesVideos = {
       })
     )
     .mutation(async ({ input, ctx }) =&gt; {
-      const id = input.videoId;
-      const userId = ctx.user.id;
-&nbsp;
-      const video = await findOne(
-        db
-          .select()
-          .from(T.videos)
-          .where(E.and(E.eq(T.videos.id, id), E.eq(T.videos.userId, userId)))
-      );
+      const video = await findUserVideo({
+        videoId: input.videoId,
+        userId: ctx.user.id,
+      });
       tinyassert(video);
 &nbsp;
       // TODO: support deleting videos with associated bookmarkEntries and practiceEntries
-      const found = await findOne(
-        db
-          .select()
-          .from(T.bookmarkEntries)
-          .where(E.eq(T.bookmarkEntries.videoId, id))
+      const found = await selectOne(
+        T.bookmarkEntries,
+        E.eq(T.bookmarkEntries.videoId, input.videoId)
       );
       tinyassert(
         !found,
@@ -397,8 +398,10 @@ export const trpcRoutesVideos = {
       );
 &nbsp;
       await Promise.all([
-        db.delete(T.videos).where(E.eq(T.videos.id, id)),
-        db.delete(T.captionEntries).where(E.eq(T.captionEntries.videoId, id)),
+        db.delete(T.videos).where(E.eq(T.videos.id, input.videoId)),
+        db
+          .delete(T.captionEntries)
+          .where(E.eq(T.captionEntries.videoId, input.videoId)),
       ]);
     }),
 &nbsp;
@@ -409,9 +412,7 @@ export const trpcRoutesVideos = {
       })
     )
     .query(async ({ input, ctx }) =&gt; {
-<span class="cstat-no" title="statement not covered" >      const video = await findOne(</span>
-<span class="cstat-no" title="statement not covered" >        db.select().from(T.videos).where(E.eq(T.videos.id, input.videoId))</span>
-<span class="cstat-no" title="statement not covered" >      );</span>
+<span class="cstat-no" title="statement not covered" >      const video = await selectOne(T.videos, E.eq(T.videos.id, input.videoId));</span>
 <span class="cstat-no" title="statement not covered" >      tinyassert(video);</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >      const rows = await db</span>
@@ -432,17 +433,10 @@ export const trpcRoutesVideos = {
       })
     )
     .query(async ({ input, ctx }) =&gt; {
-<span class="cstat-no" title="statement not covered" >      const video = await findOne(</span>
-<span class="cstat-no" title="statement not covered" >        db</span>
-<span class="cstat-no" title="statement not covered" >          .select()</span>
-<span class="cstat-no" title="statement not covered" >          .from(T.videos)</span>
-<span class="cstat-no" title="statement not covered" >          .where(</span>
-<span class="cstat-no" title="statement not covered" >            E.and(</span>
-<span class="cstat-no" title="statement not covered" >              E.eq(T.videos.id, input.videoId),</span>
-<span class="cstat-no" title="statement not covered" >              E.eq(T.videos.userId, ctx.user.id)</span>
-<span class="cstat-no" title="statement not covered" >            )</span>
-<span class="cstat-no" title="statement not covered" >          )</span>
-<span class="cstat-no" title="statement not covered" >      );</span>
+<span class="cstat-no" title="statement not covered" >      const video = await findUserVideo({</span>
+<span class="cstat-no" title="statement not covered" >        videoId: input.videoId,</span>
+<span class="cstat-no" title="statement not covered" >        userId: ctx.user.id,</span>
+<span class="cstat-no" title="statement not covered" >      });</span>
 <span class="cstat-no" title="statement not covered" >      tinyassert(video);</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >      const rows = await db</span>
@@ -483,6 +477,24 @@ export const trpcRoutesVideos = {
 <span class="cstat-no" title="statement not covered" >      return findOne(query);</span>
     }),
 };
+&nbsp;
+//
+// utils
+//
+&nbsp;
+function findUserVideo({
+  videoId,
+  userId,
+}: {
+  videoId: number;
+  userId: number;
+}) {
+  return selectOne(
+    T.videos,
+    E.eq(T.videos.id, videoId),
+    E.eq(T.videos.userId, userId)
+  );
+}
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -490,7 +502,7 @@ export const trpcRoutesVideos = {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-05-04T03:58:07.504Z
+                at 2023-05-04T05:47:55.502Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
