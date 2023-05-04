@@ -114,8 +114,8 @@ dependencies:
 
 devDependencies:
   '@hiogawa/isort-ts':
-    specifier: 1.0.1
-    version: 1.0.1(prettier@2.8.4)(typescript@4.9.5)
+    specifier: 1.0.2-pre.0
+    version: 1.0.2-pre.0(prettier@2.8.4)(typescript@4.9.5)
   '@hiogawa/unocss-preset-antd':
     specifier: 2.2.1-pre.2
     version: 2.2.1-pre.2(@unocss/preset-uno@0.51.8)(unocss@0.50.6)
@@ -2103,8 +2103,8 @@ packages:
       react-dom: 18.2.0(react@18.2.0)
     dev: false
 
-  /@hiogawa/isort-ts@1.0.1(prettier@2.8.4)(typescript@4.9.5):
-    resolution: {integrity: sha512-m2fNg8ovnI18XBQK/sTvYx7lZzq96CZjun8YEpV8obGOZhvyV6x9OEXZ/iJYgh2n5EQAdurqIXSrM8H8oKWSTA==}
+  /@hiogawa/isort-ts@1.0.2-pre.0(prettier@2.8.4)(typescript@4.9.5):
+    resolution: {integrity: sha512-z/dVlCz2FiFTvGnMurStGzJ5YIlWXVPXQfEDHkp5TuDXqgXz7UF7GNEJE/Gti0SAXH2Lk82N/vMMc18VJxdpFA==}
     hasBin: true
     peerDependencies:
       prettier: '*'
