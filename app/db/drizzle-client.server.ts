@@ -279,31 +279,16 @@ export async function dbShowTables(): Promise<string[]> {
 }
 
 // used to check knex migrations up/down reversibility
-export async function dbGetSchema(options?: {
-  showCreateTable?: boolean;
-  includeKnex?: boolean;
-}): Promise<Record<string, any>> {
-  let names = await dbShowTables();
-  if (!options?.includeKnex) {
-    names = names.filter((name) => !name.startsWith("knex_"));
-  }
+export async function dbGetSchema(): Promise<Record<string, any>> {
+  const names = await dbShowTables();
   const result: Record<string, any> = {};
   for (const name of names) {
-    if (options?.showCreateTable) {
-      const [rows]: any = await dbRaw`SHOW CREATE TABLE ${sql.raw(name)}`;
-      result[name] = rows[0]["Create Table"];
-    } else {
-      const [fields]: any = await dbRaw`DESCRIBE ${sql.raw(name)}`;
-      const [indices]: any = await dbRaw`SHOW INDEX FROM ${sql.raw(name)}`;
-      result[name] = {
-        describe: Object.fromEntries(
-          fields.map((row: any) => [row.Field, row])
-        ),
-        index: Object.fromEntries(
-          indices.map((row: any) => [row.Key_name, row])
-        ),
-      };
-    }
+    const [fields]: any = await dbRaw`DESCRIBE ${sql.raw(name)}`;
+    const [indices]: any = await dbRaw`SHOW INDEX FROM ${sql.raw(name)}`;
+    result[name] = {
+      describe: Object.fromEntries(fields.map((row: any) => [row.Field, row])),
+      index: Object.fromEntries(indices.map((row: any) => [row.Key_name, row])),
+    };
   }
   return result;
 }
