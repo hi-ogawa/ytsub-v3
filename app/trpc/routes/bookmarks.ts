@@ -139,12 +139,6 @@ export const trpcRoutesBookmarks = {
           T.captionEntries,
           E.eq(T.captionEntries.id, T.bookmarkEntries.captionEntryId)
         )
-        .where(
-          E.and(
-            E.eq(T.bookmarkEntries.userId, ctx.user.id),
-            mapOption(input.q, (v) => E.like(T.bookmarkEntries.text, `%${v}%`))
-          )
-        )
         .orderBy(E.desc(T.bookmarkEntries.createdAt));
 
       const nextCursor = rows.length === limit ? input.cursor + limit : null;
