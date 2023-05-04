@@ -5,7 +5,7 @@ import { cac } from "cac";
 import consola from "consola";
 import { z } from "zod";
 import { client } from "../db/client.server";
-import { E, T, db, findOne } from "../db/drizzle-client.server";
+import { E, T, db, findOne, selectOne } from "../db/drizzle-client.server";
 import {
   Q,
   deleteOrphans,
@@ -154,7 +154,10 @@ cli
       { language1, language2 }: { language1: string; language2: string }
     ) => {
       const user = await register({ username, password });
-      await Q.users().update({ language1, language2 }).where("id", user.id);
+      await db
+        .update(T.users)
+        .set({ language1, language2 })
+        .where(E.eq(T.users.id, user.id));
       await printSession(username, password);
     }
   );
@@ -173,10 +176,10 @@ cli
     const newVideos: NewVideo[] = JSON.parse(input);
     let userId = undefined;
     if (options.username) {
-      const user = await Q.users()
-        .where("username", options.username)
-        .select("id")
-        .first();
+      const user = await selectOne(
+        T.users,
+        E.eq(T.users.username, options.username)
+      );
       tinyassert(user);
       userId = user.id;
     }
@@ -373,10 +376,7 @@ async function importBookmarkEntry(
 cli
   .command("import-bookmark-entries <username>")
   .action(async (username: string) => {
-    const user = await Q.users()
-      .where("username", username)
-      .select("id")
-      .first();
+    const user = await selectOne(T.users, E.eq(T.users.username, username));
     tinyassert(user);
 
     const input = await streamToString(process.stdin);
@@ -399,16 +399,19 @@ cli
       options: { deleteAnonymousVideos: boolean }
     ) => {
       // delete except `onlyUsername`
-      await Q.users().delete().whereNot("username", onlyUsername);
+      await db
+        .delete(T.users)
+        .where(E.not(E.eq(T.users.username, onlyUsername)));
       if (options.deleteAnonymousVideos) {
         // delete anonymous videos
         await Q.videos().delete().where("userId", null);
       }
       await deleteOrphans();
       // rename to "dev"
-      await Q.users()
-        .update({ username: "dev", passwordHash: await toPasswordHash("dev") })
-        .where("username", onlyUsername);
+      await db
+        .update(T.users)
+        .set({ username: "dev", passwordHash: await toPasswordHash("dev") })
+        .where(E.eq(T.users.username, onlyUsername));
     }
   );
 
