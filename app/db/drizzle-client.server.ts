@@ -170,7 +170,7 @@ type Table = (typeof T)[TableName];
 export type TT = { [K in keyof typeof T]: InferModel<(typeof T)[K]> };
 
 //
-// utils
+// utils (TODO: move to db/helper.ts?)
 //
 
 // re-export expressions since eq, isNull etc.. sounds too general
