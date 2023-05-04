@@ -13,9 +13,8 @@ export type DeckTable = TT["decks"];
 export type PracticeEntryTable = TT["practiceEntries"];
 type PracticeActionTable = TT["practiceActions"];
 
-// TODO: used only for `deleteOrphans`
+// TODO: rewrite `deleteOrphans` with drizzle so that we can remove this legacy `Q`
 const Q = {
-  users: () => client<UserTable>("users"),
   videos: () => client<VideoTable>("videos"),
   captionEntries: () => client<CaptionEntryTable>("captionEntries"),
   bookmarkEntries: () => client<BookmarkEntryTable>("bookmarkEntries"),
