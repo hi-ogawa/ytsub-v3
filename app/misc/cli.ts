@@ -5,8 +5,14 @@ import { cac } from "cac";
 import consola from "consola";
 import { sql } from "drizzle-orm";
 import { z } from "zod";
-import { client } from "../db/client.server";
-import { E, T, db, dbGetSchema, selectOne } from "../db/drizzle-client.server";
+import {
+  E,
+  T,
+  db,
+  dbGetMigrationStatus,
+  dbGetSchema,
+  selectOne,
+} from "../db/drizzle-client.server";
 import {
   deleteOrphans,
   filterNewVideo,
@@ -43,18 +49,15 @@ async function clieDbTestMigrations(options: {
   unitTest: boolean;
   reversibilityTest: boolean;
 }) {
-  const [completed, pending] = (await client.migrate.list()) as [
-    { name: string }[],
-    { file: string }[]
-  ];
+  const { completedFiles, pendingFiles } = await dbGetMigrationStatus();
 
   console.error(":: list completed");
-  for (const { name } of completed) {
-    console.error(name);
+  for (const file of completedFiles) {
+    console.error(file);
   }
 
   console.error(":: list pending");
-  for (const { file } of pending) {
+  for (const file of pendingFiles) {
     console.error(file);
   }
 
@@ -66,17 +69,17 @@ async function clieDbTestMigrations(options: {
     process.env.MIGRATION_UNIT_TEST = "1";
   }
 
-  const n = pending.length;
+  const n = pendingFiles.length;
   ups.push(await dbGetSchema());
   for (const i of range(n)) {
-    console.error(`(⇑:${i + 1}/${n}) ${pending[i].file}`);
+    console.error(`(⇑:${i + 1}/${n}) ${pendingFiles[i]}`);
     await exec("pnpm knex migrate:up");
     ups.push(await dbGetSchema());
   }
 
   downs.unshift(await dbGetSchema());
   for (const i of range(n)) {
-    console.error(`(⇓:${i + 1}/${n}) ${pending[n - i - 1].file}`);
+    console.error(`(⇓:${i + 1}/${n}) ${pendingFiles[n - i - 1]}`);
     await exec("pnpm knex migrate:down");
     downs.unshift(await dbGetSchema());
   }

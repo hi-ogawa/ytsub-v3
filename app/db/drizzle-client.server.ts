@@ -1,4 +1,4 @@
-import { once, tinyassert } from "@hiogawa/utils";
+import { difference, once, tinyassert } from "@hiogawa/utils";
 import { sql } from "drizzle-orm";
 import * as E from "drizzle-orm/expressions";
 import {
@@ -293,6 +293,27 @@ export async function dbGetSchema(): Promise<Record<string, any>> {
   return result;
 }
 
+// equilvalent of `knex migrate:status` cli
+export async function dbGetMigrationStatus() {
+  const rows = await db.select().from(T.knex_migrations);
+
+  const fs = await import("fs");
+  const config = knexfile();
+  const files = await fs.promises.readdir(config.migrations.directory);
+  files.sort();
+
+  const completedFiles = rows.map((row) => row.name);
+  const pendingFiles = difference(files, completedFiles);
+  const brokenFiles = difference(completedFiles, files);
+
+  return {
+    rows,
+    completedFiles,
+    pendingFiles,
+    brokenFiles,
+  };
+}
+
 //
 // client
 //
@@ -309,7 +330,7 @@ export const initializeDrizzleClient = once(async () => {
 
   async function inner() {
     const config = knexfile();
-    const connection = await createConnection(config.connection as any);
+    const connection = await createConnection(config.connection);
     return drizzle(connection, {
       logger: process.env["DEBUG"]?.includes("drizzle"), // enable query logging by DEBUG=drizzle
     });
