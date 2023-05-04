@@ -1,7 +1,6 @@
 import { sql } from "drizzle-orm";
 import { client } from "../db/client.server";
 import { E, T, db } from "../db/drizzle-client.server";
-import { Q } from "../db/models";
 import { initializeServer } from "./initialize-server";
 
 /*
@@ -17,7 +16,6 @@ async function main() {
   await initializeServer();
   Object.assign(globalThis, {
     client,
-    Q,
     T,
     E,
     db,

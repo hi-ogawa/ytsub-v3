@@ -13,8 +13,8 @@ export type DeckTable = TT["decks"];
 export type PracticeEntryTable = TT["practiceEntries"];
 type PracticeActionTable = TT["practiceActions"];
 
-// TODO: these are only used in `models.ts` or `cli.ts`
-export const Q = {
+// TODO: used only for `deleteOrphans`
+const Q = {
   users: () => client<UserTable>("users"),
   videos: () => client<VideoTable>("videos"),
   captionEntries: () => client<CaptionEntryTable>("captionEntries"),

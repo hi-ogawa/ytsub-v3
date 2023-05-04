@@ -3,11 +3,11 @@ import fs from "node:fs";
 import { objectPick, range, tinyassert, zip } from "@hiogawa/utils";
 import { cac } from "cac";
 import consola from "consola";
+import { sql } from "drizzle-orm";
 import { z } from "zod";
 import { client } from "../db/client.server";
 import { E, T, db, findOne, selectOne } from "../db/drizzle-client.server";
 import {
-  Q,
   deleteOrphans,
   filterNewVideo,
   insertVideoAndCaptionEntries,
@@ -318,30 +318,25 @@ cli
 cli
   .command("reset-counter-cache:videos.bookmarkEntriesCount")
   .action(async () => {
-    await client.transaction(async (trx) => {
-      const rows = await Q.videos()
-        .transacting(trx)
-        .select({
-          id: "videos.id",
-          bookmarkEntriesCount: client.raw(
-            "COALESCE(COUNT(bookmarkEntries.id), 0)"
-          ),
-          updatedAt: "videos.updatedAt", // prevent changing `updatedAt` timestamp for the migration
-          videoId: client.raw("'dummy'"),
-          language1_id: client.raw("'dummy'"),
-          language2_id: client.raw("'dummy'"),
-          title: client.raw("'dummy'"),
-          author: client.raw("'dummy'"),
-          channelId: client.raw("'dummy'"),
+    // TODO: single UPDATE statement with sub query?
+    const rows = await db
+      .select({
+        id: T.videos.id,
+        bookmarkEntriesCount: sql<number>`COALESCE(COUNT(${T.bookmarkEntries.id}), 0)`,
+        udpatedAt: T.videos.updatedAt,
+      })
+      .from(T.videos)
+      .leftJoin(T.bookmarkEntries, E.eq(T.bookmarkEntries.videoId, T.videos.id))
+      .groupBy(T.videos.id);
+    for (const row of rows) {
+      await db
+        .update(T.videos)
+        .set({
+          bookmarkEntriesCount: row.bookmarkEntriesCount,
+          updatedAt: row.udpatedAt, // keep current timestamp
         })
-        .leftJoin("bookmarkEntries", "bookmarkEntries.videoId", "videos.id")
-        .groupBy("videos.id");
-      await Q.videos()
-        .transacting(trx)
-        .insert(rows)
-        .onConflict("id")
-        .merge(["id", "bookmarkEntriesCount", "updatedAt"]);
-    });
+        .where(E.eq(T.videos.id, row.id));
+    }
   });
 
 //
@@ -351,33 +346,28 @@ cli
 cli
   .command("reset-counter-cache:practiceEntries.practiceActionsCount")
   .action(async () => {
-    await client.transaction(async (trx) => {
-      const rows = await Q.practiceEntries()
-        .transacting(trx)
-        .select({
-          id: "practiceEntries.id",
-          practiceActionsCount: client.raw(
-            "COALESCE(COUNT(practiceActions.id), 0)"
-          ),
-          updatedAt: "practiceEntries.updatedAt", // prevent changing `updatedAt` timestamp for the migration
-          queueType: client.raw("'dummy'"),
-          easeFactor: 0,
-          scheduledAt: client.raw("'2022-06-24 12:00:00'"),
-          deckId: 0,
-          bookmarkEntryId: 0,
+    const rows = await db
+      .select({
+        id: T.practiceEntries.id,
+        practiceActionsCount: sql<number>`COALESCE(COUNT(${T.practiceActions.id}), 0)`,
+        udpatedAt: T.practiceEntries.updatedAt,
+      })
+      .from(T.practiceEntries)
+      .innerJoin(
+        T.practiceActions,
+        E.eq(T.practiceActions.practiceEntryId, T.practiceEntries.id)
+      )
+      .groupBy(T.practiceEntries.id);
+
+    for (const row of rows) {
+      await db
+        .update(T.practiceEntries)
+        .set({
+          practiceActionsCount: row.practiceActionsCount,
+          updatedAt: row.udpatedAt, // keep current timestamp
         })
-        .leftJoin(
-          "practiceActions",
-          "practiceActions.practiceEntryId",
-          "practiceEntries.id"
-        )
-        .groupBy("practiceEntries.id");
-      await Q.practiceEntries()
-        .transacting(trx)
-        .insert(rows)
-        .onConflict("id")
-        .merge(["id", "practiceActionsCount", "updatedAt"]);
-    });
+        .where(E.eq(T.practiceEntries.id, row.id));
+    }
   });
 
 async function printSession(username: string, password: string) {
