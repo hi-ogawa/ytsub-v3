@@ -6,7 +6,7 @@ import consola from "consola";
 import { sql } from "drizzle-orm";
 import { z } from "zod";
 import { client } from "../db/client.server";
-import { E, T, db, findOne, selectOne } from "../db/drizzle-client.server";
+import { E, T, db, selectOne } from "../db/drizzle-client.server";
 import {
   deleteOrphans,
   filterNewVideo,
@@ -422,9 +422,7 @@ cli
 
 async function debugCacheNextEntries(rawArgs: unknown) {
   const args = debugCacheNextEntriesArgs.parse(rawArgs);
-  const deck = await findOne(
-    db.select().from(T.decks).where(E.eq(T.decks.id, args.deckId))
-  );
+  const deck = await selectOne(T.decks, E.eq(T.decks.id, args.deckId));
   tinyassert(deck);
 
   const ids = deck.cache.nextEntriesRandomMode;

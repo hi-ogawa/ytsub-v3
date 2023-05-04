@@ -1,7 +1,7 @@
 import type { CaptionEntry, VideoMetadata } from "../utils/types";
 import type { NewVideo } from "../utils/youtube";
 import { client } from "./client.server";
-import { E, T, TT, db, findOne } from "./drizzle-client.server";
+import { E, T, TT, db, selectOne } from "./drizzle-client.server";
 
 // TODO: organize code
 
@@ -135,9 +135,7 @@ export async function getVideoAndCaptionEntries(
 ): Promise<
   { video: VideoTable; captionEntries: CaptionEntryTable[] } | undefined
 > {
-  const video = await findOne(
-    db.select().from(T.videos).where(E.eq(T.videos.id, id))
-  );
+  const video = await selectOne(T.videos, E.eq(T.videos.id, id));
   if (video) {
     const captionEntries = await db
       .select()

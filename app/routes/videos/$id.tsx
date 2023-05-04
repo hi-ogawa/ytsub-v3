@@ -17,7 +17,7 @@ import { z } from "zod";
 import { transitionProps } from "../../components/misc";
 import { useModal } from "../../components/modal";
 import { PopoverSimple } from "../../components/popover";
-import { E, T, TT, db, findOne } from "../../db/drizzle-client.server";
+import { E, T, TT, selectOne } from "../../db/drizzle-client.server";
 import type { UserTable, VideoTable } from "../../db/models";
 import { $R, ROUTE_DEF } from "../../misc/routes";
 import { trpc } from "../../trpc/client";
@@ -56,9 +56,7 @@ type LoaderData = {
 
 export const loader = makeLoader(async ({ ctx }) => {
   const params = ROUTE_DEF["/videos/$id"].params.parse(ctx.params);
-  const video = await findOne(
-    db.select().from(T.videos).where(E.eq(T.videos.id, params.id))
-  );
+  const video = await selectOne(T.videos, E.eq(T.videos.id, params.id));
   tinyassert(video);
   const loaderData: LoaderData = { video };
   return loaderData;

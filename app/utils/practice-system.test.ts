@@ -1,6 +1,6 @@
 import { mapGroupBy, tinyassert } from "@hiogawa/utils";
 import { beforeAll, describe, expect, it } from "vitest";
-import { E, T, db, findOne, selectOne } from "../db/drizzle-client.server";
+import { E, T, db, selectOne } from "../db/drizzle-client.server";
 import { DEFAULT_DECK_CACHE } from "../db/types";
 import { importSeed } from "../misc/seed-utils";
 import { useUser, useUserVideo } from "../misc/test-helper";
@@ -188,9 +188,7 @@ describe("cache.nextEntriesRandomMode", () => {
   });
 
   async function loadDeck() {
-    const deck = await findOne(
-      db.select().from(T.decks).where(E.eq(T.decks.id, deckId))
-    );
+    const deck = await selectOne(T.decks, E.eq(T.decks.id, deckId));
     tinyassert(deck);
     return deck;
   }
@@ -287,9 +285,7 @@ describe("DeckCache", () => {
   });
 
   async function getDeck() {
-    const deck = await findOne(
-      db.select().from(T.decks).where(E.eq(T.decks.id, deckId))
-    );
+    const deck = await selectOne(T.decks, E.eq(T.decks.id, deckId));
     tinyassert(deck);
     return deck;
   }

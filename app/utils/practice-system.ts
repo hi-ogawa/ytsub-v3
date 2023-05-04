@@ -11,7 +11,7 @@ import {
 import { Temporal } from "@js-temporal/polyfill";
 import { AnyColumn, GetColumnData, sql } from "drizzle-orm";
 import type { SQL } from "drizzle-orm/sql";
-import { E, T, TT, db, findOne } from "../db/drizzle-client.server";
+import { E, T, TT, db, selectOne } from "../db/drizzle-client.server";
 import type {
   BookmarkEntryTable,
   DeckTable,
@@ -432,16 +432,15 @@ async function queryNextPracticeEntryRandomModeWithCache(
   now: Date,
   seed: number = Date.now()
 ) {
-  const deck = await findOne(
-    db.select().from(T.decks).where(E.eq(T.decks.id, deckId))
-  );
+  const deck = await selectOne(T.decks, E.eq(T.decks.id, deckId));
   tinyassert(deck);
 
   // pick from cache only when next id is valid
   if (deck.cache.nextEntriesRandomMode.length > 0) {
     const id = deck.cache.nextEntriesRandomMode[0];
-    const row = await findOne(
-      db.select().from(T.practiceEntries).where(E.eq(T.practiceEntries.id, id))
+    const row = await selectOne(
+      T.practiceEntries,
+      E.eq(T.practiceEntries.id, id)
     );
     if (row) {
       return row;

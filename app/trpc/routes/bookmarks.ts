@@ -1,7 +1,7 @@
 import { mapOption, tinyassert } from "@hiogawa/utils";
 import { sql } from "drizzle-orm";
 import { z } from "zod";
-import { E, T, db, findOne } from "../../db/drizzle-client.server";
+import { E, T, db, findOne, selectOne } from "../../db/drizzle-client.server";
 import { Z_DATE_RANGE_TYPE } from "../../misc/routes";
 import {
   fromTemporal,
@@ -51,11 +51,9 @@ export const trpcRoutesBookmarks = {
         })
         .where(E.eq(T.videos.id, input.videoId));
 
-      const row = await findOne(
-        db
-          .select()
-          .from(T.bookmarkEntries)
-          .where(E.eq(T.bookmarkEntries.id, insertId))
+      const row = await selectOne(
+        T.bookmarkEntries,
+        E.eq(T.bookmarkEntries.id, insertId)
       );
       tinyassert(row);
       return row;
