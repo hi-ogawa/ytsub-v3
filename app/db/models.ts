@@ -120,8 +120,8 @@ export async function insertVideoAndCaptionEntries(
     userId: userId ?? null,
   });
 
-  await Q.captionEntries().insert(
-    captionEntries.map((entry) => ({
+  await db.insert(T.captionEntries).values(
+    ...captionEntries.map((entry) => ({
       ...entry,
       videoId,
     }))
