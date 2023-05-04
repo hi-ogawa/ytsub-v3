@@ -6,7 +6,7 @@ import consola from "consola";
 import { sql } from "drizzle-orm";
 import { z } from "zod";
 import { client } from "../db/client.server";
-import { E, T, db, selectOne } from "../db/drizzle-client.server";
+import { E, T, db, dbTableNames, selectOne } from "../db/drizzle-client.server";
 import {
   deleteOrphans,
   filterNewVideo,
@@ -44,16 +44,11 @@ cli
     }
   );
 
-async function getTableNames(): Promise<string[]> {
-  const [rows, columnDefs] = await client.raw("SHOW TABLES");
-  return rows.map((row: any) => row[columnDefs[0].name]);
-}
-
 async function getSchema(options: {
   showCreateTable: boolean;
   includeKnex: boolean;
 }): Promise<Record<string, any>> {
-  let names = await getTableNames();
+  let names = await dbTableNames();
   if (!options.includeKnex) {
     names = names.filter((name) => !name.startsWith("knex_"));
   }

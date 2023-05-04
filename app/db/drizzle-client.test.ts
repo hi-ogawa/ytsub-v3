@@ -6,6 +6,7 @@ import {
   TT,
   __dbExtra,
   db,
+  dbTableNames,
   selectMany,
   selectOne,
   toDeleteSql,
@@ -66,5 +67,23 @@ describe(selectOne.name, () => {
 describe(deleteOrphans.name, () => {
   it("basic", async () => {
     await deleteOrphans();
+  });
+});
+
+describe(dbTableNames.name, () => {
+  it("basic", async () => {
+    await expect(dbTableNames()).resolves.toMatchInlineSnapshot(`
+      [
+        "bookmarkEntries",
+        "captionEntries",
+        "decks",
+        "knex_migrations",
+        "knex_migrations_lock",
+        "practiceActions",
+        "practiceEntries",
+        "users",
+        "videos",
+      ]
+    `);
   });
 });

@@ -269,6 +269,15 @@ export async function toDeleteSql<Q extends { getSQL: () => SQL }>(select: Q) {
   return await db.execute(toDeleteSqlInner(select.getSQL(), tableName));
 }
 
+export function dbRaw(...args: Parameters<typeof sql>) {
+  return db.execute(sql(...args));
+}
+
+export async function dbTableNames(): Promise<string[]> {
+  const [rows]: any = await dbRaw`SHOW TABLES`;
+  return rows.map((row: any) => Object.values(row)[0]);
+}
+
 //
 // client
 //

@@ -1,6 +1,6 @@
 import { sql } from "drizzle-orm";
 import { client } from "../db/client.server";
-import { E, T, db } from "../db/drizzle-client.server";
+import { E, T, db, dbRaw } from "../db/drizzle-client.server";
 import { initializeServer } from "./initialize-server";
 
 /*
@@ -19,6 +19,7 @@ async function main() {
     T,
     E,
     db,
+    dbRaw,
     sql,
   });
 }
