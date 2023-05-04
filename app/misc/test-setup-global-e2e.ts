@@ -1,4 +1,4 @@
-import { client } from "../db/client.server";
+import { finalizeDrizzleClient } from "../db/drizzle-client.server";
 import { truncateAll } from "../db/models";
 import { testSetupCommon } from "./test-setup-common";
 
@@ -8,6 +8,6 @@ export default async () => {
 
   // returns teardown callback
   return async () => {
-    await client.destroy();
+    await finalizeDrizzleClient();
   };
 };
