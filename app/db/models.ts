@@ -21,7 +21,8 @@ export async function truncateAll(): Promise<void> {
   }
 }
 
-// no "FOREIGN KEY" constraint https://docs.planetscale.com/learn/operating-without-foreign-key-constraints#cleaning-up-orphaned-rows
+// manually cleanup "orphans" since we don't use automatic deletion with "FOREIGN KEY" constraint
+// https://docs.planetscale.com/learn/operating-without-foreign-key-constraints#cleaning-up-orphaned-rows
 export async function deleteOrphans(): Promise<void> {
   // users -> videos
   await toDeleteSql(

@@ -10,6 +10,7 @@ import {
   toDeleteSql,
   toDeleteSqlInner,
 } from "./drizzle-client.server";
+import { deleteOrphans } from "./models";
 
 describe(toDeleteSqlInner.name, () => {
   it("basic", async () => {
@@ -58,5 +59,11 @@ describe(selectOne.name, () => {
       E.eq(T.bookmarkEntries.userId, 0)
     );
     row satisfies TT["bookmarkEntries"] | undefined;
+  });
+});
+
+describe(deleteOrphans.name, () => {
+  it("basic", async () => {
+    await deleteOrphans();
   });
 });
