@@ -6,7 +6,7 @@ import {
   TT,
   __dbExtra,
   db,
-  dbTableNames,
+  dbShowTables,
   selectMany,
   selectOne,
   toDeleteSql,
@@ -70,9 +70,9 @@ describe(deleteOrphans.name, () => {
   });
 });
 
-describe(dbTableNames.name, () => {
+describe(dbShowTables.name, () => {
   it("basic", async () => {
-    await expect(dbTableNames()).resolves.toMatchInlineSnapshot(`
+    await expect(dbShowTables()).resolves.toMatchInlineSnapshot(`
       [
         "bookmarkEntries",
         "captionEntries",

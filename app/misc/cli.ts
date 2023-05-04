@@ -6,7 +6,7 @@ import consola from "consola";
 import { sql } from "drizzle-orm";
 import { z } from "zod";
 import { client } from "../db/client.server";
-import { E, T, db, dbTableNames, selectOne } from "../db/drizzle-client.server";
+import { E, T, db, dbGetSchema, selectOne } from "../db/drizzle-client.server";
 import {
   deleteOrphans,
   filterNewVideo,
@@ -27,51 +27,9 @@ import { exportDeckJson, importDeckJson } from "./seed-utils";
 
 const cli = cac("cli").help();
 
-cli
-  .command("db:schema")
-  .option("--show-create-table", "[boolean]", { default: false })
-  .option("--inclue-knex", "[boolean]", { default: false })
-  .option("--json", "[boolean]", { default: false })
-  .action(
-    async (options: {
-      showCreateTable: boolean;
-      includeKnex: boolean;
-      json: boolean;
-    }) => {
-      const schema = await getSchema(options);
-      const result = options.json ? JSON.stringify(schema, null, 2) : schema;
-      console.log(result);
-    }
-  );
-
-async function getSchema(options: {
-  showCreateTable: boolean;
-  includeKnex: boolean;
-}): Promise<Record<string, any>> {
-  let names = await dbTableNames();
-  if (!options.includeKnex) {
-    names = names.filter((name) => !name.startsWith("knex_"));
-  }
-  const result: Record<string, any> = {};
-  for (const name of names) {
-    if (options.showCreateTable) {
-      const [rows] = await client.raw(`SHOW CREATE TABLE ${name}`);
-      result[name] = rows[0]["Create Table"];
-    } else {
-      const [fields] = await client.raw(`DESCRIBE ${name}`);
-      const [indices] = await client.raw(`SHOW INDEX FROM ${name}`);
-      result[name] = {
-        describe: Object.fromEntries(
-          fields.map((row: any) => [row.Field, row])
-        ),
-        index: Object.fromEntries(
-          indices.map((row: any) => [row.Key_name, row])
-        ),
-      };
-    }
-  }
-  return result;
-}
+//
+// db:test-migrations
+//
 
 cli
   .command("db:test-migrations")
@@ -103,27 +61,24 @@ async function clieDbTestMigrations(options: {
   const ups = [];
   const downs = [];
 
-  const getSchema_ = () =>
-    getSchema({ showCreateTable: false, includeKnex: false });
-
   console.error(":: running migrations");
   if (options.unitTest) {
     process.env.MIGRATION_UNIT_TEST = "1";
   }
 
   const n = pending.length;
-  ups.push(await getSchema_());
+  ups.push(await dbGetSchema());
   for (const i of range(n)) {
     console.error(`(⇑:${i + 1}/${n}) ${pending[i].file}`);
     await exec("pnpm knex migrate:up");
-    ups.push(await getSchema_());
+    ups.push(await dbGetSchema());
   }
 
-  downs.unshift(await getSchema_());
+  downs.unshift(await dbGetSchema());
   for (const i of range(n)) {
     console.error(`(⇓:${i + 1}/${n}) ${pending[n - i - 1].file}`);
     await exec("pnpm knex migrate:down");
-    downs.unshift(await getSchema_());
+    downs.unshift(await dbGetSchema());
   }
 
   if (options.showSchema) {
@@ -137,6 +92,10 @@ async function clieDbTestMigrations(options: {
     console.error(":: reversibility test success");
   }
 }
+
+//
+// create-user
+//
 
 cli
   .command("create-user <username> <password>")
