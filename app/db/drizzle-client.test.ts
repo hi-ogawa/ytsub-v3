@@ -3,7 +3,10 @@ import { describe, expect, it } from "vitest";
 import {
   E,
   T,
+  TT,
   db,
+  selectMany,
+  selectOne,
   toDeleteQuery,
   toDeleteQueryInner,
 } from "./drizzle-client.server";
@@ -33,5 +36,27 @@ describe("toDeleteQueryInner", () => {
         "typings": [],
       }
     `);
+  });
+});
+
+describe(selectMany.name, () => {
+  it("typing", async () => {
+    const rows = await selectMany(
+      T.bookmarkEntries,
+      E.eq(T.bookmarkEntries.id, 0),
+      E.eq(T.bookmarkEntries.userId, 0)
+    );
+    rows satisfies TT["bookmarkEntries"][];
+  });
+});
+
+describe(selectOne.name, () => {
+  it("typing", async () => {
+    const row = await selectOne(
+      T.bookmarkEntries,
+      E.eq(T.bookmarkEntries.id, 0),
+      E.eq(T.bookmarkEntries.userId, 0)
+    );
+    row satisfies TT["bookmarkEntries"] | undefined;
   });
 });
