@@ -4,6 +4,7 @@ import {
   E,
   T,
   TT,
+  __dbExtra,
   db,
   selectMany,
   selectOne,
@@ -12,8 +13,8 @@ import {
 } from "./drizzle-client.server";
 import { deleteOrphans } from "./models";
 
-describe(toDeleteSqlInner.name, () => {
-  it("basic", async () => {
+describe(toDeleteSql.name, () => {
+  it.only("basic", async () => {
     const query = db
       .select()
       .from(T.videos)
@@ -21,16 +22,28 @@ describe(toDeleteSqlInner.name, () => {
       .where(
         E.and(
           sql`FALSE`,
-          // @ts-expect-error nullable sincee leftJoin
-          E.isNull(T.users.id),
+          E.isNull(T.users.id as any),
           E.isNotNull(T.videos.userId) // not delete "anonymouse" videos
         )
       );
     const res = await toDeleteSql(query);
-    expect(res).toMatchInlineSnapshot("undefined");
+    expect(res).toMatchInlineSnapshot(`
+      [
+        ResultSetHeader {
+          "affectedRows": 0,
+          "fieldCount": 0,
+          "info": "",
+          "insertId": 0,
+          "serverStatus": 2,
+          "warningStatus": 0,
+        },
+        undefined,
+      ]
+    `);
 
     const deleteSql = toDeleteSqlInner(query.getSQL(), "videos");
-    expect((db as any).dialect.sqlToQuery(deleteSql)).toMatchInlineSnapshot(`
+    const deleteSql2 = __dbExtra().dialect.sqlToQuery(deleteSql);
+    expect(deleteSql2).toMatchInlineSnapshot(`
       {
         "params": [],
         "sql": " delete \`videos\`  from \`videos\` left join \`users\`  on \`users\`.\`id\` = \`videos\`.\`userId\` where (FALSE and \`users\`.\`id\` is null and \`videos\`.\`userId\` is not null)",

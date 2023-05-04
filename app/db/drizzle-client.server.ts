@@ -3,6 +3,7 @@ import { sql } from "drizzle-orm";
 import * as E from "drizzle-orm/expressions";
 import {
   InferModel,
+  MySqlDialect,
   boolean,
   customType,
   float,
@@ -13,8 +14,9 @@ import {
   text,
   timestamp,
 } from "drizzle-orm/mysql-core";
-import { MySql2Database, drizzle } from "drizzle-orm/mysql2";
-import { SQL, noopDecoder } from "drizzle-orm/sql";
+import { MySql2Database, MySql2Session, drizzle } from "drizzle-orm/mysql2";
+import { SQL } from "drizzle-orm/sql";
+import type { Connection } from "mysql2";
 import { createConnection } from "mysql2/promise";
 import { uninitialized } from "../utils/misc";
 import type { PaginationParams } from "../utils/pagination";
@@ -247,7 +249,7 @@ export async function toCountSql<Q extends { execute: () => Promise<unknown> }>(
   return count;
 }
 
-// a little hack to generate DELETE query based on SELECT since drizzle doesn't support complicated DELETE query with JOIN.
+// a little hack to make DELETE query based on SELECT since drizzle doesn't support complicated DELETE query with JOIN.
 export function toDeleteSqlInner(sql: SQL, tableName: string): SQL {
   // replace
   //   select ... from
@@ -258,14 +260,13 @@ export function toDeleteSqlInner(sql: SQL, tableName: string): SQL {
   tinyassert(c2 instanceof SQL);
   tinyassert(c3 === " from ");
   sql.queryChunks.splice(1, 2, " delete `", tableName, "` ");
-  sql.mapWith(noopDecoder);
   return sql;
 }
 
 export async function toDeleteSql<Q extends { getSQL: () => SQL }>(select: Q) {
   const tableName = (select as any).tableName;
   tinyassert(typeof tableName === "string");
-  await db.execute(toDeleteSqlInner(select.getSQL(), tableName));
+  return await db.execute(toDeleteSqlInner(select.getSQL(), tableName));
 }
 
 //
@@ -292,5 +293,13 @@ export const initializeDrizzleClient = once(async () => {
 });
 
 export async function finalizeDrizzleClient() {
-  (db as any).session.client.destroy();
+  __dbExtra().connection.destroy();
+}
+
+export function __dbExtra() {
+  return {
+    connection: (db as any).session.client as Connection,
+    session: (db as any).session as MySql2Session,
+    dialect: (db as any).dialect as MySqlDialect,
+  };
 }
