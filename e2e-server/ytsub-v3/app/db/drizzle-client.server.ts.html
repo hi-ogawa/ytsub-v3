@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>296/296</span>
+                <span class='fraction'>305/305</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>296/296</span>
+                <span class='fraction'>305/305</span>
             </div>
         
             
@@ -359,7 +359,16 @@
 <a name='L294'></a><a href='#L294'>294</a>
 <a name='L295'></a><a href='#L295'>295</a>
 <a name='L296'></a><a href='#L296'>296</a>
-<a name='L297'></a><a href='#L297'>297</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L297'></a><a href='#L297'>297</a>
+<a name='L298'></a><a href='#L298'>298</a>
+<a name='L299'></a><a href='#L299'>299</a>
+<a name='L300'></a><a href='#L300'>300</a>
+<a name='L301'></a><a href='#L301'>301</a>
+<a name='L302'></a><a href='#L302'>302</a>
+<a name='L303'></a><a href='#L303'>303</a>
+<a name='L304'></a><a href='#L304'>304</a>
+<a name='L305'></a><a href='#L305'>305</a>
+<a name='L306'></a><a href='#L306'>306</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -393,7 +402,9 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1980x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1935x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">3600x</span>
@@ -640,17 +651,24 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">132x</span>
-<span class="cline-any cline-yes">132x</span>
-<span class="cline-any cline-yes">132x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">129x</span>
+<span class="cline-any cline-yes">129x</span>
+<span class="cline-any cline-yes">129x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">132x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">129x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -660,6 +678,7 @@ import { sql } from "drizzle-orm";
 import * as E from "drizzle-orm/expressions";
 import {
   InferModel,
+  MySqlDialect,
   boolean,
   customType,
   float,
@@ -670,8 +689,9 @@ import {
   text,
   timestamp,
 } from "drizzle-orm/mysql-core";
-import { MySql2Database, drizzle } from "drizzle-orm/mysql2";
-import { SQL, noopDecoder } from "drizzle-orm/sql";
+import { MySql2Database, MySql2Session, drizzle } from "drizzle-orm/mysql2";
+import { SQL } from "drizzle-orm/sql";
+import type { Connection } from "mysql2";
 import { createConnection } from "mysql2/promise";
 import { uninitialized } from "../utils/misc";
 import type { PaginationParams } from "../utils/pagination";
@@ -904,7 +924,7 @@ export async function toCountSql&lt;Q extends { execute: () =&gt; Promise&lt;unk
   return count;
 }
 &nbsp;
-// a little hack to generate DELETE query based on SELECT since drizzle doesn't support complicated DELETE query with JOIN.
+// a little hack to make DELETE query based on SELECT since drizzle doesn't support complicated DELETE query with JOIN.
 export function toDeleteSqlInner(sql: SQL, tableName: string): SQL {
   // replace
   //   select ... from
@@ -915,14 +935,13 @@ export function toDeleteSqlInner(sql: SQL, tableName: string): SQL {
   tinyassert(c2 instanceof SQL);
   tinyassert(c3 === " from ");
   sql.queryChunks.splice(1, 2, " delete `", tableName, "` ");
-  sql.mapWith(noopDecoder);
   return sql;
 }
 &nbsp;
 export async function toDeleteSql&lt;Q extends { getSQL: () =&gt; SQL }&gt;(select: Q) {
   const tableName = (select as any).tableName;
   tinyassert(typeof tableName === "string");
-  await db.execute(toDeleteSqlInner(select.getSQL(), tableName));
+  return await db.execute(toDeleteSqlInner(select.getSQL(), tableName));
 }
 &nbsp;
 //
@@ -949,7 +968,15 @@ export const initializeDrizzleClient = once(async () =&gt; {
 });
 &nbsp;
 export async function finalizeDrizzleClient() {
-  (db as any).session.client.destroy();
+  __dbExtra().connection.destroy();
+}
+&nbsp;
+export function __dbExtra() {
+  return {
+    connection: (db as any).session.client as Connection,
+    session: (db as any).session as MySql2Session,
+    dialect: (db as any).dialect as MySqlDialect,
+  };
 }
 &nbsp;</pre></td></tr></table></pre>
 
@@ -958,7 +985,7 @@ export async function finalizeDrizzleClient() {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-05-04T07:54:45.702Z
+                at 2023-05-04T08:28:15.319Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>
