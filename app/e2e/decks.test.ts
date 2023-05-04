@@ -1,18 +1,10 @@
 import { expect } from "@playwright/test";
-import { E, T, db } from "../db/drizzle-client.server";
 import { DEFAULT_SEED_FILE, importSeed } from "../misc/seed-utils";
 import { test } from "./coverage";
 import { useUserE2E } from "./helper";
 
-test.describe("decks", () => {
+test.describe("decks-empty", () => {
   const user = useUserE2E(test, { seed: __filename });
-
-  test.beforeEach(async () => {
-    await user.isReady;
-    await db.delete(T.videos).where(E.eq(T.videos.userId, user.data.id));
-    await db.delete(T.decks).where(E.eq(T.decks.userId, user.data.id));
-    await importSeed(user.data.id);
-  });
 
   test("decks => new-deck => edit-deck => delete-deck", async ({ page }) => {
     await user.signin(page);
@@ -53,6 +45,16 @@ test.describe("decks", () => {
     await page.getByText("Successfully deleted a deck").click();
     await expect(page).toHaveURL("/decks");
   });
+});
+
+test.describe("decks-seed", () => {
+  const user = useUserE2E(test, { seed: __filename });
+  let deckId: number;
+
+  test.beforeAll(async () => {
+    await user.isReady;
+    deckId = await importSeed(user.data.id);
+  });
 
   test("videos => add-to-deck", async ({ page }) => {
     await user.signin(page);
@@ -73,6 +75,7 @@ test.describe("decks", () => {
     await page.getByText("Added 0 to a deck").click();
   });
 
+  // prettier-ignore
   test("show-deck => pagination => deck-history", async ({ page }) => {
     await user.signin(page);
     await page.goto("/decks");
@@ -80,33 +83,51 @@ test.describe("decks", () => {
     // nagivate to "/decks/$id"
     await page.locator('[data-test="deck-menu-popover-reference"]').click();
     await page.getByRole("link", { name: "Deck" }).click();
-    await expect(page).toHaveURL(/\/decks\/\d+$/);
+    await page.waitForURL(`/decks/${deckId}`);
 
     // navigate pagination
-    await page.locator("data-test=pagination >> a >> nth=2").click();
-    await expect(page).toHaveURL(/\/decks\/\d+\?perPage=20&page=2$/);
+    await page
+      .locator('[data-test="pagination"]')
+      .getByRole("link")
+      .nth(2)
+      .click();
+    await page.waitForURL(`/decks/${deckId}?page=2`);
+    await page
+      .locator('[data-test="pagination"]')
+      .getByRole("link")
+      .nth(2)
+      .click();
+    await page.waitForURL(`/decks/${deckId}?page=3`);
+    await page
+      .locator('[data-test="pagination"]')
+      .getByRole("link")
+      .first()
+      .click();
+    await page.waitForURL(`/decks/${deckId}`);
 
     // navigate to "/decks/$id/history-graph"
     await page.locator('[data-test="deck-menu-popover-reference"]').click();
     await page.getByRole("link", { name: "Chart" }).click();
-    await expect(page).toHaveURL(/\/decks\/\d+\/history-graph$/);
+    await page.waitForURL(`/decks/${deckId}/history-graph`);
     await page.getByText("this week").click();
 
     // change graph options
     await page
       .getByTestId("SelectWrapper-rangeType")
       .selectOption({ label: "by month" });
+    await page.waitForURL(`/decks/${deckId}/history-graph?rangeType=month`);
     await page.getByText("this month").click();
     await page
       .getByTestId("SelectWrapper-graphType")
       .selectOption({ label: "by queue" });
+    await page.waitForURL(`/decks/${deckId}/history-graph?rangeType=month&graphType=queue`);
 
     //
     // /decks/$id/history
     //
     await page.locator('[data-test="deck-menu-popover-reference"]').click();
     await page.getByRole("link", { name: "History" }).click();
-    await page.waitForURL(/\/decks\/\d+\/history$/);
+    await page.waitForURL(`/decks/${deckId}/history`);
 
     // first entry
     await page.getByText("많이 울었던 사람?").click();

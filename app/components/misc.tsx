@@ -1,9 +1,10 @@
 import { Transition } from "@headlessui/react";
-import { Link, useSearchParams } from "@remix-run/react";
-import type { PaginationMetadata, VideoTable } from "../db/models";
-import { $R } from "../misc/routes";
+import { Link } from "@remix-run/react";
+import type { VideoTable } from "../db/models";
+import { $R, Z_PAGINATION_QUERY } from "../misc/routes";
+import { useTypedUrlQuery } from "../utils/loader-utils";
 import { cls } from "../utils/misc";
-import { toNewPages } from "../utils/pagination";
+import type { PaginationMetadata } from "../utils/pagination";
 import { parseVssId, toThumbnail } from "../utils/youtube";
 import { PopoverSimple } from "./popover";
 
@@ -61,15 +62,12 @@ export function VideoComponent({
           </div>
         </div>
         {bookmarkEntriesCount !== undefined && (
-          <Link
-            to={$R["/bookmarks"](null, { videoId: video.id, order: "caption" })}
-            className="absolute right-1 top-1 px-1 py-0.5 bg-black/75 text-white text-xs font-bold"
-          >
+          <div className="absolute right-1 top-1 px-1 py-0.5 bg-black/75 text-white text-xs font-bold">
             <div className="flex justify-center items-center gap-1">
               <div>{bookmarkEntriesCount}</div>
               <span className="i-ri-bookmark-line w-3 h-3"></span>
             </div>
-          </Link>
+          </div>
         )}
       </div>
       <div className="grow p-2 flex flex-col relative text-sm">
@@ -131,24 +129,24 @@ export function PaginationComponent({
 }: {
   pagination: PaginationMetadata;
 }) {
-  const mergeQuery = useMergeUrlQuery();
+  const [, , toParams] = useTypedUrlQuery(Z_PAGINATION_QUERY);
   const { page, totalPage, total } = pagination;
-  const { first, previous, next, last } = toNewPages(pagination);
   return (
     <div
       data-test="pagination"
       className="antd-floating flex items-center gap-2 px-2 py-1"
     >
       <Link
-        className="antd-btn antd-btn-ghost flex items-center"
-        to={"?" + mergeQuery(first)}
+        className="antd-btn antd-btn-ghost flex items-center aria-disabled:pointer-events-none aria-disabled:opacity-50"
+        aria-disabled={page <= 1}
+        to={"?" + toParams({ page: undefined })}
       >
         <span className="i-ri-rewind-mini-fill w-5 h-5"></span>
       </Link>
       <Link
-        className="antd-btn antd-btn-ghost flex items-center"
-        // TODO: disable
-        to={"?" + mergeQuery(previous ?? {})}
+        className="antd-btn antd-btn-ghost flex items-center aria-disabled:pointer-events-none aria-disabled:opacity-50"
+        aria-disabled={page <= 1}
+        to={"?" + toParams({ page: page - 1 })}
       >
         <span className="i-ri-play-mini-fill w-4 h-4 rotate-[180deg]"></span>
       </Link>
@@ -156,33 +154,21 @@ export function PaginationComponent({
         {page} / {totalPage} ({total})
       </span>
       <Link
-        className="antd-btn antd-btn-ghost flex items-center"
-        // TODO: disable
-        to={"?" + mergeQuery(next ?? {})}
+        className="antd-btn antd-btn-ghost flex items-center aria-disabled:pointer-events-none aria-disabled:opacity-50"
+        aria-disabled={page >= totalPage}
+        to={"?" + toParams({ page: page + 1 })}
       >
         <span className="i-ri-play-mini-fill w-4 h-4"></span>
       </Link>
       <Link
-        className="antd-btn antd-btn-ghost flex items-center"
-        to={"?" + mergeQuery(last)}
+        className="antd-btn antd-btn-ghost flex items-center aria-disabled:pointer-events-none aria-disabled:opacity-50"
+        aria-disabled={page >= totalPage}
+        to={"?" + toParams({ page: totalPage })}
       >
         <span className="i-ri-rewind-mini-fill w-5 h-5 rotate-[180deg]"></span>
       </Link>
     </div>
   );
-}
-
-function useMergeUrlQuery() {
-  const [params] = useSearchParams();
-
-  return (query: Record<string, unknown>) => {
-    return new URLSearchParams(
-      Object.fromEntries([
-        ...params.entries(),
-        ...Object.entries(query).map(([k, v]) => [k, String(v)] as const),
-      ])
-    );
-  };
 }
 
 //

@@ -1,8 +1,8 @@
-import { DeckNavBarMenuComponent } from ".";
 import { useNavigate } from "@remix-run/react";
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
+import { DeckNavBarMenuComponent } from ".";
 import type { DeckTable } from "../../../db/models";
 import { $R, R } from "../../../misc/routes";
 import { trpc } from "../../../trpc/client";

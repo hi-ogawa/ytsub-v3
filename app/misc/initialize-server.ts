@@ -1,6 +1,5 @@
 import { once } from "@hiogawa/utils";
 import { installGlobals } from "@remix-run/node";
-import { client, initializeKnexClient } from "../db/client.server";
 import {
   finalizeDrizzleClient,
   initializeDrizzleClient,
@@ -12,12 +11,10 @@ export const initializeServer = once(async () => {
   installGlobals();
   initializeConfigServer();
   initializeSessionStore();
-  initializeKnexClient();
   await initializeDrizzleClient();
 });
 
 export async function finalizeServer() {
-  await client.destroy();
   await finalizeDrizzleClient();
 }
 

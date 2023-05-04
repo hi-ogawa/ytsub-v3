@@ -17,10 +17,13 @@ const Z_ID_PARAMS = z.object({
   id: z.coerce.number().int(),
 });
 
-const Z_PAGINATION_QUERY = z.object({
+export const Z_PAGINATION_QUERY = z.object({
   page: z.coerce.number().int().optional().default(1),
   perPage: z.coerce.number().int().optional().default(20),
 });
+
+export const Z_DATE_RANGE_TYPE = z.enum(["week", "month"]);
+export type DateRangeType = z.infer<typeof Z_DATE_RANGE_TYPE>;
 
 export const ROUTE_DEF = {
   "/": {},
@@ -42,16 +45,16 @@ export const ROUTE_DEF = {
     }),
   },
   "/bookmarks": {
-    query: z
-      .object({
-        videoId: z.coerce.number().int().optional(),
-        deckId: z.coerce.number().int().optional(),
-        order: z.enum(["createdAt", "caption"]).default("createdAt"),
-        q: z.string().optional(),
-      })
-      .merge(Z_PAGINATION_QUERY),
+    query: z.object({
+      q: z.string().optional(),
+    }),
   },
-  "/bookmarks/history-chart": {},
+  "/bookmarks/history-chart": {
+    query: z.object({
+      rangeType: Z_DATE_RANGE_TYPE.default("week"),
+      page: z.coerce.number().int().optional().default(0),
+    }),
+  },
   "/users/me": {},
   "/users/register": {},
   "/users/signin": {},
@@ -81,20 +84,17 @@ export const ROUTE_DEF = {
   },
   "/decks/$id/history": {
     params: Z_ID_PARAMS,
-    query: z
-      .object({
-        actionType: Z_PRACTICE_ACTION_TYPES.optional(),
-        practiceEntryId: z.coerce.number().int().optional(),
-      })
-      .merge(Z_PAGINATION_QUERY),
+    query: z.object({
+      actionType: Z_PRACTICE_ACTION_TYPES.optional(),
+      practiceEntryId: z.coerce.number().int().optional(),
+    }),
   },
   "/decks/$id/history-graph": {
     params: Z_ID_PARAMS,
     query: z.object({
       graphType: z.enum(["action", "queue"]).default("action"),
-      rangeType: z.enum(["week", "month"]).default("week"),
+      rangeType: Z_DATE_RANGE_TYPE.default("week"),
       page: z.coerce.number().int().optional().default(0), // 0 => this week/month, 1 => last week/month, ...
-      now: z.coerce.date().optional(), // for testing
     }),
   },
   "/decks/$id/export": {

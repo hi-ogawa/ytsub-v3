@@ -1,32 +1,24 @@
 import { Transition } from "@headlessui/react";
-import { isNil, mapOption, typedBoolean } from "@hiogawa/utils";
+import { typedBoolean } from "@hiogawa/utils";
 import { toArraySetState, useRafLoop } from "@hiogawa/utils-react";
-import { Link, NavLink } from "@remix-run/react";
-import { useQuery } from "@tanstack/react-query";
+import { NavLink } from "@remix-run/react";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import React from "react";
-import type { z } from "zod";
+import { useForm } from "react-hook-form";
 import { CollapseTransition } from "../../components/collapse";
-import { PaginationComponent, transitionProps } from "../../components/misc";
-import { useModal } from "../../components/modal";
+import { transitionProps } from "../../components/misc";
 import { PopoverSimple } from "../../components/popover";
-import {
-  E,
-  T,
-  TT,
-  db,
-  toPaginationResult,
-} from "../../db/drizzle-client.server";
+import type { TT } from "../../db/drizzle-client.server";
 import type {
   BookmarkEntryTable,
   CaptionEntryTable,
-  PaginationMetadata,
   VideoTable,
 } from "../../db/models";
 import { $R, ROUTE_DEF } from "../../misc/routes";
 import { trpc } from "../../trpc/client";
 import {
-  useLeafLoaderData,
-  useLoaderDataExtra,
+  disableUrlQueryRevalidation,
+  useTypedUrlQuery,
 } from "../../utils/loader-utils";
 import { makeLoader } from "../../utils/loader-utils.server";
 import { cls } from "../../utils/misc";
@@ -40,88 +32,67 @@ export const handle: PageHandle = {
   navBarMenu: () => <NavBarMenuComponent />,
 };
 
-interface LoaderData {
-  rows: Pick<TT, "bookmarkEntries" | "videos" | "captionEntries">[];
-  pagination: PaginationMetadata;
-  request: z.infer<(typeof ROUTE_DEF)["/bookmarks"]["query"]>;
-}
+//
+// loader
+//
 
 export const loader = makeLoader(async ({ ctx }) => {
-  const user = await ctx.requireUser();
-
-  const request = ROUTE_DEF["/bookmarks"].query.parse(ctx.query);
-
-  let query = db
-    .select()
-    .from(T.bookmarkEntries)
-    .innerJoin(T.videos, E.eq(T.videos.id, T.bookmarkEntries.videoId))
-    .innerJoin(
-      T.captionEntries,
-      E.eq(T.captionEntries.id, T.bookmarkEntries.captionEntryId)
-    );
-
-  if (request.deckId) {
-    query = query
-      .innerJoin(
-        T.practiceEntries,
-        E.eq(T.practiceEntries.bookmarkEntryId, T.bookmarkEntries.id)
-      )
-      .innerJoin(T.decks, E.eq(T.decks.id, T.practiceEntries.deckId));
-  }
-
-  const [rows, pagination] = await toPaginationResult(
-    query
-      .where(
-        E.and(
-          E.eq(T.bookmarkEntries.userId, user.id),
-          mapOption(request.videoId, (v) => E.eq(T.bookmarkEntries.videoId, v)),
-          mapOption(request.deckId, (v) => E.eq(T.decks.id, v)),
-          mapOption(request.q, (v) => E.like(T.bookmarkEntries.text, `%${v}%`))
-        )
-      )
-      .orderBy(
-        request.order === "caption"
-          ? E.asc(T.captionEntries.index)
-          : E.desc(T.bookmarkEntries.createdAt)
-      ),
-    request
-  );
-  const loaderData: LoaderData = {
-    rows,
-    pagination,
-    request,
-  };
-  return loaderData;
+  await ctx.requireUser();
+  return null;
 });
 
-export default function DefaultComponent() {
-  const data = useLoaderDataExtra() as LoaderData;
-  return <ComponentImpl {...data} />;
-}
+export const shouldRevalidate = disableUrlQueryRevalidation;
 
-function ComponentImpl(props: LoaderData) {
+//
+// component
+//
+
+export default function DefaultComponent() {
+  const [urlQuery, setUrlQuery] = useTypedUrlQuery(
+    ROUTE_DEF["/bookmarks"].query
+  );
+  const form = useForm({ defaultValues: urlQuery });
+
+  const bookmarkEntriesQuery = useInfiniteQuery({
+    ...trpc.bookmarks_index.infiniteQueryOptions(
+      {
+        q: urlQuery?.q,
+      },
+      {
+        getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
+        setPageParam: (input, pageParam) => ({
+          ...input,
+          cursor: pageParam as any,
+        }),
+      }
+    ),
+    keepPreviousData: true,
+  });
+  const rows = bookmarkEntriesQuery.data?.pages.flatMap((page) => page.rows);
+
   return (
     <>
       <div className="w-full flex justify-center">
         <div className="h-full w-full max-w-lg">
-          <div className="h-full flex flex-col p-2 gap-2">
+          <div className="h-full flex flex-col p-2 gap-2 relative">
             <div className="flex py-1">
-              <form>
+              <form
+                onSubmit={form.handleSubmit((data) =>
+                  setUrlQuery({ q: data.q ? data.q : undefined })
+                )}
+              >
                 <label className="relative flex items-center">
                   <span className="absolute text-colorTextSecondary ml-2 i-ri-search-line w-4 h-4"></span>
                   <input
                     className="antd-input pl-7 py-0.5"
-                    name={ROUTE_DEF["/bookmarks"].query.keyof().enum.q}
                     type="text"
                     placeholder="Search text..."
-                    defaultValue={props.request.q}
+                    {...form.register("q")}
                   />
                 </label>
               </form>
             </div>
-            {/* TODO: CTA when empty */}
-            {props.rows.length === 0 && <div>Empty</div>}
-            {props.rows.map((row) => (
+            {rows?.map((row) => (
               <BookmarkEntryComponent
                 key={row.bookmarkEntries.id}
                 video={row.videos}
@@ -130,12 +101,29 @@ function ComponentImpl(props: LoaderData) {
                 showAutoplay
               />
             ))}
+            {bookmarkEntriesQuery.hasNextPage && (
+              <button
+                className={cls(
+                  "antd-btn antd-btn-default p-1 text-sm",
+                  bookmarkEntriesQuery.isFetchingNextPage && "antd-btn-loading"
+                )}
+                onClick={() => bookmarkEntriesQuery.fetchNextPage()}
+              >
+                Load more
+              </button>
+            )}
+            <Transition
+              show={
+                bookmarkEntriesQuery.isInitialLoading ||
+                bookmarkEntriesQuery.isPreviousData
+              }
+              className="absolute inset-0 duration-500 antd-body"
+              {...transitionProps("opacity-0", "opacity-50")}
+            >
+              <div className="mx-auto mt-[200px] antd-spin h-18"></div>
+            </Transition>
           </div>
         </div>
-      </div>
-      <div className="w-full h-8" /> {/* padding for scroll */}
-      <div className="absolute bottom-2 w-full flex justify-center">
-        <PaginationComponent pagination={props.pagination} />
       </div>
     </>
   );
@@ -203,13 +191,9 @@ export function BookmarkEntryComponent({
         <MiniPlayer
           video={video}
           captionEntry={captionEntry}
+          bookmarkEntries={[bookmarkEntry]}
           autoplay={autoplay}
           defaultIsRepeating={autoplay}
-          highlight={{
-            side: bookmarkEntry.side,
-            offset: bookmarkEntry.offset,
-            length: bookmarkEntry.text.length,
-          }}
         />
       </CollapseTransition>
     </div>
@@ -220,15 +204,15 @@ export function BookmarkEntryComponent({
 export function MiniPlayer({
   video,
   captionEntry: initialEntry,
+  bookmarkEntries,
   autoplay,
   defaultIsRepeating,
-  highlight,
 }: {
   video: VideoTable;
   captionEntry: CaptionEntryTable;
+  bookmarkEntries?: TT["bookmarkEntries"][];
   autoplay: boolean;
   defaultIsRepeating: boolean;
-  highlight: { side: number; offset: number; length: number };
 }) {
   const [player, setPlayer] = React.useState<YoutubePlayer>();
   const [isPlaying, setIsPlaying] = React.useState(false);
@@ -389,7 +373,9 @@ export function MiniPlayer({
           onClickEntryRepeat={toArraySetState(setRepeatingEntries).toggle}
           isPlaying={isPlaying}
           videoId={video.id}
-          highlight={captionEntry === initialEntry ? highlight : undefined}
+          bookmarkEntries={
+            captionEntry === initialEntry ? bookmarkEntries : undefined
+          }
           isFocused={captionEntry === initialEntry}
         />
       ))}
@@ -415,12 +401,6 @@ export function MiniPlayer({
 //
 
 function NavBarMenuComponent() {
-  const { request } = useLeafLoaderData() as LoaderData;
-  const videoSelectModal = useModal();
-  const deckSelectModal = useModal();
-
-  const isFilterActive = !isNil(request.videoId ?? request.deckId);
-
   return (
     <>
       <div className="flex items-center">
@@ -429,8 +409,7 @@ function NavBarMenuComponent() {
           reference={
             <button
               className={cls(
-                "antd-btn antd-btn-ghost i-ri-more-2-line w-6 h-6",
-                isFilterActive && "text-colorPrimary"
+                "antd-btn antd-btn-ghost i-ri-more-2-line w-6 h-6"
               )}
             />
           }
@@ -439,61 +418,11 @@ function NavBarMenuComponent() {
               <BookmarksMenuItems
                 onClickItem={() => context.onOpenChange(false)}
               />
-              <li>
-                <button
-                  className="w-full antd-menu-item flex items-center gap-2 p-2"
-                  onClick={() => videoSelectModal.setOpen(true)}
-                >
-                  <span className="i-ri-vidicon-line w-5 h-5"></span>
-                  Select Video
-                </button>
-              </li>
-              <li>
-                <button
-                  className="w-full antd-menu-item flex items-center gap-2 p-2"
-                  onClick={() => deckSelectModal.setOpen(true)}
-                >
-                  <span className="i-ri-book-line w-5 h-5"></span>
-                  Select Deck
-                </button>
-              </li>
-              <li className={cls(!isFilterActive && "hidden")}>
-                <Link
-                  className="w-full antd-menu-item flex items-center gap-2 p-2"
-                  to={$R["/bookmarks"]()}
-                  onClick={() => context.onOpenChange(false)}
-                >
-                  <span className="i-ri-close-line w-5 h-5"></span>
-                  Clear Filter
-                </Link>
-              </li>
             </ul>
           )}
         />
       </div>
-      <videoSelectModal.Wrapper>
-        <VideoSelectComponent />
-      </videoSelectModal.Wrapper>
-      <deckSelectModal.Wrapper>
-        <DeckSelectComponent />
-      </deckSelectModal.Wrapper>
     </>
-  );
-}
-
-function VideoSelectComponent() {
-  return (
-    <div className="border shadow-xl rounded-xl bg-base-100 p-4 flex flex-col gap-2">
-      <div className="text-lg">TODO</div>
-    </div>
-  );
-}
-
-function DeckSelectComponent() {
-  return (
-    <div className="border shadow-xl rounded-xl bg-base-100 p-4 flex flex-col gap-2">
-      <div className="text-lg">TODO</div>
-    </div>
   );
 }
 

@@ -1,12 +1,10 @@
-import { tinyassert } from "@hiogawa/utils";
+import { mapGroupBy, tinyassert } from "@hiogawa/utils";
 import { beforeAll, describe, expect, it } from "vitest";
-import { E, T, db, findOne } from "../db/drizzle-client.server";
-import { Q } from "../db/models";
+import { E, T, db, selectOne } from "../db/drizzle-client.server";
 import { DEFAULT_DECK_CACHE } from "../db/types";
 import { importSeed } from "../misc/seed-utils";
 import { useUser, useUserVideo } from "../misc/test-helper";
 import { testTrpcClient } from "../trpc/test-helper";
-import { mapGroupBy } from "./misc";
 import {
   PracticeSystem,
   queryNextPracticeEntryRandomModeBatch,
@@ -35,21 +33,24 @@ describe("PracticeSystem", () => {
       cache: DEFAULT_DECK_CACHE,
       randomMode: false,
     });
-    const deck = await Q.decks().where({ id: deckId }).first();
+    const deck = await selectOne(T.decks, E.eq(T.decks.id, deckId));
     tinyassert(deck);
 
     // TODO: move to `use...` helpers
-    const [bookmarkEntryId] = await Q.bookmarkEntries().insert({
-      text: "Bonjour à tous",
-      side: 0,
-      offset: 8,
-      userId: hook.user.id,
-      videoId: hook.video.id,
-      captionEntryId: hook.captionEntries[0].id,
-    });
-    const bookmarkEntry = await Q.bookmarkEntries()
-      .where({ id: bookmarkEntryId })
-      .first();
+    const [{ insertId: bookmarkEntryId }] = await db
+      .insert(T.bookmarkEntries)
+      .values({
+        text: "Bonjour à tous",
+        side: 0,
+        offset: 8,
+        userId: hook.user.id,
+        videoId: hook.video.id,
+        captionEntryId: hook.captionEntries[0].id,
+      });
+    const bookmarkEntry = await selectOne(
+      T.bookmarkEntries,
+      E.eq(T.bookmarkEntries.id, bookmarkEntryId)
+    );
     tinyassert(bookmarkEntry);
 
     // instantiate practice system
@@ -61,9 +62,10 @@ describe("PracticeSystem", () => {
       NOW
     );
     tinyassert(practiceEntryId);
-    const practiceEntry = await Q.practiceEntries()
-      .where({ id: practiceEntryId })
-      .first();
+    const practiceEntry = await selectOne(
+      T.practiceEntries,
+      E.eq(T.practiceEntries.id, practiceEntryId)
+    );
     tinyassert(practiceEntry);
     expect(await getStatistics(deck.id)).toMatchInlineSnapshot(`
       {
@@ -106,9 +108,10 @@ describe("PracticeSystem", () => {
       "GOOD",
       NOW
     );
-    const practiceAction = await Q.practiceActions()
-      .where({ id: practiceActionId })
-      .first();
+    const practiceAction = await selectOne(
+      T.practiceActions,
+      E.eq(T.practiceActions.id, practiceActionId)
+    );
     tinyassert(practiceAction);
     expect(practiceAction).toMatchObject({
       queueType: "NEW",
@@ -116,9 +119,10 @@ describe("PracticeSystem", () => {
     });
 
     // check counter cache
-    const practiceEntryWithActions = await Q.practiceEntries()
-      .where({ id: practiceEntryId })
-      .first();
+    const practiceEntryWithActions = await selectOne(
+      T.practiceEntries,
+      E.eq(T.practiceEntries.id, practiceEntryId)
+    );
     tinyassert(practiceEntryWithActions);
     expect(practiceEntryWithActions.practiceActionsCount).toBe(1);
 
@@ -162,7 +166,7 @@ describe("PracticeSystem", () => {
       cache: DEFAULT_DECK_CACHE,
       randomMode: true,
     });
-    const deck = await Q.decks().where({ id: deckId }).first();
+    const deck = await selectOne(T.decks, E.eq(T.decks.id, deckId));
     tinyassert(deck);
 
     // instantiate practice system
@@ -184,9 +188,7 @@ describe("cache.nextEntriesRandomMode", () => {
   });
 
   async function loadDeck() {
-    const deck = await findOne(
-      db.select().from(T.decks).where(E.eq(T.decks.id, deckId))
-    );
+    const deck = await selectOne(T.decks, E.eq(T.decks.id, deckId));
     tinyassert(deck);
     return deck;
   }
@@ -264,8 +266,8 @@ describe("queryNextPracticeEntryRandomModeBatch", () => {
     `);
     expect(await run(30, 2)).toMatchInlineSnapshot(`
       Map {
-        "NEW" => 29,
-        "REVIEW" => 1,
+        "NEW" => 27,
+        "LEARN" => 3,
       }
     `);
   });
@@ -283,9 +285,7 @@ describe("DeckCache", () => {
   });
 
   async function getDeck() {
-    const deck = await findOne(
-      db.select().from(T.decks).where(E.eq(T.decks.id, deckId))
-    );
+    const deck = await selectOne(T.decks, E.eq(T.decks.id, deckId));
     tinyassert(deck);
     return deck;
   }

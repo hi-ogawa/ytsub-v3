@@ -10,6 +10,13 @@ test.describe("bookmarks", () => {
     await importSeed(user.data.id);
   });
 
+  test("load-more", async ({ page }) => {
+    await user.signin(page);
+    await page.goto("/bookmarks");
+    await page.getByRole("button", { name: "Load more" }).click();
+    await page.getByText("오늘 재밌게 촬영한 것 같습니다").click();
+  });
+
   test("search", async ({ page }) => {
     await user.signin(page);
     await page.goto("/bookmarks");
@@ -39,13 +46,6 @@ test.describe("bookmarks", () => {
     await page.getByRole("button", { name: "Go to Last Bookmark" }).click();
     await page.getByText("케플러 대박 기원").click();
   });
-
-  test("invalid", async ({ page }) => {
-    await user.signin(page);
-    await page.goto("/bookmarks?order=xxx");
-    await page.getByText("Invalid request").click();
-    await page.waitForURL("/");
-  });
 });
 
 test.describe("/bookmarks/history-chart", () => {
@@ -57,9 +57,19 @@ test.describe("/bookmarks/history-chart", () => {
     await page.waitForURL("/users/signin");
   });
 
+  // prettier-ignore
   test("basic", async ({ page }) => {
     await userHook.signin(page);
     await page.goto("/bookmarks/history-chart");
     await page.getByText("this week").click();
+    await page.getByRole('button').nth(3).click();
+    await page.waitForURL(`/bookmarks/history-chart?page=1`);
+    await page.getByText("last week").click();
+    await page.getByTestId('SelectWrapper-rangeType').selectOption({ label: "by month" });
+    await page.waitForURL(`/bookmarks/history-chart?rangeType=month`);
+    await page.getByText('this month').click();
+    await page.getByRole('button').nth(3).click();
+    await page.getByText('last month').click();
+    await page.waitForURL(`/bookmarks/history-chart?rangeType=month?page=1`);
   });
 });

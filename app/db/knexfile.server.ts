@@ -2,7 +2,7 @@ import path from "node:path";
 import type { Knex } from "knex";
 import { initializeConfigServer, serverConfig } from "../utils/config";
 
-export default function knexfile(): Knex.Config {
+export default function knexfile() {
   initializeConfigServer();
 
   return {
@@ -26,5 +26,5 @@ export default function knexfile(): Knex.Config {
       stub: path.join(__dirname, "__migration-stub.ts"),
     },
     debug: Boolean(process.env.APP_KNEX_DEBUG),
-  };
+  } satisfies Knex.Config;
 }

@@ -15,7 +15,6 @@ import type {
   BookmarkEntryTable,
   CaptionEntryTable,
   DeckTable,
-  PaginationMetadata,
   PracticeEntryTable,
   VideoTable,
 } from "../../../db/models";
@@ -31,6 +30,7 @@ import {
 import { makeLoader } from "../../../utils/loader-utils.server";
 import { cls } from "../../../utils/misc";
 import type { PageHandle } from "../../../utils/page-handle";
+import type { PaginationMetadata } from "../../../utils/pagination";
 import { MiniPlayer } from "../../bookmarks";
 
 export const handle: PageHandle = {
@@ -263,13 +263,9 @@ function PracticeBookmarkEntryComponent({
         <MiniPlayer
           video={video}
           captionEntry={captionEntry}
+          bookmarkEntries={[bookmarkEntry]}
           autoplay={false}
           defaultIsRepeating={false}
-          highlight={{
-            side: bookmarkEntry.side,
-            offset: bookmarkEntry.offset,
-            length: bookmarkEntry.text.length,
-          }}
         />
       )}
     </div>
@@ -342,15 +338,6 @@ export function DeckMenuComponent({ deck }: { deck: DeckTable }) {
         <>
           <span className="i-ri-book-line w-6 h-6"></span>
           Deck
-        </>
-      ),
-    },
-    {
-      to: $R["/bookmarks"](null, { deckId: deck.id }),
-      children: (
-        <>
-          <span className="i-ri-bookmark-line w-6 h-6"></span>
-          Bookmarks{" "}
         </>
       ),
     },

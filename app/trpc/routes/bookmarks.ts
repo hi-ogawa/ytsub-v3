@@ -1,9 +1,9 @@
-import { tinyassert } from "@hiogawa/utils";
+import { mapOption, tinyassert } from "@hiogawa/utils";
 import { sql } from "drizzle-orm";
 import { z } from "zod";
-import { E, T, db, findOne } from "../../db/drizzle-client.server";
+import { E, T, db, limitOne, selectOne } from "../../db/drizzle-client.server";
+import { Z_DATE_RANGE_TYPE } from "../../misc/routes";
 import {
-  Z_DATE_RANGE_TYPE,
   fromTemporal,
   getZonedDateRange,
   toZdt,
@@ -19,12 +19,12 @@ export const trpcRoutesBookmarks = {
         videoId: z.number().int(),
         captionEntryId: z.number().int(),
         text: z.string().nonempty(),
-        side: z.union([z.literal(0), z.literal(1)]),
+        side: z.number().refine((v) => v === 0 || v === 1),
         offset: z.number().int(),
       })
     )
     .mutation(async ({ input, ctx }) => {
-      const found = await findOne(
+      const found = await limitOne(
         db
           .select()
           .from(T.captionEntries)
@@ -40,7 +40,7 @@ export const trpcRoutesBookmarks = {
       tinyassert(found, "not found");
 
       // insert with counter cache increment
-      await db.insert(T.bookmarkEntries).values({
+      const [{ insertId }] = await db.insert(T.bookmarkEntries).values({
         ...input,
         userId: ctx.user.id,
       });
@@ -50,6 +50,13 @@ export const trpcRoutesBookmarks = {
           bookmarkEntriesCount: sql`${T.videos.bookmarkEntriesCount} + 1`,
         })
         .where(E.eq(T.videos.id, input.videoId));
+
+      const row = await selectOne(
+        T.bookmarkEntries,
+        E.eq(T.bookmarkEntries.id, insertId)
+      );
+      tinyassert(row);
+      return row;
     }),
 
   bookmarks_historyChart: procedureBuilder
@@ -94,5 +101,47 @@ export const trpcRoutesBookmarks = {
       }
 
       return Object.values(countMap);
+    }),
+
+  bookmarks_index: procedureBuilder
+    .use(middlewares.requireUser)
+    .input(
+      z.object({
+        q: z.string().optional(),
+        cursor: z.number().int().default(0),
+      })
+    )
+    .query(async ({ input, ctx }) => {
+      const limit = 15;
+
+      // deferred join
+      const subQueryIds = db
+        .select({ id: T.bookmarkEntries.id })
+        .from(T.bookmarkEntries)
+        .where(
+          E.and(
+            E.eq(T.bookmarkEntries.userId, ctx.user.id),
+            // TODO: index
+            mapOption(input.q, (v) => E.like(T.bookmarkEntries.text, `%${v}%`))
+          )
+        )
+        .orderBy(E.desc(T.bookmarkEntries.createdAt))
+        .offset(input.cursor)
+        .limit(limit)
+        .as("__subQueryIds");
+
+      const rows = await db
+        .select()
+        .from(T.bookmarkEntries)
+        .innerJoin(subQueryIds, E.eq(subQueryIds.id, T.bookmarkEntries.id))
+        .innerJoin(T.videos, E.eq(T.videos.id, T.bookmarkEntries.videoId))
+        .innerJoin(
+          T.captionEntries,
+          E.eq(T.captionEntries.id, T.bookmarkEntries.captionEntryId)
+        )
+        .orderBy(E.desc(T.bookmarkEntries.createdAt));
+
+      const nextCursor = rows.length === limit ? input.cursor + limit : null;
+      return { rows, nextCursor };
     }),
 };

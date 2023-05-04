@@ -1,6 +1,6 @@
 import { tinyassert } from "@hiogawa/utils";
 import { beforeEach, describe, expect, it } from "vitest";
-import { T, db } from "../../db/drizzle-client.server";
+import { E, T, db } from "../../db/drizzle-client.server";
 import { useUser } from "../../misc/test-helper";
 import { findByUsername, getSessionUser } from "../../utils/auth";
 import { trpc } from "../client";
@@ -98,7 +98,9 @@ describe(trpc.users_register.mutationKey, () => {
   };
 
   beforeEach(async () => {
-    await db.delete(T.users);
+    await db
+      .delete(T.users)
+      .where(E.eq(T.users.username, credentials.username));
   });
 
   describe("success", () => {

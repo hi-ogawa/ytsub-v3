@@ -1,17 +1,23 @@
 import { deepEqual } from "assert/strict";
 import fs from "node:fs";
-import { objectPick, range, tinyassert } from "@hiogawa/utils";
+import { objectPick, range, tinyassert, zip } from "@hiogawa/utils";
 import { cac } from "cac";
 import consola from "consola";
+import { sql } from "drizzle-orm";
 import { z } from "zod";
-import { client } from "../db/client.server";
-import { E, T, db, findOne } from "../db/drizzle-client.server";
 import {
-  Q,
+  E,
+  T,
+  db,
+  dbGetMigrationStatus,
+  dbGetSchema,
+  selectOne,
+} from "../db/drizzle-client.server";
+import {
   deleteOrphans,
   filterNewVideo,
   insertVideoAndCaptionEntries,
-} from "../db/models";
+} from "../db/helper";
 import {
   createUserCookie,
   findByUsername,
@@ -19,7 +25,6 @@ import {
   toPasswordHash,
   verifySignin,
 } from "../utils/auth";
-import { zip } from "../utils/misc";
 import { exec, streamToString } from "../utils/node.server";
 import { resetDeckCache } from "../utils/practice-system";
 import { NewVideo, fetchCaptionEntries } from "../utils/youtube";
@@ -28,56 +33,9 @@ import { exportDeckJson, importDeckJson } from "./seed-utils";
 
 const cli = cac("cli").help();
 
-cli
-  .command("db:schema")
-  .option("--show-create-table", "[boolean]", { default: false })
-  .option("--inclue-knex", "[boolean]", { default: false })
-  .option("--json", "[boolean]", { default: false })
-  .action(
-    async (options: {
-      showCreateTable: boolean;
-      includeKnex: boolean;
-      json: boolean;
-    }) => {
-      const schema = await getSchema(options);
-      const result = options.json ? JSON.stringify(schema, null, 2) : schema;
-      console.log(result);
-    }
-  );
-
-async function getTableNames(): Promise<string[]> {
-  const [rows, columnDefs] = await client.raw("SHOW TABLES");
-  return rows.map((row: any) => row[columnDefs[0].name]);
-}
-
-async function getSchema(options: {
-  showCreateTable: boolean;
-  includeKnex: boolean;
-}): Promise<Record<string, any>> {
-  let names = await getTableNames();
-  if (!options.includeKnex) {
-    names = names.filter((name) => !name.startsWith("knex_"));
-  }
-  const result: Record<string, any> = {};
-  for (const name of names) {
-    if (options.showCreateTable) {
-      const [rows] = await client.raw(`SHOW CREATE TABLE ${name}`);
-      result[name] = rows[0]["Create Table"];
-    } else {
-      const [fields] = await client.raw(`DESCRIBE ${name}`);
-      const [indices] = await client.raw(`SHOW INDEX FROM ${name}`);
-      result[name] = {
-        describe: Object.fromEntries(
-          fields.map((row: any) => [row.Field, row])
-        ),
-        index: Object.fromEntries(
-          indices.map((row: any) => [row.Key_name, row])
-        ),
-      };
-    }
-  }
-  return result;
-}
+//
+// db:test-migrations
+//
 
 cli
   .command("db:test-migrations")
@@ -91,45 +49,39 @@ async function clieDbTestMigrations(options: {
   unitTest: boolean;
   reversibilityTest: boolean;
 }) {
-  const [completed, pending] = (await client.migrate.list()) as [
-    { name: string }[],
-    { file: string }[]
-  ];
+  const { completedFiles, pendingFiles } = await dbGetMigrationStatus();
 
   console.error(":: list completed");
-  for (const { name } of completed) {
-    console.error(name);
+  for (const file of completedFiles) {
+    console.error(file);
   }
 
   console.error(":: list pending");
-  for (const { file } of pending) {
+  for (const file of pendingFiles) {
     console.error(file);
   }
 
   const ups = [];
   const downs = [];
 
-  const getSchema_ = () =>
-    getSchema({ showCreateTable: false, includeKnex: false });
-
   console.error(":: running migrations");
   if (options.unitTest) {
     process.env.MIGRATION_UNIT_TEST = "1";
   }
 
-  const n = pending.length;
-  ups.push(await getSchema_());
+  const n = pendingFiles.length;
+  ups.push(await dbGetSchema());
   for (const i of range(n)) {
-    console.error(`(⇑:${i + 1}/${n}) ${pending[i].file}`);
+    console.error(`(⇑:${i + 1}/${n}) ${pendingFiles[i]}`);
     await exec("pnpm knex migrate:up");
-    ups.push(await getSchema_());
+    ups.push(await dbGetSchema());
   }
 
-  downs.unshift(await getSchema_());
+  downs.unshift(await dbGetSchema());
   for (const i of range(n)) {
-    console.error(`(⇓:${i + 1}/${n}) ${pending[n - i - 1].file}`);
+    console.error(`(⇓:${i + 1}/${n}) ${pendingFiles[n - i - 1]}`);
     await exec("pnpm knex migrate:down");
-    downs.unshift(await getSchema_());
+    downs.unshift(await dbGetSchema());
   }
 
   if (options.showSchema) {
@@ -144,6 +96,10 @@ async function clieDbTestMigrations(options: {
   }
 }
 
+//
+// create-user
+//
+
 cli
   .command("create-user <username> <password>")
   .option("--language1 <language1>", "[string]", { default: "fr" })
@@ -155,7 +111,10 @@ cli
       { language1, language2 }: { language1: string; language2: string }
     ) => {
       const user = await register({ username, password });
-      await Q.users().update({ language1, language2 }).where("id", user.id);
+      await db
+        .update(T.users)
+        .set({ language1, language2 })
+        .where(E.eq(T.users.id, user.id));
       await printSession(username, password);
     }
   );
@@ -174,10 +133,10 @@ cli
     const newVideos: NewVideo[] = JSON.parse(input);
     let userId = undefined;
     if (options.username) {
-      const user = await Q.users()
-        .where("username", options.username)
-        .select("id")
-        .first();
+      const user = await selectOne(
+        T.users,
+        E.eq(T.users.username, options.username)
+      );
       tinyassert(user);
       userId = user.id;
     }
@@ -281,115 +240,8 @@ async function commandDbSeedImport(argsRaw: unknown) {
 }
 
 //
-// import-bookmark-entries
+// clean-data
 //
-
-const OLD_BOOKMARK_ENTRY_SCHEMA = z.object({
-  watchParameters: z.object({
-    videoId: z.string(),
-    captions: z.array(
-      z.object({
-        id: z.string(),
-        translation: z.string().optional(),
-      })
-    ),
-  }),
-  captionEntry: z.object({
-    begin: z.number(),
-    end: z.number(),
-    text1: z.string(),
-    text2: z.string(),
-  }),
-  bookmarkText: z.string(),
-});
-
-type OldBookamrkEntry = z.infer<typeof OLD_BOOKMARK_ENTRY_SCHEMA>;
-
-async function importBookmarkEntry(
-  old: OldBookamrkEntry,
-  userId: number
-): Promise<[boolean, string]> {
-  const {
-    watchParameters: {
-      videoId,
-      captions: [language1, language2],
-    },
-    captionEntry: { begin },
-    bookmarkText,
-  } = old;
-
-  const video = await findOne(
-    filterNewVideo({ videoId, language1, language2 }, userId)
-  );
-  if (!video) return [false, "Video not found"];
-
-  const captionEntry = await Q.captionEntries()
-    .where({ videoId: video.id })
-    .where(client.raw("abs(begin - ?) < 0.1", begin))
-    .first();
-  if (!captionEntry) return [false, "CaptionEntry not found"];
-
-  if (
-    !captionEntry.text1.includes(bookmarkText) &&
-    !captionEntry.text2.includes(bookmarkText)
-  ) {
-    return [false, "Bookmark text not match"];
-  }
-
-  let side: number;
-  let offset: number;
-  if (captionEntry.text1.includes(bookmarkText)) {
-    side = 0;
-    offset = captionEntry.text1.indexOf(bookmarkText);
-  } else {
-    side = 1;
-    offset = captionEntry.text2.indexOf(bookmarkText);
-  }
-
-  const found = await Q.bookmarkEntries()
-    .where({
-      userId,
-      videoId: video.id,
-      captionEntryId: captionEntry.id,
-      side,
-      offset,
-      text: bookmarkText,
-    })
-    .first();
-  if (found) {
-    return [false, "Bookmark already exists"];
-  }
-
-  const [id] = await Q.bookmarkEntries().insert({
-    userId,
-    videoId: video.id,
-    captionEntryId: captionEntry.id,
-    side,
-    offset,
-    text: bookmarkText,
-  });
-  return [true, `Success (id = ${id})`];
-}
-
-cli
-  .command("import-bookmark-entries <username>")
-  .action(async (username: string) => {
-    const user = await Q.users()
-      .where("username", username)
-      .select("id")
-      .first();
-    tinyassert(user);
-
-    const input = await streamToString(process.stdin);
-    const olds = z.array(OLD_BOOKMARK_ENTRY_SCHEMA).parse(JSON.parse(input));
-    for (const old of olds) {
-      console.log(
-        `:: importing (${old.watchParameters.videoId}) ${old.bookmarkText}`
-      );
-      const [ok, message] = await importBookmarkEntry(old, user.id);
-      console.error(ok ? "✔" : "✘", message, ok ? "" : JSON.stringify(old));
-    }
-  });
 
 cli
   .command("clean-data <only-username>")
@@ -400,78 +252,79 @@ cli
       options: { deleteAnonymousVideos: boolean }
     ) => {
       // delete except `onlyUsername`
-      await Q.users().delete().whereNot("username", onlyUsername);
+      await db
+        .delete(T.users)
+        .where(E.not(E.eq(T.users.username, onlyUsername)));
       if (options.deleteAnonymousVideos) {
         // delete anonymous videos
-        await Q.videos().delete().where("userId", null);
+        await db.delete(T.videos).where(E.isNull(T.videos.userId));
       }
       await deleteOrphans();
       // rename to "dev"
-      await Q.users()
-        .update({ username: "dev", passwordHash: await toPasswordHash("dev") })
-        .where("username", onlyUsername);
+      await db
+        .update(T.users)
+        .set({ username: "dev", passwordHash: await toPasswordHash("dev") })
+        .where(E.eq(T.users.username, onlyUsername));
     }
   );
+
+//
+// reset-counter-cache:videos.bookmarkEntriesCount
+//
 
 cli
   .command("reset-counter-cache:videos.bookmarkEntriesCount")
   .action(async () => {
-    await client.transaction(async (trx) => {
-      const rows = await Q.videos()
-        .transacting(trx)
-        .select({
-          id: "videos.id",
-          bookmarkEntriesCount: client.raw(
-            "COALESCE(COUNT(bookmarkEntries.id), 0)"
-          ),
-          updatedAt: "videos.updatedAt", // prevent changing `updatedAt` timestamp for the migration
-          videoId: client.raw("'dummy'"),
-          language1_id: client.raw("'dummy'"),
-          language2_id: client.raw("'dummy'"),
-          title: client.raw("'dummy'"),
-          author: client.raw("'dummy'"),
-          channelId: client.raw("'dummy'"),
+    // TODO: single UPDATE statement with sub query?
+    const rows = await db
+      .select({
+        id: T.videos.id,
+        bookmarkEntriesCount: sql<number>`COALESCE(COUNT(${T.bookmarkEntries.id}), 0)`,
+        udpatedAt: T.videos.updatedAt,
+      })
+      .from(T.videos)
+      .leftJoin(T.bookmarkEntries, E.eq(T.bookmarkEntries.videoId, T.videos.id))
+      .groupBy(T.videos.id);
+    for (const row of rows) {
+      await db
+        .update(T.videos)
+        .set({
+          bookmarkEntriesCount: row.bookmarkEntriesCount,
+          updatedAt: row.udpatedAt, // keep current timestamp
         })
-        .leftJoin("bookmarkEntries", "bookmarkEntries.videoId", "videos.id")
-        .groupBy("videos.id");
-      await Q.videos()
-        .transacting(trx)
-        .insert(rows)
-        .onConflict("id")
-        .merge(["id", "bookmarkEntriesCount", "updatedAt"]);
-    });
+        .where(E.eq(T.videos.id, row.id));
+    }
   });
+
+//
+// reset-counter-cache:practiceEntries.practiceActionsCount
+//
 
 cli
   .command("reset-counter-cache:practiceEntries.practiceActionsCount")
   .action(async () => {
-    await client.transaction(async (trx) => {
-      const rows = await Q.practiceEntries()
-        .transacting(trx)
-        .select({
-          id: "practiceEntries.id",
-          practiceActionsCount: client.raw(
-            "COALESCE(COUNT(practiceActions.id), 0)"
-          ),
-          updatedAt: "practiceEntries.updatedAt", // prevent changing `updatedAt` timestamp for the migration
-          queueType: client.raw("'dummy'"),
-          easeFactor: 0,
-          scheduledAt: client.raw("'2022-06-24 12:00:00'"),
-          deckId: 0,
-          bookmarkEntryId: 0,
+    const rows = await db
+      .select({
+        id: T.practiceEntries.id,
+        practiceActionsCount: sql<number>`COALESCE(COUNT(${T.practiceActions.id}), 0)`,
+        udpatedAt: T.practiceEntries.updatedAt,
+      })
+      .from(T.practiceEntries)
+      .innerJoin(
+        T.practiceActions,
+        E.eq(T.practiceActions.practiceEntryId, T.practiceEntries.id)
+      )
+      .groupBy(T.practiceEntries.id);
+
+    for (const row of rows) {
+      await db
+        .update(T.practiceEntries)
+        .set({
+          practiceActionsCount: row.practiceActionsCount,
+          updatedAt: row.udpatedAt, // keep current timestamp
         })
-        .leftJoin(
-          "practiceActions",
-          "practiceActions.practiceEntryId",
-          "practiceEntries.id"
-        )
-        .groupBy("practiceEntries.id");
-      await Q.practiceEntries()
-        .transacting(trx)
-        .insert(rows)
-        .onConflict("id")
-        .merge(["id", "practiceActionsCount", "updatedAt"]);
-    });
+        .where(E.eq(T.practiceEntries.id, row.id));
+    }
   });
 
 async function printSession(username: string, password: string) {
@@ -526,9 +379,7 @@ cli
 
 async function debugCacheNextEntries(rawArgs: unknown) {
   const args = debugCacheNextEntriesArgs.parse(rawArgs);
-  const deck = await findOne(
-    db.select().from(T.decks).where(E.eq(T.decks.id, args.deckId))
-  );
+  const deck = await selectOne(T.decks, E.eq(T.decks.id, args.deckId));
   tinyassert(deck);
 
   const ids = deck.cache.nextEntriesRandomMode;
@@ -542,6 +393,69 @@ async function debugCacheNextEntries(rawArgs: unknown) {
     .from(T.practiceEntries)
     .where(E.inArray(T.practiceEntries.id, ids));
   console.log(entries);
+}
+
+//
+// fixBookmarkEntriesOffset
+//
+
+const fixBookmarkEntriesOffsetArgs = z.object({
+  update: z.boolean().default(false),
+});
+
+cli
+  .command(fixBookmarkEntriesOffset.name)
+  .option(`--${fixBookmarkEntriesOffsetArgs.keyof().enum.update} [boolean]`, "")
+  .action(fixBookmarkEntriesOffset);
+
+async function fixBookmarkEntriesOffset(rawArgs: unknown) {
+  const args = fixBookmarkEntriesOffsetArgs.parse(rawArgs);
+  const rows = await db
+    .select()
+    .from(T.bookmarkEntries)
+    .innerJoin(
+      T.captionEntries,
+      E.eq(T.captionEntries.id, T.bookmarkEntries.captionEntryId)
+    );
+
+  const stats = {
+    total: 0,
+    fixable: 0,
+  };
+
+  for (const row of rows) {
+    const { id, text, offset, side } = row.bookmarkEntries;
+    const captionText = [row.captionEntries.text1, row.captionEntries.text2][
+      side
+    ];
+
+    const textByOffset = captionText.slice(offset).slice(0, text.length);
+    if (textByOffset !== text) {
+      const newOffset = offset - text.length;
+      const textByNewOffset = captionText
+        .slice(newOffset)
+        .slice(0, text.length);
+
+      const fixable = textByNewOffset === text;
+      stats.total++;
+      stats.fixable += Number(fixable);
+
+      console.log(
+        fixable ? "[ok]" : "[no]",
+        { text, textByOffset, textByNewOffset },
+        row
+      );
+
+      if (args.update) {
+        await db
+          .update(T.bookmarkEntries)
+          .set({ offset: newOffset })
+          .where(E.eq(T.bookmarkEntries.id, id));
+      }
+    }
+  }
+
+  console.log({ stats });
 }
 
 //

@@ -1,6 +1,7 @@
+import { hashString } from "@hiogawa/utils";
 import { E, T, db } from "../db/drizzle-client.server";
 import type { UserTable } from "../db/models";
-import { register, sha256 } from "../utils/auth";
+import { register } from "../utils/auth";
 
 export function useUserImpl({
   username = "root",
@@ -13,7 +14,7 @@ export function useUserImpl({
 }) {
   // generate pseudo random username to avoid db uniqueness constraint
   if (seed !== undefined) {
-    username += "-" + sha256(seed, "hex").slice(0, 8);
+    username += "-" + hashString(seed).slice(0, 8);
   }
 
   async function before(): Promise<UserTable> {

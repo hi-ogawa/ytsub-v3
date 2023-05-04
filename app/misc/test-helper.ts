@@ -4,12 +4,10 @@ import type { LoaderFunction } from "@remix-run/server-runtime";
 import { afterAll, beforeAll } from "vitest";
 import { E, T, db } from "../db/drizzle-client.server";
 import {
-  CaptionEntryTable,
-  UserTable,
-  VideoTable,
   getVideoAndCaptionEntries,
   insertVideoAndCaptionEntries,
-} from "../db/models";
+} from "../db/helper";
+import type { CaptionEntryTable, UserTable, VideoTable } from "../db/models";
 import { createUserCookie } from "../utils/auth";
 import type { NewVideo, fetchCaptionEntries } from "../utils/youtube";
 import { useUserImpl } from "./test-helper-common";

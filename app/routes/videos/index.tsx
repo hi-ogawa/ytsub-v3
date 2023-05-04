@@ -9,12 +9,7 @@ import {
 } from "../../components/misc";
 import { useModal } from "../../components/modal";
 import { E, T, db, toPaginationResult } from "../../db/drizzle-client.server";
-import type {
-  DeckTable,
-  PaginationMetadata,
-  UserTable,
-  VideoTable,
-} from "../../db/models";
+import type { DeckTable, UserTable, VideoTable } from "../../db/models";
 import { R } from "../../misc/routes";
 import { trpc } from "../../trpc/client";
 import { toastInfo } from "../../utils/flash-message-hook";
@@ -26,6 +21,7 @@ import { makeLoader } from "../../utils/loader-utils.server";
 import type { PageHandle } from "../../utils/page-handle";
 import {
   PAGINATION_PARAMS_SCHEMA,
+  PaginationMetadata,
   PaginationParams,
 } from "../../utils/pagination";
 
@@ -127,8 +123,8 @@ function VideoComponentExtra({
       toast.success("Successfully deleted a video");
       navigate(R["/videos"]); // refetch
     },
-    onError: () => {
-      toast.error("Failed to delete a video");
+    onError: (e) => {
+      toast.error(e instanceof Error ? e.message : "Failed to delete a video");
     },
   });
   const modal = useModal();

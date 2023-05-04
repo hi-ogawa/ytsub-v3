@@ -1,5 +1,7 @@
 import { expect } from "@playwright/test";
 import { E, T, db } from "../db/drizzle-client.server";
+import { importSeed } from "../misc/seed-utils";
+import { regExpRaw } from "../utils/misc";
 import { test } from "./coverage";
 import { useUserE2E } from "./helper";
 
@@ -8,83 +10,101 @@ test.describe("videos-signed-in", () => {
     seed: __filename + "/users/me",
   });
 
-  test("new-video => show-video => new-bookmark => list-bookmarks", async ({
-    page,
-  }) => {
+  // prettier-ignore
+  test("create-bookmarks", async ({ page }) => {
     await user.signin(page);
 
     //
-    // navigate to /videos/new to create https://www.youtube.com/watch?v=EnPYXckiUVg with fr/en
+    // input video url in "/"
     //
-
-    await page.goto("/videos/new?videoId=EnPYXckiUVg");
-    await page
-      .locator("data-test=setup-form >> select >> nth=0")
-      .selectOption('{"id":".fr"}');
-    await page
-      .locator("data-test=setup-form >> select >> nth=1")
-      .selectOption('{"id":".en"}');
-    await page.locator('data-test=setup-form >> button[type="submit"]').click();
+    await page.goto("/");
+    await page.getByTestId("Navbar-drawer-button").click();
+    await page.getByPlaceholder("Enter Video ID or URL").fill("https://www.youtube.com/watch?v=4gXmClk8rKI");
+    await page.getByPlaceholder("Enter Video ID or URL").press("Enter");
 
     //
-    // navigate to /videos/$id
+    // create video in "/videos/new"
     //
+    await page.waitForURL("/videos/new?videoId=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3D4gXmClk8rKI");
+    await page.getByRole("combobox", { name: "1st language" }).selectOption('{"id":".ko"}');
+    await page.getByRole("combobox", { name: "2nd language" }).selectOption('{"id":".en"}');
+    await page.getByRole("button", { name: "Save and Play" }).click();
 
-    await page.waitForSelector(`"Created a new video"`);
+    //
+    // play video in "/videos/$id"
+    //
+    await page.waitForURL(regExpRaw`/videos/\d+$`);
 
-    await expect(page).toHaveURL(/\/videos\/\d+$/);
-
-    // select text to bookmark
-    const bookmarkable = page.locator(".--bookmarkable-- >> nth=6");
-    await bookmarkable.evaluate((el) => {
-      const text = el.childNodes[0];
+    // select text
+    await page.getByText("잠깐 밖으로 나올래").evaluate((el) => {
       const selection = window.getSelection();
-      const range = document.createRange();
-      range.setStart(text, 13);
-      range.setEnd(text, 39);
-      if (!selection) throw new Error();
-      selection.addRange(range);
+      selection?.setBaseAndExtent(el.childNodes[0], 0, el.childNodes[0], 6);
     });
 
-    // click bookmark
-    await page.locator("data-test=new-bookmark-button").click();
+    // create bookmark
+    await page.locator('[data-test="new-bookmark-button"]').click();
+    await page.getByText("Bookmark success").click();
 
-    // see success message
-    await page.waitForSelector(`"Bookmark success"`);
+    // highlight bookmarks
+    await page.getByTestId('video-menu-reference').click();
+    await page.getByRole('button', { name: 'Show bookmarks' }).click();
+    await expect(page.getByText('잠깐 밖으로')).toHaveAttribute("data-offset", "0");
+    await expect(page.getByText('잠깐 밖으로')).toHaveClass("text-colorPrimaryText")
+    await expect(page.getByText('나올래')).toHaveAttribute("data-offset", "6");
+    await expect(page.getByText('나올래')).not.toHaveClass("text-colorPrimaryText");
 
-    // verify database
+    // create overlapped bookmark
+    await page.getByText("잠깐 밖으로 나올래").evaluate((el) => {
+      const selection = window.getSelection();
+      selection?.setBaseAndExtent(el.childNodes[0].childNodes[0], 3, el.childNodes[1].childNodes[0], 3);
+    });
+    await page.getByTestId("toast-remove").evaluate((el: any) => el.click());
+    await page.locator('[data-test="new-bookmark-button"]').click();
+    await page.getByText("Bookmark success").click();
+
+    await page.getByText("잠깐 밖으로 나올래").evaluate((el) => {
+      const selection = window.getSelection();
+      // dragging in reverse direction
+      selection?.setBaseAndExtent(el.childNodes[3].childNodes[0], 1, el.childNodes[1].childNodes[0], 2);
+    });
+    await page.getByTestId("toast-remove").evaluate((el: any) => el.click());
+    await page.locator('[data-test="new-bookmark-button"]').click();
+    await page.getByText("Bookmark success").click();
+
+    // check db
     const rows = await db
       .select()
       .from(T.bookmarkEntries)
       .where(E.eq(T.bookmarkEntries.userId, user.data.id));
-    expect(rows[0]).toMatchObject({
-      text: "qu'est-ce qu'on va faire ?",
-      offset: 13,
-      side: 0,
-    });
+    expect(rows).toMatchObject([
+      {
+        side: 0,
+        offset: 0,
+        text: "잠깐 밖으로",
+      },
+      {
+        side: 0,
+        offset: 3,
+        text: "밖으로 나올",
+      },
+      {
+        side: 0,
+        offset: 5,
+        text: "로 나올래",
+      },
+    ]);
 
     //
-    // navigate to bookmark list
+    // check created bookmarks in /bookmarks
     //
 
-    await page.goto("/bookmarks");
+    await page.getByTestId('Navbar-drawer-button').click();
+    await page.getByRole('link', { name: 'Bookmarks' }).click();
+    await page.getByText('잠깐 밖으로').click();
+    await page.locator('[data-test="caption-entry-component__video-link"]').click();
 
-    // verify bookmark text
-    await expect(
-      page.locator("data-test=bookmark-entry >> data-test=bookmark-entry-text")
-    ).toHaveText("qu'est-ce qu'on va faire ?");
-
-    // click "ChevronDown"
-    await page.locator("data-test=bookmark-entry >> button >> nth=0").click();
-
-    // click link to navigate back to /videos/$id
-    await page
-      .locator(
-        "data-test=bookmark-entry >> data-test=caption-entry-component__video-link >> nth=0"
-      )
-      .click();
-
-    await expect(page).toHaveURL(/\/videos\/\d+\?index=\d+$/);
+    // back to the video
+    await page.waitForURL(regExpRaw`/videos/\d+\?index=1$`);
   });
 });
 
@@ -128,4 +148,29 @@ test("invalid videoId input", async ({ page }) => {
     .fill("https://www.youtube.com/watch?v=4gXmClk8rXX");
   await page.getByPlaceholder("Enter Video ID or URL").press("Enter");
   await page.getByText("Failed to load a video").click();
+});
+
+test.describe("videos deletion", () => {
+  const userHook = useUserE2E(test, { seed: __filename + "videos deletion" });
+
+  test.beforeAll(async () => {
+    await userHook.isReady;
+    await importSeed(userHook.data.id);
+  });
+
+  test("error", async ({ page }) => {
+    await userHook.signin(page);
+    await page.goto("/videos");
+    await page
+      .locator('[data-test="video-component-popover-button"]')
+      .nth(0)
+      .click();
+    page.once("dialog", (dialog) => {
+      dialog.accept();
+    });
+    await page.locator('[data-test="video-delete-form"]').click();
+    await page
+      .getByText("You cannot delete a video when it has associated bookmarks.")
+      .click();
+  });
 });
