@@ -14,5 +14,7 @@ CREATE TABLE `videos` (
   `bookmarkEntriesCount` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `videoId` (`videoId`,`language1_id`,`language1_translation`,`language2_id`,`language2_translation`,`userId`),
-  KEY `videos_userId_key` (`userId`)
+  KEY `videos_userId_key` (`userId`),
+  KEY `videos_language1_id` (`language1_id`),
+  KEY `videos_language1_id_translation` (`language1_translation`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
