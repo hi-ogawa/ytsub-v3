@@ -4,9 +4,11 @@ import {
   sortBy,
   tinyassert,
 } from "@hiogawa/utils";
-import { UseMutationOptions, useMutation } from "@tanstack/react-query";
+import { useRefCallbackEffect } from "@hiogawa/utils-react";
+import { useMutation } from "@tanstack/react-query";
 import { XMLParser } from "fast-xml-parser";
 import React from "react";
+import { toast } from "react-hot-toast";
 import { z } from "zod";
 import { loadScript } from "./dom-utils";
 import {
@@ -341,6 +343,7 @@ export interface YoutubePlayer {
   seekTo: (second: number) => void;
   getCurrentTime: () => number;
   getPlayerState: () => number;
+  destroy: () => void;
 }
 
 // singleton
@@ -377,28 +380,30 @@ async function loadYoutubePlayer(
 
 export function usePlayerLoader(
   playerOptions: YoutubePlayerOptions,
-  mutationOptions: UseMutationOptions<
-    YoutubePlayer,
-    unknown,
-    HTMLElement,
-    unknown
-  >
+  { onReady }: { onReady: (player: YoutubePlayer) => void }
 ) {
-  // TODO: cleanup resource on unmount?
-
-  const ref: React.RefCallback<HTMLElement> = (el) => {
-    if (el) {
+  const ref = useRefCallbackEffect<HTMLElement>((el) => {
+    if (el && mutation.isIdle) {
       mutation.mutate(el);
     }
-  };
+  });
 
   const mutation = useMutation(
     (el: HTMLElement) => loadYoutubePlayer(el, playerOptions),
-    mutationOptions
+    {
+      onSuccess: onReady,
+      onError: () => {
+        toast.error("Failed to initialize youtube player");
+      },
+    }
   );
 
+  React.useEffect(() => {
+    return () => mutation.data?.destroy();
+  }, []);
+
   return {
-    ref: React.useCallback(ref, []),
+    ref,
     isLoading: !mutation.isSuccess,
   };
 }

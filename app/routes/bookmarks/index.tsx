@@ -294,7 +294,7 @@ export function MiniPlayer({
       },
     },
     {
-      onSuccess: (player) => {
+      onReady: (player) => {
         setPlayer(player);
         // autoplay manually since it seems playerVars.autoplay doesn't work for mobile
         if (autoplay) {

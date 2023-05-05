@@ -296,7 +296,7 @@ function PageComponent({
         <>
           <PlayerComponent
             defaultOptions={{ videoId: video.videoId }}
-            onLoad={setPlayer}
+            onReady={setPlayer}
           />
         </>
       }
@@ -413,16 +413,13 @@ function LayoutComponent(props: {
 
 function PlayerComponent({
   defaultOptions,
-  onLoad,
-  onError,
+  onReady,
 }: {
   defaultOptions: YoutubePlayerOptions;
-  onLoad: (player: YoutubePlayer) => void;
-  onError?: (e: unknown) => void;
+  onReady: (player: YoutubePlayer) => void;
 }) {
   const { ref, isLoading } = usePlayerLoader(defaultOptions, {
-    onSuccess: onLoad,
-    onError,
+    onReady,
   });
 
   return (
