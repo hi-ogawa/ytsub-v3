@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">75.74% </span>
+                <span class="strong">75.55% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>306/404</span>
+                <span class='fraction'>309/409</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">75.74% </span>
+                <span class="strong">75.55% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>306/404</span>
+                <span class='fraction'>309/409</span>
             </div>
         
             
@@ -467,7 +467,14 @@
 <a name='L402'></a><a href='#L402'>402</a>
 <a name='L403'></a><a href='#L403'>403</a>
 <a name='L404'></a><a href='#L404'>404</a>
-<a name='L405'></a><a href='#L405'>405</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L405'></a><a href='#L405'>405</a>
+<a name='L406'></a><a href='#L406'>406</a>
+<a name='L407'></a><a href='#L407'>407</a>
+<a name='L408'></a><a href='#L408'>408</a>
+<a name='L409'></a><a href='#L409'>409</a>
+<a name='L410'></a><a href='#L410'>410</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -816,6 +823,7 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -845,6 +853,8 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -877,9 +887,11 @@
   sortBy,
   tinyassert,
 } from "@hiogawa/utils";
-import { UseMutationOptions, useMutation } from "@tanstack/react-query";
+import { useRefCallbackEffect } from "@hiogawa/utils-react";
+import { useMutation } from "@tanstack/react-query";
 import { XMLParser } from "fast-xml-parser";
 import React from "react";
+import { toast } from "react-hot-toast";
 import { z } from "zod";
 import { loadScript } from "./dom-utils";
 import {
@@ -1214,6 +1226,7 @@ export interface YoutubePlayer {
   seekTo: (second: number) =&gt; void;
   getCurrentTime: () =&gt; number;
   getPlayerState: () =&gt; number;
+  destroy: () =&gt; void;
 }
 &nbsp;
 // singleton
@@ -1250,28 +1263,30 @@ const loadYoutubeIframeApi = once(async () =&gt; {
 &nbsp;
 export <span class="fstat-no" title="function not covered" >function usePlayerLoader(</span>
 <span class="cstat-no" title="statement not covered" >  playerOptions: YoutubePlayerOptions,</span>
-<span class="cstat-no" title="statement not covered" >  mutationOptions: UseMutationOptions&lt;</span>
-<span class="cstat-no" title="statement not covered" >    YoutubePlayer,</span>
-<span class="cstat-no" title="statement not covered" >    unknown,</span>
-<span class="cstat-no" title="statement not covered" >    HTMLElement,</span>
-<span class="cstat-no" title="statement not covered" >    unknown</span>
-<span class="cstat-no" title="statement not covered" >  &gt;</span>
+<span class="cstat-no" title="statement not covered" >  { onReady }: { onReady: (player: YoutubePlayer) =&gt; void }</span>
 <span class="cstat-no" title="statement not covered" >) {</span>
-<span class="cstat-no" title="statement not covered" >  // TODO: cleanup resource on unmount?</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >  const ref: React.RefCallback&lt;HTMLElement&gt; = (el) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >    if (el) {</span>
+<span class="cstat-no" title="statement not covered" >  const ref = useRefCallbackEffect&lt;HTMLElement&gt;((el) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >    if (el &amp;&amp; mutation.isIdle) {</span>
 <span class="cstat-no" title="statement not covered" >      mutation.mutate(el);</span>
 <span class="cstat-no" title="statement not covered" >    }</span>
-<span class="cstat-no" title="statement not covered" >  };</span>
+<span class="cstat-no" title="statement not covered" >  });</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  const mutation = useMutation(</span>
 <span class="cstat-no" title="statement not covered" >    (el: HTMLElement) =&gt; loadYoutubePlayer(el, playerOptions),</span>
-<span class="cstat-no" title="statement not covered" >    mutationOptions</span>
+<span class="cstat-no" title="statement not covered" >    {</span>
+<span class="cstat-no" title="statement not covered" >      onSuccess: onReady,</span>
+<span class="cstat-no" title="statement not covered" >      onError: () =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >        toast.error("Failed to initialize youtube player");</span>
+<span class="cstat-no" title="statement not covered" >      },</span>
+<span class="cstat-no" title="statement not covered" >    }</span>
 <span class="cstat-no" title="statement not covered" >  );</span>
 <span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >  React.useEffect(() =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >    return () =&gt; mutation.data?.destroy();</span>
+<span class="cstat-no" title="statement not covered" >  }, []);</span>
+<span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  return {</span>
-<span class="cstat-no" title="statement not covered" >    ref: React.useCallback(ref, []),</span>
+<span class="cstat-no" title="statement not covered" >    ref,</span>
 <span class="cstat-no" title="statement not covered" >    isLoading: !mutation.isSuccess,</span>
 <span class="cstat-no" title="statement not covered" >  };</span>
 <span class="cstat-no" title="statement not covered" >}</span>
@@ -1282,7 +1297,7 @@ export <span class="fstat-no" title="function not covered" >function usePlayerLo
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-05-05T06:46:49.638Z
+                at 2023-05-05T10:21:28.208Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>
