@@ -13,6 +13,12 @@ describe("fetchVideoMetadata", () => {
     expect(res.videoDetails.title).toMatchInlineSnapshot(
       '"Are French People Really That Mean?! // French Girls React to Emily In Paris (in FR w/ FR & EN subs)"'
     );
+    expect(res.playabilityStatus).toMatchInlineSnapshot(`
+      {
+        "playableInEmbed": true,
+        "status": "OK",
+      }
+    `);
   });
 
   it("no-caption", async () => {
@@ -24,6 +30,12 @@ describe("fetchVideoMetadata", () => {
         "playerCaptionsTracklistRenderer": {
           "captionTracks": [],
         },
+      }
+    `);
+    expect(res.value.playabilityStatus).toMatchInlineSnapshot(`
+      {
+        "playableInEmbed": true,
+        "status": "OK",
       }
     `);
   });
@@ -42,8 +54,30 @@ describe("fetchVideoMetadata", () => {
             "videoDetails"
           ],
           "message": "Required"
+        },
+        {
+          "code": "invalid_type",
+          "expected": "boolean",
+          "received": "undefined",
+          "path": [
+            "playabilityStatus",
+            "playableInEmbed"
+          ],
+          "message": "Required"
         }
       ]],
+      }
+    `);
+  });
+
+  it("iframe-embed-disabled", async () => {
+    // https://www.youtube.com/watch?v=_TZN41ojF8A
+    const res = await wrapPromise(fetchVideoMetadata("_TZN41ojF8A"));
+    tinyassert(res.ok);
+    expect(res.value.playabilityStatus).toMatchInlineSnapshot(`
+      {
+        "playableInEmbed": false,
+        "status": "OK",
       }
     `);
   });

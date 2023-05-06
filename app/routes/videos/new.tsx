@@ -124,6 +124,11 @@ export default function DefaultComponent() {
               No caption is available for this video.
             </div>
           )}
+          {!videoMetadata.playabilityStatus.playableInEmbed && (
+            <div className="p-2 text-sm text-colorErrorText bg-colorErrorBg border border-colorErrorBorder">
+              Playback on other websites has been disabled by the video owner.
+            </div>
+          )}
           <div className="text-xl">Select Languages</div>
           <form
             data-test="setup-form"
