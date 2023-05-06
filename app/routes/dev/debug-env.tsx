@@ -1,8 +1,9 @@
 import { sortBy } from "@hiogawa/utils";
 import type { LoaderFunction } from "@remix-run/server-runtime";
 import { verifyPassword } from "../../utils/auth";
+import { prettierJson } from "../../utils/loader-utils";
 
-// npm run console
+// pnpm console
 // > await require("./app/utils/auth.ts").toPasswordHash("Basic " + Buffer.from("<user>:<pass>").toString("base64"))
 const PASSWORD_HASH =
   "$2a$10$SInJ/nZ5Q59BhpfWYIOvDOzXZWFD37tDCqr3dkEbvod5/0QKi3CSy";
@@ -13,14 +14,19 @@ export const loader: LoaderFunction = async ({ request }) => {
     return new Response("", {
       status: 401,
       headers: {
-        "www-authenticate": 'Basic realm="debug-secret"',
+        "www-authenticate": 'Basic realm="debug-env"',
       },
     });
   }
-  const res = Object.fromEntries(
-    sortBy(Object.entries(process.env), ([k]) => k)
-  );
-  return new Response(JSON.stringify(res, null, 2), {
-    headers: { "content-type": "application/json" },
-  });
+  const res = sortObjectBy(process.env, (_v, k) => k);
+  return prettierJson(res);
 };
+
+function sortObjectBy<T>(
+  record: Record<string, T>,
+  keyFn: (v: T, k: string) => unknown
+): Record<string, T> {
+  return Object.fromEntries(
+    sortBy(Object.entries(record), ([k, v]) => keyFn(v, k))
+  );
+}

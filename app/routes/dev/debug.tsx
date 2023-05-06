@@ -1,13 +1,11 @@
 import type { LoaderFunction } from "@remix-run/server-runtime";
+import { prettierJson } from "../../utils/loader-utils";
 
 export const loader: LoaderFunction = async ({ request }) => {
-  const res = {
+  return prettierJson({
     "request.headers": headersEntries(request.headers),
     "process.versions": process.versions,
     VERCEL_ENV: process.env.VERCEL_ENV,
-  };
-  return new Response(JSON.stringify(res, null, 2), {
-    headers: { "content-type": "application/json" },
   });
 };
 
