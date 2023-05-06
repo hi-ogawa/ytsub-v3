@@ -92,10 +92,21 @@ export default function DefaultComponent() {
             toast.remove();
           }}
         />
+        <HydratedTestId />
         <Compose elements={[<QueryClientWrapper />, <Root />]} />
       </body>
     </html>
   );
+}
+
+function HydratedTestId() {
+  const [hydrated, setHydrated] = React.useState(false);
+
+  React.useEffect(() => {
+    setHydrated(true);
+  }, []);
+
+  return <span data-testid={hydrated && "hydrated"}></span>;
 }
 
 function Root() {
