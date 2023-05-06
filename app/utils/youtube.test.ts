@@ -54,6 +54,16 @@ describe("fetchVideoMetadata", () => {
             "videoDetails"
           ],
           "message": "Required"
+        },
+        {
+          "code": "invalid_type",
+          "expected": "boolean",
+          "received": "undefined",
+          "path": [
+            "playabilityStatus",
+            "playableInEmbed"
+          ],
+          "message": "Required"
         }
       ]],
       }
