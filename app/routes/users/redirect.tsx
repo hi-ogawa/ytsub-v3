@@ -18,14 +18,15 @@ export default function PageComponent() {
       Object.fromEntries(searchParams.entries())
     );
     if (parsed.success) {
+      const options = { id: parsed.data.type }; // stable toast for React.StrictMode
       if (parsed.data.type === "register") {
-        toast.success("Successfully registered");
+        toast.success("Successfully registered", options);
       }
       if (parsed.data.type === "signin") {
-        toast.success("Successfully signed in");
+        toast.success("Successfully signed in", options);
       }
       if (parsed.data.type === "signout") {
-        toast.success("Successfully signed out");
+        toast.success("Successfully signed out", options);
       }
     }
     navigate($R["/"](), { replace: true });
