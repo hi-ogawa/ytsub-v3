@@ -4,7 +4,7 @@ import {
   sortBy,
   tinyassert,
 } from "@hiogawa/utils";
-import { useRefCallbackEffect } from "@hiogawa/utils-react";
+import { useRefCallbackEffect, useStableCallback } from "@hiogawa/utils-react";
 import { useMutation } from "@tanstack/react-query";
 import { XMLParser } from "fast-xml-parser";
 import React from "react";
@@ -382,6 +382,8 @@ export function usePlayerLoader(
   playerOptions: YoutubePlayerOptions,
   { onReady }: { onReady: (player: YoutubePlayer) => void }
 ) {
+  onReady = useStableCallback(onReady);
+
   const ref = useRefCallbackEffect<HTMLElement>((el) => {
     if (el && mutation.isIdle) {
       mutation.mutate(el);
