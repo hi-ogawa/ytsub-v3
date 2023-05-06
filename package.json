@@ -119,7 +119,8 @@
     "patchedDependencies": {
       "@remix-run/dev@1.15.0": "patches/@remix-run__dev@1.15.0.patch",
       "@remix-run/server-runtime@1.15.0": "patches/@remix-run__server-runtime@1.15.0.patch",
-      "@remix-run/node@1.15.0": "patches/@remix-run__node@1.15.0.patch"
+      "@remix-run/node@1.15.0": "patches/@remix-run__node@1.15.0.patch",
+      "@opentelemetry/sdk-node@0.38.0": "patches/@opentelemetry__sdk-node@0.38.0.patch"
     }
   }
 }
