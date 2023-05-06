@@ -1,5 +1,5 @@
 import { sortBy } from "@hiogawa/utils";
-import { LoaderFunction, json } from "@remix-run/server-runtime";
+import type { LoaderFunction } from "@remix-run/server-runtime";
 import { verifyPassword } from "../../utils/auth";
 
 // npm run console
@@ -17,7 +17,10 @@ export const loader: LoaderFunction = async ({ request }) => {
       },
     });
   }
-  return json(
-    Object.fromEntries(sortBy(Object.entries(process.env), ([k]) => k))
+  const res = Object.fromEntries(
+    sortBy(Object.entries(process.env), ([k]) => k)
   );
+  return new Response(JSON.stringify(res, null, 2), {
+    headers: { "content-type": "application/json" },
+  });
 };
