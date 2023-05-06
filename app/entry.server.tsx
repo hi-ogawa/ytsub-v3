@@ -2,11 +2,11 @@ import { RemixServer } from "@remix-run/react";
 import type { HandleDocumentRequestFunction } from "@remix-run/server-runtime";
 import { renderToString } from "react-dom/server";
 import { injectThemeScript } from "./components/theme-select";
-import { injectInitializeServer } from "./misc/initialize-server";
+import { injectPatch } from "./misc/patch";
 import { injectConfigScript } from "./utils/config";
 import { decorateTraceAsync } from "./utils/opentelemetry-utils";
 
-injectInitializeServer();
+injectPatch();
 
 const handler: HandleDocumentRequestFunction = async (
   request,

@@ -19,15 +19,16 @@ index 6106c5d3f2ed5436bbee56674e69212d1d05d3bc..292d9840dc253e8d24ead785c1d87ffa
          request: args.request,
          params: args.params,
 diff --git a/dist/server.js b/dist/server.js
-index fd10bc563175ba69bda9b21ccc7732b20f794900..ebb6e94785bee2bca35031977d083ad516a3ae94 100644
+index fd10bc563175ba69bda9b21ccc7732b20f794900..8b0c62b10e08228daeecbc648521212a68e67861 100644
 --- a/dist/server.js
 +++ b/dist/server.js
-@@ -29,6 +29,8 @@ const createRequestHandler = (build, mode$1) => {
+@@ -28,7 +28,8 @@ const createRequestHandler = (build, mode$1) => {
+   let dataRoutes = routes.createStaticHandlerDataRoutes(build.routes, build.future);
    let serverMode = mode.isServerMode(mode$1) ? mode$1 : mode.ServerMode.Production;
    let staticHandler = router.createStaticHandler(dataRoutes);
-   return async function requestHandler(request, loadContext = {}) {
-+    // see misc/initialize-server.ts
-+    await globalThis.__onRequestHandler?.();
+-  return async function requestHandler(request, loadContext = {}) {
++  return (globalThis.__wrapRequestHandler ?? (f => f))(requestHandler);
++  async function requestHandler(request, loadContext = {}) {
      let url = new URL(request.url);
  
      // special __REMIX_ASSETS_MANIFEST endpoint for checking if app server serving up-to-date routes and assets
