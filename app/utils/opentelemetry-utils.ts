@@ -44,8 +44,9 @@ function getDefaultTracer() {
   return trace.getTracer("default");
 }
 
+// ts-prune-ignore-next
 export async function traceAsync<T>(
-  asyncFn: () => Promise<T>,
+  asyncFn: () => T,
   spanName: string,
   spanOptions?: SpanOptions
 ): Promise<T> {
@@ -62,4 +63,18 @@ export async function traceAsync<T>(
       span.end();
     }
   });
+}
+
+export function decorateTraceAsync<F extends (...args: any[]) => any>(
+  asyncFn: F,
+  metaFn: (...args: Parameters<F>) => {
+    spanName: string;
+    spanOptions?: SpanOptions;
+  }
+): F {
+  const wrapper = (...args: Parameters<F>) => {
+    const meta = metaFn(...args);
+    return traceAsync(() => asyncFn(...args), meta.spanName, meta.spanOptions);
+  };
+  return wrapper as F;
 }

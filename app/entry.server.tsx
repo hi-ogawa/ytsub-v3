@@ -4,10 +4,11 @@ import { renderToString } from "react-dom/server";
 import { injectThemeScript } from "./components/theme-select";
 import { injectInitializeServer } from "./misc/initialize-server";
 import { injectConfigScript } from "./utils/config";
+import { decorateTraceAsync } from "./utils/opentelemetry-utils";
 
 injectInitializeServer();
 
-const handler: HandleDocumentRequestFunction = (
+const handler: HandleDocumentRequestFunction = async (
   request,
   responseStatusCode,
   responseHeaders,
@@ -26,4 +27,8 @@ const handler: HandleDocumentRequestFunction = (
   });
 };
 
-export default handler;
+const handlerWrapper = decorateTraceAsync(handler, () => {
+  return { spanName: "HandleDocumentRequest" };
+});
+
+export default handlerWrapper;
