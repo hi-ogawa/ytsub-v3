@@ -5,9 +5,14 @@ import {
   initializeDrizzleClient,
 } from "../db/drizzle-client.server";
 import { initializeConfigServer } from "../utils/config";
+import {
+  finalizeOpentelemetry,
+  initializeOpentelemetry,
+} from "../utils/opentelemetry-utils";
 import { initializeSessionStore } from "../utils/session.server";
 
 export const initializeServer = once(async () => {
+  initializeOpentelemetry();
   installGlobals();
   initializeConfigServer();
   initializeSessionStore();
@@ -16,6 +21,7 @@ export const initializeServer = once(async () => {
 
 export async function finalizeServer() {
   await finalizeDrizzleClient();
+  finalizeOpentelemetry();
 }
 
 // to workaround async initialization on the server (cf. @remix-run/server-runtime patch)
