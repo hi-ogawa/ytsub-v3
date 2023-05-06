@@ -8,10 +8,12 @@ import { initializeConfigServer } from "../utils/config";
 import {
   finalizeOpentelemetry,
   initializeOpentelemetry,
+  injectTraceRemixLoader,
 } from "../utils/opentelemetry-utils";
 import { initializeSessionStore } from "../utils/session.server";
 
 export const initializeServer = once(async () => {
+  injectTraceRemixLoader();
   initializeOpentelemetry();
   installGlobals();
   initializeConfigServer();

@@ -78,3 +78,15 @@ export function decorateTraceAsync<F extends (...args: any[]) => any>(
   };
   return wrapper as F;
 }
+
+// cf. patches/@remix-run__server-runtime
+function traceRemixLoader(original: () => unknown, route: { path: string }) {
+  if (route.path === "trpc/:trpc") {
+    return original;
+  }
+  return () => traceAsync(original, `loader /${route.path}`);
+}
+
+export function injectTraceRemixLoader() {
+  Object.assign(globalThis, { __wrapLoader: traceRemixLoader });
+}

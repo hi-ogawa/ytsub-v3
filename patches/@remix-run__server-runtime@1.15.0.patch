@@ -1,3 +1,23 @@
+diff --git a/dist/routes.js b/dist/routes.js
+index 6106c5d3f2ed5436bbee56674e69212d1d05d3bc..292d9840dc253e8d24ead785c1d87ffa95121406 100644
+--- a/dist/routes.js
++++ b/dist/routes.js
+@@ -45,13 +45,13 @@ function createStaticHandlerDataRoutes(manifest, future, parentId = "", routesBy
+       hasErrorBoundary,
+       id: route.id,
+       path: route.path,
+-      loader: route.module.loader ? args => data.callRouteLoaderRR({
++      loader: route.module.loader ? args => (globalThis.__wrapLoader ?? (f => f))((() => data.callRouteLoaderRR({
+         request: args.request,
+         params: args.params,
+         loadContext: args.context,
+         loader: route.module.loader,
+         routeId: route.id
+-      }) : undefined,
++      })), route)() : undefined,
+       action: route.module.action ? args => data.callRouteActionRR({
+         request: args.request,
+         params: args.params,
 diff --git a/dist/server.js b/dist/server.js
 index fd10bc563175ba69bda9b21ccc7732b20f794900..ebb6e94785bee2bca35031977d083ad516a3ae94 100644
 --- a/dist/server.js
