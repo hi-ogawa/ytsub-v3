@@ -8,6 +8,11 @@ export const Z_VIDEO_METADATA = z.object({
     author: z.string(),
     channelId: z.string(),
   }),
+  playabilityStatus: z.object({
+    status: z.string(),
+    // some videos don't allow iframe playback https://github.com/hi-ogawa/ytsub-v3/issues/364
+    playableInEmbed: z.boolean(),
+  }),
   captions: z
     .object({
       playerCaptionsTracklistRenderer: z.object({
