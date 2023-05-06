@@ -85,3 +85,9 @@ export function useTypedUrlQuery<S extends z.AnyZodObject>(schema: S) {
 
   return [typedQuery, setTypedQuery, toTypedParams] as const;
 }
+
+export function prettierJson(data: unknown) {
+  return new Response(JSON.stringify(data, null, 2), {
+    headers: { "content-type": "application/json" },
+  });
+}
