@@ -81,6 +81,7 @@ export function decorateTraceAsync<F extends (...args: any[]) => any>(
 
 // cf. patches/@remix-run__server-runtime
 function traceRemixLoader(original: () => unknown, route: { path: string }) {
+  // TODO: more filtering? (e.g. service-worker.js, manifest.json)
   if (route.path === "trpc/:trpc") {
     return original;
   }

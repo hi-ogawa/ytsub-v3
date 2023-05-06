@@ -22,7 +22,8 @@ function trpcHandler(args: { request: Request }) {
 const trpcHandlerWrapper = decorateTraceAsync(trpcHandler, (args) => {
   const url = new URL(args.request.url);
   const procedure = url.pathname.slice("/trpc".length);
-  const spanName = `trpc ${args.request.method} ${procedure}`;
+  const type = args.request.method === "GET" ? "query" : "mutation";
+  const spanName = `trpc-${type} ${procedure}`;
   return { spanName };
 });
 
