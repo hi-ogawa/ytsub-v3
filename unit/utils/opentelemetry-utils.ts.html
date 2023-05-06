@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for trpc/client.ts</title>
+    <title>Code coverage report for utils/opentelemetry-utils.ts</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../prettify.css" />
     <link rel="stylesheet" href="../base.css" />
@@ -19,34 +19,34 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../index.html">All files</a> / <a href="index.html">trpc</a> client.ts</h1>
+        <h1><a href="../index.html">All files</a> / <a href="index.html">utils</a> opentelemetry-utils.ts</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">88.4% </span>
+                <span class="strong">53.84% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>61/69</span>
+                <span class='fraction'>35/65</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">84.61% </span>
+                <span class="strong">66.66% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>11/13</span>
+                <span class='fraction'>2/3</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">50% </span>
+                <span class="strong">20% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>3/6</span>
+                <span class='fraction'>1/5</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">88.4% </span>
+                <span class="strong">53.84% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>61/69</span>
+                <span class='fraction'>35/65</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line high'></div>
+    <div class='status-line medium'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -128,11 +128,7 @@
 <a name='L63'></a><a href='#L63'>63</a>
 <a name='L64'></a><a href='#L64'>64</a>
 <a name='L65'></a><a href='#L65'>65</a>
-<a name='L66'></a><a href='#L66'>66</a>
-<a name='L67'></a><a href='#L67'>67</a>
-<a name='L68'></a><a href='#L68'>68</a>
-<a name='L69'></a><a href='#L69'>69</a>
-<a name='L70'></a><a href='#L70'>70</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L66'></a><a href='#L66'>66</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -162,114 +158,106 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">11x</span>
-<span class="cline-any cline-yes">11x</span>
-<span class="cline-any cline-yes">9x</span>
-<span class="cline-any cline-yes">9x</span>
-<span class="cline-any cline-yes">11x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">13x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import type { GetNextPageParamFunction } from "@tanstack/react-query";
-import type { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
-import { createGetProxy } from "../utils/misc";
-import { trpcClient } from "./client-internal.client";
-import type { trpcApp } from "./server";
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import process from "node:process";
+import { once } from "@hiogawa/utils";
+import {
+  SpanOptions,
+  SpanStatusCode,
+  context,
+  trace,
+} from "@opentelemetry/api";
+import { NodeSDK } from "@opentelemetry/sdk-node";
 &nbsp;
-//
-// quick and dirty react-query integration (super simplified version of https://trpc.io/docs/reactjs/introduction)
-//
+// based on https://github.com/hi-ogawa/youtube-dl-web-v2/blob/cc66c0bcdfd2f669edd0d03016cb5fd45ee1f5fe/packages/app/src/utils/otel-utils.ts
 &nbsp;
-type Inputs = inferRouterInputs&lt;typeof trpcApp&gt;;
-type Outputs = inferRouterOutputs&lt;typeof trpcApp&gt;;
+/*
 &nbsp;
-type ReactQueryIntegration = {
-  [K in keyof Inputs]: {
-    queryKey: K;
-    queryOptions: (input: Inputs[K]) =&gt; {
-      queryKey: unknown[];
-      queryFn: () =&gt; Promise&lt;Outputs[K]&gt;;
-    };
-    infiniteQueryOptions: (
-      input: Inputs[K],
-      options: {
-        getNextPageParam: GetNextPageParamFunction&lt;Outputs[K]&gt;;
-        setPageParam: (input: Inputs[K], pageParam: unknown) =&gt; Inputs[K];
-      }
-    ) =&gt; {
-      queryKey: unknown[];
-      queryFn: (context: unknown) =&gt; Promise&lt;Outputs[K]&gt;;
-      getNextPageParam: any;
-    };
-    mutationKey: K;
-    mutationOptions: () =&gt; {
-      mutationKey: unknown[];
-      mutationFn: (input: Inputs[K]) =&gt; Promise&lt;Outputs[K]&gt;;
-    };
-  };
-};
+# how to view trace locally
 &nbsp;
-// prettier-ignore
-export const trpc =
-  createGetProxy((k) =&gt;
-    createGetProxy(prop =&gt; {
-      if (prop === "queryKey" || prop === "mutationKey") {
-        return k;
-      }
-      if (prop === "queryOptions") {
-        return (input: unknown) =&gt; ({
-          queryKey: [k, input],
-          queryFn: <span class="fstat-no" title="function not covered" >() =&gt; (trpcClient as any)[k].query(input),</span>
-        })
-      }
-      if (prop === "infiniteQueryOptions") <span class="branch-0 cbranch-no" title="branch not covered" >{</span>
-<span class="cstat-no" title="statement not covered" >        return <span class="fstat-no" title="function not covered" >(input: unknown, options: any) =&gt; ({</span></span>
-<span class="cstat-no" title="statement not covered" >          queryKey: [k, input],</span>
-<span class="cstat-no" title="statement not covered" >          queryFn: ({ pageParam }: any) =&gt; (trpcClient as any)[k].query(options.setPageParam(input, pageParam)),</span>
-<span class="cstat-no" title="statement not covered" >          getNextPageParam: options.getNextPageParam,</span>
-<span class="cstat-no" title="statement not covered" >        })</span>
-<span class="cstat-no" title="statement not covered" >      }</span>
-      if (prop === "mutationOptions") {
-        return () =&gt; ({
-          mutationKey: [k],
-          mutationFn: <span class="fstat-no" title="function not covered" >(input: unknown) =&gt; (trpcClient as any)[k].mutate(input),</span>
-        })
-<span class="branch-0 cbranch-no" title="branch not covered" >      }</span>
-<span class="cstat-no" title="statement not covered" >      console.error({ k, prop });</span>
-<span class="cstat-no" title="statement not covered" >      throw new Error("invalid trpc react-query call");</span>
-    })
-  ) as ReactQueryIntegration;
+```sh
+# see logs on console
+OTEL_TRACES_EXPORTER=console pnpm dev
+&nbsp;
+# see logs on local jaeger
+docker-compose up jaeger
+OTEL_TRACES_EXPORTER=otlp OTEL_EXPORTER_OTLP_TRACES_PROTOCOL=http/json pnpm dev
+```
+&nbsp;
+*/
+&nbsp;
+let sdk: NodeSDK;
+&nbsp;
+export const initializeOpentelemetry = once(() =&gt; {
+  if (!process.env["OTEL_TRACES_EXPORTER"]) <span class="branch-0 cbranch-no" title="branch not covered" >return;</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >  sdk = new NodeSDK();</span>
+<span class="cstat-no" title="statement not covered" >  sdk.start();</span>
+<span class="cstat-no" title="statement not covered" >});</span>
+&nbsp;
+export const finalizeOpentelemetry = once(() =&gt; {
+<span class="cstat-no" title="statement not covered" >  if (sdk) {</span>
+<span class="cstat-no" title="statement not covered" >    sdk.shutdown();</span>
+<span class="cstat-no" title="statement not covered" >  }</span>
+<span class="cstat-no" title="statement not covered" >}<span class="fstat-no" title="function not covered" >);</span></span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >function getDefaultTracer() {</span></span>
+<span class="cstat-no" title="statement not covered" >  return trace.getTracer("default");</span>
+<span class="cstat-no" title="statement not covered" >}</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >export async function traceAsync&lt;T&gt;(</span></span>
+<span class="cstat-no" title="statement not covered" >  asyncFn: () =&gt; Promise&lt;T&gt;,</span>
+<span class="cstat-no" title="statement not covered" >  spanName: string,</span>
+<span class="cstat-no" title="statement not covered" >  spanOptions?: SpanOptions</span>
+<span class="cstat-no" title="statement not covered" >): Promise&lt;T&gt; {</span>
+<span class="cstat-no" title="statement not covered" >  const tracer = getDefaultTracer();</span>
+<span class="cstat-no" title="statement not covered" >  const span = tracer.startSpan(spanName, spanOptions);</span>
+<span class="cstat-no" title="statement not covered" >  return context.with(trace.setSpan(context.active(), span), async () =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >    try {</span>
+<span class="cstat-no" title="statement not covered" >      return await asyncFn();</span>
+<span class="cstat-no" title="statement not covered" >    } catch (e) {</span>
+<span class="cstat-no" title="statement not covered" >      span.setStatus({ code: SpanStatusCode.ERROR });</span>
+<span class="cstat-no" title="statement not covered" >      span.recordException(e as any);</span>
+<span class="cstat-no" title="statement not covered" >      throw e;</span>
+<span class="cstat-no" title="statement not covered" >    } finally {</span>
+<span class="cstat-no" title="statement not covered" >      span.end();</span>
+<span class="cstat-no" title="statement not covered" >    }</span>
+<span class="cstat-no" title="statement not covered" >  });</span>
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >}</span></span>
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
