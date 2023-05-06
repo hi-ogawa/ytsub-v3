@@ -18,7 +18,7 @@ export default function PageComponent() {
       Object.fromEntries(searchParams.entries())
     );
     if (parsed.success) {
-      const options = { id: parsed.data.type }; // stable toast for React.StrictMode
+      const options = { id: parsed.data.type }; // stable toast id for React.StrictMode
       if (parsed.data.type === "register") {
         toast.success("Successfully registered", options);
       }
