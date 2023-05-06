@@ -386,7 +386,10 @@ export function usePlayerLoader(
 
   const ref = useRefCallbackEffect<HTMLElement>((el) => {
     if (el && mutation.isIdle) {
-      mutation.mutate(el);
+      // workaroudn for StrictMode? https://github.com/TanStack/query/issues/4983
+      window.setTimeout(() => {
+        mutation.mutate(el);
+      });
     }
   });
 
