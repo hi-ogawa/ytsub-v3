@@ -1,13 +1,13 @@
-import type { LoaderFunction } from "@remix-run/server-runtime";
+import { makeLoader } from "../utils/loader-utils.server";
 
-// use loader since otherwise it's tricky to reference assets
-
-export const loader: LoaderFunction = () =>
-  new Response(SERVICE_WORKER_JS, {
+export const loader = makeLoader(({ ctx }) => {
+  ctx.cacheResponse();
+  return new Response(SERVICE_WORKER_JS, {
     headers: {
       "content-type": "application/javascript; charset=utf-8",
     },
   });
+});
 
 const SERVICE_WORKER_JS = `
 // satisfy minimal requirements for PWA
