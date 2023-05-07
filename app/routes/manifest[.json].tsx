@@ -1,8 +1,9 @@
-import type { LoaderFunction } from "@remix-run/server-runtime";
+import { makeLoader } from "../utils/loader-utils.server";
 
-// use loader since otherwise it's tricky to reference assets
-
-export const loader: LoaderFunction = () => MANIFEST_JSON;
+export const loader = makeLoader(({ ctx }) => {
+  ctx.cacheResponse();
+  return MANIFEST_JSON;
+});
 
 const MANIFEST_JSON = {
   short_name: "Ytsub",
