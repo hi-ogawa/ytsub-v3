@@ -25,14 +25,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>57/57</span>
+                <span class='fraction'>53/53</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">90.9% </span>
+                <span class="strong">80% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>10/11</span>
+                <span class='fraction'>8/10</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>57/57</span>
+                <span class='fraction'>53/53</span>
             </div>
         
             
@@ -116,12 +116,7 @@
 <a name='L51'></a><a href='#L51'>51</a>
 <a name='L52'></a><a href='#L52'>52</a>
 <a name='L53'></a><a href='#L53'>53</a>
-<a name='L54'></a><a href='#L54'>54</a>
-<a name='L55'></a><a href='#L55'>55</a>
-<a name='L56'></a><a href='#L56'>56</a>
-<a name='L57'></a><a href='#L57'>57</a>
-<a name='L58'></a><a href='#L58'>58</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<a name='L54'></a><a href='#L54'>54</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -149,9 +144,6 @@
 <span class="cline-any cline-yes">138x</span>
 <span class="cline-any cline-yes">138x</span>
 <span class="cline-any cline-yes">138x</span>
-<span class="cline-any cline-yes">138x</span>
-<span class="cline-any cline-yes">138x</span>
-<span class="cline-any cline-yes">17x</span>
 <span class="cline-any cline-yes">138x</span>
 <span class="cline-any cline-yes">138x</span>
 <span class="cline-any cline-yes">138x</span>
@@ -177,8 +169,7 @@
 <span class="cline-any cline-yes">120x</span>
 <span class="cline-any cline-yes">120x</span>
 <span class="cline-any cline-yes">150x</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { mapOption } from "@hiogawa/utils";
-import { SpanKind, SpanOptions } from "@opentelemetry/api";
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { SpanKind, SpanOptions } from "@opentelemetry/api";
 import { SemanticAttributes } from "@opentelemetry/semantic-conventions";
 import { traceAsync } from "../utils/opentelemetry-utils";
 import { initializeServer } from "./initialize-server";
@@ -196,7 +187,7 @@ export function injectPatch() {
 &nbsp;
 function wrapRequestHandler(
   original: (...args: unknown[]) =&gt; unknown,
-  matchRoutes: (pathname: string) =&gt; { route: { path: string } }[]
+  matchRoutes: (pathname: string) =&gt; { route: { id: string } }[]
 ) {
   return async (...args: unknown[]) =&gt; {
     // one-time server initialization
@@ -206,18 +197,15 @@ function wrapRequestHandler(
     const request = args[0] as Request;
     const url = new URL(request.url);
     const matches = matchRoutes(url.pathname);
-    const routeName =
-      mapOption(<span class="branch-0 cbranch-no" title="branch not covered" >matches.a</span>t(-1)?.route.path, (path) =&gt; `/${path}`) ??
-      "__unknown__";
-&nbsp;
-    const spanName = `request-handler ${request.method} ${routeName}`;
+    const routeId = <span class="branch-0 cbranch-no" title="branch not covered" >matches.a</span>t(-1)?.route.<span class="branch-0 cbranch-no" title="branch not covered" >id ?? "__unknown__";</span>
+    const spanName = `request-handler ${request.method}`;
     const spanOptions: SpanOptions = {
       kind: SpanKind.SERVER,
       attributes: {
         [SemanticAttributes.HTTP_METHOD]: request.method,
         [SemanticAttributes.HTTP_SCHEME]: url.protocol.slice(0, -1),
         [SemanticAttributes.HTTP_TARGET]: url.pathname + url.search,
-        [SemanticAttributes.HTTP_ROUTE]: routeName,
+        [SemanticAttributes.HTTP_ROUTE]: routeId,
         [SemanticAttributes.NET_HOST_NAME]: url.hostname,
         [SemanticAttributes.NET_HOST_PORT]: url.port,
       },
@@ -227,12 +215,12 @@ function wrapRequestHandler(
   };
 }
 &nbsp;
-function wrapLoader(original: () =&gt; unknown, route: { path: string }) {
+function wrapLoader(original: () =&gt; unknown, route: { id: string }) {
   // TODO: more filtering? (e.g. service-worker.js, manifest.json)
-  if (route.path === "trpc/:trpc") {
+  if (route.id === "routes/trpc/$trpc") {
     return original;
   }
-  return () =&gt; traceAsync(original, `loader /${route.path}`);
+  return () =&gt; traceAsync(original, `loader ${route.id}`);
 }
 &nbsp;</pre></td></tr></table></pre>
 
@@ -241,7 +229,7 @@ function wrapLoader(original: () =&gt; unknown, route: { path: string }) {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-05-06T10:32:38.349Z
+                at 2023-05-07T01:53:13.895Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>
