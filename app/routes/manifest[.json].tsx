@@ -1,10 +1,11 @@
+import { prettierJson } from "../utils/loader-utils";
 import { makeLoader } from "../utils/loader-utils.server";
 
 // it could be moved to `/public` but the loader conveniently works for now.
 
 export const loader = makeLoader(({ ctx }) => {
   ctx.cacheResponse();
-  return MANIFEST_JSON;
+  return prettierJson(MANIFEST_JSON);
 });
 
 const MANIFEST_JSON = {
