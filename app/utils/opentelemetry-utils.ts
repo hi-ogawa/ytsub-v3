@@ -44,7 +44,6 @@ function getDefaultTracer() {
   return trace.getTracer("default");
 }
 
-// ts-prune-ignore-next
 export async function traceAsync<T>(
   asyncFn: () => T,
   spanName: string,
