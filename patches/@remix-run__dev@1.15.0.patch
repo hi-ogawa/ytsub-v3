@@ -24,18 +24,6 @@ index e478a879768cd6d54b9f42676715db034996f4bc..178bc4b387e3a2dc0458052a20b01691
      config,
      mode,
      outputCss
-diff --git a/dist/compiler/loaders.js b/dist/compiler/loaders.js
-index a3f7dc36d245afb8176208b0f75bbd03bdec4cfb..0d6a63e8408dac14b19734cb74de25830cd7168a 100644
---- a/dist/compiler/loaders.js
-+++ b/dist/compiler/loaders.js
-@@ -35,6 +35,7 @@ function _interopNamespace(e) {
- var path__namespace = /*#__PURE__*/_interopNamespace(path);
- 
- const loaders = {
-+  ".html": "text",
-   ".aac": "file",
-   ".avif": "file",
-   ".css": "file",
 diff --git a/dist/compiler/plugins/browserRouteModulesPlugin.js b/dist/compiler/plugins/browserRouteModulesPlugin.js
 index dc3f4123e715338a0ac2893725a8eb58f44b7578..b9339ee7ed04ed6bdf040f2dbcc81d032aba6f86 100644
 --- a/dist/compiler/plugins/browserRouteModulesPlugin.js
