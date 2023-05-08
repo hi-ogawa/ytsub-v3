@@ -26,22 +26,24 @@ esbuild.build({
     "oracledb",
     "pg-query-stream",
   ],
-  plugins: [
-    // https://github.com/evanw/esbuild/issues/1685#issuecomment-944916409
-    {
-      name: "no-source-map-node-modules",
-      setup(build) {
-        build.onLoad({ filter: /node_modules/ }, (args) => {
-          if (args.path.endsWith("js")) {
-            return {
-              contents:
-                fs.readFileSync(args.path, "utf8") +
-                "\n//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIiJdLCJtYXBwaW5ncyI6IkEifQ==",
-              loader: "default",
-            };
-          }
-        });
-      },
-    },
-  ],
+  plugins: [noSourceMapNodeModulesPlugin()],
 });
+
+// https://github.com/evanw/esbuild/issues/1685#issuecomment-944916409
+function noSourceMapNodeModulesPlugin(): esbuild.Plugin {
+  return {
+    name: "no-source-map-node-modules",
+    setup(build) {
+      build.onLoad({ filter: /node_modules/ }, (args) => {
+        if (args.path.endsWith("js")) {
+          return {
+            contents:
+              fs.readFileSync(args.path, "utf8") +
+              "\n//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIiJdLCJtYXBwaW5ncyI6IkEifQ==",
+            loader: "default",
+          };
+        }
+      });
+    },
+  };
+}
