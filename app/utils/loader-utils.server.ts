@@ -14,6 +14,7 @@ import {
   pushFlashMessage,
 } from "./flash-message";
 
+// tree-shake from client bundle via `pureCommentPlugin`
 export function makeLoader(
   inner: (args: { ctx: LoaderContext }) => unknown
 ): LoaderFunction {

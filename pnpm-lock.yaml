@@ -2,7 +2,7 @@ lockfileVersion: '6.0'
 
 patchedDependencies:
   '@remix-run/dev@1.15.0':
-    hash: 4kubt446ofjkt4nsjube7fcuei
+    hash: mbqp72oyleohhce4ih45diwqsm
     path: patches/@remix-run__dev@1.15.0.patch
   '@remix-run/node@1.15.0':
     hash: z6mxtllsu73w4y6xnddlyl6j6y
@@ -98,7 +98,7 @@ dependencies:
     version: 7.43.7(react@18.2.0)
   react-hot-toast:
     specifier: ^2.4.0
-    version: 2.4.0(csstype@3.1.2)(react-dom@18.2.0)(react@18.2.0)
+    version: 2.4.0(react-dom@18.2.0)(react@18.2.0)
   react-remove-scroll:
     specifier: ^2.5.5
     version: 2.5.5(@types/react@18.0.28)(react@18.2.0)
@@ -118,7 +118,7 @@ devDependencies:
     version: 1.0.2-pre.1(prettier@2.8.4)(typescript@4.9.5)
   '@hiogawa/unocss-preset-antd':
     specifier: 2.2.1-pre.2
-    version: 2.2.1-pre.2(@unocss/preset-uno@0.51.8)(unocss@0.50.6)
+    version: 2.2.1-pre.2(unocss@0.50.6)
   '@iconify-json/ri':
     specifier: ^1.1.7
     version: 1.1.7
@@ -127,7 +127,7 @@ devDependencies:
     version: 1.31.2
   '@remix-run/dev':
     specifier: 1.15.0
-    version: 1.15.0(patch_hash=4kubt446ofjkt4nsjube7fcuei)(@remix-run/serve@1.15.0)(@types/node@16.11.35)
+    version: 1.15.0(patch_hash=mbqp72oyleohhce4ih45diwqsm)(@remix-run/serve@1.15.0)(@types/node@16.11.35)
   '@remix-run/serve':
     specifier: 1.15.0
     version: 1.15.0
@@ -208,7 +208,7 @@ devDependencies:
     version: 4.9.5
   unocss:
     specifier: ^0.50.6
-    version: 0.50.6(postcss@8.4.23)(vite@4.2.0)
+    version: 0.50.6(vite@4.2.0)
   vite:
     specifier: ^4.2.0
     version: 4.2.0(@types/node@16.11.35)
@@ -2116,16 +2116,15 @@ packages:
       typescript: 4.9.5
     dev: true
 
-  /@hiogawa/unocss-preset-antd@2.2.1-pre.2(@unocss/preset-uno@0.51.8)(unocss@0.50.6):
+  /@hiogawa/unocss-preset-antd@2.2.1-pre.2(unocss@0.50.6):
     resolution: {integrity: sha512-IyLBst49BiscFZ+lcO1d2fJ7S7YhEK+ikgZNymtgbcMYhIbgzY6Qju4FW5BpBivQ3csMblzvgz+sfJDaXC0viw==}
     peerDependencies:
       '@unocss/preset-uno': '*'
       unocss: '*'
     dependencies:
-      '@unocss/preset-uno': 0.51.8
       '@unocss/reset': 0.48.5
       local-pkg: 0.4.3
-      unocss: 0.50.6(postcss@8.4.23)(vite@4.2.0)
+      unocss: 0.50.6(vite@4.2.0)
     dev: true
 
   /@hiogawa/utils-react@1.2.1-pre.4(react@18.2.0):
@@ -2268,7 +2267,7 @@ packages:
     resolution: {integrity: sha512-a5Sab1C4/icpTZVzZc5Ghpz88yQtGOyNqYXcZgOssB2uuAr+wF/MvN6bgtW32q7HHrvBki+BsZ0OuNv6EV3K9g==}
     dev: true
 
-  /@remix-run/dev@1.15.0(patch_hash=4kubt446ofjkt4nsjube7fcuei)(@remix-run/serve@1.15.0)(@types/node@16.11.35):
+  /@remix-run/dev@1.15.0(patch_hash=mbqp72oyleohhce4ih45diwqsm)(@remix-run/serve@1.15.0)(@types/node@16.11.35):
     resolution: {integrity: sha512-BsE1GN6WM9PhN+agZi4TqUIuYzoHYZrufEdXLg3ZEYxWXqvtRKUNfhsYSDlEhrW+D5fyVQhJrs61wQ83sEXHLQ==}
     engines: {node: '>=14'}
     hasBin: true
@@ -2419,7 +2418,7 @@ packages:
     peerDependencies:
       '@remix-run/dev': ^1.15.0
     dependencies:
-      '@remix-run/dev': 1.15.0(patch_hash=4kubt446ofjkt4nsjube7fcuei)(@remix-run/serve@1.15.0)(@types/node@16.11.35)
+      '@remix-run/dev': 1.15.0(patch_hash=mbqp72oyleohhce4ih45diwqsm)(@remix-run/serve@1.15.0)(@types/node@16.11.35)
       minimatch: 7.4.6
     dev: false
 
@@ -2760,16 +2759,6 @@ packages:
     resolution: {integrity: sha512-WMIp8xr7YSlID2whqfRGLwagp59e6u4ckPACEpoDOW8sTeSPRZm54hxPhuWXD1SQuqcwHPMtM9nzGD8UOnqQxA==}
     dev: true
 
-  /@unocss/core@0.51.8:
-    resolution: {integrity: sha512-myHRKBphEN3h0OnsUhg2JaFKjFGfqF/jmmzZCCMNU5UmxbheZomXANNLYXVgEP6LHvd4xAF0DEzrOBcDPLf0HQ==}
-    dev: true
-
-  /@unocss/extractor-arbitrary-variants@0.51.8:
-    resolution: {integrity: sha512-cCsdRLqmt3adcaRtoIP2pC8mYgH3ed8DEES3E7VOWghqLjwLULUMyBS+vy7n9CvnV75kuTKb1bZ+k9eu/rfh2w==}
-    dependencies:
-      '@unocss/core': 0.51.8
-    dev: true
-
   /@unocss/inspector@0.50.6:
     resolution: {integrity: sha512-6nX1YtaL67ohn/PfSSBv3npJ8qZcdc7S9X2zE6PUD/xhwtz7Bohx9I/KtmFdjJz5WeeGR7di0uYC6xsAcFLndQ==}
     dependencies:
@@ -2777,11 +2766,9 @@ packages:
       sirv: 2.0.2
     dev: true
 
-  /@unocss/postcss@0.50.6(postcss@8.4.23):
+  /@unocss/postcss@0.50.6:
     resolution: {integrity: sha512-pRPBVPmwjsVu3v1T0hQuqq3L4K74Wobo6pGDypvK/MuzWdWDhHiktWwmXGNxlYSWK7mGJBIa+vI10pp4e15OUw==}
     engines: {node: '>=14'}
-    peerDependencies:
-      postcss: ^8.4.21
     dependencies:
       '@unocss/config': 0.50.6
       '@unocss/core': 0.50.6
@@ -2813,13 +2800,6 @@ packages:
       '@unocss/core': 0.50.6
     dev: true
 
-  /@unocss/preset-mini@0.51.8:
-    resolution: {integrity: sha512-eDm70Kuw3gscq2bjjmM7i11ox2siAbzsI9dIIpJtXntuWdzwlhqNk40YH/YnM02OfWVi8QLdWuye4wOA3//Fjw==}
-    dependencies:
-      '@unocss/core': 0.51.8
-      '@unocss/extractor-arbitrary-variants': 0.51.8
-    dev: true
-
   /@unocss/preset-tagify@0.50.6:
     resolution: {integrity: sha512-ZyG/SJMobn4GZMbgrZOxT59ARp22LwgJGArCwJVosh3rraRVlb+B4x6ctMl6JOiLG5B1lHT9vZ92//u51Y0WTw==}
     dependencies:
@@ -2841,14 +2821,6 @@ packages:
       '@unocss/preset-wind': 0.50.6
     dev: true
 
-  /@unocss/preset-uno@0.51.8:
-    resolution: {integrity: sha512-akBkjSDqFhuiLPPOu+t+bhae1/ZRjcKnmMMGekSBoJvE3CfYsDpkYgzlj+U1NhCtmKXHeDZKD8spUJj5Jvea1g==}
-    dependencies:
-      '@unocss/core': 0.51.8
-      '@unocss/preset-mini': 0.51.8
-      '@unocss/preset-wind': 0.51.8
-    dev: true
-
   /@unocss/preset-web-fonts@0.50.6:
     resolution: {integrity: sha512-81meQMAq2lOy7k5qHQZ2EGWN5iJQUJOLl8dc9dxIo1eZPgiZQruxTVr4AkNVH5LRFcjHs/1sDb2CYxAiakwTVg==}
     dependencies:
@@ -2861,13 +2833,6 @@ packages:
     dependencies:
       '@unocss/core': 0.50.6
       '@unocss/preset-mini': 0.50.6
-    dev: true
-
-  /@unocss/preset-wind@0.51.8:
-    resolution: {integrity: sha512-L8zqVQigmPiclCuUdXwzNpj3CcC0PX38m5DAb9fkYyEdeSMkM2BYsKgR56oxah+0crN1dRTjJsqK45MAjJiVKQ==}
-    dependencies:
-      '@unocss/core': 0.51.8
-      '@unocss/preset-mini': 0.51.8
     dev: true
 
   /@unocss/reset@0.48.5:
@@ -3714,10 +3679,6 @@ packages:
 
   /csstype@3.0.11:
     resolution: {integrity: sha512-sa6P2wJ+CAbgyy4KFssIb/JNMLxFvKF1pCYCSXS8ZMuqZnMsrxqI2E5sPyoTpxoPU/gVZMzr2zjOfg8GIZOMsw==}
-
-  /csstype@3.1.2:
-    resolution: {integrity: sha512-I7K1Uu0MBPzaFKg4nI5Q7Vs2t+3gWWW648spaF+Rg7pI9ds18Ugn+lvg4SHczUdKlHI5LWBXyqfS8+DufyBsgQ==}
-    dev: false
 
   /data-uri-to-buffer@3.0.1:
     resolution: {integrity: sha512-WboRycPNsVw3B3TL559F7kuBUM4d8CgMEvk6xEJlOp7OBPjt6G7z8WMWlD2rOFZLk6OYfFIUGsCOWzcQH9K2og==}
@@ -4674,12 +4635,10 @@ packages:
       pinkie-promise: 2.0.1
     dev: true
 
-  /goober@2.1.12(csstype@3.1.2):
+  /goober@2.1.12:
     resolution: {integrity: sha512-yXHAvO08FU1JgTXX6Zn6sYCUFfB/OJSX8HHjDSgerZHZmFKAb08cykp5LBw5QnmyMcZyPRMqkdyHUSSzge788Q==}
     peerDependencies:
       csstype: ^3.0.10
-    dependencies:
-      csstype: 3.1.2
     dev: false
 
   /gopd@1.0.1:
@@ -6721,14 +6680,14 @@ packages:
       react: 18.2.0
     dev: false
 
-  /react-hot-toast@2.4.0(csstype@3.1.2)(react-dom@18.2.0)(react@18.2.0):
+  /react-hot-toast@2.4.0(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-qnnVbXropKuwUpriVVosgo8QrB+IaPJCpL8oBI6Ov84uvHZ5QQcTp2qg6ku2wNfgJl6rlQXJIQU5q+5lmPOutA==}
     engines: {node: '>=10'}
     peerDependencies:
       react: '>=16'
       react-dom: '>=16'
     dependencies:
-      goober: 2.1.12(csstype@3.1.2)
+      goober: 2.1.12
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
     transitivePeerDependencies:
@@ -7807,7 +7766,7 @@ packages:
     resolution: {integrity: sha512-hAZsKq7Yy11Zu1DE0OzWjw7nnLZmJZYTDZZyEFHZdUhV8FkH5MCfoU1XMaxXovpyW5nq5scPqq0ZDP9Zyl04oQ==}
     engines: {node: '>= 10.0.0'}
 
-  /unocss@0.50.6(postcss@8.4.23)(vite@4.2.0):
+  /unocss@0.50.6(vite@4.2.0):
     resolution: {integrity: sha512-7cKiIB/ssAPvCDUcFMs0jm0FzIyQKfgIjUzBYZ5dVFthOvN5dcFh7bCZE9dIM862n7oW8FjbkTxwdTbRqqJQVQ==}
     engines: {node: '>=14'}
     peerDependencies:
@@ -7819,7 +7778,7 @@ packages:
       '@unocss/astro': 0.50.6(vite@4.2.0)
       '@unocss/cli': 0.50.6
       '@unocss/core': 0.50.6
-      '@unocss/postcss': 0.50.6(postcss@8.4.23)
+      '@unocss/postcss': 0.50.6
       '@unocss/preset-attributify': 0.50.6
       '@unocss/preset-icons': 0.50.6
       '@unocss/preset-mini': 0.50.6
@@ -7835,7 +7794,6 @@ packages:
       '@unocss/transformer-variant-group': 0.50.6
       '@unocss/vite': 0.50.6(vite@4.2.0)
     transitivePeerDependencies:
-      - postcss
       - rollup
       - supports-color
       - vite
