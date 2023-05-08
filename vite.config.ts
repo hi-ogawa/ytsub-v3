@@ -11,8 +11,10 @@ export default defineConfig({
 
 // inject theme initialization script
 function injectHtmlPlugin() {
-  const path = "@hiogawa/utils-experimental/dist/theme-script.global.js";
-  const script = fs.readFileSync(path, "utf-8");
+  const script = fs.readFileSync(
+    require.resolve("@hiogawa/utils-experimental/dist/theme-script.global.js"),
+    "utf-8"
+  );
   return {
     name: "local:" + injectHtmlPlugin.name,
     transformIndexHtml(html: string) {
