@@ -44,6 +44,7 @@
     "@formatjs/intl": "^2.7.1",
     "@headlessui/react": "^1.7.13",
     "@hiogawa/utils": "1.4.2-pre.9",
+    "@hiogawa/utils-experimental": "^0.0.1",
     "@hiogawa/utils-react": "1.2.1-pre.4",
     "@js-temporal/polyfill": "^0.4.3",
     "@remix-run/node": "1.15.0",
