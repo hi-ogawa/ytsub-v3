@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">84.42% </span>
+                <span class="strong">85.07% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>271/321</span>
+                <span class='fraction'>285/335</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">90.47% </span>
+                <span class="strong">90.9% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>19/21</span>
+                <span class='fraction'>20/22</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">43.75% </span>
+                <span class="strong">47.05% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>7/16</span>
+                <span class='fraction'>8/17</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">84.42% </span>
+                <span class="strong">85.07% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>271/321</span>
+                <span class='fraction'>285/335</span>
             </div>
         
             
@@ -384,7 +384,21 @@
 <a name='L319'></a><a href='#L319'>319</a>
 <a name='L320'></a><a href='#L320'>320</a>
 <a name='L321'></a><a href='#L321'>321</a>
-<a name='L322'></a><a href='#L322'>322</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L322'></a><a href='#L322'>322</a>
+<a name='L323'></a><a href='#L323'>323</a>
+<a name='L324'></a><a href='#L324'>324</a>
+<a name='L325'></a><a href='#L325'>325</a>
+<a name='L326'></a><a href='#L326'>326</a>
+<a name='L327'></a><a href='#L327'>327</a>
+<a name='L328'></a><a href='#L328'>328</a>
+<a name='L329'></a><a href='#L329'>329</a>
+<a name='L330'></a><a href='#L330'>330</a>
+<a name='L331'></a><a href='#L331'>331</a>
+<a name='L332'></a><a href='#L332'>332</a>
+<a name='L333'></a><a href='#L333'>333</a>
+<a name='L334'></a><a href='#L334'>334</a>
+<a name='L335'></a><a href='#L335'>335</a>
+<a name='L336'></a><a href='#L336'>336</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -445,6 +459,7 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">29x</span>
 <span class="cline-any cline-yes">29x</span>
 <span class="cline-any cline-yes">29x</span>
 <span class="cline-any cline-yes">29x</span>
@@ -477,6 +492,19 @@
 <span class="cline-any cline-yes">29x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">29x</span>
+<span class="cline-any cline-yes">29x</span>
+<span class="cline-any cline-yes">29x</span>
+<span class="cline-any cline-yes">29x</span>
+<span class="cline-any cline-yes">29x</span>
+<span class="cline-any cline-yes">29x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">29x</span>
+<span class="cline-any cline-yes">29x</span>
+<span class="cline-any cline-yes">29x</span>
+<span class="cline-any cline-yes">29x</span>
+<span class="cline-any cline-yes">29x</span>
+<span class="cline-any cline-yes">29x</span>
 <span class="cline-any cline-yes">29x</span>
 <span class="cline-any cline-yes">29x</span>
 <span class="cline-any cline-yes">29x</span>
@@ -724,7 +752,7 @@ import { useForm } from "react-hook-form";
 import { Toaster, toast } from "react-hot-toast";
 import { Drawer } from "./components/drawer";
 import { PopoverSimple } from "./components/popover";
-import { ThemeScriptPlaceholder, ThemeSelect } from "./components/theme-select";
+import { ThemeSelect } from "./components/theme-select";
 import { TopProgressBarRemix } from "./components/top-progress-bar";
 import type { UserTable } from "./db/models";
 import { $R, R } from "./misc/routes";
@@ -781,8 +809,9 @@ export default function DefaultComponent() {
         &lt;Meta /&gt;
         &lt;Links /&gt;
         &lt;ConfigPlaceholder /&gt;
-        &lt;ThemeScriptPlaceholder /&gt;
+        &lt;ThemeScript /&gt;
         &lt;HideRecaptchaBadge /&gt;
+        &lt;script dangerouslySetInnerHTML={{ __html: `` }} /&gt;
       &lt;/head&gt;
       &lt;body className="h-full"&gt;
         {/* TODO: default position="top" is fine? */}
@@ -802,6 +831,19 @@ export default function DefaultComponent() {
         &lt;Compose elements={[&lt;QueryClientWrapper /&gt;, &lt;Root /&gt;]} /&gt;
       &lt;/body&gt;
     &lt;/html&gt;
+  );
+}
+&nbsp;
+function ThemeScript() {
+  return (
+    &lt;script
+      dangerouslySetInnerHTML={{
+        __html: `\
+globalThis.__themeStorageKey = "ytsub:theme";
+${require("@hiogawa/utils-experimental/dist/theme-script.global.js?loader=text")}
+`,
+      }}
+    /&gt;
   );
 }
 &nbsp;
@@ -1033,7 +1075,7 @@ const SIDE_MENU_ENTRIES: SideMenuEntry[] = [
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-05-08T11:35:50.324Z
+                at 2023-05-08T11:38:26.883Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
