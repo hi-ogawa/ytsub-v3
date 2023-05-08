@@ -17,7 +17,6 @@ const handler: HandleDocumentRequestFunction = (
     <RemixServer context={remixContext} url={request.url} />
   );
   markup = injectConfigScript(markup);
-  // markup = injectThemeScript(markup);
   responseHeaders.set("content-type", "text/html");
   return new Response("<!DOCTYPE html>" + markup, {
     status: responseStatusCode,
