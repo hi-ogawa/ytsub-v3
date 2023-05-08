@@ -25,6 +25,7 @@ const Z_SERVER_CONFIG = z.object({
 const Z_PUBLIC_CONFIG = z.object({
   APP_RECAPTCHA_CLIENT_KEY: z.string().default("6Lc79AcgAAAAAOdPnmAZfQqhVwL7mJngRndTyG19"),
   APP_RECAPTCHA_DISABLED: z.coerce.boolean(),
+  APP_SENTRY_DSN: z.string().optional(),
   VERCEL_ENV: z.string().optional(),
 });
 
