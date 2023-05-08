@@ -20,36 +20,49 @@ module.exports = {
     ),
 };
 
+//
 // see patches/@remix-run__dev
+//
 globalThis.__esbuildPluginsCommon = [loaderOverridePlugin()];
 globalThis.__esbuildPluginsBrowser = [pureCommentPlugin()];
 globalThis.__esbuildPluginsServer = [];
 
+// tree-shake `export const loader = makeLoader(...)` from client bundle
 function pureCommentPlugin() {
+  const fs = require("node:fs");
+  const path = require("node:path");
+
   return {
     name: pureCommentPlugin.name,
     setup(build) {
-      // TODO
-      // build.onLoad({
-      //   // match only route file import
-      //   namespace: "file",
-      //   filter: new RegExp(Object.values(config.routes).map(({ file }) => `${config.appDirectory}/${file}`.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join("|"))
-      // }, async args => {
-      //   var fs = require('node:fs');
-      //   var path = require('node:path');
-      //   var loaders = require('../loaders.js');
-      //   let contents = await fs.promises.readFile(args.path, "utf8");
-      //   contents = contents.replace("= makeLoader", "= /* @__PURE__ */ makeLoader");
-      //   return {
-      //     contents,
-      //     loader: loaders.getLoaderForFile(args.path),
-      //     resolveDir: path.dirname(args.path)
-      //   };
-      // })
+      build.onLoad(
+        {
+          namespace: "file",
+          filter: new RegExp(
+            `${__dirname}/app/`.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") +
+              ".*.tsx"
+          ),
+        },
+        async (args) => {
+          let contents = await fs.promises.readFile(args.path, "utf8");
+          if (contents.includes("makeLoader(")) {
+            contents = contents.replace(
+              "makeLoader(",
+              "/* @__PURE__ */ makeLoader("
+            );
+            return {
+              contents,
+              resolveDir: path.dirname(args.path),
+              loader: "tsx",
+            };
+          }
+        }
+      );
     },
   };
 }
 
+// immitate raw loader by require("some-file?loader=text")
 function loaderOverridePlugin() {
   const fs = require("node:fs");
 
@@ -73,7 +86,11 @@ function loaderOverridePlugin() {
           });
           const contents = await fs.promises.readFile(resolvedPath, "utf8");
           const loader = args.path.split("loader=")[1];
-          return { contents, loader };
+          return {
+            contents,
+            resolveDir,
+            loader,
+          };
         }
       );
     },
