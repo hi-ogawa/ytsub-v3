@@ -44,7 +44,7 @@ function useTheme() {
 }
 
 export function injectThemeScript(markup: string): string {
-  // use loaderOverridePlugin
+  // load raw text by `loaderOverridePlugin`
   const viteIndexHtml = require("../../index.html?loader=text");
   tinyassert(typeof viteIndexHtml === "string");
 
