@@ -17,7 +17,7 @@ import { useForm } from "react-hook-form";
 import { Toaster, toast } from "react-hot-toast";
 import { Drawer } from "./components/drawer";
 import { PopoverSimple } from "./components/popover";
-import { ThemeScriptPlaceholder, ThemeSelect } from "./components/theme-select";
+import { ThemeSelect } from "./components/theme-select";
 import { TopProgressBarRemix } from "./components/top-progress-bar";
 import type { UserTable } from "./db/models";
 import { $R, R } from "./misc/routes";
@@ -74,8 +74,9 @@ export default function DefaultComponent() {
         <Meta />
         <Links />
         <ConfigPlaceholder />
-        <ThemeScriptPlaceholder />
+        <ThemeScript />
         <HideRecaptchaBadge />
+        <script dangerouslySetInnerHTML={{ __html: `` }} />
       </head>
       <body className="h-full">
         {/* TODO: default position="top" is fine? */}
@@ -95,6 +96,19 @@ export default function DefaultComponent() {
         <Compose elements={[<QueryClientWrapper />, <Root />]} />
       </body>
     </html>
+  );
+}
+
+function ThemeScript() {
+  return (
+    <script
+      dangerouslySetInnerHTML={{
+        __html: `\
+globalThis.__themeStorageKey = "ytsub:theme";
+${require("@hiogawa/utils-experimental/dist/theme-script.global.js?loader=text")}
+`,
+      }}
+    />
   );
 }
 

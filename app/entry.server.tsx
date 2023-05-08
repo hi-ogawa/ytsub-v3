@@ -1,7 +1,6 @@
 import { RemixServer } from "@remix-run/react";
 import type { HandleDocumentRequestFunction } from "@remix-run/server-runtime";
 import { renderToString } from "react-dom/server";
-import { injectThemeScript } from "./components/theme-select";
 import { injectPatch } from "./misc/patch";
 import { injectConfigScript } from "./utils/config";
 import { decorateTraceAsync } from "./utils/opentelemetry-utils";
@@ -19,7 +18,6 @@ const handler: HandleDocumentRequestFunction = async (
     <RemixServer context={remixContext} url={request.url} />
   );
   markup = injectConfigScript(markup);
-  markup = injectThemeScript(markup);
   responseHeaders.set("content-type", "text/html");
   return new Response("<!DOCTYPE html>" + markup, {
     status: responseStatusCode,
