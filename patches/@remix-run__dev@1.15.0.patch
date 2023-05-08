@@ -1,29 +1,29 @@
 diff --git a/dist/compiler/compileBrowser.js b/dist/compiler/compileBrowser.js
-index 97d71b6ecc8b641e9408301eedf372e5e2e62e1d..e0c3a8779771001002a6a886a4be6ff4176c5bfe 100644
+index 97d71b6ecc8b641e9408301eedf372e5e2e62e1d..b37348a279cd18f26085ab7b233663d5b509080a 100644
 --- a/dist/compiler/compileBrowser.js
 +++ b/dist/compiler/compileBrowser.js
-@@ -110,7 +110,7 @@ const createEsbuildConfig = (build, config, options, onLoader) => {
-     mode
-   } = options;
-   let outputCss = isCssBuild;
--  let plugins = [deprecatedRemixPackagePlugin.deprecatedRemixPackagePlugin(options.onWarning), isCssBundlingEnabled(config) && isCssBuild ? cssBundleEntryModulePlugin.cssBundleEntryModulePlugin(config) : null, config.future.unstable_cssModules ? cssModulesPlugin.cssModulesPlugin({
-+  let plugins = [...(globalThis.__esbuildPluginsCommon ?? []), ...(globalThis.__esbuildPluginsBrowser ?? []), deprecatedRemixPackagePlugin.deprecatedRemixPackagePlugin(options.onWarning), isCssBundlingEnabled(config) && isCssBuild ? cssBundleEntryModulePlugin.cssBundleEntryModulePlugin(config) : null, config.future.unstable_cssModules ? cssModulesPlugin.cssModulesPlugin({
-     config,
-     mode,
-     outputCss
+@@ -141,6 +141,8 @@ const createEsbuildConfig = (build, config, options, onLoader) => {
+       }));
+     }
+   }
++  plugins.unshift(...(globalThis.__esbuildPluginsCommon ?? []));
++  plugins.unshift(...(globalThis.__esbuildPluginsBrowser ?? []));
+   return {
+     entryPoints,
+     outdir: config.assetsBuildDirectory,
 diff --git a/dist/compiler/compilerServer.js b/dist/compiler/compilerServer.js
-index e478a879768cd6d54b9f42676715db034996f4bc..178bc4b387e3a2dc0458052a20b016911024f1e9 100644
+index e478a879768cd6d54b9f42676715db034996f4bc..9abc3c72b8f315cb673477a22300b9430529f72b 100644
 --- a/dist/compiler/compilerServer.js
 +++ b/dist/compiler/compilerServer.js
-@@ -69,7 +69,7 @@ const createEsbuildConfig = (config, assetsManifestChannel, options) => {
-     mode
-   } = options;
-   let outputCss = false;
--  let plugins = [deprecatedRemixPackagePlugin.deprecatedRemixPackagePlugin(options.onWarning), config.future.unstable_cssModules ? cssModulesPlugin.cssModulesPlugin({
-+  let plugins = [...(globalThis.__esbuildPluginsCommon ?? []), ...(globalThis.__esbuildPluginsServer ?? []), deprecatedRemixPackagePlugin.deprecatedRemixPackagePlugin(options.onWarning), config.future.unstable_cssModules ? cssModulesPlugin.cssModulesPlugin({
-     config,
-     mode,
-     outputCss
+@@ -89,6 +89,8 @@ const createEsbuildConfig = (config, assetsManifestChannel, options) => {
+   if (config.serverPlatform !== "node") {
+     plugins.unshift(nodeModulesPolyfill.NodeModulesPolyfillPlugin());
+   }
++  plugins.unshift(...(globalThis.__esbuildPluginsCommon ?? []));
++  plugins.unshift(...(globalThis.__esbuildPluginsServer ?? []));
+   return {
+     absWorkingDir: config.rootDirectory,
+     stdin,
 diff --git a/dist/compiler/plugins/browserRouteModulesPlugin.js b/dist/compiler/plugins/browserRouteModulesPlugin.js
 index dc3f4123e715338a0ac2893725a8eb58f44b7578..b9339ee7ed04ed6bdf040f2dbcc81d032aba6f86 100644
 --- a/dist/compiler/plugins/browserRouteModulesPlugin.js
