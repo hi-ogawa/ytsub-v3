@@ -1,5 +1,5 @@
 import * as process from "process";
-import { once, tinyassert } from "@hiogawa/utils";
+import { once } from "@hiogawa/utils";
 import { z } from "zod";
 import { uninitialized } from "./misc";
 
@@ -29,13 +29,19 @@ const Z_PUBLIC_CONFIG = z.object({
   VERCEL_ENV: z.string().optional(),
 });
 
+// prettier-ignore
+const Z_BUILD_CONFIG = z.object({
+  // build time constants injected via esbuild "define" options
+  GIT_COMMIT_REF: z.string().optional(),
+});
+
 export let serverConfig = uninitialized as z.infer<typeof Z_SERVER_CONFIG>;
 
 export let publicConfig = uninitialized as z.infer<typeof Z_PUBLIC_CONFIG>;
 
-export const CONFIG_SCRIPT_ID = "__configScript";
+export let buildConfig = uninitialized as z.infer<typeof Z_BUILD_CONFIG>;
 
-export const CONFIG_SCRIPT_PLACEHOLDER = "@@__configScriptPlaceholder@@";
+export const CONFIG_SCRIPT_PLACEHOLDER = "/*@@INJECT_CONFIG_SCRIPT@@*/";
 
 //
 // server
@@ -44,13 +50,21 @@ export const CONFIG_SCRIPT_PLACEHOLDER = "@@__configScriptPlaceholder@@";
 export const initializeConfigServer = once(() => {
   serverConfig = Z_SERVER_CONFIG.parse(process.env);
   publicConfig = Z_PUBLIC_CONFIG.parse(process.env);
+  // esbuild injects BUILD_CONFIG_DEFINE on release build
+  buildConfig = Z_BUILD_CONFIG.parse(process.env.BUILD_CONFIG_DEFINE ?? {});
 });
 
+// pass data to client via global script
+declare let __publicConfig: any;
+declare let __buildConfig: any;
+
 export function injectConfigScript(markup: string): string {
-  return markup.replace(
-    CONFIG_SCRIPT_PLACEHOLDER,
-    JSON.stringify(publicConfig)
-  );
+  // TODO: need to escape?
+  const code = `
+globalThis.__publicConfig = ${JSON.stringify(publicConfig)};
+globalThis.__buildConfig = ${JSON.stringify(buildConfig)};
+`;
+  return markup.replace(CONFIG_SCRIPT_PLACEHOLDER, code);
 }
 
 //
@@ -58,7 +72,6 @@ export function injectConfigScript(markup: string): string {
 //
 
 export const initializeConfigClient = once(() => {
-  const el = document.querySelector("#" + CONFIG_SCRIPT_ID);
-  tinyassert(el);
-  publicConfig = JSON.parse(el.innerHTML);
+  publicConfig = __publicConfig;
+  buildConfig = __buildConfig;
 });
