@@ -38,7 +38,7 @@ esbuild.build({
   ],
   plugins: [noSourceMapNodeModulesPlugin()],
   define: {
-    "process.env.BUILD_CONFIG_DEFINE": JSON.stringify(BUILD_CONFIG_DEFINE),
+    BUILD_CONFIG_DEFINE: JSON.stringify(BUILD_CONFIG_DEFINE),
   },
 });
 

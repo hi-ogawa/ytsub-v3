@@ -1,4 +1,4 @@
-import * as process from "process";
+import process from "process";
 import { once } from "@hiogawa/utils";
 import { z } from "zod";
 import { uninitialized } from "./misc";
@@ -31,7 +31,6 @@ const Z_PUBLIC_CONFIG = z.object({
 
 // prettier-ignore
 const Z_BUILD_CONFIG = z.object({
-  // build time constants injected via esbuild "define" options
   GIT_COMMIT_REF: z.string().optional(),
 });
 
@@ -41,7 +40,8 @@ export let publicConfig = uninitialized as z.infer<typeof Z_PUBLIC_CONFIG>;
 
 export let buildConfig = uninitialized as z.infer<typeof Z_BUILD_CONFIG>;
 
-export const CONFIG_SCRIPT_PLACEHOLDER = "/*@@INJECT_CONFIG_SCRIPT@@*/";
+// esbuild injects BUILD_CONFIG_DEFINE on server release build
+declare let BUILD_CONFIG_DEFINE: unknown;
 
 //
 // server
@@ -50,21 +50,26 @@ export const CONFIG_SCRIPT_PLACEHOLDER = "/*@@INJECT_CONFIG_SCRIPT@@*/";
 export const initializeConfigServer = once(() => {
   serverConfig = Z_SERVER_CONFIG.parse(process.env);
   publicConfig = Z_PUBLIC_CONFIG.parse(process.env);
-  // esbuild injects BUILD_CONFIG_DEFINE on release build
-  buildConfig = Z_BUILD_CONFIG.parse(process.env.BUILD_CONFIG_DEFINE ?? {});
+  buildConfig = Z_BUILD_CONFIG.parse(
+    typeof BUILD_CONFIG_DEFINE !== "undefined" ? BUILD_CONFIG_DEFINE : {}
+  );
 });
 
 // pass data to client via global script
 declare let __publicConfig: any;
 declare let __buildConfig: any;
 
+export const CONFIG_SCRIPT_PLACEHOLDER = "/*@@INJECT_CONFIG_SCRIPT@@*/";
+
 export function injectConfigScript(markup: string): string {
-  // TODO: need to escape?
-  const code = `
+  // TODO: should escape?
+  return markup.replace(
+    CONFIG_SCRIPT_PLACEHOLDER,
+    `
 globalThis.__publicConfig = ${JSON.stringify(publicConfig)};
 globalThis.__buildConfig = ${JSON.stringify(buildConfig)};
-`;
-  return markup.replace(CONFIG_SCRIPT_PLACEHOLDER, code);
+`
+  );
 }
 
 //
