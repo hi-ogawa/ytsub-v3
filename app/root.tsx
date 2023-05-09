@@ -159,16 +159,6 @@ function Navbar({
       />
       <div className="flex-1">{title}</div>
       {menu}
-      <div className="flex-none flex items-center">
-        <button
-          className="antd-btn antd-btn-default px-1"
-          onClick={() => {
-            throw new Error("Boom!");
-          }}
-        >
-          Boom!
-        </button>
-      </div>
       {!user && (
         <div className="flex-none flex items-center">
           <Link
