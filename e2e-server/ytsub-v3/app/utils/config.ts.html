@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">93.65% </span>
+                <span class="strong">96.34% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>59/63</span>
+                <span class='fraction'>79/82</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">66.66% </span>
+                <span class="strong">50% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>2/3</span>
+                <span class='fraction'>2/4</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">93.65% </span>
+                <span class="strong">96.34% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>59/63</span>
+                <span class='fraction'>79/82</span>
             </div>
         
             
@@ -126,7 +126,26 @@
 <a name='L61'></a><a href='#L61'>61</a>
 <a name='L62'></a><a href='#L62'>62</a>
 <a name='L63'></a><a href='#L63'>63</a>
-<a name='L64'></a><a href='#L64'>64</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L64'></a><a href='#L64'>64</a>
+<a name='L65'></a><a href='#L65'>65</a>
+<a name='L66'></a><a href='#L66'>66</a>
+<a name='L67'></a><a href='#L67'>67</a>
+<a name='L68'></a><a href='#L68'>68</a>
+<a name='L69'></a><a href='#L69'>69</a>
+<a name='L70'></a><a href='#L70'>70</a>
+<a name='L71'></a><a href='#L71'>71</a>
+<a name='L72'></a><a href='#L72'>72</a>
+<a name='L73'></a><a href='#L73'>73</a>
+<a name='L74'></a><a href='#L74'>74</a>
+<a name='L75'></a><a href='#L75'>75</a>
+<a name='L76'></a><a href='#L76'>76</a>
+<a name='L77'></a><a href='#L77'>77</a>
+<a name='L78'></a><a href='#L78'>78</a>
+<a name='L79'></a><a href='#L79'>79</a>
+<a name='L80'></a><a href='#L80'>80</a>
+<a name='L81'></a><a href='#L81'>81</a>
+<a name='L82'></a><a href='#L82'>82</a>
+<a name='L83'></a><a href='#L83'>83</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -169,11 +188,31 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">130x</span>
-<span class="cline-any cline-yes">130x</span>
-<span class="cline-any cline-yes">130x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">128x</span>
+<span class="cline-any cline-yes">128x</span>
+<span class="cline-any cline-yes">128x</span>
+<span class="cline-any cline-yes">128x</span>
+<span class="cline-any cline-yes">128x</span>
+<span class="cline-any cline-yes">128x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">29x</span>
+<span class="cline-any cline-yes">29x</span>
+<span class="cline-any cline-yes">29x</span>
+<span class="cline-any cline-yes">29x</span>
 <span class="cline-any cline-yes">29x</span>
 <span class="cline-any cline-yes">29x</span>
 <span class="cline-any cline-yes">29x</span>
@@ -188,9 +227,8 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import * as process from "process";
-import { once, tinyassert } from "@hiogawa/utils";
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import process from "process";
+import { once } from "@hiogawa/utils";
 import { z } from "zod";
 import { uninitialized } from "./misc";
 &nbsp;
@@ -216,16 +254,23 @@ const Z_SERVER_CONFIG = z.object({
 const Z_PUBLIC_CONFIG = z.object({
   APP_RECAPTCHA_CLIENT_KEY: z.string().default("6Lc79AcgAAAAAOdPnmAZfQqhVwL7mJngRndTyG19"),
   APP_RECAPTCHA_DISABLED: z.coerce.boolean(),
+  APP_SENTRY_DSN: z.string().optional(),
   VERCEL_ENV: z.string().optional(),
+});
+&nbsp;
+// prettier-ignore
+const Z_BUILD_CONFIG = z.object({
+  GIT_COMMIT_REF: z.string().optional(),
 });
 &nbsp;
 export let serverConfig = uninitialized as z.infer&lt;typeof Z_SERVER_CONFIG&gt;;
 &nbsp;
 export let publicConfig = uninitialized as z.infer&lt;typeof Z_PUBLIC_CONFIG&gt;;
 &nbsp;
-export const CONFIG_SCRIPT_ID = "__configScript";
+export let buildConfig = uninitialized as z.infer&lt;typeof Z_BUILD_CONFIG&gt;;
 &nbsp;
-export const CONFIG_SCRIPT_PLACEHOLDER = "@@__configScriptPlaceholder@@";
+// esbuild injects BUILD_CONFIG_DEFINE on server release build
+declare let BUILD_CONFIG_DEFINE: unknown;
 &nbsp;
 //
 // server
@@ -234,12 +279,25 @@ export const CONFIG_SCRIPT_PLACEHOLDER = "@@__configScriptPlaceholder@@";
 export const initializeConfigServer = once(() =&gt; {
   serverConfig = Z_SERVER_CONFIG.parse(process.env);
   publicConfig = Z_PUBLIC_CONFIG.parse(process.env);
+  buildConfig = Z_BUILD_CONFIG.parse(
+    typeof BUILD_CONFIG_DEFINE !== <span class="branch-0 cbranch-no" title="branch not covered" >"undefined" ? BUILD_CONFIG_DEFINE : {</span>}
+  );
 });
 &nbsp;
+// pass data to client via global script
+declare let __publicConfig: any;
+declare let __buildConfig: any;
+&nbsp;
+export const CONFIG_SCRIPT_PLACEHOLDER = "/*@@INJECT_CONFIG_SCRIPT@@*/";
+&nbsp;
 export function injectConfigScript(markup: string): string {
+  // TODO: should escape?
   return markup.replace(
     CONFIG_SCRIPT_PLACEHOLDER,
-    JSON.stringify(publicConfig)
+    `
+globalThis.__publicConfig = ${JSON.stringify(publicConfig)};
+globalThis.__buildConfig = ${JSON.stringify(buildConfig)};
+`
   );
 }
 &nbsp;
@@ -248,9 +306,8 @@ export function injectConfigScript(markup: string): string {
 //
 &nbsp;
 export const initializeConfigClient = once(() =&gt; {
-<span class="cstat-no" title="statement not covered" >  const el = document.querySelector("#" + CONFIG_SCRIPT_ID);</span>
-<span class="cstat-no" title="statement not covered" >  tinyassert(el);</span>
-<span class="cstat-no" title="statement not covered" >  publicConfig = JSON.parse(el.innerHTML);</span>
+<span class="cstat-no" title="statement not covered" >  publicConfig = __publicConfig;</span>
+<span class="cstat-no" title="statement not covered" >  buildConfig = __buildConfig;</span>
 <span class="cstat-no" title="statement not covered" >});</span>
 &nbsp;</pre></td></tr></table></pre>
 
@@ -259,7 +316,7 @@ export const initializeConfigClient = once(() =&gt; {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-05-09T00:18:11.220Z
+                at 2023-05-09T04:19:19.561Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>
