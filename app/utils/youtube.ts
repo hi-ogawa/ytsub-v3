@@ -121,7 +121,7 @@ export function toCaptionConfigOptions(
   return { captions, translationGroups };
 }
 
-function captionConfigToUrl(
+export function captionConfigToUrl(
   captionConfig: CaptionConfig,
   videoMetadata: VideoMetadata
 ): string | undefined {
@@ -181,30 +181,31 @@ interface TtmlEntry {
   text: string;
 }
 
+const Z_TTML_ENTRY_XML = z.object({
+  tt: z.object({
+    body: z.object({
+      div: z.object({
+        p: z
+          .object({
+            "@_begin": z.string(),
+            "@_end": z.string(),
+            "#text": z.string().optional(),
+          })
+          .array(),
+      }),
+    }),
+  }),
+});
+
 export function ttmlToEntries(ttml: string): TtmlEntry[] {
+  // Replace "<br/>" elements with " "
+  const sanitized = ttml.replaceAll("<br />", " ");
+
   const parser = new XMLParser({
     ignoreAttributes: false,
     alwaysCreateTextNode: true,
   });
-
-  // Replace "<br/>" elements with " "
-  const sanitized = ttml.replaceAll("<br />", " ");
-
-  // TODO: Validate
-  interface Parsed {
-    tt: {
-      body: {
-        div: {
-          p: {
-            "@_begin": string;
-            "@_end": string;
-            "#text"?: string;
-          }[];
-        };
-      };
-    };
-  }
-  const parsed: Parsed = parser.parse(sanitized);
+  const parsed = Z_TTML_ENTRY_XML.parse(parser.parse(sanitized));
 
   return parsed.tt.body.div.p
     .map((p) => ({
