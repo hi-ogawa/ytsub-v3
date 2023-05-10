@@ -1,8 +1,10 @@
 import {
+  HashKeyDefaultMap,
   newPromiseWithResolvers,
   once,
   sortBy,
   tinyassert,
+  zip,
 } from "@hiogawa/utils";
 import { useRefCallbackEffect, useStableCallback } from "@hiogawa/utils-react";
 import { useMutation } from "@tanstack/react-query";
@@ -253,6 +255,53 @@ function mergeTtmlEntries(
       text2,
     };
   });
+}
+
+// handle sane and simplest case where all intervals share the same timestamp interval
+export function mergeTtmlEntriesSimple(
+  entries1: TtmlEntry[],
+  entries2: TtmlEntry[]
+): CaptionEntry[] | undefined {
+  // group entries by timestamp
+  const map = new HashKeyDefaultMap<
+    { begin: number; end: number },
+    [TtmlEntry[], TtmlEntry[]]
+  >(() => [[], []]);
+
+  for (const e of entries1) {
+    map.get({ begin: e.begin, end: e.end })[0].push(e);
+  }
+
+  for (const e of entries2) {
+    map.get({ begin: e.begin, end: e.end })[1].push(e);
+  }
+
+  // to array
+  let entries = [...map.entries()];
+  entries = sortBy(entries, ([k]) => k.begin);
+
+  // give up overlap
+  for (const [[curr], [next]] of zip(entries, entries.slice(1))) {
+    if (curr.end > next.begin) {
+      return;
+    }
+  }
+
+  // give up if one side have many entries
+  for (const [, [lefts, rights]] of entries) {
+    if (lefts.length >= 2 || rights.length >= 2) {
+      return;
+    }
+  }
+
+  return entries.map(([k, [lefts, rights]], i) => ({
+    index: i,
+    begin: k.begin,
+    end: k.end,
+    // fill blank if one side is empry
+    text1: lefts.at(0)?.text ?? "",
+    text2: rights.at(0)?.text ?? "",
+  }));
 }
 
 function computeIntersection(e1: TtmlEntry, e2: TtmlEntry): number {
