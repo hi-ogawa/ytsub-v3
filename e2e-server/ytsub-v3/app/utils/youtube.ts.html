@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">75.18% </span>
+                <span class="strong">75.24% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>309/411</span>
+                <span class='fraction'>310/412</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">75.18% </span>
+                <span class="strong">75.24% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>309/411</span>
+                <span class='fraction'>310/412</span>
             </div>
         
             
@@ -474,7 +474,8 @@
 <a name='L409'></a><a href='#L409'>409</a>
 <a name='L410'></a><a href='#L410'>410</a>
 <a name='L411'></a><a href='#L411'>411</a>
-<a name='L412'></a><a href='#L412'>412</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L412'></a><a href='#L412'>412</a>
+<a name='L413'></a><a href='#L413'>413</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -597,7 +598,7 @@
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
@@ -658,21 +659,22 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
@@ -1008,7 +1010,7 @@ export function toCaptionConfigOptions(
   return { captions, translationGroups };
 }
 &nbsp;
-function captionConfigToUrl(
+export function captionConfigToUrl(
   captionConfig: CaptionConfig,
   videoMetadata: VideoMetadata
 ): string | undefined {
@@ -1068,30 +1070,31 @@ interface TtmlEntry {
   text: string;
 }
 &nbsp;
+const Z_TTML_ENTRY_XML = z.object({
+  tt: z.object({
+    body: z.object({
+      div: z.object({
+        p: z
+          .object({
+            "@_begin": z.string(),
+            "@_end": z.string(),
+            "#text": z.string().optional(),
+          })
+          .array(),
+      }),
+    }),
+  }),
+});
+&nbsp;
 export function ttmlToEntries(ttml: string): TtmlEntry[] {
+  // Replace "&lt;br/&gt;" elements with " "
+  const sanitized = ttml.replaceAll("&lt;br /&gt;", " ");
+&nbsp;
   const parser = new XMLParser({
     ignoreAttributes: false,
     alwaysCreateTextNode: true,
   });
-&nbsp;
-  // Replace "&lt;br/&gt;" elements with " "
-  const sanitized = ttml.replaceAll("&lt;br /&gt;", " ");
-&nbsp;
-  // TODO: Validate
-  interface Parsed {
-    tt: {
-      body: {
-        div: {
-          p: {
-            "@_begin": string;
-            "@_end": string;
-            "#text"?: string;
-          }[];
-        };
-      };
-    };
-  }
-  const parsed: Parsed = parser.parse(sanitized);
+  const parsed = Z_TTML_ENTRY_XML.parse(parser.parse(sanitized));
 &nbsp;
   return parsed.tt.body.div.p
     .map((p) =&gt; ({
@@ -1303,7 +1306,7 @@ export <span class="fstat-no" title="function not covered" >function usePlayerLo
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-05-09T04:50:24.602Z
+                at 2023-05-10T04:00:55.388Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>
