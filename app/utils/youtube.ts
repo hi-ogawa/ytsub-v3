@@ -1,8 +1,10 @@
 import {
+  HashKeyDefaultMap,
   newPromiseWithResolvers,
   once,
   sortBy,
   tinyassert,
+  zip,
 } from "@hiogawa/utils";
 import { useRefCallbackEffect, useStableCallback } from "@hiogawa/utils-react";
 import { useMutation } from "@tanstack/react-query";
@@ -121,7 +123,7 @@ export function toCaptionConfigOptions(
   return { captions, translationGroups };
 }
 
-function captionConfigToUrl(
+export function captionConfigToUrl(
   captionConfig: CaptionConfig,
   videoMetadata: VideoMetadata
 ): string | undefined {
@@ -181,30 +183,31 @@ interface TtmlEntry {
   text: string;
 }
 
+const Z_TTML_ENTRY_XML = z.object({
+  tt: z.object({
+    body: z.object({
+      div: z.object({
+        p: z
+          .object({
+            "@_begin": z.string(),
+            "@_end": z.string(),
+            "#text": z.string().optional(),
+          })
+          .array(),
+      }),
+    }),
+  }),
+});
+
 export function ttmlToEntries(ttml: string): TtmlEntry[] {
+  // Replace "<br/>" elements with " "
+  const sanitized = ttml.replaceAll("<br />", " ");
+
   const parser = new XMLParser({
     ignoreAttributes: false,
     alwaysCreateTextNode: true,
   });
-
-  // Replace "<br/>" elements with " "
-  const sanitized = ttml.replaceAll("<br />", " ");
-
-  // TODO: Validate
-  interface Parsed {
-    tt: {
-      body: {
-        div: {
-          p: {
-            "@_begin": string;
-            "@_end": string;
-            "#text"?: string;
-          }[];
-        };
-      };
-    };
-  }
-  const parsed: Parsed = parser.parse(sanitized);
+  const parsed = Z_TTML_ENTRY_XML.parse(parser.parse(sanitized));
 
   return parsed.tt.body.div.p
     .map((p) => ({
@@ -229,6 +232,13 @@ function mergeTtmlEntries(
   entries1: TtmlEntry[],
   entries2: TtmlEntry[]
 ): CaptionEntry[] {
+  // try simple case first
+  const found = mergeTtmlEntriesSimple(entries1, entries2);
+  if (found) {
+    return found;
+  }
+
+  // otherwise a bit complicated heuristics
   return entries1.map((e1, index) => {
     const isects = entries2
       .map((e2) => [e2, computeIntersection(e1, e2)] as const)
@@ -252,6 +262,53 @@ function mergeTtmlEntries(
       text2,
     };
   });
+}
+
+// handle sane and simplest case where all intervals share the same timestamp interval
+function mergeTtmlEntriesSimple(
+  entries1: TtmlEntry[],
+  entries2: TtmlEntry[]
+): CaptionEntry[] | undefined {
+  // group entries by timestamp
+  const map = new HashKeyDefaultMap<
+    { begin: number; end: number },
+    [TtmlEntry[], TtmlEntry[]]
+  >(() => [[], []]);
+
+  for (const e of entries1) {
+    map.get({ begin: e.begin, end: e.end })[0].push(e);
+  }
+
+  for (const e of entries2) {
+    map.get({ begin: e.begin, end: e.end })[1].push(e);
+  }
+
+  // to array
+  let entries = [...map.entries()];
+  entries = sortBy(entries, ([k]) => k.begin);
+
+  // give up if overlap
+  for (const [[curr], [next]] of zip(entries, entries.slice(1))) {
+    if (curr.end > next.begin) {
+      return;
+    }
+  }
+
+  // give up if one side has many entries
+  for (const [, [lefts, rights]] of entries) {
+    if (lefts.length >= 2 || rights.length >= 2) {
+      return;
+    }
+  }
+
+  return entries.map(([k, [lefts, rights]], i) => ({
+    index: i,
+    begin: k.begin,
+    end: k.end,
+    // fill blank if one side is empry
+    text1: lefts.at(0)?.text ?? "",
+    text2: rights.at(0)?.text ?? "",
+  }));
 }
 
 function computeIntersection(e1: TtmlEntry, e2: TtmlEntry): number {
