@@ -232,6 +232,13 @@ function mergeTtmlEntries(
   entries1: TtmlEntry[],
   entries2: TtmlEntry[]
 ): CaptionEntry[] {
+  // try simple case first
+  const found = mergeTtmlEntriesSimple(entries1, entries2);
+  if (found) {
+    return found;
+  }
+
+  // otherwise a bit complicated heuristics
   return entries1.map((e1, index) => {
     const isects = entries2
       .map((e2) => [e2, computeIntersection(e1, e2)] as const)
@@ -258,7 +265,7 @@ function mergeTtmlEntries(
 }
 
 // handle sane and simplest case where all intervals share the same timestamp interval
-export function mergeTtmlEntriesSimple(
+function mergeTtmlEntriesSimple(
   entries1: TtmlEntry[],
   entries2: TtmlEntry[]
 ): CaptionEntry[] | undefined {

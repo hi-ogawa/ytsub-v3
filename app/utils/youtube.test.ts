@@ -196,6 +196,107 @@ describe("fetchCaptionEntries", () => {
       ]
     `);
   });
+
+  it("left-side-can-be-empty", async () => {
+    // https://www.youtube.com/watch?v=-UroBRG1rY8
+    const entries = await fetchCaptionEntries({
+      videoId: "-UroBRG1rY8",
+      language1: { id: ".ko" },
+      language2: { id: ".en" },
+    });
+    expect(entries.captionEntries.slice(0, 6)).toMatchInlineSnapshot(`
+      [
+        {
+          "begin": 3.139,
+          "end": 7.625,
+          "index": 0,
+          "text1": "",
+          "text2": "Zombie biebiebie biebiebiebiebiebiebie",
+        },
+        {
+          "begin": 7.626,
+          "end": 9.441,
+          "index": 1,
+          "text1": "",
+          "text2": "Zombie",
+        },
+        {
+          "begin": 12.501,
+          "end": 16.647,
+          "index": 2,
+          "text1": "달콤하고 잔인한 너의 그 맛 맛 맛 맛 맛",
+          "text2": "Sweet and cruel, your taste taste taste taste taste",
+        },
+        {
+          "begin": 16.648,
+          "end": 18.781,
+          "index": 3,
+          "text1": "참을 수가 없어 널 보면",
+          "text2": "I can't hold it when I see you",
+        },
+        {
+          "begin": 18.782,
+          "end": 20.849,
+          "index": 4,
+          "text1": "",
+          "text2": "Cool down down down",
+        },
+        {
+          "begin": 20.89,
+          "end": 25.103,
+          "index": 5,
+          "text1": "너를 깜짝 놀라 켜 너 몰래 그림자놀이",
+          "text2": "Surprising you, a shadow play in secret",
+        },
+      ]
+    `);
+    expect(entries.captionEntries.slice(38, 44)).toMatchInlineSnapshot(`
+      [
+        {
+          "begin": 141.162,
+          "end": 143.003,
+          "index": 38,
+          "text1": "여기 여기 붙어라",
+          "text2": "Come gather around here",
+        },
+        {
+          "begin": 143.102,
+          "end": 145.36599999999999,
+          "index": 39,
+          "text1": "엄지를 붙여 모두 모여라",
+          "text2": "Gather around with the thumbs together",
+        },
+        {
+          "begin": 145.542,
+          "end": 147.385,
+          "index": 40,
+          "text1": "꼭꼭 숨어라",
+          "text2": "Hide well",
+        },
+        {
+          "begin": 147.99,
+          "end": 149.913,
+          "index": 41,
+          "text1": "",
+          "text2": "PURPLE KISS Hide on Bloody top",
+        },
+        {
+          "begin": 149.914,
+          "end": 154.052,
+          "index": 42,
+          "text1": "-Zombie biebiebie biebiebiebiebiebiebie -여기 여기 붙어라 엄지를 붙여 모두 모여라",
+          "text2": "-Zombie biebiebie biebiebiebiebiebiebie - Come gather around here, Gather around with the thumbs together",
+        },
+        {
+          "begin": 154.183,
+          "end": 161.138,
+          "index": 43,
+          "text1": "술래잡기를 시작해 이 밤",
+          "text2": "Start the hide & seek on this night",
+        },
+      ]
+    `);
+  });
 });
 
 function wrapTtml(content: string): string {
