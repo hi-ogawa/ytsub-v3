@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">35.48% </span>
+                <span class="strong">34.4% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>33/93</span>
+                <span class='fraction'>32/93</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>1/1</span>
+                <span class='fraction'>0/0</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">7.14% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>1/14</span>
+                <span class='fraction'>0/7</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">35.48% </span>
+                <span class="strong">34.4% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>33/93</span>
+                <span class='fraction'>32/93</span>
             </div>
         
             
@@ -194,7 +194,7 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -269,25 +269,25 @@ export interface RootLoaderData {
 export <span class="fstat-no" title="function not covered" >function useRootLoaderData(): RootLoaderData {</span>
 <span class="cstat-no" title="statement not covered" >  const [{ data }] = useMatches();</span>
 <span class="cstat-no" title="statement not covered" >  return React.useMemo(() =&gt; deserialize(data), [data]);</span>
-<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >}</span></span>
+<span class="cstat-no" title="statement not covered" >}</span>
 &nbsp;
 export <span class="fstat-no" title="function not covered" >function useLeafLoaderData(): unknown {</span>
 <span class="cstat-no" title="statement not covered" >  const [{ data }] = useMatches().slice(-1);</span>
 <span class="cstat-no" title="statement not covered" >  return React.useMemo(() =&gt; deserialize(data), [data]);</span>
-<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >}</span></span>
+<span class="cstat-no" title="statement not covered" >}</span>
 &nbsp;
 // superjson.deserialize wrapper
 export <span class="fstat-no" title="function not covered" >function useLoaderDataExtra(): unknown {</span>
 <span class="cstat-no" title="statement not covered" >  const data = useLoaderData();</span>
 <span class="cstat-no" title="statement not covered" >  return React.useMemo(() =&gt; deserialize(data), [data]);</span>
-<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >}</span></span>
+<span class="cstat-no" title="statement not covered" >}</span>
 &nbsp;
 export const disableUrlQueryRevalidation: ShouldRevalidateFunction = <span class="fstat-no" title="function not covered" >(args) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >  if (args.nextUrl.pathname === args.currentUrl.pathname) {</span>
 <span class="cstat-no" title="statement not covered" >    return false;</span>
 <span class="cstat-no" title="statement not covered" >  }</span>
 <span class="cstat-no" title="statement not covered" >  return args.defaultShouldRevalidate;</span>
-};
+<span class="cstat-no" title="statement not covered" >};</span>
 &nbsp;
 // Record&lt;string, unknown&gt; based wrapper for useSearchParams
 export <span class="fstat-no" title="function not covered" >function useUrlQuery() {</span>
@@ -315,7 +315,7 @@ export <span class="fstat-no" title="function not covered" >function useUrlQuery
 <span class="cstat-no" title="statement not covered" >  };</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  return [query, setQuery, toParams] as const;</span>
-<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >}</span></span>
+<span class="cstat-no" title="statement not covered" >}</span>
 &nbsp;
 export <span class="fstat-no" title="function not covered" >function useTypedUrlQuery&lt;S extends z.AnyZodObject&gt;(schema: S) {</span>
 <span class="cstat-no" title="statement not covered" >  const [query, setQuery, toParams] = useUrlQuery();</span>
@@ -335,13 +335,13 @@ export <span class="fstat-no" title="function not covered" >function useTypedUrl
 <span class="cstat-no" title="statement not covered" >  };</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  return [typedQuery, setTypedQuery, toTypedParams] as const;</span>
-<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >}</span></span>
+<span class="cstat-no" title="statement not covered" >}</span>
 &nbsp;
 export <span class="fstat-no" title="function not covered" >function prettierJson(data: unknown) {</span>
 <span class="cstat-no" title="statement not covered" >  return new Response(JSON.stringify(data, null, 2), {</span>
 <span class="cstat-no" title="statement not covered" >    headers: { "content-type": "application/json" },</span>
 <span class="cstat-no" title="statement not covered" >  });</span>
-<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >}</span></span>
+<span class="cstat-no" title="statement not covered" >}</span>
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -349,7 +349,7 @@ export <span class="fstat-no" title="function not covered" >function prettierJso
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-05-10T04:16:31.720Z
+                at 2023-05-10T04:47:37.130Z
             </div>
         <script src="../prettify.js"></script>
         <script>
