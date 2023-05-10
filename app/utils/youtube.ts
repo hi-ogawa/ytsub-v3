@@ -287,14 +287,14 @@ function mergeTtmlEntriesSimple(
   let entries = [...map.entries()];
   entries = sortBy(entries, ([k]) => k.begin);
 
-  // give up overlap
+  // give up if overlap
   for (const [[curr], [next]] of zip(entries, entries.slice(1))) {
     if (curr.end > next.begin) {
       return;
     }
   }
 
-  // give up if one side have many entries
+  // give up if one side has many entries
   for (const [, [lefts, rights]] of entries) {
     if (lefts.length >= 2 || rights.length >= 2) {
       return;

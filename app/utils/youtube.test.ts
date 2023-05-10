@@ -197,7 +197,7 @@ describe("fetchCaptionEntries", () => {
     `);
   });
 
-  it("left-side-can-be-empty", async () => {
+  it("text1 can be empty", async () => {
     // https://www.youtube.com/watch?v=-UroBRG1rY8
     const entries = await fetchCaptionEntries({
       videoId: "-UroBRG1rY8",
