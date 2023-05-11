@@ -1,4 +1,3 @@
--- `textChars` for quick workaround of single character search
 CREATE TABLE `bookmarkEntries` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `text` text NOT NULL,
