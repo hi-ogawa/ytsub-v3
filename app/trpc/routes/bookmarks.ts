@@ -121,8 +121,12 @@ export const trpcRoutesBookmarks = {
         .where(
           E.and(
             E.eq(T.bookmarkEntries.userId, ctx.user.id),
-            // TODO: index
-            mapOption(input.q, (v) => E.like(T.bookmarkEntries.text, `%${v}%`))
+            // cf. https://dev.mysql.com/doc/refman/8.0/en/fulltext-boolean.html
+            mapOption(
+              input.q,
+              (v) =>
+                sql`MATCH (${T.bookmarkEntries.text}) AGAINST (${v} IN BOOLEAN MODE)`
+            )
           )
         )
         .orderBy(E.desc(T.bookmarkEntries.createdAt))
