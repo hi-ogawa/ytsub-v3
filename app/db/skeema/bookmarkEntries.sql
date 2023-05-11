@@ -12,5 +12,5 @@ CREATE TABLE `bookmarkEntries` (
   KEY `bookmarkEntries_userId_createdAt_key` (`userId`,`createdAt`),
   KEY `bookmarkEntries_videoId_key` (`videoId`),
   KEY `bookmarkEntries_captionEntryId_key` (`captionEntryId`),
-  FULLTEXT (`text`) WITH PARSER ngram
+  FULLTEXT KEY `text` (`text`) /*!50100 WITH PARSER `ngram` */
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
