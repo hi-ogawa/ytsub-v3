@@ -121,12 +121,15 @@ export const trpcRoutesBookmarks = {
         .where(
           E.and(
             E.eq(T.bookmarkEntries.userId, ctx.user.id),
-            // cf. https://dev.mysql.com/doc/refman/8.0/en/fulltext-boolean.html
-            mapOption(
-              input.q,
-              (v) =>
-                sql`MATCH (${T.bookmarkEntries.text}) AGAINST (${v} IN BOOLEAN MODE)`
-            )
+            mapOption(input.q, (q) => {
+              // cf. https://dev.mysql.com/doc/refman/8.0/en/fulltext-boolean.html
+              // default ngram size 2 doesn't support single character search.
+              // by appending "*", it will match a word having `q` unless it appears at the end.
+              if (q.length === 1) {
+                q += "*";
+              }
+              return sql`MATCH (${T.bookmarkEntries.text}) AGAINST (${q} IN BOOLEAN MODE)`;
+            })
           )
         )
         .orderBy(E.desc(T.bookmarkEntries.createdAt))
