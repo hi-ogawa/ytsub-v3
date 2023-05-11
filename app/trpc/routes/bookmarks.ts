@@ -42,6 +42,7 @@ export const trpcRoutesBookmarks = {
       // insert with counter cache increment
       const [{ insertId }] = await db.insert(T.bookmarkEntries).values({
         ...input,
+        textCharacters: Array.from(input.text),
         userId: ctx.user.id,
       });
       await db
@@ -122,12 +123,13 @@ export const trpcRoutesBookmarks = {
           E.and(
             E.eq(T.bookmarkEntries.userId, ctx.user.id),
             mapOption(input.q, (q) => {
-              // cf. https://dev.mysql.com/doc/refman/8.0/en/fulltext-boolean.html
-              // default ngram size 2 doesn't support single character search.
-              // by appending "*", it will match a word having `q` unless it appears at the end.
+              // default ngram size 2 doesn't support single character search,
+              // so we rely on JSON array multi-valued index.
               if (q.length === 1) {
-                q += "*";
+                // https://dev.mysql.com/doc/refman/8.0/en/create-index.html#create-index-multi-valued
+                return sql`${q} MEMBER OF(${T.bookmarkEntries.textCharacters})`;
               }
+              // https://dev.mysql.com/doc/refman/8.0/en/fulltext-boolean.html
               return sql`MATCH (${T.bookmarkEntries.text}) AGAINST (${q} IN BOOLEAN MODE)`;
             })
           )

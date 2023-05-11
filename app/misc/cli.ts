@@ -526,6 +526,25 @@ async function fixBookmarkEntriesOffset(rawArgs: unknown) {
 }
 
 //
+// resetBookmarkEntriesTextChars
+//
+
+cli
+  .command(resetBookmarkEntriesTextCharacters.name)
+  .action(resetBookmarkEntriesTextCharacters);
+
+async function resetBookmarkEntriesTextCharacters() {
+  const rows = await db.select().from(T.bookmarkEntries);
+
+  for (const row of rows) {
+    await db
+      .update(T.bookmarkEntries)
+      .set({ textCharacters: Array.from(row.text), updatedAt: row.updatedAt })
+      .where(E.eq(T.bookmarkEntries.id, row.id));
+  }
+}
+
+//
 // main
 //
 

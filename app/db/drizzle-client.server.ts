@@ -101,6 +101,7 @@ const bookmarkEntries = mysqlTable("bookmarkEntries", {
   ...timestampColumns,
   //
   text: text("text").notNull(),
+  textCharacters: json<string[]>("textCharacters").notNull(),
   side: int("side").notNull(), // 0 | 1
   offset: int("offset").notNull(),
 });
