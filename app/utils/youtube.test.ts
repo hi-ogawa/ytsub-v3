@@ -4,8 +4,8 @@ import {
   fetchCaptionEntries,
   fetchCaptionEntriesHalfManual,
   fetchVideoMetadata,
+  mergeTtmlEntries,
   ttmlToEntries,
-  ttmlsToCaptionEntries,
 } from "./youtube";
 
 describe("fetchVideoMetadata", () => {
@@ -320,6 +320,12 @@ function wrapTtml(content: string): string {
       </body>
     </tt>
   `;
+}
+
+function ttmlsToCaptionEntries(ttml1: string, ttml2: string) {
+  const entries1 = ttmlToEntries(ttml1);
+  const entries2 = ttmlToEntries(ttml2);
+  return mergeTtmlEntries(entries1, entries2);
 }
 
 describe("ttmlToEntries", () => {

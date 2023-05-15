@@ -340,6 +340,7 @@ function AdvancedModePreview(props: {
       {previewEntriesQuery.isLoading && (
         <div className="antd-spin w-6 h-6 m-2 self-center"></div>
       )}
+      {/* TODO: directly edit from this table? */}
       {previewEntriesQuery.isSuccess && (
         <div className="border p-1 overflow-y-auto">
           <div className="flex flex-col gap-1">

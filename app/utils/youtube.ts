@@ -183,7 +183,7 @@ export function findCaptionConfigPair(
   return { language1, language2 };
 }
 
-export interface TtmlEntry {
+interface TtmlEntry {
   begin: number;
   end: number;
   text: string;
@@ -225,16 +225,7 @@ export function ttmlToEntries(ttml: string): TtmlEntry[] {
     .filter((e) => e.text);
 }
 
-export function ttmlsToCaptionEntries(
-  ttml1: string,
-  ttml2: string
-): CaptionEntry[] {
-  const entries1 = ttmlToEntries(ttml1);
-  const entries2 = ttmlToEntries(ttml2);
-  return mergeTtmlEntries(entries1, entries2);
-}
-
-function mergeTtmlEntries(
+export function mergeTtmlEntries(
   entries1: TtmlEntry[],
   entries2: TtmlEntry[]
 ): CaptionEntry[] {
@@ -367,17 +358,11 @@ export async function fetchCaptionEntries({
   captionEntries: CaptionEntry[];
 }> {
   const videoMetadata = await fetchVideoMetadata(videoId);
-  const url1 = captionConfigToUrl(language1, videoMetadata);
-  const url2 = captionConfigToUrl(language2, videoMetadata);
-  tinyassert(url1);
-  tinyassert(url2);
-  const ttmls = [url1, url2].map(async (url) => {
-    const res = await fetch(url);
-    tinyassert(res.ok);
-    return res.text();
-  });
-  const [ttml1, ttml2] = await Promise.all(ttmls);
-  const captionEntries = ttmlsToCaptionEntries(ttml1, ttml2);
+  const [ttmlEntries1, ttmlEntries2] = await Promise.all([
+    fetchTtmlEntries(language1, videoMetadata),
+    fetchTtmlEntries(language2, videoMetadata),
+  ]);
+  const captionEntries = mergeTtmlEntries(ttmlEntries1, ttmlEntries2);
   return { videoMetadata, captionEntries };
 }
 
@@ -441,7 +426,6 @@ export function mergeTtmlEntriesHalfManualNonStrict(
   }));
 }
 
-// TODO: refactor fetchCaptionEntries
 export async function fetchTtmlEntries(
   captionConfig: CaptionConfig,
   videoMetadata: VideoMetadata
