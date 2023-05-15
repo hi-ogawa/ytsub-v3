@@ -5,21 +5,25 @@ import { useMutation } from "@tanstack/react-query";
 import { atom, useAtom } from "jotai";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
+import { SelectWrapper } from "../../components/misc";
 import { PopoverSimple } from "../../components/popover";
 import type { UserTable } from "../../db/models";
 import { $R, R, ROUTE_DEF } from "../../misc/routes";
 import { trpc } from "../../trpc/client";
 import { toastInfo } from "../../utils/flash-message-hook";
-import { isLanguageCode } from "../../utils/language";
 import {
-  useLoaderDataExtra,
-  useRootLoaderData,
-} from "../../utils/loader-utils";
+  FILTERED_LANGUAGE_CODES,
+  LanguageCode,
+  isLanguageCode,
+  languageCodeToName,
+} from "../../utils/language";
+import { useLoaderDataExtra } from "../../utils/loader-utils";
 import { makeLoader } from "../../utils/loader-utils.server";
 import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 import type { CaptionConfig, VideoMetadata } from "../../utils/types";
 import {
+  encodeAdvancedModeLanguageCode,
   fetchVideoMetadata,
   findCaptionConfigPair,
   parseVideoId,
@@ -82,7 +86,6 @@ export const handle: PageHandle = {
 };
 
 export default function DefaultComponent() {
-  const { currentUser } = useRootLoaderData();
   const { videoMetadata, userCaptionConfigs } =
     useLoaderDataExtra() as LoaderData;
 
@@ -116,6 +119,7 @@ export default function DefaultComponent() {
       },
     },
   });
+  const { videoId, language1, language2 } = form.watch();
 
   const [showAdvancedMode] = useAtom(showAdvancedModeAtom);
 
@@ -146,7 +150,7 @@ export default function DefaultComponent() {
                 type="text"
                 className="antd-input p-1 bg-colorBgContainerDisabled"
                 readOnly
-                {...form.register("videoId", { required: true })}
+                value={videoId}
               />
             </label>
             <label className="flex flex-col gap-1">
@@ -167,12 +171,17 @@ export default function DefaultComponent() {
                 readOnly
               />
             </label>
-            <label className="flex flex-col gap-1">
+            <label
+              className={cls(
+                "flex flex-col gap-1",
+                showAdvancedMode && "!hidden"
+              )}
+            >
               1st language
               <LanguageSelectComponent
                 className="antd-input p-1"
                 required
-                value={form.watch("language1")}
+                value={language1}
                 onChange={(value) => form.setValue("language1", value)}
                 videoMetadata={videoMetadata}
               />
@@ -182,7 +191,7 @@ export default function DefaultComponent() {
               <LanguageSelectComponent
                 className="antd-input p-1"
                 required
-                value={form.watch("language2")}
+                value={language2}
                 onChange={(value) => form.setValue("language2", value)}
                 videoMetadata={videoMetadata}
               />
@@ -191,18 +200,31 @@ export default function DefaultComponent() {
               type="submit"
               className={cls(
                 "antd-btn antd-btn-primary p-1",
-                createMutation.isLoading && "antd-btn-loading"
+                createMutation.isLoading && "antd-btn-loading",
+                showAdvancedMode && "!hidden"
               )}
               disabled={createMutation.isLoading || !form.formState.isValid}
             >
-              {currentUser ? "Save and Play" : "Play"}
+              Save and Play
             </button>
           </form>
         </div>
         {showAdvancedMode && (
           <>
             <div className="border-t mx-3"></div>
-            <AdvancedModeForm />
+            <AdvancedModeForm
+              isLoading={createMutation.isLoading}
+              onSubmit={(data) => {
+                createMutation.mutate({
+                  videoId,
+                  language1: {
+                    id: data.id,
+                  },
+                  language2,
+                  input: data.input,
+                });
+              }}
+            />
           </>
         )}
       </div>
@@ -210,13 +232,61 @@ export default function DefaultComponent() {
   );
 }
 
-function AdvancedModeForm() {
+// TODO: preview `fetchCaptionEntriesHalfManual` before creation?
+function AdvancedModeForm(props: {
+  isLoading: boolean;
+  onSubmit: (data: { id: string; input: string }) => void;
+}) {
+  interface FormType {
+    language?: LanguageCode;
+    input: string;
+  }
+
+  const form = useForm<FormType>({
+    defaultValues: {
+      language: undefined,
+      input: "",
+    },
+  });
+
   return (
-    <div className="p-6 flex flex-col gap-3">
-      <div className="text-lg">Advanced Mode</div>
-      <div>1st language</div>
-      <div>Manual input</div>
-    </div>
+    <form
+      className="p-6 flex flex-col gap-3"
+      onSubmit={form.handleSubmit((data) => {
+        tinyassert(data.language);
+        const id = encodeAdvancedModeLanguageCode(data.language);
+        props.onSubmit({ id, input: data.input });
+      })}
+    >
+      <div className="text-lg">Advanced mode</div>
+      <label className="flex flex-col gap-1">
+        <span className="text-colorTextLabel">1st language</span>
+        <SelectWrapper
+          className="antd-input p-1"
+          value={form.watch("language")}
+          options={[undefined, ...FILTERED_LANGUAGE_CODES]}
+          onChange={(v) => form.setValue("language", v)}
+          labelFn={(v) => v && languageCodeToName(v)}
+        />
+      </label>
+      <label className="flex flex-col gap-1">
+        <span className="text-colorTextLabel">Captions</span>
+        <textarea
+          className="antd-input p-1"
+          {...form.register("input", { required: true })}
+        />
+      </label>
+      <button
+        type="submit"
+        className={cls(
+          "antd-btn antd-btn-primary p-1",
+          props.isLoading && "antd-btn-loading"
+        )}
+        disabled={!form.formState.isValid}
+      >
+        Save and Play
+      </button>
+    </form>
   );
 }
 
@@ -303,4 +373,4 @@ function NavBarMenuComponent() {
 // page local state
 //
 
-const showAdvancedModeAtom = atom(false);
+const showAdvancedModeAtom = atom(true);

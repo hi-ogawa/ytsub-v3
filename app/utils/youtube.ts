@@ -99,6 +99,11 @@ export function parseVssId(vssId: string): LanguageCode {
   return vssId.split(".")[1].slice(0, 2) as LanguageCode;
 }
 
+// ad-hoc encoding for manual input
+export function encodeAdvancedModeLanguageCode(code: LanguageCode): string {
+  return `x.${code}`;
+}
+
 export function toCaptionConfigOptions(
   videoMetadata: VideoMetadata
 ): CaptionConfigOptions {

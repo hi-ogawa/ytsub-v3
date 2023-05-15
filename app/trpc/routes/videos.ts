@@ -2,20 +2,41 @@ import { tinyassert } from "@hiogawa/utils";
 import { z } from "zod";
 import { E, T, db, limitOne, selectOne } from "../../db/drizzle-client.server";
 import { filterNewVideo, insertVideoAndCaptionEntries } from "../../db/helper";
-import { Z_NEW_VIDEO, fetchCaptionEntries } from "../../utils/youtube";
+import {
+  Z_NEW_VIDEO,
+  fetchCaptionEntries,
+  fetchCaptionEntriesHalfManual,
+} from "../../utils/youtube";
 import { middlewares } from "../context";
 import { procedureBuilder } from "../factory";
 
 export const trpcRoutesVideos = {
   videos_create: procedureBuilder
     .use(middlewares.currentUser)
-    .input(Z_NEW_VIDEO)
+    .input(
+      Z_NEW_VIDEO.merge(
+        z.object({
+          input: z.string().optional(),
+        })
+      )
+    )
     .mutation(async ({ input, ctx }) => {
       const [found] = await filterNewVideo(input, ctx.user?.id);
       if (found) {
         return { id: found.id, created: false };
       }
-      const data = await fetchCaptionEntries(input);
+      let data: Awaited<ReturnType<typeof fetchCaptionEntries>>;
+      if (input.input) {
+        data = await fetchCaptionEntriesHalfManual({
+          ...input,
+          language1: {
+            ...input.language1,
+            input: input.input,
+          },
+        });
+      } else {
+        data = await fetchCaptionEntries(input);
+      }
       const id = await insertVideoAndCaptionEntries(input, data, ctx.user?.id);
       return { id, created: true };
     }),
