@@ -375,6 +375,62 @@ export async function fetchCaptionEntries({
   return { videoMetadata, captionEntries };
 }
 
+// very ad-hoc support for providing captions externally
+export async function fetchCaptionEntriesHalfManual({
+  videoId,
+  language1,
+  language2,
+}: {
+  videoId: string;
+  language1: NewVideo["language1"] & { input: string };
+  language2: NewVideo["language2"];
+}): Promise<{
+  videoMetadata: VideoMetadata;
+  captionEntries: CaptionEntry[];
+}> {
+  const videoMetadata = await fetchVideoMetadata(videoId);
+  const ttmlEntries = await fetchTtmlEntries(language2, videoMetadata);
+  const captionEntries = mergeTtmlEntriesHalfManual(
+    language1.input,
+    ttmlEntries
+  );
+  return {
+    videoMetadata,
+    captionEntries,
+  };
+}
+
+function mergeTtmlEntriesHalfManual(
+  input: string,
+  entries: TtmlEntry[]
+): CaptionEntry[] {
+  const lines = input
+    .split("\n")
+    .map((s) => s.trim())
+    .filter((s) => s);
+
+  return zip(lines, entries).map(([line, e], i) => ({
+    index: i,
+    begin: e.begin,
+    end: e.end,
+    text1: line,
+    text2: e.text ?? "",
+  }));
+}
+
+// TODO: refactor fetchCaptionEntries
+async function fetchTtmlEntries(
+  captionConfig: CaptionConfig,
+  videoMetadata: VideoMetadata
+) {
+  const url = captionConfigToUrl(captionConfig, videoMetadata);
+  tinyassert(url);
+  const res = await fetch(url);
+  tinyassert(res.ok);
+  const ttml = await res.text();
+  return ttmlToEntries(ttml);
+}
+
 //
 // Youtube Iframe API wrapper https://developers.google.com/youtube/iframe_api_reference
 //

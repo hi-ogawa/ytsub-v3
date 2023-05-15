@@ -2,6 +2,7 @@ import { objectOmit, tinyassert, wrapPromise } from "@hiogawa/utils";
 import { describe, expect, it } from "vitest";
 import {
   fetchCaptionEntries,
+  fetchCaptionEntriesHalfManual,
   fetchVideoMetadata,
   ttmlToEntries,
   ttmlsToCaptionEntries,
@@ -428,6 +429,163 @@ describe("ttmlsToCaptionEntries", () => {
           "index": 0,
           "text1": "hello friends and welcome to a",
           "text2": "bonjour les amis et bienvenue dans un",
+        },
+      ]
+    `);
+  });
+});
+
+describe(fetchCaptionEntriesHalfManual.name, () => {
+  it("basic", async () => {
+    // copied from https://lyricstranslate.com/en/twice-alcohol-free-lyrics.html
+    const input = `\
+너와 있을 땐 내게
+신기한 변화가 있는데
+자꾸 미소 짓게 돼
+아무 일도 없는데
+
+자꾸 마법에 걸려
+밤을 새워도 안 졸려
+다른 생각 지워져
+심장 소리는 커져
+사랑이 참 쉬워져
+그래서 빠지고 빠져 점점 너에게
+That's what you do to me
+
+나는 Alcohol free 근데 취해
+마신 게 하나도 없는데
+너와 있을 때마다 이래
+날 보는 네 눈빛 때문에
+
+너는 눈으로 마시는 내 Champagne, 내 Wine
+내 Tequila, margarita
+Mojito with lime
+Sweet mimosa, pina colada
+
+I'm drunk in you
+I'm drunk in you
+
+너는 정말 특별해
+전혀 독하지 않은데
+낮에 별이 뜨게 해
+한 모금 마셨는데
+
+자꾸 마법에 걸려
+밤을 새워도 안 졸려
+다른 생각 지워져
+심장 소리는 커져
+사랑이 참 쉬워져
+그래서 빠지고 빠져 점점 너에게
+That's what you do to me
+
+나는 Alcohol free 근데 취해
+마신 게 하나도 없는데
+너와 있을 때마다 이래
+날 보는 네 눈빛 때문에
+
+Alcohol 도수는 완전 0.0%
+근데 마실 때마다 자꾸 길을 잃어
+자고 일어나도 깨지가 않아
+근데 이 기분 싫지가 않아
+
+Easy to the mouth and tummy
+Like a drink made of honey
+이 술 이름은 도대체 뭐니
+Makes the whole world bright and sunny
+
+나는 Alcohol free 근데 취해
+마신 게 하나도 없는데
+너와 있을 때마다 이래
+날 보는 네 눈빛 때문에
+
+너는 눈으로 마시는 내 Champagne, 내 Wine
+내 Tequila, margarita
+Mojito with lime
+Sweet mimosa, pina colada
+
+I'm drunk in you
+I'm drunk in you
+`;
+    const { captionEntries } = await fetchCaptionEntriesHalfManual({
+      videoId: "XA2YEHn-A8Q",
+      language1: { id: ".ko", input },
+      language2: { id: ".en" },
+    });
+    expect(captionEntries.slice(0, 4)).toMatchInlineSnapshot(`
+      [
+        {
+          "begin": 8.896,
+          "end": 13.884,
+          "index": 0,
+          "text1": "너와 있을 땐 내게",
+          "text2": "When I am with you",
+        },
+        {
+          "begin": 13.884,
+          "end": 18.836,
+          "index": 1,
+          "text1": "신기한 변화가 있는데",
+          "text2": "Something magical happens",
+        },
+        {
+          "begin": 18.836,
+          "end": 23.801,
+          "index": 2,
+          "text1": "자꾸 미소 짓게 돼",
+          "text2": "I keep smiling for no reason",
+        },
+        {
+          "begin": 23.801,
+          "end": 28.752,
+          "index": 3,
+          "text1": "아무 일도 없는데",
+          "text2": "Though there is nothing going on",
+        },
+      ]
+    `);
+    expect(captionEntries.slice(-6)).toMatchInlineSnapshot(`
+      [
+        {
+          "begin": 187.073,
+          "end": 190.887,
+          "index": 48,
+          "text1": "너는 눈으로 마시는 내 Champagne, 내 Wine",
+          "text2": "You are my champagne, my wine I drink with my eyes",
+        },
+        {
+          "begin": 190.887,
+          "end": 193.223,
+          "index": 49,
+          "text1": "내 Tequila, margarita",
+          "text2": "My tequila, margarita",
+        },
+        {
+          "begin": 193.223,
+          "end": 195.678,
+          "index": 50,
+          "text1": "Mojito with lime",
+          "text2": "Mojito with lime",
+        },
+        {
+          "begin": 195.678,
+          "end": 198.15800000000002,
+          "index": 51,
+          "text1": "Sweet mimosa, pina colada",
+          "text2": "Sweet mimosa, pina colada",
+        },
+        {
+          "begin": 198.15800000000002,
+          "end": 203.039,
+          "index": 52,
+          "text1": "I'm drunk in you",
+          "text2": "I'm drunk in you",
+        },
+        {
+          "begin": 203.039,
+          "end": 206.239,
+          "index": 53,
+          "text1": "I'm drunk in you",
+          "text2": "I'm drunk in you",
         },
       ]
     `);
