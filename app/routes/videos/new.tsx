@@ -329,7 +329,8 @@ function AdvancedModePreview(props: {
       videoId: props.videoId,
       language: props.language2,
     }),
-    select: (data) => mergeTtmlEntriesHalfManualNonStrict(props.input, data),
+    // select: (data) => mergeTtmlEntriesHalfManualNonStrict(props.input, data),
+    select: (data) => mergeTtmlEntriesHalfManualNonStrict(devInput, data),
     onError: () => {
       toast.error("failed to fetch captions");
     },
@@ -343,10 +344,18 @@ function AdvancedModePreview(props: {
       {/* TODO: directly edit from this table? */}
       {previewEntriesQuery.isSuccess && (
         <div className="border p-1 overflow-y-auto">
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-col">
             {previewEntriesQuery.data.map((e, i) => (
-              <div key={i} className="border flex gap-2 p-1">
-                <div className="flex-1 p-1 border-r">{e.text1}</div>
+              <div
+                key={i}
+                className="border-t first:border-0 flex gap-2 p-1 py-2"
+              >
+                <div className="flex-1 p-0.5 border-r">
+                  <textarea
+                    className="w-full h-full p-0.5"
+                    defaultValue={e.text1}
+                  />
+                </div>
                 <div className="flex-1 p-1">{e.text2}</div>
               </div>
             ))}
@@ -356,6 +365,62 @@ function AdvancedModePreview(props: {
     </div>
   );
 }
+
+const devInput = `
+기분이 들떠
+Like a star like a star
+걸음에 시선이 쏟아져
+
+아닌척해도 살짝살짝
+너 역시 나를 보잖아요
+힐끔힐끔
+
+여전히 난 어려워
+어디로 향하는지
+숨길 수 없어진 나의 맘을
+따라와 줘 GLASSY
+
+So bright 좋아 모든 빛을 쏟아내는 Eyes
+눈을 뜨면 한편의 영화 같은 떨림
+너랑 나랑 Someday
+시작해 My baby
+
+라라라 라라라
+나의 두 발이 이끌 My journey
+라라라 라라라
+온몸이 짜릿 떨려 Like dreaming
+
+망설이지 마 Don't Stop don't stop
+기다릴 시간이 없거든
+
+머뭇거리면 째깍째깍
+결국엔 또 엇갈릴 거야 삐끗삐끗
+
+발끝이 아찔하게 어디로 향하든지
+순수한 상상 그 끝 너머에 데려다줘 GLASSY
+
+So bright 좋아 모든 빛을 쏟아내는 Eyes
+눈을 뜨면 한편의 영화 같은 떨림
+너랑 나랑 Someday
+시작해 My baby
+
+24/7 (Twenty Twenty Twenty Four Seven)
+그래 24/7 (Twenty Twenty Twenty Four Seven)
+It's about time
+
+한 걸음씩 되돌아가 몇 번을 말해도
+입버릇 돼 좀 더 날 안아줘
+이제는 더운 공기를 채워 더 높이높이 날아
+
+So bright 좋아 모든 빛을 쏟아내는 Eyes
+눈을 뜨면 한편의 영화 같은 떨림
+너랑 나랑 Someday 시작해 My baby
+
+라라라 라라라
+나의 두 발이 이끌 My journey
+라라라 라라라
+온몸이 짜릿 떨려 Like dreaming
+`;
 
 function LanguageSelectComponent({
   value,
