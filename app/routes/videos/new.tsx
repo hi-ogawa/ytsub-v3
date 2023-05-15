@@ -373,4 +373,4 @@ function NavBarMenuComponent() {
 // page local state
 //
 
-const showAdvancedModeAtom = atom(true);
+const showAdvancedModeAtom = atom(false);
