@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">75% </span>
+                <span class="strong">78.91% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>117/156</span>
+                <span class='fraction'>116/147</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">75% </span>
+                <span class="strong">78.91% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>117/156</span>
+                <span class='fraction'>116/147</span>
             </div>
         
             
@@ -210,16 +210,7 @@
 <a name='L145'></a><a href='#L145'>145</a>
 <a name='L146'></a><a href='#L146'>146</a>
 <a name='L147'></a><a href='#L147'>147</a>
-<a name='L148'></a><a href='#L148'>148</a>
-<a name='L149'></a><a href='#L149'>149</a>
-<a name='L150'></a><a href='#L150'>150</a>
-<a name='L151'></a><a href='#L151'>151</a>
-<a name='L152'></a><a href='#L152'>152</a>
-<a name='L153'></a><a href='#L153'>153</a>
-<a name='L154'></a><a href='#L154'>154</a>
-<a name='L155'></a><a href='#L155'>155</a>
-<a name='L156'></a><a href='#L156'>156</a>
-<a name='L157'></a><a href='#L157'>157</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L148'></a><a href='#L148'>148</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -245,7 +236,6 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
@@ -334,14 +324,6 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -419,7 +401,6 @@ export const trpcRoutesBookmarks = {
       // insert with counter cache increment
       const [{ insertId }] = await db.insert(T.bookmarkEntries).values({
         ...input,
-        textCharacters: Array.from(input.text),
         userId: ctx.user.id,
       });
       await db
@@ -499,16 +480,8 @@ export const trpcRoutesBookmarks = {
 <span class="cstat-no" title="statement not covered" >        .where(</span>
 <span class="cstat-no" title="statement not covered" >          E.and(</span>
 <span class="cstat-no" title="statement not covered" >            E.eq(T.bookmarkEntries.userId, ctx.user.id),</span>
-<span class="cstat-no" title="statement not covered" >            mapOption(input.q, (q) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >              // default ngram size 2 doesn't support single character search,</span>
-<span class="cstat-no" title="statement not covered" >              // so we rely on JSON array multi-valued index.</span>
-<span class="cstat-no" title="statement not covered" >              if (q.length === 1) {</span>
-<span class="cstat-no" title="statement not covered" >                // https://dev.mysql.com/doc/refman/8.0/en/create-index.html#create-index-multi-valued</span>
-<span class="cstat-no" title="statement not covered" >                return sql`${q} MEMBER OF(${T.bookmarkEntries.textCharacters})`;</span>
-<span class="cstat-no" title="statement not covered" >              }</span>
-<span class="cstat-no" title="statement not covered" >              // https://dev.mysql.com/doc/refman/8.0/en/fulltext-boolean.html</span>
-<span class="cstat-no" title="statement not covered" >              return sql`MATCH (${T.bookmarkEntries.text}) AGAINST (${q} IN BOOLEAN MODE)`;</span>
-<span class="cstat-no" title="statement not covered" >            })</span>
+<span class="cstat-no" title="statement not covered" >            // TODO: index</span>
+<span class="cstat-no" title="statement not covered" >            mapOption(input.q, (v) =&gt; E.like(T.bookmarkEntries.text, `%${v}%`))</span>
 <span class="cstat-no" title="statement not covered" >          )</span>
 <span class="cstat-no" title="statement not covered" >        )</span>
 <span class="cstat-no" title="statement not covered" >        .orderBy(E.desc(T.bookmarkEntries.createdAt))</span>
@@ -538,7 +511,7 @@ export const trpcRoutesBookmarks = {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-05-11T08:43:23.388Z
+                at 2023-05-15T04:15:05.182Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
