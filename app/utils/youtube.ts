@@ -409,6 +409,9 @@ function mergeTtmlEntriesHalfManual(
     .map((s) => s.trim())
     .filter((s) => s);
 
+  // TODO: throw if it doesn't match?
+  // tinyassert(lines.length === entries.length);
+
   return zip(lines, entries).map(([line, e], i) => ({
     index: i,
     begin: e.begin,

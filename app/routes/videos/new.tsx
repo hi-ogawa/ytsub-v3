@@ -2,8 +2,10 @@ import { tinyassert, wrapPromise } from "@hiogawa/utils";
 import { useNavigate } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import { useMutation } from "@tanstack/react-query";
+import { atom, useAtom } from "jotai";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
+import { PopoverSimple } from "../../components/popover";
 import type { UserTable } from "../../db/models";
 import { $R, R, ROUTE_DEF } from "../../misc/routes";
 import { trpc } from "../../trpc/client";
@@ -76,6 +78,7 @@ function findUserCaptionConfigs(videoMetadata: VideoMetadata, user: UserTable) {
 
 export const handle: PageHandle = {
   navBarTitle: () => "Select languages",
+  navBarMenu: () => <NavBarMenuComponent />,
 };
 
 export default function DefaultComponent() {
@@ -114,10 +117,12 @@ export default function DefaultComponent() {
     },
   });
 
+  const [showAdvancedMode] = useAtom(showAdvancedModeAtom);
+
   return (
     <div className="w-full p-4 flex justify-center">
-      <div className="h-full w-full max-w-lg border">
-        <div className="h-full p-6 flex flex-col gap-3">
+      <div className="w-full max-w-lg border flex flex-col">
+        <div className="p-6 flex flex-col gap-3">
           {videoMetadata.captions.playerCaptionsTracklistRenderer.captionTracks
             .length === 0 && (
             <div className="p-2 text-sm text-colorErrorText bg-colorErrorBg border border-colorErrorBorder">
@@ -194,7 +199,23 @@ export default function DefaultComponent() {
             </button>
           </form>
         </div>
+        {showAdvancedMode && (
+          <>
+            <div className="border-t mx-3"></div>
+            <AdvancedModeForm />
+          </>
+        )}
       </div>
+    </div>
+  );
+}
+
+function AdvancedModeForm() {
+  return (
+    <div className="p-6 flex flex-col gap-3">
+      <div className="text-lg">Advanced Mode</div>
+      <div>1st language</div>
+      <div>Manual input</div>
     </div>
   );
 }
@@ -241,3 +262,45 @@ function LanguageSelectComponent({
     </>
   );
 }
+
+//
+// NavBarMenuComponent
+//
+
+function NavBarMenuComponent() {
+  const [showAdvancedMode, setShowAdvancedMode] = useAtom(showAdvancedModeAtom);
+  return (
+    <div className="flex items-center">
+      <PopoverSimple
+        placement="bottom-end"
+        reference={
+          <button
+            className="antd-btn antd-btn-ghost i-ri-more-2-line w-6 h-6"
+            data-testid="video-menu-reference"
+          />
+        }
+        floating={() => (
+          <ul className="flex flex-col gap-2 p-2 w-[180px] text-sm">
+            <li>
+              <button
+                className="w-full antd-menu-item p-2 flex gap-2"
+                onClick={() => setShowAdvancedMode((prev) => !prev)}
+              >
+                Advanced Mode
+                {showAdvancedMode && (
+                  <span className="i-ri-check-line w-5 h-5"></span>
+                )}
+              </button>
+            </li>
+          </ul>
+        )}
+      />
+    </div>
+  );
+}
+
+//
+// page local state
+//
+
+const showAdvancedModeAtom = atom(false);
