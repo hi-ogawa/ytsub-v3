@@ -2,6 +2,7 @@ import {
   HashKeyDefaultMap,
   newPromiseWithResolvers,
   once,
+  range,
   sortBy,
   tinyassert,
   zip,
@@ -182,7 +183,7 @@ export function findCaptionConfigPair(
   return { language1, language2 };
 }
 
-interface TtmlEntry {
+export interface TtmlEntry {
   begin: number;
   end: number;
   text: string;
@@ -414,9 +415,6 @@ function mergeTtmlEntriesHalfManual(
     .map((s) => s.trim())
     .filter((s) => s);
 
-  // TODO: throw if it doesn't match?
-  // tinyassert(lines.length === entries.length);
-
   return zip(lines, entries).map(([line, e], i) => ({
     index: i,
     begin: e.begin,
@@ -426,8 +424,25 @@ function mergeTtmlEntriesHalfManual(
   }));
 }
 
+export function mergeTtmlEntriesHalfManualNonStrict(
+  input: string,
+  entries: TtmlEntry[]
+): { text1: string; text2: string }[] {
+  const lines = input
+    .split("\n")
+    .map((s) => s.trim())
+    .filter((s) => s);
+
+  const length = Math.max(lines.length, entries.length);
+
+  return range(length).map((i) => ({
+    text1: lines.at(i) ?? "",
+    text2: entries.at(i)?.text ?? "",
+  }));
+}
+
 // TODO: refactor fetchCaptionEntries
-async function fetchTtmlEntries(
+export async function fetchTtmlEntries(
   captionConfig: CaptionConfig,
   videoMetadata: VideoMetadata
 ) {

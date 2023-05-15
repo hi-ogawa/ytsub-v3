@@ -1,11 +1,12 @@
 import { tinyassert, wrapPromise } from "@hiogawa/utils";
 import { useNavigate } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { atom, useAtom } from "jotai";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { SelectWrapper } from "../../components/misc";
+import { useModal } from "../../components/modal";
 import { PopoverSimple } from "../../components/popover";
 import type { UserTable } from "../../db/models";
 import { $R, R, ROUTE_DEF } from "../../misc/routes";
@@ -26,6 +27,7 @@ import {
   encodeAdvancedModeLanguageCode,
   fetchVideoMetadata,
   findCaptionConfigPair,
+  mergeTtmlEntriesHalfManualNonStrict,
   parseVideoId,
   toCaptionConfigOptions,
 } from "../../utils/youtube";
@@ -171,21 +173,18 @@ export default function DefaultComponent() {
                 readOnly
               />
             </label>
-            <label
-              className={cls(
-                "flex flex-col gap-1",
-                showAdvancedMode && "!hidden"
-              )}
-            >
-              1st language
-              <LanguageSelectComponent
-                className="antd-input p-1"
-                required
-                value={language1}
-                onChange={(value) => form.setValue("language1", value)}
-                videoMetadata={videoMetadata}
-              />
-            </label>
+            {!showAdvancedMode && (
+              <label className="flex flex-col gap-1">
+                1st language
+                <LanguageSelectComponent
+                  className="antd-input p-1"
+                  required
+                  value={language1}
+                  onChange={(value) => form.setValue("language1", value)}
+                  videoMetadata={videoMetadata}
+                />
+              </label>
+            )}
             <label className="flex flex-col gap-1">
               2nd language
               <LanguageSelectComponent
@@ -196,23 +195,26 @@ export default function DefaultComponent() {
                 videoMetadata={videoMetadata}
               />
             </label>
-            <button
-              type="submit"
-              className={cls(
-                "antd-btn antd-btn-primary p-1",
-                createMutation.isLoading && "antd-btn-loading",
-                showAdvancedMode && "!hidden"
-              )}
-              disabled={createMutation.isLoading || !form.formState.isValid}
-            >
-              Save and Play
-            </button>
+            {!showAdvancedMode && (
+              <button
+                type="submit"
+                className={cls(
+                  "antd-btn antd-btn-primary p-1",
+                  createMutation.isLoading && "antd-btn-loading"
+                )}
+                disabled={createMutation.isLoading || !form.formState.isValid}
+              >
+                Save and Play
+              </button>
+            )}
           </form>
         </div>
         {showAdvancedMode && (
           <>
             <div className="border-t mx-3"></div>
             <AdvancedModeForm
+              videoId={videoId}
+              language2={language2}
               isLoading={createMutation.isLoading}
               onSubmit={(data) => {
                 createMutation.mutate({
@@ -234,6 +236,8 @@ export default function DefaultComponent() {
 
 // TODO: preview `fetchCaptionEntriesHalfManual` before creation?
 function AdvancedModeForm(props: {
+  videoId: string;
+  language2: CaptionConfig;
   isLoading: boolean;
   onSubmit: (data: { id: string; input: string }) => void;
 }) {
@@ -248,45 +252,107 @@ function AdvancedModeForm(props: {
       input: "",
     },
   });
+  const { input } = form.watch();
+
+  const previewModal = useModal(true);
 
   return (
-    <form
-      className="p-6 flex flex-col gap-3"
-      onSubmit={form.handleSubmit((data) => {
-        tinyassert(data.language);
-        const id = encodeAdvancedModeLanguageCode(data.language);
-        props.onSubmit({ id, input: data.input });
-      })}
-    >
-      <div className="text-lg">Advanced mode</div>
-      <label className="flex flex-col gap-1">
-        <span className="text-colorTextLabel">1st language</span>
-        <SelectWrapper
-          className="antd-input p-1"
-          value={form.watch("language")}
-          options={[undefined, ...FILTERED_LANGUAGE_CODES]}
-          onChange={(v) => form.setValue("language", v)}
-          labelFn={(v) => v && languageCodeToName(v)}
-        />
-      </label>
-      <label className="flex flex-col gap-1">
-        <span className="text-colorTextLabel">Captions</span>
-        <textarea
-          className="antd-input p-1"
-          {...form.register("input", { required: true })}
-        />
-      </label>
-      <button
-        type="submit"
-        className={cls(
-          "antd-btn antd-btn-primary p-1",
-          props.isLoading && "antd-btn-loading"
-        )}
-        disabled={!form.formState.isValid}
+    <>
+      <form
+        className="p-6 flex flex-col gap-3"
+        onSubmit={form.handleSubmit((data) => {
+          tinyassert(data.language);
+          const id = encodeAdvancedModeLanguageCode(data.language);
+          props.onSubmit({ id, input: data.input });
+        })}
       >
-        Save and Play
-      </button>
-    </form>
+        <div className="text-lg">Manual input</div>
+        <label className="flex flex-col gap-1">
+          <span>1st language</span>
+          <SelectWrapper
+            className="antd-input p-1"
+            value={form.watch("language")}
+            options={[undefined, ...FILTERED_LANGUAGE_CODES]}
+            onChange={(v) => form.setValue("language", v)}
+            labelFn={(v) => v && languageCodeToName(v)}
+          />
+        </label>
+        <div className="flex flex-col gap-1">
+          <div className="flex items-center gap-2">
+            <span>Captions</span>
+            <button
+              type="button"
+              className="antd-btn antd-btn-default text-sm px-1"
+              onClick={() => previewModal.setOpen(true)}
+            >
+              Preview
+            </button>
+          </div>
+          <textarea
+            className="antd-input p-1"
+            rows={8}
+            {...form.register("input", { required: true })}
+          />
+        </div>
+        <button
+          type="submit"
+          className={cls(
+            "antd-btn antd-btn-primary p-1",
+            props.isLoading && "antd-btn-loading"
+          )}
+          disabled={!form.formState.isValid}
+        >
+          Save and Play
+        </button>
+      </form>
+      <previewModal.Wrapper>
+        <div className="flex flex-col gap-2 p-4 relative h-[90vh]">
+          <div className="flex-none text-lg">Preview</div>
+          <AdvancedModePreview
+            videoId={props.videoId}
+            language2={props.language2}
+            input={input}
+          />
+        </div>
+      </previewModal.Wrapper>
+    </>
+  );
+}
+
+function AdvancedModePreview(props: {
+  input: string;
+  videoId: string;
+  language2: CaptionConfig;
+}) {
+  const previewEntriesQuery = useQuery({
+    ...trpc.videos_fetchTtmlEntries.queryOptions({
+      videoId: props.videoId,
+      language: props.language2,
+    }),
+    select: (data) => mergeTtmlEntriesHalfManualNonStrict(props.input, data),
+    onError: () => {
+      toast.error("failed to fetch captions");
+    },
+  });
+
+  return (
+    <div className="flex flex-col overflow-hidden">
+      {previewEntriesQuery.isLoading && (
+        <div className="antd-spin w-6 h-6 m-2 self-center"></div>
+      )}
+      {previewEntriesQuery.isSuccess && (
+        <div className="border p-1 overflow-y-auto">
+          <div className="flex flex-col gap-1">
+            {previewEntriesQuery.data.map((e, i) => (
+              <div key={i} className="border flex gap-2 p-1">
+                <div className="flex-1 p-1 border-r">{e.text1}</div>
+                <div className="flex-1 p-1">{e.text2}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -356,7 +422,7 @@ function NavBarMenuComponent() {
                 className="w-full antd-menu-item p-2 flex gap-2"
                 onClick={() => setShowAdvancedMode((prev) => !prev)}
               >
-                Advanced Mode
+                Manual input
                 {showAdvancedMode && (
                   <span className="i-ri-check-line w-5 h-5"></span>
                 )}
@@ -373,4 +439,4 @@ function NavBarMenuComponent() {
 // page local state
 //
 
-const showAdvancedModeAtom = atom(false);
+const showAdvancedModeAtom = atom(true);

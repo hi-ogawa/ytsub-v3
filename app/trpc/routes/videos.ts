@@ -6,6 +6,8 @@ import {
   Z_NEW_VIDEO,
   fetchCaptionEntries,
   fetchCaptionEntriesHalfManual,
+  fetchTtmlEntries,
+  fetchVideoMetadata,
 } from "../../utils/youtube";
 import { middlewares } from "../context";
 import { procedureBuilder } from "../factory";
@@ -39,6 +41,22 @@ export const trpcRoutesVideos = {
       }
       const id = await insertVideoAndCaptionEntries(input, data, ctx.user?.id);
       return { id, created: true };
+    }),
+
+  videos_fetchTtmlEntries: procedureBuilder
+    .input(
+      z.object({
+        videoId: z.string(),
+        language: z.object({
+          id: z.string(),
+          translation: z.string().optional(),
+        }),
+      })
+    )
+    .query(async ({ input }) => {
+      const videoMetadata = await fetchVideoMetadata(input.videoId);
+      const ttmlEntries = await fetchTtmlEntries(input.language, videoMetadata);
+      return ttmlEntries;
     }),
 
   videos_destroy: procedureBuilder
