@@ -1,8 +1,10 @@
 import { tinyassert, wrapPromise } from "@hiogawa/utils";
+import { toArraySetState } from "@hiogawa/utils-react";
 import { useNavigate } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { atom, useAtom } from "jotai";
+import React from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { SelectWrapper } from "../../components/misc";
@@ -20,15 +22,15 @@ import {
 } from "../../utils/language";
 import { useLoaderDataExtra } from "../../utils/loader-utils";
 import { makeLoader } from "../../utils/loader-utils.server";
-import { cls } from "../../utils/misc";
+import { cls, zipMax } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 import type { CaptionConfig, VideoMetadata } from "../../utils/types";
 import {
   encodeAdvancedModeLanguageCode,
   fetchVideoMetadata,
   findCaptionConfigPair,
-  mergeTtmlEntriesHalfManualNonStrict,
   parseVideoId,
+  splitManualInputEntries,
   toCaptionConfigOptions,
 } from "../../utils/youtube";
 
@@ -234,7 +236,6 @@ export default function DefaultComponent() {
   );
 }
 
-// TODO: preview `fetchCaptionEntriesHalfManual` before creation?
 function AdvancedModeForm(props: {
   videoId: string;
   language2: CaptionConfig;
@@ -252,9 +253,9 @@ function AdvancedModeForm(props: {
       input: "",
     },
   });
-  const { input } = form.watch();
+  const { language, input } = form.watch();
 
-  const previewModal = useModal(true);
+  const previewModal = useModal();
 
   return (
     <>
@@ -271,7 +272,7 @@ function AdvancedModeForm(props: {
           <span>1st language</span>
           <SelectWrapper
             className="antd-input p-1"
-            value={form.watch("language")}
+            value={language}
             options={[undefined, ...FILTERED_LANGUAGE_CODES]}
             onChange={(v) => form.setValue("language", v)}
             labelFn={(v) => v && languageCodeToName(v)}
@@ -306,12 +307,12 @@ function AdvancedModeForm(props: {
         </button>
       </form>
       <previewModal.Wrapper>
-        <div className="flex flex-col gap-2 p-4 relative h-[90vh]">
-          <div className="flex-none text-lg">Preview</div>
+        <div className="flex flex-col p-4 relative max-h-[90vh]">
           <AdvancedModePreview
             videoId={props.videoId}
             language2={props.language2}
             input={input}
+            setInput={(v) => form.setValue("input", v)}
           />
         </div>
       </previewModal.Wrapper>
@@ -321,6 +322,7 @@ function AdvancedModeForm(props: {
 
 function AdvancedModePreview(props: {
   input: string;
+  setInput: (input: string) => void;
   videoId: string;
   language2: CaptionConfig;
 }) {
@@ -329,98 +331,83 @@ function AdvancedModePreview(props: {
       videoId: props.videoId,
       language: props.language2,
     }),
-    // select: (data) => mergeTtmlEntriesHalfManualNonStrict(props.input, data),
-    select: (data) => mergeTtmlEntriesHalfManualNonStrict(devInput, data),
     onError: () => {
       toast.error("failed to fetch captions");
     },
   });
 
+  const entries1 = splitManualInputEntries(props.input);
+  const entries2 = previewEntriesQuery.data?.map((e) => e.text) ?? [];
+
   return (
-    <div className="flex flex-col overflow-hidden">
-      {previewEntriesQuery.isLoading && (
-        <div className="antd-spin w-6 h-6 m-2 self-center"></div>
+    <div className="flex flex-col gap-2 overflow-hidden">
+      <div className="flex-none text-lg">Preview</div>
+      {previewEntriesQuery.isFetching && (
+        <div className="antd-spin w-10 h-10 m-2 self-center"></div>
       )}
-      {/* TODO: directly edit from this table? */}
-      {previewEntriesQuery.isSuccess && (
-        <div className="border p-1 overflow-y-auto">
-          <div className="flex flex-col">
-            {previewEntriesQuery.data.map((e, i) => (
-              <div
-                key={i}
-                className="border-t first:border-0 flex gap-2 p-1 py-2"
-              >
-                <div className="flex-1 p-0.5 border-r">
-                  <textarea
-                    className="w-full h-full p-0.5"
-                    defaultValue={e.text1}
-                  />
-                </div>
-                <div className="flex-1 p-1">{e.text2}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+      {previewEntriesQuery.isFetchedAfterMount &&
+        previewEntriesQuery.isSuccess && (
+          <AdvancedModePreviewEditor
+            defaultValue={entries1}
+            onChange={(entries1) => {
+              const newInput = entries1
+                .map((e) => e.replaceAll("\n", " "))
+                .join("\n");
+              props.setInput(newInput);
+            }}
+            entries2={entries2}
+          />
+        )}
     </div>
   );
 }
 
-const devInput = `
-기분이 들떠
-Like a star like a star
-걸음에 시선이 쏟아져
+function AdvancedModePreviewEditor(props: {
+  defaultValue: string[];
+  onChange: (entries1: string[]) => void;
+  entries2: string[];
+}) {
+  const [entries1, setEntries1] = React.useState(() => props.defaultValue);
+  const { splice } = toArraySetState(setEntries1);
 
-아닌척해도 살짝살짝
-너 역시 나를 보잖아요
-힐끔힐끔
+  React.useEffect(() => {
+    props.onChange(entries1);
+  }, [entries1]);
 
-여전히 난 어려워
-어디로 향하는지
-숨길 수 없어진 나의 맘을
-따라와 줘 GLASSY
-
-So bright 좋아 모든 빛을 쏟아내는 Eyes
-눈을 뜨면 한편의 영화 같은 떨림
-너랑 나랑 Someday
-시작해 My baby
-
-라라라 라라라
-나의 두 발이 이끌 My journey
-라라라 라라라
-온몸이 짜릿 떨려 Like dreaming
-
-망설이지 마 Don't Stop don't stop
-기다릴 시간이 없거든
-
-머뭇거리면 째깍째깍
-결국엔 또 엇갈릴 거야 삐끗삐끗
-
-발끝이 아찔하게 어디로 향하든지
-순수한 상상 그 끝 너머에 데려다줘 GLASSY
-
-So bright 좋아 모든 빛을 쏟아내는 Eyes
-눈을 뜨면 한편의 영화 같은 떨림
-너랑 나랑 Someday
-시작해 My baby
-
-24/7 (Twenty Twenty Twenty Four Seven)
-그래 24/7 (Twenty Twenty Twenty Four Seven)
-It's about time
-
-한 걸음씩 되돌아가 몇 번을 말해도
-입버릇 돼 좀 더 날 안아줘
-이제는 더운 공기를 채워 더 높이높이 날아
-
-So bright 좋아 모든 빛을 쏟아내는 Eyes
-눈을 뜨면 한편의 영화 같은 떨림
-너랑 나랑 Someday 시작해 My baby
-
-라라라 라라라
-나의 두 발이 이끌 My journey
-라라라 라라라
-온몸이 짜릿 떨려 Like dreaming
-`;
+  return (
+    <div className="flex flex-col gap-2 overflow-hidden">
+      <div className="border p-1 overflow-y-auto">
+        <div className="flex flex-col">
+          {zipMax(entries1, props.entries2).map(([t1, t2], i) => (
+            <div
+              key={i}
+              className="border-t first:border-0 flex gap-2 p-1 py-2"
+            >
+              <div className="flex-1 p-0.5 border-r">
+                <textarea
+                  className="w-full h-full p-0.5"
+                  value={t1}
+                  onChange={(e) => {
+                    splice(i, 1, e.target.value);
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.ctrlKey && e.key === "Enter") {
+                      splice(i + 1, 0, "");
+                    }
+                    if (e.ctrlKey && e.key === "d") {
+                      splice(i, 1);
+                    }
+                  }}
+                />
+              </div>
+              <div className="flex-1 p-1">{t2}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
 
 function LanguageSelectComponent({
   value,

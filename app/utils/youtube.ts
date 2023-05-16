@@ -2,7 +2,6 @@ import {
   HashKeyDefaultMap,
   newPromiseWithResolvers,
   once,
-  range,
   sortBy,
   tinyassert,
   zip,
@@ -393,14 +392,11 @@ export async function fetchCaptionEntriesHalfManual({
 
 function mergeTtmlEntriesHalfManual(
   input: string,
-  entries: TtmlEntry[]
+  entries2: TtmlEntry[]
 ): CaptionEntry[] {
-  const lines = input
-    .split("\n")
-    .map((s) => s.trim())
-    .filter((s) => s);
+  const entries1 = splitManualInputEntries(input);
 
-  return zip(lines, entries).map(([line, e], i) => ({
+  return zip(entries1, entries2).map(([line, e], i) => ({
     index: i,
     begin: e.begin,
     end: e.end,
@@ -409,21 +405,11 @@ function mergeTtmlEntriesHalfManual(
   }));
 }
 
-export function mergeTtmlEntriesHalfManualNonStrict(
-  input: string,
-  entries: TtmlEntry[]
-): { text1: string; text2: string }[] {
-  const lines = input
+export function splitManualInputEntries(input: string): string[] {
+  return input
     .split("\n")
     .map((s) => s.trim())
     .filter((s) => s);
-
-  const length = Math.max(lines.length, entries.length);
-
-  return range(length).map((i) => ({
-    text1: lines.at(i) ?? "",
-    text2: entries.at(i)?.text ?? "",
-  }));
 }
 
 export async function fetchTtmlEntries(
