@@ -383,7 +383,7 @@ function AdvancedModePreviewEditor(props: {
               <div className="flex-1 p-0.5 border-r">
                 <textarea
                   className="w-full h-full p-0.5"
-                  value={t1}
+                  value={t1 ?? ""}
                   onChange={(e) => {
                     splice(i, 1, e.target.value);
                   }}
