@@ -8,7 +8,7 @@ import { useDocumentEvent } from "./hooks-client-utils";
 export function QueryClientWrapper({ children }: React.PropsWithChildren) {
   const [queryClient] = React.useState(() => createQueryClient());
 
-  const [showDevtools, setShowDevtools] = React.useState(true);
+  const [showDevtools, setShowDevtools] = React.useState(false);
 
   // alt + shift + q to toggle
   useDocumentEvent("keyup", (e) => {
