@@ -331,9 +331,6 @@ function AdvancedModePreview(props: {
       videoId: props.videoId,
       language: props.language2,
     }),
-    onError: () => {
-      toast.error("failed to fetch captions");
-    },
   });
 
   const entries1 = splitManualInputEntries(props.input);
