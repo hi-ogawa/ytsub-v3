@@ -1,5 +1,5 @@
 import { tinyassert, wrapPromise } from "@hiogawa/utils";
-import { toArraySetState } from "@hiogawa/utils-react";
+import { Debug, toArraySetState } from "@hiogawa/utils-react";
 import { useNavigate } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -301,7 +301,7 @@ function AdvancedModeForm(props: {
             "antd-btn antd-btn-primary p-1",
             props.isLoading && "antd-btn-loading"
           )}
-          disabled={!form.formState.isValid}
+          disabled={!language || !input}
         >
           Save and Play
         </button>
