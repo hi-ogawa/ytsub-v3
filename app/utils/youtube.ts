@@ -342,7 +342,7 @@ export function stringifyTimestamp(s: number): string {
 // .en   (youtube manual caption for English)
 // a.en  (youtube machine caption for English)
 // x.en  (user input for English)
-const VIDEO_LANGUAGE_ID_RE = /^[a-zA-Z-]\.[a-zA-Z-]+$/;
+const VIDEO_LANGUAGE_ID_RE = /^[a-zA-Z-]?\.[a-zA-Z-]+$/;
 
 export const Z_NEW_VIDEO = z.object({
   videoId: z.string().length(11),
