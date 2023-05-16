@@ -334,7 +334,7 @@ function PageComponent({
         currentUser.id === video.userId && (
           <Transition
             show={!!bookmarkState || newBookmarkMutation.isLoading}
-            className="absolute bottom-0 right-0 flex gap-2 p-1.5 transition duration-300 z-1"
+            className="absolute bottom-0 right-0 flex gap-2 p-1.5 transition duration-300"
             enterFrom="scale-30 opacity-0"
             enterTo="scale-100 opacity-100"
             leaveFrom="scale-100 opacity-100"
