@@ -1,6 +1,5 @@
 import {
   FloatingContext,
-  FloatingPortal,
   Placement,
   arrow,
   autoUpdate,
@@ -10,12 +9,12 @@ import {
   useClick,
   useDismiss,
   useFloating,
-  useId,
   useInteractions,
 } from "@floating-ui/react";
 import { Transition } from "@headlessui/react";
 import React from "react";
 import { cls } from "../utils/misc";
+import { FloatingWrapper } from "./floating-utils";
 
 // based on https://github.com/hi-ogawa/unocss-preset-antd/blob/95b2359ca2a7bcec3ccc36762fae4929937b628e/packages/app/src/components/popover.tsx
 
@@ -54,8 +53,6 @@ function Popover(props: {
     useDismiss(context),
   ]);
 
-  const id = useId();
-
   return (
     <>
       {props.reference({
@@ -66,7 +63,7 @@ function Popover(props: {
           ref: reference,
         }),
       })}
-      <FloatingPortal id={id}>
+      <FloatingWrapper>
         {props.floating({
           context,
           open,
@@ -88,7 +85,7 @@ function Popover(props: {
             },
           },
         })}
-      </FloatingPortal>
+      </FloatingWrapper>
     </>
   );
 }
@@ -118,7 +115,7 @@ export function PopoverSimple({
       floating={({ props, open, arrowProps, context }) => (
         <Transition
           show={open}
-          className="transition duration-200"
+          className="transition duration-200 z-1"
           enterFrom="scale-90 opacity-0"
           enterTo="scale-100 opacity-100"
           leaveFrom="scale-100 opacity-100"

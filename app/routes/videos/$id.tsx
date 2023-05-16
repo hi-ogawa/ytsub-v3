@@ -334,7 +334,7 @@ function PageComponent({
         currentUser.id === video.userId && (
           <Transition
             show={!!bookmarkState || newBookmarkMutation.isLoading}
-            className="absolute bottom-0 right-0 flex gap-2 p-1.5 transition duration-300 z-10"
+            className="absolute bottom-0 right-0 flex gap-2 p-1.5 transition duration-300 z-1"
             enterFrom="scale-30 opacity-0"
             enterTo="scale-100 opacity-100"
             leaveFrom="scale-100 opacity-100"
@@ -725,26 +725,6 @@ function NavBarMenuComponent() {
   );
   const modal = useModal();
 
-  const navigate = useNavigate();
-
-  const lastBookmarkQuery = useMutation({
-    ...trpc.videos_getLastBookmark.mutationOptions(),
-    onSuccess: (data) => {
-      if (data) {
-        modal.setOpen(false);
-        navigate(
-          $R["/videos/$id"](
-            { id: video.id },
-            { index: data.captionEntries.index }
-          ),
-          { replace: true }
-        );
-      } else {
-        toast.error("No bookmark is found");
-      }
-    },
-  });
-
   return (
     <>
       <div className="flex items-center">
@@ -765,6 +745,15 @@ function NavBarMenuComponent() {
                 >
                   Details
                 </button>
+                <modal.Wrapper>
+                  <DetailsComponent
+                    video={video}
+                    onClose={() => {
+                      modal.setOpen(false);
+                      context.onOpenChange(false);
+                    }}
+                  />
+                </modal.Wrapper>
               </li>
               <li>
                 <button
@@ -805,73 +794,102 @@ function NavBarMenuComponent() {
           )}
         />
       </div>
-      <modal.Wrapper>
-        <div className="flex flex-col gap-2 p-4 relative">
-          <div className="text-lg">Details</div>
-          <label className="flex flex-col gap-1">
-            <span className="text-colorTextLabel">Title</span>
-            <input
-              type="text"
-              className="antd-input p-1 bg-colorBgContainerDisabled"
-              readOnly
-              value={video.title}
-            />
-          </label>
-          <label className="flex flex-col gap-1">
-            <span className="text-colorTextLabel">Author</span>
-            <input
-              type="text"
-              className="antd-input p-1 bg-colorBgContainerDisabled"
-              readOnly
-              value={video.author}
-            />
-          </label>
-          <label className="flex flex-col gap-1">
-            <span className="text-colorTextLabel">Imported at</span>
-            <input
-              type="text"
-              className="antd-input p-1 bg-colorBgContainerDisabled"
-              readOnly
-              value={intl.formatDate(video.createdAt, {
-                dateStyle: "long",
-                timeStyle: "long",
-                hour12: false,
-              })}
-            />
-          </label>
-          <label className="flex flex-col gap-1">
-            <span className="text-colorTextLabel">Bookmark count</span>
-            <input
-              type="text"
-              className="antd-input p-1 bg-colorBgContainerDisabled"
-              readOnly
-              value={video.bookmarkEntriesCount}
-            />
-          </label>
-          <div className="border-t my-1"></div>
-          <h4>Shortcuts</h4>
-          <div className="flex flex-col sm:flex-row gap-2 text-sm">
-            <button
-              className={cls(
-                "antd-btn antd-btn-default px-2 py-0.5",
-                lastBookmarkQuery.isLoading && "antd-btn-loading"
-              )}
-              onClick={() => {
-                lastBookmarkQuery.mutate({ videoId: video.id });
-              }}
-            >
-              Go to Last Bookmark
-            </button>
-            <Link
-              className="antd-btn antd-btn-default px-2 py-0.5 flex justify-center"
-              to={$R["/videos/new"](null, { videoId: video.videoId })}
-            >
-              Change Languages
-            </Link>
-          </div>
-        </div>
-      </modal.Wrapper>
     </>
+  );
+}
+
+function DetailsComponent({
+  video,
+  onClose,
+}: {
+  video: TT["videos"];
+  onClose: () => void;
+}) {
+  const navigate = useNavigate();
+
+  const lastBookmarkQuery = useMutation({
+    ...trpc.videos_getLastBookmark.mutationOptions(),
+    onSuccess: (data) => {
+      if (data) {
+        onClose();
+        navigate(
+          $R["/videos/$id"](
+            { id: video.id },
+            { index: data.captionEntries.index }
+          ),
+          { replace: true }
+        );
+      } else {
+        toast.error("No bookmark is found");
+      }
+    },
+  });
+
+  return (
+    <div className="flex flex-col gap-2 p-4 relative">
+      <div className="text-lg">Details</div>
+      <label className="flex flex-col gap-1">
+        <span className="text-colorTextLabel">Title</span>
+        <input
+          type="text"
+          className="antd-input p-1 bg-colorBgContainerDisabled"
+          readOnly
+          value={video.title}
+        />
+      </label>
+      <label className="flex flex-col gap-1">
+        <span className="text-colorTextLabel">Author</span>
+        <input
+          type="text"
+          className="antd-input p-1 bg-colorBgContainerDisabled"
+          readOnly
+          value={video.author}
+        />
+      </label>
+      <label className="flex flex-col gap-1">
+        <span className="text-colorTextLabel">Imported at</span>
+        <input
+          type="text"
+          className="antd-input p-1 bg-colorBgContainerDisabled"
+          readOnly
+          value={intl.formatDate(video.createdAt, {
+            dateStyle: "long",
+            timeStyle: "long",
+            hour12: false,
+          })}
+        />
+      </label>
+      <label className="flex flex-col gap-1">
+        <span className="text-colorTextLabel">Bookmark count</span>
+        <input
+          type="text"
+          className="antd-input p-1 bg-colorBgContainerDisabled"
+          readOnly
+          value={video.bookmarkEntriesCount}
+        />
+      </label>
+      <div className="border-t my-1"></div>
+      <h4>Shortcuts</h4>
+      <div className="flex flex-col sm:flex-row gap-2 text-sm">
+        <button
+          className={cls(
+            "antd-btn antd-btn-default px-2 py-0.5",
+            lastBookmarkQuery.isLoading && "antd-btn-loading"
+          )}
+          onClick={() => {
+            lastBookmarkQuery.mutate({ videoId: video.id });
+          }}
+        >
+          Go to Last Bookmark
+        </button>
+        <Link
+          className="antd-btn antd-btn-default px-2 py-0.5 flex justify-center"
+          to={$R["/videos/new"](null, { videoId: video.videoId })}
+        >
+          Change Languages
+        </Link>
+      </div>
+    </div>
   );
 }
 

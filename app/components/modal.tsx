@@ -1,16 +1,11 @@
-import {
-  FloatingPortal,
-  useDismiss,
-  useFloating,
-  useId,
-  useInteractions,
-} from "@floating-ui/react";
+import { useDismiss, useFloating, useInteractions } from "@floating-ui/react";
 import { Transition } from "@headlessui/react";
 import { tinyassert } from "@hiogawa/utils";
 import { atom, useAtom } from "jotai";
 import React from "react";
 import { RemoveScroll } from "react-remove-scroll";
 import { cls } from "../utils/misc";
+import { FloatingWrapper } from "./floating-utils";
 
 // based on https://github.com/hi-ogawa/unocss-preset-antd/blob/02adfc9dfcb7cebbc31cd4651395e1ecc67d813e/packages/app/src/components/modal.tsx
 
@@ -28,11 +23,10 @@ function Modal(props: {
     },
   });
   const { getFloatingProps } = useInteractions([useDismiss(context)]);
-  const id = useId();
 
   return (
-    <FloatingPortal id={id}>
-      <Transition className="fixed inset-0 z-100" appear show={props.open}>
+    <FloatingWrapper>
+      <Transition className="fixed inset-0 z-1" appear show={props.open}>
         {/* backdrop */}
         <Transition.Child
           className="transition duration-300 fixed inset-0 bg-black"
@@ -66,7 +60,7 @@ function Modal(props: {
           </Transition.Child>
         </RemoveScroll>
       </Transition>
-    </FloatingPortal>
+    </FloatingWrapper>
   );
 }
 

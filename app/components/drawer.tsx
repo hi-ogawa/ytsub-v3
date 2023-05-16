@@ -1,14 +1,9 @@
-import {
-  FloatingPortal,
-  useDismiss,
-  useFloating,
-  useId,
-  useInteractions,
-} from "@floating-ui/react";
+import { useDismiss, useFloating, useInteractions } from "@floating-ui/react";
 import { Transition } from "@headlessui/react";
 import { tinyassert } from "@hiogawa/utils";
 import type React from "react";
 import { RemoveScroll } from "react-remove-scroll";
+import { FloatingWrapper } from "./floating-utils";
 
 export function Drawer(props: {
   open: boolean;
@@ -23,11 +18,10 @@ export function Drawer(props: {
     },
   });
   const { getFloatingProps } = useInteractions([useDismiss(context)]);
-  const id = useId();
 
   return (
-    <FloatingPortal id={id}>
-      <Transition className="fixed inset-0 z-100" show={props.open}>
+    <FloatingWrapper>
+      <Transition className="fixed inset-0 z-1" show={props.open}>
         {/* backdrop */}
         <Transition.Child
           className="transition duration-300 fixed inset-0 bg-black"
@@ -56,6 +50,6 @@ export function Drawer(props: {
           </Transition.Child>
         </RemoveScroll>
       </Transition>
-    </FloatingPortal>
+    </FloatingWrapper>
   );
 }

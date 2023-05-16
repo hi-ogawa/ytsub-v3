@@ -130,7 +130,7 @@ function VideoComponentExtra({
   const modal = useModal();
   const addToDeckDisabled = !video.bookmarkEntriesCount;
 
-  const videoComponent = (
+  return (
     <VideoComponent
       key={video.id}
       video={video}
@@ -138,7 +138,8 @@ function VideoComponentExtra({
       isLoading={deleteVideoMutation.isLoading}
       actions={
         currentUser &&
-        currentUser.id === video.userId && (
+        currentUser.id === video.userId &&
+        ((context) => (
           <>
             <li>
               <button
@@ -154,6 +155,16 @@ function VideoComponentExtra({
                 <span className="i-ri-add-box-line w-5 h-5"></span>
                 Add to Deck
               </button>
+              <modal.Wrapper>
+                <AddToDeckComponent
+                  videoId={video.id}
+                  bookmarkEntriesCount={video.bookmarkEntriesCount}
+                  onSuccess={() => {
+                    modal.setOpen(false);
+                    context.onOpenChange(false);
+                  }}
+                />
+              </modal.Wrapper>
             </li>
             <li>
               <button
@@ -171,22 +182,9 @@ function VideoComponentExtra({
               </button>
             </li>
           </>
-        )
+        ))
       }
     />
-  );
-
-  return (
-    <>
-      {videoComponent}
-      <modal.Wrapper>
-        <AddToDeckComponent
-          videoId={video.id}
-          bookmarkEntriesCount={video.bookmarkEntriesCount}
-          onSuccess={() => modal.setOpen(false)}
-        />
-      </modal.Wrapper>
-    </>
   );
 }
 
