@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">13.15% </span>
+                <span class="strong">13.3% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>121/920</span>
+                <span class='fraction'>120/902</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">8.69% </span>
+                <span class="strong">9.09% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>2/23</span>
+                <span class='fraction'>2/22</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">13.15% </span>
+                <span class="strong">13.3% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>121/920</span>
+                <span class='fraction'>120/902</span>
             </div>
         
             
@@ -965,25 +965,7 @@
 <a name='L900'></a><a href='#L900'>900</a>
 <a name='L901'></a><a href='#L901'>901</a>
 <a name='L902'></a><a href='#L902'>902</a>
-<a name='L903'></a><a href='#L903'>903</a>
-<a name='L904'></a><a href='#L904'>904</a>
-<a name='L905'></a><a href='#L905'>905</a>
-<a name='L906'></a><a href='#L906'>906</a>
-<a name='L907'></a><a href='#L907'>907</a>
-<a name='L908'></a><a href='#L908'>908</a>
-<a name='L909'></a><a href='#L909'>909</a>
-<a name='L910'></a><a href='#L910'>910</a>
-<a name='L911'></a><a href='#L911'>911</a>
-<a name='L912'></a><a href='#L912'>912</a>
-<a name='L913'></a><a href='#L913'>913</a>
-<a name='L914'></a><a href='#L914'>914</a>
-<a name='L915'></a><a href='#L915'>915</a>
-<a name='L916'></a><a href='#L916'>916</a>
-<a name='L917'></a><a href='#L917'>917</a>
-<a name='L918'></a><a href='#L918'>918</a>
-<a name='L919'></a><a href='#L919'>919</a>
-<a name='L920'></a><a href='#L920'>920</a>
-<a name='L921'></a><a href='#L921'>921</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L903'></a><a href='#L903'>903</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -1765,24 +1747,6 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -2239,7 +2203,7 @@ interface BookmarkSelection {
 <span class="cstat-no" title="statement not covered" >        currentUser.id === video.userId &amp;&amp; (</span>
 <span class="cstat-no" title="statement not covered" >          &lt;Transition</span>
 <span class="cstat-no" title="statement not covered" >            show={!!bookmarkState || newBookmarkMutation.isLoading}</span>
-<span class="cstat-no" title="statement not covered" >            className="absolute bottom-0 right-0 flex gap-2 p-1.5 transition duration-300"</span>
+<span class="cstat-no" title="statement not covered" >            className="absolute bottom-0 right-0 flex gap-2 p-1.5 transition duration-300 z-10"</span>
 <span class="cstat-no" title="statement not covered" >            enterFrom="scale-30 opacity-0"</span>
 <span class="cstat-no" title="statement not covered" >            enterTo="scale-100 opacity-100"</span>
 <span class="cstat-no" title="statement not covered" >            leaveFrom="scale-100 opacity-100"</span>
@@ -2630,6 +2594,26 @@ const BOOKMARK_DATA_ATTR = z.enum([
 <span class="cstat-no" title="statement not covered" >  );</span>
 <span class="cstat-no" title="statement not covered" >  const modal = useModal();</span>
 <span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >  const navigate = useNavigate();</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >  const lastBookmarkQuery = useMutation({</span>
+<span class="cstat-no" title="statement not covered" >    ...trpc.videos_getLastBookmark.mutationOptions(),</span>
+<span class="cstat-no" title="statement not covered" >    onSuccess: (data) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >      if (data) {</span>
+<span class="cstat-no" title="statement not covered" >        modal.setOpen(false);</span>
+<span class="cstat-no" title="statement not covered" >        navigate(</span>
+<span class="cstat-no" title="statement not covered" >          $R["/videos/$id"](</span>
+<span class="cstat-no" title="statement not covered" >            { id: video.id },</span>
+<span class="cstat-no" title="statement not covered" >            { index: data.captionEntries.index }</span>
+<span class="cstat-no" title="statement not covered" >          ),</span>
+<span class="cstat-no" title="statement not covered" >          { replace: true }</span>
+<span class="cstat-no" title="statement not covered" >        );</span>
+<span class="cstat-no" title="statement not covered" >      } else {</span>
+<span class="cstat-no" title="statement not covered" >        toast.error("No bookmark is found");</span>
+<span class="cstat-no" title="statement not covered" >      }</span>
+<span class="cstat-no" title="statement not covered" >    },</span>
+<span class="cstat-no" title="statement not covered" >  });</span>
+<span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  return (</span>
 <span class="cstat-no" title="statement not covered" >    &lt;&gt;</span>
 <span class="cstat-no" title="statement not covered" >      &lt;div className="flex items-center"&gt;</span>
@@ -2650,15 +2634,6 @@ const BOOKMARK_DATA_ATTR = z.enum([
 <span class="cstat-no" title="statement not covered" >                &gt;</span>
 <span class="cstat-no" title="statement not covered" >                  Details</span>
 <span class="cstat-no" title="statement not covered" >                &lt;/button&gt;</span>
-<span class="cstat-no" title="statement not covered" >                &lt;modal.Wrapper&gt;</span>
-<span class="cstat-no" title="statement not covered" >                  &lt;DetailsComponent</span>
-<span class="cstat-no" title="statement not covered" >                    video={video}</span>
-<span class="cstat-no" title="statement not covered" >                    onClose={() =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >                      modal.setOpen(false);</span>
-<span class="cstat-no" title="statement not covered" >                      context.onOpenChange(false);</span>
-<span class="cstat-no" title="statement not covered" >                    }}</span>
-<span class="cstat-no" title="statement not covered" >                  /&gt;</span>
-<span class="cstat-no" title="statement not covered" >                &lt;/modal.Wrapper&gt;</span>
 <span class="cstat-no" title="statement not covered" >              &lt;/li&gt;</span>
 <span class="cstat-no" title="statement not covered" >              &lt;li&gt;</span>
 <span class="cstat-no" title="statement not covered" >                &lt;button</span>
@@ -2699,102 +2674,73 @@ const BOOKMARK_DATA_ATTR = z.enum([
 <span class="cstat-no" title="statement not covered" >          )}</span>
 <span class="cstat-no" title="statement not covered" >        /&gt;</span>
 <span class="cstat-no" title="statement not covered" >      &lt;/div&gt;</span>
+<span class="cstat-no" title="statement not covered" >      &lt;modal.Wrapper&gt;</span>
+<span class="cstat-no" title="statement not covered" >        &lt;div className="flex flex-col gap-2 p-4 relative"&gt;</span>
+<span class="cstat-no" title="statement not covered" >          &lt;div className="text-lg"&gt;Details&lt;/div&gt;</span>
+<span class="cstat-no" title="statement not covered" >          &lt;label className="flex flex-col gap-1"&gt;</span>
+<span class="cstat-no" title="statement not covered" >            &lt;span className="text-colorTextLabel"&gt;Title&lt;/span&gt;</span>
+<span class="cstat-no" title="statement not covered" >            &lt;input</span>
+<span class="cstat-no" title="statement not covered" >              type="text"</span>
+<span class="cstat-no" title="statement not covered" >              className="antd-input p-1 bg-colorBgContainerDisabled"</span>
+<span class="cstat-no" title="statement not covered" >              readOnly</span>
+<span class="cstat-no" title="statement not covered" >              value={video.title}</span>
+<span class="cstat-no" title="statement not covered" >            /&gt;</span>
+<span class="cstat-no" title="statement not covered" >          &lt;/label&gt;</span>
+<span class="cstat-no" title="statement not covered" >          &lt;label className="flex flex-col gap-1"&gt;</span>
+<span class="cstat-no" title="statement not covered" >            &lt;span className="text-colorTextLabel"&gt;Author&lt;/span&gt;</span>
+<span class="cstat-no" title="statement not covered" >            &lt;input</span>
+<span class="cstat-no" title="statement not covered" >              type="text"</span>
+<span class="cstat-no" title="statement not covered" >              className="antd-input p-1 bg-colorBgContainerDisabled"</span>
+<span class="cstat-no" title="statement not covered" >              readOnly</span>
+<span class="cstat-no" title="statement not covered" >              value={video.author}</span>
+<span class="cstat-no" title="statement not covered" >            /&gt;</span>
+<span class="cstat-no" title="statement not covered" >          &lt;/label&gt;</span>
+<span class="cstat-no" title="statement not covered" >          &lt;label className="flex flex-col gap-1"&gt;</span>
+<span class="cstat-no" title="statement not covered" >            &lt;span className="text-colorTextLabel"&gt;Imported at&lt;/span&gt;</span>
+<span class="cstat-no" title="statement not covered" >            &lt;input</span>
+<span class="cstat-no" title="statement not covered" >              type="text"</span>
+<span class="cstat-no" title="statement not covered" >              className="antd-input p-1 bg-colorBgContainerDisabled"</span>
+<span class="cstat-no" title="statement not covered" >              readOnly</span>
+<span class="cstat-no" title="statement not covered" >              value={intl.formatDate(video.createdAt, {</span>
+<span class="cstat-no" title="statement not covered" >                dateStyle: "long",</span>
+<span class="cstat-no" title="statement not covered" >                timeStyle: "long",</span>
+<span class="cstat-no" title="statement not covered" >                hour12: false,</span>
+<span class="cstat-no" title="statement not covered" >              })}</span>
+<span class="cstat-no" title="statement not covered" >            /&gt;</span>
+<span class="cstat-no" title="statement not covered" >          &lt;/label&gt;</span>
+<span class="cstat-no" title="statement not covered" >          &lt;label className="flex flex-col gap-1"&gt;</span>
+<span class="cstat-no" title="statement not covered" >            &lt;span className="text-colorTextLabel"&gt;Bookmark count&lt;/span&gt;</span>
+<span class="cstat-no" title="statement not covered" >            &lt;input</span>
+<span class="cstat-no" title="statement not covered" >              type="text"</span>
+<span class="cstat-no" title="statement not covered" >              className="antd-input p-1 bg-colorBgContainerDisabled"</span>
+<span class="cstat-no" title="statement not covered" >              readOnly</span>
+<span class="cstat-no" title="statement not covered" >              value={video.bookmarkEntriesCount}</span>
+<span class="cstat-no" title="statement not covered" >            /&gt;</span>
+<span class="cstat-no" title="statement not covered" >          &lt;/label&gt;</span>
+<span class="cstat-no" title="statement not covered" >          &lt;div className="border-t my-1"&gt;&lt;/div&gt;</span>
+<span class="cstat-no" title="statement not covered" >          &lt;h4&gt;Shortcuts&lt;/h4&gt;</span>
+<span class="cstat-no" title="statement not covered" >          &lt;div className="flex flex-col sm:flex-row gap-2 text-sm"&gt;</span>
+<span class="cstat-no" title="statement not covered" >            &lt;button</span>
+<span class="cstat-no" title="statement not covered" >              className={cls(</span>
+<span class="cstat-no" title="statement not covered" >                "antd-btn antd-btn-default px-2 py-0.5",</span>
+<span class="cstat-no" title="statement not covered" >                lastBookmarkQuery.isLoading &amp;&amp; "antd-btn-loading"</span>
+<span class="cstat-no" title="statement not covered" >              )}</span>
+<span class="cstat-no" title="statement not covered" >              onClick={() =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                lastBookmarkQuery.mutate({ videoId: video.id });</span>
+<span class="cstat-no" title="statement not covered" >              }}</span>
+<span class="cstat-no" title="statement not covered" >            &gt;</span>
+<span class="cstat-no" title="statement not covered" >              Go to Last Bookmark</span>
+<span class="cstat-no" title="statement not covered" >            &lt;/button&gt;</span>
+<span class="cstat-no" title="statement not covered" >            &lt;Link</span>
+<span class="cstat-no" title="statement not covered" >              className="antd-btn antd-btn-default px-2 py-0.5 flex justify-center"</span>
+<span class="cstat-no" title="statement not covered" >              to={$R["/videos/new"](null, { videoId: video.videoId })}</span>
+<span class="cstat-no" title="statement not covered" >            &gt;</span>
+<span class="cstat-no" title="statement not covered" >              Change Languages</span>
+<span class="cstat-no" title="statement not covered" >            &lt;/Link&gt;</span>
+<span class="cstat-no" title="statement not covered" >          &lt;/div&gt;</span>
+<span class="cstat-no" title="statement not covered" >        &lt;/div&gt;</span>
+<span class="cstat-no" title="statement not covered" >      &lt;/modal.Wrapper&gt;</span>
 <span class="cstat-no" title="statement not covered" >    &lt;/&gt;</span>
-<span class="cstat-no" title="statement not covered" >  );</span>
-<span class="cstat-no" title="statement not covered" >}</span>
-&nbsp;
-<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >function DetailsComponent({</span></span>
-<span class="cstat-no" title="statement not covered" >  video,</span>
-<span class="cstat-no" title="statement not covered" >  onClose,</span>
-<span class="cstat-no" title="statement not covered" >}: {</span>
-<span class="cstat-no" title="statement not covered" >  video: TT["videos"];</span>
-<span class="cstat-no" title="statement not covered" >  onClose: () =&gt; void;</span>
-<span class="cstat-no" title="statement not covered" >}) {</span>
-<span class="cstat-no" title="statement not covered" >  const navigate = useNavigate();</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >  const lastBookmarkQuery = useMutation({</span>
-<span class="cstat-no" title="statement not covered" >    ...trpc.videos_getLastBookmark.mutationOptions(),</span>
-<span class="cstat-no" title="statement not covered" >    onSuccess: (data) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >      if (data) {</span>
-<span class="cstat-no" title="statement not covered" >        onClose();</span>
-<span class="cstat-no" title="statement not covered" >        navigate(</span>
-<span class="cstat-no" title="statement not covered" >          $R["/videos/$id"](</span>
-<span class="cstat-no" title="statement not covered" >            { id: video.id },</span>
-<span class="cstat-no" title="statement not covered" >            { index: data.captionEntries.index }</span>
-<span class="cstat-no" title="statement not covered" >          ),</span>
-<span class="cstat-no" title="statement not covered" >          { replace: true }</span>
-<span class="cstat-no" title="statement not covered" >        );</span>
-<span class="cstat-no" title="statement not covered" >      } else {</span>
-<span class="cstat-no" title="statement not covered" >        toast.error("No bookmark is found");</span>
-<span class="cstat-no" title="statement not covered" >      }</span>
-<span class="cstat-no" title="statement not covered" >    },</span>
-<span class="cstat-no" title="statement not covered" >  });</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >  return (</span>
-<span class="cstat-no" title="statement not covered" >    &lt;div className="flex flex-col gap-2 p-4 relative"&gt;</span>
-<span class="cstat-no" title="statement not covered" >      &lt;div className="text-lg"&gt;Details&lt;/div&gt;</span>
-<span class="cstat-no" title="statement not covered" >      &lt;label className="flex flex-col gap-1"&gt;</span>
-<span class="cstat-no" title="statement not covered" >        &lt;span className="text-colorTextLabel"&gt;Title&lt;/span&gt;</span>
-<span class="cstat-no" title="statement not covered" >        &lt;input</span>
-<span class="cstat-no" title="statement not covered" >          type="text"</span>
-<span class="cstat-no" title="statement not covered" >          className="antd-input p-1 bg-colorBgContainerDisabled"</span>
-<span class="cstat-no" title="statement not covered" >          readOnly</span>
-<span class="cstat-no" title="statement not covered" >          value={video.title}</span>
-<span class="cstat-no" title="statement not covered" >        /&gt;</span>
-<span class="cstat-no" title="statement not covered" >      &lt;/label&gt;</span>
-<span class="cstat-no" title="statement not covered" >      &lt;label className="flex flex-col gap-1"&gt;</span>
-<span class="cstat-no" title="statement not covered" >        &lt;span className="text-colorTextLabel"&gt;Author&lt;/span&gt;</span>
-<span class="cstat-no" title="statement not covered" >        &lt;input</span>
-<span class="cstat-no" title="statement not covered" >          type="text"</span>
-<span class="cstat-no" title="statement not covered" >          className="antd-input p-1 bg-colorBgContainerDisabled"</span>
-<span class="cstat-no" title="statement not covered" >          readOnly</span>
-<span class="cstat-no" title="statement not covered" >          value={video.author}</span>
-<span class="cstat-no" title="statement not covered" >        /&gt;</span>
-<span class="cstat-no" title="statement not covered" >      &lt;/label&gt;</span>
-<span class="cstat-no" title="statement not covered" >      &lt;label className="flex flex-col gap-1"&gt;</span>
-<span class="cstat-no" title="statement not covered" >        &lt;span className="text-colorTextLabel"&gt;Imported at&lt;/span&gt;</span>
-<span class="cstat-no" title="statement not covered" >        &lt;input</span>
-<span class="cstat-no" title="statement not covered" >          type="text"</span>
-<span class="cstat-no" title="statement not covered" >          className="antd-input p-1 bg-colorBgContainerDisabled"</span>
-<span class="cstat-no" title="statement not covered" >          readOnly</span>
-<span class="cstat-no" title="statement not covered" >          value={intl.formatDate(video.createdAt, {</span>
-<span class="cstat-no" title="statement not covered" >            dateStyle: "long",</span>
-<span class="cstat-no" title="statement not covered" >            timeStyle: "long",</span>
-<span class="cstat-no" title="statement not covered" >            hour12: false,</span>
-<span class="cstat-no" title="statement not covered" >          })}</span>
-<span class="cstat-no" title="statement not covered" >        /&gt;</span>
-<span class="cstat-no" title="statement not covered" >      &lt;/label&gt;</span>
-<span class="cstat-no" title="statement not covered" >      &lt;label className="flex flex-col gap-1"&gt;</span>
-<span class="cstat-no" title="statement not covered" >        &lt;span className="text-colorTextLabel"&gt;Bookmark count&lt;/span&gt;</span>
-<span class="cstat-no" title="statement not covered" >        &lt;input</span>
-<span class="cstat-no" title="statement not covered" >          type="text"</span>
-<span class="cstat-no" title="statement not covered" >          className="antd-input p-1 bg-colorBgContainerDisabled"</span>
-<span class="cstat-no" title="statement not covered" >          readOnly</span>
-<span class="cstat-no" title="statement not covered" >          value={video.bookmarkEntriesCount}</span>
-<span class="cstat-no" title="statement not covered" >        /&gt;</span>
-<span class="cstat-no" title="statement not covered" >      &lt;/label&gt;</span>
-<span class="cstat-no" title="statement not covered" >      &lt;div className="border-t my-1"&gt;&lt;/div&gt;</span>
-<span class="cstat-no" title="statement not covered" >      &lt;h4&gt;Shortcuts&lt;/h4&gt;</span>
-<span class="cstat-no" title="statement not covered" >      &lt;div className="flex flex-col sm:flex-row gap-2 text-sm"&gt;</span>
-<span class="cstat-no" title="statement not covered" >        &lt;button</span>
-<span class="cstat-no" title="statement not covered" >          className={cls(</span>
-<span class="cstat-no" title="statement not covered" >            "antd-btn antd-btn-default px-2 py-0.5",</span>
-<span class="cstat-no" title="statement not covered" >            lastBookmarkQuery.isLoading &amp;&amp; "antd-btn-loading"</span>
-<span class="cstat-no" title="statement not covered" >          )}</span>
-<span class="cstat-no" title="statement not covered" >          onClick={() =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >            lastBookmarkQuery.mutate({ videoId: video.id });</span>
-<span class="cstat-no" title="statement not covered" >          }}</span>
-<span class="cstat-no" title="statement not covered" >        &gt;</span>
-<span class="cstat-no" title="statement not covered" >          Go to Last Bookmark</span>
-<span class="cstat-no" title="statement not covered" >        &lt;/button&gt;</span>
-<span class="cstat-no" title="statement not covered" >        &lt;Link</span>
-<span class="cstat-no" title="statement not covered" >          className="antd-btn antd-btn-default px-2 py-0.5 flex justify-center"</span>
-<span class="cstat-no" title="statement not covered" >          to={$R["/videos/new"](null, { videoId: video.videoId })}</span>
-<span class="cstat-no" title="statement not covered" >        &gt;</span>
-<span class="cstat-no" title="statement not covered" >          Change Languages</span>
-<span class="cstat-no" title="statement not covered" >        &lt;/Link&gt;</span>
-<span class="cstat-no" title="statement not covered" >      &lt;/div&gt;</span>
-<span class="cstat-no" title="statement not covered" >    &lt;/div&gt;</span>
 <span class="cstat-no" title="statement not covered" >  );</span>
 <span class="cstat-no" title="statement not covered" >}</span>
 &nbsp;
@@ -2830,7 +2776,7 @@ const highlightBookmarkStorageAtom = atomWithStorage(
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-05-16T13:36:26.233Z
+                at 2023-05-16T13:38:48.823Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>
