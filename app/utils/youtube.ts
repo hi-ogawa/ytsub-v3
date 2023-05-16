@@ -99,6 +99,11 @@ export function parseVssId(vssId: string): LanguageCode {
   return vssId.split(".")[1].slice(0, 2) as LanguageCode;
 }
 
+// ad-hoc encoding for manual input
+export function encodeAdvancedModeLanguageCode(code: LanguageCode): string {
+  return `x.${code}`;
+}
+
 export function toCaptionConfigOptions(
   videoMetadata: VideoMetadata
 ): CaptionConfigOptions {
@@ -219,16 +224,7 @@ export function ttmlToEntries(ttml: string): TtmlEntry[] {
     .filter((e) => e.text);
 }
 
-export function ttmlsToCaptionEntries(
-  ttml1: string,
-  ttml2: string
-): CaptionEntry[] {
-  const entries1 = ttmlToEntries(ttml1);
-  const entries2 = ttmlToEntries(ttml2);
-  return mergeTtmlEntries(entries1, entries2);
-}
-
-function mergeTtmlEntries(
+export function mergeTtmlEntries(
   entries1: TtmlEntry[],
   entries2: TtmlEntry[]
 ): CaptionEntry[] {
@@ -361,18 +357,71 @@ export async function fetchCaptionEntries({
   captionEntries: CaptionEntry[];
 }> {
   const videoMetadata = await fetchVideoMetadata(videoId);
-  const url1 = captionConfigToUrl(language1, videoMetadata);
-  const url2 = captionConfigToUrl(language2, videoMetadata);
-  tinyassert(url1);
-  tinyassert(url2);
-  const ttmls = [url1, url2].map(async (url) => {
-    const res = await fetch(url);
-    tinyassert(res.ok);
-    return res.text();
-  });
-  const [ttml1, ttml2] = await Promise.all(ttmls);
-  const captionEntries = ttmlsToCaptionEntries(ttml1, ttml2);
+  const [ttmlEntries1, ttmlEntries2] = await Promise.all([
+    fetchTtmlEntries(language1, videoMetadata),
+    fetchTtmlEntries(language2, videoMetadata),
+  ]);
+  const captionEntries = mergeTtmlEntries(ttmlEntries1, ttmlEntries2);
   return { videoMetadata, captionEntries };
+}
+
+// very ad-hoc support for providing captions externally
+export async function fetchCaptionEntriesHalfManual({
+  videoId,
+  language1,
+  language2,
+}: {
+  videoId: string;
+  language1: NewVideo["language1"] & { input: string };
+  language2: NewVideo["language2"];
+}): Promise<{
+  videoMetadata: VideoMetadata;
+  captionEntries: CaptionEntry[];
+}> {
+  const videoMetadata = await fetchVideoMetadata(videoId);
+  const ttmlEntries = await fetchTtmlEntries(language2, videoMetadata);
+  const captionEntries = mergeTtmlEntriesHalfManual(
+    language1.input,
+    ttmlEntries
+  );
+  return {
+    videoMetadata,
+    captionEntries,
+  };
+}
+
+function mergeTtmlEntriesHalfManual(
+  input: string,
+  entries2: TtmlEntry[]
+): CaptionEntry[] {
+  const entries1 = splitManualInputEntries(input);
+
+  return zip(entries1, entries2).map(([line, e], i) => ({
+    index: i,
+    begin: e.begin,
+    end: e.end,
+    text1: line,
+    text2: e.text ?? "",
+  }));
+}
+
+export function splitManualInputEntries(input: string): string[] {
+  return input
+    .split("\n")
+    .map((s) => s.trim())
+    .filter((s) => s);
+}
+
+export async function fetchTtmlEntries(
+  captionConfig: CaptionConfig,
+  videoMetadata: VideoMetadata
+) {
+  const url = captionConfigToUrl(captionConfig, videoMetadata);
+  tinyassert(url);
+  const res = await fetch(url);
+  tinyassert(res.ok);
+  const ttml = await res.text();
+  return ttmlToEntries(ttml);
 }
 
 //
