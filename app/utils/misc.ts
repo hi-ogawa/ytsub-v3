@@ -1,4 +1,4 @@
-import { tinyassert, zip } from "@hiogawa/utils";
+import { range, tinyassert, zip } from "@hiogawa/utils";
 
 export function createGetProxy(
   propHandler: (prop: string | symbol) => unknown
@@ -79,4 +79,12 @@ export function regExpRaw(
 
 function escapeRegExp(s: string): string {
   return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+export function zipMax<T1, T2>(
+  ls1: readonly T1[],
+  ls2: readonly T2[]
+): [T1 | undefined, T2 | undefined][] {
+  const length = Math.max(ls1.length, ls2.length);
+  return range(length).map((i) => [ls1[i], ls2[i]]);
 }

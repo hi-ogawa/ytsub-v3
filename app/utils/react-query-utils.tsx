@@ -37,6 +37,11 @@ function createQueryClient() {
         retry: false,
         refetchOnWindowFocus: false,
         refetchOnReconnect: false,
+        // TODO: use QueryCache.onError with explicit Query.meta? https://tkdodo.eu/blog/breaking-react-querys-api-on-purpose
+        onError: (error) => {
+          console.error(error);
+          toast.error("Someting went wrong");
+        },
       },
     },
     queryCache: new QueryCache({
