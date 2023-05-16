@@ -98,10 +98,12 @@ export function PopoverSimple({
   placement,
   reference,
   floating,
+  floatingClassName,
 }: {
   placement: Placement;
   reference: RenderElement;
   floating: RenderElement;
+  floatingClassName?: string;
 }) {
   return (
     <Popover
@@ -122,7 +124,7 @@ export function PopoverSimple({
           leaveTo="scale-90 opacity-0"
           {...props}
         >
-          <div className="antd-floating">
+          <div className={cls("antd-floating", floatingClassName)}>
             <div
               {...arrowProps}
               className={cls(

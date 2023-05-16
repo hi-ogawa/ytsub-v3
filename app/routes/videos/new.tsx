@@ -343,8 +343,9 @@ function AdvancedModePreview(props: {
         <PopoverSimple
           placement="bottom"
           reference={<button className="i-ri-question-line w-5 h-5"></button>}
+          floatingClassName="!bg-colorBgSpotlight"
           floating={
-            <div className="p-1 px-2 bg-colorBgSpotlight text-sm">
+            <div className="p-1 px-2 text-sm">
               <div>Add: Ctrl + Enter</div>
               <div>Remove: Ctrl + D</div>
             </div>
