@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">28.83% </span>
+                <span class="strong">29.05% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>77/267</span>
+                <span class='fraction'>77/265</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">28.83% </span>
+                <span class="strong">29.05% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>77/267</span>
+                <span class='fraction'>77/265</span>
             </div>
         
             
@@ -328,9 +328,7 @@
 <a name='L263'></a><a href='#L263'>263</a>
 <a name='L264'></a><a href='#L264'>264</a>
 <a name='L265'></a><a href='#L265'>265</a>
-<a name='L266'></a><a href='#L266'>266</a>
-<a name='L267'></a><a href='#L267'>267</a>
-<a name='L268'></a><a href='#L268'>268</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L266'></a><a href='#L266'>266</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -441,8 +439,6 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -729,7 +725,7 @@ export <span class="fstat-no" title="function not covered" >function VideoListCo
 <span class="cstat-no" title="statement not covered" >  const modal = useModal();</span>
 <span class="cstat-no" title="statement not covered" >  const addToDeckDisabled = !video.bookmarkEntriesCount;</span>
 <span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >  const videoComponent = (</span>
+<span class="cstat-no" title="statement not covered" >  return (</span>
 <span class="cstat-no" title="statement not covered" >    &lt;VideoComponent</span>
 <span class="cstat-no" title="statement not covered" >      key={video.id}</span>
 <span class="cstat-no" title="statement not covered" >      video={video}</span>
@@ -737,7 +733,8 @@ export <span class="fstat-no" title="function not covered" >function VideoListCo
 <span class="cstat-no" title="statement not covered" >      isLoading={deleteVideoMutation.isLoading}</span>
 <span class="cstat-no" title="statement not covered" >      actions={</span>
 <span class="cstat-no" title="statement not covered" >        currentUser &amp;&amp;</span>
-<span class="cstat-no" title="statement not covered" >        currentUser.id === video.userId &amp;&amp; (</span>
+<span class="cstat-no" title="statement not covered" >        currentUser.id === video.userId &amp;&amp;</span>
+<span class="cstat-no" title="statement not covered" >        ((context) =&gt; (</span>
 <span class="cstat-no" title="statement not covered" >          &lt;&gt;</span>
 <span class="cstat-no" title="statement not covered" >            &lt;li&gt;</span>
 <span class="cstat-no" title="statement not covered" >              &lt;button</span>
@@ -753,6 +750,16 @@ export <span class="fstat-no" title="function not covered" >function VideoListCo
 <span class="cstat-no" title="statement not covered" >                &lt;span className="i-ri-add-box-line w-5 h-5"&gt;&lt;/span&gt;</span>
 <span class="cstat-no" title="statement not covered" >                Add to Deck</span>
 <span class="cstat-no" title="statement not covered" >              &lt;/button&gt;</span>
+<span class="cstat-no" title="statement not covered" >              &lt;modal.Wrapper&gt;</span>
+<span class="cstat-no" title="statement not covered" >                &lt;AddToDeckComponent</span>
+<span class="cstat-no" title="statement not covered" >                  videoId={video.id}</span>
+<span class="cstat-no" title="statement not covered" >                  bookmarkEntriesCount={video.bookmarkEntriesCount}</span>
+<span class="cstat-no" title="statement not covered" >                  onSuccess={() =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                    modal.setOpen(false);</span>
+<span class="cstat-no" title="statement not covered" >                    context.onOpenChange(false);</span>
+<span class="cstat-no" title="statement not covered" >                  }}</span>
+<span class="cstat-no" title="statement not covered" >                /&gt;</span>
+<span class="cstat-no" title="statement not covered" >              &lt;/modal.Wrapper&gt;</span>
 <span class="cstat-no" title="statement not covered" >            &lt;/li&gt;</span>
 <span class="cstat-no" title="statement not covered" >            &lt;li&gt;</span>
 <span class="cstat-no" title="statement not covered" >              &lt;button</span>
@@ -770,22 +777,9 @@ export <span class="fstat-no" title="function not covered" >function VideoListCo
 <span class="cstat-no" title="statement not covered" >              &lt;/button&gt;</span>
 <span class="cstat-no" title="statement not covered" >            &lt;/li&gt;</span>
 <span class="cstat-no" title="statement not covered" >          &lt;/&gt;</span>
-<span class="cstat-no" title="statement not covered" >        )</span>
+<span class="cstat-no" title="statement not covered" >        ))</span>
 <span class="cstat-no" title="statement not covered" >      }</span>
 <span class="cstat-no" title="statement not covered" >    /&gt;</span>
-<span class="cstat-no" title="statement not covered" >  );</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >  return (</span>
-<span class="cstat-no" title="statement not covered" >    &lt;&gt;</span>
-<span class="cstat-no" title="statement not covered" >      {videoComponent}</span>
-<span class="cstat-no" title="statement not covered" >      &lt;modal.Wrapper&gt;</span>
-<span class="cstat-no" title="statement not covered" >        &lt;AddToDeckComponent</span>
-<span class="cstat-no" title="statement not covered" >          videoId={video.id}</span>
-<span class="cstat-no" title="statement not covered" >          bookmarkEntriesCount={video.bookmarkEntriesCount}</span>
-<span class="cstat-no" title="statement not covered" >          onSuccess={() =&gt; modal.setOpen(false)}</span>
-<span class="cstat-no" title="statement not covered" >        /&gt;</span>
-<span class="cstat-no" title="statement not covered" >      &lt;/modal.Wrapper&gt;</span>
-<span class="cstat-no" title="statement not covered" >    &lt;/&gt;</span>
 <span class="cstat-no" title="statement not covered" >  );</span>
 <span class="cstat-no" title="statement not covered" >}</span>
 &nbsp;
@@ -871,7 +865,7 @@ export <span class="fstat-no" title="function not covered" >function VideoListCo
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-05-17T00:55:40.953Z
+                at 2023-05-17T03:57:07.840Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
