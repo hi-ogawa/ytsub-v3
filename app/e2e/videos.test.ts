@@ -143,7 +143,7 @@ test("captions-manual-mode", async ({ page }) => {
   await page.goto("/");
 
   // input videoId
-  await page.getByRole("button").click();
+  await page.getByTestId("Navbar-drawer-button").click();
   await page
     .getByPlaceholder("Enter Video ID or URL")
     .fill("https://www.youtube.com/watch?v=AQt4K08L_m8");
