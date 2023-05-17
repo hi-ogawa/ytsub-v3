@@ -334,14 +334,20 @@ export function stringifyTimestamp(s: number): string {
   return `${D(h, 2)}:${D(m, 2)}:${D(s, 2)}.${D(ms, 3)}`;
 }
 
+// examples
+// .en   (youtube manual caption for English)
+// a.en  (youtube machine caption for English)
+// x.en  (user input for English)
+const VIDEO_LANGUAGE_ID_RE = /^[a-zA-Z-]?\.[a-zA-Z-]+$/;
+
 export const Z_NEW_VIDEO = z.object({
   videoId: z.string().length(11),
   language1: z.object({
-    id: z.string(),
+    id: z.string().regex(VIDEO_LANGUAGE_ID_RE),
     translation: z.string().optional(),
   }),
   language2: z.object({
-    id: z.string(),
+    id: z.string().regex(VIDEO_LANGUAGE_ID_RE),
     translation: z.string().optional(),
   }),
 });
