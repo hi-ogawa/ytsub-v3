@@ -338,7 +338,20 @@ function AdvancedModePreview(props: {
 
   return (
     <div className="flex flex-col gap-2 overflow-hidden">
-      <div className="flex-none text-lg">Preview</div>
+      <div className="flex-none text-lg flex items-center gap-2">
+        <span>Preview</span>
+        <PopoverSimple
+          placement="bottom"
+          reference={<button className="i-ri-question-line w-5 h-5"></button>}
+          floatingClassName="!bg-colorBgSpotlight"
+          floating={
+            <div className="p-1 px-2 text-sm">
+              <div>Add: Ctrl + Enter</div>
+              <div>Remove: Ctrl + D</div>
+            </div>
+          }
+        />
+      </div>
       {previewEntriesQuery.isFetching && (
         <div className="antd-spin w-10 h-10 m-2 self-center"></div>
       )}

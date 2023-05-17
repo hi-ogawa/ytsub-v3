@@ -1,3 +1,4 @@
+import type { FloatingContext } from "@floating-ui/react";
 import { Transition } from "@headlessui/react";
 import { Link } from "@remix-run/react";
 import type { VideoTable } from "../db/models";
@@ -27,7 +28,7 @@ export function VideoComponent({
     | "language2_translation"
   >;
   bookmarkEntriesCount?: number;
-  actions?: React.ReactNode;
+  actions?: React.ReactNode | ((context: FloatingContext) => React.ReactNode);
   isLoading?: boolean;
 }) {
   const { id, videoId, title, author, channelId } = video;
@@ -95,12 +96,11 @@ export function VideoComponent({
                   data-test="video-component-popover-button"
                 />
               )}
-              floating={
+              floating={(context) => (
                 <ul className="flex flex-col gap-2 p-2 w-48 text-sm">
-                  {/* TODO: how to let `actions` close the popover? */}
-                  {actions}
+                  {typeof actions === "function" ? actions(context) : actions}
                 </ul>
-              }
+              )}
             />
           </div>
         )}

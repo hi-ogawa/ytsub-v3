@@ -1,3 +1,4 @@
+import { FloatingTree } from "@floating-ui/react";
 import { Compose } from "@hiogawa/utils-react";
 import {
   Link,
@@ -93,7 +94,9 @@ export default function DefaultComponent() {
             toast.remove();
           }}
         />
-        <Compose elements={[<QueryClientWrapper />, <Root />]} />
+        <Compose
+          elements={[<FloatingTree />, <QueryClientWrapper />, <Root />]}
+        />
       </body>
     </html>
   );
