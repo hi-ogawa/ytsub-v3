@@ -1,6 +1,5 @@
 import {
   FloatingContext,
-  FloatingPortal,
   Placement,
   arrow,
   autoUpdate,
@@ -10,12 +9,12 @@ import {
   useClick,
   useDismiss,
   useFloating,
-  useId,
   useInteractions,
 } from "@floating-ui/react";
 import { Transition } from "@headlessui/react";
 import React from "react";
 import { cls } from "../utils/misc";
+import { FloatingWrapper } from "./floating-utils";
 
 // based on https://github.com/hi-ogawa/unocss-preset-antd/blob/95b2359ca2a7bcec3ccc36762fae4929937b628e/packages/app/src/components/popover.tsx
 
@@ -54,8 +53,6 @@ function Popover(props: {
     useDismiss(context),
   ]);
 
-  const id = useId();
-
   return (
     <>
       {props.reference({
@@ -66,7 +63,7 @@ function Popover(props: {
           ref: reference,
         }),
       })}
-      <FloatingPortal id={id}>
+      <FloatingWrapper>
         {props.floating({
           context,
           open,
@@ -88,7 +85,7 @@ function Popover(props: {
             },
           },
         })}
-      </FloatingPortal>
+      </FloatingWrapper>
     </>
   );
 }
@@ -101,10 +98,12 @@ export function PopoverSimple({
   placement,
   reference,
   floating,
+  floatingClassName,
 }: {
   placement: Placement;
   reference: RenderElement;
   floating: RenderElement;
+  floatingClassName?: string;
 }) {
   return (
     <Popover
@@ -125,7 +124,7 @@ export function PopoverSimple({
           leaveTo="scale-90 opacity-0"
           {...props}
         >
-          <div className="antd-floating">
+          <div className={cls("antd-floating", floatingClassName)}>
             <div
               {...arrowProps}
               className={cls(
