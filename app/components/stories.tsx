@@ -312,7 +312,7 @@ export function TestYoutubePlayer() {
         </div>
         <div className="flex justify-end">
           <label className="flex items-center gap-2">
-            <span>Playback Rate</span>
+            <span>Speed</span>
             <SelectWrapper
               className="antd-input p-1 w-16"
               value={playbackRate}

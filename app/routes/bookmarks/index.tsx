@@ -6,7 +6,7 @@ import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { CollapseTransition } from "../../components/collapse";
-import { transitionProps } from "../../components/misc";
+import { SelectWrapper, transitionProps } from "../../components/misc";
 import { PopoverSimple } from "../../components/popover";
 import type { TT } from "../../db/drizzle-client.server";
 import type {
@@ -226,6 +226,10 @@ export function MiniPlayer({
     initialEntry.index,
   ]);
 
+  // playback speed control
+  const playbackRateOptions = player?.getAvailablePlaybackRates() ?? [1];
+  const [playbackRate, setPlaybackRate] = React.useState(1);
+
   //
   // fetch all caption entries on client after `loadNeighbor`
   // but rely on `initialEntry` until then.
@@ -306,6 +310,8 @@ export function MiniPlayer({
 
   useRafLoop(() => {
     if (!player) return;
+
+    setPlaybackRate(player?.getPlaybackRate() ?? 1);
 
     const isPlaying = player.getPlayerState() === 1;
     setIsPlaying(isPlaying);
@@ -391,6 +397,19 @@ export function MiniPlayer({
           className="duration-500 antd-body antd-spin-overlay-20"
           {...transitionProps("opacity-0", "opacity-100")}
         />
+      </div>
+      <div className="w-full flex justify-end">
+        {/* TODO: ability to hide? */}
+        {/* TODO: show it on /videos/$id too? */}
+        <label className="flex items-center gap-2 text-sm">
+          <span>Speed</span>
+          <SelectWrapper
+            className="antd-input px-1 w-15"
+            value={playbackRate}
+            options={playbackRateOptions}
+            onChange={(v) => player?.setPlaybackRate(v)}
+          />
+        </label>
       </div>
     </div>
   );
