@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">30.8% </span>
+                <span class="strong">29.55% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>146/474</span>
+                <span class='fraction'>146/494</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">30.8% </span>
+                <span class="strong">29.55% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>146/474</span>
+                <span class='fraction'>146/494</span>
             </div>
         
             
@@ -537,7 +537,27 @@
 <a name='L472'></a><a href='#L472'>472</a>
 <a name='L473'></a><a href='#L473'>473</a>
 <a name='L474'></a><a href='#L474'>474</a>
-<a name='L475'></a><a href='#L475'>475</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L475'></a><a href='#L475'>475</a>
+<a name='L476'></a><a href='#L476'>476</a>
+<a name='L477'></a><a href='#L477'>477</a>
+<a name='L478'></a><a href='#L478'>478</a>
+<a name='L479'></a><a href='#L479'>479</a>
+<a name='L480'></a><a href='#L480'>480</a>
+<a name='L481'></a><a href='#L481'>481</a>
+<a name='L482'></a><a href='#L482'>482</a>
+<a name='L483'></a><a href='#L483'>483</a>
+<a name='L484'></a><a href='#L484'>484</a>
+<a name='L485'></a><a href='#L485'>485</a>
+<a name='L486'></a><a href='#L486'>486</a>
+<a name='L487'></a><a href='#L487'>487</a>
+<a name='L488'></a><a href='#L488'>488</a>
+<a name='L489'></a><a href='#L489'>489</a>
+<a name='L490'></a><a href='#L490'>490</a>
+<a name='L491'></a><a href='#L491'>491</a>
+<a name='L492'></a><a href='#L492'>492</a>
+<a name='L493'></a><a href='#L493'>493</a>
+<a name='L494'></a><a href='#L494'>494</a>
+<a name='L495'></a><a href='#L495'>495</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -741,6 +761,26 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -1019,7 +1059,7 @@ import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { CollapseTransition } from "../../components/collapse";
-import { transitionProps } from "../../components/misc";
+import { SelectWrapper, transitionProps } from "../../components/misc";
 import { PopoverSimple } from "../../components/popover";
 import type { TT } from "../../db/drizzle-client.server";
 import type {
@@ -1239,6 +1279,10 @@ export <span class="fstat-no" title="function not covered" >function MiniPlayer(
 <span class="cstat-no" title="statement not covered" >    initialEntry.index,</span>
 <span class="cstat-no" title="statement not covered" >  ]);</span>
 <span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >  // playback speed control</span>
+<span class="cstat-no" title="statement not covered" >  const playbackRateOptions = player?.getAvailablePlaybackRates() ?? [1];</span>
+<span class="cstat-no" title="statement not covered" >  const [playbackRate, setPlaybackRate] = React.useState(1);</span>
+<span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  //</span>
 <span class="cstat-no" title="statement not covered" >  // fetch all caption entries on client after `loadNeighbor`</span>
 <span class="cstat-no" title="statement not covered" >  // but rely on `initialEntry` until then.</span>
@@ -1319,6 +1363,8 @@ export <span class="fstat-no" title="function not covered" >function MiniPlayer(
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  useRafLoop(() =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >    if (!player) return;</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >    setPlaybackRate(player?.getPlaybackRate() ?? 1);</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >    const isPlaying = player.getPlayerState() === 1;</span>
 <span class="cstat-no" title="statement not covered" >    setIsPlaying(isPlaying);</span>
@@ -1404,6 +1450,20 @@ export <span class="fstat-no" title="function not covered" >function MiniPlayer(
 <span class="cstat-no" title="statement not covered" >          className="duration-500 antd-body antd-spin-overlay-20"</span>
 <span class="cstat-no" title="statement not covered" >          {...transitionProps("opacity-0", "opacity-100")}</span>
 <span class="cstat-no" title="statement not covered" >        /&gt;</span>
+<span class="cstat-no" title="statement not covered" >      &lt;/div&gt;</span>
+<span class="cstat-no" title="statement not covered" >      &lt;div className="w-full flex justify-end"&gt;</span>
+<span class="cstat-no" title="statement not covered" >        {/* TODO: ability to hide? */}</span>
+<span class="cstat-no" title="statement not covered" >        {/* TODO: show it on /videos/$id too? */}</span>
+<span class="cstat-no" title="statement not covered" >        &lt;label className="flex items-center gap-2"&gt;</span>
+<span class="cstat-no" title="statement not covered" >          &lt;span className="i-ri-speed-up-line w-5 h-5"&gt;&lt;/span&gt;</span>
+<span class="cstat-no" title="statement not covered" >          &lt;SelectWrapper</span>
+<span class="cstat-no" title="statement not covered" >            data-testid="PlaybackRateSelect"</span>
+<span class="cstat-no" title="statement not covered" >            className="antd-input px-1 w-15 text-sm"</span>
+<span class="cstat-no" title="statement not covered" >            value={playbackRate}</span>
+<span class="cstat-no" title="statement not covered" >            options={playbackRateOptions}</span>
+<span class="cstat-no" title="statement not covered" >            onChange={(v) =&gt; player?.setPlaybackRate(v)}</span>
+<span class="cstat-no" title="statement not covered" >          /&gt;</span>
+<span class="cstat-no" title="statement not covered" >        &lt;/label&gt;</span>
 <span class="cstat-no" title="statement not covered" >      &lt;/div&gt;</span>
 <span class="cstat-no" title="statement not covered" >    &lt;/div&gt;</span>
 <span class="cstat-no" title="statement not covered" >  );</span>
@@ -1492,7 +1552,7 @@ export <span class="fstat-no" title="function not covered" >function BookmarksMe
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-05-20T03:35:27.658Z
+                at 2023-05-20T04:41:54.323Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>
