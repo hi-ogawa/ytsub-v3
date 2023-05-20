@@ -6,13 +6,13 @@ import { DeckNavBarMenuComponent } from ".";
 import type { DeckTable } from "../../../db/models";
 import { $R, R } from "../../../misc/routes";
 import { trpc } from "../../../trpc/client";
-import { toastInfo } from "../../../utils/flash-message-hook";
 import { intl } from "../../../utils/intl";
 import { requireUserAndDeck } from "../../../utils/loader-deck-utils";
 import { useLoaderDataExtra } from "../../../utils/loader-utils";
 import { makeLoader } from "../../../utils/loader-utils.server";
 import { cls } from "../../../utils/misc";
 import type { PageHandle } from "../../../utils/page-handle";
+import { toastInfo } from "../../../utils/toast-utils";
 
 export const handle: PageHandle = {
   navBarTitle: () => "Edit Deck",

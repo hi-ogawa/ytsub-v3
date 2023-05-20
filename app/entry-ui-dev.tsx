@@ -1,10 +1,13 @@
 import "virtual:uno.css";
 import { tinyassert } from "@hiogawa/utils";
+import { Compose } from "@hiogawa/utils-react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, NavLink, Route, Routes } from "react-router-dom";
 import * as stories from "./components/stories";
 import { ThemeSelect } from "./components/theme-select";
 import { cls } from "./utils/misc";
+import { QueryClientWrapper } from "./utils/react-query-utils";
+import { ToastWrapper } from "./utils/toast-utils";
 
 // based on https://github.com/hi-ogawa/unocss-preset-antd/blob/e2b9f18764cfb466ff9c91871cd1b65a9d006877/packages/app/src/app.tsx
 
@@ -63,11 +66,17 @@ function Root() {
   );
 }
 
+function RootWrapper() {
+  return (
+    <Compose elements={[<ToastWrapper />, <QueryClientWrapper />, <Root />]} />
+  );
+}
+
 function main() {
   const el = document.getElementById("root");
   tinyassert(el);
   const root = createRoot(el);
-  root.render(<Root />);
+  root.render(<RootWrapper />);
 }
 
 main();
