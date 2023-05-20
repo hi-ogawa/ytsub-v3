@@ -399,8 +399,6 @@ export function MiniPlayer({
         />
       </div>
       <div className="w-full flex justify-end">
-        {/* TODO: ability to hide? */}
-        {/* TODO: show it on /videos/$id too? */}
         <label className="flex items-center gap-2">
           <span className="i-ri-speed-up-line w-5 h-5"></span>
           <SelectWrapper
