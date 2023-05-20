@@ -1,40 +1,32 @@
 import fs from "node:fs";
 import esbuild from "esbuild";
 
-// TODO: move to misc/vercel/bundle.ts
-
-// used by scripts/vercel.sh to
-// - bundle server app for simpler vercel deployment
+// the purposes of this extra build step are:
+// - bundle server app into single file for simpler vercel deployment
 // - exclude node_modules from generating source map to reduce deployment size
 
 // references
 // - https://esbuild.github.io/plugins/
 // - https://github.com/evanw/esbuild/issues/1685#issuecomment-944916409
 
-esbuild.build({
-  logLevel: "info",
-  entryPoints: ["./build/remix/production/server/index.js"],
-  outfile: "./build/remix/production/server/index-bundled.js",
-  bundle: true,
-  sourcemap: "inline",
-  platform: "node",
-  external: [
-    // exclude knex drivers except "mysql2"
-    "mysql",
-    "sqlite3",
-    "better-sqlite3",
-    "tedious",
-    "pg",
-    "oracledb",
-    "pg-query-stream",
-  ],
-  plugins: [noSourceMapNodeModulesPlugin()],
-});
+async function main() {
+  const [infile, outfile] = process.argv.slice(2);
+
+  await esbuild.build({
+    logLevel: "info",
+    entryPoints: [infile],
+    outfile,
+    bundle: true,
+    sourcemap: "inline",
+    platform: "node",
+    plugins: [noSourceMapNodeModulesPlugin()],
+  });
+}
 
 // https://github.com/evanw/esbuild/issues/1685#issuecomment-944916409
 function noSourceMapNodeModulesPlugin(): esbuild.Plugin {
   return {
-    name: "no-source-map-node-modules",
+    name: noSourceMapNodeModulesPlugin.name,
     setup(build) {
       build.onLoad({ filter: /node_modules/ }, (args) => {
         if (args.path.endsWith("js")) {
@@ -49,3 +41,5 @@ function noSourceMapNodeModulesPlugin(): esbuild.Plugin {
     },
   };
 }
+
+main();

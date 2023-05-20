@@ -19,9 +19,10 @@ set -eu -o pipefail
 #
 
 # cleanup
-rm -rf .vercel/output
 rm -rf build/remix/production
 rm -rf build/css
+rm -rf .vercel/output
+mkdir -p .vercel/output/functions/index.func
 
 # css
 pnpm build:css
@@ -29,11 +30,8 @@ pnpm build:css
 # remix's default "node-cjs" build with custom server entry
 NODE_ENV=production BUILD_VERCEL=1 npx remix build --sourcemap
 
-# run esbuild again manually to bundle server entry
-node -r esbuild-register ./misc/build/bundle-vercel.ts
-
-# setup .vercel/output
-mkdir -p .vercel/output/functions/index.func
+# bundle server entry
+node -r esbuild-register ./misc/vercel/bundle.ts build/remix/production/server/index.js .vercel/output/functions/index.func/index.js
 
 # config.json
 cp misc/vercel/config.json .vercel/output/config.json
@@ -43,7 +41,6 @@ cp -r ./build/remix/production/public .vercel/output/static
 
 # serverless
 cp misc/vercel/.vc-config.json .vercel/output/functions/index.func/.vc-config.json
-cp ./build/remix/production/server/index-bundled.js .vercel/output/functions/index.func/index.js
 cat > ".vercel/output/functions/index.func/index-bootstrap.js" <<EOF
 process.setSourceMapsEnabled(true);
 module.exports = require("./index.js");
