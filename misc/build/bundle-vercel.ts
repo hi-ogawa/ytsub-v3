@@ -1,6 +1,8 @@
 import fs from "node:fs";
 import esbuild from "esbuild";
 
+// TODO: move to misc/vercel/bundle.ts
+
 // used by scripts/vercel.sh to
 // - bundle server app for simpler vercel deployment
 // - exclude node_modules from generating source map to reduce deployment size

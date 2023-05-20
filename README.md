@@ -18,10 +18,7 @@ npx playwright install
 pnpm test-e2e
 pnpm test-e2e-coverage
 
-# deploy (vercel)
-vercel --version # Vercel CLI 24.2.4
-vercel projects add ytsub-v3-hiro18181
-vercel link -p ytsub-v3-hiro18181
+# deploy (see also misc/vercel/README.md)
 pnpm build
 pnpm release-production
 
