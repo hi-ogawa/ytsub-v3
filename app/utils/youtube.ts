@@ -455,6 +455,9 @@ export interface YoutubePlayer {
   seekTo: (second: number) => void;
   getCurrentTime: () => number;
   getPlayerState: () => number;
+  getPlaybackRate: () => number;
+  setPlaybackRate: (suggestedRate: number) => void;
+  getAvailablePlaybackRates: () => number[];
   destroy: () => void;
 }
 

@@ -204,6 +204,30 @@ test("invalid videoId input", async ({ page }) => {
   await page.getByText("Failed to load a video").click();
 });
 
+test.describe("video playback rate", () => {
+  const userHook = useUserE2E(test, {
+    seed: __filename + "video playback rate",
+  });
+
+  test.beforeAll(async () => {
+    await userHook.isReady;
+    await importSeed(userHook.data.id);
+  });
+
+  test("basic", async ({ page }) => {
+    await userHook.signin(page);
+    await page.goto("/videos");
+    await page
+      .getByRole("link", { name: "fromis_9 (프로미스나인) 'DM' Official MV" })
+      .click();
+    await page.getByTestId("video-menu-reference").click();
+    await page
+      .getByTestId("PlaybackRateSelect")
+      .selectOption({ label: "0.75" });
+    await page.pause();
+  });
+});
+
 test.describe("videos deletion", () => {
   const userHook = useUserE2E(test, { seed: __filename + "videos deletion" });
 

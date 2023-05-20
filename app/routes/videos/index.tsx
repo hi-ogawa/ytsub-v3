@@ -12,7 +12,6 @@ import { E, T, db, toPaginationResult } from "../../db/drizzle-client.server";
 import type { DeckTable, UserTable, VideoTable } from "../../db/models";
 import { R } from "../../misc/routes";
 import { trpc } from "../../trpc/client";
-import { toastInfo } from "../../utils/flash-message-hook";
 import {
   useLoaderDataExtra,
   useRootLoaderData,
@@ -24,6 +23,7 @@ import {
   PaginationMetadata,
   PaginationParams,
 } from "../../utils/pagination";
+import { toastInfo } from "../../utils/toast-utils";
 
 export const handle: PageHandle = {
   navBarTitle: () => "Your Videos",

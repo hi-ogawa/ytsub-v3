@@ -90,7 +90,7 @@ export default function DefaultComponent() {
       <div className="w-full flex justify-center">
         <div className="h-full w-full max-w-lg">
           <div className="h-full flex flex-col p-2 gap-2">
-            <div className="flex items-center gap-2 py-1">
+            <label className="flex items-center gap-2 py-1">
               Filter
               <SelectWrapper
                 className="antd-input p-1"
@@ -99,7 +99,7 @@ export default function DefaultComponent() {
                 labelFn={(v) => v ?? "Select..."}
                 onChange={(actionType) => setUrlQuery({ actionType })}
               />
-            </div>
+            </label>
             <ActionStatisticsComponent
               deckId={deck.id}
               currentActionType={urlQuery?.actionType}

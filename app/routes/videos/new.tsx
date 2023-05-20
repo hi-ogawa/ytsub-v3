@@ -13,7 +13,6 @@ import { PopoverSimple } from "../../components/popover";
 import type { UserTable } from "../../db/models";
 import { $R, R, ROUTE_DEF } from "../../misc/routes";
 import { trpc } from "../../trpc/client";
-import { toastInfo } from "../../utils/flash-message-hook";
 import {
   FILTERED_LANGUAGE_CODES,
   LanguageCode,
@@ -24,6 +23,7 @@ import { useLoaderDataExtra } from "../../utils/loader-utils";
 import { makeLoader } from "../../utils/loader-utils.server";
 import { cls, zipMax } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
+import { toastInfo } from "../../utils/toast-utils";
 import type { CaptionConfig, VideoMetadata } from "../../utils/types";
 import {
   encodeAdvancedModeLanguageCode,
