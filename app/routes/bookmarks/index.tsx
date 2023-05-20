@@ -401,10 +401,10 @@ export function MiniPlayer({
       <div className="w-full flex justify-end">
         {/* TODO: ability to hide? */}
         {/* TODO: show it on /videos/$id too? */}
-        <label className="flex items-center gap-2 text-sm">
-          <span>Speed</span>
+        <label className="flex items-center gap-2">
+          <span className="i-ri-speed-up-line w-5 h-5"></span>
           <SelectWrapper
-            className="antd-input px-1 w-15"
+            className="antd-input px-1 w-15 text-sm"
             value={playbackRate}
             options={playbackRateOptions}
             onChange={(v) => player?.setPlaybackRate(v)}
