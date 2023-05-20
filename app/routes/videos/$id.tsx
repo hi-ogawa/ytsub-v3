@@ -13,7 +13,7 @@ import { atomWithStorage } from "jotai/utils";
 import React from "react";
 import toast from "react-hot-toast";
 import { z } from "zod";
-import { transitionProps } from "../../components/misc";
+import { SelectWrapper, transitionProps } from "../../components/misc";
 import { useModal } from "../../components/modal";
 import { PopoverSimple } from "../../components/popover";
 import { E, T, TT, selectOne } from "../../db/drizzle-client.server";
@@ -30,7 +30,7 @@ import {
   useTypedUrlQuery,
 } from "../../utils/loader-utils";
 import { makeLoader } from "../../utils/loader-utils.server";
-import { cls } from "../../utils/misc";
+import { cls, none } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 import type { CaptionEntry } from "../../utils/types";
 import {
@@ -119,6 +119,13 @@ function PageComponent({
   const [isPlaying, setIsPlaying] = React.useState(false);
   const [currentEntry, setCurrentEntry] = React.useState<CaptionEntry>();
   const [bookmarkState, setBookmarkState] = React.useState<BookmarkSelection>();
+  const [playerbackRateState, setPlaybackRateState] = useAtom(
+    playbackRateStateAtom
+  );
+  React.useEffect(
+    () => () => setPlaybackRateState(INITIAL_PLAYBACK_RATE_STATE),
+    [video]
+  ); // clear state on change
 
   //
   // query
@@ -165,6 +172,11 @@ function PageComponent({
 
   useRafLoop(() => {
     if (!player) return;
+
+    const playbackRate = player.getPlaybackRate() ?? 1;
+    if (playerbackRateState.value !== playbackRate) {
+      setPlaybackRateState((prev) => ({ ...prev, value: playbackRate }));
+    }
 
     const isPlaying = player.getPlayerState() === 1;
     setIsPlaying(isPlaying);
@@ -296,7 +308,14 @@ function PageComponent({
         <>
           <PlayerComponent
             defaultOptions={{ videoId: video.videoId }}
-            onReady={setPlayer}
+            onReady={(player) => {
+              setPlayer(player);
+              setPlaybackRateState((prev) => ({
+                ...prev,
+                player,
+                options: player.getAvailablePlaybackRates(),
+              }));
+            }}
           />
         </>
       }
@@ -723,6 +742,7 @@ function NavBarMenuComponent() {
   const [highlightBookmark, setHighlightBookmark] = useAtom(
     highlightBookmarkStorageAtom
   );
+  const [playbackRateState] = useAtom(playbackRateStateAtom);
   const modal = useModal();
 
   return (
@@ -789,6 +809,20 @@ function NavBarMenuComponent() {
                 >
                   Clear Repeat
                 </button>
+              </li>
+              <li>
+                <label className="p-2 flex items-center gap-2">
+                  <span>Speed</span>
+                  <SelectWrapper
+                    data-testid="PlaybackRateSelect"
+                    className="antd-input px-1 w-15 text-sm"
+                    value={playbackRateState.value}
+                    options={playbackRateState.options}
+                    onChange={(v) =>
+                      playbackRateState.player?.setPlaybackRate(v)
+                    }
+                  />
+                </label>
               </li>
             </ul>
           )}
@@ -918,3 +952,11 @@ const highlightBookmarkStorageAtom = atomWithStorage(
   "ytsub:video-highlight-bookmark",
   false
 );
+
+const INITIAL_PLAYBACK_RATE_STATE = {
+  value: 1,
+  options: [1],
+  player: none<YoutubePlayer>(),
+};
+
+const playbackRateStateAtom = atom(INITIAL_PLAYBACK_RATE_STATE);

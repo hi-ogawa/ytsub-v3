@@ -15,7 +15,7 @@ import type { LinksFunction } from "@remix-run/server-runtime";
 import { useMutation } from "@tanstack/react-query";
 import React from "react";
 import { useForm } from "react-hook-form";
-import { Toaster, toast } from "react-hot-toast";
+import { toast } from "react-hot-toast";
 import { Drawer } from "./components/drawer";
 import { PopoverSimple } from "./components/popover";
 import { ThemeSelect } from "./components/theme-select";
@@ -32,6 +32,7 @@ import { makeLoader } from "./utils/loader-utils.server";
 import { cls } from "./utils/misc";
 import type { PageHandle } from "./utils/page-handle";
 import { QueryClientWrapper } from "./utils/react-query-utils";
+import { ToastWrapper } from "./utils/toast-utils";
 
 export const links: LinksFunction = () => {
   // prettier-ignore
@@ -80,13 +81,6 @@ export default function DefaultComponent() {
         <script dangerouslySetInnerHTML={{ __html: `` }} />
       </head>
       <body className="h-full">
-        {/* TODO: default position="top" is fine? */}
-        <Toaster
-          position="bottom-left"
-          toastOptions={{
-            className: "!bg-colorBgElevated !text-colorText",
-          }}
-        />
         <button
           className="hidden"
           data-testid="toast-remove"
@@ -95,7 +89,12 @@ export default function DefaultComponent() {
           }}
         />
         <Compose
-          elements={[<FloatingTree />, <QueryClientWrapper />, <Root />]}
+          elements={[
+            <FloatingTree />,
+            <ToastWrapper />,
+            <QueryClientWrapper />,
+            <Root />,
+          ]}
         />
       </body>
     </html>

@@ -1,8 +1,10 @@
 import { Transition } from "@headlessui/react";
+import { useRafLoop } from "@hiogawa/utils-react";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { cls } from "../utils/misc";
-import { VideoComponent, transitionProps } from "./misc";
+import { YoutubePlayer, usePlayerLoader } from "../utils/youtube";
+import { SelectWrapper, VideoComponent, transitionProps } from "./misc";
 import { PopoverSimple } from "./popover";
 import {
   EchartsComponent,
@@ -273,6 +275,52 @@ export function TestPracticeHistoryChart() {
           className="h-[300px] w-full"
           option={practiceHistoryChartDataToEchartsOption(data as any, "queue")}
         />
+      </div>
+    </div>
+  );
+}
+
+export function TestYoutubePlayer() {
+  const [player, setPlayer] = React.useState<YoutubePlayer>();
+
+  const { ref, isLoading } = usePlayerLoader(
+    // https://www.youtube.com/watch?v=AQt4K08L_m8
+    { videoId: "AQt4K08L_m8" },
+    { onReady: setPlayer }
+  );
+
+  const playbackRateOptions = player?.getAvailablePlaybackRates() ?? [1];
+  const [playbackRate, setPlaybackRate] = React.useState(1);
+
+  // sync state on animation frame
+  useRafLoop(() => {
+    setPlaybackRate(player?.getPlaybackRate() ?? 1);
+  });
+
+  return (
+    <div className="flex flex-col items-center">
+      <div className="w-full max-w-2xl flex flex-col gap-2">
+        <div className="relative w-full max-w-md md:max-w-none">
+          <div className="relative pt-[56.2%]">
+            <div className="absolute top-0 w-full h-full" ref={ref} />
+          </div>
+          <Transition
+            show={isLoading}
+            className="duration-500 antd-body antd-spin-overlay-30"
+            {...transitionProps("opacity-0", "opacity-100")}
+          />
+        </div>
+        <div className="flex justify-end">
+          <label className="flex items-center gap-2">
+            <span>Speed</span>
+            <SelectWrapper
+              className="antd-input p-1 w-16"
+              value={playbackRate}
+              options={playbackRateOptions}
+              onChange={(v) => player?.setPlaybackRate(v)}
+            />
+          </label>
+        </div>
       </div>
     </div>
   );
