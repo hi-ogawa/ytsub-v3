@@ -404,6 +404,7 @@ export function MiniPlayer({
         <label className="flex items-center gap-2">
           <span className="i-ri-speed-up-line w-5 h-5"></span>
           <SelectWrapper
+            data-testid="PlaybackRateSelect"
             className="antd-input px-1 w-15 text-sm"
             value={playbackRate}
             options={playbackRateOptions}
