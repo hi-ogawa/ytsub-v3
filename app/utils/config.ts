@@ -1,5 +1,5 @@
-import * as process from "process";
-import { once, tinyassert } from "@hiogawa/utils";
+import process from "process";
+import { once } from "@hiogawa/utils";
 import { z } from "zod";
 import { uninitialized } from "./misc";
 
@@ -25,16 +25,23 @@ const Z_SERVER_CONFIG = z.object({
 const Z_PUBLIC_CONFIG = z.object({
   APP_RECAPTCHA_CLIENT_KEY: z.string().default("6Lc79AcgAAAAAOdPnmAZfQqhVwL7mJngRndTyG19"),
   APP_RECAPTCHA_DISABLED: z.coerce.boolean(),
+  APP_SENTRY_DSN: z.string().optional(),
   VERCEL_ENV: z.string().optional(),
+});
+
+// prettier-ignore
+const Z_BUILD_CONFIG = z.object({
+  GIT_COMMIT_REF: z.string().optional(),
 });
 
 export let serverConfig = uninitialized as z.infer<typeof Z_SERVER_CONFIG>;
 
 export let publicConfig = uninitialized as z.infer<typeof Z_PUBLIC_CONFIG>;
 
-export const CONFIG_SCRIPT_ID = "__configScript";
+export let buildConfig = uninitialized as z.infer<typeof Z_BUILD_CONFIG>;
 
-export const CONFIG_SCRIPT_PLACEHOLDER = "@@__configScriptPlaceholder@@";
+// esbuild injects BUILD_CONFIG_DEFINE on server release build
+declare let BUILD_CONFIG_DEFINE: unknown;
 
 //
 // server
@@ -43,12 +50,25 @@ export const CONFIG_SCRIPT_PLACEHOLDER = "@@__configScriptPlaceholder@@";
 export const initializeConfigServer = once(() => {
   serverConfig = Z_SERVER_CONFIG.parse(process.env);
   publicConfig = Z_PUBLIC_CONFIG.parse(process.env);
+  buildConfig = Z_BUILD_CONFIG.parse(
+    typeof BUILD_CONFIG_DEFINE !== "undefined" ? BUILD_CONFIG_DEFINE : {}
+  );
 });
 
+// pass data to client via global script
+declare let __publicConfig: any;
+declare let __buildConfig: any;
+
+export const CONFIG_SCRIPT_PLACEHOLDER = "/*@@INJECT_CONFIG_SCRIPT@@*/";
+
 export function injectConfigScript(markup: string): string {
+  // TODO: should escape?
   return markup.replace(
     CONFIG_SCRIPT_PLACEHOLDER,
-    JSON.stringify(publicConfig)
+    `
+globalThis.__publicConfig = ${JSON.stringify(publicConfig)};
+globalThis.__buildConfig = ${JSON.stringify(buildConfig)};
+`
   );
 }
 
@@ -57,7 +77,6 @@ export function injectConfigScript(markup: string): string {
 //
 
 export const initializeConfigClient = once(() => {
-  const el = document.querySelector("#" + CONFIG_SCRIPT_ID);
-  tinyassert(el);
-  publicConfig = JSON.parse(el.innerHTML);
+  publicConfig = __publicConfig;
+  buildConfig = __buildConfig;
 });

@@ -5,11 +5,13 @@ import {
   initializeDrizzleClient,
 } from "../db/drizzle-client.server";
 import { initializeConfigServer } from "../utils/config";
+import { initializeSentryServer } from "../utils/sentry-utils.server";
 import { initializeSessionStore } from "../utils/session.server";
 
 export const initializeServer = once(async () => {
   installGlobals();
   initializeConfigServer();
+  initializeSentryServer();
   initializeSessionStore();
   await initializeDrizzleClient();
 });

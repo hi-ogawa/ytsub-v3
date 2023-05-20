@@ -24,8 +24,7 @@ import type { UserTable } from "./db/models";
 import { $R, R } from "./misc/routes";
 import { HideRecaptchaBadge } from "./routes/users/register";
 import { trpc } from "./trpc/client";
-import { publicConfig } from "./utils/config";
-import { ConfigPlaceholder } from "./utils/config-placeholder";
+import { CONFIG_SCRIPT_PLACEHOLDER, publicConfig } from "./utils/config";
 import { useFlashMessages } from "./utils/flash-message-hook";
 import { RootLoaderData, useRootLoaderData } from "./utils/loader-utils";
 import { makeLoader } from "./utils/loader-utils.server";
@@ -74,10 +73,19 @@ export default function DefaultComponent() {
         </title>
         <Meta />
         <Links />
-        <ConfigPlaceholder />
-        <ThemeScript />
         <HideRecaptchaBadge />
-        <script dangerouslySetInnerHTML={{ __html: `` }} />
+        <script
+          suppressHydrationWarning
+          dangerouslySetInnerHTML={{ __html: CONFIG_SCRIPT_PLACEHOLDER }}
+        />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `\
+              globalThis.__themeStorageKey = "ytsub:theme";
+              ${require("@hiogawa/utils-experimental/dist/theme-script.global.js?loader=text")}
+            `,
+          }}
+        />
       </head>
       <body className="h-full">
         {/* TODO: default position="top" is fine? */}
@@ -99,19 +107,6 @@ export default function DefaultComponent() {
         />
       </body>
     </html>
-  );
-}
-
-function ThemeScript() {
-  return (
-    <script
-      dangerouslySetInnerHTML={{
-        __html: `\
-globalThis.__themeStorageKey = "ytsub:theme";
-${require("@hiogawa/utils-experimental/dist/theme-script.global.js?loader=text")}
-`,
-      }}
-    />
   );
 }
 
