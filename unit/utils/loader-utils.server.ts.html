@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">75.92% </span>
+                <span class="strong">70.33% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>82/108</span>
+                <span class='fraction'>83/118</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">75.92% </span>
+                <span class="strong">70.33% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>82/108</span>
+                <span class='fraction'>83/118</span>
             </div>
         
             
@@ -171,7 +171,18 @@
 <a name='L106'></a><a href='#L106'>106</a>
 <a name='L107'></a><a href='#L107'>107</a>
 <a name='L108'></a><a href='#L108'>108</a>
-<a name='L109'></a><a href='#L109'>109</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L109'></a><a href='#L109'>109</a>
+<a name='L110'></a><a href='#L110'>110</a>
+<a name='L111'></a><a href='#L111'>111</a>
+<a name='L112'></a><a href='#L112'>112</a>
+<a name='L113'></a><a href='#L113'>113</a>
+<a name='L114'></a><a href='#L114'>114</a>
+<a name='L115'></a><a href='#L115'>115</a>
+<a name='L116'></a><a href='#L116'>116</a>
+<a name='L117'></a><a href='#L117'>117</a>
+<a name='L118'></a><a href='#L118'>118</a>
+<a name='L119'></a><a href='#L119'>119</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -243,6 +254,9 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -250,6 +264,12 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -291,6 +311,7 @@ import { createTrpcAppContext } from "../trpc/context";
 import { getSessionUser } from "./auth";
 import {
   FlashMessage,
+  encodeFlashMessage,
   getFlashMessages,
   pushFlashMessage,
 } from "./flash-message";
@@ -348,13 +369,16 @@ async function createLoaderContext(loaderArgs: DataFunctionArgs) {
     requireUser: async () =&gt; {
       const user = await ctx.currentUser();
       if (!user) <span class="branch-0 cbranch-no" title="branch not covered" >{</span>
-<span class="cstat-no" title="statement not covered" >        await ctx.flash({ content: "Signin required", variant: "error" });</span>
-<span class="cstat-no" title="statement not covered" >        throw redirect($R["/users/signin"]());</span>
+<span class="cstat-no" title="statement not covered" >        throw redirect(</span>
+<span class="cstat-no" title="statement not covered" >          $R["/users/signin"]() +</span>
+<span class="cstat-no" title="statement not covered" >            "?" +</span>
+<span class="cstat-no" title="statement not covered" >            encodeFlashMessage({ content: "Signin required", variant: "error" })</span>
+<span class="cstat-no" title="statement not covered" >        );</span>
 <span class="cstat-no" title="statement not covered" >      }</span>
       return user;
     },
 &nbsp;
-    async redirectOnError&lt;T&gt;(f: () =&gt; T, destUrl: string = $R["/"]()) {
+    async redirectOnError&lt;T&gt;(f: () =&gt; T) {
       try {
         return await f();
 <span class="branch-0 cbranch-no" title="branch not covered" >      } catch (error) {</span>
@@ -362,12 +386,18 @@ async function createLoaderContext(loaderArgs: DataFunctionArgs) {
 <span class="cstat-no" title="statement not covered" >        if (error instanceof Response) {</span>
 <span class="cstat-no" title="statement not covered" >          res = error;</span>
 <span class="cstat-no" title="statement not covered" >        } else {</span>
-<span class="cstat-no" title="statement not covered" >          // root redirection as default error handling unless infinite redirection</span>
-<span class="cstat-no" title="statement not covered" >          if (reqUrl.pathname + reqUrl.search === destUrl) {</span>
+<span class="cstat-no" title="statement not covered" >          // redirect to root unless infinite redirection</span>
+<span class="cstat-no" title="statement not covered" >          if (reqUrl.pathname === "/") {</span>
 <span class="cstat-no" title="statement not covered" >            throw new Error("redirectOnError (infinite redirection detected)");</span>
 <span class="cstat-no" title="statement not covered" >          }</span>
-<span class="cstat-no" title="statement not covered" >          await ctx.flash({ content: "Invalid request", variant: "error" });</span>
-<span class="cstat-no" title="statement not covered" >          res = redirect(destUrl);</span>
+<span class="cstat-no" title="statement not covered" >          res = redirect(</span>
+<span class="cstat-no" title="statement not covered" >            $R["/"]() +</span>
+<span class="cstat-no" title="statement not covered" >              "?" +</span>
+<span class="cstat-no" title="statement not covered" >              encodeFlashMessage({</span>
+<span class="cstat-no" title="statement not covered" >                content: "Invalid request",</span>
+<span class="cstat-no" title="statement not covered" >                variant: "error",</span>
+<span class="cstat-no" title="statement not covered" >              })</span>
+<span class="cstat-no" title="statement not covered" >          );</span>
 <span class="cstat-no" title="statement not covered" >        }</span>
 <span class="cstat-no" title="statement not covered" >        throw ctx.__finalizeResponse(res);</span>
 <span class="cstat-no" title="statement not covered" >      }</span>
@@ -394,7 +424,7 @@ function mergeHeaders(dst: Headers, src: Headers) {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-05-23T04:36:30.291Z
+                at 2023-05-24T03:22:16.750Z
             </div>
         <script src="../prettify.js"></script>
         <script>
