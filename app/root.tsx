@@ -8,6 +8,7 @@ import {
   NavLink,
   Outlet,
   Scripts,
+  ShouldRevalidateFunction,
   useMatches,
   useNavigate,
 } from "@remix-run/react";
@@ -56,6 +57,9 @@ export const loader = makeLoader(async ({ ctx }) => {
   };
   return loaderData;
 });
+
+// no need to revalidate `currentUser` since app refreshes on user session change (signin/signout)
+export const shouldRevalidate: ShouldRevalidateFunction = () => false;
 
 //
 // component
