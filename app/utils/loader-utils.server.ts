@@ -8,12 +8,7 @@ import { serialize } from "superjson";
 import { $R } from "../misc/routes";
 import { createTrpcAppContext } from "../trpc/context";
 import { getSessionUser } from "./auth";
-import {
-  FlashMessage,
-  encodeFlashMessage,
-  getFlashMessages,
-  pushFlashMessage,
-} from "./flash-message";
+import { encodeFlashMessage } from "./flash-message";
 
 // tree-shake from client bundle via `pureCommentPlugin`
 export function makeLoader(
@@ -47,19 +42,6 @@ async function createLoaderContext(loaderArgs: DataFunctionArgs) {
     params: loaderArgs.params,
 
     query: Object.fromEntries(reqUrl.searchParams.entries()),
-
-    flash: async (message: FlashMessage) => {
-      pushFlashMessage(ctx.session, message);
-      await ctx.commitSession();
-    },
-
-    getFlashMessages: async () => {
-      const flashMessages = getFlashMessages(ctx.session);
-      if (flashMessages.length > 0) {
-        await ctx.commitSession();
-      }
-      return flashMessages;
-    },
 
     currentUser: () => {
       return getSessionUser(ctx.session);
