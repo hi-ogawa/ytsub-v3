@@ -33,11 +33,6 @@ export const loader = makeLoader(async ({ ctx }) => {
           variant: "error",
         })
     );
-    // await ctx.flash({
-    //   content: `Already signed in as '${user.username}'`,
-    //   variant: "error",
-    // });
-    // return redirect(R["/users/me"]);
   }
   return null;
 });
@@ -50,7 +45,6 @@ export default function DefaultComponent() {
   const registerMutation = useMutation({
     ...trpc.users_register.mutationOptions(),
     onSuccess: () => {
-      // window.location.href = $R["/users/redirect"](null, { type: "register" });
       window.location.href =
         $R["/"]() +
         "?" +

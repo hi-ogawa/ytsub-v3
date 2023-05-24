@@ -55,7 +55,7 @@ export function useFlashMessageHandler() {
         }
       }
 
-      // let remix does redundant refetch for simplicty (we can tweak shouldRevalidate if we really want to avoid that)
+      // remix might refetch redundantly (we can tweak shouldRevalidate if we need want to avoid that)
       const newParams = new URLSearchParams(params);
       newParams.delete(MSG_KEY);
       setParams(newParams, { replace: true });

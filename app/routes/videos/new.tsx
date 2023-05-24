@@ -60,11 +60,6 @@ export const loader = makeLoader(async ({ ctx }) => {
           variant: "error",
         })
     );
-    // await ctx.flash({
-    //   content: `Failed to load a video`,
-    //   variant: "error",
-    // });
-    // return redirect(R["/"]);
   }
   const videoMetadata = result.value;
   const loaderData: LoaderData = {

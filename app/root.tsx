@@ -121,7 +121,6 @@ ${require("@hiogawa/utils-experimental/dist/theme-script.global.js?loader=text")
 
 function Root() {
   const data = useRootLoaderData();
-  // useFlashMessages(data.flashMessages);
   useFlashMessageHandler();
 
   // `PageHandle` of the leaf compoment
@@ -326,7 +325,6 @@ function SignoutComponent() {
   const signoutMutation = useMutation({
     ...trpc.users_signout.mutationOptions(),
     onSuccess: () => {
-      // window.location.href = $R["/users/redirect"](null, { type: "signout" });
       window.location.href =
         $R["/"]() +
         "?" +
