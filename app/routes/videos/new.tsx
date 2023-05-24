@@ -13,6 +13,7 @@ import { PopoverSimple } from "../../components/popover";
 import type { UserTable } from "../../db/models";
 import { $R, R, ROUTE_DEF } from "../../misc/routes";
 import { trpc } from "../../trpc/client";
+import { encodeFlashMessage } from "../../utils/flash-message";
 import {
   FILTERED_LANGUAGE_CODES,
   LanguageCode,
@@ -51,11 +52,14 @@ export const loader = makeLoader(async ({ ctx }) => {
   const result = await wrapPromise(fetchVideoMetadata(videoId));
   if (!result.ok) {
     // either invalid videoId or youtube api failure
-    await ctx.flash({
-      content: `Failed to load a video`,
-      variant: "error",
-    });
-    return redirect(R["/"]);
+    return redirect(
+      R["/"] +
+        "?" +
+        encodeFlashMessage({
+          content: `Failed to load a video`,
+          variant: "error",
+        })
+    );
   }
   const videoMetadata = result.value;
   const loaderData: LoaderData = {

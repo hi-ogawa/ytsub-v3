@@ -9,6 +9,7 @@ import { $R, R } from "../../misc/routes";
 import { trpc } from "../../trpc/client";
 import { publicConfig } from "../../utils/config";
 import { loadScript } from "../../utils/dom-utils";
+import { encodeFlashMessage } from "../../utils/flash-message";
 import { makeLoader } from "../../utils/loader-utils.server";
 import { uninitialized, usePromiseQueryOpitons } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
@@ -24,11 +25,14 @@ export const handle: PageHandle = {
 export const loader = makeLoader(async ({ ctx }) => {
   const user = await ctx.currentUser();
   if (user) {
-    await ctx.flash({
-      content: `Already signed in as '${user.username}'`,
-      variant: "error",
-    });
-    return redirect(R["/users/me"]);
+    return redirect(
+      R["/users/me"] +
+        "?" +
+        encodeFlashMessage({
+          content: `Already signed in as '${user.username}'`,
+          variant: "error",
+        })
+    );
   }
   return null;
 });
@@ -41,7 +45,13 @@ export default function DefaultComponent() {
   const registerMutation = useMutation({
     ...trpc.users_register.mutationOptions(),
     onSuccess: () => {
-      window.location.href = $R["/users/redirect"](null, { type: "register" });
+      window.location.href =
+        $R["/"]() +
+        "?" +
+        encodeFlashMessage({
+          variant: "success",
+          content: "Successfully registered",
+        });
     },
   });
 

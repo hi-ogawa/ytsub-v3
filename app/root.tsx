@@ -8,6 +8,7 @@ import {
   NavLink,
   Outlet,
   Scripts,
+  ShouldRevalidateFunction,
   useMatches,
   useNavigate,
 } from "@remix-run/react";
@@ -26,7 +27,10 @@ import { HideRecaptchaBadge } from "./routes/users/register";
 import { trpc } from "./trpc/client";
 import { publicConfig } from "./utils/config";
 import { ConfigPlaceholder } from "./utils/config-placeholder";
-import { useFlashMessages } from "./utils/flash-message-hook";
+import {
+  encodeFlashMessage,
+  useFlashMessageHandler,
+} from "./utils/flash-message";
 import { RootLoaderData, useRootLoaderData } from "./utils/loader-utils";
 import { makeLoader } from "./utils/loader-utils.server";
 import { cls } from "./utils/misc";
@@ -50,11 +54,12 @@ export const links: LinksFunction = () => {
 export const loader = makeLoader(async ({ ctx }) => {
   const loaderData: RootLoaderData = {
     currentUser: await ctx.currentUser(),
-    // TODO: revalidation of root loader is required only for reloading flash message, which sounds so odd, so please think about a different approach.
-    flashMessages: await ctx.getFlashMessages(),
   };
   return loaderData;
 });
+
+// no need to revalidate `currentUser` since app refreshes on user session change (signin/signout)
+export const shouldRevalidate: ShouldRevalidateFunction = () => false;
 
 //
 // component
@@ -116,7 +121,7 @@ ${require("@hiogawa/utils-experimental/dist/theme-script.global.js?loader=text")
 
 function Root() {
   const data = useRootLoaderData();
-  useFlashMessages(data.flashMessages);
+  useFlashMessageHandler();
 
   // `PageHandle` of the leaf compoment
   const matches = useMatches();
@@ -320,7 +325,13 @@ function SignoutComponent() {
   const signoutMutation = useMutation({
     ...trpc.users_signout.mutationOptions(),
     onSuccess: () => {
-      window.location.href = $R["/users/redirect"](null, { type: "signout" });
+      window.location.href =
+        $R["/"]() +
+        "?" +
+        encodeFlashMessage({
+          variant: "success",
+          content: "Successfully signed out",
+        });
     },
   });
 
