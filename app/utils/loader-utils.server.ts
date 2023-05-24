@@ -10,6 +10,7 @@ import { createTrpcAppContext } from "../trpc/context";
 import { getSessionUser } from "./auth";
 import {
   FlashMessage,
+  encodeFlashMessage,
   getFlashMessages,
   pushFlashMessage,
 } from "./flash-message";
@@ -67,13 +68,16 @@ async function createLoaderContext(loaderArgs: DataFunctionArgs) {
     requireUser: async () => {
       const user = await ctx.currentUser();
       if (!user) {
-        await ctx.flash({ content: "Signin required", variant: "error" });
-        throw redirect($R["/users/signin"]());
+        throw redirect(
+          $R["/users/signin"]() +
+            "?" +
+            encodeFlashMessage({ content: "Signin required", variant: "error" })
+        );
       }
       return user;
     },
 
-    async redirectOnError<T>(f: () => T, destUrl: string = $R["/"]()) {
+    async redirectOnError<T>(f: () => T) {
       try {
         return await f();
       } catch (error) {
@@ -81,12 +85,18 @@ async function createLoaderContext(loaderArgs: DataFunctionArgs) {
         if (error instanceof Response) {
           res = error;
         } else {
-          // root redirection as default error handling unless infinite redirection
-          if (reqUrl.pathname + reqUrl.search === destUrl) {
+          // redirect to root unless infinite redirection
+          if (reqUrl.pathname === "/") {
             throw new Error("redirectOnError (infinite redirection detected)");
           }
-          await ctx.flash({ content: "Invalid request", variant: "error" });
-          res = redirect(destUrl);
+          res = redirect(
+            $R["/"]() +
+              "?" +
+              encodeFlashMessage({
+                content: "Invalid request",
+                variant: "error",
+              })
+          );
         }
         throw ctx.__finalizeResponse(res);
       }
