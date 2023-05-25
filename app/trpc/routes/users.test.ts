@@ -168,7 +168,7 @@ describe(trpc.users_register.mutationKey, () => {
       `);
     });
 
-    it("unique username", async () => {
+    it("unique username case insensitive", async () => {
       {
         const trpc = await testTrpcClientWithContext();
         await trpc.caller.users_register(credentials);
@@ -180,6 +180,18 @@ describe(trpc.users_register.mutationKey, () => {
           trpc.caller.users_register(credentials)
         ).rejects.toMatchInlineSnapshot(
           "[TRPCError: Username 'test-trpc-register' is already taken]"
+        );
+      }
+
+      {
+        const trpc = await testTrpcClientWithContext();
+        await expect(
+          trpc.caller.users_register({
+            ...credentials,
+            username: "test-tRPC-REGISTER",
+          })
+        ).rejects.toMatchInlineSnapshot(
+          "[TRPCError: Username 'test-tRPC-REGISTER' is already taken]"
         );
       }
     });
