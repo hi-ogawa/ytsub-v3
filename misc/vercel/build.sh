@@ -10,7 +10,7 @@ set -eu -o pipefail
 #   project.json
 #   output/
 #     config.json
-#     static/             = (remix-outdir)/public
+#     static/             = (remix-outdir)/public + (root)/public
 #     functions/
 #       index.func/
 #         .vc-config.json
@@ -23,6 +23,7 @@ rm -rf build/remix/production
 rm -rf build/css
 rm -rf .vercel/output
 mkdir -p .vercel/output/functions/index.func
+mkdir -p .vercel/output/static
 
 # css
 pnpm build:css
@@ -34,7 +35,8 @@ NODE_ENV=production BUILD_VERCEL=1 npx remix build
 cp misc/vercel/config.json .vercel/output/config.json
 
 # static
-cp -r ./build/remix/production/public .vercel/output/static
+cp -a ./public/. .vercel/output/static/
+cp -a ./build/remix/production/public/. .vercel/output/static/
 
 # serverless
 cp build/remix/production/server/index.js .vercel/output/functions/index.func

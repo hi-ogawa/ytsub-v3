@@ -40,7 +40,7 @@ export const links: LinksFunction = () => {
   // prettier-ignore
   return [
     { rel: "stylesheet", href: require("../build/css/index.css") },
-    { rel: "icon", href: require("./assets/icon-32.png"), sizes: "32x32" },
+    { rel: "icon", href: "/favicon.ico" },
     { rel: "manifest", href: "/manifest.json" },
   ];
 };

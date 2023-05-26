@@ -11,6 +11,7 @@ async function main() {
 
   // serve client build assets
   app.use("/build", express.static(build.assetsBuildDirectory));
+  app.use("/", express.static("./public"));
 
   // all application logic as hattip handler
   app.use(createMiddleware(createHattipApp()));
