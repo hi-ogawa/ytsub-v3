@@ -1,5 +1,4 @@
 import { once } from "@hiogawa/utils";
-import { installGlobals } from "@remix-run/node";
 import {
   finalizeDrizzleClient,
   initializeDrizzleClient,
@@ -8,7 +7,6 @@ import { initializeConfigServer } from "../utils/config";
 import { initializeSessionStore } from "../utils/session.server";
 
 export const initializeServer = once(async () => {
-  installGlobals();
   initializeConfigServer();
   initializeSessionStore();
   await initializeDrizzleClient();
@@ -16,9 +14,4 @@ export const initializeServer = once(async () => {
 
 export async function finalizeServer() {
   await finalizeDrizzleClient();
-}
-
-// to workaround async initialization on the server (cf. @remix-run/server-runtime patch)
-export function injectInitializeServer() {
-  Object.assign(globalThis, { __onRequestHandler: initializeServer });
 }

@@ -14,8 +14,8 @@ import { trpcApp } from "../trpc/server";
 
 export function createHattipApp() {
   return compose(
-    createBootstrapHandler(),
     createLogger(),
+    createBootstrapHandler(),
     createTrpchandler(),
     createRemixHandler()
   );
