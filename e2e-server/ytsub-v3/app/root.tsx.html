@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">83.9% </span>
+                <span class="strong">83.33% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>292/348</span>
+                <span class='fraction'>280/336</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">80.95% </span>
+                <span class="strong">80% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>17/21</span>
+                <span class='fraction'>16/20</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">42.1% </span>
+                <span class="strong">38.88% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>8/19</span>
+                <span class='fraction'>7/18</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">83.9% </span>
+                <span class="strong">83.33% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>292/348</span>
+                <span class='fraction'>280/336</span>
             </div>
         
             
@@ -399,20 +399,7 @@
 <a name='L334'></a><a href='#L334'>334</a>
 <a name='L335'></a><a href='#L335'>335</a>
 <a name='L336'></a><a href='#L336'>336</a>
-<a name='L337'></a><a href='#L337'>337</a>
-<a name='L338'></a><a href='#L338'>338</a>
-<a name='L339'></a><a href='#L339'>339</a>
-<a name='L340'></a><a href='#L340'>340</a>
-<a name='L341'></a><a href='#L341'>341</a>
-<a name='L342'></a><a href='#L342'>342</a>
-<a name='L343'></a><a href='#L343'>343</a>
-<a name='L344'></a><a href='#L344'>344</a>
-<a name='L345'></a><a href='#L345'>345</a>
-<a name='L346'></a><a href='#L346'>346</a>
-<a name='L347'></a><a href='#L347'>347</a>
-<a name='L348'></a><a href='#L348'>348</a>
-<a name='L349'></a><a href='#L349'>349</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<a name='L337'></a><a href='#L337'>337</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -479,6 +466,8 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">31x</span>
+<span class="cline-any cline-yes">31x</span>
 <span class="cline-any cline-yes">31x</span>
 <span class="cline-any cline-yes">31x</span>
 <span class="cline-any cline-yes">31x</span>
@@ -506,19 +495,6 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">31x</span>
-<span class="cline-any cline-yes">31x</span>
-<span class="cline-any cline-yes">31x</span>
-<span class="cline-any cline-yes">31x</span>
-<span class="cline-any cline-yes">31x</span>
-<span class="cline-any cline-yes">31x</span>
-<span class="cline-any cline-yes">31x</span>
-<span class="cline-any cline-yes">31x</span>
-<span class="cline-any cline-yes">31x</span>
-<span class="cline-any cline-yes">31x</span>
-<span class="cline-any cline-yes">31x</span>
-<span class="cline-any cline-yes">31x</span>
-<span class="cline-any cline-yes">31x</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">31x</span>
 <span class="cline-any cline-yes">31x</span>
 <span class="cline-any cline-yes">31x</span>
@@ -780,14 +756,13 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { Drawer } from "./components/drawer";
 import { PopoverSimple } from "./components/popover";
-import { ThemeSelect } from "./components/theme-select";
+import { ThemeSelect, injectThemeScript } from "./components/theme-select";
 import { TopProgressBarRemix } from "./components/top-progress-bar";
 import type { UserTable } from "./db/models";
 import { $R, R } from "./misc/routes";
 import { HideRecaptchaBadge } from "./routes/users/register";
 import { trpc } from "./trpc/client";
-import { publicConfig } from "./utils/config";
-import { ConfigPlaceholder } from "./utils/config-placeholder";
+import { injectPublicConfigScript, publicConfig } from "./utils/config-public";
 import {
   encodeFlashMessage,
   useFlashMessageHandler,
@@ -841,10 +816,12 @@ export default function DefaultComponent() {
         &lt;/title&gt;
         &lt;Meta /&gt;
         &lt;Links /&gt;
-        &lt;ConfigPlaceholder /&gt;
-        &lt;ThemeScript /&gt;
         &lt;HideRecaptchaBadge /&gt;
-        &lt;script dangerouslySetInnerHTML={{ __html: `` }} /&gt;
+        {/* only server needs to do script injection but let client do as well */}
+        &lt;script dangerouslySetInnerHTML={{ __html: injectThemeScript() }} /&gt;
+        &lt;script
+          dangerouslySetInnerHTML={{ __html: injectPublicConfigScript() }}
+        /&gt;
       &lt;/head&gt;
       &lt;body className="h-full"&gt;
         &lt;button
@@ -864,19 +841,6 @@ export default function DefaultComponent() {
         /&gt;
       &lt;/body&gt;
     &lt;/html&gt;
-  );
-}
-&nbsp;
-function ThemeScript() {
-  return (
-    &lt;script
-      dangerouslySetInnerHTML={{
-        __html: `\
-globalThis.__themeStorageKey = "ytsub:theme";
-${require("@hiogawa/utils-experimental/dist/theme-script.global.js?loader=text")}
-`,
-      }}
-    /&gt;
   );
 }
 &nbsp;
@@ -1114,7 +1078,7 @@ const SIDE_MENU_ENTRIES: SideMenuEntry[] = [
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-05-25T04:40:03.399Z
+                at 2023-05-26T03:45:55.276Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">93.65% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>59/63</span>
+                <span class='fraction'>38/38</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">66.66% </span>
+                <span class="strong">50% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>2/3</span>
+                <span class='fraction'>1/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>1/1</span>
+                <span class='fraction'>0/0</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">93.65% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>59/63</span>
+                <span class='fraction'>38/38</span>
             </div>
         
             
@@ -101,40 +101,7 @@
 <a name='L36'></a><a href='#L36'>36</a>
 <a name='L37'></a><a href='#L37'>37</a>
 <a name='L38'></a><a href='#L38'>38</a>
-<a name='L39'></a><a href='#L39'>39</a>
-<a name='L40'></a><a href='#L40'>40</a>
-<a name='L41'></a><a href='#L41'>41</a>
-<a name='L42'></a><a href='#L42'>42</a>
-<a name='L43'></a><a href='#L43'>43</a>
-<a name='L44'></a><a href='#L44'>44</a>
-<a name='L45'></a><a href='#L45'>45</a>
-<a name='L46'></a><a href='#L46'>46</a>
-<a name='L47'></a><a href='#L47'>47</a>
-<a name='L48'></a><a href='#L48'>48</a>
-<a name='L49'></a><a href='#L49'>49</a>
-<a name='L50'></a><a href='#L50'>50</a>
-<a name='L51'></a><a href='#L51'>51</a>
-<a name='L52'></a><a href='#L52'>52</a>
-<a name='L53'></a><a href='#L53'>53</a>
-<a name='L54'></a><a href='#L54'>54</a>
-<a name='L55'></a><a href='#L55'>55</a>
-<a name='L56'></a><a href='#L56'>56</a>
-<a name='L57'></a><a href='#L57'>57</a>
-<a name='L58'></a><a href='#L58'>58</a>
-<a name='L59'></a><a href='#L59'>59</a>
-<a name='L60'></a><a href='#L60'>60</a>
-<a name='L61'></a><a href='#L61'>61</a>
-<a name='L62'></a><a href='#L62'>62</a>
-<a name='L63'></a><a href='#L63'>63</a>
-<a name='L64'></a><a href='#L64'>64</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<a name='L39'></a><a href='#L39'>39</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -172,31 +139,11 @@
 <span class="cline-any cline-yes">129x</span>
 <span class="cline-any cline-yes">129x</span>
 <span class="cline-any cline-yes">129x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">31x</span>
-<span class="cline-any cline-yes">31x</span>
-<span class="cline-any cline-yes">31x</span>
-<span class="cline-any cline-yes">31x</span>
-<span class="cline-any cline-yes">31x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import * as process from "process";
-import { once, tinyassert } from "@hiogawa/utils";
+import { once } from "@hiogawa/utils";
 import { z } from "zod";
+import { initializePublicConfigServer } from "./config-public";
 import { uninitialized } from "./misc";
-&nbsp;
-//
-// common
-//
 &nbsp;
 // prettier-ignore
 const Z_SERVER_CONFIG = z.object({
@@ -208,50 +155,28 @@ const Z_SERVER_CONFIG = z.object({
   APP_MYSQL_SSL: z.coerce.boolean(),
 &nbsp;
   APP_SESSION_SECRET: z.string().default("__sessionSecret"),
-  // TODO: even for dev localhost, let's not expose server key?
-  APP_RECAPTCHA_SERVER_KEY: z.string().default("6Lc79AcgAAAAAMGT4kicuJ9Mbq8JuRWy6xRwHDHS"),
-});
 &nbsp;
-// prettier-ignore
-const Z_PUBLIC_CONFIG = z.object({
+  APP_RECAPTCHA_SERVER_KEY: z.string().default("6Lc79AcgAAAAAMGT4kicuJ9Mbq8JuRWy6xRwHDHS"),
   APP_RECAPTCHA_CLIENT_KEY: z.string().default("6Lc79AcgAAAAAOdPnmAZfQqhVwL7mJngRndTyG19"),
   APP_RECAPTCHA_DISABLED: z.coerce.boolean(),
+&nbsp;
   VERCEL_ENV: z.string().optional(),
 });
 &nbsp;
+const Z_PUBLIC_CONFIG = Z_SERVER_CONFIG.pick({
+  APP_RECAPTCHA_CLIENT_KEY: true,
+  APP_RECAPTCHA_DISABLED: true,
+  VERCEL_ENV: true,
+});
+&nbsp;
+export type PublicConfig = z.infer&lt;typeof Z_PUBLIC_CONFIG&gt;;
+&nbsp;
 export let serverConfig = uninitialized as z.infer&lt;typeof Z_SERVER_CONFIG&gt;;
-&nbsp;
-export let publicConfig = uninitialized as z.infer&lt;typeof Z_PUBLIC_CONFIG&gt;;
-&nbsp;
-export const CONFIG_SCRIPT_ID = "__configScript";
-&nbsp;
-export const CONFIG_SCRIPT_PLACEHOLDER = "@@__configScriptPlaceholder@@";
-&nbsp;
-//
-// server
-//
 &nbsp;
 export const initializeConfigServer = once(() =&gt; {
   serverConfig = Z_SERVER_CONFIG.parse(process.env);
-  publicConfig = Z_PUBLIC_CONFIG.parse(process.env);
+  initializePublicConfigServer(Z_PUBLIC_CONFIG.parse(process.env));
 });
-&nbsp;
-export function injectConfigScript(markup: string): string {
-  return markup.replace(
-    CONFIG_SCRIPT_PLACEHOLDER,
-    JSON.stringify(publicConfig)
-  );
-}
-&nbsp;
-//
-// client
-//
-&nbsp;
-export const initializeConfigClient = once(() =&gt; {
-<span class="cstat-no" title="statement not covered" >  const el = document.querySelector("#" + CONFIG_SCRIPT_ID);</span>
-<span class="cstat-no" title="statement not covered" >  tinyassert(el);</span>
-<span class="cstat-no" title="statement not covered" >  publicConfig = JSON.parse(el.innerHTML);</span>
-<span class="cstat-no" title="statement not covered" >});</span>
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -259,7 +184,7 @@ export const initializeConfigClient = once(() =&gt; {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-05-25T04:40:03.399Z
+                at 2023-05-26T03:45:55.276Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>
