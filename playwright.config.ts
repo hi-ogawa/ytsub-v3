@@ -7,15 +7,15 @@ export default defineConfig({
     baseURL: "http://localhost:3001",
     actionTimeout: 10_000,
     navigationTimeout: 10_000,
-    trace: process.env.E2E_CLIENT_TRACE ? "on" : "off",
+    trace: process.env.E2E_CLIENT_TRACE ? "retain-on-failure" : "off",
   },
   projects: [
     {
       name: "chromium",
       use: {
         browserName: "chromium",
-        // https://github.com/microsoft/playwright/issues/1086#issuecomment-592227413
-        viewport: null, // adopt to browser window size specified below
+        // adapt to browser window size specified below (cf. https://github.com/microsoft/playwright/issues/1086#issuecomment-592227413)
+        viewport: null,
         launchOptions: {
           args: ["--window-size=600,800"],
         },
