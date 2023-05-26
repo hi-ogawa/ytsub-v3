@@ -7,7 +7,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { $R, R } from "../../misc/routes";
 import { trpc } from "../../trpc/client";
-import { publicConfig } from "../../utils/config";
+import { publicConfig } from "../../utils/config-public";
 import { loadScript } from "../../utils/dom-utils";
 import { encodeFlashMessage } from "../../utils/flash-message";
 import { makeLoader } from "../../utils/loader-utils.server";
