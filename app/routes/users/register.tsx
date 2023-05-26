@@ -1,18 +1,20 @@
-import { newPromiseWithResolvers, once, tinyassert } from "@hiogawa/utils";
+import { tinyassert } from "@hiogawa/utils";
 import { Temporal } from "@js-temporal/polyfill";
 import { Link } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import React from "react";
 import { useForm } from "react-hook-form";
-import { toast } from "react-hot-toast";
 import { $R, R } from "../../misc/routes";
-import { trpc } from "../../trpc/client";
-import { publicConfig } from "../../utils/config";
-import { loadScript } from "../../utils/dom-utils";
+import { trpcClient } from "../../trpc/client-internal.client";
 import { encodeFlashMessage } from "../../utils/flash-message";
 import { makeLoader } from "../../utils/loader-utils.server";
-import { uninitialized, usePromiseQueryOpitons } from "../../utils/misc";
+import { cls, usePromiseQueryOpitons } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
+import {
+  loadTurnstileScript,
+  turnstileRenderPromise,
+} from "../../utils/turnstile-utils.client";
 
 export const handle: PageHandle = {
   navBarTitle: () => "Register",
@@ -42,8 +44,23 @@ export const loader = makeLoader(async ({ ctx }) => {
 //
 
 export default function DefaultComponent() {
+  type FormState = {
+    username: string;
+    password: string;
+    passwordConfirmation: string;
+  };
+
   const registerMutation = useMutation({
-    ...trpc.users_register.mutationOptions(),
+    mutationFn: async (data: FormState) => {
+      tinyassert(turnstileScriptQuery.isSuccess);
+      tinyassert(turnstileRef.current);
+      const token = await turnstileRenderPromise(turnstileRef.current);
+      await trpcClient.users_register.mutate({
+        ...data,
+        token,
+        timezone: Temporal.Now.zonedDateTimeISO().offset,
+      });
+    },
     onSuccess: () => {
       window.location.href =
         $R["/"]() +
@@ -55,7 +72,7 @@ export default function DefaultComponent() {
     },
   });
 
-  const form = useForm({
+  const form = useForm<FormState>({
     defaultValues: {
       username: "",
       password: "",
@@ -63,12 +80,11 @@ export default function DefaultComponent() {
     },
   });
 
-  const recaptchaApiQuery = useQuery({
-    ...usePromiseQueryOpitons(() => loadRecaptchaApi().then(() => null)),
-    onError: () => {
-      toast.error("failed to load recaptcha");
-    },
+  const turnstileScriptQuery = useQuery({
+    ...usePromiseQueryOpitons(() => loadTurnstileScript().then(() => null)),
   });
+
+  const turnstileRef = React.useRef<HTMLDivElement>(null);
 
   return (
     <div className="w-full p-4 flex justify-center">
@@ -76,17 +92,7 @@ export default function DefaultComponent() {
         className="flex flex-col border w-full max-w-sm p-4 px-6 gap-3"
         data-test="register-form"
         onSubmit={form.handleSubmit(async (data) => {
-          let recaptchaToken = "";
-          if (!publicConfig.APP_RECAPTCHA_DISABLED) {
-            recaptchaToken = await recaptchaApi.execute(
-              publicConfig.APP_RECAPTCHA_CLIENT_KEY
-            );
-          }
-          registerMutation.mutate({
-            ...data,
-            recaptchaToken,
-            timezone: Temporal.Now.zonedDateTimeISO().offset,
-          });
+          registerMutation.mutate(data);
         })}
       >
         {registerMutation.isError && (
@@ -126,10 +132,13 @@ export default function DefaultComponent() {
         <div className="flex flex-col gap-1">
           <button
             type="submit"
-            className="antd-btn antd-btn-primary p-1"
+            className={cls(
+              "antd-btn antd-btn-primary p-1",
+              registerMutation.isLoading && "antd-btn-loading"
+            )}
             disabled={
               !form.formState.isValid ||
-              !recaptchaApiQuery.isSuccess ||
+              !turnstileScriptQuery.isSuccess ||
               registerMutation.isLoading
             }
           >
@@ -142,48 +151,8 @@ export default function DefaultComponent() {
             </Link>
           </div>
         </div>
-        <div className="border-t"></div>
-        {/* https://developers.google.com/recaptcha/docs/faq#id-like-to-hide-the-recaptcha-badge.-what-is-allowed */}
-        <div className="text-colorTextSecondary text-xs">
-          This site is protected by reCAPTCHA and the Google{" "}
-          <a className="antd-link" href="https://policies.google.com/privacy">
-            Privacy Policy
-          </a>{" "}
-          and{" "}
-          <a className="antd-link" href="https://policies.google.com/terms">
-            Terms of Service
-          </a>{" "}
-          apply.
-        </div>
+        <div ref={turnstileRef} className="absolute"></div>
       </form>
     </div>
   );
 }
-
-export function HideRecaptchaBadge() {
-  return <style>{".grecaptcha-badge { visibility: hidden; }"}</style>;
-}
-
-//
-// recaptcha api
-//
-
-interface RecaptchaApi {
-  ready: (callback: () => void) => void;
-  execute: (key: string) => Promise<string>;
-}
-
-// singleton
-let recaptchaApi = uninitialized as RecaptchaApi;
-
-const loadRecaptchaApi = once(async () => {
-  const key = publicConfig.APP_RECAPTCHA_CLIENT_KEY;
-  await loadScript(`https://www.google.com/recaptcha/api.js?render=${key}`);
-
-  recaptchaApi = (window as any).grecaptcha as RecaptchaApi;
-  tinyassert(recaptchaApi);
-
-  const { promise, resolve } = newPromiseWithResolvers<void>();
-  recaptchaApi.ready(() => resolve());
-  await promise;
-});

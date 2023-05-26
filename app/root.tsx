@@ -19,14 +19,12 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { Drawer } from "./components/drawer";
 import { PopoverSimple } from "./components/popover";
-import { ThemeSelect } from "./components/theme-select";
+import { ThemeSelect, injectThemeScript } from "./components/theme-select";
 import { TopProgressBarRemix } from "./components/top-progress-bar";
 import type { UserTable } from "./db/models";
 import { $R, R } from "./misc/routes";
-import { HideRecaptchaBadge } from "./routes/users/register";
 import { trpc } from "./trpc/client";
-import { publicConfig } from "./utils/config";
-import { ConfigPlaceholder } from "./utils/config-placeholder";
+import { injectPublicConfigScript, publicConfig } from "./utils/config-public";
 import {
   encodeFlashMessage,
   useFlashMessageHandler,
@@ -80,10 +78,11 @@ export default function DefaultComponent() {
         </title>
         <Meta />
         <Links />
-        <ConfigPlaceholder />
-        <ThemeScript />
-        <HideRecaptchaBadge />
-        <script dangerouslySetInnerHTML={{ __html: `` }} />
+        {/* only server needs to do script injection but let client do as well */}
+        <script dangerouslySetInnerHTML={{ __html: injectThemeScript() }} />
+        <script
+          dangerouslySetInnerHTML={{ __html: injectPublicConfigScript() }}
+        />
       </head>
       <body className="h-full">
         <button
@@ -103,19 +102,6 @@ export default function DefaultComponent() {
         />
       </body>
     </html>
-  );
-}
-
-function ThemeScript() {
-  return (
-    <script
-      dangerouslySetInnerHTML={{
-        __html: `\
-globalThis.__themeStorageKey = "ytsub:theme";
-${require("@hiogawa/utils-experimental/dist/theme-script.global.js?loader=text")}
-`,
-      }}
-    />
   );
 }
 

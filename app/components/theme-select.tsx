@@ -28,3 +28,10 @@ export function ThemeSelect() {
     </label>
   );
 }
+
+export function injectThemeScript() {
+  return `\
+globalThis.__themeStorageKey = "ytsub:theme";
+${require("@hiogawa/utils-experimental/dist/theme-script.global.js?loader=text")}
+`;
+}
