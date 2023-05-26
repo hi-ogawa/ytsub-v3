@@ -19,6 +19,10 @@ const Z_SERVER_CONFIG = z.object({
   APP_RECAPTCHA_CLIENT_KEY: z.string().default("6Lc79AcgAAAAAOdPnmAZfQqhVwL7mJngRndTyG19"),
   APP_RECAPTCHA_DISABLED: z.coerce.boolean(),
 
+  // captcha (default test keys always succeed https://developers.cloudflare.com/turnstile/reference/testing/)
+  APP_CAPTCHA_SITE_KEY: z.string().default("1x00000000000000000000BB"),
+  APP_CAPTCHA_SECRET_KEY: z.string().default("1x0000000000000000000000000000000AA"),
+
   VERCEL_ENV: z.string().optional(),
 });
 
