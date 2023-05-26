@@ -27,6 +27,7 @@ const Z_SERVER_CONFIG = z.object({
 });
 
 const Z_PUBLIC_CONFIG = Z_SERVER_CONFIG.pick({
+  APP_CAPTCHA_SITE_KEY: true,
   APP_RECAPTCHA_CLIENT_KEY: true,
   APP_RECAPTCHA_DISABLED: true,
   VERCEL_ENV: true,
