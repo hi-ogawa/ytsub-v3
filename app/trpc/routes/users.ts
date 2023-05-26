@@ -10,9 +10,8 @@ import {
   signoutSession,
   verifyPassword,
 } from "../../utils/auth";
-import { serverConfig } from "../../utils/config";
-import { publicConfig } from "../../utils/config-public";
 import { isValidTimezone } from "../../utils/temporal-utils";
+import { verifyTurnstile } from "../../utils/turnstile-utils.server";
 import { middlewares } from "../context";
 import { procedureBuilder } from "../factory";
 
@@ -29,7 +28,7 @@ export const trpcRoutesUsers = {
             .regex(/^[a-zA-Z0-9_.-]+$/),
           password: z.string().nonempty().max(PASSWORD_MAX_LENGTH),
           passwordConfirmation: z.string(),
-          recaptchaToken: z.string(),
+          token: z.string(),
           timezone: z.string().refine(isValidTimezone),
         })
         .refine((obj) => obj.password === obj.passwordConfirmation, {
@@ -39,14 +38,7 @@ export const trpcRoutesUsers = {
     )
     .mutation(async ({ input, ctx }) => {
       tinyassert(!ctx.user, "Already signed in");
-
-      if (!publicConfig.APP_RECAPTCHA_DISABLED) {
-        tinyassert(
-          await verifyRecaptchaToken(input.recaptchaToken),
-          "Invalid reCAPTCHA"
-        );
-      }
-
+      await verifyTurnstile({ response: input.token });
       const user = await register(input);
       signinSession(ctx.session, user);
       await ctx.commitSession();
@@ -93,37 +85,3 @@ export const trpcRoutesUsers = {
       await db.update(T.users).set(input).where(E.eq(T.users.id, ctx.user.id));
     }),
 };
-
-//
-// recaptcha utils
-//
-
-async function verifyRecaptchaToken(token: string): Promise<boolean> {
-  // https://developers.google.com/recaptcha/docs/verify
-  const res = await fetch("https://www.google.com/recaptcha/api/siteverify", {
-    method: "POST",
-    body: toFormDate({
-      secret: serverConfig.APP_RECAPTCHA_SERVER_KEY,
-      response: token,
-    }),
-  });
-  tinyassert(res.ok);
-
-  const resJson = await res.json();
-  const parsed = Z_RECAPTCHA_REPONSE.parse(resJson);
-  return parsed.success && parsed.score >= 0.5;
-}
-
-function toFormDate(data: object) {
-  const formData = new FormData();
-  for (const [k, v] of Object.entries(data)) {
-    formData.set(k, String(v));
-  }
-  return formData;
-}
-
-// https://developers.google.com/recaptcha/docs/v3#site_verify_response
-const Z_RECAPTCHA_REPONSE = z.object({
-  success: z.boolean(),
-  score: z.number(),
-});

@@ -15,16 +15,15 @@ const Z_SERVER_CONFIG = z.object({
 
   APP_SESSION_SECRET: z.string().default("__sessionSecret"),
 
-  APP_RECAPTCHA_SERVER_KEY: z.string().default("6Lc79AcgAAAAAMGT4kicuJ9Mbq8JuRWy6xRwHDHS"),
-  APP_RECAPTCHA_CLIENT_KEY: z.string().default("6Lc79AcgAAAAAOdPnmAZfQqhVwL7mJngRndTyG19"),
-  APP_RECAPTCHA_DISABLED: z.coerce.boolean(),
+  // captcha (default test keys always succeed https://developers.cloudflare.com/turnstile/reference/testing/)
+  APP_CAPTCHA_SITE_KEY: z.string().default("1x00000000000000000000BB"),
+  APP_CAPTCHA_SECRET_KEY: z.string().default("1x0000000000000000000000000000000AA"),
 
   VERCEL_ENV: z.string().optional(),
 });
 
 const Z_PUBLIC_CONFIG = Z_SERVER_CONFIG.pick({
-  APP_RECAPTCHA_CLIENT_KEY: true,
-  APP_RECAPTCHA_DISABLED: true,
+  APP_CAPTCHA_SITE_KEY: true,
   VERCEL_ENV: true,
 });
 

@@ -38,10 +38,16 @@ function createQueryClient() {
         refetchOnWindowFocus: false,
         refetchOnReconnect: false,
       },
+      mutations: {
+        onError(error, _variables, _context) {
+          console.error("[mutation error]", error);
+          toast.error("Something went wrong...");
+        },
+      },
     },
     queryCache: new QueryCache({
       onError(error, _query) {
-        console.error(error);
+        console.error("[query error]", error);
         toast.error("Something went wrong...");
       },
     }),
