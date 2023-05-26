@@ -37,7 +37,7 @@ export async function fetchVideoMetadata(videoId: string) {
 }
 
 // cf. https://gist.github.com/hi-ogawa/23f6d0b212f51c2b1b255339c642e9b9
-async function fetchVideoMetadataRaw(videoId: string): Promise<any> {
+export async function fetchVideoMetadataRaw(videoId: string): Promise<unknown> {
   // prettier-ignore
   const res = await fetch("https://www.youtube.com/youtubei/v1/player", {
     method: "POST",
