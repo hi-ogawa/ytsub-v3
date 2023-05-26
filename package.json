@@ -2,7 +2,7 @@
   "scripts": {
     "dev": "pnpm dev-pre && run-p dev:*",
     "dev-pre": "pnpm build:css",
-    "dev-e2e": "export NODE_ENV=test && pnpm dev-pre && PORT=3001 pnpm dev:remix",
+    "dev-e2e": "export NODE_ENV=test && pnpm dev-pre && PORT=3001 STRICT_PORT=true pnpm dev:remix",
     "dev-ui": "vite --host",
     "dev:remix": "run-p remix-watch remix-dev-server",
     "remix-watch": "remix watch",
