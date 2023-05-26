@@ -1,4 +1,4 @@
-import { difference, once, tinyassert } from "@hiogawa/utils";
+import { difference, tinyassert } from "@hiogawa/utils";
 import { sql } from "drizzle-orm";
 import * as E from "drizzle-orm/expressions";
 import {
@@ -317,24 +317,15 @@ export async function dbGetMigrationStatus() {
 // client
 //
 
-// persist through dev auto reloading
-declare let globalThis: {
-  __drizzleClient: MySql2Database;
-};
+export let db = uninitialized as MySql2Database;
 
-export let db = uninitialized as typeof globalThis.__drizzleClient;
-
-export const initializeDrizzleClient = once(async () => {
-  db = globalThis.__drizzleClient ??= await inner();
-
-  async function inner() {
-    const config = knexfile();
-    const connection = await createConnection(config.connection);
-    return drizzle(connection, {
-      logger: process.env["DEBUG"]?.includes("drizzle"), // enable query logging by DEBUG=drizzle
-    });
-  }
-});
+export async function initializeDrizzleClient() {
+  const config = knexfile();
+  const connection = await createConnection(config.connection);
+  db = drizzle(connection, {
+    logger: process.env["DEBUG"]?.includes("drizzle"), // enable query logging by DEBUG=drizzle
+  });
+}
 
 export async function finalizeDrizzleClient() {
   __dbExtra().connection.destroy();

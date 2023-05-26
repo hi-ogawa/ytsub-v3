@@ -1,4 +1,3 @@
-import { once } from "@hiogawa/utils";
 import {
   finalizeDrizzleClient,
   initializeDrizzleClient,
@@ -6,11 +5,11 @@ import {
 import { initializeConfigServer } from "../utils/config";
 import { initializeSessionStore } from "../utils/session.server";
 
-export const initializeServer = once(async () => {
+export async function initializeServer() {
   initializeConfigServer();
   initializeSessionStore();
   await initializeDrizzleClient();
-});
+}
 
 export async function finalizeServer() {
   await finalizeDrizzleClient();

@@ -31,7 +31,7 @@ export type PublicConfig = z.infer<typeof Z_PUBLIC_CONFIG>;
 
 export let serverConfig = uninitialized as z.infer<typeof Z_SERVER_CONFIG>;
 
-export const initializeConfigServer = once(() => {
+export function initializeConfigServer() {
   serverConfig = Z_SERVER_CONFIG.parse(process.env);
   initializePublicConfigServer(Z_PUBLIC_CONFIG.parse(process.env));
-});
+}
