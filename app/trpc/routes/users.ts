@@ -10,7 +10,8 @@ import {
   signoutSession,
   verifyPassword,
 } from "../../utils/auth";
-import { publicConfig, serverConfig } from "../../utils/config";
+import { serverConfig } from "../../utils/config";
+import { publicConfig } from "../../utils/config-public";
 import { isValidTimezone } from "../../utils/temporal-utils";
 import { middlewares } from "../context";
 import { procedureBuilder } from "../factory";

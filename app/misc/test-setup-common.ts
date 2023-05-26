@@ -1,4 +1,4 @@
-import { publicConfig } from "../utils/config";
+import { publicConfig } from "../utils/config-public";
 import { initializeServer } from "./initialize-server";
 
 export async function testSetupCommon() {
