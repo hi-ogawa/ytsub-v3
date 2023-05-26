@@ -30,9 +30,6 @@ pnpm build:css
 # remix's default "node-cjs" build with custom server entry
 NODE_ENV=production BUILD_VERCEL=1 npx remix build --sourcemap
 
-# bundle server entry
-node -r esbuild-register ./misc/vercel/bundle.ts build/remix/production/server/index.js .vercel/output/functions/index.func/index.js
-
 # config.json
 cp misc/vercel/config.json .vercel/output/config.json
 
@@ -40,6 +37,7 @@ cp misc/vercel/config.json .vercel/output/config.json
 cp -r ./build/remix/production/public .vercel/output/static
 
 # serverless
+cp build/remix/production/server/{index.js,index.js.map} .vercel/output/functions/index.func
 cp misc/vercel/.vc-config.json .vercel/output/functions/index.func/.vc-config.json
 cat > ".vercel/output/functions/index.func/index-bootstrap.js" <<EOF
 process.setSourceMapsEnabled(true);

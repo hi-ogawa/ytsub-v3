@@ -25,7 +25,9 @@ module.exports = {
 //
 globalThis.__esbuildPluginsCommon = [loaderOverridePlugin()];
 globalThis.__esbuildPluginsBrowser = [pureCommentPlugin()];
-globalThis.__esbuildPluginsServer = [];
+globalThis.__esbuildPluginsServer = [
+  env === "production" && noSourceMapNodeModulesPlugin(),
+].filter(Boolean);
 
 // tree-shake `export const loader = makeLoader(...)` from client bundle
 function pureCommentPlugin() {
@@ -93,6 +95,27 @@ function loaderOverridePlugin() {
           };
         }
       );
+    },
+  };
+}
+
+// https://github.com/evanw/esbuild/issues/1685#issuecomment-944916409
+function noSourceMapNodeModulesPlugin() {
+  const fs = require("node:fs");
+
+  return {
+    name: noSourceMapNodeModulesPlugin.name,
+    setup(build) {
+      build.onLoad({ filter: /node_modules/ }, (args) => {
+        if (args.path.endsWith("js")) {
+          return {
+            contents:
+              fs.readFileSync(args.path, "utf8") +
+              "\n//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIiJdLCJtYXBwaW5ncyI6IkEifQ==",
+            loader: "default",
+          };
+        }
+      });
     },
   };
 }
