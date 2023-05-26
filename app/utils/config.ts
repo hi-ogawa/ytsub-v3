@@ -1,5 +1,4 @@
 import * as process from "process";
-import { once } from "@hiogawa/utils";
 import { z } from "zod";
 import { initializePublicConfigServer } from "./config-public";
 import { uninitialized } from "./misc";
