@@ -11,7 +11,7 @@ import type { trpcApp } from "./server";
 type Inputs = inferRouterInputs<typeof trpcApp>;
 type Outputs = inferRouterOutputs<typeof trpcApp>;
 
-export { Inputs as TrpcInputs, Outputs as TrpcOutpus };
+export { Inputs as TrpcInputs };
 
 type ReactQueryIntegration = {
   [K in keyof Inputs]: {
