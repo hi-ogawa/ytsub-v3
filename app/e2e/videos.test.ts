@@ -112,7 +112,7 @@ test("anonymouse: / => /videos/new => /videos/id", async ({ page }) => {
   await page.goto("/");
 
   // input videoId
-  await page.getByRole("button").click();
+  await page.getByTestId("Navbar-drawer-button").click();
   await page
     .getByPlaceholder("Enter Video ID or URL")
     .fill("https://www.youtube.com/watch?v=4gXmClk8rKI");
@@ -139,6 +139,60 @@ test("anonymouse: / => /videos/new => /videos/id", async ({ page }) => {
   await page.getByText("Hey you 지금 뭐 해").click();
 });
 
+test("captions-manual-mode", async ({ page }) => {
+  await page.goto("/");
+
+  // input videoId
+  await page.getByTestId("Navbar-drawer-button").click();
+  await page
+    .getByPlaceholder("Enter Video ID or URL")
+    .fill("https://www.youtube.com/watch?v=AQt4K08L_m8");
+  await page.getByPlaceholder("Enter Video ID or URL").press("Enter");
+
+  // navigated to /vides/new
+  await page.waitForURL(
+    "/videos/new?videoId=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DAQt4K08L_m8"
+  );
+  await expect(page.getByLabel("Title")).toHaveValue(
+    "조유리 (JO YURI) | 'GLASSY' MV"
+  );
+
+  // enable manual mode
+  await page.getByTestId("video-menu-reference").click();
+  await page.getByRole("button", { name: "Manual input" }).click();
+
+  // input form
+  await page
+    .getByRole("combobox", { name: "1st language" })
+    .selectOption({ label: "Korean" });
+  await page
+    .getByRole("combobox", { name: "2nd language" })
+    .selectOption('{"id":".en"}');
+  await page.locator('textarea[name="input"]').fill(`\
+기분이 들떠
+Like a star like a star
+걸음에 시선이 쏟아져
+`);
+
+  // edit preview
+  await page.getByRole("button", { name: "Preview" }).click();
+  await page.getByText("기분이 들떠").click();
+  await page.getByText("걸음에 시선이 쏟아져").click();
+  await page
+    .locator("div:nth-child(4) > div > .w-full")
+    .fill("아닌척해도 살짝살짝");
+  await page.keyboard.press("Escape");
+
+  // submit and navigated to /videos/$id
+  await page.getByRole("button", { name: "Save and Play" }).click();
+  await page.getByText("Created a new video").click();
+  await page.waitForURL(/\/videos\/\d+$/);
+
+  // check created captions
+  await page.getByText("아닌척해도 살짝살짝").click();
+  await page.getByText("Even if you’re pretending not to").click();
+});
+
 test("invalid videoId input", async ({ page }) => {
   await page.goto("/");
   await page.getByTestId("Navbar-drawer-button").click();
@@ -148,6 +202,30 @@ test("invalid videoId input", async ({ page }) => {
     .fill("https://www.youtube.com/watch?v=4gXmClk8rXX");
   await page.getByPlaceholder("Enter Video ID or URL").press("Enter");
   await page.getByText("Failed to load a video").click();
+});
+
+test.describe("video playback rate", () => {
+  const userHook = useUserE2E(test, {
+    seed: __filename + "video playback rate",
+  });
+
+  test.beforeAll(async () => {
+    await userHook.isReady;
+    await importSeed(userHook.data.id);
+  });
+
+  test("basic", async ({ page }) => {
+    await userHook.signin(page);
+    await page.goto("/videos");
+    await page
+      .getByRole("link", { name: "fromis_9 (프로미스나인) 'DM' Official MV" })
+      .click();
+    await page.getByTestId("video-menu-reference").click();
+    await page
+      .getByTestId("PlaybackRateSelect")
+      .selectOption({ label: "0.75" });
+    await page.pause();
+  });
 });
 
 test.describe("videos deletion", () => {

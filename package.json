@@ -23,9 +23,9 @@
     "test-coverage": "NODE_ENV=test vitest --run --coverage",
     "test-e2e": "NODE_ENV=test playwright test",
     "test-e2e-coverage": "bash scripts/test-e2e-coverage.sh",
-    "build": "bash scripts/vercel.sh",
-    "release": "vercel deploy --prebuilt build/remix/production/deploy",
-    "release-production": "vercel deploy --prebuilt build/remix/production/deploy --prod",
+    "build": "bash misc/vercel/build.sh",
+    "release": "vercel deploy --prebuilt .",
+    "release-production": "vercel deploy --prebuilt . --prod",
     "cli": "node --require esbuild-register app/misc/cli.ts",
     "cli-staging": "pnpm dotenv-staging node --require esbuild-register app/misc/cli.ts",
     "cli-production": "pnpm dotenv-production node --require esbuild-register app/misc/cli.ts",
@@ -47,6 +47,7 @@
     "@hattip/core": "^0.0.33",
     "@headlessui/react": "^1.7.13",
     "@hiogawa/utils": "1.4.2-pre.9",
+    "@hiogawa/utils-experimental": "^0.0.1",
     "@hiogawa/utils-react": "1.2.1-pre.4",
     "@js-temporal/polyfill": "^0.4.3",
     "@remix-run/express": "1.15.0",
@@ -95,7 +96,7 @@
     "@unocss/cli": "^0.50.6",
     "@unocss/reset": "^0.50.6",
     "@vitejs/plugin-react": "^3.1.0",
-    "@vitest/coverage-c8": "^0.29.3",
+    "@vitest/coverage-c8": "^0.31.0",
     "c8": "^7.13.0",
     "cac": "^6.7.12",
     "consola": "^2.15.3",
@@ -113,7 +114,8 @@
     "typescript": "^4.9.5",
     "unocss": "^0.50.6",
     "vite": "^4.2.0",
-    "vitest": "^0.29.3"
+    "vitest": "^0.31.0",
+    "zx": "^7.2.2"
   },
   "volta": {
     "node": "16.20.0"

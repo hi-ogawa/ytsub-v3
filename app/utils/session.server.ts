@@ -12,6 +12,9 @@ export const initializeSessionStore = once(() => {
   sessionStore = createCookieSessionStorage({
     cookie: {
       httpOnly: true,
+      secure: true,
+      sameSite: "lax",
+      maxAge: 14 * 24 * 60 * 60, // two weeks
       secrets: [serverConfig.APP_SESSION_SECRET],
     },
   });

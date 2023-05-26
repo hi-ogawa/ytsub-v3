@@ -5,6 +5,7 @@ import { cac } from "cac";
 import consola from "consola";
 import { sql } from "drizzle-orm";
 import { z } from "zod";
+import * as zx from "zx";
 import {
   E,
   T,
@@ -27,7 +28,14 @@ import {
 } from "../utils/auth";
 import { exec, streamToString } from "../utils/node.server";
 import { resetDeckCache } from "../utils/practice-system";
-import { NewVideo, fetchCaptionEntries } from "../utils/youtube";
+import {
+  NewVideo,
+  captionConfigToUrl,
+  fetchCaptionEntries,
+  fetchVideoMetadata,
+  toCaptionConfigOptions,
+  ttmlToEntries,
+} from "../utils/youtube";
 import { finalizeServer, initializeServer } from "./initialize-server";
 import { exportDeckJson, importDeckJson } from "./seed-utils";
 
@@ -187,6 +195,65 @@ async function commandFetchCaptionEntries(rawArgs: unknown) {
     },
   });
   await fs.promises.writeFile(args.outFile, JSON.stringify(data, null, 2));
+}
+
+//
+// scrapeCaptionEntries
+//   pnpm cli scrapeCaptionEntries --videoId='-UroBRG1rY8' --id .ko --outFile misc/youtube/data/zombie-ko.ttml
+//   pnpm cli scrapeCaptionEntries --videoId='-UroBRG1rY8' --id .en --outFile misc/youtube/data/zombie-en.ttml
+//
+
+const scrapeCaptionEntriesArgs = z.object({
+  videoId: z.string(),
+  id: z.string().optional(),
+  translation: z.string().optional(),
+  formatJson: z.boolean().optional(),
+  outFile: z.string().optional(),
+});
+
+// prettier-ignore
+cli
+  .command(scrapeCaptionEntries.name)
+  .option(`--${scrapeCaptionEntriesArgs.keyof().enum.videoId} [string]`, "")
+  .option(`--${scrapeCaptionEntriesArgs.keyof().enum.id} [string]`, "")
+  .option(`--${scrapeCaptionEntriesArgs.keyof().enum.translation} [string]`, "")
+  .option(`--${scrapeCaptionEntriesArgs.keyof().enum.formatJson}`, "")
+  .option(`--${scrapeCaptionEntriesArgs.keyof().enum.outFile} [string]`, "")
+  .action(scrapeCaptionEntries);
+
+async function scrapeCaptionEntries(rawArgs: unknown) {
+  const args = scrapeCaptionEntriesArgs.parse(rawArgs);
+
+  console.error(":: fetching metadata...");
+  const videoMetadata = await fetchVideoMetadata(args.videoId);
+
+  // list available captions and pick interactively
+  let id = args.id;
+  if (!id) {
+    const options = toCaptionConfigOptions(videoMetadata);
+    console.error(":: available languages");
+    console.error(options.captions);
+    id = await zx.question(":: please select a language > ");
+  }
+
+  // fetch caption and format
+  const url = captionConfigToUrl(
+    { id, translation: args.translation },
+    videoMetadata
+  );
+  tinyassert(url);
+  const ttml = await fetch(url).then((res) => res.text());
+  let output = ttml;
+  if (args.formatJson) {
+    const entries = ttmlToEntries(ttml);
+    output = JSON.stringify(entries, null, 2);
+  }
+
+  if (args.outFile) {
+    await fs.promises.writeFile(args.outFile, output);
+  } else {
+    console.log(output);
+  }
 }
 
 //

@@ -3,7 +3,6 @@ import type { Session } from "@remix-run/server-runtime";
 import bcrypt from "bcryptjs";
 import { E, T, db, selectOne } from "../db/drizzle-client.server";
 import type { UserTable } from "../db/models";
-import { AppError } from "./errors";
 import { crypto } from "./node.server";
 import { sessionStore } from "./session.server";
 
@@ -42,7 +41,7 @@ export async function register({
 }): Promise<UserTable> {
   // Check uniqueness
   if (await findByUsername(username)) {
-    throw new AppError(`Username '${username}' is already taken`);
+    throw new Error(`Username '${username}' is already taken`);
   }
 
   // Save
@@ -73,7 +72,7 @@ export async function verifySignin(data: {
   if (user && (await verifyPassword(data.password, user.passwordHash))) {
     return user;
   }
-  throw new AppError("Invalid username or password");
+  throw new Error("Invalid username or password");
 }
 
 const SESSION_USER_KEY = "session-user-v1";

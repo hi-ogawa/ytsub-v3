@@ -1,0 +1,15 @@
+{
+  "version": 3,
+  "routes": [
+    {
+      "src": "^/build/(.*)$",
+      "headers": {
+        "cache-control": "public, immutable, max-age=31536000"
+      }
+    },
+    {
+      "src": "^/(.*)$",
+      "dest": "/"
+    }
+  ]
+}

@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it } from "vitest";
 import { E, T, db } from "../../db/drizzle-client.server";
 import { useUser } from "../../misc/test-helper";
 import { findByUsername, getSessionUser } from "../../utils/auth";
-import { trpc } from "../client";
+import { TrpcInputs, trpc } from "../client";
 import { testTrpcClient, testTrpcClientWithContext } from "../test-helper";
 
 describe(trpc.users_signin.mutationKey, () => {
@@ -89,11 +89,11 @@ describe(trpc.users_signout.mutationKey, () => {
 });
 
 describe(trpc.users_register.mutationKey, () => {
-  const credentials = {
+  const credentials: TrpcInputs["users_register"] = {
     username: "test-trpc-register",
     password: "correct",
     passwordConfirmation: "correct",
-    recaptchaToken: "",
+    token: "dummy",
     timezone: "+00:00",
   };
 
@@ -168,7 +168,7 @@ describe(trpc.users_register.mutationKey, () => {
       `);
     });
 
-    it("unique username", async () => {
+    it("unique username case insensitive", async () => {
       {
         const trpc = await testTrpcClientWithContext();
         await trpc.caller.users_register(credentials);
@@ -180,6 +180,18 @@ describe(trpc.users_register.mutationKey, () => {
           trpc.caller.users_register(credentials)
         ).rejects.toMatchInlineSnapshot(
           "[TRPCError: Username 'test-trpc-register' is already taken]"
+        );
+      }
+
+      {
+        const trpc = await testTrpcClientWithContext();
+        await expect(
+          trpc.caller.users_register({
+            ...credentials,
+            username: "test-tRPC-REGISTER",
+          })
+        ).rejects.toMatchInlineSnapshot(
+          "[TRPCError: Username 'test-tRPC-REGISTER' is already taken]"
         );
       }
     });

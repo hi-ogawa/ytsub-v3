@@ -13,7 +13,7 @@ import { atomWithStorage } from "jotai/utils";
 import React from "react";
 import toast from "react-hot-toast";
 import { z } from "zod";
-import { transitionProps } from "../../components/misc";
+import { SelectWrapper, transitionProps } from "../../components/misc";
 import { useModal } from "../../components/modal";
 import { PopoverSimple } from "../../components/popover";
 import { E, T, TT, selectOne } from "../../db/drizzle-client.server";
@@ -30,7 +30,7 @@ import {
   useTypedUrlQuery,
 } from "../../utils/loader-utils";
 import { makeLoader } from "../../utils/loader-utils.server";
-import { cls } from "../../utils/misc";
+import { cls, none } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 import type { CaptionEntry } from "../../utils/types";
 import {
@@ -119,6 +119,13 @@ function PageComponent({
   const [isPlaying, setIsPlaying] = React.useState(false);
   const [currentEntry, setCurrentEntry] = React.useState<CaptionEntry>();
   const [bookmarkState, setBookmarkState] = React.useState<BookmarkSelection>();
+  const [playerbackRateState, setPlaybackRateState] = useAtom(
+    playbackRateStateAtom
+  );
+  React.useEffect(
+    () => () => setPlaybackRateState(INITIAL_PLAYBACK_RATE_STATE),
+    [video]
+  ); // clear state on change
 
   //
   // query
@@ -165,6 +172,11 @@ function PageComponent({
 
   useRafLoop(() => {
     if (!player) return;
+
+    const playbackRate = player.getPlaybackRate() ?? 1;
+    if (playerbackRateState.value !== playbackRate) {
+      setPlaybackRateState((prev) => ({ ...prev, value: playbackRate }));
+    }
 
     const isPlaying = player.getPlayerState() === 1;
     setIsPlaying(isPlaying);
@@ -296,7 +308,14 @@ function PageComponent({
         <>
           <PlayerComponent
             defaultOptions={{ videoId: video.videoId }}
-            onReady={setPlayer}
+            onReady={(player) => {
+              setPlayer(player);
+              setPlaybackRateState((prev) => ({
+                ...prev,
+                player,
+                options: player.getAvailablePlaybackRates(),
+              }));
+            }}
           />
         </>
       }
@@ -334,7 +353,7 @@ function PageComponent({
         currentUser.id === video.userId && (
           <Transition
             show={!!bookmarkState || newBookmarkMutation.isLoading}
-            className="absolute bottom-0 right-0 flex gap-2 p-1.5 transition duration-300 z-10"
+            className="absolute bottom-0 right-0 flex gap-2 p-1.5 transition duration-300"
             enterFrom="scale-30 opacity-0"
             enterTo="scale-100 opacity-100"
             leaveFrom="scale-100 opacity-100"
@@ -723,27 +742,8 @@ function NavBarMenuComponent() {
   const [highlightBookmark, setHighlightBookmark] = useAtom(
     highlightBookmarkStorageAtom
   );
+  const [playbackRateState] = useAtom(playbackRateStateAtom);
   const modal = useModal();
-
-  const navigate = useNavigate();
-
-  const lastBookmarkQuery = useMutation({
-    ...trpc.videos_getLastBookmark.mutationOptions(),
-    onSuccess: (data) => {
-      if (data) {
-        modal.setOpen(false);
-        navigate(
-          $R["/videos/$id"](
-            { id: video.id },
-            { index: data.captionEntries.index }
-          ),
-          { replace: true }
-        );
-      } else {
-        toast.error("No bookmark is found");
-      }
-    },
-  });
 
   return (
     <>
@@ -765,6 +765,15 @@ function NavBarMenuComponent() {
                 >
                   Details
                 </button>
+                <modal.Wrapper>
+                  <DetailsComponent
+                    video={video}
+                    onClose={() => {
+                      modal.setOpen(false);
+                      context.onOpenChange(false);
+                    }}
+                  />
+                </modal.Wrapper>
               </li>
               <li>
                 <button
@@ -801,77 +810,120 @@ function NavBarMenuComponent() {
                   Clear Repeat
                 </button>
               </li>
+              <li>
+                <label className="p-2 flex items-center gap-2">
+                  <span>Speed</span>
+                  <SelectWrapper
+                    data-testid="PlaybackRateSelect"
+                    className="antd-input px-1 w-15 text-sm"
+                    value={playbackRateState.value}
+                    options={playbackRateState.options}
+                    onChange={(v) =>
+                      playbackRateState.player?.setPlaybackRate(v)
+                    }
+                  />
+                </label>
+              </li>
             </ul>
           )}
         />
       </div>
-      <modal.Wrapper>
-        <div className="flex flex-col gap-2 p-4 relative">
-          <div className="text-lg">Details</div>
-          <label className="flex flex-col gap-1">
-            <span className="text-colorTextLabel">Title</span>
-            <input
-              type="text"
-              className="antd-input p-1 bg-colorBgContainerDisabled"
-              readOnly
-              value={video.title}
-            />
-          </label>
-          <label className="flex flex-col gap-1">
-            <span className="text-colorTextLabel">Author</span>
-            <input
-              type="text"
-              className="antd-input p-1 bg-colorBgContainerDisabled"
-              readOnly
-              value={video.author}
-            />
-          </label>
-          <label className="flex flex-col gap-1">
-            <span className="text-colorTextLabel">Imported at</span>
-            <input
-              type="text"
-              className="antd-input p-1 bg-colorBgContainerDisabled"
-              readOnly
-              value={intl.formatDate(video.createdAt, {
-                dateStyle: "long",
-                timeStyle: "long",
-                hour12: false,
-              })}
-            />
-          </label>
-          <label className="flex flex-col gap-1">
-            <span className="text-colorTextLabel">Bookmark count</span>
-            <input
-              type="text"
-              className="antd-input p-1 bg-colorBgContainerDisabled"
-              readOnly
-              value={video.bookmarkEntriesCount}
-            />
-          </label>
-          <div className="border-t my-1"></div>
-          <h4>Shortcuts</h4>
-          <div className="flex flex-col sm:flex-row gap-2 text-sm">
-            <button
-              className={cls(
-                "antd-btn antd-btn-default px-2 py-0.5",
-                lastBookmarkQuery.isLoading && "antd-btn-loading"
-              )}
-              onClick={() => {
-                lastBookmarkQuery.mutate({ videoId: video.id });
-              }}
-            >
-              Go to Last Bookmark
-            </button>
-            <Link
-              className="antd-btn antd-btn-default px-2 py-0.5 flex justify-center"
-              to={$R["/videos/new"](null, { videoId: video.videoId })}
-            >
-              Change Languages
-            </Link>
-          </div>
-        </div>
-      </modal.Wrapper>
     </>
+  );
+}
+
+function DetailsComponent({
+  video,
+  onClose,
+}: {
+  video: TT["videos"];
+  onClose: () => void;
+}) {
+  const navigate = useNavigate();
+
+  const lastBookmarkQuery = useMutation({
+    ...trpc.videos_getLastBookmark.mutationOptions(),
+    onSuccess: (data) => {
+      if (data) {
+        onClose();
+        navigate(
+          $R["/videos/$id"](
+            { id: video.id },
+            { index: data.captionEntries.index }
+          ),
+          { replace: true }
+        );
+      } else {
+        toast.error("No bookmark is found");
+      }
+    },
+  });
+
+  return (
+    <div className="flex flex-col gap-2 p-4 relative">
+      <div className="text-lg">Details</div>
+      <label className="flex flex-col gap-1">
+        <span className="text-colorTextLabel">Title</span>
+        <input
+          type="text"
+          className="antd-input p-1 bg-colorBgContainerDisabled"
+          readOnly
+          value={video.title}
+        />
+      </label>
+      <label className="flex flex-col gap-1">
+        <span className="text-colorTextLabel">Author</span>
+        <input
+          type="text"
+          className="antd-input p-1 bg-colorBgContainerDisabled"
+          readOnly
+          value={video.author}
+        />
+      </label>
+      <label className="flex flex-col gap-1">
+        <span className="text-colorTextLabel">Imported at</span>
+        <input
+          type="text"
+          className="antd-input p-1 bg-colorBgContainerDisabled"
+          readOnly
+          value={intl.formatDate(video.createdAt, {
+            dateStyle: "long",
+            timeStyle: "long",
+            hour12: false,
+          })}
+        />
+      </label>
+      <label className="flex flex-col gap-1">
+        <span className="text-colorTextLabel">Bookmark count</span>
+        <input
+          type="text"
+          className="antd-input p-1 bg-colorBgContainerDisabled"
+          readOnly
+          value={video.bookmarkEntriesCount}
+        />
+      </label>
+      <div className="border-t my-1"></div>
+      <h4>Shortcuts</h4>
+      <div className="flex flex-col sm:flex-row gap-2 text-sm">
+        <button
+          className={cls(
+            "antd-btn antd-btn-default px-2 py-0.5",
+            lastBookmarkQuery.isLoading && "antd-btn-loading"
+          )}
+          onClick={() => {
+            lastBookmarkQuery.mutate({ videoId: video.id });
+          }}
+        >
+          Go to Last Bookmark
+        </button>
+        <Link
+          className="antd-btn antd-btn-default px-2 py-0.5 flex justify-center"
+          to={$R["/videos/new"](null, { videoId: video.videoId })}
+        >
+          Change Languages
+        </Link>
+      </div>
+    </div>
   );
 }
 
@@ -900,3 +952,11 @@ const highlightBookmarkStorageAtom = atomWithStorage(
   "ytsub:video-highlight-bookmark",
   false
 );
+
+const INITIAL_PLAYBACK_RATE_STATE = {
+  value: 1,
+  options: [1],
+  player: none<YoutubePlayer>(),
+};
+
+const playbackRateStateAtom = atom(INITIAL_PLAYBACK_RATE_STATE);

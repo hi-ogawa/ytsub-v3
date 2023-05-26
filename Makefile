@@ -17,7 +17,7 @@ lint/docker-compose:
 	docker-compose config -q
 
 lint/shellcheck:
-	$(SHELLCHECK) scripts/*.sh
+	$(SHELLCHECK) scripts/*.sh $$(find misc -name '*.sh')
 
 lint/github-workflow:
 	$(SCHEMACHECK) -s github-workflow -y < .github/workflows/ci.yml
