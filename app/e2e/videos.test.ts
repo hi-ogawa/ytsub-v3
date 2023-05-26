@@ -224,7 +224,6 @@ test.describe("video playback rate", () => {
     await page
       .getByTestId("PlaybackRateSelect")
       .selectOption({ label: "0.75" });
-    await page.pause();
   });
 });
 

@@ -3,5 +3,6 @@ set -eu -o pipefail
 
 server_entry="./build/remix/${NODE_ENV:-development}/server/index.js"
 
-# TODO: wait for "$server_entry" to be created
+bash scripts/wait-for.sh test -f "$server_entry"
+
 exec nodemon --enable-source-maps "$server_entry" --watch "$server_entry"
