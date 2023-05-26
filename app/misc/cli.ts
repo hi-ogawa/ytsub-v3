@@ -28,11 +28,13 @@ import {
 } from "../utils/auth";
 import { exec, streamToString } from "../utils/node.server";
 import { resetDeckCache } from "../utils/practice-system";
+import { Z_VIDEO_METADATA } from "../utils/types";
 import {
   NewVideo,
   captionConfigToUrl,
   fetchCaptionEntries,
   fetchVideoMetadata,
+  fetchVideoMetadataRaw,
   toCaptionConfigOptions,
   ttmlToEntries,
 } from "../utils/youtube";
@@ -253,6 +255,57 @@ async function scrapeCaptionEntries(rawArgs: unknown) {
     await fs.promises.writeFile(args.outFile, output);
   } else {
     console.log(output);
+  }
+}
+
+//
+// pnpm cli scrapeYoutube --videoId='-UroBRG1rY8'
+//
+
+const scrapeYoutubeArgs = z.object({
+  videoId: z.string(),
+  outDir: z.string().default("./misc/youtube/data"),
+});
+
+// prettier-ignore
+cli
+  .command(scrapeYoutube.name)
+  .option(`--${scrapeYoutubeArgs.keyof().enum.videoId} [string]`, "")
+  .option(`--${scrapeYoutubeArgs.keyof().enum.outDir} [string]`, "")
+  .action(scrapeYoutube);
+
+async function scrapeYoutube(rawArgs: unknown) {
+  const args = scrapeYoutubeArgs.parse(rawArgs);
+  const dir = `${args.outDir}/${args.videoId}`;
+  await zx.$`mkdir -p ${dir}`;
+
+  console.log(`:: fetching metadata to '${dir}/metadata.json'...`);
+  const metadataRaw = await fetchVideoMetadataRaw(args.videoId);
+  await fs.promises.writeFile(
+    `${dir}/metadata.json`,
+    JSON.stringify(metadataRaw, null, 2)
+  );
+
+  // list available captions and pick interactively
+  const videoMetadata = Z_VIDEO_METADATA.parse(metadataRaw);
+  const options = toCaptionConfigOptions(videoMetadata);
+  console.log(":: available languages");
+  console.log(options.captions);
+
+  while (true) {
+    const input = await zx.question(
+      ":: please input language+translation (e.g. .en, .en_fr) > "
+    );
+    if (!input) {
+      break;
+    }
+    const [id, translation] = input.split("_");
+
+    // fetch caption and format
+    const url = captionConfigToUrl({ id, translation }, videoMetadata);
+    tinyassert(url);
+    const ttml = await fetch(url).then((res) => res.text());
+    await fs.promises.writeFile(`${dir}/${input}.ttml`, ttml);
   }
 }
 
