@@ -93,7 +93,7 @@ describe(trpc.users_register.mutationKey, () => {
     username: "test-trpc-register",
     password: "correct",
     passwordConfirmation: "correct",
-    token: "",
+    token: "dummy",
     timezone: "+00:00",
   };
 
