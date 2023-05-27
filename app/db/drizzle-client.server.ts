@@ -58,7 +58,7 @@ const users = mysqlTable("users", {
   //
   username: text("username").notNull(),
   passwordHash: text("passwordHash").notNull(), // TODO: reduct when responding to client
-  email: text("email"),
+  email: text("email"), // email is optional only for reset password feature
   language1: text("language1"),
   language2: text("language2"),
   timezone: text("timezone").notNull().default(DUMMY_DEFAULT),
