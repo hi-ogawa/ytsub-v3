@@ -238,9 +238,7 @@ Please follow this link to confirm the change:
 
 [Change your email](${href})
 
-If you did not request a password reset, please ignore this email.
-
-Thanks
+If you did not request an email change, please ignore this email.
 `;
   await sendEmail({
     Messages: [
@@ -259,8 +257,40 @@ Thanks
   });
 }
 
-async function sendResetPasswordEmail({}: { email: string; code: string }) {
-  // TODO
+async function sendResetPasswordEmail({
+  email,
+  code,
+}: {
+  email: string;
+  code: string;
+}) {
+  const href =
+    serverConfig.BASE_URL + $R["/users/password-new"](null, { code });
+  const TextPart = `\
+Hello,
+
+You recently requested to reset your password on Ytsub account.
+Please follow this link to continue:
+
+[Reset your password](${href})
+
+If you did not request a password reset, please ignore this email.
+`;
+  await sendEmail({
+    Messages: [
+      {
+        To: [
+          {
+            Email: email,
+          },
+        ],
+        From: EMAIL_FROM,
+        Subject: "Password reset",
+        TextPart,
+        HTMLPart: new showdown.Converter().makeHtml(TextPart),
+      },
+    ],
+  });
 }
 
 const EMAIL_FROM = {
