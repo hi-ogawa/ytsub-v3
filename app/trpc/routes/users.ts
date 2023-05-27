@@ -1,6 +1,8 @@
+import crypto from "node:crypto";
 import { tinyassert } from "@hiogawa/utils";
 import { z } from "zod";
 import { E, T, db } from "../../db/drizzle-client.server";
+import { $R } from "../../misc/routes";
 import {
   PASSWORD_MAX_LENGTH,
   USERNAME_MAX_LENGTH,
@@ -84,4 +86,78 @@ export const trpcRoutesUsers = {
     .mutation(async ({ input, ctx }) => {
       await db.update(T.users).set(input).where(E.eq(T.users.id, ctx.user.id));
     }),
+
+  users_requestUpdateEmail: procedureBuilder
+    .use(middlewares.requireUser)
+    .input(
+      z.object({
+        email: z.string(),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      tinyassert(input.email !== ctx.user.email);
+      const code = crypto.randomBytes(32).toString("hex"); // 64 chars
+      await db.insert(T.userVerifications).values({
+        userId: ctx.user.id,
+        email: input.email,
+        code,
+      });
+      // TODO: send email with link
+      const href = $R["/users/verify"](null, { code });
+      console.log({ href });
+    }),
+
+  // TODO
+  users_requestResetPassword: procedureBuilder
+    .input(
+      z.object({
+        email: z.string(),
+      })
+    )
+    .mutation(async ({ input }) => {
+      input;
+    }),
+
+  // TODO
+  users_resetPassword: procedureBuilder
+    .input(
+      z.object({
+        code: z.string(),
+        password: z.string(),
+        passwordConfirmation: z.string(),
+      })
+    )
+    .mutation(async ({ input }) => {
+      tinyassert(input.password === input.passwordConfirmation);
+    }),
 };
+
+// not exposed as trpc since it's done directly in /users/verify loader
+export async function updateEmailByCode(code: string) {
+  // select one
+  const rows = await db
+    .select()
+    .from(T.userVerifications)
+    .where(E.eq(T.userVerifications.code, code))
+    .orderBy(E.desc(T.userVerifications.createdAt))
+    .limit(1);
+  const row = rows.at(0);
+  tinyassert(row);
+  tinyassert(!row.verifiedAt);
+
+  // update user
+  await db
+    .update(T.users)
+    .set({
+      email: row.email,
+    })
+    .where(E.eq(T.users.id, row.userId));
+
+  // update verification
+  await db
+    .update(T.userVerifications)
+    .set({
+      verifiedAt: new Date(),
+    })
+    .where(E.eq(T.userVerifications.id, row.id));
+}
