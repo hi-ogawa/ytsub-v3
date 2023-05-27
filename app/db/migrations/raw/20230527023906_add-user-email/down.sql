@@ -1,3 +1,5 @@
+ALTER TABLE `users` DROP COLUMN `email`, DROP KEY `email`;
+
 DROP TABLE `userVerifications`;
 
-ALTER TABLE `users` DROP COLUMN `email`, DROP KEY `email`;
+DROP TABLE `passwordResetRequests`;
