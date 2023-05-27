@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">74.23% </span>
+                <span class="strong">72.09% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>121/163</span>
+                <span class='fraction'>124/172</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">74.23% </span>
+                <span class="strong">72.09% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>121/163</span>
+                <span class='fraction'>124/172</span>
             </div>
         
             
@@ -226,7 +226,17 @@
 <a name='L161'></a><a href='#L161'>161</a>
 <a name='L162'></a><a href='#L162'>162</a>
 <a name='L163'></a><a href='#L163'>163</a>
-<a name='L164'></a><a href='#L164'>164</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L164'></a><a href='#L164'>164</a>
+<a name='L165'></a><a href='#L165'>165</a>
+<a name='L166'></a><a href='#L166'>166</a>
+<a name='L167'></a><a href='#L167'>167</a>
+<a name='L168'></a><a href='#L168'>168</a>
+<a name='L169'></a><a href='#L169'>169</a>
+<a name='L170'></a><a href='#L170'>170</a>
+<a name='L171'></a><a href='#L171'>171</a>
+<a name='L172'></a><a href='#L172'>172</a>
+<a name='L173'></a><a href='#L173'>173</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -333,19 +343,7 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -361,6 +359,19 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -389,6 +400,13 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import crypto from "node:crypto";
 import { tinyassert } from "@hiogawa/utils";
 import { z } from "zod";
@@ -403,6 +421,7 @@ import {
   signoutSession,
   verifyPassword,
 } from "../../utils/auth";
+import { sendEmail } from "../../utils/email-utils";
 import { isValidTimezone } from "../../utils/temporal-utils";
 import { verifyTurnstile } from "../../utils/turnstile-utils.server";
 import { middlewares } from "../context";
@@ -482,7 +501,7 @@ export const trpcRoutesUsers = {
     .use(middlewares.requireUser)
     .input(
       z.object({
-        email: z.string(),
+        email: z.string().email(),
       })
     )
     .mutation(async ({ input, ctx }) =&gt; {
@@ -494,8 +513,9 @@ export const trpcRoutesUsers = {
 <span class="cstat-no" title="statement not covered" >        code,</span>
 <span class="cstat-no" title="statement not covered" >      });</span>
 <span class="cstat-no" title="statement not covered" >      // TODO: send email with link</span>
+<span class="cstat-no" title="statement not covered" >      // TODO: escape hatch for e2e</span>
 <span class="cstat-no" title="statement not covered" >      const href = $R["/users/verify"](null, { code });</span>
-<span class="cstat-no" title="statement not covered" >      console.log({ href });</span>
+<span class="cstat-no" title="statement not covered" >      await sendEmail({ href });</span>
     }),
 &nbsp;
   // TODO
@@ -525,6 +545,8 @@ export const trpcRoutesUsers = {
 &nbsp;
 // not exposed as trpc since it's done directly in /users/verify loader
 <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >export async function updateEmailByCode(code: string) {</span></span>
+<span class="cstat-no" title="statement not covered" >  // TODO: atomic?</span>
+<span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  // select one</span>
 <span class="cstat-no" title="statement not covered" >  const rows = await db</span>
 <span class="cstat-no" title="statement not covered" >    .select()</span>
@@ -535,6 +557,9 @@ export const trpcRoutesUsers = {
 <span class="cstat-no" title="statement not covered" >  const row = rows.at(0);</span>
 <span class="cstat-no" title="statement not covered" >  tinyassert(row);</span>
 <span class="cstat-no" title="statement not covered" >  tinyassert(!row.verifiedAt);</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >  const now = new Date();</span>
+<span class="cstat-no" title="statement not covered" >  tinyassert(now.getTime() - row.createdAt.getTime() &lt; VERIFICATION_MAX_AGE);</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  // update user</span>
 <span class="cstat-no" title="statement not covered" >  await db</span>
@@ -548,10 +573,12 @@ export const trpcRoutesUsers = {
 <span class="cstat-no" title="statement not covered" >  await db</span>
 <span class="cstat-no" title="statement not covered" >    .update(T.userVerifications)</span>
 <span class="cstat-no" title="statement not covered" >    .set({</span>
-<span class="cstat-no" title="statement not covered" >      verifiedAt: new Date(),</span>
+<span class="cstat-no" title="statement not covered" >      verifiedAt: now,</span>
 <span class="cstat-no" title="statement not covered" >    })</span>
 <span class="cstat-no" title="statement not covered" >    .where(E.eq(T.userVerifications.id, row.id));</span>
 <span class="cstat-no" title="statement not covered" >}</span>
+&nbsp;
+const VERIFICATION_MAX_AGE = 1000 * 60 * 60;
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -559,7 +586,7 @@ export const trpcRoutesUsers = {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-05-27T03:43:47.007Z
+                at 2023-05-27T04:38:20.854Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>
