@@ -23,6 +23,9 @@ const Z_SERVER_CONFIG = z.object({
   MJ_APIKEY_PUBLIC: z.string().optional(),
   MJ_APIKEY_PRIVATE: z.string().optional(),
 
+  // used for email link
+  BASE_URL: z.string().default("https://ytsub-v3-hiro18181.vercel.app"),
+
   VERCEL_ENV: z.string().optional(),
 });
 

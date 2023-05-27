@@ -1,5 +1,6 @@
 import crypto from "node:crypto";
 import { tinyassert } from "@hiogawa/utils";
+import showdown from "showdown";
 import { z } from "zod";
 import { E, T, db } from "../../db/drizzle-client.server";
 import { $R } from "../../misc/routes";
@@ -12,6 +13,7 @@ import {
   signoutSession,
   verifyPassword,
 } from "../../utils/auth";
+import { serverConfig } from "../../utils/config";
 import { sendEmail } from "../../utils/email-utils";
 import { isValidTimezone } from "../../utils/temporal-utils";
 import { verifyTurnstile } from "../../utils/turnstile-utils.server";
@@ -103,21 +105,23 @@ export const trpcRoutesUsers = {
         email: input.email,
         code,
       });
-      // TODO: send email with link
-      // TODO: escape hatch for e2e
-      const href = $R["/users/verify"](null, { code });
-      await sendEmail({ href });
+      await sendEmailChangeVerificationEmail({
+        username: ctx.user.username,
+        email: input.email,
+        code,
+      });
     }),
 
   // TODO
   users_requestResetPassword: procedureBuilder
     .input(
       z.object({
-        email: z.string(),
+        email: z.string().email(),
       })
     )
     .mutation(async ({ input }) => {
-      input;
+      const code = crypto.randomBytes(32).toString("hex"); // 64 chars
+      await sendResetPasswordEmail({ email: input.email, code });
     }),
 
   // TODO
@@ -170,3 +174,53 @@ export async function updateEmailByCode(code: string) {
 }
 
 const VERIFICATION_MAX_AGE = 1000 * 60 * 60;
+
+//
+// email (based on https://github.com/ActiveCampaign/postmark-templates)
+//
+
+async function sendEmailChangeVerificationEmail({
+  username,
+  email,
+  code,
+}: {
+  username: string;
+  email: string;
+  code: string;
+}) {
+  const href = serverConfig.BASE_URL + $R["/users/verify"](null, { code });
+  const content = `\
+Hi, ${username}
+
+You recently requested to change your email on Ytsub account.
+Please follow this link to confirm the change:
+
+[Change your email](${href})
+
+If you did not request a password reset, please ignore this email.
+
+Thanks
+`;
+  await sendEmail({
+    Messages: [
+      {
+        To: [
+          {
+            Email: email,
+          },
+        ],
+        From: {
+          Name: "Ytsub",
+          Email: "noreply@hiro18181.com",
+        },
+        Subject: "Email change verification",
+        TextPart: content,
+        HTMLPart: new showdown.Converter().makeHtml(content),
+      },
+    ],
+  });
+}
+
+async function sendResetPasswordEmail({}: { email: string; code: string }) {
+  // TODO
+}
