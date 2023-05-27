@@ -67,6 +67,8 @@ async function createLoaderContext(loaderArgs: DataFunctionArgs) {
         if (error instanceof Response) {
           res = error;
         } else {
+          console.error("redirectOnError", error);
+
           // redirect to root unless infinite redirection
           if (reqUrl.pathname === "/") {
             throw new Error("redirectOnError (infinite redirection detected)");

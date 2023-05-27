@@ -189,7 +189,7 @@ async function sendEmailChangeVerificationEmail({
   code: string;
 }) {
   const href = serverConfig.BASE_URL + $R["/users/verify"](null, { code });
-  const content = `\
+  const TextPart = `\
 Hi, ${username}
 
 You recently requested to change your email on Ytsub account.
@@ -209,13 +209,10 @@ Thanks
             Email: email,
           },
         ],
-        From: {
-          Name: "Ytsub",
-          Email: "noreply@hiro18181.com",
-        },
+        From: EMAIL_FROM,
         Subject: "Email change verification",
-        TextPart: content,
-        HTMLPart: new showdown.Converter().makeHtml(content),
+        TextPart,
+        HTMLPart: new showdown.Converter().makeHtml(TextPart),
       },
     ],
   });
@@ -224,3 +221,8 @@ Thanks
 async function sendResetPasswordEmail({}: { email: string; code: string }) {
   // TODO
 }
+
+const EMAIL_FROM = {
+  Name: "Ytsub",
+  Email: "noreply@hiro18181.com",
+};

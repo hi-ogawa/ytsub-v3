@@ -3,6 +3,7 @@
 /.cache
 /.eslintcache
 /.vercel
+/.env.local
 /.env.staging
 /.env.staging.sh
 /.env.production
