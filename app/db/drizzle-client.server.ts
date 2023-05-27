@@ -56,11 +56,22 @@ const users = mysqlTable("users", {
   id: serial("id").primaryKey(),
   ...timestampColumns,
   //
-  username: text("username").notNull(), // TODO: case insensitive
+  username: text("username").notNull(),
   passwordHash: text("passwordHash").notNull(), // TODO: reduct when responding to client
+  email: text("email"),
   language1: text("language1"),
   language2: text("language2"),
   timezone: text("timezone").notNull().default(DUMMY_DEFAULT),
+});
+
+const userVerifications = mysqlTable("userVerifications", {
+  id: serial("id").primaryKey(),
+  userId: int("userId").notNull(),
+  ...timestampColumns,
+  //
+  email: text("email").notNull(),
+  code: text("code").notNull(),
+  verifiedAt: datetimeUtc("verifiedAt"),
 });
 
 const videos = mysqlTable("videos", {
@@ -154,6 +165,7 @@ const knex_migrations = mysqlTable("knex_migrations", {
 // short accessor for tables
 export const T = {
   users,
+  userVerifications,
   videos,
   captionEntries,
   bookmarkEntries,

@@ -81,6 +81,7 @@ describe(dbShowTables.name, () => {
         "knex_migrations_lock",
         "practiceActions",
         "practiceEntries",
+        "userVerifications",
         "users",
         "videos",
       ]
