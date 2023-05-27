@@ -41,13 +41,13 @@ export default function Page() {
         <div className="h-full p-6 flex flex-col gap-3">
           <h1 className="text-xl">Reset password</h1>
           <div className="w-full flex flex-col gap-3">
-            <div className="flex flex-col gap-1">
+            <label className="flex flex-col gap-1">
               Email
               <input
                 className="antd-input p-1"
                 {...form.register("email", { required: true })}
               />
-            </div>
+            </label>
             <button
               type="submit"
               className={cls(

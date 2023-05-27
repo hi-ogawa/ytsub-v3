@@ -1,4 +1,4 @@
-import crypto from "node:crypto";
+import crypto from "crypto";
 import { tinyassert } from "@hiogawa/utils";
 import showdown from "showdown";
 import { z } from "zod";
@@ -128,7 +128,12 @@ export const trpcRoutesUsers = {
         email: input.email,
         code,
       });
-      await sendResetPasswordEmail({ email: input.email, code });
+
+      const user = await selectOne(T.users, E.eq(T.users.email, input.email));
+      if (user) {
+        // hang promise for consistent response time regardless of email validity
+        sendResetPasswordEmail({ email: input.email, code });
+      }
     }),
 
   users_resetPassword: procedureBuilder
@@ -141,8 +146,6 @@ export const trpcRoutesUsers = {
     )
     .mutation(async ({ input }) => {
       tinyassert(input.password === input.passwordConfirmation);
-
-      // TODO: atmoic?
 
       const rows = await db
         .select()
@@ -181,8 +184,6 @@ export const trpcRoutesUsers = {
 
 // not exposed as trpc since it's done directly in /users/verify loader
 export async function updateEmailByCode(code: string) {
-  // TODO: atomic?
-
   // select one
   const rows = await db
     .select()
