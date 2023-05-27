@@ -1,3 +1,4 @@
+import { FloatingTree } from "@floating-ui/react";
 import { Compose } from "@hiogawa/utils-react";
 import {
   Link,
@@ -7,6 +8,7 @@ import {
   NavLink,
   Outlet,
   Scripts,
+  ShouldRevalidateFunction,
   useMatches,
   useNavigate,
 } from "@remix-run/react";
@@ -14,23 +16,25 @@ import type { LinksFunction } from "@remix-run/server-runtime";
 import { useMutation } from "@tanstack/react-query";
 import React from "react";
 import { useForm } from "react-hook-form";
-import { Toaster, toast } from "react-hot-toast";
+import { toast } from "react-hot-toast";
 import { Drawer } from "./components/drawer";
 import { PopoverSimple } from "./components/popover";
-import { ThemeScriptPlaceholder, ThemeSelect } from "./components/theme-select";
+import { ThemeSelect, injectThemeScript } from "./components/theme-select";
 import { TopProgressBarRemix } from "./components/top-progress-bar";
 import type { UserTable } from "./db/models";
 import { $R, R } from "./misc/routes";
-import { HideRecaptchaBadge } from "./routes/users/register";
 import { trpc } from "./trpc/client";
-import { publicConfig } from "./utils/config";
-import { ConfigPlaceholder } from "./utils/config-placeholder";
-import { useFlashMessages } from "./utils/flash-message-hook";
+import { injectPublicConfigScript, publicConfig } from "./utils/config-public";
+import {
+  encodeFlashMessage,
+  useFlashMessageHandler,
+} from "./utils/flash-message";
 import { RootLoaderData, useRootLoaderData } from "./utils/loader-utils";
 import { makeLoader } from "./utils/loader-utils.server";
 import { cls } from "./utils/misc";
 import type { PageHandle } from "./utils/page-handle";
 import { QueryClientWrapper } from "./utils/react-query-utils";
+import { ToastWrapper } from "./utils/toast-utils";
 
 export const links: LinksFunction = () => {
   // prettier-ignore
@@ -48,11 +52,12 @@ export const links: LinksFunction = () => {
 export const loader = makeLoader(async ({ ctx }) => {
   const loaderData: RootLoaderData = {
     currentUser: await ctx.currentUser(),
-    // TODO: revalidation of root loader is required only for reloading flash message, which sounds so odd, so please think about a different approach.
-    flashMessages: await ctx.getFlashMessages(),
   };
   return loaderData;
 });
+
+// no need to revalidate `currentUser` since app refreshes on user session change (signin/signout)
+export const shouldRevalidate: ShouldRevalidateFunction = () => false;
 
 //
 // component
@@ -73,18 +78,13 @@ export default function DefaultComponent() {
         </title>
         <Meta />
         <Links />
-        <ConfigPlaceholder />
-        <ThemeScriptPlaceholder />
-        <HideRecaptchaBadge />
+        {/* only server needs to do script injection but let client do as well */}
+        <script dangerouslySetInnerHTML={{ __html: injectThemeScript() }} />
+        <script
+          dangerouslySetInnerHTML={{ __html: injectPublicConfigScript() }}
+        />
       </head>
       <body className="h-full">
-        {/* TODO: default position="top" is fine? */}
-        <Toaster
-          position="bottom-left"
-          toastOptions={{
-            className: "!bg-colorBgElevated !text-colorText",
-          }}
-        />
         <button
           className="hidden"
           data-testid="toast-remove"
@@ -92,7 +92,14 @@ export default function DefaultComponent() {
             toast.remove();
           }}
         />
-        <Compose elements={[<QueryClientWrapper />, <Root />]} />
+        <Compose
+          elements={[
+            <FloatingTree />,
+            <ToastWrapper />,
+            <QueryClientWrapper />,
+            <Root />,
+          ]}
+        />
       </body>
     </html>
   );
@@ -100,7 +107,7 @@ export default function DefaultComponent() {
 
 function Root() {
   const data = useRootLoaderData();
-  useFlashMessages(data.flashMessages);
+  useFlashMessageHandler();
 
   // `PageHandle` of the leaf compoment
   const matches = useMatches();
@@ -304,7 +311,13 @@ function SignoutComponent() {
   const signoutMutation = useMutation({
     ...trpc.users_signout.mutationOptions(),
     onSuccess: () => {
-      window.location.href = $R["/users/redirect"](null, { type: "signout" });
+      window.location.href =
+        $R["/"]() +
+        "?" +
+        encodeFlashMessage({
+          variant: "success",
+          content: "Successfully signed out",
+        });
     },
   });
 

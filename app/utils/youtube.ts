@@ -1,8 +1,10 @@
 import {
+  HashKeyDefaultMap,
   newPromiseWithResolvers,
   once,
   sortBy,
   tinyassert,
+  zip,
 } from "@hiogawa/utils";
 import { useRefCallbackEffect, useStableCallback } from "@hiogawa/utils-react";
 import { useMutation } from "@tanstack/react-query";
@@ -35,7 +37,7 @@ export async function fetchVideoMetadata(videoId: string) {
 }
 
 // cf. https://gist.github.com/hi-ogawa/23f6d0b212f51c2b1b255339c642e9b9
-async function fetchVideoMetadataRaw(videoId: string): Promise<any> {
+export async function fetchVideoMetadataRaw(videoId: string): Promise<unknown> {
   // prettier-ignore
   const res = await fetch("https://www.youtube.com/youtubei/v1/player", {
     method: "POST",
@@ -97,6 +99,11 @@ export function parseVssId(vssId: string): LanguageCode {
   return vssId.split(".")[1].slice(0, 2) as LanguageCode;
 }
 
+// ad-hoc encoding for manual input
+export function encodeAdvancedModeLanguageCode(code: LanguageCode): string {
+  return `x.${code}`;
+}
+
 export function toCaptionConfigOptions(
   videoMetadata: VideoMetadata
 ): CaptionConfigOptions {
@@ -121,7 +128,7 @@ export function toCaptionConfigOptions(
   return { captions, translationGroups };
 }
 
-function captionConfigToUrl(
+export function captionConfigToUrl(
   captionConfig: CaptionConfig,
   videoMetadata: VideoMetadata
 ): string | undefined {
@@ -181,30 +188,31 @@ interface TtmlEntry {
   text: string;
 }
 
+const Z_TTML_ENTRY_XML = z.object({
+  tt: z.object({
+    body: z.object({
+      div: z.object({
+        p: z
+          .object({
+            "@_begin": z.string(),
+            "@_end": z.string(),
+            "#text": z.string().optional(),
+          })
+          .array(),
+      }),
+    }),
+  }),
+});
+
 export function ttmlToEntries(ttml: string): TtmlEntry[] {
+  // Replace "<br/>" elements with " "
+  const sanitized = ttml.replaceAll("<br />", " ");
+
   const parser = new XMLParser({
     ignoreAttributes: false,
     alwaysCreateTextNode: true,
   });
-
-  // Replace "<br/>" elements with " "
-  const sanitized = ttml.replaceAll("<br />", " ");
-
-  // TODO: Validate
-  interface Parsed {
-    tt: {
-      body: {
-        div: {
-          p: {
-            "@_begin": string;
-            "@_end": string;
-            "#text"?: string;
-          }[];
-        };
-      };
-    };
-  }
-  const parsed: Parsed = parser.parse(sanitized);
+  const parsed = Z_TTML_ENTRY_XML.parse(parser.parse(sanitized));
 
   return parsed.tt.body.div.p
     .map((p) => ({
@@ -216,19 +224,17 @@ export function ttmlToEntries(ttml: string): TtmlEntry[] {
     .filter((e) => e.text);
 }
 
-export function ttmlsToCaptionEntries(
-  ttml1: string,
-  ttml2: string
-): CaptionEntry[] {
-  const entries1 = ttmlToEntries(ttml1);
-  const entries2 = ttmlToEntries(ttml2);
-  return mergeTtmlEntries(entries1, entries2);
-}
-
-function mergeTtmlEntries(
+export function mergeTtmlEntries(
   entries1: TtmlEntry[],
   entries2: TtmlEntry[]
 ): CaptionEntry[] {
+  // try simple case first
+  const found = mergeTtmlEntriesSimple(entries1, entries2);
+  if (found) {
+    return found;
+  }
+
+  // otherwise a bit complicated heuristics
   return entries1.map((e1, index) => {
     const isects = entries2
       .map((e2) => [e2, computeIntersection(e1, e2)] as const)
@@ -252,6 +258,53 @@ function mergeTtmlEntries(
       text2,
     };
   });
+}
+
+// handle sane and simplest case where all intervals share the same timestamp interval
+function mergeTtmlEntriesSimple(
+  entries1: TtmlEntry[],
+  entries2: TtmlEntry[]
+): CaptionEntry[] | undefined {
+  // group entries by timestamp
+  const map = new HashKeyDefaultMap<
+    { begin: number; end: number },
+    [TtmlEntry[], TtmlEntry[]]
+  >(() => [[], []]);
+
+  for (const e of entries1) {
+    map.get({ begin: e.begin, end: e.end })[0].push(e);
+  }
+
+  for (const e of entries2) {
+    map.get({ begin: e.begin, end: e.end })[1].push(e);
+  }
+
+  // to array
+  let entries = [...map.entries()];
+  entries = sortBy(entries, ([k]) => k.begin);
+
+  // give up if overlap
+  for (const [[curr], [next]] of zip(entries, entries.slice(1))) {
+    if (curr.end > next.begin) {
+      return;
+    }
+  }
+
+  // give up if one side has many entries
+  for (const [, [lefts, rights]] of entries) {
+    if (lefts.length >= 2 || rights.length >= 2) {
+      return;
+    }
+  }
+
+  return entries.map(([k, [lefts, rights]], i) => ({
+    index: i,
+    begin: k.begin,
+    end: k.end,
+    // fill blank if one side is empry
+    text1: lefts.at(0)?.text ?? "",
+    text2: rights.at(0)?.text ?? "",
+  }));
 }
 
 function computeIntersection(e1: TtmlEntry, e2: TtmlEntry): number {
@@ -281,14 +334,20 @@ export function stringifyTimestamp(s: number): string {
   return `${D(h, 2)}:${D(m, 2)}:${D(s, 2)}.${D(ms, 3)}`;
 }
 
+// examples
+// .en   (youtube manual caption for English)
+// a.en  (youtube machine caption for English)
+// x.en  (user input for English)
+const VIDEO_LANGUAGE_ID_RE = /^[a-zA-Z-]?\.[a-zA-Z-]+$/;
+
 export const Z_NEW_VIDEO = z.object({
   videoId: z.string().length(11),
   language1: z.object({
-    id: z.string(),
+    id: z.string().regex(VIDEO_LANGUAGE_ID_RE),
     translation: z.string().optional(),
   }),
   language2: z.object({
-    id: z.string(),
+    id: z.string().regex(VIDEO_LANGUAGE_ID_RE),
     translation: z.string().optional(),
   }),
 });
@@ -304,18 +363,71 @@ export async function fetchCaptionEntries({
   captionEntries: CaptionEntry[];
 }> {
   const videoMetadata = await fetchVideoMetadata(videoId);
-  const url1 = captionConfigToUrl(language1, videoMetadata);
-  const url2 = captionConfigToUrl(language2, videoMetadata);
-  tinyassert(url1);
-  tinyassert(url2);
-  const ttmls = [url1, url2].map(async (url) => {
-    const res = await fetch(url);
-    tinyassert(res.ok);
-    return res.text();
-  });
-  const [ttml1, ttml2] = await Promise.all(ttmls);
-  const captionEntries = ttmlsToCaptionEntries(ttml1, ttml2);
+  const [ttmlEntries1, ttmlEntries2] = await Promise.all([
+    fetchTtmlEntries(language1, videoMetadata),
+    fetchTtmlEntries(language2, videoMetadata),
+  ]);
+  const captionEntries = mergeTtmlEntries(ttmlEntries1, ttmlEntries2);
   return { videoMetadata, captionEntries };
+}
+
+// very ad-hoc support for providing captions externally
+export async function fetchCaptionEntriesHalfManual({
+  videoId,
+  language1,
+  language2,
+}: {
+  videoId: string;
+  language1: NewVideo["language1"] & { input: string };
+  language2: NewVideo["language2"];
+}): Promise<{
+  videoMetadata: VideoMetadata;
+  captionEntries: CaptionEntry[];
+}> {
+  const videoMetadata = await fetchVideoMetadata(videoId);
+  const ttmlEntries = await fetchTtmlEntries(language2, videoMetadata);
+  const captionEntries = mergeTtmlEntriesHalfManual(
+    language1.input,
+    ttmlEntries
+  );
+  return {
+    videoMetadata,
+    captionEntries,
+  };
+}
+
+function mergeTtmlEntriesHalfManual(
+  input: string,
+  entries2: TtmlEntry[]
+): CaptionEntry[] {
+  const entries1 = splitManualInputEntries(input);
+
+  return zip(entries1, entries2).map(([line, e], i) => ({
+    index: i,
+    begin: e.begin,
+    end: e.end,
+    text1: line,
+    text2: e.text ?? "",
+  }));
+}
+
+export function splitManualInputEntries(input: string): string[] {
+  return input
+    .split("\n")
+    .map((s) => s.trim())
+    .filter((s) => s);
+}
+
+export async function fetchTtmlEntries(
+  captionConfig: CaptionConfig,
+  videoMetadata: VideoMetadata
+) {
+  const url = captionConfigToUrl(captionConfig, videoMetadata);
+  tinyassert(url);
+  const res = await fetch(url);
+  tinyassert(res.ok);
+  const ttml = await res.text();
+  return ttmlToEntries(ttml);
 }
 
 //
@@ -343,6 +455,9 @@ export interface YoutubePlayer {
   seekTo: (second: number) => void;
   getCurrentTime: () => number;
   getPlayerState: () => number;
+  getPlaybackRate: () => number;
+  setPlaybackRate: (suggestedRate: number) => void;
+  getAvailablePlaybackRates: () => number[];
   destroy: () => void;
 }
 

@@ -8,11 +8,9 @@ import React from "react";
 import { deserialize } from "superjson";
 import type { z } from "zod";
 import type { UserTable } from "../db/models";
-import type { FlashMessage } from "./flash-message";
 
 export interface RootLoaderData {
   currentUser?: UserTable;
-  flashMessages: FlashMessage[];
 }
 
 export function useRootLoaderData(): RootLoaderData {

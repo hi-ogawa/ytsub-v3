@@ -3,6 +3,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { $R } from "../../misc/routes";
 import { trpc } from "../../trpc/client";
+import { encodeFlashMessage } from "../../utils/flash-message";
 import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 
@@ -21,7 +22,13 @@ export default function DefaultComponent() {
   const signinMutation = useMutation({
     ...trpc.users_signin.mutationOptions(),
     onSuccess: () => {
-      window.location.href = $R["/users/redirect"](null, { type: "signin" });
+      window.location.href =
+        $R["/"]() +
+        "?" +
+        encodeFlashMessage({
+          variant: "success",
+          content: "Successfully signed in",
+        });
     },
   });
 

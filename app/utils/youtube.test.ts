@@ -2,9 +2,10 @@ import { objectOmit, tinyassert, wrapPromise } from "@hiogawa/utils";
 import { describe, expect, it } from "vitest";
 import {
   fetchCaptionEntries,
+  fetchCaptionEntriesHalfManual,
   fetchVideoMetadata,
+  mergeTtmlEntries,
   ttmlToEntries,
-  ttmlsToCaptionEntries,
 } from "./youtube";
 
 describe("fetchVideoMetadata", () => {
@@ -196,6 +197,107 @@ describe("fetchCaptionEntries", () => {
       ]
     `);
   });
+
+  it("text1 can be empty", async () => {
+    // https://www.youtube.com/watch?v=-UroBRG1rY8
+    const entries = await fetchCaptionEntries({
+      videoId: "-UroBRG1rY8",
+      language1: { id: ".ko" },
+      language2: { id: ".en" },
+    });
+    expect(entries.captionEntries.slice(0, 6)).toMatchInlineSnapshot(`
+      [
+        {
+          "begin": 3.139,
+          "end": 7.625,
+          "index": 0,
+          "text1": "",
+          "text2": "Zombie biebiebie biebiebiebiebiebiebie",
+        },
+        {
+          "begin": 7.626,
+          "end": 9.441,
+          "index": 1,
+          "text1": "",
+          "text2": "Zombie",
+        },
+        {
+          "begin": 12.501,
+          "end": 16.647,
+          "index": 2,
+          "text1": "달콤하고 잔인한 너의 그 맛 맛 맛 맛 맛",
+          "text2": "Sweet and cruel, your taste taste taste taste taste",
+        },
+        {
+          "begin": 16.648,
+          "end": 18.781,
+          "index": 3,
+          "text1": "참을 수가 없어 널 보면",
+          "text2": "I can't hold it when I see you",
+        },
+        {
+          "begin": 18.782,
+          "end": 20.849,
+          "index": 4,
+          "text1": "",
+          "text2": "Cool down down down",
+        },
+        {
+          "begin": 20.89,
+          "end": 25.103,
+          "index": 5,
+          "text1": "너를 깜짝 놀라 켜 너 몰래 그림자놀이",
+          "text2": "Surprising you, a shadow play in secret",
+        },
+      ]
+    `);
+    expect(entries.captionEntries.slice(38, 44)).toMatchInlineSnapshot(`
+      [
+        {
+          "begin": 141.162,
+          "end": 143.003,
+          "index": 38,
+          "text1": "여기 여기 붙어라",
+          "text2": "Come gather around here",
+        },
+        {
+          "begin": 143.102,
+          "end": 145.36599999999999,
+          "index": 39,
+          "text1": "엄지를 붙여 모두 모여라",
+          "text2": "Gather around with the thumbs together",
+        },
+        {
+          "begin": 145.542,
+          "end": 147.385,
+          "index": 40,
+          "text1": "꼭꼭 숨어라",
+          "text2": "Hide well",
+        },
+        {
+          "begin": 147.99,
+          "end": 149.913,
+          "index": 41,
+          "text1": "",
+          "text2": "PURPLE KISS Hide on Bloody top",
+        },
+        {
+          "begin": 149.914,
+          "end": 154.052,
+          "index": 42,
+          "text1": "-Zombie biebiebie biebiebiebiebiebiebie -여기 여기 붙어라 엄지를 붙여 모두 모여라",
+          "text2": "-Zombie biebiebie biebiebiebiebiebiebie - Come gather around here, Gather around with the thumbs together",
+        },
+        {
+          "begin": 154.183,
+          "end": 161.138,
+          "index": 43,
+          "text1": "술래잡기를 시작해 이 밤",
+          "text2": "Start the hide & seek on this night",
+        },
+      ]
+    `);
+  });
 });
 
 function wrapTtml(content: string): string {
@@ -218,6 +320,12 @@ function wrapTtml(content: string): string {
       </body>
     </tt>
   `;
+}
+
+function ttmlsToCaptionEntries(ttml1: string, ttml2: string) {
+  const entries1 = ttmlToEntries(ttml1);
+  const entries2 = ttmlToEntries(ttml2);
+  return mergeTtmlEntries(entries1, entries2);
 }
 
 describe("ttmlToEntries", () => {
@@ -327,6 +435,163 @@ describe("ttmlsToCaptionEntries", () => {
           "index": 0,
           "text1": "hello friends and welcome to a",
           "text2": "bonjour les amis et bienvenue dans un",
+        },
+      ]
+    `);
+  });
+});
+
+describe(fetchCaptionEntriesHalfManual.name, () => {
+  it("basic", async () => {
+    // copied from https://lyricstranslate.com/en/twice-alcohol-free-lyrics.html
+    const input = `\
+너와 있을 땐 내게
+신기한 변화가 있는데
+자꾸 미소 짓게 돼
+아무 일도 없는데
+
+자꾸 마법에 걸려
+밤을 새워도 안 졸려
+다른 생각 지워져
+심장 소리는 커져
+사랑이 참 쉬워져
+그래서 빠지고 빠져 점점 너에게
+That's what you do to me
+
+나는 Alcohol free 근데 취해
+마신 게 하나도 없는데
+너와 있을 때마다 이래
+날 보는 네 눈빛 때문에
+
+너는 눈으로 마시는 내 Champagne, 내 Wine
+내 Tequila, margarita
+Mojito with lime
+Sweet mimosa, pina colada
+
+I'm drunk in you
+I'm drunk in you
+
+너는 정말 특별해
+전혀 독하지 않은데
+낮에 별이 뜨게 해
+한 모금 마셨는데
+
+자꾸 마법에 걸려
+밤을 새워도 안 졸려
+다른 생각 지워져
+심장 소리는 커져
+사랑이 참 쉬워져
+그래서 빠지고 빠져 점점 너에게
+That's what you do to me
+
+나는 Alcohol free 근데 취해
+마신 게 하나도 없는데
+너와 있을 때마다 이래
+날 보는 네 눈빛 때문에
+
+Alcohol 도수는 완전 0.0%
+근데 마실 때마다 자꾸 길을 잃어
+자고 일어나도 깨지가 않아
+근데 이 기분 싫지가 않아
+
+Easy to the mouth and tummy
+Like a drink made of honey
+이 술 이름은 도대체 뭐니
+Makes the whole world bright and sunny
+
+나는 Alcohol free 근데 취해
+마신 게 하나도 없는데
+너와 있을 때마다 이래
+날 보는 네 눈빛 때문에
+
+너는 눈으로 마시는 내 Champagne, 내 Wine
+내 Tequila, margarita
+Mojito with lime
+Sweet mimosa, pina colada
+
+I'm drunk in you
+I'm drunk in you
+`;
+    const { captionEntries } = await fetchCaptionEntriesHalfManual({
+      videoId: "XA2YEHn-A8Q",
+      language1: { id: ".ko", input },
+      language2: { id: ".en" },
+    });
+    expect(captionEntries.slice(0, 4)).toMatchInlineSnapshot(`
+      [
+        {
+          "begin": 8.896,
+          "end": 13.884,
+          "index": 0,
+          "text1": "너와 있을 땐 내게",
+          "text2": "When I am with you",
+        },
+        {
+          "begin": 13.884,
+          "end": 18.836,
+          "index": 1,
+          "text1": "신기한 변화가 있는데",
+          "text2": "Something magical happens",
+        },
+        {
+          "begin": 18.836,
+          "end": 23.801,
+          "index": 2,
+          "text1": "자꾸 미소 짓게 돼",
+          "text2": "I keep smiling for no reason",
+        },
+        {
+          "begin": 23.801,
+          "end": 28.752,
+          "index": 3,
+          "text1": "아무 일도 없는데",
+          "text2": "Though there is nothing going on",
+        },
+      ]
+    `);
+    expect(captionEntries.slice(-6)).toMatchInlineSnapshot(`
+      [
+        {
+          "begin": 187.073,
+          "end": 190.887,
+          "index": 48,
+          "text1": "너는 눈으로 마시는 내 Champagne, 내 Wine",
+          "text2": "You are my champagne, my wine I drink with my eyes",
+        },
+        {
+          "begin": 190.887,
+          "end": 193.223,
+          "index": 49,
+          "text1": "내 Tequila, margarita",
+          "text2": "My tequila, margarita",
+        },
+        {
+          "begin": 193.223,
+          "end": 195.678,
+          "index": 50,
+          "text1": "Mojito with lime",
+          "text2": "Mojito with lime",
+        },
+        {
+          "begin": 195.678,
+          "end": 198.15800000000002,
+          "index": 51,
+          "text1": "Sweet mimosa, pina colada",
+          "text2": "Sweet mimosa, pina colada",
+        },
+        {
+          "begin": 198.15800000000002,
+          "end": 203.039,
+          "index": 52,
+          "text1": "I'm drunk in you",
+          "text2": "I'm drunk in you",
+        },
+        {
+          "begin": 203.039,
+          "end": 206.239,
+          "index": 53,
+          "text1": "I'm drunk in you",
+          "text2": "I'm drunk in you",
         },
       ]
     `);
