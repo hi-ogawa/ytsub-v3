@@ -12,6 +12,7 @@ import {
   signoutSession,
   verifyPassword,
 } from "../../utils/auth";
+import { sendEmail } from "../../utils/email-utils";
 import { isValidTimezone } from "../../utils/temporal-utils";
 import { verifyTurnstile } from "../../utils/turnstile-utils.server";
 import { middlewares } from "../context";
@@ -105,7 +106,7 @@ export const trpcRoutesUsers = {
       // TODO: send email with link
       // TODO: escape hatch for e2e
       const href = $R["/users/verify"](null, { code });
-      console.log({ href });
+      await sendEmail({ href });
     }),
 
   // TODO
