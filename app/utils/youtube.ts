@@ -6,13 +6,11 @@ import {
   tinyassert,
   zip,
 } from "@hiogawa/utils";
-import { useRefCallbackEffect, useStableCallback } from "@hiogawa/utils-react";
 import { useMutation } from "@tanstack/react-query";
 import { XMLParser } from "fast-xml-parser";
-import React from "react";
-import { toast } from "react-hot-toast";
 import { z } from "zod";
 import { loadScript } from "./dom-utils";
+import { useIntersectionObserver } from "./hooks-client-utils";
 import {
   FILTERED_LANGUAGE_CODES,
   LanguageCode,
@@ -497,30 +495,16 @@ export function usePlayerLoader(
   playerOptions: YoutubePlayerOptions,
   { onReady }: { onReady: (player: YoutubePlayer) => void }
 ) {
-  onReady = useStableCallback(onReady);
-
-  const ref = useRefCallbackEffect<HTMLElement>((el) => {
-    if (el && mutation.isIdle) {
-      // workaround for React.StrictMode https://github.com/TanStack/query/issues/4983
-      window.setTimeout(() => {
-        mutation.mutate(el);
-      });
+  const ref = useIntersectionObserver(([entry]) => {
+    if (entry && entry.target instanceof HTMLElement && mutation.isIdle) {
+      mutation.mutate(entry.target);
     }
   });
 
-  const mutation = useMutation(
-    (el: HTMLElement) => loadYoutubePlayer(el, playerOptions),
-    {
-      onSuccess: onReady,
-      onError: () => {
-        toast.error("Failed to initialize youtube player");
-      },
-    }
-  );
-
-  React.useEffect(() => {
-    return () => mutation.data?.destroy();
-  }, []);
+  const mutation = useMutation({
+    mutationFn: (el: HTMLElement) => loadYoutubePlayer(el, playerOptions),
+    onSuccess: onReady,
+  });
 
   return {
     ref,
