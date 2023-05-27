@@ -468,18 +468,23 @@ async function queryNextPracticeEntryRandomModeWithCache(
   return nextEntries[0];
 }
 
+type ScoredPracticeEntry = TT["practiceEntries"] & {
+  score: number;
+  scoreFactors: number[];
+};
+
 export async function queryNextPracticeEntryRandomModeBatch(
   deckId: number,
   now: Date,
   maxCount: number,
   seed: number
-): Promise<TT["practiceEntries"][]> {
+): Promise<ScoredPracticeEntry[]> {
   const rng = new HashRng(seed);
 
   //
   // fetch all and randomize in js
   //
-  let rows = await db
+  const rows = await db
     .select()
     .from(T.practiceEntries)
     .where(E.and(E.eq(T.practiceEntries.deckId, deckId)));
@@ -499,21 +504,26 @@ export async function queryNextPracticeEntryRandomModeBatch(
   }
 
   // score = (uniform in [0, 1]) + (scheduledAt bonus in [-?, BONUS_LIMIT])
-  rows = sortBy(
-    rows,
-    (row) => -(rng.float() + computeScheduledAtFactor(row.scheduledAt))
-  );
-
-  if (rows.length <= maxCount) {
-    return rows;
-  }
+  let scoredRows = rows.map((row) => {
+    const scoreFactors = [
+      rng.float(),
+      computeScheduledAtFactor(row.scheduledAt),
+    ];
+    const score = sum(scoreFactors);
+    return {
+      ...row,
+      score,
+      scoreFactors,
+    };
+  });
+  scoredRows = sortBy(scoredRows, (row) => -row.score);
 
   //
   // choose queueType by a fixed probability
   //
 
   const rowsByQueue = objectFromMapDefault(
-    groupBy(rows, (row) => row.queueType),
+    groupBy(scoredRows, (row) => row.queueType),
     PRACTICE_QUEUE_TYPES,
     []
   );
@@ -543,7 +553,7 @@ export async function queryNextPracticeEntryRandomModeBatch(
     return queueRows.shift();
   }
 
-  const nextEntries = range(maxCount)
+  const nextEntries = range(Math.min(rows.length, maxCount))
     .map(() => getNextEntry())
     .filter(typedBoolean);
   return nextEntries;
@@ -564,4 +574,8 @@ function prefixSum(ls: number[]): number[] {
     acc.push(acc[i] + ls[i]);
   }
   return acc;
+}
+
+function sum(ls: number[]): number {
+  return ls.reduce((x, y) => x + y, 0);
 }
