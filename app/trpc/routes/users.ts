@@ -157,13 +157,10 @@ export const trpcRoutesUsers = {
     .mutation(async ({ input }) => {
       tinyassert(input.password === input.passwordConfirmation);
 
-      const rows = await db
-        .select()
-        .from(T.passwordResetRequests)
-        .where(E.eq(T.passwordResetRequests.code, input.code))
-        .orderBy(E.desc(T.passwordResetRequests.createdAt))
-        .limit(1);
-      const row = rows.at(0);
+      const row = await selectOne(
+        T.passwordResetRequests,
+        E.eq(T.passwordResetRequests.code, input.code)
+      );
       tinyassert(row);
       tinyassert(!row.invalidatedAt);
 
@@ -209,14 +206,10 @@ async function generateUniqueCode(
 
 // not exposed as trpc since it's done directly in /users/verify loader
 export async function updateEmailByCode(code: string) {
-  // select one
-  const rows = await db
-    .select()
-    .from(T.emailUpdateRequests)
-    .where(E.eq(T.emailUpdateRequests.code, code))
-    .orderBy(E.desc(T.emailUpdateRequests.createdAt))
-    .limit(1);
-  const row = rows.at(0);
+  const row = await selectOne(
+    T.emailUpdateRequests,
+    E.eq(T.emailUpdateRequests.code, code)
+  );
   tinyassert(row);
   tinyassert(!row.verifiedAt);
 
