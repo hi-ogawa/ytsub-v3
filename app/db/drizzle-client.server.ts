@@ -36,10 +36,10 @@ const datetimeUtc = customType<{ data: Date; driverData: string }>({
     return "datetime";
   },
   toDriver: (jsValue) => {
-    return jsValue.toISOString().slice(0, -5);
+    return jsValue.toISOString().slice(0, -1);
   },
   fromDriver: (dbValue) => {
-    return new Date(dbValue + ".000Z");
+    return new Date(dbValue + "Z");
   },
 });
 
