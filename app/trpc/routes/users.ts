@@ -103,7 +103,12 @@ export const trpcRoutesUsers = {
       // we don't check whether new email already exists in db
       // because showing an error for that would give away other user's email.
       tinyassert(input.email !== ctx.user.email);
-      const code = crypto.randomBytes(32).toString("hex"); // 64 chars
+      const code = await generateUniqueCode((code) =>
+        selectOne(
+          T.userVerifications,
+          E.eq(T.userVerifications.code, code)
+        ).then(Boolean)
+      );
       await db.insert(T.userVerifications).values({
         userId: ctx.user.id,
         email: input.email,
@@ -123,7 +128,12 @@ export const trpcRoutesUsers = {
       })
     )
     .mutation(async ({ input }) => {
-      const code = crypto.randomBytes(32).toString("hex"); // 64 chars
+      const code = await generateUniqueCode((code) =>
+        selectOne(
+          T.passwordResetRequests,
+          E.eq(T.passwordResetRequests.code, code)
+        ).then(Boolean)
+      );
       await db.insert(T.passwordResetRequests).values({
         email: input.email,
         code,
@@ -181,6 +191,21 @@ export const trpcRoutesUsers = {
         .where(E.eq(T.passwordResetRequests.id, row.id));
     }),
 };
+
+// check collision in application layer first
+async function generateUniqueCode(
+  check: (v: string) => Promise<boolean>
+): Promise<string> {
+  for (let i = 0; ; i++) {
+    if (i > 100) {
+      throw new Error("bound loop just in case");
+    }
+    const value = crypto.randomBytes(32).toString("hex"); // 64 chars
+    if (await check(value)) {
+      return value;
+    }
+  }
+}
 
 // not exposed as trpc since it's done directly in /users/verify loader
 export async function updateEmailByCode(code: string) {
