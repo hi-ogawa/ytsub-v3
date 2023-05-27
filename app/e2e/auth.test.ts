@@ -138,7 +138,7 @@ test.describe("change email", () => {
     await page.goto("/users/me");
 
     const newEmail = "test@dummy.local";
-    await page.locator(".i-ri-edit-box-line").click();
+    await page.getByRole("button", { name: "Change email" }).click();
     await page.getByPlaceholder("Input new email...").fill(newEmail);
     await page.getByRole("button", { name: "Send Verification Email" }).click();
     await page.getByText("Verification email is sent successfullly").click();

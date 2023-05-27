@@ -87,16 +87,7 @@ export default function DefaultComponent() {
               />
             </label>
             <div className="flex flex-col gap-1">
-              <div className="flex items-center gap-2">
-                Email
-                <button
-                  type="button"
-                  className="antd-btn antd-btn-ghost i-ri-edit-box-line w-4 h-4"
-                  onClick={() => {
-                    updateEmailModal.setOpen(true);
-                  }}
-                ></button>
-              </div>
+              Email
               <input
                 data-testid="me-email"
                 className="antd-input p-1"
@@ -188,11 +179,13 @@ export default function DefaultComponent() {
         className="h-full w-full max-w-md border p-4 flex flex-col gap-3"
         onSubmit={form.handleSubmit((data) => updateMutation.mutate(data))}
       >
-        <h1 className="text-lg">Security</h1>
-        {/* TODO: move it here */}
-        {/* <button className="antd-btn antd-btn-default p-0.5" onClick={() => {}}>
+        <h1 className="text-xl">Security</h1>
+        <button
+          className="antd-btn antd-btn-default p-0.5"
+          onClick={() => updateEmailModal.setOpen(true)}
+        >
           Change email
-        </button> */}
+        </button>
         {currentUser.email && (
           <button
             className={cls(
