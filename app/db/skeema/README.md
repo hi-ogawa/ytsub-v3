@@ -15,7 +15,7 @@ pnpm skeema diff --allow-unsafe
 pnpm skeema push --allow-unsafe
 
 # 3. temporary revert skeema/xxx.sql e.g. by
-git co master
+git checkout master
 
 # 4. diff for "down" migration
 pnpm skeema diff --allow-unsafe
@@ -24,7 +24,7 @@ pnpm skeema diff --allow-unsafe
 pnpm skeema push --allow-unsafe
 
 # 6. restore skeema/xxx.sql
-git co -
+git checkout -
 ```
 
 ## references
