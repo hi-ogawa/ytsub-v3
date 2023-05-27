@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">35% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>7/20</span>
+                <span class='fraction'>20/20</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">66.66% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>1/1</span>
+                <span class='fraction'>2/3</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">35% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>7/20</span>
+                <span class='fraction'>20/20</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -90,19 +90,19 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { redirect } from "@remix-run/server-runtime";
 import { R, ROUTE_DEF } from "../../misc/routes";
 import { updateEmailByCode } from "../../trpc/routes/users";
@@ -110,19 +110,19 @@ import { encodeFlashMessage } from "../../utils/flash-message";
 import { makeLoader } from "../../utils/loader-utils.server";
 &nbsp;
 export const loader = makeLoader(async ({ ctx }) =&gt; {
-<span class="cstat-no" title="statement not covered" >  const { code } = ROUTE_DEF["/users/verify"].query.parse(ctx.query);</span>
-<span class="cstat-no" title="statement not covered" >  await updateEmailByCode(code);</span>
-<span class="cstat-no" title="statement not covered" >  const user = await ctx.currentUser();</span>
-<span class="cstat-no" title="statement not covered" >  const url = user ? R["/users/me"] : R["/users/signin"];</span>
-<span class="cstat-no" title="statement not covered" >  return redirect(</span>
-<span class="cstat-no" title="statement not covered" >    url +</span>
-<span class="cstat-no" title="statement not covered" >      "?" +</span>
-<span class="cstat-no" title="statement not covered" >      encodeFlashMessage({</span>
-<span class="cstat-no" title="statement not covered" >        content: `Successfully update an email`,</span>
-<span class="cstat-no" title="statement not covered" >        variant: "error",</span>
-<span class="cstat-no" title="statement not covered" >      })</span>
-<span class="cstat-no" title="statement not covered" >  );</span>
-<span class="cstat-no" title="statement not covered" >});</span>
+  const { code } = ROUTE_DEF["/users/verify"].query.parse(ctx.query);
+  await updateEmailByCode(code);
+  const user = await ctx.currentUser();
+  const url = user ? R[<span class="branch-0 cbranch-no" title="branch not covered" >"/users/me"] : R["/users/signin"];</span>
+  return redirect(
+    url +
+      "?" +
+      encodeFlashMessage({
+        variant: "success",
+        content: `Successfully updated an email`,
+      })
+  );
+});
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -130,7 +130,7 @@ export const loader = makeLoader(async ({ ctx }) =&gt; {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-05-27T06:09:27.746Z
+                at 2023-05-27T06:44:40.398Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>
