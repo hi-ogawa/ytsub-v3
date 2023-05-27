@@ -41,6 +41,7 @@ describe("PracticeSystem", () => {
       .insert(T.bookmarkEntries)
       .values({
         text: "Bonjour à tous",
+        textCharacters: [],
         side: 0,
         offset: 8,
         userId: hook.user.id,
