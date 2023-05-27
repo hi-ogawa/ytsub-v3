@@ -1,5 +1,4 @@
--- TODO: maybe rename to newEmailRequests
-CREATE TABLE `userVerifications` (
+CREATE TABLE `emailUpdateRequests` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `userId` bigint NOT NULL,
   `email` varchar(128) NOT NULL,

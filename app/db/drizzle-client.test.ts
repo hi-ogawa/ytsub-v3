@@ -82,7 +82,7 @@ describe(dbShowTables.name, () => {
         "passwordResetRequests",
         "practiceActions",
         "practiceEntries",
-        "userVerifications",
+        "emailUpdateRequests",
         "users",
         "videos",
       ]

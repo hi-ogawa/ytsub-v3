@@ -64,7 +64,7 @@ const users = mysqlTable("users", {
   timezone: text("timezone").notNull().default(DUMMY_DEFAULT),
 });
 
-const userVerifications = mysqlTable("userVerifications", {
+const emailUpdateRequests = mysqlTable("emailUpdateRequests", {
   id: serial("id").primaryKey(),
   userId: int("userId").notNull(),
   ...timestampColumns,
@@ -174,7 +174,7 @@ const knex_migrations = mysqlTable("knex_migrations", {
 // short accessor for tables
 export const T = {
   users,
-  userVerifications,
+  emailUpdateRequests,
   passwordResetRequests,
   videos,
   captionEntries,

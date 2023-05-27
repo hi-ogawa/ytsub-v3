@@ -11,7 +11,7 @@ CREATE TABLE `passwordResetRequests` (
   UNIQUE KEY `code` (`code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-CREATE TABLE `userVerifications` (
+CREATE TABLE `emailUpdateRequests` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `userId` bigint NOT NULL,
   `email` varchar(128) NOT NULL,

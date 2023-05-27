@@ -105,11 +105,11 @@ export const trpcRoutesUsers = {
       tinyassert(input.email !== ctx.user.email);
       const code = await generateUniqueCode((code) =>
         selectOne(
-          T.userVerifications,
-          E.eq(T.userVerifications.code, code)
+          T.emailUpdateRequests,
+          E.eq(T.emailUpdateRequests.code, code)
         ).then((row) => !row)
       );
-      await db.insert(T.userVerifications).values({
+      await db.insert(T.emailUpdateRequests).values({
         userId: ctx.user.id,
         email: input.email,
         code,
@@ -212,9 +212,9 @@ export async function updateEmailByCode(code: string) {
   // select one
   const rows = await db
     .select()
-    .from(T.userVerifications)
-    .where(E.eq(T.userVerifications.code, code))
-    .orderBy(E.desc(T.userVerifications.createdAt))
+    .from(T.emailUpdateRequests)
+    .where(E.eq(T.emailUpdateRequests.code, code))
+    .orderBy(E.desc(T.emailUpdateRequests.createdAt))
     .limit(1);
   const row = rows.at(0);
   tinyassert(row);
@@ -233,11 +233,11 @@ export async function updateEmailByCode(code: string) {
 
   // update verification
   await db
-    .update(T.userVerifications)
+    .update(T.emailUpdateRequests)
     .set({
       verifiedAt: now,
     })
-    .where(E.eq(T.userVerifications.id, row.id));
+    .where(E.eq(T.emailUpdateRequests.id, row.id));
 }
 
 const VERIFICATION_MAX_AGE = 1000 * 60 * 60;
