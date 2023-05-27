@@ -64,6 +64,12 @@ export const ROUTE_DEF = {
       code: z.string(),
     }),
   },
+  "/users/password-reset": {},
+  "/users/password-new": {
+    query: z.object({
+      code: z.string(),
+    }),
+  },
   "/decks": {},
   "/decks/new": {},
   "/decks/import": {},

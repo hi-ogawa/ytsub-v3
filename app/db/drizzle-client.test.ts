@@ -77,11 +77,12 @@ describe(dbShowTables.name, () => {
         "bookmarkEntries",
         "captionEntries",
         "decks",
+        "emailUpdateRequests",
         "knex_migrations",
         "knex_migrations_lock",
+        "passwordResetRequests",
         "practiceActions",
         "practiceEntries",
-        "userVerifications",
         "users",
         "videos",
       ]

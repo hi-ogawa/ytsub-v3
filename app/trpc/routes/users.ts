@@ -1,8 +1,8 @@
-import crypto from "node:crypto";
+import crypto from "crypto";
 import { tinyassert } from "@hiogawa/utils";
 import showdown from "showdown";
 import { z } from "zod";
-import { E, T, db } from "../../db/drizzle-client.server";
+import { E, T, db, selectOne } from "../../db/drizzle-client.server";
 import { $R } from "../../misc/routes";
 import {
   PASSWORD_MAX_LENGTH,
@@ -11,6 +11,7 @@ import {
   register,
   signinSession,
   signoutSession,
+  toPasswordHash,
   verifyPassword,
 } from "../../utils/auth";
 import { serverConfig } from "../../utils/config";
@@ -102,8 +103,13 @@ export const trpcRoutesUsers = {
       // we don't check whether new email already exists in db
       // because showing an error for that would give away other user's email.
       tinyassert(input.email !== ctx.user.email);
-      const code = crypto.randomBytes(32).toString("hex"); // 64 chars
-      await db.insert(T.userVerifications).values({
+      const code = await generateUniqueCode((code) =>
+        selectOne(
+          T.emailUpdateRequests,
+          E.eq(T.emailUpdateRequests.code, code)
+        ).then((row) => !row)
+      );
+      await db.insert(T.emailUpdateRequests).values({
         userId: ctx.user.id,
         email: input.email,
         code,
@@ -115,7 +121,6 @@ export const trpcRoutesUsers = {
       });
     }),
 
-  // TODO
   users_requestResetPassword: procedureBuilder
     .input(
       z.object({
@@ -123,11 +128,24 @@ export const trpcRoutesUsers = {
       })
     )
     .mutation(async ({ input }) => {
-      const code = crypto.randomBytes(32).toString("hex"); // 64 chars
-      await sendResetPasswordEmail({ email: input.email, code });
+      const code = await generateUniqueCode((code) =>
+        selectOne(
+          T.passwordResetRequests,
+          E.eq(T.passwordResetRequests.code, code)
+        ).then((row) => !row)
+      );
+      await db.insert(T.passwordResetRequests).values({
+        email: input.email,
+        code,
+      });
+
+      const user = await selectOne(T.users, E.eq(T.users.email, input.email));
+      if (user) {
+        // hang promise for consistent response time regardless of email validity
+        sendResetPasswordEmail({ email: input.email, code });
+      }
     }),
 
-  // TODO
   users_resetPassword: procedureBuilder
     .input(
       z.object({
@@ -138,21 +156,60 @@ export const trpcRoutesUsers = {
     )
     .mutation(async ({ input }) => {
       tinyassert(input.password === input.passwordConfirmation);
+
+      const row = await selectOne(
+        T.passwordResetRequests,
+        E.eq(T.passwordResetRequests.code, input.code)
+      );
+      tinyassert(row);
+      tinyassert(!row.invalidatedAt);
+
+      const now = new Date();
+      tinyassert(
+        now.getTime() - row.createdAt.getTime() < VERIFICATION_MAX_AGE
+      );
+
+      // find and update user
+      const user = await selectOne(T.users, E.eq(T.users.email, row.email));
+      tinyassert(user);
+      await db
+        .update(T.users)
+        .set({
+          passwordHash: await toPasswordHash(input.password),
+        })
+        .where(E.eq(T.users.id, user.id));
+
+      // invalidate request
+      await db
+        .update(T.passwordResetRequests)
+        .set({
+          invalidatedAt: now,
+        })
+        .where(E.eq(T.passwordResetRequests.id, row.id));
     }),
 };
 
+// check collision in application layer first
+async function generateUniqueCode(
+  checkUnique: (v: string) => Promise<boolean>
+): Promise<string> {
+  for (let i = 0; ; i++) {
+    if (i > 100) {
+      throw new Error("bound loop just in case");
+    }
+    const value = crypto.randomBytes(32).toString("hex"); // 64 chars
+    if (await checkUnique(value)) {
+      return value;
+    }
+  }
+}
+
 // not exposed as trpc since it's done directly in /users/verify loader
 export async function updateEmailByCode(code: string) {
-  // TODO: atomic?
-
-  // select one
-  const rows = await db
-    .select()
-    .from(T.userVerifications)
-    .where(E.eq(T.userVerifications.code, code))
-    .orderBy(E.desc(T.userVerifications.createdAt))
-    .limit(1);
-  const row = rows.at(0);
+  const row = await selectOne(
+    T.emailUpdateRequests,
+    E.eq(T.emailUpdateRequests.code, code)
+  );
   tinyassert(row);
   tinyassert(!row.verifiedAt);
 
@@ -169,11 +226,11 @@ export async function updateEmailByCode(code: string) {
 
   // update verification
   await db
-    .update(T.userVerifications)
+    .update(T.emailUpdateRequests)
     .set({
       verifiedAt: now,
     })
-    .where(E.eq(T.userVerifications.id, row.id));
+    .where(E.eq(T.emailUpdateRequests.id, row.id));
 }
 
 const VERIFICATION_MAX_AGE = 1000 * 60 * 60;
@@ -200,9 +257,7 @@ Please follow this link to confirm the change:
 
 [Change your email](${href})
 
-If you did not request a password reset, please ignore this email.
-
-Thanks
+If you did not request an email change, please ignore this email.
 `;
   await sendEmail({
     Messages: [
@@ -221,8 +276,40 @@ Thanks
   });
 }
 
-async function sendResetPasswordEmail({}: { email: string; code: string }) {
-  // TODO
+async function sendResetPasswordEmail({
+  email,
+  code,
+}: {
+  email: string;
+  code: string;
+}) {
+  const href =
+    serverConfig.BASE_URL + $R["/users/password-new"](null, { code });
+  const TextPart = `\
+Hello,
+
+You recently requested to reset your password on Ytsub account.
+Please follow this link to continue:
+
+[Reset your password](${href})
+
+If you did not request a password reset, please ignore this email.
+`;
+  await sendEmail({
+    Messages: [
+      {
+        To: [
+          {
+            Email: email,
+          },
+        ],
+        From: EMAIL_FROM,
+        Subject: "Password reset",
+        TextPart,
+        HTMLPart: new showdown.Converter().makeHtml(TextPart),
+      },
+    ],
+  });
 }
 
 const EMAIL_FROM = {

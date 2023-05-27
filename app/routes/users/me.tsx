@@ -50,6 +50,13 @@ export default function DefaultComponent() {
     },
   });
 
+  const resetPasswordMutation = useMutation({
+    ...trpc.users_requestResetPassword.mutationOptions(),
+    onSuccess: () => {
+      toast.success("Please check your email to reset your password");
+    },
+  });
+
   const form = useForm({
     defaultValues: {
       language1: currentUser.language1 ?? "",
@@ -61,7 +68,7 @@ export default function DefaultComponent() {
   const updateEmailModal = useModal();
 
   return (
-    <div className="w-full p-4 flex justify-center">
+    <div className="w-full p-4 gap-4 flex flex-col items-center">
       <form
         className="h-full w-full max-w-md border"
         onSubmit={form.handleSubmit((data) => updateMutation.mutate(data))}
@@ -80,16 +87,7 @@ export default function DefaultComponent() {
               />
             </label>
             <div className="flex flex-col gap-1">
-              <div className="flex items-center gap-2">
-                Email
-                <button
-                  type="button"
-                  className="antd-btn antd-btn-ghost i-ri-edit-box-line w-4 h-4"
-                  onClick={() => {
-                    updateEmailModal.setOpen(true);
-                  }}
-                ></button>
-              </div>
+              Email
               <input
                 data-testid="me-email"
                 className="antd-input p-1"
@@ -177,6 +175,33 @@ export default function DefaultComponent() {
           </div>
         </div>
       </form>
+      <div
+        className="h-full w-full max-w-md border p-4 flex flex-col gap-3"
+        onSubmit={form.handleSubmit((data) => updateMutation.mutate(data))}
+      >
+        <h1 className="text-xl">Security</h1>
+        <button
+          className="antd-btn antd-btn-default p-0.5"
+          onClick={() => updateEmailModal.setOpen(true)}
+        >
+          Change email
+        </button>
+        {currentUser.email && (
+          <button
+            className={cls(
+              "antd-btn antd-btn-default p-0.5 flex justify-center",
+              resetPasswordMutation.isLoading && "antd-btn-loading"
+            )}
+            disabled={resetPasswordMutation.isLoading}
+            onClick={() =>
+              currentUser.email &&
+              resetPasswordMutation.mutate({ email: currentUser.email })
+            }
+          >
+            Reset password
+          </button>
+        )}
+      </div>
       <updateEmailModal.Wrapper>
         <UpdateEmailForm onSuccess={() => updateEmailModal.setOpen(false)} />
       </updateEmailModal.Wrapper>
