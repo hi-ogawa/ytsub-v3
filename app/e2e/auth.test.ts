@@ -1,5 +1,6 @@
-import { hashString } from "@hiogawa/utils";
+import { hashString, tinyassert } from "@hiogawa/utils";
 import { expect } from "@playwright/test";
+import type { Email } from "../utils/email-utils";
 import { test } from "./coverage";
 import { useUserE2E } from "./helper";
 
@@ -124,5 +125,39 @@ test.describe("/users/signout", () => {
     await page.locator('[data-test="user-menu"]').click();
     await page.getByRole("button", { name: "Sign out" }).click();
     await page.getByText("Successfully signed out").click();
+  });
+});
+
+test.describe("change email", () => {
+  const user = useUserE2E(test, {
+    seed: __filename + "change email",
+  });
+
+  test("basic", async ({ page }) => {
+    await user.signin(page);
+    await page.goto("/users/me");
+
+    const newEmail = "test@dummy.local";
+    await page.locator(".i-ri-edit-box-line").click();
+    await page.getByPlaceholder("Input new email...").fill(newEmail);
+    await page.getByRole("button", { name: "Send Verification Email" }).click();
+    await page.getByText("Verification email is sent successfullly").click();
+
+    // find verification link from dev page
+    await page.goto("/dev/emails");
+    const emailsRaw = await page.evaluate(() => document.body.textContent);
+    tinyassert(emailsRaw);
+    const emails: Email[] = JSON.parse(emailsRaw);
+    const message = emails[0].Messages[0];
+    expect(message.To[0].Email).toEqual(newEmail);
+    tinyassert(message.TextPart);
+
+    const match = message.TextPart.match(/\[Change your email\]\((.+?)\)/);
+    tinyassert(match);
+    const url = new URL(match[1]);
+    await page.goto(url.pathname + url.search);
+    await page.getByText("Successfully updated an email").click();
+    await page.waitForURL("/users/me");
+    await expect(page.getByTestId("me-email")).toHaveValue(newEmail);
   });
 });

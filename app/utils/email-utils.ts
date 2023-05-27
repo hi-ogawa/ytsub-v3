@@ -5,7 +5,7 @@ import { serverConfig } from "./config";
 
 // we only borrow their typing and fetch it by ourselves
 // https://dev.mailjet.com/email/guides/send-api-v31
-type Email = SendEmailV3_1.Body;
+export type Email = SendEmailV3_1.Body;
 
 // previewed in /dev/emails for e2e
 export const debugEmails: Email[] = ((globalThis as any).__debugEmails ??= []);
@@ -16,7 +16,7 @@ export const debugEmails: Email[] = ((globalThis as any).__debugEmails ??= []);
 
 export async function sendEmail(email: Email) {
   if (process.env.NODE_ENV !== "production") {
-    debugEmails.push(email);
+    debugEmails.unshift(email);
   }
   await sendMailjet(email);
 }

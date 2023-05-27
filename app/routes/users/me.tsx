@@ -91,6 +91,7 @@ export default function DefaultComponent() {
                 ></button>
               </div>
               <input
+                data-testid="me-email"
                 className="antd-input p-1"
                 disabled
                 readOnly

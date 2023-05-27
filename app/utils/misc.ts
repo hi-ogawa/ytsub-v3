@@ -1,4 +1,4 @@
-import { range, tinyassert, zip } from "@hiogawa/utils";
+import { range } from "@hiogawa/utils";
 
 export function createGetProxy(
   propHandler: (prop: string | symbol) => unknown
@@ -64,21 +64,6 @@ export function defaultObject<K extends string, Keys extends [K, ...K[]], V>(
 // shortcut for `undefined as T | undefined`
 export function none<T>(): T | undefined {
   return undefined;
-}
-
-// new RegExp(String.raw`...`) with only inner strings are escaped
-export function regExpRaw(
-  { raw }: TemplateStringsArray,
-  ...params: string[]
-): RegExp {
-  tinyassert(raw.length === params.length + 1);
-  return new RegExp(
-    [...zip(raw, params.map(escapeRegExp)), raw.slice(-1)].flat().join("")
-  );
-}
-
-function escapeRegExp(s: string): string {
-  return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
 export function zipMax<T1, T2>(

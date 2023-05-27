@@ -13,8 +13,8 @@ export const loader = makeLoader(async ({ ctx }) => {
     url +
       "?" +
       encodeFlashMessage({
-        content: `Successfully update an email`,
-        variant: "error",
+        variant: "success",
+        content: `Successfully updated an email`,
       })
   );
 });
