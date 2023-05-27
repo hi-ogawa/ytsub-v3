@@ -2,6 +2,7 @@ import { useNavigate } from "@remix-run/react";
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
+import { useModal } from "../../components/modal";
 import { PopoverSimple } from "../../components/popover";
 import type { UserTable } from "../../db/models";
 import { trpc } from "../../trpc/client";
@@ -57,6 +58,8 @@ export default function DefaultComponent() {
     },
   });
 
+  const updateEmailModal = useModal();
+
   return (
     <div className="w-full p-4 flex justify-center">
       <form
@@ -76,6 +79,24 @@ export default function DefaultComponent() {
                 data-test="me-username"
               />
             </label>
+            <div className="flex flex-col gap-1">
+              <div className="flex items-center gap-2">
+                Email
+                <button
+                  type="button"
+                  className="antd-btn antd-btn-ghost i-ri-edit-box-line w-4 h-4"
+                  onClick={() => {
+                    updateEmailModal.setOpen(true);
+                  }}
+                ></button>
+              </div>
+              <input
+                className="antd-input p-1"
+                disabled
+                readOnly
+                value={currentUser.email ?? "(no email)"}
+              />
+            </div>
             <label className="flex flex-col gap-1">
               Created At
               <input
@@ -155,7 +176,48 @@ export default function DefaultComponent() {
           </div>
         </div>
       </form>
+      <updateEmailModal.Wrapper>
+        <UpdateEmailForm onSuccess={() => updateEmailModal.setOpen(false)} />
+      </updateEmailModal.Wrapper>
     </div>
+  );
+}
+
+function UpdateEmailForm(props: { onSuccess: () => void }) {
+  const form = useForm({ defaultValues: { email: "" } });
+  const formIsValid = form.formState.isValid;
+
+  const mutation = useMutation({
+    ...trpc.users_requestUpdateEmail.mutationOptions(),
+    onSuccess: () => {
+      toast.success("Verification email is sent successfullly");
+      props.onSuccess();
+    },
+  });
+
+  return (
+    <form
+      className="flex flex-col gap-3 p-4 relative"
+      onSubmit={form.handleSubmit((data) => mutation.mutate(data))}
+    >
+      <h2 className="text-xl">Update Email</h2>
+      <label className="flex flex-col gap-1">
+        <input
+          className="antd-input p-1"
+          placeholder="Input new email..."
+          {...form.register("email", { required: true })}
+        />
+      </label>
+      <button
+        className={cls(
+          "antd-btn antd-btn-primary p-1",
+          mutation.isLoading && "antd-btn-loading"
+        )}
+        disabled={mutation.isLoading || !formIsValid}
+      >
+        Send Verification Email
+      </button>
+    </form>
   );
 }
 

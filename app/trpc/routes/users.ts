@@ -91,7 +91,7 @@ export const trpcRoutesUsers = {
     .use(middlewares.requireUser)
     .input(
       z.object({
-        email: z.string(),
+        email: z.string().email(),
       })
     )
     .mutation(async ({ input, ctx }) => {
@@ -103,6 +103,7 @@ export const trpcRoutesUsers = {
         code,
       });
       // TODO: send email with link
+      // TODO: escape hatch for e2e
       const href = $R["/users/verify"](null, { code });
       console.log({ href });
     }),
