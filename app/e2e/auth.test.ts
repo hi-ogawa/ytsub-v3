@@ -151,13 +151,18 @@ test.describe("change email", () => {
     const message = emails[0].Messages[0];
     expect(message.To[0].Email).toEqual(newEmail);
     tinyassert(message.TextPart);
-
     const match = message.TextPart.match(/\[Change your email\]\((.+?)\)/);
     tinyassert(match);
     const url = new URL(match[1]);
+
+    // visit link
     await page.goto(url.pathname + url.search);
     await page.getByText("Successfully updated an email").click();
     await page.waitForURL("/users/me");
     await expect(page.getByTestId("me-email")).toHaveValue(newEmail);
+
+    // using a same link is invalid
+    await page.goto(url.pathname + url.search);
+    await page.getByText("Invalid request").click();
   });
 });
