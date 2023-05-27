@@ -107,7 +107,7 @@ export const trpcRoutesUsers = {
         selectOne(
           T.userVerifications,
           E.eq(T.userVerifications.code, code)
-        ).then(Boolean)
+        ).then((row) => !row)
       );
       await db.insert(T.userVerifications).values({
         userId: ctx.user.id,
@@ -132,7 +132,7 @@ export const trpcRoutesUsers = {
         selectOne(
           T.passwordResetRequests,
           E.eq(T.passwordResetRequests.code, code)
-        ).then(Boolean)
+        ).then((row) => !row)
       );
       await db.insert(T.passwordResetRequests).values({
         email: input.email,
@@ -194,14 +194,14 @@ export const trpcRoutesUsers = {
 
 // check collision in application layer first
 async function generateUniqueCode(
-  check: (v: string) => Promise<boolean>
+  checkUnique: (v: string) => Promise<boolean>
 ): Promise<string> {
   for (let i = 0; ; i++) {
     if (i > 100) {
       throw new Error("bound loop just in case");
     }
     const value = crypto.randomBytes(32).toString("hex"); // 64 chars
-    if (await check(value)) {
+    if (await checkUnique(value)) {
       return value;
     }
   }
