@@ -135,6 +135,8 @@ export const trpcRoutesUsers = {
 
 // not exposed as trpc since it's done directly in /users/verify loader
 export async function updateEmailByCode(code: string) {
+  // TODO: atomic?
+
   // select one
   const rows = await db
     .select()
@@ -145,6 +147,9 @@ export async function updateEmailByCode(code: string) {
   const row = rows.at(0);
   tinyassert(row);
   tinyassert(!row.verifiedAt);
+
+  const now = new Date();
+  tinyassert(now.getTime() - row.createdAt.getTime() < VERIFICATION_MAX_AGE);
 
   // update user
   await db
@@ -158,7 +163,9 @@ export async function updateEmailByCode(code: string) {
   await db
     .update(T.userVerifications)
     .set({
-      verifiedAt: new Date(),
+      verifiedAt: now,
     })
     .where(E.eq(T.userVerifications.id, row.id));
 }
+
+const VERIFICATION_MAX_AGE = 1000 * 60 * 60;
