@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">58.84% </span>
+                <span class="strong">60.52% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>133/226</span>
+                <span class='fraction'>138/228</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">58.84% </span>
+                <span class="strong">60.52% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>133/226</span>
+                <span class='fraction'>138/228</span>
             </div>
         
             
@@ -289,7 +289,9 @@
 <a name='L224'></a><a href='#L224'>224</a>
 <a name='L225'></a><a href='#L225'>225</a>
 <a name='L226'></a><a href='#L226'>226</a>
-<a name='L227'></a><a href='#L227'>227</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L227'></a><a href='#L227'>227</a>
+<a name='L228'></a><a href='#L228'>228</a>
+<a name='L229'></a><a href='#L229'>229</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -508,13 +510,15 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import crypto from "node:crypto";
 import { tinyassert } from "@hiogawa/utils";
 import showdown from "showdown";
@@ -706,7 +710,7 @@ const VERIFICATION_MAX_AGE = 1000 * 60 * 60;
 <span class="cstat-no" title="statement not covered" >  code: string;</span>
 <span class="cstat-no" title="statement not covered" >}) {</span>
 <span class="cstat-no" title="statement not covered" >  const href = serverConfig.BASE_URL + $R["/users/verify"](null, { code });</span>
-<span class="cstat-no" title="statement not covered" >  const content = `\</span>
+<span class="cstat-no" title="statement not covered" >  const TextPart = `\</span>
 <span class="cstat-no" title="statement not covered" >Hi, ${username}</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >You recently requested to change your email on Ytsub account.</span>
@@ -726,13 +730,10 @@ const VERIFICATION_MAX_AGE = 1000 * 60 * 60;
 <span class="cstat-no" title="statement not covered" >            Email: email,</span>
 <span class="cstat-no" title="statement not covered" >          },</span>
 <span class="cstat-no" title="statement not covered" >        ],</span>
-<span class="cstat-no" title="statement not covered" >        From: {</span>
-<span class="cstat-no" title="statement not covered" >          Name: "Ytsub",</span>
-<span class="cstat-no" title="statement not covered" >          Email: "noreply@hiro18181.com",</span>
-<span class="cstat-no" title="statement not covered" >        },</span>
+<span class="cstat-no" title="statement not covered" >        From: EMAIL_FROM,</span>
 <span class="cstat-no" title="statement not covered" >        Subject: "Email change verification",</span>
-<span class="cstat-no" title="statement not covered" >        TextPart: content,</span>
-<span class="cstat-no" title="statement not covered" >        HTMLPart: new showdown.Converter().makeHtml(content),</span>
+<span class="cstat-no" title="statement not covered" >        TextPart,</span>
+<span class="cstat-no" title="statement not covered" >        HTMLPart: new showdown.Converter().makeHtml(TextPart),</span>
 <span class="cstat-no" title="statement not covered" >      },</span>
 <span class="cstat-no" title="statement not covered" >    ],</span>
 <span class="cstat-no" title="statement not covered" >  });</span>
@@ -741,6 +742,11 @@ const VERIFICATION_MAX_AGE = 1000 * 60 * 60;
 <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >async function sendResetPasswordEmail({}: { email: string; code: string }) {</span></span>
 <span class="cstat-no" title="statement not covered" >  // TODO</span>
 <span class="cstat-no" title="statement not covered" >}</span>
+&nbsp;
+const EMAIL_FROM = {
+  Name: "Ytsub",
+  Email: "noreply@hiro18181.com",
+};
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -748,7 +754,7 @@ const VERIFICATION_MAX_AGE = 1000 * 60 * 60;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-05-27T05:41:42.120Z
+                at 2023-05-27T05:55:03.123Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
