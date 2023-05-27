@@ -14,14 +14,17 @@ pnpm skeema diff --allow-unsafe
 # 2. apply "up"
 pnpm skeema push --allow-unsafe
 
-# 3. temporary revert skeema/some-table.sql
-git stash
+# 3. temporary revert skeema/some-table.sql e.g. by
+git co master
 
 # 4. diff for "down" migration
 pnpm skeema diff --allow-unsafe
 
-# 5. restore skeema/some-table.sql
-git stash pop
+# 5. apply "down"
+pnpm skeema push --allow-unsafe
+
+# 6. restore skeema/some-table.sql
+git co -
 ```
 
 ## references

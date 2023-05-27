@@ -74,6 +74,15 @@ const userVerifications = mysqlTable("userVerifications", {
   verifiedAt: datetimeUtc("verifiedAt"),
 });
 
+const passwordResetRequests = mysqlTable("passwordResetRequests", {
+  id: serial("id").primaryKey(),
+  ...timestampColumns,
+  //
+  email: text("email").notNull(),
+  code: text("code").notNull(),
+  invalidatedAt: datetimeUtc("invalidatedAt"),
+});
+
 const videos = mysqlTable("videos", {
   id: serial("id").primaryKey(),
   userId: int("userId"), // `null` indicates the video is created by/for "anonymous" users
@@ -166,6 +175,7 @@ const knex_migrations = mysqlTable("knex_migrations", {
 export const T = {
   users,
   userVerifications,
+  passwordResetRequests,
   videos,
   captionEntries,
   bookmarkEntries,

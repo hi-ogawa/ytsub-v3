@@ -79,6 +79,7 @@ describe(dbShowTables.name, () => {
         "decks",
         "knex_migrations",
         "knex_migrations_lock",
+        "passwordResetRequests",
         "practiceActions",
         "practiceEntries",
         "userVerifications",
