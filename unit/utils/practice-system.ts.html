@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">96.09% </span>
+                <span class="strong">96.21% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>541/563</span>
+                <span class='fraction'>559/581</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">85.48% </span>
+                <span class="strong">86.15% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>53/62</span>
+                <span class='fraction'>56/65</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>16/16</span>
+                <span class='fraction'>17/17</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">96.09% </span>
+                <span class="strong">96.21% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>541/563</span>
+                <span class='fraction'>559/581</span>
             </div>
         
             
@@ -626,7 +626,25 @@
 <a name='L561'></a><a href='#L561'>561</a>
 <a name='L562'></a><a href='#L562'>562</a>
 <a name='L563'></a><a href='#L563'>563</a>
-<a name='L564'></a><a href='#L564'>564</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L564'></a><a href='#L564'>564</a>
+<a name='L565'></a><a href='#L565'>565</a>
+<a name='L566'></a><a href='#L566'>566</a>
+<a name='L567'></a><a href='#L567'>567</a>
+<a name='L568'></a><a href='#L568'>568</a>
+<a name='L569'></a><a href='#L569'>569</a>
+<a name='L570'></a><a href='#L570'>570</a>
+<a name='L571'></a><a href='#L571'>571</a>
+<a name='L572'></a><a href='#L572'>572</a>
+<a name='L573'></a><a href='#L573'>573</a>
+<a name='L574'></a><a href='#L574'>574</a>
+<a name='L575'></a><a href='#L575'>575</a>
+<a name='L576'></a><a href='#L576'>576</a>
+<a name='L577'></a><a href='#L577'>577</a>
+<a name='L578'></a><a href='#L578'>578</a>
+<a name='L579'></a><a href='#L579'>579</a>
+<a name='L580'></a><a href='#L580'>580</a>
+<a name='L581'></a><a href='#L581'>581</a>
+<a name='L582'></a><a href='#L582'>582</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -1096,6 +1114,11 @@
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
@@ -1128,7 +1151,16 @@
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">1020x</span>
+<span class="cline-any cline-yes">1020x</span>
+<span class="cline-any cline-yes">1020x</span>
+<span class="cline-any cline-yes">1020x</span>
+<span class="cline-any cline-yes">1020x</span>
+<span class="cline-any cline-yes">1020x</span>
+<span class="cline-any cline-yes">1020x</span>
+<span class="cline-any cline-yes">1020x</span>
+<span class="cline-any cline-yes">1020x</span>
+<span class="cline-any cline-yes">1020x</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
@@ -1189,6 +1221,10 @@
 <span class="cline-any cline-yes">210x</span>
 <span class="cline-any cline-yes">70x</span>
 <span class="cline-any cline-yes">70x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1020x</span>
+<span class="cline-any cline-yes">1020x</span>
+<span class="cline-any cline-yes">1020x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import {
   HashRng,
   difference,
@@ -1659,18 +1695,23 @@ async function queryNextPracticeEntryRandomModeWithCache(
   return nextEntries[0];
 }
 &nbsp;
+type ScoredPracticeEntry = TT["practiceEntries"] &amp; {
+  score: number;
+  scoreFactors: number[];
+};
+&nbsp;
 export async function queryNextPracticeEntryRandomModeBatch(
   deckId: number,
   now: Date,
   maxCount: number,
   seed: number
-): Promise&lt;TT["practiceEntries"][]&gt; {
+): Promise&lt;ScoredPracticeEntry[]&gt; {
   const rng = new HashRng(seed);
 &nbsp;
   //
   // fetch all and randomize in js
   //
-  let rows = await db
+  const rows = await db
     .select()
     .from(T.practiceEntries)
     .where(E.and(E.eq(T.practiceEntries.deckId, deckId)));
@@ -1690,17 +1731,26 @@ export async function queryNextPracticeEntryRandomModeBatch(
   }
 &nbsp;
   // score = (uniform in [0, 1]) + (scheduledAt bonus in [-?, BONUS_LIMIT])
-  rows = sortBy(
-    rows,
-    (row) =&gt; -(rng.float() + computeScheduledAtFactor(row.scheduledAt))
-  );
+  let scoredRows = rows.map((row) =&gt; {
+    const scoreFactors = [
+      rng.float(),
+      computeScheduledAtFactor(row.scheduledAt),
+    ];
+    const score = sum(scoreFactors);
+    return {
+      ...row,
+      score,
+      scoreFactors,
+    };
+  });
+  scoredRows = sortBy(scoredRows, (row) =&gt; -row.score);
 &nbsp;
   //
   // choose queueType by a fixed probability
   //
 &nbsp;
   const rowsByQueue = objectFromMapDefault(
-    groupBy(rows, (row) =&gt; row.queueType),
+    groupBy(scoredRows, (row) =&gt; row.queueType),
     PRACTICE_QUEUE_TYPES,
     []
   );
@@ -1752,6 +1802,10 @@ function prefixSum(ls: number[]): number[] {
   }
   return acc;
 }
+&nbsp;
+function sum(ls: number[]): number {
+  return ls.reduce((x, y) =&gt; x + y, 0);
+}
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -1759,7 +1813,7 @@ function prefixSum(ls: number[]): number[] {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-05-27T00:44:25.947Z
+                at 2023-05-27T01:05:17.019Z
             </div>
         <script src="../prettify.js"></script>
         <script>
