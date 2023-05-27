@@ -493,9 +493,9 @@ export async function queryNextPracticeEntryRandomModeBatch(
   // sort random with scheduledAt bonus
   //
   function computeScheduledAtFactor(scheduledAt: Date): number {
-    // +0.1 for each week scheduled eariler
-    const BONUS_SLOPE = 0.1 / (60 * 60 * 24 * 7 * 1000);
-    const BONUS_LIMIT = 0.3;
+    // +0.025 for each week scheduled eariler
+    const BONUS_SLOPE = 0.025 / (60 * 60 * 24 * 7 * 1000);
+    const BONUS_LIMIT = 0.2;
 
     return Math.min(
       BONUS_LIMIT,
@@ -503,7 +503,7 @@ export async function queryNextPracticeEntryRandomModeBatch(
     );
   }
 
-  // score = (uniform in [0, 1]) + (scheduledAt bonus in [-?, BONUS_LIMIT])
+  // score = (uniform in [0, 1]) + (scheduledAt bonus in [-oo, BONUS_LIMIT])
   let scoredRows = rows.map((row) => {
     const scoreFactors = [
       rng.float(),
