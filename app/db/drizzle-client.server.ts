@@ -310,7 +310,8 @@ export async function dbGetMigrationStatus() {
 
   const fs = await import("fs");
   const config = knexfile();
-  const files = await fs.promises.readdir(config.migrations.directory);
+  let files = await fs.promises.readdir(config.migrations.directory);
+  files = files.filter((f) => f.match(/\.(js|ts)$/));
   files.sort();
 
   const completedFiles = rows.map((row) => row.name);
