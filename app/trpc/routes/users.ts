@@ -98,6 +98,9 @@ export const trpcRoutesUsers = {
       })
     )
     .mutation(async ({ input, ctx }) => {
+      // we only minimally check if new email is differrnt from current email.
+      // we don't check whether new email already exists in db
+      // because showing an error for that would give away other user's email.
       tinyassert(input.email !== ctx.user.email);
       const code = crypto.randomBytes(32).toString("hex"); // 64 chars
       await db.insert(T.userVerifications).values({
