@@ -59,6 +59,17 @@ export const ROUTE_DEF = {
   "/users/register": {},
   "/users/signin": {},
   "/users/signout": {},
+  "/users/verify": {
+    query: z.object({
+      code: z.string(),
+    }),
+  },
+  "/users/password-reset": {},
+  "/users/password-new": {
+    query: z.object({
+      code: z.string(),
+    }),
+  },
   "/decks": {},
   "/decks/new": {},
   "/decks/import": {},

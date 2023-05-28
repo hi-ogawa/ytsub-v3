@@ -90,6 +90,12 @@ export default function DefaultComponent() {
               Register
             </Link>
           </div>
+          <Link
+            className="antd-link text-sm"
+            to={$R["/users/password-reset"]()}
+          >
+            Forgot your password?
+          </Link>
         </div>
       </form>
     </div>

@@ -1,7 +1,7 @@
+import { regExpRaw } from "@hiogawa/utils";
 import { expect } from "@playwright/test";
 import { E, T, db } from "../db/drizzle-client.server";
 import { importSeed } from "../misc/seed-utils";
-import { regExpRaw } from "../utils/misc";
 import { test } from "./coverage";
 import { useUserE2E } from "./helper";
 

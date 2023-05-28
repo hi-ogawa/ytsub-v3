@@ -36,10 +36,10 @@ const datetimeUtc = customType<{ data: Date; driverData: string }>({
     return "datetime";
   },
   toDriver: (jsValue) => {
-    return jsValue.toISOString().slice(0, -5);
+    return jsValue.toISOString().slice(0, -1);
   },
   fromDriver: (dbValue) => {
-    return new Date(dbValue + ".000Z");
+    return new Date(dbValue + "Z");
   },
 });
 
@@ -56,11 +56,31 @@ const users = mysqlTable("users", {
   id: serial("id").primaryKey(),
   ...timestampColumns,
   //
-  username: text("username").notNull(), // TODO: case insensitive
+  username: text("username").notNull(),
   passwordHash: text("passwordHash").notNull(), // TODO: reduct when responding to client
+  email: text("email"), // email is optional only for reset password feature
   language1: text("language1"),
   language2: text("language2"),
   timezone: text("timezone").notNull().default(DUMMY_DEFAULT),
+});
+
+const emailUpdateRequests = mysqlTable("emailUpdateRequests", {
+  id: serial("id").primaryKey(),
+  userId: int("userId").notNull(),
+  ...timestampColumns,
+  //
+  email: text("email").notNull(),
+  code: text("code").notNull(),
+  verifiedAt: datetimeUtc("verifiedAt"),
+});
+
+const passwordResetRequests = mysqlTable("passwordResetRequests", {
+  id: serial("id").primaryKey(),
+  ...timestampColumns,
+  //
+  email: text("email").notNull(),
+  code: text("code").notNull(),
+  invalidatedAt: datetimeUtc("invalidatedAt"),
 });
 
 const videos = mysqlTable("videos", {
@@ -154,6 +174,8 @@ const knex_migrations = mysqlTable("knex_migrations", {
 // short accessor for tables
 export const T = {
   users,
+  emailUpdateRequests,
+  passwordResetRequests,
   videos,
   captionEntries,
   bookmarkEntries,
@@ -298,7 +320,8 @@ export async function dbGetMigrationStatus() {
 
   const fs = await import("fs");
   const config = knexfile();
-  const files = await fs.promises.readdir(config.migrations.directory);
+  let files = await fs.promises.readdir(config.migrations.directory);
+  files = files.filter((f) => f.match(/\.(js|ts)$/));
   files.sort();
 
   const completedFiles = rows.map((row) => row.name);
