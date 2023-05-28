@@ -4,8 +4,6 @@ export function ToastWrapper(props: React.PropsWithChildren) {
   return (
     <>
       <Toaster
-        // TODO: default position="top" is fine?
-        position="bottom-left"
         toastOptions={{
           className: "!bg-colorBgElevated !text-colorText",
         }}

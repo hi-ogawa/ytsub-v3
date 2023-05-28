@@ -1,6 +1,6 @@
 import { deepEqual } from "assert/strict";
 import fs from "node:fs";
-import { objectPick, range, tinyassert, zip } from "@hiogawa/utils";
+import { groupBy, objectPick, range, tinyassert, zip } from "@hiogawa/utils";
 import { cac } from "cac";
 import consola from "consola";
 import { sql } from "drizzle-orm";
@@ -24,10 +24,12 @@ import {
   findByUsername,
   register,
   toPasswordHash,
-  verifySignin,
 } from "../utils/auth";
 import { exec, streamToString } from "../utils/node.server";
-import { resetDeckCache } from "../utils/practice-system";
+import {
+  queryNextPracticeEntryRandomModeBatch,
+  resetDeckCache,
+} from "../utils/practice-system";
 import { Z_VIDEO_METADATA } from "../utils/types";
 import {
   NewVideo,
@@ -125,15 +127,13 @@ cli
         .update(T.users)
         .set({ language1, language2 })
         .where(E.eq(T.users.id, user.id));
-      await printSession(username, password);
+      await printSession(username);
     }
   );
 
-cli
-  .command("print-session <username> <password>")
-  .action(async (username: string, password: string) => {
-    await printSession(username, password);
-  });
+cli.command("print-session <username>").action(async (username: string) => {
+  await printSession(username);
+});
 
 cli
   .command("create-videos")
@@ -382,7 +382,7 @@ cli
       await deleteOrphans();
       // rename to "dev"
       await db
-        .update(T.users)
+        .update(T.usersCredentials)
         .set({ username: "dev", passwordHash: await toPasswordHash("dev") })
         .where(E.eq(T.users.username, onlyUsername));
     }
@@ -447,8 +447,9 @@ cli
     }
   });
 
-async function printSession(username: string, password: string) {
-  const user = await verifySignin({ username, password });
+async function printSession(username: string) {
+  const user = await findByUsername(username);
+  tinyassert(user);
   const cookie = await createUserCookie(user);
   console.log(cookie);
 }
@@ -513,6 +514,73 @@ async function debugCacheNextEntries(rawArgs: unknown) {
     .from(T.practiceEntries)
     .where(E.inArray(T.practiceEntries.id, ids));
   console.log(entries);
+}
+
+//
+// debugRandomMode
+//
+
+const debugRandomModeArgs = z.object({
+  deckId: z.coerce.number().int(),
+  count: z.coerce.number().default(10),
+  seed: z.coerce.number().default(Date.now()),
+});
+
+cli
+  .command(debugRandomMode.name)
+  .option(`--${debugRandomModeArgs.keyof().enum.deckId} [number]`, "")
+  .option(`--${debugRandomModeArgs.keyof().enum.count} [number]`, "")
+  .option(`--${debugRandomModeArgs.keyof().enum.seed} [number]`, "")
+  .action(debugRandomMode);
+
+async function debugRandomMode(rawArgs: unknown) {
+  const args = debugRandomModeArgs.parse(rawArgs);
+  const deck = await selectOne(T.decks, E.eq(T.decks.id, args.deckId));
+  tinyassert(deck);
+
+  // get practice order
+  const scoredEntries = await queryNextPracticeEntryRandomModeBatch(
+    args.deckId,
+    new Date(),
+    args.count,
+    args.seed
+  );
+
+  // get all rows
+  const rows = await db
+    .select()
+    .from(T.practiceEntries)
+    .innerJoin(
+      T.bookmarkEntries,
+      E.eq(T.bookmarkEntries.id, T.practiceEntries.bookmarkEntryId)
+    )
+    .innerJoin(
+      T.captionEntries,
+      E.eq(T.captionEntries.id, T.bookmarkEntries.captionEntryId)
+    )
+    .innerJoin(T.videos, E.eq(T.videos.id, T.bookmarkEntries.videoId))
+    .where(E.eq(T.practiceEntries.deckId, args.deckId));
+
+  const rowsById = groupBy(rows, (row) => row.practiceEntries.id);
+
+  // format
+  const formatted = scoredEntries.map((s) => {
+    const e = rowsById.get(s.id)![0];
+    const picked = [
+      objectPick(e.bookmarkEntries, ["text"]),
+      objectPick(e.captionEntries, ["text1", "text2", "begin"]),
+      objectPick(e.videos, ["title", "bookmarkEntriesCount"]),
+      objectPick(e.practiceEntries, [
+        "scheduledAt",
+        "queueType",
+        "practiceActionsCount",
+      ]),
+      objectPick(s, ["score", "scoreFactors"]),
+    ];
+    const combined = Object.assign({}, ...picked);
+    return combined;
+  });
+  console.log(JSON.stringify(formatted, null, 2));
 }
 
 //

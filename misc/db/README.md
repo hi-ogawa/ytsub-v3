@@ -7,7 +7,8 @@ wget -c -P misc/db/export https://github.com/hi-ogawa/ytsub-v3/files/11132553/yt
 
 # load production database locally
 make db/dump/production         # create dump from planetscale
-make db/restore/production      # restore to local
+make db/recreate/dev            # clean dev db
+make db/restore/production      # load schema and data to dev db
 pnpm clean-data hiroshi         # filter only 'hiroshi' data and rename to 'dev'
 make db/dump                    # create dump from local (after that rename manually to `misc/db/dev.sql.gz`)
 ```
