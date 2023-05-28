@@ -140,9 +140,9 @@ export const trpcRoutesUsers = {
       });
 
       const user = await selectOne(T.users, E.eq(T.users.email, input.email));
+      // TODO: obfuscate response time
       if (user) {
-        // hang promise for consistent response time regardless of email validity
-        sendResetPasswordEmail({ email: input.email, code });
+        await sendResetPasswordEmail({ email: input.email, code });
       }
     }),
 
