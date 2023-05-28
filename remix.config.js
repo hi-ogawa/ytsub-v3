@@ -6,7 +6,9 @@ module.exports = {
   serverBuildPath: `build/remix/${env}/server/index.js`,
   assetsBuildDirectory: `build/remix/${env}/public/build`,
   server: process.env.BUILD_VERCEL ? "./app/server/entry-vercel.ts" : "./app/server/entry-hattip.ts",
-  serverDependenciesToBundle: "all",
+  serverDependenciesToBundle: process.env.BUILD_VERCEL ? "all" : [
+    /@hattip/, /@js-temporal/
+  ],
   future: {
     v2_meta: true,
     v2_errorBoundary: true,
