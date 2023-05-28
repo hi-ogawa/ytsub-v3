@@ -1,20 +1,15 @@
-import { tinyassert } from "@hiogawa/utils";
 import { Temporal } from "@js-temporal/polyfill";
 import { Link } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import React from "react";
+import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { $R, R } from "../../misc/routes";
 import { trpcClient } from "../../trpc/client-internal.client";
 import { encodeFlashMessage } from "../../utils/flash-message";
 import { makeLoader } from "../../utils/loader-utils.server";
-import { cls, usePromiseQueryOpitons } from "../../utils/misc";
+import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
-import {
-  loadTurnstileScript,
-  turnstileRenderPromise,
-} from "../../utils/turnstile-utils.client";
+import { useTurnstile } from "../../utils/turnstile-utils.client";
 
 export const handle: PageHandle = {
   navBarTitle: () => "Register",
@@ -50,11 +45,11 @@ export default function DefaultComponent() {
     passwordConfirmation: string;
   };
 
+  const turnstile = useTurnstile();
+
   const registerMutation = useMutation({
     mutationFn: async (data: FormState) => {
-      tinyassert(turnstileScriptQuery.isSuccess);
-      tinyassert(turnstileRef.current);
-      const token = await turnstileRenderPromise(turnstileRef.current);
+      const token = await turnstile.render();
       await trpcClient.users_register.mutate({
         ...data,
         token,
@@ -79,12 +74,6 @@ export default function DefaultComponent() {
       passwordConfirmation: "",
     },
   });
-
-  const turnstileScriptQuery = useQuery({
-    ...usePromiseQueryOpitons(() => loadTurnstileScript().then(() => null)),
-  });
-
-  const turnstileRef = React.useRef<HTMLDivElement>(null);
 
   return (
     <div className="w-full p-4 flex justify-center">
@@ -138,7 +127,7 @@ export default function DefaultComponent() {
             )}
             disabled={
               !form.formState.isValid ||
-              !turnstileScriptQuery.isSuccess ||
+              !turnstile.query.isSuccess ||
               registerMutation.isLoading
             }
           >
@@ -151,7 +140,7 @@ export default function DefaultComponent() {
             </Link>
           </div>
         </div>
-        <div ref={turnstileRef} className="absolute"></div>
+        <div ref={turnstile.ref} className="absolute"></div>
       </form>
     </div>
   );
