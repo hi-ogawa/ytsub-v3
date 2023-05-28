@@ -1,0 +1,13 @@
+diff --git a/dist/components.js b/dist/components.js
+index b355788f65867c8ca672d87c7cc1d26532ca1306..03c5bd9f0ac4787c20e23c800aaa7bcef884b696 100644
+--- a/dist/components.js
++++ b/dist/components.js
+@@ -1237,7 +1237,7 @@ function convertRouterFetcherToRemixFetcher(fetcherRR) {
+ // This way devs don't have to worry about doing the NODE_ENV check themselves.
+ // If running an un-bundled server outside of `remix dev` you will still need
+ // to set the REMIX_DEV_SERVER_WS_PORT manually.
+-const LiveReload = process.env.NODE_ENV !== "development" ? () => null : function LiveReload({
++const LiveReload = false ? () => null : function LiveReload({
+   port = Number(process.env.REMIX_DEV_SERVER_WS_PORT || 8002),
+   timeoutMs = 1000,
+   nonce = undefined

@@ -21,6 +21,9 @@ export function createHattipApp() {
   );
 }
 
+// re-export for entry-dev
+export const assetsBuildDirectory = build.assetsBuildDirectory;
+
 //
 // remix
 //
