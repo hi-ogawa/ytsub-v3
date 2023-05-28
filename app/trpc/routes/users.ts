@@ -7,6 +7,7 @@ import { $R } from "../../misc/routes";
 import {
   PASSWORD_MAX_LENGTH,
   USERNAME_MAX_LENGTH,
+  findByUsername,
   register,
   signinSession,
   signoutSession,
@@ -59,13 +60,12 @@ export const trpcRoutesUsers = {
     )
     .mutation(async ({ input, ctx }) => {
       tinyassert(!ctx.user, "Already signed in");
-      const user = await verifySignin(input);
-      if (user) {
-        signinSession(ctx.session, user);
-        await ctx.commitSession();
-        return user;
-      }
-      throw new Error("Invalid username or password");
+      await verifySignin(input);
+      const user = await findByUsername(input.username);
+      tinyassert(user);
+      signinSession(ctx.session, user);
+      await ctx.commitSession();
+      return user;
     }),
 
   users_signout: procedureBuilder
