@@ -39,9 +39,6 @@ dependencies:
   '@js-temporal/polyfill':
     specifier: ^0.4.3
     version: 0.4.3
-  '@remix-run/express':
-    specifier: 1.15.0
-    version: 1.15.0(express@4.17.3)
   '@remix-run/node':
     specifier: 1.15.0
     version: 1.15.0(patch_hash=z6mxtllsu73w4y6xnddlyl6j6y)
