@@ -10,12 +10,11 @@ set -eu -o pipefail
 #   project.json
 #   output/
 #     config.json
-#     static/  (= (remix-output)/public)
+#     static/                = (remix-outdir)/public
 #     functions/
 #       index.func/
 #         .vc-config.json
-#         index-bootstrap.js (require index.js after process.setSourceMapsEnabled)
-#         index.js
+#         index.js           = (remix-outdir)/server/index.js
 #
 
 # cleanup
@@ -27,11 +26,8 @@ mkdir -p .vercel/output/functions/index.func
 # css
 pnpm build:css
 
-# remix's default "node-cjs" build with custom server entry
-NODE_ENV=production BUILD_VERCEL=1 npx remix build --sourcemap
-
-# bundle server entry
-node -r esbuild-register ./misc/vercel/bundle.ts build/remix/production/server/index.js .vercel/output/functions/index.func/index.js
+# remix build with custom server entry
+NODE_ENV=production BUILD_VERCEL=1 npx remix build
 
 # config.json
 cp misc/vercel/config.json .vercel/output/config.json
@@ -40,8 +36,5 @@ cp misc/vercel/config.json .vercel/output/config.json
 cp -r ./build/remix/production/public .vercel/output/static
 
 # serverless
+cp build/remix/production/server/index.js .vercel/output/functions/index.func
 cp misc/vercel/.vc-config.json .vercel/output/functions/index.func/.vc-config.json
-cat > ".vercel/output/functions/index.func/index-bootstrap.js" <<EOF
-process.setSourceMapsEnabled(true);
-module.exports = require("./index.js");
-EOF
