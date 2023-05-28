@@ -28,7 +28,13 @@ async function main() {
   const server = createServer(app);
 
   // serve client build assets
-  app.use("/build", express.static(build.assetsBuildDirectory));
+  app.use(
+    "/build",
+    express.static(build.assetsBuildDirectory, {
+      immutable: true,
+      maxAge: "1y",
+    })
+  );
   app.use("/", express.static("./public"));
 
   // main app
