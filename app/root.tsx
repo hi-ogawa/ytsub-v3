@@ -132,7 +132,7 @@ function Root() {
         </div>
       </div>
       <Scripts />
-      <LiveReload />
+      {process.env.NODE_ENV !== "production" && <LiveReload />}
     </>
   );
 }
