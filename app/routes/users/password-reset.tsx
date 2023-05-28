@@ -3,9 +3,10 @@ import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { $R } from "../../misc/routes";
-import { trpc } from "../../trpc/client";
+import { trpcClient } from "../../trpc/client-internal.client";
 import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
+import { useTurnstile } from "../../utils/turnstile-utils.client";
 
 export const handle: PageHandle = {
   navBarTitle: () => "Reset password",
@@ -18,8 +19,16 @@ export const handle: PageHandle = {
 export default function Page() {
   const navigate = useNavigate();
 
+  const turnstile = useTurnstile();
+
   const mutation = useMutation({
-    ...trpc.users_requestResetPassword.mutationOptions(),
+    mutationFn: async ({ email }: { email: string }) => {
+      const token = await turnstile.render();
+      return trpcClient.users_requestResetPassword.mutate({
+        email,
+        token,
+      });
+    },
     onSuccess: () => {
       toast.success("Please check your email to reset your password");
       navigate($R["/"]());
@@ -54,10 +63,15 @@ export default function Page() {
                 "antd-btn antd-btn-primary p-1 flex justify-center items-center",
                 mutation.isLoading && "antd-btn-loading"
               )}
-              disabled={!form.formState.isValid || mutation.isLoading}
+              disabled={
+                !form.formState.isValid ||
+                mutation.isLoading ||
+                !turnstile.query.isSuccess
+              }
             >
               Submit
             </button>
+            <div ref={turnstile.ref} className="absolute"></div>
           </div>
         </div>
       </form>

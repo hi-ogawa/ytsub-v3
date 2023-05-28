@@ -125,9 +125,12 @@ export const trpcRoutesUsers = {
     .input(
       z.object({
         email: z.string().email(),
+        token: z.string(),
       })
     )
     .mutation(async ({ input }) => {
+      await verifyTurnstile({ response: input.token });
+
       const code = await generateUniqueCode((code) =>
         selectOne(
           T.passwordResetRequests,

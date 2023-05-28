@@ -6,6 +6,7 @@ import { useModal } from "../../components/modal";
 import { PopoverSimple } from "../../components/popover";
 import type { UserTable } from "../../db/models";
 import { trpc } from "../../trpc/client";
+import { trpcClient } from "../../trpc/client-internal.client";
 import { intl } from "../../utils/intl";
 import {
   FILTERED_LANGUAGE_CODES,
@@ -15,6 +16,7 @@ import { useLeafLoaderData } from "../../utils/loader-utils";
 import { makeLoader } from "../../utils/loader-utils.server";
 import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
+import { useTurnstile } from "../../utils/turnstile-utils.client";
 
 export const handle: PageHandle = {
   navBarTitle: () => "Account",
@@ -50,8 +52,16 @@ export default function DefaultComponent() {
     },
   });
 
+  const turnstile = useTurnstile();
+
   const resetPasswordMutation = useMutation({
-    ...trpc.users_requestResetPassword.mutationOptions(),
+    mutationFn: async ({ email }: { email: string }) => {
+      const token = await turnstile.render();
+      return trpcClient.users_requestResetPassword.mutate({
+        email,
+        token,
+      });
+    },
     onSuccess: () => {
       toast.success("Please check your email to reset your password");
     },
@@ -201,6 +211,7 @@ export default function DefaultComponent() {
             Reset password
           </button>
         )}
+        <div ref={turnstile.ref} className="absolute"></div>
       </div>
       <updateEmailModal.Wrapper>
         <UpdateEmailForm onSuccess={() => updateEmailModal.setOpen(false)} />
