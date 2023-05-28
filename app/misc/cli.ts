@@ -385,7 +385,7 @@ cli
       await deleteOrphans();
       // rename to "dev"
       await db
-        .update(T.users)
+        .update(T.usersCredentials)
         .set({ username: "dev", passwordHash: await toPasswordHash("dev") })
         .where(E.eq(T.users.username, onlyUsername));
     }

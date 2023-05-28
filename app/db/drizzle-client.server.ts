@@ -57,11 +57,18 @@ const users = mysqlTable("users", {
   ...timestampColumns,
   //
   username: text("username").notNull(),
-  passwordHash: text("passwordHash").notNull(), // TODO: reduct when responding to client
   email: text("email"), // email is optional only for reset password feature
   language1: text("language1"),
   language2: text("language2"),
   timezone: text("timezone").notNull().default(DUMMY_DEFAULT),
+});
+
+// use a separate model for credentials related operations
+// so that `users` can reduct `passwordHash` by default.
+const usersCredentials = mysqlTable("users", {
+  id: serial("id").primaryKey(),
+  username: text("username").notNull(),
+  passwordHash: text("passwordHash").notNull(),
 });
 
 const emailUpdateRequests = mysqlTable("emailUpdateRequests", {
@@ -174,6 +181,7 @@ const knex_migrations = mysqlTable("knex_migrations", {
 // short accessor for tables
 export const T = {
   users,
+  usersCredentials,
   emailUpdateRequests,
   passwordResetRequests,
   videos,

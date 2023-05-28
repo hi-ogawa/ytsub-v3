@@ -1,7 +1,7 @@
 import { isNil, tinyassert } from "@hiogawa/utils";
 import type { Session } from "@remix-run/server-runtime";
 import bcrypt from "bcryptjs";
-import { E, T, db, selectOne } from "../db/drizzle-client.server";
+import { E, T, TT, db, selectOne } from "../db/drizzle-client.server";
 import type { UserTable } from "../db/models";
 import { crypto } from "./node.server";
 import { sessionStore } from "./session.server";
@@ -10,6 +10,10 @@ export const USERNAME_MAX_LENGTH = 32;
 export const PASSWORD_MAX_LENGTH = 128;
 const DEFAULT_TIMEZONE = "+00:00";
 const BCRYPT_ROUNDS = 10;
+
+// dummy hash to obfuscate `verifySignin` timing
+const DUMMY_PASSWORD_HASH =
+  "$2a$10$CWAI6jQmv9H9PRYGJhBRNu7hv5BdYQgWM4xBVIWu9nLnGCRyv8A7G";
 
 function sha256(password: string): string {
   return crypto
@@ -46,11 +50,11 @@ export async function register({
 
   // Save
   const passwordHash = await toPasswordHash(password);
-  await db.insert(T.users).values({
+  const [{ insertId }] = await db.insert(T.usersCredentials).values({
     username,
     passwordHash,
-    timezone,
   });
+  await db.update(T.users).set({ timezone }).where(E.eq(T.users.id, insertId));
 
   const user = await findByUsername(username);
   tinyassert(user);
@@ -63,13 +67,22 @@ export async function findByUsername(
   return selectOne(T.users, E.eq(T.users.username, username));
 }
 
+async function findCredentials(
+  username: string
+): Promise<TT["usersCredentials"] | undefined> {
+  return selectOne(T.usersCredentials, E.eq(T.users.username, username));
+}
+
 export async function verifySignin(data: {
   username: string;
   password: string;
-}): Promise<UserTable> {
-  // Find user
-  const user = await findByUsername(data.username);
-  if (user && (await verifyPassword(data.password, user.passwordHash))) {
+}): Promise<TT["usersCredentials"]> {
+  const user = await findCredentials(data.username);
+  const verified = await verifyPassword(
+    data.password,
+    user?.passwordHash ?? DUMMY_PASSWORD_HASH
+  );
+  if (user && verified) {
     return user;
   }
   throw new Error("Invalid username or password");

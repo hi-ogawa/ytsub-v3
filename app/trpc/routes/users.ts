@@ -7,12 +7,11 @@ import { $R } from "../../misc/routes";
 import {
   PASSWORD_MAX_LENGTH,
   USERNAME_MAX_LENGTH,
-  findByUsername,
   register,
   signinSession,
   signoutSession,
   toPasswordHash,
-  verifyPassword,
+  verifySignin,
 } from "../../utils/auth";
 import { serverConfig } from "../../utils/config";
 import { sendEmail } from "../../utils/email-utils";
@@ -60,8 +59,8 @@ export const trpcRoutesUsers = {
     )
     .mutation(async ({ input, ctx }) => {
       tinyassert(!ctx.user, "Already signed in");
-      const user = await findByUsername(input.username);
-      if (user && (await verifyPassword(input.password, user.passwordHash))) {
+      const user = await verifySignin(input);
+      if (user) {
         signinSession(ctx.session, user);
         await ctx.commitSession();
         return user;
@@ -176,7 +175,7 @@ export const trpcRoutesUsers = {
       const user = await selectOne(T.users, E.eq(T.users.email, row.email));
       tinyassert(user);
       await db
-        .update(T.users)
+        .update(T.usersCredentials)
         .set({
           passwordHash: await toPasswordHash(input.password),
         })
