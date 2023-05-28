@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">90.32% </span>
+                <span class="strong">90.55% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>336/372</span>
+                <span class='fraction'>345/381</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">93.75% </span>
+                <span class="strong">94.11% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>15/16</span>
+                <span class='fraction'>16/17</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">90.32% </span>
+                <span class="strong">90.55% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>336/372</span>
+                <span class='fraction'>345/381</span>
             </div>
         
             
@@ -435,7 +435,16 @@
 <a name='L370'></a><a href='#L370'>370</a>
 <a name='L371'></a><a href='#L371'>371</a>
 <a name='L372'></a><a href='#L372'>372</a>
-<a name='L373'></a><a href='#L373'>373</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L373'></a><a href='#L373'>373</a>
+<a name='L374'></a><a href='#L374'>374</a>
+<a name='L375'></a><a href='#L375'>375</a>
+<a name='L376'></a><a href='#L376'>376</a>
+<a name='L377'></a><a href='#L377'>377</a>
+<a name='L378'></a><a href='#L378'>378</a>
+<a name='L379'></a><a href='#L379'>379</a>
+<a name='L380'></a><a href='#L380'>380</a>
+<a name='L381'></a><a href='#L381'>381</a>
+<a name='L382'></a><a href='#L382'>382</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -788,6 +797,15 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-yes">13x</span>
 <span class="cline-any cline-yes">13x</span>
 <span class="cline-any cline-yes">13x</span>
 <span class="cline-any cline-yes">13x</span>
@@ -807,7 +825,7 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { difference, tinyassert } from "@hiogawa/utils";
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { difference, once, tinyassert } from "@hiogawa/utils";
 import { sql } from "drizzle-orm";
 import * as E from "drizzle-orm/expressions";
 import {
@@ -1158,15 +1176,24 @@ export async function dbShowTables(): Promise&lt;string[]&gt; {
 // client
 //
 &nbsp;
-export let db = uninitialized as MySql2Database;
+// persist through dev auto reloading
+declare let globalThis: {
+  __drizzleClient: MySql2Database;
+};
 &nbsp;
-export async function initializeDrizzleClient() {
-  const config = knexfile();
-  const connection = await createConnection(config.connection);
-  db = drizzle(connection, {
-    logger: process.env["DEBUG"<span class="branch-0 cbranch-no" title="branch not covered" >]?.includes("</span>drizzle"), // enable query logging by DEBUG=drizzle
-  });
-}
+export let db = uninitialized as typeof globalThis.__drizzleClient;
+&nbsp;
+export const initializeDrizzleClient = once(async () =&gt; {
+  db = globalThis.__drizzleClient ??= await inner();
+&nbsp;
+  async function inner() {
+    const config = knexfile();
+    const connection = await createConnection(config.connection);
+    return drizzle(connection, {
+      logger: process.env["DEBUG"<span class="branch-0 cbranch-no" title="branch not covered" >]?.includes("</span>drizzle"), // enable query logging by DEBUG=drizzle
+    });
+  }
+});
 &nbsp;
 <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >export async function finalizeDrizzleClient() {</span></span>
 <span class="cstat-no" title="statement not covered" >  __dbExtra().connection.destroy();</span>
@@ -1186,7 +1213,7 @@ export function __dbExtra() {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-05-28T11:35:48.653Z
+                at 2023-05-28T11:40:22.339Z
             </div>
         <script src="../prettify.js"></script>
         <script>
