@@ -202,7 +202,9 @@ export default function DefaultComponent() {
               "antd-btn antd-btn-default p-0.5 flex justify-center",
               resetPasswordMutation.isLoading && "antd-btn-loading"
             )}
-            disabled={resetPasswordMutation.isLoading}
+            disabled={
+              !turnstile.query.isSuccess || resetPasswordMutation.isLoading
+            }
             onClick={() =>
               currentUser.email &&
               resetPasswordMutation.mutate({ email: currentUser.email })
