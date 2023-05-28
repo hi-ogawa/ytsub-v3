@@ -24,7 +24,6 @@ import {
   findByUsername,
   register,
   toPasswordHash,
-  verifySignin,
 } from "../utils/auth";
 import { exec, streamToString } from "../utils/node.server";
 import {
@@ -128,15 +127,13 @@ cli
         .update(T.users)
         .set({ language1, language2 })
         .where(E.eq(T.users.id, user.id));
-      await printSession(username, password);
+      await printSession(username);
     }
   );
 
-cli
-  .command("print-session <username> <password>")
-  .action(async (username: string, password: string) => {
-    await printSession(username, password);
-  });
+cli.command("print-session <username>").action(async (username: string) => {
+  await printSession(username);
+});
 
 cli
   .command("create-videos")
@@ -385,7 +382,7 @@ cli
       await deleteOrphans();
       // rename to "dev"
       await db
-        .update(T.users)
+        .update(T.usersCredentials)
         .set({ username: "dev", passwordHash: await toPasswordHash("dev") })
         .where(E.eq(T.users.username, onlyUsername));
     }
@@ -450,8 +447,9 @@ cli
     }
   });
 
-async function printSession(username: string, password: string) {
-  const user = await verifySignin({ username, password });
+async function printSession(username: string) {
+  const user = await findByUsername(username);
+  tinyassert(user);
   const cookie = await createUserCookie(user);
   console.log(cookie);
 }

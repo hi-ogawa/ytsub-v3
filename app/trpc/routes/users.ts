@@ -12,7 +12,7 @@ import {
   signinSession,
   signoutSession,
   toPasswordHash,
-  verifyPassword,
+  verifySignin,
 } from "../../utils/auth";
 import { serverConfig } from "../../utils/config";
 import { sendEmail } from "../../utils/email-utils";
@@ -60,13 +60,12 @@ export const trpcRoutesUsers = {
     )
     .mutation(async ({ input, ctx }) => {
       tinyassert(!ctx.user, "Already signed in");
+      tinyassert(await verifySignin(input), "Invalid username or password");
       const user = await findByUsername(input.username);
-      if (user && (await verifyPassword(input.password, user.passwordHash))) {
-        signinSession(ctx.session, user);
-        await ctx.commitSession();
-        return user;
-      }
-      throw new Error("Invalid username or password");
+      tinyassert(user);
+      signinSession(ctx.session, user);
+      await ctx.commitSession();
+      return user;
     }),
 
   users_signout: procedureBuilder
@@ -176,7 +175,7 @@ export const trpcRoutesUsers = {
       const user = await selectOne(T.users, E.eq(T.users.email, row.email));
       tinyassert(user);
       await db
-        .update(T.users)
+        .update(T.usersCredentials)
         .set({
           passwordHash: await toPasswordHash(input.password),
         })

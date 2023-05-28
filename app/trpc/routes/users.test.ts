@@ -14,6 +14,18 @@ describe(trpc.users_signin.mutationKey, () => {
     it("basic", async () => {
       const trpc = await testTrpcClientWithContext();
       const output = await trpc.caller.users_signin(credentials);
+      expect(Object.keys(output)).toMatchInlineSnapshot(`
+        [
+          "id",
+          "createdAt",
+          "updatedAt",
+          "username",
+          "email",
+          "language1",
+          "language2",
+          "timezone",
+        ]
+      `);
       expect(output).toEqual(userHook.data);
 
       // check session cookie in response header

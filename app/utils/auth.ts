@@ -11,6 +11,10 @@ export const PASSWORD_MAX_LENGTH = 128;
 const DEFAULT_TIMEZONE = "+00:00";
 const BCRYPT_ROUNDS = 10;
 
+// dummy hash to obfuscate `verifySignin` timing
+const DUMMY_PASSWORD_HASH =
+  "$2a$10$CWAI6jQmv9H9PRYGJhBRNu7hv5BdYQgWM4xBVIWu9nLnGCRyv8A7G";
+
 function sha256(password: string): string {
   return crypto
     .createHash("sha256")
@@ -46,11 +50,11 @@ export async function register({
 
   // Save
   const passwordHash = await toPasswordHash(password);
-  await db.insert(T.users).values({
+  const [{ insertId }] = await db.insert(T.usersCredentials).values({
     username,
     passwordHash,
-    timezone,
   });
+  await db.update(T.users).set({ timezone }).where(E.eq(T.users.id, insertId));
 
   const user = await findByUsername(username);
   tinyassert(user);
@@ -66,13 +70,16 @@ export async function findByUsername(
 export async function verifySignin(data: {
   username: string;
   password: string;
-}): Promise<UserTable> {
-  // Find user
-  const user = await findByUsername(data.username);
-  if (user && (await verifyPassword(data.password, user.passwordHash))) {
-    return user;
-  }
-  throw new Error("Invalid username or password");
+}): Promise<boolean> {
+  const user = await selectOne(
+    T.usersCredentials,
+    E.eq(T.users.username, data.username)
+  );
+  const verified = await verifyPassword(
+    data.password,
+    user?.passwordHash ?? DUMMY_PASSWORD_HASH
+  );
+  return Boolean(user && data.password && verified);
 }
 
 const SESSION_USER_KEY = "session-user-v1";
