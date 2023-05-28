@@ -16,7 +16,7 @@ import { useLeafLoaderData } from "../../utils/loader-utils";
 import { makeLoader } from "../../utils/loader-utils.server";
 import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
-import { useTurnstile } from "../../utils/turnstile-utils.client";
+import { useTurnstile } from "../../utils/turnstile-utils";
 
 export const handle: PageHandle = {
   navBarTitle: () => "Account",
