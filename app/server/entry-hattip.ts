@@ -22,7 +22,8 @@ export function createHattipApp() {
 }
 
 // re-export for entry-dev
-export const assetsBuildDirectory = build.assetsBuildDirectory;
+// ts-prune-ignore-next
+export const assetsBuildDirectory = build.assetsBuildDirectory
 
 //
 // remix
