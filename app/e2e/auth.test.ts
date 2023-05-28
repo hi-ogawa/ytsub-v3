@@ -1,5 +1,7 @@
-import { hashString } from "@hiogawa/utils";
-import { expect } from "@playwright/test";
+import { hashString, tinyassert } from "@hiogawa/utils";
+import { Page, expect } from "@playwright/test";
+import { E, T, db } from "../db/drizzle-client.server";
+import type { Email } from "../utils/email-utils";
 import { test } from "./coverage";
 import { useUserE2E } from "./helper";
 
@@ -126,3 +128,140 @@ test.describe("/users/signout", () => {
     await page.getByText("Successfully signed out").click();
   });
 });
+
+test.describe("change email", () => {
+  const user = useUserE2E(test, {
+    seed: __filename + "change email",
+  });
+
+  test("basic", async ({ page }) => {
+    await user.signin(page);
+    await page.goto("/users/me");
+
+    const newEmail = "change-email@dummy.local";
+    await page.getByRole("button", { name: "Change email" }).click();
+    await page.getByPlaceholder("Input new email...").fill(newEmail);
+    await page.getByRole("button", { name: "Send Verification Email" }).click();
+    await page.getByText("Verification email is sent successfullly").click();
+
+    // find verification link from dev page
+    const emails = await getDevEmails(page);
+    const email = emails.find((e) =>
+      e.Messages[0].To.find((t) => t.Email === newEmail)
+    );
+    tinyassert(email);
+    const match = email.Messages[0].TextPart?.match(
+      /\[Change your email\]\((.+?)\)/
+    );
+    tinyassert(match);
+    const url = new URL(match[1]);
+
+    // visit a link
+    await page.goto(url.pathname + url.search);
+    await page.getByText("Successfully updated an email").click();
+    await page.waitForURL("/users/me");
+    await expect(page.getByTestId("me-email")).toHaveValue(newEmail);
+
+    // cannot use a same link
+    await page.goto(url.pathname + url.search);
+    await page.getByText("Invalid request").click();
+  });
+});
+
+test.describe.only("reset password", () => {
+  const user = useUserE2E(test, {
+    seed: __filename + "reset password",
+  });
+
+  const userEmail = "reset-password@dummy.local";
+
+  // find reset link from email
+  async function findResetPasswordLink(page: Page) {
+    const emails = await getDevEmails(page);
+    const email = emails.find((e) =>
+      e.Messages[0].To.find((t) => t.Email === userEmail)
+    );
+    tinyassert(email);
+    const match = email.Messages[0].TextPart?.match(
+      /\[Reset your password\]\((.+?)\)/
+    );
+    tinyassert(match);
+    const urlObj = new URL(match[1]);
+    const url = urlObj.pathname + urlObj.search;
+    return url;
+  }
+
+  test.beforeAll(async () => {
+    // set email
+    await user.isReady;
+    await db
+      .update(T.users)
+      .set({ email: userEmail })
+      .where(E.eq(T.users.id, user.data.id));
+  });
+
+  test("logged in", async ({ page }) => {
+    // trigger reset password from account
+    await user.signin(page);
+    await page.goto("/users/me");
+    await page.getByRole("button", { name: "Reset password" }).click();
+    await page
+      .getByText("Please check your email to reset your password")
+      .click();
+
+    // find reset link from email
+    const url = await findResetPasswordLink(page);
+
+    // submit new password
+    const newPassword = "asdfjkl;";
+    await page.goto(url);
+    await page.getByLabel("Password", { exact: true }).fill(newPassword);
+    await page.getByLabel("Password confirmation").fill(newPassword);
+    await page.getByRole("button", { name: "Submit" }).click();
+    await page.getByText("Successfully reset your password").click();
+
+    // cannot use a same link
+    await page.goto(url);
+    await page.getByLabel("Password", { exact: true }).fill(newPassword);
+    await page.getByLabel("Password confirmation").fill(newPassword);
+    await page.getByRole("button", { name: "Submit" }).click();
+    await page.getByText("Something went wrong").click();
+  });
+
+  test("forgot password", async ({ page }) => {
+    // submit email from "forgot password" page
+    await page.goto("/users/signin");
+    await page.getByRole("link", { name: "Forgot your password?" }).click();
+    await page.getByLabel("Email").fill(userEmail);
+    await page.getByRole("button", { name: "Submit" }).click();
+    await page
+      .getByText("Please check your email to reset your password")
+      .click();
+
+    // find reset link from email
+    const url = await findResetPasswordLink(page);
+
+    // submit new password
+    const newPassword = "12345678";
+    await page.goto(url);
+    await page.getByLabel("Password", { exact: true }).fill(newPassword);
+    await page.getByLabel("Password confirmation").fill(newPassword);
+    await page.getByRole("button", { name: "Submit" }).click();
+    await page.getByText("Successfully reset your password").click();
+
+    // login with new password
+    await page.locator('[data-test="login-icon"]').click();
+    await page.getByLabel("Username").fill(user.data.username);
+    await page.getByLabel("Password").fill(newPassword);
+    await page.getByRole("button", { name: "Sign in" }).click();
+    await page.getByText("Successfully signed in").click();
+  });
+});
+
+async function getDevEmails(page: Page) {
+  await page.goto("/dev/emails");
+  const emailsRaw = await page.evaluate(() => document.body.textContent);
+  tinyassert(emailsRaw);
+  const emails: Email[] = JSON.parse(emailsRaw);
+  return emails;
+}

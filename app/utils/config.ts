@@ -19,6 +19,13 @@ const Z_SERVER_CONFIG = z.object({
   APP_CAPTCHA_SITE_KEY: z.string().default("1x00000000000000000000BB"),
   APP_CAPTCHA_SECRET_KEY: z.string().default("1x0000000000000000000000000000000AA"),
 
+  // mailjet
+  MJ_APIKEY_PUBLIC: z.string().optional(),
+  MJ_APIKEY_PRIVATE: z.string().optional(),
+
+  // used for email link
+  BASE_URL: z.string().default("https://ytsub-v3-hiro18181.vercel.app"),
+
   VERCEL_ENV: z.string().optional(),
 });
 
