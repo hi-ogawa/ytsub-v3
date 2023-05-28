@@ -60,7 +60,7 @@ export const trpcRoutesUsers = {
     )
     .mutation(async ({ input, ctx }) => {
       tinyassert(!ctx.user, "Already signed in");
-      await verifySignin(input);
+      tinyassert(await verifySignin(input), "Invalid username or password");
       const user = await findByUsername(input.username);
       tinyassert(user);
       signinSession(ctx.session, user);

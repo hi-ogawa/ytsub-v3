@@ -1,7 +1,7 @@
 import { isNil, tinyassert } from "@hiogawa/utils";
 import type { Session } from "@remix-run/server-runtime";
 import bcrypt from "bcryptjs";
-import { E, T, TT, db, selectOne } from "../db/drizzle-client.server";
+import { E, T, db, selectOne } from "../db/drizzle-client.server";
 import type { UserTable } from "../db/models";
 import { crypto } from "./node.server";
 import { sessionStore } from "./session.server";
@@ -67,25 +67,19 @@ export async function findByUsername(
   return selectOne(T.users, E.eq(T.users.username, username));
 }
 
-async function findCredentials(
-  username: string
-): Promise<TT["usersCredentials"] | undefined> {
-  return selectOne(T.usersCredentials, E.eq(T.users.username, username));
-}
-
 export async function verifySignin(data: {
   username: string;
   password: string;
-}): Promise<TT["usersCredentials"]> {
-  const user = await findCredentials(data.username);
+}): Promise<boolean> {
+  const user = await selectOne(
+    T.usersCredentials,
+    E.eq(T.users.username, data.username)
+  );
   const verified = await verifyPassword(
     data.password,
     user?.passwordHash ?? DUMMY_PASSWORD_HASH
   );
-  if (user && verified) {
-    return user;
-  }
-  throw new Error("Invalid username or password");
+  return Boolean(user && data.password && verified);
 }
 
 const SESSION_USER_KEY = "session-user-v1";
