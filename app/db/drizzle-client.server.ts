@@ -65,6 +65,7 @@ const users = mysqlTable("users", {
 
 // use a separate model for credentials related operations
 // so that `users` can reduct `passwordHash` by default.
+// TODO: probably we should reduct `email` too by default. client can do extra request when needed.
 const usersCredentials = mysqlTable("users", {
   id: serial("id").primaryKey(),
   username: text("username").notNull(),
