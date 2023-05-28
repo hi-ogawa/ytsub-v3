@@ -8,10 +8,10 @@ jobs:
       - uses: actions/checkout@v3
       - uses: pnpm/action-setup@v2
         with:
-          version: 7
+          version: 8
       - uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 18
           cache: pnpm
       - run: make lint
       - run: pnpm i
@@ -25,10 +25,10 @@ jobs:
       - uses: actions/checkout@v3
       - uses: pnpm/action-setup@v2
         with:
-          version: 7
+          version: 8
       - uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 18
           cache: pnpm
       - run: pnpm i
       - run: make docker/up db/reset/test db/seed-download
@@ -44,10 +44,10 @@ jobs:
       - uses: actions/checkout@v3
       - uses: pnpm/action-setup@v2
         with:
-          version: 7
+          version: 8
       - uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 18
           cache: pnpm
       - run: pnpm i
       - uses: actions/cache@v3
@@ -76,10 +76,10 @@ jobs:
       - uses: actions/checkout@v3
       - uses: pnpm/action-setup@v2
         with:
-          version: 7
+          version: 8
       - uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 18
           cache: pnpm
       - run: pnpm i
       - run: make docker/up db/recreate
@@ -103,7 +103,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 18
       - uses: actions/download-artifact@v3
         with:
           name: coverage-unit
