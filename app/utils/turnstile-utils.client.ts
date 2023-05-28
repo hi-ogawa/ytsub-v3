@@ -1,10 +1,12 @@
-import { newPromiseWithResolvers } from "@hiogawa/utils";
+import { newPromiseWithResolvers, tinyassert } from "@hiogawa/utils";
+import { useQuery } from "@tanstack/react-query";
+import React from "react";
 import { publicConfig } from "./config-public";
 import { loadScript } from "./dom-utils";
 
 // https://developers.cloudflare.com/turnstile/get-started/client-side-rendering/
 
-let turnstile: {
+interface TurnstileApi {
   render: (
     el: HTMLElement,
     params: {
@@ -13,32 +15,49 @@ let turnstile: {
       "error-callback": (error: unknown) => void;
     }
   ) => string | undefined;
-};
+}
 
-export async function loadTurnstileScript() {
-  const { promise, resolve } = newPromiseWithResolvers<void>();
+async function loadTurnstileScript() {
+  const { promise, resolve } = newPromiseWithResolvers<TurnstileApi>();
   const CALLBACK_VAR = "__onloadTurnstileCallback";
-  const windowAny = window as any;
-  windowAny[CALLBACK_VAR] = () => {
-    turnstile = windowAny.turnstile;
-    resolve();
+  (window as any)[CALLBACK_VAR] = () => {
+    resolve((window as any).turnstile);
   };
   await loadScript(
     `https://challenges.cloudflare.com/turnstile/v0/api.js?onload=${CALLBACK_VAR}`
   );
-  await promise;
+  return promise;
 }
 
-export function turnstileRenderPromise(el: HTMLElement): Promise<string> {
-  return new Promise<string>((resolve, reject) => {
-    turnstile.render(el, {
-      sitekey: publicConfig.APP_CAPTCHA_SITE_KEY,
-      callback: (token) => {
-        resolve(token);
-      },
-      "error-callback": (error) => {
-        reject(error);
-      },
-    });
+export function useTurnstile() {
+  const query = useQuery({
+    queryKey: ["loadTurnstileScript"],
+    queryFn: loadTurnstileScript,
   });
+
+  const ref = React.useRef<HTMLDivElement>(null);
+
+  function render(): Promise<string> {
+    tinyassert(query.isSuccess);
+    tinyassert(ref.current);
+    const turnstile = query.data;
+    const el = ref.current;
+    return new Promise<string>((resolve, reject) => {
+      turnstile.render(el, {
+        sitekey: publicConfig.APP_CAPTCHA_SITE_KEY,
+        callback: (token) => {
+          resolve(token);
+        },
+        "error-callback": (error) => {
+          reject(error);
+        },
+      });
+    });
+  }
+
+  return {
+    query,
+    ref,
+    render,
+  };
 }
