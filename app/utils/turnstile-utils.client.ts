@@ -1,8 +1,9 @@
-import { newPromiseWithResolvers, tinyassert } from "@hiogawa/utils";
+import { newPromiseWithResolvers, once, tinyassert } from "@hiogawa/utils";
 import { useQuery } from "@tanstack/react-query";
 import React from "react";
 import { publicConfig } from "./config-public";
 import { loadScript } from "./dom-utils";
+import { usePromiseQueryOpitons } from "./misc";
 
 // https://developers.cloudflare.com/turnstile/get-started/client-side-rendering/
 
@@ -29,10 +30,11 @@ async function loadTurnstileScript() {
   return promise;
 }
 
+const loadTurnstileScriptOnce = once(loadTurnstileScript);
+
 export function useTurnstile() {
   const query = useQuery({
-    queryKey: ["loadTurnstileScript"],
-    queryFn: loadTurnstileScript,
+    ...usePromiseQueryOpitons(loadTurnstileScriptOnce),
   });
 
   const ref = React.useRef<HTMLDivElement>(null);
