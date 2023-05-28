@@ -7,6 +7,10 @@ import express from "express";
 import { listenPortSearchByEnv } from "./http";
 
 async function main() {
+  //
+  // require buildPath with require.cache invalidation
+  //
+
   const buildPath = path.resolve(process.argv[2]);
 
   // require.cache trick as a cheap live reload
@@ -16,13 +20,16 @@ async function main() {
     return require(path.resolve(buildPath)) as typeof import("./entry-hattip");
   }
 
-  // reload remix build output on nodemon's signal
   let build = requireBuild();
-  fs.watch(path.dirname(buildPath), (eventType) => {
-    if (eventType === "change") {
+  fs.watch(path.dirname(buildPath), (eventType, filename) => {
+    if (eventType === "change" && path.basename(buildPath) === filename) {
       build = undefined!;
     }
   });
+
+  //
+  // express app
+  //
 
   const app = express();
   const server = createServer(app);
@@ -37,7 +44,7 @@ async function main() {
   );
   app.use("/", express.static("./public"));
 
-  // main app
+  // main logic as hattip handler
   app.all("*", (req, res, next) => {
     build ??= requireBuild();
     return createMiddleware(build.createHattipApp())(req, res, next);
