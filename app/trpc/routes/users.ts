@@ -186,6 +186,9 @@ export const trpcRoutesUsers = {
           invalidatedAt: now,
         })
         .where(E.eq(T.passwordResetRequests.id, row.id));
+
+      // TODO: send email to notify password has changed
+      // TODO: reset existing sessions
     }),
 };
 
@@ -231,6 +234,9 @@ export async function updateEmailByCode(code: string) {
       verifiedAt: now,
     })
     .where(E.eq(T.emailUpdateRequests.id, row.id));
+
+  // TODO: send email to notify email has changed
+  // TODO: reset existing sessions
 }
 
 const VERIFICATION_MAX_AGE = 1000 * 60 * 60;
