@@ -38,3 +38,6 @@ cp -r ./build/remix/production/public .vercel/output/static
 # serverless
 cp build/remix/production/server/index.js .vercel/output/functions/index.func
 cp misc/vercel/.vc-config.json .vercel/output/functions/index.func/.vc-config.json
+
+# output server size
+ls -lh .vercel/output/functions/index.func

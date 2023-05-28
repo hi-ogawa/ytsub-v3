@@ -6,7 +6,7 @@ module.exports = {
   serverBuildPath: `build/remix/${env}/server/index.js`,
   assetsBuildDirectory: `build/remix/${env}/public/build`,
   publicPath: process.env.BUILD_VERCEL ? undefined : `/build/remix/${env}/public/build`,
-  server: process.env.BUILD_VERCEL ? "./app/misc/vercel.ts" : undefined,
+  server: process.env.BUILD_VERCEL ? "./app/misc/entry-vercel.ts" : undefined,
   serverDependenciesToBundle: process.env.BUILD_VERCEL ? "all" : undefined,
   future: {
     v2_meta: true,
