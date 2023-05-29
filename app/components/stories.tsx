@@ -1,9 +1,13 @@
 import { Transition } from "@headlessui/react";
-import { useRafLoop } from "@hiogawa/utils-react";
+import { toArraySetState, useRafLoop } from "@hiogawa/utils-react";
 import React from "react";
 import { useForm } from "react-hook-form";
-import { cls } from "../utils/misc";
-import { YoutubePlayer, usePlayerLoader } from "../utils/youtube";
+import { cls, zipMax } from "../utils/misc";
+import {
+  YoutubePlayer,
+  stringifyTimestamp,
+  usePlayerLoader,
+} from "../utils/youtube";
 import { SelectWrapper, VideoComponent, transitionProps } from "./misc";
 import { PopoverSimple } from "./popover";
 import {
@@ -325,3 +329,303 @@ export function TestYoutubePlayer() {
     </div>
   );
 }
+
+// TODO: virtualize list? (since it's not used for too long video, so it's fine)
+export function TestCaptionEditor() {
+  const [player, setPlayer] = React.useState<YoutubePlayer>();
+
+  const { ref, isLoading } = usePlayerLoader(
+    // https://www.youtube.com/watch?v=UY3N52CrTPE
+    { videoId: "UY3N52CrTPE" },
+    { onReady: setPlayer }
+  );
+
+  // TODO: import initial entries by copy/paste (or directly import from https://lyricstranslate.com by scraping?)
+  const initialEntries: CaptionEditorEntry[] = zipMax(
+    parseCaptionInput(EXAMPLE_KO),
+    parseCaptionInput(EXAMPLE_EN)
+  ).map(([text1 = "", text2 = ""]) => ({
+    begin: 0,
+    end: 0,
+    text1,
+    text2,
+  }));
+
+  // form state
+  // TODO: save draft in localstorage?
+  // TODO: export final entries
+  const [entries, setEntries] = React.useState(() => initialEntries);
+
+  // form helper
+  const setEntriesExtra = toArraySetState(setEntries);
+
+  function setEntry(
+    i: number,
+    action: (e: CaptionEditorEntry) => CaptionEditorEntry
+  ) {
+    const e = entries.at(i);
+    if (e) {
+      setEntriesExtra.splice(i, 1, action(e));
+    }
+  }
+
+  function insertEntry(i: number, side: 1 | 2) {
+    setEntries((entries) => {
+      return entries.map((e, j) => {
+        e = { ...e };
+        if (j >= i) {
+          if (side === 1) {
+            e.text1 = (j > i && entries.at(j - 1)?.text1) || "";
+          } else {
+            e.text2 = (j > i && entries.at(j - 1)?.text2) || "";
+          }
+        }
+        return e;
+      });
+    });
+  }
+
+  function deleteEntry(i: number, side: 1 | 2) {
+    setEntries((entries) => {
+      return entries.map((e, j) => {
+        e = { ...e };
+        if (j >= i) {
+          if (side === 1) {
+            e.text1 = entries.at(j + 1)?.text1 ?? "";
+          } else {
+            e.text2 = entries.at(j + 1)?.text2 ?? "";
+          }
+        }
+        return e;
+      });
+    });
+  }
+
+  return (
+    <div className="h-full flex flex-col items-center h-full">
+      <div className="h-full w-full flex gap-2">
+        <div className="flex-1 relative">
+          <div className="relative pt-[56.2%]">
+            <div className="absolute top-0 w-full h-full" ref={ref} />
+            <Transition
+              show={isLoading}
+              className="duration-500 antd-body antd-spin-overlay-30"
+              {...transitionProps("opacity-0", "opacity-100")}
+            />
+          </div>
+        </div>
+        <div className="flex-1 flex flex-col gap-2 overflow-hidden">
+          <div className="border p-1 flex-[1_0_0] h-full overflow-y-auto">
+            <div className="flex-1 flex flex-col gap-1">
+              {entries.map((e, i) => (
+                <div
+                  key={i}
+                  className="border-t first:border-0 flex flex-col gap-1.5 p-1 text-sm"
+                >
+                  <div className="flex items-center gap-2 px-1">
+                    <button
+                      className="antd-btn antd-btn-ghost i-ri-play-line w-4 h-4"
+                      onClick={() => {
+                        if (!player) return;
+                        player.seekTo(e.begin);
+                      }}
+                    ></button>
+                    <button
+                      className="antd-btn antd-btn-ghost i-ri-time-line w-4 h-4"
+                      onClick={() => {
+                        if (!player) return;
+                        const time = player.getCurrentTime();
+                        setEntry(i, (e) => ({ ...e, begin: time }));
+                        setEntry(i - 1, (e) => ({ ...e, end: time }));
+                      }}
+                    ></button>
+                    <span>
+                      {stringifyTimestamp(e.begin)} -{" "}
+                      {stringifyTimestamp(e.end)}
+                    </span>
+                  </div>
+                  <div key={i} className="flex gap-2">
+                    <div className="flex-1 p-0.5 border-r">
+                      <textarea
+                        className="antd-input w-full h-full p-0.5"
+                        value={e.text1}
+                        onChange={(ev) => {
+                          const text1 = ev.target.value;
+                          setEntry(i, (e) => ({ ...e, text1 }));
+                        }}
+                        onKeyDown={(ev) => {
+                          if (ev.ctrlKey && ev.key === "Enter") {
+                            insertEntry(i, 1);
+                          }
+                          if (ev.ctrlKey && ev.key === "d") {
+                            deleteEntry(i, 1);
+                          }
+                        }}
+                      />
+                    </div>
+                    <div className="flex-1 p-1">
+                      <textarea
+                        className="antd-input w-full h-full p-0.5"
+                        value={e.text2}
+                        onChange={(ev) => {
+                          const text2 = ev.target.value;
+                          setEntry(i, (e) => ({ ...e, text2 }));
+                        }}
+                        onKeyDown={(ev) => {
+                          if (ev.ctrlKey && ev.key === "Enter") {
+                            insertEntry(i, 2);
+                          }
+                          if (ev.ctrlKey && ev.key === "d") {
+                            deleteEntry(i, 2);
+                          }
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+interface CaptionEditorEntry {
+  begin: number;
+  end: number;
+  text1: string;
+  text2: string;
+}
+
+function parseCaptionInput(input: string): string[] {
+  return input
+    .trim()
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean);
+}
+
+// copied from https://lyricstranslate.com/en/twice-say-something-lyrics.html
+const EXAMPLE_KO = `\
+매일이 별다를 것 없던
+기억들이 변해가는 것 같아
+Where are we 우린 어디쯤인 걸까 가끔은
+
+맘이 기울어
+I've been waiting for you (Two of us)
+달이 기울면 I'm ready for you (Both of us)
+아무런 예고 없이 다가온
+그리 낯설지 않았던
+
+느린 시간 속 심장은 빨라지고
+이 도시의 빛이 꺼질 때쯤
+아스라이 감은 눈을 뜨면
+내 이름이 들려오는 이 순간에
+
+Say something, say something
+Say something, say something
+Say something, say something
+Say something, say something
+
+늘 혼자 서 있는 가로등은
+어느 누구를 기다리고 있을까
+똑같은 표정의 불빛들이
+오늘은 달라 보여서
+
+맘이 기울어
+I've been waiting for you (Two of us)
+달이 기울면 I'm ready for you (Both of us)
+변덕스러운 밤이 차가워지고
+그만큼 낯설지 않았던
+
+느린 시간 속 심장은 빨라지고
+이 도시의 빛이 꺼질 때쯤
+아스라이 감은 눈을 뜨면
+내 이름이 들려오는 이 순간에
+
+Say something, say something
+Say something, say something
+Say something, say something
+Say something, say something
+
+도시의 사각 틈 사이로
+새어 나온 불빛 나를 감싸면
+맘을 말해 줘
+
+느린 시간 속 심장은 빨라지고 (빨라지고)
+이 도시의 빛이 꺼질 때쯤 (빛이 꺼질 때쯤)
+아스라이 감은 눈을 뜨면
+내 이름이 들려오는 이 순간에
+
+Say something (Say something)
+Say something (Oh)
+Say something (Nanananananana)
+Say something
+Say something (Oh)
+Say something
+Say something (Say something)
+Say something
+`;
+
+const EXAMPLE_EN = `\
+It will be different tomorrow
+Are bad memories changing?
+Where are we on the war? Sometimes
+
+My heart is leaning
+I've been waiting for you (Two of us)
+When the moon tilts, I'm ready for you (Both of us)
+Came without any notice
+Still, it wasn't strange
+
+My heart speeds up in slow time
+By the time the city lights go out
+When I open my closed eyes
+At this moment when my name is heard
+
+Say something, say something
+Say something, say something
+Say something, say something
+Say something, say something
+
+Street lights that always stand alone
+One day will you be waiting for the clouds
+The lights of the same expression
+It looks different today
+
+My heart is leaning
+I've been waiting for you (Two of us)
+When the moon tilts, I'm ready for you (Both of us)
+My secret heart gets colder
+That wasn't that strange
+
+My heart speeds up in slow time
+By the time this city light goes out
+When I open my closed eyes
+At this moment when my name is heard
+
+Say something, say something
+Say something, say something
+Say something, say something
+Say something, say something
+
+Through the dawn of this city
+When the leaked light wraps around me
+Tell me your heart
+
+My heart speeds up in slow time
+By the time this city light goes out
+When I open my closed eyes
+At this moment when my name is heard
+
+Say something (Say something)
+Say something (Oh)
+Say something (Nanananananana)
+Say something
+Say something (Oh)
+Say something
+Say something (Say something)
+Say something
+`;
