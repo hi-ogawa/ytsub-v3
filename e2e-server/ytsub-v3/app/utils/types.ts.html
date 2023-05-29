@@ -3,15 +3,15 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for entry-dev.ts</title>
+    <title>Code coverage report for ytsub-v3/app/utils/types.ts</title>
     <meta charset="utf-8" />
-    <link rel="stylesheet" href="prettify.css" />
-    <link rel="stylesheet" href="base.css" />
-    <link rel="shortcut icon" type="image/x-icon" href="favicon.png" />
+    <link rel="stylesheet" href="../../../prettify.css" />
+    <link rel="stylesheet" href="../../../base.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="../../../favicon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <style type='text/css'>
         .coverage-summary .sorter {
-            background-image: url(sort-arrow-sprite.png);
+            background-image: url(../../../sort-arrow-sprite.png);
         }
     </style>
 </head>
@@ -19,34 +19,34 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="index.html">All files</a> entry-dev.ts</h1>
+        <h1><a href="../../../index.html">All files</a> / <a href="index.html">ytsub-v3/app/utils</a> types.ts</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">94.82% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>55/58</span>
+                <span class='fraction'>60/60</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>3/3</span>
+                <span class='fraction'>0/0</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>2/2</span>
+                <span class='fraction'>0/0</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">94.82% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>55/58</span>
+                <span class='fraction'>60/60</span>
             </div>
         
             
@@ -121,7 +121,9 @@
 <a name='L56'></a><a href='#L56'>56</a>
 <a name='L57'></a><a href='#L57'>57</a>
 <a name='L58'></a><a href='#L58'>58</a>
-<a name='L59'></a><a href='#L59'>59</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L59'></a><a href='#L59'>59</a>
+<a name='L60'></a><a href='#L60'>60</a>
+<a name='L61'></a><a href='#L61'>61</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -145,9 +147,6 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -169,8 +168,6 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">20x</span>
-<span class="cline-any cline-yes">20x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -179,64 +176,73 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import fs from "node:fs";
-import { createServer } from "node:http";
-import path from "node:path";
-import process from "node:process";
-import { createMiddleware } from "@hattip/adapter-node";
-import express from "express";
-import { listenPortSearchByEnv } from "./http";
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { z } from "zod";
 &nbsp;
-async function main() {
-  //
-  // require buildPath with require.cache invalidation
-  //
-&nbsp;
-  const buildPath = path.resolve(process.argv[2]);
-&nbsp;
-  // require.cache trick as a cheap live reload
-  function requireBuild() {
-    console.log(`[entry-dev] Loading ${buildPath}`);
-    delete require.cache[buildPath];
-    return require(path.resolve(buildPath)) as typeof import("./entry-hattip");
-  }
-&nbsp;
-  let build = requireBuild();
-  fs.watch(path.dirname(buildPath), (eventType, filename) =&gt; {
-<span class="cstat-no" title="statement not covered" >    if (eventType === "change" &amp;&amp; path.basename(buildPath) === filename) {</span>
-<span class="cstat-no" title="statement not covered" >      build = undefined!;</span>
-<span class="cstat-no" title="statement not covered" >    }</span>
-  });
-&nbsp;
-  //
-  // express app
-  //
-&nbsp;
-  const app = express();
-  const server = createServer(app);
-&nbsp;
-  // serve client build assets
-  app.use(
-    "/build",
-    express.static(build.assetsBuildDirectory, {
-      immutable: true,
-      maxAge: "1y",
+export const Z_VIDEO_METADATA = z.object({
+  // invalid video id returns empty `videoDetails`
+  videoDetails: z.object({
+    videoId: z.string(),
+    title: z.string(),
+    author: z.string(),
+    channelId: z.string(),
+  }),
+  playabilityStatus: z.object({
+    status: z.string(),
+    // some videos don't allow iframe playback https://github.com/hi-ogawa/ytsub-v3/issues/364
+    playableInEmbed: z.boolean(),
+  }),
+  captions: z
+    .object({
+      playerCaptionsTracklistRenderer: z.object({
+        captionTracks: z
+          .object({
+            baseUrl: z.string(),
+            vssId: z.string(),
+            languageCode: z.string(),
+            kind: z.string().optional(),
+          })
+          .array(),
+      }),
     })
-  );
-  app.use("/", express.static("./public"));
+    // allow loading a video without captions, but show a special error message in /vides/new page
+    .default({ playerCaptionsTracklistRenderer: { captionTracks: [] } }),
+});
 &nbsp;
-  // main logic as hattip handler
-  app.all("*", (req, res, next) =&gt; {
-    build ??= requireBuild();
-    return createMiddleware(build.createHattipApp())(req, res, next);
-  });
+export type VideoMetadata = z.infer&lt;typeof Z_VIDEO_METADATA&gt;;
 &nbsp;
-  // start app
-  const port = await listenPortSearchByEnv(server);
-  console.log(`[entry-dev] Server running at http://localhost:${port}`);
+export interface CaptionConfig {
+  id: string;
+  translation?: string;
 }
 &nbsp;
-main();
+export interface CaptionConfigOptions {
+  captions: {
+    name: string;
+    captionConfig: CaptionConfig;
+  }[];
+  translationGroups: {
+    name: string;
+    translations: {
+      name: string;
+      captionConfig: CaptionConfig;
+    }[];
+  }[];
+}
+&nbsp;
+export interface CaptionEntry {
+  index: number;
+  begin: number;
+  end: number;
+  text1: string;
+  text2: string;
+}
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -244,16 +250,16 @@ main();
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-05-28T11:46:13.807Z
+                at 2023-05-29T04:03:28.699Z
             </div>
-        <script src="prettify.js"></script>
+        <script src="../../../prettify.js"></script>
         <script>
             window.onload = function () {
                 prettyPrint();
             };
         </script>
-        <script src="sorter.js"></script>
-        <script src="block-navigation.js"></script>
+        <script src="../../../sorter.js"></script>
+        <script src="../../../block-navigation.js"></script>
     </body>
 </html>
     
