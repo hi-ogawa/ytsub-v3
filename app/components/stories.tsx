@@ -415,7 +415,7 @@ function CaptionEditor(props: { videoId: string }) {
       await navigator.clipboard.writeText(output);
     },
     onSuccess: () => {
-      toast.success("Copied captions data to clipboard!");
+      toast.success("Caption data is copied to clipboard!");
     },
   });
 
