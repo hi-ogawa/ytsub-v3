@@ -9,6 +9,7 @@ import {
   usePlayerLoader,
 } from "../utils/youtube";
 import { SelectWrapper, VideoComponent, transitionProps } from "./misc";
+import { useModal } from "./modal";
 import { PopoverSimple } from "./popover";
 import {
   EchartsComponent,
@@ -401,10 +402,25 @@ export function TestCaptionEditor() {
     });
   }
 
+  function exportEntries() {
+    const output = JSON.stringify(entries, null, 2);
+    const href = URL.createObjectURL(new Blob([output])); // TODO: URL.revokeObjectURL
+    const timestamp = new Date()
+      .toISOString()
+      .slice(0, 19)
+      .replace(/[^0-9]/g, "-");
+    const download = `caption-editor-export-${timestamp}.json`;
+    triggerDownloadClick({ href, download });
+  }
+
+  const importModal = useModal();
+
+  const videoIdInputForm = useForm({ defaultValues: { videoId: "" } });
+
   return (
     <div className="h-full flex flex-col items-center h-full">
       <div className="h-full w-full flex gap-2">
-        <div className="flex-1 relative">
+        <div className="flex-1 flex flex-col gap-2">
           <div className="relative pt-[56.2%]">
             <div className="absolute top-0 w-full h-full" ref={ref} />
             <Transition
@@ -413,6 +429,37 @@ export function TestCaptionEditor() {
               {...transitionProps("opacity-0", "opacity-100")}
             />
           </div>
+          <div className="flex items-center gap-3">
+            <form
+              className="flex items-center m-0"
+              onSubmit={videoIdInputForm.handleSubmit((data) => {
+                // TODO
+                data.videoId;
+              })}
+            >
+              <input
+                className="inline antd-input p-1"
+                placeholder="Input Video ID or URL"
+                {...videoIdInputForm.register("videoId", { required: true })}
+              />
+            </form>
+            <button
+              className="atnd-btn antd-btn-default p-1 px-3"
+              onClick={() => importModal.setOpen(true)}
+            >
+              Import
+            </button>
+            <button
+              className="atnd-btn antd-btn-default p-1 px-3"
+              onClick={() => exportEntries()}
+            >
+              Export
+            </button>
+          </div>
+          <importModal.Wrapper>
+            {/* TODO: show form to choose side and copy-paste input */}
+            <div>todo</div>
+          </importModal.Wrapper>
         </div>
         <div className="flex-1 flex flex-col gap-2 overflow-hidden">
           <div className="border p-1 flex-[1_0_0] h-full overflow-y-auto">
@@ -490,6 +537,19 @@ export function TestCaptionEditor() {
       </div>
     </div>
   );
+}
+
+function triggerDownloadClick({
+  href,
+  download,
+}: {
+  href: string;
+  download: string;
+}) {
+  const a = document.createElement("a");
+  a.setAttribute("href", href);
+  a.setAttribute("download", download);
+  a.click();
 }
 
 interface CaptionEditorEntry {
