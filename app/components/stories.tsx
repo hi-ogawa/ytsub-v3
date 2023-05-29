@@ -457,8 +457,15 @@ export function TestCaptionEditor() {
             </button>
           </div>
           <importModal.Wrapper>
-            {/* TODO: show form to choose side and copy-paste input */}
-            <div>todo</div>
+            <div className="flex flex-col max-h-[80vh]">
+              <ImportModalForm
+                onSubmit={(data) => {
+                  data.side;
+                  data.input;
+                  importModal.setOpen(false);
+                }}
+              />
+            </div>
           </importModal.Wrapper>
         </div>
         <div className="flex-1 flex flex-col gap-2 overflow-hidden">
@@ -536,6 +543,52 @@ export function TestCaptionEditor() {
         </div>
       </div>
     </div>
+  );
+}
+
+interface ImportModalFormType {
+  side: 1 | 2;
+  input: string;
+}
+
+function ImportModalForm(props: {
+  onSubmit: (data: ImportModalFormType) => void;
+}) {
+  const form = useForm<ImportModalFormType>({
+    defaultValues: {
+      side: 1,
+      input: "",
+    },
+  });
+
+  return (
+    <form
+      className="flex flex-col gap-4 p-4"
+      onSubmit={form.handleSubmit((data) => {
+        props.onSubmit(data);
+      })}
+    >
+      <h2 className="text-lg">Import Captions</h2>
+      <label className="flex flex-col gap-1">
+        Side
+        <SelectWrapper
+          className="antd-input p-1"
+          options={[1, 2] as const}
+          labelFn={(v) => (v === 1 ? "Left" : "Right")}
+          value={form.watch("side")}
+          onChange={(v) => form.setValue("side", v)}
+        />
+      </label>
+      <label className="flex flex-col gap-1">
+        Captions
+        <textarea
+          className="antd-input p-1"
+          rows={8}
+          {...form.register("input", { required: true })}
+        />
+      </label>
+      <button className="antd-btn antd-btn-primary p-1">Submit</button>
+    </form>
   );
 }
 
