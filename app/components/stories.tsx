@@ -1,10 +1,13 @@
 import { Transition } from "@headlessui/react";
 import { toArraySetState, useRafLoop } from "@hiogawa/utils-react";
+import { useMutation } from "@tanstack/react-query";
 import React from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "react-hot-toast";
 import { cls, zipMax } from "../utils/misc";
 import {
   YoutubePlayer,
+  parseVideoId,
   stringifyTimestamp,
   usePlayerLoader,
 } from "../utils/youtube";
@@ -331,33 +334,37 @@ export function TestYoutubePlayer() {
   );
 }
 
-// TODO: virtualize list? (since it's not used for too long video, so it's fine)
 export function TestCaptionEditor() {
+  const videoIdInputForm = useForm({ defaultValues: { videoId: "" } });
+  <form
+    className="flex items-center m-0"
+    onSubmit={videoIdInputForm.handleSubmit((data) => {
+      const videoId = parseVideoId(data.videoId);
+      videoId;
+    })}
+  >
+    <input
+      className="inline antd-input p-1"
+      placeholder="Input Video ID or URL"
+      {...videoIdInputForm.register("videoId", { required: true })}
+    />
+  </form>;
+
+  return <CaptionEditor videoId="UY3N52CrTPE" />;
+}
+
+// TODO: virtualize list? (since it's not used for too long video, so it's fine)
+// TODO: save draft in localstorage?
+function CaptionEditor(props: { videoId: string }) {
   const [player, setPlayer] = React.useState<YoutubePlayer>();
 
   const { ref, isLoading } = usePlayerLoader(
-    // https://www.youtube.com/watch?v=UY3N52CrTPE
-    { videoId: "UY3N52CrTPE" },
+    { videoId: props.videoId },
     { onReady: setPlayer }
   );
 
-  // TODO: import initial entries by copy/paste (or directly import from https://lyricstranslate.com by scraping?)
-  const initialEntries: CaptionEditorEntry[] = zipMax(
-    parseCaptionInput(EXAMPLE_KO),
-    parseCaptionInput(EXAMPLE_EN)
-  ).map(([text1 = "", text2 = ""]) => ({
-    begin: 0,
-    end: 0,
-    text1,
-    text2,
-  }));
+  const [entries, setEntries] = React.useState<CaptionEditorEntry[]>([]);
 
-  // form state
-  // TODO: save draft in localstorage?
-  // TODO: export final entries
-  const [entries, setEntries] = React.useState(() => initialEntries);
-
-  // form helper
   const setEntriesExtra = toArraySetState(setEntries);
 
   function setEntry(
@@ -402,20 +409,17 @@ export function TestCaptionEditor() {
     });
   }
 
-  function exportEntries() {
-    const output = JSON.stringify(entries, null, 2);
-    const href = URL.createObjectURL(new Blob([output])); // TODO: URL.revokeObjectURL
-    const timestamp = new Date()
-      .toISOString()
-      .slice(0, 19)
-      .replace(/[^0-9]/g, "-");
-    const download = `caption-editor-export-${timestamp}.json`;
-    triggerDownloadClick({ href, download });
-  }
+  const exportEntriesMutation = useMutation({
+    mutationFn: async () => {
+      const output = JSON.stringify(entries, null, 2);
+      await navigator.clipboard.writeText(output);
+    },
+    onSuccess: () => {
+      toast.success("Copied captions data to clipboard!");
+    },
+  });
 
   const importModal = useModal();
-
-  const videoIdInputForm = useForm({ defaultValues: { videoId: "" } });
 
   return (
     <div className="h-full flex flex-col items-center h-full">
@@ -430,38 +434,24 @@ export function TestCaptionEditor() {
             />
           </div>
           <div className="flex items-center gap-3">
-            <form
-              className="flex items-center m-0"
-              onSubmit={videoIdInputForm.handleSubmit((data) => {
-                // TODO
-                data.videoId;
-              })}
-            >
-              <input
-                className="inline antd-input p-1"
-                placeholder="Input Video ID or URL"
-                {...videoIdInputForm.register("videoId", { required: true })}
-              />
-            </form>
             <button
-              className="atnd-btn antd-btn-default p-1 px-3"
+              className="atnd-btn antd-btn-default px-3"
               onClick={() => importModal.setOpen(true)}
             >
               Import
             </button>
             <button
-              className="atnd-btn antd-btn-default p-1 px-3"
-              onClick={() => exportEntries()}
+              className="atnd-btn antd-btn-default px-3"
+              onClick={() => exportEntriesMutation.mutate()}
             >
               Export
             </button>
           </div>
-          <importModal.Wrapper>
+          <importModal.Wrapper className="!max-w-3xl">
             <div className="flex flex-col max-h-[80vh]">
               <ImportModalForm
                 onSubmit={(data) => {
-                  data.side;
-                  data.input;
+                  setEntries(createInitialEntries(data.text1, data.text2));
                   importModal.setOpen(false);
                 }}
               />
@@ -469,14 +459,14 @@ export function TestCaptionEditor() {
           </importModal.Wrapper>
         </div>
         <div className="flex-1 flex flex-col gap-2 overflow-hidden">
-          <div className="border p-1 flex-[1_0_0] h-full overflow-y-auto">
-            <div className="flex-1 flex flex-col gap-1">
+          <div className="border p-2 flex-[1_0_0] h-full overflow-y-auto">
+            <div className="flex-1 flex flex-col gap-2">
               {entries.map((e, i) => (
                 <div
                   key={i}
-                  className="border-t first:border-0 flex flex-col gap-1.5 p-1 text-sm"
+                  className="border flex flex-col gap-1.5 p-1 text-sm"
                 >
-                  <div className="flex items-center gap-2 px-1">
+                  <div className="flex items-center gap-2.5 px-1">
                     <button
                       className="antd-btn antd-btn-ghost i-ri-play-line w-4 h-4"
                       onClick={() => {
@@ -484,22 +474,50 @@ export function TestCaptionEditor() {
                         player.seekTo(e.begin);
                       }}
                     ></button>
-                    <button
-                      className="antd-btn antd-btn-ghost i-ri-time-line w-4 h-4"
-                      onClick={() => {
-                        if (!player) return;
-                        const time = player.getCurrentTime();
-                        setEntry(i, (e) => ({ ...e, begin: time }));
-                        setEntry(i - 1, (e) => ({ ...e, end: time }));
-                      }}
-                    ></button>
-                    <span>
-                      {stringifyTimestamp(e.begin)} -{" "}
+                    <div className="flex items-center gap-1.5">
+                      <button
+                        className="antd-btn antd-btn-ghost i-ri-time-line w-4 h-4"
+                        onClick={() => {
+                          if (!player) return;
+                          const time = player.getCurrentTime();
+                          setEntry(i, (e) => ({ ...e, begin: time }));
+                          setEntry(i - 1, (e) =>
+                            e.endLocked ? { ...e, end: time } : e
+                          );
+                        }}
+                      ></button>
+                      <span>{stringifyTimestamp(e.begin)}</span>
+                    </div>
+                    <span>-</span>
+                    <div className="flex items-center gap-1.5">
+                      <button
+                        className="antd-btn antd-btn-ghost i-ri-time-line w-4 h-4"
+                        disabled={e.endLocked}
+                        onClick={() => {
+                          if (!player) return;
+                          const time = player.getCurrentTime();
+                          setEntry(i, (e) => ({ ...e, end: time }));
+                        }}
+                      ></button>
                       {stringifyTimestamp(e.end)}
-                    </span>
+                      <button
+                        className={cls(
+                          "antd-btn antd-btn-ghost w-4 h-4",
+                          e.endLocked
+                            ? "i-ri-lock-password-line"
+                            : "i-ri-lock-unlock-line"
+                        )}
+                        onClick={() => {
+                          setEntry(i, (e) => ({
+                            ...e,
+                            endLocked: !e.endLocked,
+                          }));
+                        }}
+                      ></button>
+                    </div>
                   </div>
-                  <div key={i} className="flex gap-2">
-                    <div className="flex-1 p-0.5 border-r">
+                  <div key={i} className="flex gap-1">
+                    <div className="flex-1 p-0.5">
                       <textarea
                         className="antd-input w-full h-full p-0.5"
                         value={e.text1}
@@ -517,7 +535,7 @@ export function TestCaptionEditor() {
                         }}
                       />
                     </div>
-                    <div className="flex-1 p-1">
+                    <div className="flex-1 p-0.5">
                       <textarea
                         className="antd-input w-full h-full p-0.5"
                         value={e.text2}
@@ -546,9 +564,24 @@ export function TestCaptionEditor() {
   );
 }
 
+function createInitialEntries(
+  text1: string,
+  text2: string
+): CaptionEditorEntry[] {
+  return zipMax(parseCaptionInput(text1), parseCaptionInput(text2)).map(
+    ([text1 = "", text2 = ""]) => ({
+      begin: 0,
+      end: 0,
+      endLocked: true,
+      text1,
+      text2,
+    })
+  );
+}
+
 interface ImportModalFormType {
-  side: 1 | 2;
-  input: string;
+  text1: string;
+  text2: string;
 }
 
 function ImportModalForm(props: {
@@ -556,58 +589,58 @@ function ImportModalForm(props: {
 }) {
   const form = useForm<ImportModalFormType>({
     defaultValues: {
-      side: 1,
-      input: "",
+      text1: "",
+      text2: "",
     },
   });
 
   return (
     <form
-      className="flex flex-col gap-4 p-4"
+      className="flex flex-col gap-4 p-4 m-0"
       onSubmit={form.handleSubmit((data) => {
         props.onSubmit(data);
       })}
     >
-      <h2 className="text-lg">Import Captions</h2>
-      <label className="flex flex-col gap-1">
-        Side
-        <SelectWrapper
-          className="antd-input p-1"
-          options={[1, 2] as const}
-          labelFn={(v) => (v === 1 ? "Left" : "Right")}
-          value={form.watch("side")}
-          onChange={(v) => form.setValue("side", v)}
-        />
-      </label>
-      <label className="flex flex-col gap-1">
-        Captions
-        <textarea
-          className="antd-input p-1"
-          rows={8}
-          {...form.register("input", { required: true })}
-        />
-      </label>
+      <div className="flex items-center">
+        <h2 className="text-lg">Import Captions</h2>
+        <span className="flex-1"></span>
+        <button
+          type="button"
+          className="antd-btn antd-btn-default px-2"
+          onClick={() => {
+            props.onSubmit({ text1: EXAMPLE_KO, text2: EXAMPLE_EN });
+          }}
+        >
+          use sample
+        </button>
+      </div>
+      <div className="flex gap-2">
+        <label className="flex-1 flex flex-col gap-1">
+          Left
+          <textarea
+            className="antd-input p-1"
+            rows={10}
+            {...form.register("text1")}
+          />
+        </label>
+        <label className="flex-1 flex flex-col gap-1">
+          Right
+          <textarea
+            className="antd-input p-1"
+            rows={10}
+            {...form.register("text2")}
+          />
+        </label>
+      </div>
       <button className="antd-btn antd-btn-primary p-1">Submit</button>
     </form>
   );
 }
 
-function triggerDownloadClick({
-  href,
-  download,
-}: {
-  href: string;
-  download: string;
-}) {
-  const a = document.createElement("a");
-  a.setAttribute("href", href);
-  a.setAttribute("download", download);
-  a.click();
-}
-
 interface CaptionEditorEntry {
   begin: number;
   end: number;
+  endLocked: boolean;
   text1: string;
   text2: string;
 }
