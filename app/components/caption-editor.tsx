@@ -75,13 +75,15 @@ export function CaptionEditor(props: { videoId: string }) {
 
   const exportEntriesMutation = useMutation({
     mutationFn: async () => {
-      const formatted = entries.map(
-        (e, index) =>
-          ({
-            ...e,
-            index,
-          } satisfies CaptionEntry)
-      );
+      const formatted = entries
+        .filter((e) => e.text1.trim() || e.text2.trim())
+        .map(
+          (e, index) =>
+            ({
+              ...e,
+              index,
+            } satisfies CaptionEntry)
+        );
       const output = JSON.stringify(formatted, null, 2);
       await navigator.clipboard.writeText(output);
     },
