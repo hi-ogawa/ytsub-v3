@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">36.03% </span>
+                <span class="strong">33.89% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>160/444</span>
+                <span class='fraction'>160/472</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">36.03% </span>
+                <span class="strong">33.89% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>160/444</span>
+                <span class='fraction'>160/472</span>
             </div>
         
             
@@ -507,7 +507,35 @@
 <a name='L442'></a><a href='#L442'>442</a>
 <a name='L443'></a><a href='#L443'>443</a>
 <a name='L444'></a><a href='#L444'>444</a>
-<a name='L445'></a><a href='#L445'>445</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L445'></a><a href='#L445'>445</a>
+<a name='L446'></a><a href='#L446'>446</a>
+<a name='L447'></a><a href='#L447'>447</a>
+<a name='L448'></a><a href='#L448'>448</a>
+<a name='L449'></a><a href='#L449'>449</a>
+<a name='L450'></a><a href='#L450'>450</a>
+<a name='L451'></a><a href='#L451'>451</a>
+<a name='L452'></a><a href='#L452'>452</a>
+<a name='L453'></a><a href='#L453'>453</a>
+<a name='L454'></a><a href='#L454'>454</a>
+<a name='L455'></a><a href='#L455'>455</a>
+<a name='L456'></a><a href='#L456'>456</a>
+<a name='L457'></a><a href='#L457'>457</a>
+<a name='L458'></a><a href='#L458'>458</a>
+<a name='L459'></a><a href='#L459'>459</a>
+<a name='L460'></a><a href='#L460'>460</a>
+<a name='L461'></a><a href='#L461'>461</a>
+<a name='L462'></a><a href='#L462'>462</a>
+<a name='L463'></a><a href='#L463'>463</a>
+<a name='L464'></a><a href='#L464'>464</a>
+<a name='L465'></a><a href='#L465'>465</a>
+<a name='L466'></a><a href='#L466'>466</a>
+<a name='L467'></a><a href='#L467'>467</a>
+<a name='L468'></a><a href='#L468'>468</a>
+<a name='L469'></a><a href='#L469'>469</a>
+<a name='L470'></a><a href='#L470'>470</a>
+<a name='L471'></a><a href='#L471'>471</a>
+<a name='L472'></a><a href='#L472'>472</a>
+<a name='L473'></a><a href='#L473'>473</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -528,6 +556,34 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -952,7 +1008,7 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { Transition } from "@headlessui/react";
-import { toArraySetState } from "@hiogawa/utils-react";
+import { toArraySetState, useRafLoop } from "@hiogawa/utils-react";
 import { useMutation } from "@tanstack/react-query";
 import React from "react";
 import { useForm } from "react-hook-form";
@@ -1044,6 +1100,25 @@ export <span class="fstat-no" title="function not covered" >function CaptionEdit
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  const importModal = useModal();</span>
 <span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >  const [currentEntries, setCurrentEntries] = React.useState&lt;</span>
+<span class="cstat-no" title="statement not covered" >    CaptionEditorEntry[]</span>
+<span class="cstat-no" title="statement not covered" >  &gt;([]);</span>
+<span class="cstat-no" title="statement not covered" >  const currentEntriesSet = new Set(currentEntries);</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >  const [isPlaying, setIsPlayring] = React.useState(false);</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >  useRafLoop(() =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >    setCurrentEntries((prev) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >      if (player) {</span>
+<span class="cstat-no" title="statement not covered" >        const time = player.getCurrentTime();</span>
+<span class="cstat-no" title="statement not covered" >        return entries.filter((e) =&gt; e.begin &lt;= time &amp;&amp; time &lt;= e.end);</span>
+<span class="cstat-no" title="statement not covered" >      }</span>
+<span class="cstat-no" title="statement not covered" >      return prev;</span>
+<span class="cstat-no" title="statement not covered" >    });</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >    setIsPlayring(player?.getPlayerState() === 1);</span>
+<span class="cstat-no" title="statement not covered" >  });</span>
+<span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  return (</span>
 <span class="cstat-no" title="statement not covered" >    &lt;div className="h-full flex flex-col items-center h-full"&gt;</span>
 <span class="cstat-no" title="statement not covered" >      &lt;div className="h-full w-full flex gap-2"&gt;</span>
@@ -1085,7 +1160,16 @@ export <span class="fstat-no" title="function not covered" >function CaptionEdit
 <span class="cstat-no" title="statement not covered" >          &lt;div className="border p-2 flex-[1_0_0] h-full overflow-y-auto"&gt;</span>
 <span class="cstat-no" title="statement not covered" >            &lt;div className="flex-1 flex flex-col gap-2"&gt;</span>
 <span class="cstat-no" title="statement not covered" >              {entries.map((e, i) =&gt; (</span>
-<span class="cstat-no" title="statement not covered" >                &lt;div key={i} className="border flex flex-col gap-1 p-1 text-sm"&gt;</span>
+<span class="cstat-no" title="statement not covered" >                &lt;div</span>
+<span class="cstat-no" title="statement not covered" >                  key={i}</span>
+<span class="cstat-no" title="statement not covered" >                  className={cls(</span>
+<span class="cstat-no" title="statement not covered" >                    "border flex flex-col gap-1 p-1 text-sm",</span>
+<span class="cstat-no" title="statement not covered" >                    currentEntriesSet.has(e) &amp;&amp; "border-colorPrimary",</span>
+<span class="cstat-no" title="statement not covered" >                    currentEntriesSet.has(e) &amp;&amp;</span>
+<span class="cstat-no" title="statement not covered" >                      isPlaying &amp;&amp;</span>
+<span class="cstat-no" title="statement not covered" >                      "ring-2 ring-colorPrimaryBorder"</span>
+<span class="cstat-no" title="statement not covered" >                  )}</span>
+<span class="cstat-no" title="statement not covered" >                &gt;</span>
 <span class="cstat-no" title="statement not covered" >                  &lt;div className="flex items-center gap-2.5 px-1"&gt;</span>
 <span class="cstat-no" title="statement not covered" >                    &lt;button</span>
 <span class="cstat-no" title="statement not covered" >                      className="antd-btn antd-btn-ghost i-ri-play-line w-4 h-4"</span>
@@ -1122,7 +1206,7 @@ export <span class="fstat-no" title="function not covered" >function CaptionEdit
 <span class="cstat-no" title="statement not covered" >                      {stringifyTimestamp(e.end)}</span>
 <span class="cstat-no" title="statement not covered" >                      &lt;button</span>
 <span class="cstat-no" title="statement not covered" >                        className={cls(</span>
-<span class="cstat-no" title="statement not covered" >                          "antd-btn antd-btn-ghost w-4 h-4",</span>
+<span class="cstat-no" title="statement not covered" >                          "antd-btn antd-btn-ghost w-3.5 h-3.5",</span>
 <span class="cstat-no" title="statement not covered" >                          e.endLocked</span>
 <span class="cstat-no" title="statement not covered" >                            ? "i-ri-lock-password-line"</span>
 <span class="cstat-no" title="statement not covered" >                            : "i-ri-lock-unlock-line"</span>
@@ -1402,7 +1486,7 @@ Say something
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-05-30T03:48:10.487Z
+                at 2023-05-30T04:11:50.702Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

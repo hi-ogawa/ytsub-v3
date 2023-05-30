@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">93.76% </span>
+                <span class="strong">98.08% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>391/417</span>
+                <span class='fraction'>409/417</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">78.26% </span>
+                <span class="strong">79.16% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>18/23</span>
+                <span class='fraction'>19/24</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">93.76% </span>
+                <span class="strong">98.08% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>391/417</span>
+                <span class='fraction'>409/417</span>
             </div>
         
             
@@ -552,24 +552,24 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -890,13 +890,13 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">13x</span>
-<span class="cline-any cline-yes">13x</span>
-<span class="cline-any cline-yes">13x</span>
-<span class="cline-any cline-yes">13x</span>
-<span class="cline-any cline-yes">13x</span>
-<span class="cline-any cline-yes">13x</span>
-<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">14x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { mapOption, tinyassert } from "@hiogawa/utils";
 import { sql } from "drizzle-orm";
 import { z } from "zod";
@@ -969,24 +969,24 @@ export const trpcRoutesDecks = {
       })
     )
     .mutation(async ({ input, ctx }) =&gt; {
-<span class="cstat-no" title="statement not covered" >      const deck = await findUserDeck({</span>
-<span class="cstat-no" title="statement not covered" >        deckId: input.deckId,</span>
-<span class="cstat-no" title="statement not covered" >        userId: ctx.user.id,</span>
-<span class="cstat-no" title="statement not covered" >      });</span>
-<span class="cstat-no" title="statement not covered" >      tinyassert(deck);</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >      const practiceEntry = await selectOne(</span>
-<span class="cstat-no" title="statement not covered" >        T.practiceEntries,</span>
-<span class="cstat-no" title="statement not covered" >        E.eq(T.practiceEntries.id, input.practiceEntryId)</span>
-<span class="cstat-no" title="statement not covered" >      );</span>
-<span class="cstat-no" title="statement not covered" >      tinyassert(practiceEntry);</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >      const system = new PracticeSystem(ctx.user, deck);</span>
-<span class="cstat-no" title="statement not covered" >      await system.createPracticeAction(</span>
-<span class="cstat-no" title="statement not covered" >        practiceEntry,</span>
-<span class="cstat-no" title="statement not covered" >        input.actionType,</span>
-<span class="cstat-no" title="statement not covered" >        new Date()</span>
-<span class="cstat-no" title="statement not covered" >      );</span>
+      const deck = await findUserDeck({
+        deckId: input.deckId,
+        userId: ctx.user.id,
+      });
+      tinyassert(deck);
+&nbsp;
+      const practiceEntry = await selectOne(
+        T.practiceEntries,
+        E.eq(T.practiceEntries.id, input.practiceEntryId)
+      );
+      tinyassert(practiceEntry);
+&nbsp;
+      const system = new PracticeSystem(ctx.user, deck);
+      await system.createPracticeAction(
+        practiceEntry,
+        input.actionType,
+        new Date()
+      );
     }),
 &nbsp;
   decks_create: procedureBuilder
@@ -1321,7 +1321,7 @@ function findUserDeck({ deckId, userId }: { deckId: number; userId: number }) {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-05-30T03:48:10.487Z
+                at 2023-05-30T04:11:50.702Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>
