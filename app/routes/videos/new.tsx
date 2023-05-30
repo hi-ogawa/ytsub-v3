@@ -13,6 +13,7 @@ import { PopoverSimple } from "../../components/popover";
 import type { UserTable } from "../../db/models";
 import { $R, R, ROUTE_DEF } from "../../misc/routes";
 import { trpc } from "../../trpc/client";
+import { trpcClient } from "../../trpc/client-internal.client";
 import { encodeFlashMessage } from "../../utils/flash-message";
 import {
   FILTERED_LANGUAGE_CODES,
@@ -191,16 +192,18 @@ export default function DefaultComponent() {
                 />
               </label>
             )}
-            <label className="flex flex-col gap-1">
-              2nd language
-              <LanguageSelectComponent
-                className="antd-input p-1"
-                required
-                value={language2}
-                onChange={(value) => form.setValue("language2", value)}
-                videoMetadata={videoMetadata}
-              />
-            </label>
+            {showAdvancedMode !== 2 && (
+              <label className="flex flex-col gap-1">
+                2nd language
+                <LanguageSelectComponent
+                  className="antd-input p-1"
+                  required
+                  value={language2}
+                  onChange={(value) => form.setValue("language2", value)}
+                  videoMetadata={videoMetadata}
+                />
+              </label>
+            )}
             {!showAdvancedMode && (
               <button
                 type="submit"
@@ -215,7 +218,7 @@ export default function DefaultComponent() {
             )}
           </form>
         </div>
-        {showAdvancedMode && (
+        {showAdvancedMode === 1 && (
           <>
             <div className="border-t mx-3"></div>
             <AdvancedModeForm
@@ -235,8 +238,112 @@ export default function DefaultComponent() {
             />
           </>
         )}
+        {showAdvancedMode === 2 && (
+          <>
+            <div className="border-t mx-3"></div>
+            <AdvancedModeFormV2 videoId={videoId} />
+          </>
+        )}
       </div>
     </div>
+  );
+}
+
+function AdvancedModeFormV2({ videoId }: { videoId: string }) {
+  interface FormType {
+    language1?: LanguageCode;
+    language2?: LanguageCode;
+    input: string;
+  }
+
+  const form = useForm<FormType>({
+    defaultValues: {
+      language1: undefined,
+      language2: undefined,
+      input: "",
+    },
+  });
+  const { language1, language2, input } = form.watch();
+
+  const navigate = useNavigate();
+
+  const createMutation = useMutation({
+    mutationFn: async (data: FormType) => {
+      tinyassert(data.language1);
+      tinyassert(data.language2);
+      return trpcClient.videos_createDirect.mutate({
+        videoId,
+        language1: {
+          id: encodeAdvancedModeLanguageCode(data.language1),
+        },
+        language2: {
+          id: encodeAdvancedModeLanguageCode(data.language2),
+        },
+        captionEntries: JSON.parse(data.input), // validated on trpc input
+      });
+    },
+    onSuccess: (data) => {
+      toast.success("Created a new video");
+      navigate($R["/videos/$id"]({ id: data.id }));
+    },
+  });
+
+  return (
+    <form
+      className="p-6 flex flex-col gap-3"
+      onSubmit={form.handleSubmit((data) => createMutation.mutate(data))}
+    >
+      <div className="text-lg">Manual input (v2)</div>
+      <label className="flex flex-col gap-1">
+        <span>1st language</span>
+        <SelectWrapper
+          className="antd-input p-1"
+          value={language1}
+          options={[undefined, ...FILTERED_LANGUAGE_CODES]}
+          onChange={(v) => form.setValue("language1", v)}
+          labelFn={(v) => v && languageCodeToName(v)}
+        />
+      </label>
+      <label className="flex flex-col gap-1">
+        <span>2nd language</span>
+        <SelectWrapper
+          className="antd-input p-1"
+          value={language2}
+          options={[undefined, ...FILTERED_LANGUAGE_CODES]}
+          onChange={(v) => form.setValue("language2", v)}
+          labelFn={(v) => v && languageCodeToName(v)}
+        />
+      </label>
+      <div className="flex flex-col gap-1">
+        <div className="flex items-center gap-3">
+          <span>Input</span>
+          <a
+            className="antd-link text-sm flex items-center gap-1"
+            href={$R["/videos/caption-editor"](null, { videoId })}
+            target="_blank"
+          >
+            Open caption editor
+            <span className="i-ri-external-link-line w-4 h-4"></span>
+          </a>
+        </div>
+        <textarea
+          className="antd-input p-1"
+          rows={8}
+          placeholder="Please copy the exported data from caption editor"
+          {...form.register("input", { required: true })}
+        />
+      </div>
+      <button
+        type="submit"
+        className={cls(
+          "antd-btn antd-btn-primary p-1",
+          createMutation.isLoading && "andt-btn-loading"
+        )}
+        disabled={!language1 || !language2 || !input}
+      >
+        Save and Play
+      </button>
+    </form>
   );
 }
 
@@ -487,10 +594,25 @@ function NavBarMenuComponent() {
             <li>
               <button
                 className="w-full antd-menu-item p-2 flex gap-2"
-                onClick={() => setShowAdvancedMode((prev) => !prev)}
+                onClick={() =>
+                  setShowAdvancedMode((prev) => (prev !== 1 ? 1 : false))
+                }
               >
                 Manual input
-                {showAdvancedMode && (
+                {showAdvancedMode === 1 && (
+                  <span className="i-ri-check-line w-5 h-5"></span>
+                )}
+              </button>
+            </li>
+            <li>
+              <button
+                className="w-full antd-menu-item p-2 flex gap-2"
+                onClick={() =>
+                  setShowAdvancedMode((prev) => (prev !== 2 ? 2 : false))
+                }
+              >
+                Manual input (v2)
+                {showAdvancedMode === 2 && (
                   <span className="i-ri-check-line w-5 h-5"></span>
                 )}
               </button>
@@ -506,4 +628,4 @@ function NavBarMenuComponent() {
 // page local state
 //
 
-const showAdvancedModeAtom = atom(false);
+const showAdvancedModeAtom = atom<false | 1 | 2>(false);

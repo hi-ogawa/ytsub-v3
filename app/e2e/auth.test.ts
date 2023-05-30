@@ -168,7 +168,7 @@ test.describe("change email", () => {
   });
 });
 
-test.describe.only("reset password", () => {
+test.describe("reset password", () => {
   const user = useUserE2E(test, {
     seed: __filename + "reset password",
   });

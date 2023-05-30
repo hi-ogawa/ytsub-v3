@@ -4,6 +4,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { cls } from "../utils/misc";
 import { YoutubePlayer, usePlayerLoader } from "../utils/youtube";
+import { CaptionEditor } from "./caption-editor";
 import { SelectWrapper, VideoComponent, transitionProps } from "./misc";
 import { PopoverSimple } from "./popover";
 import {
@@ -324,4 +325,9 @@ export function TestYoutubePlayer() {
       </div>
     </div>
   );
+}
+
+export function TestCaptionEditor() {
+  // https://www.youtube.com/watch?v=UY3N52CrTPE
+  return <CaptionEditor videoId="UY3N52CrTPE" />;
 }

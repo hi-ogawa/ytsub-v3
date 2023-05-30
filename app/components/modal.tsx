@@ -51,7 +51,7 @@ function Modal(props: {
             <div
               {...getFloatingProps({
                 ref: floating,
-                className: "w-full h-full",
+                className: "w-full",
               })}
               data-test="modal"
             >
