@@ -5,6 +5,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { cls, zipMax } from "../utils/misc";
+import type { CaptionEntry } from "../utils/types";
 import {
   YoutubePlayer,
   stringifyTimestamp,
@@ -15,6 +16,7 @@ import { useModal } from "./modal";
 
 // TODO: virtualize list? (no perf problem when used for short 3 min song)
 // TODO: save draft in localstorage?
+// TODO: support "half manual" mode
 
 export function CaptionEditor(props: { videoId: string }) {
   const [player, setPlayer] = React.useState<YoutubePlayer>();
@@ -72,7 +74,14 @@ export function CaptionEditor(props: { videoId: string }) {
 
   const exportEntriesMutation = useMutation({
     mutationFn: async () => {
-      const output = JSON.stringify(entries, null, 2);
+      const formatted = entries.map(
+        (e, index) =>
+          ({
+            ...e,
+            index,
+          } satisfies CaptionEntry)
+      );
+      const output = JSON.stringify(formatted, null, 2);
       await navigator.clipboard.writeText(output);
     },
     onSuccess: () => {
