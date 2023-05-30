@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">34.04% </span>
+                <span class="strong">44.68% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>16/47</span>
+                <span class='fraction'>21/47</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>1/1</span>
+                <span class='fraction'>2/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">25% </span>
+                <span class="strong">50% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>1/4</span>
+                <span class='fraction'>2/4</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">34.04% </span>
+                <span class="strong">44.68% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>16/47</span>
+                <span class='fraction'>21/47</span>
             </div>
         
             
@@ -124,25 +124,25 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">41x</span>
+<span class="cline-any cline-yes">41x</span>
+<span class="cline-any cline-yes">41x</span>
+<span class="cline-any cline-yes">41x</span>
+<span class="cline-any cline-yes">41x</span>
+<span class="cline-any cline-yes">41x</span>
+<span class="cline-any cline-yes">41x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -179,17 +179,17 @@ export function useDocumentEvent&lt;K extends keyof DocumentEventMap&gt;(
   React.useEffect(() =&gt; documentEventEffect(type, stableHanlder), []);
 }
 &nbsp;
-export <span class="fstat-no" title="function not covered" >function useClickOutside(callback: (e: PointerEvent) =&gt; void) {</span>
-<span class="cstat-no" title="statement not covered" >  const stableCallback = useStableCallback(callback);</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >  return useRefCallbackEffect&lt;Element&gt;((el) =&gt;</span>
+export function useClickOutside(callback: (e: PointerEvent) =&gt; void) {
+  const stableCallback = useStableCallback(callback);
+&nbsp;
+  return useRefCallbackEffect&lt;Element&gt;((el) =&gt;
 <span class="cstat-no" title="statement not covered" >    documentEventEffect("pointerdown", (e) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >      if (e.target instanceof Node &amp;&amp; el.contains(e.target)) {</span>
 <span class="cstat-no" title="statement not covered" >        stableCallback(e);</span>
 <span class="cstat-no" title="statement not covered" >      }</span>
 <span class="cstat-no" title="statement not covered" >    })</span>
-<span class="cstat-no" title="statement not covered" >  );</span>
-<span class="cstat-no" title="statement not covered" >}</span>
+  );
+}
 &nbsp;
 export <span class="fstat-no" title="function not covered" >function useIntersectionObserver(</span>
 <span class="cstat-no" title="statement not covered" >  callback: IntersectionObserverCallback</span>
@@ -211,7 +211,7 @@ export <span class="fstat-no" title="function not covered" >function useIntersec
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-05-30T03:27:35.366Z
+                at 2023-05-30T03:48:10.487Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>
