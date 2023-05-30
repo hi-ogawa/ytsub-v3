@@ -1,5 +1,5 @@
 import { Transition } from "@headlessui/react";
-import { toArraySetState } from "@hiogawa/utils-react";
+import { toArraySetState, useRafLoop } from "@hiogawa/utils-react";
 import { useMutation } from "@tanstack/react-query";
 import React from "react";
 import { useForm } from "react-hook-form";
@@ -91,6 +91,25 @@ export function CaptionEditor(props: { videoId: string }) {
 
   const importModal = useModal();
 
+  const [currentEntries, setCurrentEntries] = React.useState<
+    CaptionEditorEntry[]
+  >([]);
+  const currentEntriesSet = new Set(currentEntries);
+
+  const [isPlaying, setIsPlayring] = React.useState(false);
+
+  useRafLoop(() => {
+    setCurrentEntries((prev) => {
+      if (player) {
+        const time = player.getCurrentTime();
+        return entries.filter((e) => e.begin <= time && time <= e.end);
+      }
+      return prev;
+    });
+
+    setIsPlayring(player?.getPlayerState() === 1);
+  });
+
   return (
     <div className="h-full flex flex-col items-center h-full">
       <div className="h-full w-full flex gap-2">
@@ -132,7 +151,16 @@ export function CaptionEditor(props: { videoId: string }) {
           <div className="border p-2 flex-[1_0_0] h-full overflow-y-auto">
             <div className="flex-1 flex flex-col gap-2">
               {entries.map((e, i) => (
-                <div key={i} className="border flex flex-col gap-1 p-1 text-sm">
+                <div
+                  key={i}
+                  className={cls(
+                    "border flex flex-col gap-1 p-1 text-sm",
+                    currentEntriesSet.has(e) && "border-colorPrimary",
+                    currentEntriesSet.has(e) &&
+                      isPlaying &&
+                      "ring-2 ring-colorPrimaryBorder"
+                  )}
+                >
                   <div className="flex items-center gap-2.5 px-1">
                     <button
                       className="antd-btn antd-btn-ghost i-ri-play-line w-4 h-4"
@@ -169,7 +197,7 @@ export function CaptionEditor(props: { videoId: string }) {
                       {stringifyTimestamp(e.end)}
                       <button
                         className={cls(
-                          "antd-btn antd-btn-ghost w-4 h-4",
+                          "antd-btn antd-btn-ghost w-3.5 h-3.5",
                           e.endLocked
                             ? "i-ri-lock-password-line"
                             : "i-ri-lock-unlock-line"
