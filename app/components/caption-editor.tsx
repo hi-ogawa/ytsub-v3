@@ -4,6 +4,7 @@ import { useMutation } from "@tanstack/react-query";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
+import { useDocumentEvent } from "../utils/hooks-client-utils";
 import { cls, zipMax } from "../utils/misc";
 import type { CaptionEntry } from "../utils/types";
 import {
@@ -91,6 +92,9 @@ export function CaptionEditor(props: { videoId: string }) {
 
   const importModal = useModal();
 
+  //
+  // sync player state on animation frame
+  //
   const [currentEntries, setCurrentEntries] = React.useState<
     CaptionEditorEntry[]
   >([]);
@@ -108,6 +112,39 @@ export function CaptionEditor(props: { videoId: string }) {
     });
 
     setIsPlayring(player?.getPlayerState() === 1);
+  });
+
+  //
+  // same keyboard shortcut for youtube player
+  //
+  useDocumentEvent("keyup", (e) => {
+    if (document.activeElement?.tagName === "TEXTAREA") {
+      return;
+    }
+
+    if (!player) {
+      return;
+    }
+
+    if (e.key === "k") {
+      if (player.getPlayerState() === 1) {
+        player.pauseVideo();
+      } else {
+        player.playVideo();
+      }
+    }
+    if (e.key === "j") {
+      player.seekTo(player.getCurrentTime() - 10);
+    }
+    if (e.key === "l") {
+      player.seekTo(player.getCurrentTime() + 10);
+    }
+    if (e.key === "ArrowLeft") {
+      player.seekTo(player.getCurrentTime() - 5);
+    }
+    if (e.key === "ArrowRight") {
+      player.seekTo(player.getCurrentTime() + 5);
+    }
   });
 
   return (
