@@ -2,6 +2,7 @@ import { tinyassert } from "@hiogawa/utils";
 import { z } from "zod";
 import { E, T, db, limitOne, selectOne } from "../../db/drizzle-client.server";
 import { filterNewVideo, insertVideoAndCaptionEntries } from "../../db/helper";
+import { Z_CAPTION_ENTRY } from "../../utils/types";
 import {
   Z_NEW_VIDEO,
   fetchCaptionEntries,
@@ -41,6 +42,27 @@ export const trpcRoutesVideos = {
       }
       const id = await insertVideoAndCaptionEntries(input, data, ctx.user?.id);
       return { id, created: true };
+    }),
+
+  videos_createDirect: procedureBuilder
+    .use(middlewares.currentUser)
+    .input(
+      Z_NEW_VIDEO.merge(
+        z.object({
+          captionEntries: Z_CAPTION_ENTRY.array(),
+        })
+      )
+    )
+    .mutation(async ({ input, ctx }) => {
+      const id = await insertVideoAndCaptionEntries(
+        input,
+        {
+          videoMetadata: await fetchVideoMetadata(input.videoId),
+          captionEntries: input.captionEntries,
+        },
+        ctx.user?.id
+      );
+      return { id };
     }),
 
   videos_fetchTtmlEntries: procedureBuilder

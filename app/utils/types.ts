@@ -51,10 +51,12 @@ export interface CaptionConfigOptions {
   }[];
 }
 
-export interface CaptionEntry {
-  index: number;
-  begin: number;
-  end: number;
-  text1: string;
-  text2: string;
-}
+export const Z_CAPTION_ENTRY = z.object({
+  index: z.number(),
+  begin: z.number(),
+  end: z.number(),
+  text1: z.string(),
+  text2: z.string(),
+});
+
+export type CaptionEntry = z.infer<typeof Z_CAPTION_ENTRY>;

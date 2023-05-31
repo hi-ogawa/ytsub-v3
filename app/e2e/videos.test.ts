@@ -159,7 +159,7 @@ test("captions-manual-mode", async ({ page }) => {
 
   // enable manual mode
   await page.getByTestId("video-menu-reference").click();
-  await page.getByRole("button", { name: "Manual input" }).click();
+  await page.getByRole("button", { name: "Manual input", exact: true }).click();
 
   // input form
   await page
@@ -193,6 +193,71 @@ Like a star like a star
   await page.getByText("Even if you’re pretending not to").click();
 });
 
+test("captions-editor", async ({ page }) => {
+  await page.goto("/");
+
+  // input videoId
+  await page.getByTestId("Navbar-drawer-button").click();
+  await page
+    .getByPlaceholder("Enter Video ID or URL")
+    .fill("https://www.youtube.com/watch?v=UY3N52CrTPE");
+  await page.getByPlaceholder("Enter Video ID or URL").press("Enter");
+
+  // navigated to /vides/new
+  await page.waitForURL(
+    "http://localhost:3001/videos/new?videoId=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DUY3N52CrTPE"
+  );
+  await expect(page.getByLabel("Title")).toHaveValue(
+    `TWICE 5th Anniversary Special Live 'WITH' "SAY SOMETHING"`
+  );
+
+  // enable manual mode
+  await page.getByTestId("video-menu-reference").click();
+  await page.getByRole("button", { name: "Manual input (v2)" }).click();
+
+  // check link
+  await expect(
+    page.getByRole("link", { name: "Open caption editor" })
+  ).toHaveAttribute("href", "/videos/caption-editor?videoId=UY3N52CrTPE");
+
+  // input form
+  await page
+    .getByRole("combobox", { name: "1st language" })
+    .selectOption({ label: "Korean" });
+  await page
+    .getByRole("combobox", { name: "2nd language" })
+    .selectOption({ label: "English" });
+  await page.locator('textarea[name="input"]').fill(`\
+[
+  {
+    "begin": 0,
+    "end": 0,
+    "endLocked": true,
+    "text1": "매일이 별다를 것 없던",
+    "text2": "It will be different tomorrow",
+    "index": 0
+  },
+  {
+    "begin": 0,
+    "end": 0,
+    "endLocked": true,
+    "text1": "기억들이 변해가는 것 같아",
+    "text2": "Are bad memories changing?",
+    "index": 1
+  }
+]
+`);
+
+  // submit and navigated to /videos/$id
+  await page.getByRole("button", { name: "Save and Play" }).click();
+  await page.getByText("Created a new video").click();
+  await page.waitForURL(/\/videos\/\d+$/);
+
+  // check captions
+  await page.getByText("기억들이 변해가는 것 같아").click();
+  await page.getByText("Are bad memories changing?").click();
+});
+
 test("invalid videoId input", async ({ page }) => {
   await page.goto("/");
   await page.getByTestId("Navbar-drawer-button").click();
@@ -224,7 +289,6 @@ test.describe("video playback rate", () => {
     await page
       .getByTestId("PlaybackRateSelect")
       .selectOption({ label: "0.75" });
-    await page.pause();
   });
 });
 
