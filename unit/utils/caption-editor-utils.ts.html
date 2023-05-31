@@ -3,15 +3,15 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for ytsub-v3/app/routes/manifest[.json].tsx</title>
+    <title>Code coverage report for utils/caption-editor-utils.ts</title>
     <meta charset="utf-8" />
-    <link rel="stylesheet" href="../../../prettify.css" />
-    <link rel="stylesheet" href="../../../base.css" />
-    <link rel="shortcut icon" type="image/x-icon" href="../../../favicon.png" />
+    <link rel="stylesheet" href="../prettify.css" />
+    <link rel="stylesheet" href="../base.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="../favicon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <style type='text/css'>
         .coverage-summary .sorter {
-            background-image: url(../../../sort-arrow-sprite.png);
+            background-image: url(../sort-arrow-sprite.png);
         }
     </style>
 </head>
@@ -19,34 +19,34 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../../../index.html">All files</a> / <a href="index.html">ytsub-v3/app/routes</a> manifest[.json].tsx</h1>
+        <h1><a href="../index.html">All files</a> / <a href="index.html">utils</a> caption-editor-utils.ts</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">95.12% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>39/41</span>
+                <span class='fraction'>43/43</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>1/1</span>
+                <span class='fraction'>7/7</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">71.42% </span>
+                <span class="quiet">Functions</span>
+                <span class='fraction'>5/7</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
-                <span class="quiet">Functions</span>
-                <span class='fraction'>1/1</span>
-            </div>
-        
-            
-            <div class='fl pad1y space-right2'>
-                <span class="strong">95.12% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>39/41</span>
+                <span class='fraction'>43/43</span>
             </div>
         
             
@@ -104,15 +104,9 @@
 <a name='L39'></a><a href='#L39'>39</a>
 <a name='L40'></a><a href='#L40'>40</a>
 <a name='L41'></a><a href='#L41'>41</a>
-<a name='L42'></a><a href='#L42'>42</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">162x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<a name='L42'></a><a href='#L42'>42</a>
+<a name='L43'></a><a href='#L43'>43</a>
+<a name='L44'></a><a href='#L44'>44</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -133,6 +127,16 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">22x</span>
+<span class="cline-any cline-yes">22x</span>
+<span class="cline-any cline-yes">22x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -145,47 +149,49 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { prettierJson } from "../utils/loader-utils";
-import { makeLoader } from "../utils/loader-utils.server";
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { tinyassert } from "@hiogawa/utils";
+import { Window } from "happy-dom";
 &nbsp;
-// it could be moved to `/public` but the loader conveniently works for now.
+// not used yet
+export async function scrapeColorCodedLyrics(url: string) {
+  const res = await fetch(url);
+  tinyassert(res.ok);
+  const resText = await res.text();
 &nbsp;
-export const loader = makeLoader(({ ctx }) =&gt; {
-<span class="cstat-no" title="statement not covered" >  ctx.cacheResponse();</span>
-<span class="cstat-no" title="statement not covered" >  return prettierJson(MANIFEST_JSON);</span>
-});
+  const window = new Window({
+    settings: {
+      disableCSSFileLoading: true,
+      disableIframePageLoading: true,
+      disableJavaScriptEvaluation: true,
+      disableJavaScriptFileLoading: true,
+    },
+  });
+  Object.assign(window.document.defaultView, { console: createNoopProxy() }); // silence loading error log
+  window.document.body.innerHTML = resText;
 &nbsp;
-const MANIFEST_JSON = {
-  short_name: "Ytsub",
-  name: "Ytsub",
-  icons: [
-    {
-      src: require("../assets/icon-192.png"),
-      type: "image/png",
-      sizes: "192x192",
-    },
-    {
-      src: require("../assets/icon-512.png"),
-      type: "image/png",
-      sizes: "512x512",
-    },
-  ],
-  start_url: "/",
-  scope: "/",
-  theme_color: "#FFFFFF",
-  background_color: "#FFFFFF",
-  display: "standalone",
-  share_target: {
-    action: "/share-target",
-    method: "GET",
-    enctype: "application/x-www-form-urlencoded",
-    params: {
-      title: "share-target-title",
-      text: "share-target-text",
-      url: "share-target-url",
-    },
-  },
-};
+  function parseColumn(n: number) {
+    const elements = window.document.querySelectorAll(
+      `.wp-block-columns.are-vertically-aligned-top &gt; .wp-block-column:nth-child(${n}) .wp-block-group p`
+    );
+    const lines = Array.from(elements).flatMap((p) =&gt;
+      Array.from(p.childNodes)
+        .map((n) =&gt; n.textContent?.trim())
+        .filter(Boolean)
+    );
+    return lines;
+  }
+&nbsp;
+  return [2, 3].map(parseColumn);
+}
+&nbsp;
+function createNoopProxy(): unknown {
+  const proxy: any = new Proxy(<span class="fstat-no" title="function not covered" >() =&gt; {}, {</span>
+    get: () =&gt; proxy,
+    set: <span class="fstat-no" title="function not covered" >() =&gt; false,</span>
+    apply: () =&gt; {},
+  });
+  return proxy;
+}
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -193,16 +199,16 @@ const MANIFEST_JSON = {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-05-31T07:01:17.489Z
+                at 2023-05-31T06:59:38.742Z
             </div>
-        <script src="../../../prettify.js"></script>
+        <script src="../prettify.js"></script>
         <script>
             window.onload = function () {
                 prettyPrint();
             };
         </script>
-        <script src="../../../sorter.js"></script>
-        <script src="../../../block-navigation.js"></script>
+        <script src="../sorter.js"></script>
+        <script src="../block-navigation.js"></script>
     </body>
 </html>
     
