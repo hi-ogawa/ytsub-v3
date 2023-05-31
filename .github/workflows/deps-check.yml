@@ -21,31 +21,31 @@ jobs:
       - run: pnpm i
       - run: pnpm update
       # https://stackoverflow.com/a/73340290
-      # - name: create PR
+      - name: create PR
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout -b deps-check
+          git add .
+          git commit -m "deps-check"
+          gh pr create --base master --head deps-check --fill --title deps-check
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # - name: prepare PR
       #   run: |
       #     git checkout -b deps-check
       #     git add .
-      #     git commit -m "deps-check"
-      #     git config --global user.name "github-actions[bot]"
-      #     git config --global user.email "github-actions[bot]@users.noreply.github.com"
-      #     gh pr create --base master --head deps-check --fill --title deps-check
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: prepare PR
-        run: |
-          git checkout -b deps-check
-          git add .
-          git commit -m deps-check
-      - name: create PR
-        uses: actions/github-script@v6
-        with:
-          script: |
-            const { repo, owner } = context.repo;
-            await github.rest.pulls.create({
-              title: "deps-check",
-              owner,
-              repo,
-              head: "deps-check",
-              base: 'master',
-              body: "deps-check"
-            });
+      #     git commit -m deps-check
+      # - name: create PR
+      #   uses: actions/github-script@v6
+      #   with:
+      #     script: |
+      #       const { repo, owner } = context.repo;
+      #       await github.rest.pulls.create({
+      #         title: "deps-check",
+      #         owner,
+      #         repo,
+      #         head: "deps-check",
+      #         base: 'master',
+      #         body: "deps-check"
+      #       });
