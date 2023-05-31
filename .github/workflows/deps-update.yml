@@ -25,11 +25,12 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          branch_name="__deps-update--$GITHUB_HEAD_REF"
+          base_name="$GITHUB_REF_NAME"
+          branch_name="__depsUpdate__$GITHUB_REF_NAME"
           git checkout -b "$branch_name"
           git add .
           git commit -m deps-update
           git push -f origin "$branch_name"
-          gh pr create --base "$GITHUB_HEAD_REF" --head "$branch_name" --title deps-update --body deps-update
+          gh pr create --base "$base_name" --head "$branch_name" --title deps-update --body deps-update
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
