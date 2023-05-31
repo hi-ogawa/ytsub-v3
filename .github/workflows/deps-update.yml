@@ -3,7 +3,7 @@ name: deps-update
   workflow_dispatch:
   schedule:
     # every saturday (cf. https://crontab.guru/#0_0_*_*_6)
-    cron: "0 0 * * 6"
+    - cron: "0 0 * * 6"
 jobs:
   deps-update-pnpm:
     runs-on: ubuntu-latest
