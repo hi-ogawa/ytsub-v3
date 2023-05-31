@@ -1,0 +1,30 @@
+name: deps-check
+"on":
+  workflow_dispatch:
+  # for now only manually
+  # schedule:
+  #   # every week (cf. https://crontab.guru/#0_0_*_*_0)
+  #   cron: "0 0 * * 0"
+jobs:
+  deps-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: pnpm
+      - run: pnpm i
+      - run: pnpm update
+      # https://stackoverflow.com/a/73340290
+      - name: create PR
+        run:
+          git checkout -b deps-check
+          git add .
+          git commit -m "deps-check"
+          gh pr create --base main --fill --title "deps-check"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
