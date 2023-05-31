@@ -575,7 +575,7 @@ async function debugRandomMode(rawArgs: unknown) {
         "queueType",
         "practiceActionsCount",
       ]),
-      objectPick(s, ["score", "scoreFactors"]),
+      objectPick(s, ["score"]),
     ];
     const combined = Object.assign({}, ...picked);
     return combined;

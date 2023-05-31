@@ -206,14 +206,16 @@ describe("cache.nextEntriesRandomMode", () => {
     // build cache
     const deck1 = await loadDeck();
     expect(deck1.cache.nextEntriesRandomMode.length).toMatchInlineSnapshot(
-      "10"
+      "25"
     );
     expect(deck1.cache.nextEntriesRandomMode[0]).toBe(entry1.id);
 
     // cache shifts after action
     await system.createPracticeAction(entry1, "HARD");
     const deck2 = await loadDeck();
-    expect(deck2.cache.nextEntriesRandomMode.length).toMatchInlineSnapshot("9");
+    expect(deck2.cache.nextEntriesRandomMode.length).toMatchInlineSnapshot(
+      "24"
+    );
     expect(deck2.cache.nextEntriesRandomMode).toEqual(
       deck1.cache.nextEntriesRandomMode.slice(1)
     );
