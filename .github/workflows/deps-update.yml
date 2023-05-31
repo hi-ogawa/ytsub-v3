@@ -37,7 +37,7 @@ jobs:
           git commit -am "deps-update by $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
           git push -f origin "$branch_name"
           # TODO: skip if there's already PR
-          gh pr list --head "$branch_name" --json
+          gh pr list --head "$branch_name" --json number
           gh pr create --base "$base_name" --head "$branch_name" --title "deps-update ($base_name)" --body deps-update
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
