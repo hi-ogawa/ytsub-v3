@@ -108,7 +108,7 @@ export function CaptionEditor(props: { videoId: string }) {
     setCurrentEntries((prev) => {
       if (player) {
         const time = player.getCurrentTime();
-        return entries.filter((e) => e.begin <= time && time <= e.end);
+        return entries.filter((e) => e.begin <= time && time < e.end);
       }
       return prev;
     });
@@ -233,7 +233,11 @@ export function CaptionEditor(props: { videoId: string }) {
                           setEntry(i, (e) => ({ ...e, end: time }));
                         }}
                       ></button>
-                      {stringifyTimestamp(e.end)}
+                      <span
+                        className={cls(e.begin >= e.end && "text-colorError")}
+                      >
+                        {stringifyTimestamp(e.end)}
+                      </span>
                       <button
                         className={cls(
                           "antd-btn antd-btn-ghost w-3.5 h-3.5",
