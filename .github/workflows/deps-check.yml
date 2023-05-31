@@ -1,5 +1,6 @@
 name: deps-check
 "on":
+  push:
   workflow_dispatch:
   # for now only manually
   # schedule:
