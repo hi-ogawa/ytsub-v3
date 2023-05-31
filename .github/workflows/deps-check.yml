@@ -11,6 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          ref: master
       - uses: pnpm/action-setup@v2
         with:
           version: 8
@@ -27,25 +29,8 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git checkout -b deps-check
           git add .
-          git commit -m "deps-check"
+          git commit -m deps-check
+          git diff master
           gh pr create --base master --head deps-check --title deps-check --body deps-check
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      # - name: prepare PR
-      #   run: |
-      #     git checkout -b deps-check
-      #     git add .
-      #     git commit -m deps-check
-      # - name: create PR
-      #   uses: actions/github-script@v6
-      #   with:
-      #     script: |
-      #       const { repo, owner } = context.repo;
-      #       await github.rest.pulls.create({
-      #         title: "deps-check",
-      #         owner,
-      #         repo,
-      #         head: "deps-check",
-      #         base: 'master',
-      #         body: "deps-check"
-      #       });
