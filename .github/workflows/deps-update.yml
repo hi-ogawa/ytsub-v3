@@ -20,17 +20,23 @@ jobs:
           cache: pnpm
       - run: pnpm i
       - run: pnpm update
+
+      - id: check-diff
+        run: echo "COUNT=$(git diff --name-only | wc -l)" >> "$GITHUB_OUTPUT"
+
       # https://stackoverflow.com/a/73340290
-      - name: create PR
+      - name: push branch and create PR
+        if: steps.check-diff.outputs.COUNT != '0'
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           base_name="$GITHUB_REF_NAME"
-          branch_name="__depsUpdate__$GITHUB_REF_NAME"
+          branch_name="__deps-update__$GITHUB_REF_NAME"
           git checkout -b "$branch_name"
-          git add .
-          git commit -m deps-update
+          git commit -am "deps-update by $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
           git push -f origin "$branch_name"
-          gh pr create --base "$base_name" --head "$branch_name" --title deps-update --body deps-update
+          # TODO: skip if there's already PR
+          gh pr --head "$branch_name" --json
+          gh pr create --base "$base_name" --head "$branch_name" --title "deps-update ($base_name)" --body deps-update
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
