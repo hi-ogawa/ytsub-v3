@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for utils/config.ts</title>
+    <title>Code coverage report for utils/caption-editor-utils.ts</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../prettify.css" />
     <link rel="stylesheet" href="../base.css" />
@@ -19,34 +19,34 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../index.html">All files</a> / <a href="index.html">utils</a> config.ts</h1>
+        <h1><a href="../index.html">All files</a> / <a href="index.html">utils</a> caption-editor-utils.ts</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>44/44</span>
-            </div>
-        
-            
-            <div class='fl pad1y space-right2'>
-                <span class="strong">50% </span>
-                <span class="quiet">Branches</span>
-                <span class='fraction'>1/2</span>
+                <span class='fraction'>43/43</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
+                <span class="quiet">Branches</span>
+                <span class='fraction'>7/7</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">71.42% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/0</span>
+                <span class='fraction'>5/7</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>44/44</span>
+                <span class='fraction'>43/43</span>
             </div>
         
             
@@ -106,8 +106,7 @@
 <a name='L41'></a><a href='#L41'>41</a>
 <a name='L42'></a><a href='#L42'>42</a>
 <a name='L43'></a><a href='#L43'>43</a>
-<a name='L44'></a><a href='#L44'>44</a>
-<a name='L45'></a><a href='#L45'>45</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L44'></a><a href='#L44'>44</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -128,6 +127,16 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">22x</span>
+<span class="cline-any cline-yes">22x</span>
+<span class="cline-any cline-yes">22x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -140,61 +149,49 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">14x</span>
-<span class="cline-any cline-yes">14x</span>
-<span class="cline-any cline-yes">14x</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import * as process from "process";
-import { once } from "@hiogawa/utils";
-import { z } from "zod";
-import { initializePublicConfigServer } from "./config-public";
-import { uninitialized } from "./misc";
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { tinyassert } from "@hiogawa/utils";
+import { Window } from "happy-dom";
 &nbsp;
-// prettier-ignore
-const Z_SERVER_CONFIG = z.object({
-  APP_MYSQL_HOST: z.string().default("localhost"),
-  APP_MYSQL_PORT: z.coerce.number().default(3306),
-  APP_MYSQL_USER: z.string().default("root"),
-  APP_MYSQL_PASSWORD: z.string().default("password"),
-  APP_MYSQL_DATABASE: z.string().default(process.env.NODE_ENV === "test" ? <span class="branch-0 cbranch-no" title="branch not covered" >"ytsub_test" : "ytsub_development")</span>,
-  APP_MYSQL_SSL: z.coerce.boolean(),
+// not used yet
+export async function scrapeColorCodedLyrics(url: string) {
+  const res = await fetch(url);
+  tinyassert(res.ok);
+  const resText = await res.text();
 &nbsp;
-  APP_SESSION_SECRET: z.string().default("__sessionSecret"),
+  const window = new Window({
+    settings: {
+      disableCSSFileLoading: true,
+      disableIframePageLoading: true,
+      disableJavaScriptEvaluation: true,
+      disableJavaScriptFileLoading: true,
+    },
+  });
+  Object.assign(window.document.defaultView, { console: createNoopProxy() }); // silence loading error log
+  window.document.body.innerHTML = resText;
 &nbsp;
-  // captcha (default test keys always succeed https://developers.cloudflare.com/turnstile/reference/testing/)
-  APP_CAPTCHA_SITE_KEY: z.string().default("1x00000000000000000000BB"),
-  APP_CAPTCHA_SECRET_KEY: z.string().default("1x0000000000000000000000000000000AA"),
+  function parseColumn(n: number) {
+    const elements = window.document.querySelectorAll(
+      `.wp-block-columns.are-vertically-aligned-top &gt; .wp-block-column:nth-child(${n}) .wp-block-group p`
+    );
+    const lines = Array.from(elements).flatMap((p) =&gt;
+      Array.from(p.childNodes)
+        .map((n) =&gt; n.textContent?.trim())
+        .filter(Boolean)
+    );
+    return lines;
+  }
 &nbsp;
-  // mailjet
-  MJ_APIKEY_PUBLIC: z.string().optional(),
-  MJ_APIKEY_PRIVATE: z.string().optional(),
+  return [2, 3].map(parseColumn);
+}
 &nbsp;
-  // used for email link
-  BASE_URL: z.string().default("https://ytsub-v3-hiro18181.vercel.app"),
-&nbsp;
-  VERCEL_ENV: z.string().optional(),
-});
-&nbsp;
-const Z_PUBLIC_CONFIG = Z_SERVER_CONFIG.pick({
-  APP_CAPTCHA_SITE_KEY: true,
-  VERCEL_ENV: true,
-});
-&nbsp;
-export type PublicConfig = z.infer&lt;typeof Z_PUBLIC_CONFIG&gt;;
-&nbsp;
-export let serverConfig = uninitialized as z.infer&lt;typeof Z_SERVER_CONFIG&gt;;
-&nbsp;
-export const initializeConfigServer = once(() =&gt; {
-  serverConfig = Z_SERVER_CONFIG.parse(process.env);
-  initializePublicConfigServer(Z_PUBLIC_CONFIG.parse(process.env));
-});
+function createNoopProxy(): unknown {
+  const proxy: any = new Proxy(<span class="fstat-no" title="function not covered" >() =&gt; {}, {</span>
+    get: () =&gt; proxy,
+    set: <span class="fstat-no" title="function not covered" >() =&gt; false,</span>
+    apply: () =&gt; {},
+  });
+  return proxy;
+}
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
