@@ -28,7 +28,7 @@ jobs:
           git checkout -b deps-check
           git add .
           git commit -m "deps-check"
-          gh pr create --base master --head deps-check --fill --title deps-check
+          gh pr create --base master --head deps-check --fill --title deps-check --body deps-check
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # - name: prepare PR
