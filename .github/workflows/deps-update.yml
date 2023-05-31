@@ -31,13 +31,17 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
           base_name="$GITHUB_REF_NAME"
           branch_name="__deps-update__$GITHUB_REF_NAME"
+
           git checkout -b "$branch_name"
           git commit -am "deps-update by $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
           git push -f origin "$branch_name"
-          # TODO: skip if there's already PR
-          gh pr list --head "$branch_name" --json number
-          gh pr create --base "$base_name" --head "$branch_name" --title "deps-update ($base_name)" --body deps-update
+
+          # skip creation if there's already PR
+          if ! (gh pr list --head "$branch_name" --json number | jq --exit-status '.[0]'); then
+            gh pr create --base "$base_name" --head "$branch_name" --title "deps-update ($base_name)"
+          fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
