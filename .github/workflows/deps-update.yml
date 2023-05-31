@@ -17,6 +17,9 @@ jobs:
           node-version: 18
           cache: pnpm
       - run: pnpm i
+
+      # TODO: support "ignoreDeps" like renovate?
+      # TODO: "--latest" to bump major?
       - run: pnpm update
 
       - id: check-diff
