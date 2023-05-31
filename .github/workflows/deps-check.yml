@@ -28,6 +28,6 @@ jobs:
           git commit -m "deps-check"
           # git config user.name "github-actions[bot]"
           # git config user.email "github-actions[bot]@users.noreply.github.com"
-          gh pr create --base main --head deps-check --fill --title deps-check
+          gh pr create --base master --head deps-check --fill --title deps-check
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
