@@ -36,12 +36,12 @@ jobs:
           branch_name="__deps-update__$GITHUB_REF_NAME"
 
           git checkout -b "$branch_name"
-          git commit -am "deps-update\n\n- $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          git commit -am "deps-update $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
           git push -f origin "$branch_name"
 
           # skip creation if there's already PR
           if ! (gh pr list --head "$branch_name" --json number | jq --exit-status '.[0]'); then
-            gh pr create --base "$base_name" --head "$branch_name" --title "deps-update ($base_name)"
+            gh pr create --base "$base_name" --head "$branch_name" --title "deps-update ($base_name)" --body ""
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
