@@ -337,7 +337,7 @@ function AdvancedModeFormV2({ videoId }: { videoId: string }) {
         type="submit"
         className={cls(
           "antd-btn antd-btn-primary p-1",
-          createMutation.isLoading && "andt-btn-loading"
+          createMutation.isLoading && "antd-btn-loading"
         )}
         disabled={!language1 || !language2 || !input}
       >
