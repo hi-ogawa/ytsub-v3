@@ -1,6 +1,7 @@
 import { tinyassert } from "@hiogawa/utils";
 import { Window } from "happy-dom";
 
+// not used yet
 export async function scrapeColorCodedLyrics(url: string) {
   const res = await fetch(url);
   tinyassert(res.ok);
