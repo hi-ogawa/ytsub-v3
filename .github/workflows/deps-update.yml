@@ -1,18 +1,16 @@
-name: deps-check
+name: deps-update
 "on":
   push:
+  # manually by workflow dispatch or cron job
   workflow_dispatch:
-  # for now only manually
   # schedule:
   #   # every week (cf. https://crontab.guru/#0_0_*_*_0)
   #   cron: "0 0 * * 0"
 jobs:
-  deps-check:
+  deps-update-pnpm:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-        with:
-          ref: master
       - uses: pnpm/action-setup@v2
         with:
           version: 8
@@ -27,10 +25,11 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git checkout -b deps-check
+          branch_name="__deps-update--$GITHUB_HEAD_REF"
+          git checkout -b "$branch_name"
           git add .
-          git commit -m deps-check
-          git push -f origin deps-check
-          gh pr create --base master --head deps-check --title deps-check --body deps-check
+          git commit -m deps-update
+          git push -f origin "$branch_name"
+          gh pr create --base "$GITHUB_HEAD_REF" --head "$branch_name" --title deps-update --body deps-update
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
