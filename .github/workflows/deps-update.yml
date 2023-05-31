@@ -36,7 +36,7 @@ jobs:
           branch_name="__deps-update__$GITHUB_REF_NAME"
 
           git checkout -b "$branch_name"
-          git commit -am "deps-update by $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          git commit -am "deps-update\n\n- $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
           git push -f origin "$branch_name"
 
           # skip creation if there's already PR
