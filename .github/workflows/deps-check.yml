@@ -21,7 +21,7 @@ jobs:
       - run: pnpm update
       # https://stackoverflow.com/a/73340290
       - name: create PR
-        run:
+        run: |
           git checkout -b deps-check
           git add .
           git commit -m "deps-check"
