@@ -2,7 +2,7 @@ lockfileVersion: '6.0'
 
 patchedDependencies:
   '@remix-run/dev@1.15.0':
-    hash: aczlqyziesl2rswt5gxxdm2qlm
+    hash: 7w7em752ihak5gwkomtllfrbhe
     path: patches/@remix-run__dev@1.15.0.patch
   '@remix-run/node@1.15.0':
     hash: z6mxtllsu73w4y6xnddlyl6j6y
@@ -127,7 +127,7 @@ devDependencies:
     version: 1.31.2
   '@remix-run/dev':
     specifier: 1.15.0
-    version: 1.15.0(patch_hash=aczlqyziesl2rswt5gxxdm2qlm)(@types/node@18.16.6)
+    version: 1.15.0(patch_hash=7w7em752ihak5gwkomtllfrbhe)(@types/node@18.16.6)
   '@tsconfig/strictest':
     specifier: ^1.0.2
     version: 1.0.2
@@ -2329,7 +2329,7 @@ packages:
     resolution: {integrity: sha512-a5Sab1C4/icpTZVzZc5Ghpz88yQtGOyNqYXcZgOssB2uuAr+wF/MvN6bgtW32q7HHrvBki+BsZ0OuNv6EV3K9g==}
     dev: true
 
-  /@remix-run/dev@1.15.0(patch_hash=aczlqyziesl2rswt5gxxdm2qlm)(@types/node@18.16.6):
+  /@remix-run/dev@1.15.0(patch_hash=7w7em752ihak5gwkomtllfrbhe)(@types/node@18.16.6):
     resolution: {integrity: sha512-BsE1GN6WM9PhN+agZi4TqUIuYzoHYZrufEdXLg3ZEYxWXqvtRKUNfhsYSDlEhrW+D5fyVQhJrs61wQ83sEXHLQ==}
     engines: {node: '>=14'}
     hasBin: true
@@ -2458,7 +2458,7 @@ packages:
     peerDependencies:
       '@remix-run/dev': ^1.15.0
     dependencies:
-      '@remix-run/dev': 1.15.0(patch_hash=aczlqyziesl2rswt5gxxdm2qlm)(@types/node@18.16.6)
+      '@remix-run/dev': 1.15.0(patch_hash=7w7em752ihak5gwkomtllfrbhe)(@types/node@18.16.6)
       minimatch: 7.4.6
     dev: false
 
