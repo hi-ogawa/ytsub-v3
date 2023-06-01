@@ -22,8 +22,5 @@ function createHattipApp() {
 
 function createRemixHandler(): RequestHandler {
   const remixHandler = createRequestHandler(build);
-  return async (ctx) => {
-    const response = await remixHandler(ctx.request);
-    return response;
-  };
+  return (ctx) => remixHandler(ctx.request);
 }
