@@ -5,8 +5,10 @@ const env = process.env.NODE_ENV ?? "development";
 module.exports = {
   serverBuildPath: `build/remix/${env}/server/index.js`,
   assetsBuildDirectory: `build/remix/${env}/public/build`,
-  publicPath: process.env.BUILD_VERCEL ? undefined : `/build/remix/${env}/public/build`,
-  server: process.env.BUILD_VERCEL ? "./app/misc/vercel.ts" : undefined,
+  server: "./app/misc/entry-express.ts",
+  serverDependenciesToBundle: process.env.BUILD_VERCEL ? "all" : [
+    /@hattip/, /@js-temporal/, /node-fetch-native/
+  ],
   future: {
     v2_meta: true,
     v2_errorBoundary: true,

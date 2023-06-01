@@ -1,9 +1,6 @@
 import { RemixServer } from "@remix-run/react";
 import type { HandleDocumentRequestFunction } from "@remix-run/server-runtime";
 import { renderToString } from "react-dom/server";
-import { injectInitializeServer } from "./misc/initialize-server";
-
-injectInitializeServer();
 
 const handler: HandleDocumentRequestFunction = (
   request,
