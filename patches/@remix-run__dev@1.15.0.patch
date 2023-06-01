@@ -37,3 +37,42 @@ index 4127eef2a81df8ea28f6c71f3f98d614dd31ef46..76e6a8d0df63498a8a690af476d66072
    }
    let future = {
      unstable_cssModules: ((_appConfig$future5 = appConfig.future) === null || _appConfig$future5 === void 0 ? void 0 : _appConfig$future5.unstable_cssModules) === true,
+diff --git a/dist/devServer/serve.js b/dist/devServer/serve.js
+index f51422abcb9ccf72399c97d5b391871e54daf0c0..d25aa6fe6e37f7746aab83eb4e1980697b8b5e83 100644
+--- a/dist/devServer/serve.js
++++ b/dist/devServer/serve.js
+@@ -37,14 +37,16 @@ function tryImport(packageName) {
+   }
+ }
+ async function serve(config, mode, portPreference) {
+-  if (config.serverEntryPoint) {
+-    throw new Error("remix dev is not supported for custom servers.");
+-  }
+-  let {
+-    createApp
+-  } = tryImport("@remix-run/serve"
+-  // eslint-disable-next-line @typescript-eslint/consistent-type-imports
+-  );
++  // (patch) use custom entry directly as middleware
++
++  // if (config.serverEntryPoint) {
++  //   throw new Error("remix dev is not supported for custom servers.");
++  // }
++  // let {
++  //   createApp
++  // } = tryImport("@remix-run/serve"
++  // // eslint-disable-next-line @typescript-eslint/consistent-type-imports
++  // );
+   // eslint-disable-next-line @typescript-eslint/consistent-type-imports
+   let express = tryImport("express");
+   await env.loadEnv(config.rootDirectory);
+@@ -57,7 +59,8 @@ async function serve(config, mode, portPreference) {
+     purgeAppRequireCache(config.serverBuildPath);
+     next();
+   });
+-  app.use(createApp(config.serverBuildPath, mode, config.publicPath, config.assetsBuildDirectory));
++  app.use((req, res, next) => require(config.serverBuildPath).default(config)(req, res, next));
++  // app.use(createApp(config.serverBuildPath, mode, config.publicPath, config.assetsBuildDirectory));
+   let dispose = await liveReload.liveReload(config);
+   let server;
+   let onListen = () => {

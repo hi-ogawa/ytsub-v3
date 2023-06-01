@@ -1,4 +1,4 @@
-import { difference, once, tinyassert } from "@hiogawa/utils";
+import { difference, tinyassert } from "@hiogawa/utils";
 import { sql } from "drizzle-orm";
 import * as E from "drizzle-orm/expressions";
 import {
@@ -356,7 +356,7 @@ declare let globalThis: {
 
 export let db = uninitialized as typeof globalThis.__drizzleClient;
 
-export const initializeDrizzleClient = once(async () => {
+export async function initializeDrizzleClient() {
   db = globalThis.__drizzleClient ??= await inner();
 
   async function inner() {
@@ -366,7 +366,7 @@ export const initializeDrizzleClient = once(async () => {
       logger: process.env["DEBUG"]?.includes("drizzle"), // enable query logging by DEBUG=drizzle
     });
   }
-});
+}
 
 export async function finalizeDrizzleClient() {
   __dbExtra().connection.destroy();
