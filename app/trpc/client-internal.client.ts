@@ -1,5 +1,6 @@
 import { createTRPCProxyClient, httpLink } from "@trpc/client";
 import superjson from "superjson";
+import { TRPC_ENDPOINT } from "./common";
 import type { trpcApp } from "./server";
 
 // remove raw client from server bundle since it's not meant to be used on server.
@@ -9,7 +10,7 @@ export const trpcClient = createTRPCProxyClient<typeof trpcApp>({
   transformer: superjson,
   links: [
     httpLink({
-      url: "/trpc",
+      url: TRPC_ENDPOINT,
     }),
   ],
 });

@@ -1,4 +1,3 @@
-import { once } from "@hiogawa/utils";
 import {
   Session,
   SessionStorage,
@@ -8,7 +7,7 @@ import { serverConfig } from "./config";
 
 export let sessionStore: SessionStorage;
 
-export const initializeSessionStore = once(() => {
+export function initializeSessionStore() {
   sessionStore = createCookieSessionStorage({
     cookie: {
       httpOnly: true,
@@ -18,7 +17,7 @@ export const initializeSessionStore = once(() => {
       secrets: [serverConfig.APP_SESSION_SECRET],
     },
   });
-});
+}
 
 //
 // utils
