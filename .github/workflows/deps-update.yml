@@ -1,0 +1,49 @@
+name: deps-update
+"on":
+  workflow_dispatch:
+  schedule:
+    # every saturday (cf. https://crontab.guru/#0_0_*_*_6)
+    - cron: "0 0 * * 6"
+jobs:
+  deps-update-pnpm:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2
+        with:
+          # workaround https://github.com/pnpm/pnpm/issues/6609
+          version: 8.5
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: pnpm
+      - run: pnpm i
+
+      # TODO: support "ignoreDeps" like renovate?
+      # TODO: "--latest" to bump major?
+      - run: pnpm update
+
+      - id: check-diff
+        name: check diff
+        run: echo "COUNT=$(git diff --name-only | wc -l)" >> "$GITHUB_OUTPUT"
+
+      # https://stackoverflow.com/a/73340290
+      - name: push branch and create PR
+        if: steps.check-diff.outputs.COUNT != '0'
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+          base_name="$GITHUB_REF_NAME"
+          branch_name="__deps-update__$GITHUB_REF_NAME"
+
+          git checkout -b "$branch_name"
+          git commit -am "chore(deps): pnpm update $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          git push -f origin "$branch_name"
+
+          # skip creation if there's already PR
+          if ! (gh pr list --head "$branch_name" --json number | jq --exit-status '.[0]'); then
+            gh pr create --base "$base_name" --head "$branch_name" --title "chore(deps): pnpm update" --body ""
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

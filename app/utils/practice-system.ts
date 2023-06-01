@@ -451,7 +451,7 @@ async function queryNextPracticeEntryRandomModeWithCache(
   const nextEntries = await queryNextPracticeEntryRandomModeBatch(
     deckId,
     now,
-    10,
+    25,
     seed
   );
 
@@ -470,12 +470,11 @@ async function queryNextPracticeEntryRandomModeWithCache(
 
 type ScoredPracticeEntry = TT["practiceEntries"] & {
   score: number;
-  scoreFactors: number[];
 };
 
 export async function queryNextPracticeEntryRandomModeBatch(
   deckId: number,
-  now: Date,
+  _now: Date, // not used
   maxCount: number,
   seed: number
 ): Promise<ScoredPracticeEntry[]> {
@@ -489,31 +488,10 @@ export async function queryNextPracticeEntryRandomModeBatch(
     .from(T.practiceEntries)
     .where(E.and(E.eq(T.practiceEntries.deckId, deckId)));
 
-  //
-  // sort random with scheduledAt bonus
-  //
-  function computeScheduledAtFactor(scheduledAt: Date): number {
-    // +0.025 for each week scheduled eariler
-    const BONUS_SLOPE = 0.025 / (60 * 60 * 24 * 7 * 1000);
-    const BONUS_LIMIT = 0.2;
-
-    return Math.min(
-      BONUS_LIMIT,
-      BONUS_SLOPE * (now.getTime() - scheduledAt.getTime())
-    );
-  }
-
-  // score = (uniform in [0, 1]) + (scheduledAt bonus in [-oo, BONUS_LIMIT])
   let scoredRows = rows.map((row) => {
-    const scoreFactors = [
-      rng.float(),
-      computeScheduledAtFactor(row.scheduledAt),
-    ];
-    const score = sum(scoreFactors);
     return {
       ...row,
-      score,
-      scoreFactors,
+      score: rng.float(),
     };
   });
   scoredRows = sortBy(scoredRows, (row) => -row.score);
@@ -574,8 +552,4 @@ function prefixSum(ls: number[]): number[] {
     acc.push(acc[i] + ls[i]);
   }
   return acc;
-}
-
-function sum(ls: number[]): number {
-  return ls.reduce((x, y) => x + y, 0);
 }

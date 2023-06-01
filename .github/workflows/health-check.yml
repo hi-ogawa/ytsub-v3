@@ -2,7 +2,7 @@ name: health-check
 "on":
   workflow_dispatch:
   schedule:
-    # every hour
+    # every hour (cf. https://crontab.guru/#0_*_*_*_*)
     - cron: "0 * * * *"
 jobs:
   health-check:
