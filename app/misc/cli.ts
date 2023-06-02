@@ -659,8 +659,6 @@ async function main() {
     consola.error(e);
     process.exit(1);
   } finally {
-    // TODO: fix mysql driver warning?
-    //   Warning: got packets out of order. Expected 22 but received 0
     await finalizeServer();
   }
 }
