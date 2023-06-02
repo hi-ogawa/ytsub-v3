@@ -1,7 +1,7 @@
+import fs from "node:fs/promises";
 import path from "node:path";
 import { hashString } from "@hiogawa/utils";
 import { Page, test as testDefault } from "@playwright/test";
-import fse from "fs-extra";
 
 // cf.
 // - https://playwright.dev/docs/test-fixtures#overriding-fixtures
@@ -35,8 +35,8 @@ export const test = testDefault.extend({
     entries = entries.map(preprocessCoverageEntry);
     const id = hashString([testInfo.file, ...testInfo.titlePath].join("@"));
     const outfile = path.resolve("coverage", "e2e-client", "tmp", id + ".json");
-    await fse.ensureDir(path.dirname(outfile));
-    await fse.writeFile(outfile, JSON.stringify({ result: entries }));
+    await fs.mkdir(path.dirname(outfile), { recursive: true });
+    await fs.writeFile(outfile, JSON.stringify({ result: entries }));
   },
 });
 

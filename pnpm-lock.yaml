@@ -137,9 +137,6 @@ devDependencies:
   '@types/express':
     specifier: ^4.17.17
     version: 4.17.17
-  '@types/fs-extra':
-    specifier: ^9.0.13
-    version: 9.0.13
   '@types/node':
     specifier: ^18.16.16
     version: 18.16.16
@@ -185,9 +182,6 @@ devDependencies:
   express:
     specifier: ^4.18.2
     version: 4.18.2
-  fs-extra:
-    specifier: ^10.1.0
-    version: 10.1.0
   gh-pages:
     specifier: ^3.2.3
     version: 3.2.3
@@ -2805,12 +2799,6 @@ packages:
     resolution: {integrity: sha512-MxObHvNl4A69ofaTRU8DFqvgzzv8s9yRtaPPm5gud9HDNvpB3GPQFvNuTWAI59B9huVGV5jXYJwbCsmBsOGYWA==}
     dependencies:
       '@types/jsonfile': 6.1.1
-      '@types/node': 18.16.16
-    dev: true
-
-  /@types/fs-extra@9.0.13:
-    resolution: {integrity: sha512-nEnwB++1u5lVDM2UI4c1+5R+FYaKfaAzS4OococimjVm3nQw3TuzH5UNsocrcTBbhnerblyHj4A49qXbIiZdpA==}
-    dependencies:
       '@types/node': 18.16.16
     dev: true
 
