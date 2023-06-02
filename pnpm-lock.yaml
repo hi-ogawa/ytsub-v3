@@ -71,7 +71,7 @@ dependencies:
     version: 2.4.3
   drizzle-orm:
     specifier: ^0.22.0
-    version: 0.22.0(mysql2@2.3.3)
+    version: 0.22.0(mysql2@3.3.3)
   echarts:
     specifier: ^5.4.2
     version: 5.4.2
@@ -83,10 +83,10 @@ dependencies:
     version: 2.1.0(react@18.2.0)
   knex:
     specifier: ^2.4.2
-    version: 2.4.2(mysql2@2.3.3)
+    version: 2.4.2(mysql2@3.3.3)
   mysql2:
-    specifier: ^2.3.3
-    version: 2.3.3
+    specifier: ^3.3.3
+    version: 3.3.3
   react:
     specifier: ^18.2.0
     version: 18.2.0
@@ -98,7 +98,7 @@ dependencies:
     version: 7.44.3(react@18.2.0)
   react-hot-toast:
     specifier: ^2.4.1
-    version: 2.4.1(react-dom@18.2.0)(react@18.2.0)
+    version: 2.4.1(csstype@3.1.2)(react-dom@18.2.0)(react@18.2.0)
   react-remove-scroll:
     specifier: ^2.5.6
     version: 2.5.6(@types/react@18.2.8)(react@18.2.0)
@@ -118,7 +118,7 @@ devDependencies:
     version: 1.0.2-pre.1(prettier@2.8.8)(typescript@5.1.3)
   '@hiogawa/unocss-preset-antd':
     specifier: 2.2.1-pre.2
-    version: 2.2.1-pre.2(unocss@0.52.7)
+    version: 2.2.1-pre.2(@unocss/preset-uno@0.52.7)(unocss@0.52.7)
   '@iconify-json/ri':
     specifier: ^1.1.9
     version: 1.1.9
@@ -217,7 +217,7 @@ devDependencies:
     version: 5.1.3
   unocss:
     specifier: ^0.52.7
-    version: 0.52.7(vite@4.3.9)
+    version: 0.52.7(postcss@8.4.24)(vite@4.3.9)
   vite:
     specifier: ^4.3.9
     version: 4.3.9(@types/node@18.16.16)
@@ -2129,15 +2129,16 @@ packages:
       typescript: 5.1.3
     dev: true
 
-  /@hiogawa/unocss-preset-antd@2.2.1-pre.2(unocss@0.52.7):
+  /@hiogawa/unocss-preset-antd@2.2.1-pre.2(@unocss/preset-uno@0.52.7)(unocss@0.52.7):
     resolution: {integrity: sha512-IyLBst49BiscFZ+lcO1d2fJ7S7YhEK+ikgZNymtgbcMYhIbgzY6Qju4FW5BpBivQ3csMblzvgz+sfJDaXC0viw==}
     peerDependencies:
       '@unocss/preset-uno': '*'
       unocss: '*'
     dependencies:
+      '@unocss/preset-uno': 0.52.7
       '@unocss/reset': 0.48.5
       local-pkg: 0.4.3
-      unocss: 0.52.7(vite@4.3.9)
+      unocss: 0.52.7(postcss@8.4.24)(vite@4.3.9)
     dev: true
 
   /@hiogawa/utils-experimental@0.0.1:
@@ -2983,9 +2984,11 @@ packages:
       sirv: 2.0.3
     dev: true
 
-  /@unocss/postcss@0.52.7:
+  /@unocss/postcss@0.52.7(postcss@8.4.24):
     resolution: {integrity: sha512-0yG7K8ie9gky7Y/oD29Jzpe4l92IgRPB2Fo9a7g2f4dGlKOuih5S+NsH3EO4WODrawntISyxVXMHsIydze2vAw==}
     engines: {node: '>=14'}
+    peerDependencies:
+      postcss: ^8.4.21
     dependencies:
       '@unocss/config': 0.52.7
       '@unocss/core': 0.52.7
@@ -4271,7 +4274,7 @@ packages:
     resolution: {integrity: sha512-FYssxsmCTtKL72fGBSvb1K9dRz0/VZeWqFme/vSb7r7323x4CRaHu4LvQ5JG3+s6yt2YPbBrkpiEODktfyjI9A==}
     engines: {node: '>=12'}
 
-  /drizzle-orm@0.22.0(mysql2@2.3.3):
+  /drizzle-orm@0.22.0(mysql2@3.3.3):
     resolution: {integrity: sha512-oZ/CNbv3NXoCxmBWTPNAZHZkuzhacT+eXM0ywemkHSTiqEJe79VQ1jvGVd0fQthfOt1UHRMuAW0CeIizhQpb2Q==}
     peerDependencies:
       '@aws-sdk/client-rds-data': '>=3 <4'
@@ -4318,7 +4321,7 @@ packages:
       sqlite3:
         optional: true
     dependencies:
-      mysql2: 2.3.3
+      mysql2: 3.3.3
     dev: false
 
   /duplexer@0.1.2:
@@ -5249,10 +5252,12 @@ packages:
       pinkie-promise: 2.0.1
     dev: true
 
-  /goober@2.1.13:
+  /goober@2.1.13(csstype@3.1.2):
     resolution: {integrity: sha512-jFj3BQeleOoy7t93E9rZ2de+ScC4lQICLwiAQmKMg9F6roKGaLSHoCDYKkWlSafg138jejvq/mTdvmnwDQgqoQ==}
     peerDependencies:
       csstype: ^3.0.10
+    dependencies:
+      csstype: 3.1.2
     dev: false
 
   /gopd@1.0.1:
@@ -6043,7 +6048,7 @@ packages:
     resolution: {integrity: sha512-o+NO+8WrRiQEE4/7nwRJhN1HWpVmJm511pBHUxPLtp0BUISzlBplORYSmTclCnJvQq2tKu/sgl3xVpkc7ZWuQQ==}
     engines: {node: '>=6'}
 
-  /knex@2.4.2(mysql2@2.3.3):
+  /knex@2.4.2(mysql2@3.3.3):
     resolution: {integrity: sha512-tMI1M7a+xwHhPxjbl/H9K1kHX+VncEYcvCx5K00M16bWvpYPKAZd6QrCu68PtHAdIZNQPWZn0GVhqVBEthGWCg==}
     engines: {node: '>=12'}
     hasBin: true
@@ -6080,7 +6085,7 @@ packages:
       getopts: 2.3.0
       interpret: 2.2.0
       lodash: 4.17.21
-      mysql2: 2.3.3
+      mysql2: 3.3.3
       pg-connection-string: 2.5.0
       rechoir: 0.8.0
       resolve-from: 5.0.0
@@ -6172,8 +6177,8 @@ packages:
       chalk: 4.1.2
       is-unicode-supported: 0.1.0
 
-  /long@4.0.0:
-    resolution: {integrity: sha512-XsP+KhQif4bjX1kbuSiySJFNAehNxgLb6hPRGJ9QsUr8ajHkuXGdrHmFUTUUXhDwVX2R5bY4JNZEwbUiMhV+MA==}
+  /long@5.2.3:
+    resolution: {integrity: sha512-lcHwpNoggQTObv5apGNCTdJrO69eHOZMi4BNC+rTLER8iHAqGrUVeLh/irVIM7zTw2bOXA8T6uNPeujwOLg/2Q==}
     dev: false
 
   /longest-streak@3.1.0:
@@ -6215,6 +6220,11 @@ packages:
   /lru-cache@7.18.3:
     resolution: {integrity: sha512-jumlc0BIUrS3qJGgIkWZsyfAM7NCWiBcCDhnd+3NNM5KbBmLTgHVfWBcg6W+rLUsIpzpERPsvwUP7CckAQSOoA==}
     engines: {node: '>=12'}
+
+  /lru-cache@8.0.5:
+    resolution: {integrity: sha512-MhWWlVnuab1RG5/zMRRcVGXZLCXrZTgfwMikgzCegsPnG62yDQo5JnqKkrK4jO5iKqDAZGItAqN5CtKBCBWRUA==}
+    engines: {node: '>=16.14'}
+    dev: false
 
   /lru-cache@9.1.2:
     resolution: {integrity: sha512-ERJq3FOzJTxBbFjZ7iDs+NiK4VI9Wz+RdrrAB8dio1oV+YvdPzUEE4QNiT2VD51DkIbCYRUUzCRkssXCHqSnKQ==}
@@ -6871,15 +6881,15 @@ packages:
   /mute-stream@0.0.8:
     resolution: {integrity: sha512-nnbWWOkoWyUsTjKrhgD0dcz22mdkSnpYqbEjIm2nhwhuxlSkpywJmBo8h0ZqJdkp73mb90SssHkN4rsRaBAfAA==}
 
-  /mysql2@2.3.3:
-    resolution: {integrity: sha512-wxJUev6LgMSgACDkb/InIFxDprRa6T95+VEoR+xPvtngtccNH2dGjEB/fVZ8yg1gWv1510c9CvXuJHi5zUm0ZA==}
+  /mysql2@3.3.3:
+    resolution: {integrity: sha512-MxDQJztArk4JFX1PKVjDhIXRzAmVJfuqZrVU+my6NeYBAA/XZRaDw5q7vga8TNvgyy3Lv3rivBFBBuJFbsdjaw==}
     engines: {node: '>= 8.0'}
     dependencies:
       denque: 2.1.0
       generate-function: 2.3.1
       iconv-lite: 0.6.3
-      long: 4.0.0
-      lru-cache: 6.0.0
+      long: 5.2.3
+      lru-cache: 8.0.5
       named-placeholders: 1.1.3
       seq-queue: 0.0.5
       sqlstring: 2.3.3
@@ -7840,14 +7850,14 @@ packages:
       react: 18.2.0
     dev: false
 
-  /react-hot-toast@2.4.1(react-dom@18.2.0)(react@18.2.0):
+  /react-hot-toast@2.4.1(csstype@3.1.2)(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-j8z+cQbWIM5LY37pR6uZR6D4LfseplqnuAO4co4u8917hBUvXlEqyP1ZzqVLcqoyUesZZv/ImreoCeHVDpE5pQ==}
     engines: {node: '>=10'}
     peerDependencies:
       react: '>=16'
       react-dom: '>=16'
     dependencies:
-      goober: 2.1.13
+      goober: 2.1.13(csstype@3.1.2)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
     transitivePeerDependencies:
@@ -9122,7 +9132,7 @@ packages:
     resolution: {integrity: sha512-hAZsKq7Yy11Zu1DE0OzWjw7nnLZmJZYTDZZyEFHZdUhV8FkH5MCfoU1XMaxXovpyW5nq5scPqq0ZDP9Zyl04oQ==}
     engines: {node: '>= 10.0.0'}
 
-  /unocss@0.52.7(vite@4.3.9):
+  /unocss@0.52.7(postcss@8.4.24)(vite@4.3.9):
     resolution: {integrity: sha512-c35lqmzWqnQH0hW2IE1owac2qfGOvNAhrIrLV2+pNmc2MDWq8WMjIEuWo8G+OS5JqFQY3ZBlE61q2x/tHPlujQ==}
     engines: {node: '>=14'}
     peerDependencies:
@@ -9135,7 +9145,7 @@ packages:
       '@unocss/cli': 0.52.7
       '@unocss/core': 0.52.7
       '@unocss/extractor-arbitrary-variants': 0.52.7
-      '@unocss/postcss': 0.52.7
+      '@unocss/postcss': 0.52.7(postcss@8.4.24)
       '@unocss/preset-attributify': 0.52.7
       '@unocss/preset-icons': 0.52.7
       '@unocss/preset-mini': 0.52.7
@@ -9152,6 +9162,7 @@ packages:
       '@unocss/transformer-variant-group': 0.52.7
       '@unocss/vite': 0.52.7(vite@4.3.9)
     transitivePeerDependencies:
+      - postcss
       - rollup
       - supports-color
       - vite
