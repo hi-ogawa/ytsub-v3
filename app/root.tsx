@@ -327,7 +327,12 @@ function SignoutComponent() {
       onClick={() => signoutMutation.mutate(null)}
       disabled={signoutMutation.isLoading}
     >
-      <span className="i-ri-logout-box-line w-6 h-6"></span>
+      <span
+        className={cls(
+          "w-6 h-6",
+          signoutMutation.isLoading ? "antd-spin" : "i-ri-logout-box-line"
+        )}
+      ></span>
       Sign out
     </button>
   );
