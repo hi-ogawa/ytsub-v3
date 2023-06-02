@@ -19,6 +19,9 @@ jobs:
           cache: pnpm
       - run: pnpm i
 
+      # just output major change for now
+      - run: npx npm-check-updates
+
       # TODO: support "ignoreDeps" like renovate?
       # TODO: "--latest" to bump major?
       - run: pnpm update
