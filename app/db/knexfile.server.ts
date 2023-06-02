@@ -17,14 +17,9 @@ export default function knexfile() {
       multipleStatements: true,
       timezone: "+00:00", // planetscale and development mysql image have UTC localtime
     },
-    pool: {
-      min: 2,
-      max: 10,
-    },
     migrations: {
       directory: path.join(__dirname, "migrations"),
       stub: path.join(__dirname, "__migration-stub.ts"),
     },
-    debug: Boolean(process.env.APP_KNEX_DEBUG),
   } satisfies Knex.Config;
 }
