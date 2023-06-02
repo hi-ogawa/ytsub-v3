@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">21.51% </span>
+                <span class="strong">21.38% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>34/158</span>
+                <span class='fraction'>34/159</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">21.51% </span>
+                <span class="strong">21.38% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>34/158</span>
+                <span class='fraction'>34/159</span>
             </div>
         
             
@@ -221,7 +221,8 @@
 <a name='L156'></a><a href='#L156'>156</a>
 <a name='L157'></a><a href='#L157'>157</a>
 <a name='L158'></a><a href='#L158'>158</a>
-<a name='L159'></a><a href='#L159'>159</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L159'></a><a href='#L159'>159</a>
+<a name='L160'></a><a href='#L160'>160</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -249,6 +250,7 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -415,18 +417,19 @@ interface PopoverRenderProps {
 <span class="cstat-no" title="statement not covered" >  const [open, setOpen] = React.useState(false);</span>
 <span class="cstat-no" title="statement not covered" >  const arrowRef = React.useRef&lt;Element&gt;(null);</span>
 <span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >  const { refs, context, x, y, strategy, middlewareData } = useFloating({</span>
-<span class="cstat-no" title="statement not covered" >    open,</span>
-<span class="cstat-no" title="statement not covered" >    onOpenChange: setOpen,</span>
-<span class="cstat-no" title="statement not covered" >    placement: props.placement,</span>
-<span class="cstat-no" title="statement not covered" >    middleware: [</span>
-<span class="cstat-no" title="statement not covered" >      offset(16),</span>
-<span class="cstat-no" title="statement not covered" >      flip(),</span>
-<span class="cstat-no" title="statement not covered" >      shift(),</span>
-<span class="cstat-no" title="statement not covered" >      arrow({ element: arrowRef, padding: 10 }),</span>
-<span class="cstat-no" title="statement not covered" >    ],</span>
-<span class="cstat-no" title="statement not covered" >    whileElementsMounted: autoUpdate,</span>
-<span class="cstat-no" title="statement not covered" >  });</span>
+<span class="cstat-no" title="statement not covered" >  const { reference, floating, context, x, y, strategy, middlewareData } =</span>
+<span class="cstat-no" title="statement not covered" >    useFloating({</span>
+<span class="cstat-no" title="statement not covered" >      open,</span>
+<span class="cstat-no" title="statement not covered" >      onOpenChange: setOpen,</span>
+<span class="cstat-no" title="statement not covered" >      placement: props.placement,</span>
+<span class="cstat-no" title="statement not covered" >      middleware: [</span>
+<span class="cstat-no" title="statement not covered" >        offset(16),</span>
+<span class="cstat-no" title="statement not covered" >        flip(),</span>
+<span class="cstat-no" title="statement not covered" >        shift(),</span>
+<span class="cstat-no" title="statement not covered" >        arrow({ element: arrowRef, padding: 10 }),</span>
+<span class="cstat-no" title="statement not covered" >      ],</span>
+<span class="cstat-no" title="statement not covered" >      whileElementsMounted: autoUpdate,</span>
+<span class="cstat-no" title="statement not covered" >    });</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  const { getReferenceProps, getFloatingProps } = useInteractions([</span>
 <span class="cstat-no" title="statement not covered" >    useClick(context),</span>
@@ -440,7 +443,7 @@ interface PopoverRenderProps {
 <span class="cstat-no" title="statement not covered" >        open,</span>
 <span class="cstat-no" title="statement not covered" >        setOpen,</span>
 <span class="cstat-no" title="statement not covered" >        props: getReferenceProps({</span>
-<span class="cstat-no" title="statement not covered" >          ref: refs.setReference,</span>
+<span class="cstat-no" title="statement not covered" >          ref: reference,</span>
 <span class="cstat-no" title="statement not covered" >        }),</span>
 <span class="cstat-no" title="statement not covered" >      })}</span>
 <span class="cstat-no" title="statement not covered" >      &lt;FloatingWrapper&gt;</span>
@@ -449,7 +452,7 @@ interface PopoverRenderProps {
 <span class="cstat-no" title="statement not covered" >          open,</span>
 <span class="cstat-no" title="statement not covered" >          setOpen,</span>
 <span class="cstat-no" title="statement not covered" >          props: getFloatingProps({</span>
-<span class="cstat-no" title="statement not covered" >            ref: refs.setFloating,</span>
+<span class="cstat-no" title="statement not covered" >            ref: floating,</span>
 <span class="cstat-no" title="statement not covered" >            style: {</span>
 <span class="cstat-no" title="statement not covered" >              top: y ?? "",</span>
 <span class="cstat-no" title="statement not covered" >              left: x ?? "",</span>
@@ -544,7 +547,7 @@ export <span class="fstat-no" title="function not covered" >function PopoverSimp
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-06-02T13:30:48.120Z
+                at 2023-06-02T13:37:49.273Z
             </div>
         <script src="../prettify.js"></script>
         <script>
