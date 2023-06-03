@@ -1,6 +1,7 @@
 import { tinyassert } from "@hiogawa/utils";
 import { z } from "zod";
 import { serverConfig } from "./config";
+import { wrapTraceAsyncSimple } from "./opentelemetry-utils";
 
 // https://developers.cloudflare.com/turnstile/get-started/server-side-validation/
 
@@ -22,6 +23,8 @@ export let verifyTurnstile = async (options: { response: string }) => {
   const data = Z_SITE_VERIFY.parse(await res.json());
   tinyassert(data.success);
 };
+
+verifyTurnstile = wrapTraceAsyncSimple(verifyTurnstile);
 
 const Z_SITE_VERIFY = z
   .object({

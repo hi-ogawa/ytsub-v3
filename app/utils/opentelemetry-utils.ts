@@ -64,7 +64,7 @@ type SpanMetaFn<F extends (...args: any[]) => any> = (
   options?: SpanOptions;
 };
 
-export function wrapTraceAsync<F extends (...args: any[]) => any>(
+function wrapTraceAsync<F extends (...args: any[]) => any>(
   asyncFn: F,
   spanMetaFn: SpanMetaFn<F>
 ): F {
@@ -72,4 +72,10 @@ export function wrapTraceAsync<F extends (...args: any[]) => any>(
     return traceAsync(spanMetaFn(...args), () => asyncFn.apply(this, args));
   }
   return wrapper as F;
+}
+
+export function wrapTraceAsyncSimple<
+  F extends ((...args: any[]) => any) & { name: string }
+>(asyncFn: F): F {
+  return wrapTraceAsync(asyncFn, () => ({ name: asyncFn.name }));
 }
