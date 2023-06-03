@@ -82,9 +82,9 @@ export function splitFirst(s: string, sep: string): [string, string] {
   return [s.slice(0, i), s.slice(i + sep.length)];
 }
 
-export function pathToRegExp(pattern: string): RegExp {
+export function pathToRegExp(pattern: string) {
+  const keys: string[] = [];
   let source = "";
-  const keys: string[] = []; // not used
   mapRegExp(
     pattern,
     /:\w+/g,
@@ -96,5 +96,5 @@ export function pathToRegExp(pattern: string): RegExp {
       source += escapeRegExp(other);
     }
   );
-  return new RegExp(`^${source}$`);
+  return { regexp: new RegExp(`^${source}$`), keys };
 }

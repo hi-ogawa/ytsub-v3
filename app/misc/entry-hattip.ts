@@ -143,7 +143,9 @@ function createRemixRouteResolver() {
     .filter((r): r is string => typeof r === "string")
     .map((r) => "/" + r);
 
-  const mapping = new Map(paths.map((p) => [p, pathToRegExp(p)] as const));
+  const mapping = new Map(
+    paths.map((p) => [p, pathToRegExp(p).regexp] as const)
+  );
 
   return (pathname: string): string | undefined => {
     for (const [k, v] of mapping) {
