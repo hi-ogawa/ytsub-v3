@@ -1,6 +1,5 @@
 import { difference, tinyassert } from "@hiogawa/utils";
-import { sql, SQL, InferModel } from "drizzle-orm";
-import * as E from "drizzle-orm"; // TODO: import only https://github.com/drizzle-team/drizzle-orm/blob/1f8ff173a08b562cc64e41970c55f0dba0ac56f6/drizzle-orm/src/sql/expressions/index.ts
+import { InferModel, SQL, sql } from "drizzle-orm";
 import {
   MySqlDialect,
   boolean,
@@ -203,6 +202,8 @@ export type TT = { [K in keyof typeof T]: InferModel<(typeof T)[K]> };
 //
 
 // re-export expressions since eq, isNull etc.. sounds too general
+// TODO: import only https://github.com/drizzle-team/drizzle-orm/blob/1f8ff173a08b562cc64e41970c55f0dba0ac56f6/drizzle-orm/src/sql/expressions/index.ts
+const E = require("drizzle-orm") as typeof import("drizzle-orm");
 export { E };
 
 export async function limitOne<
