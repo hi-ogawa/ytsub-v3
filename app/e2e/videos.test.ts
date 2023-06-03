@@ -193,14 +193,14 @@ Like a star like a star
   await page.getByText("Even if you’re pretending not to").click();
 });
 
-test("captions-editor", async ({ page }) => {
+test("captions-editor-basic", async ({ page }) => {
   await page.goto("/");
 
   // input videoId
   await page.getByTestId("Navbar-drawer-button").click();
   await page
     .getByPlaceholder("Enter Video ID or URL")
-    .fill("https://www.youtube.com/watch?v=UY3N52CrTPE");
+    .fill("https://www.youtube.com/watch?v=UY3N52CrTPE"); // SAY SOMETHING (TWICE)
   await page.getByPlaceholder("Enter Video ID or URL").press("Enter");
 
   // navigated to /vides/new
@@ -256,6 +256,44 @@ test("captions-editor", async ({ page }) => {
   // check captions
   await page.getByText("기억들이 변해가는 것 같아").click();
   await page.getByText("Are bad memories changing?").click();
+});
+
+test("captions-editor-auto-save", async ({ page }) => {
+  // PAXXWORD (NMIXX) https://www.youtube.com/watch?v=sLd0jl6zv80
+  await page.goto("/videos/caption-editor?videoId=sLd0jl6zv80");
+
+  // import a few lines
+  await page.getByRole("button", { name: "Import" }).click();
+  await page
+    .getByLabel("Left")
+    .fill("Alright 일단 system check\n시작하기 전 stretching 해");
+  await page
+    .getByLabel("Right")
+    .fill(
+      "Alright, First, system check\nBefore you start, go stretching, yeah"
+    );
+  await page.getByRole("button", { name: "Submit" }).click();
+
+  // edit
+  await page
+    .getByText("Alright 일단 system check")
+    .fill("[EDIT] Alright 일단 system check");
+  await page.waitForTimeout(500);
+
+  // reload and verify draft
+  await page.reload();
+  await page.getByText("[EDIT] Alright 일단 system check").click();
+
+  // export
+  await page.context().grantPermissions(["clipboard-read", "clipboard-write"]);
+  await page.getByRole("button", { name: "Export" }).click();
+  await page.getByText("Caption data is copied to clipboard!").click();
+  const clipboardText = await page.evaluate(() =>
+    navigator.clipboard.readText()
+  );
+  expect(clipboardText).toContain(
+    `"text1": "[EDIT] Alright 일단 system check"`
+  );
 });
 
 test("invalid videoId input", async ({ page }) => {
