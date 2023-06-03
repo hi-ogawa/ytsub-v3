@@ -283,13 +283,12 @@ export function toDeleteSqlInner(sql: SQL, tableName: string): SQL {
   // with
   //   delete yyy from
   const [, , c1, c2, c3] = sql.queryChunks;
-  console.log(sql.queryChunks);
   tinyassert(c1 instanceof StringChunk);
   tinyassert(c1.value[0] === "select ");
   tinyassert(c2 instanceof SQL);
   tinyassert(c3 instanceof StringChunk);
   tinyassert(c3.value[0] === " from ");
-  sql.queryChunks.splice(0, 4, new StringChunk(" delete `" + tableName + "` "));
+  sql.queryChunks.splice(0, 4, new StringChunk("delete `" + tableName + "`"));
   return sql;
 }
 
