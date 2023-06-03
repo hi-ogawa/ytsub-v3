@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>381/381</span>
+                <span class='fraction'>374/374</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>381/381</span>
+                <span class='fraction'>374/374</span>
             </div>
         
             
@@ -437,17 +437,7 @@
 <a name='L372'></a><a href='#L372'>372</a>
 <a name='L373'></a><a href='#L373'>373</a>
 <a name='L374'></a><a href='#L374'>374</a>
-<a name='L375'></a><a href='#L375'>375</a>
-<a name='L376'></a><a href='#L376'>376</a>
-<a name='L377'></a><a href='#L377'>377</a>
-<a name='L378'></a><a href='#L378'>378</a>
-<a name='L379'></a><a href='#L379'>379</a>
-<a name='L380'></a><a href='#L380'>380</a>
-<a name='L381'></a><a href='#L381'>381</a>
-<a name='L382'></a><a href='#L382'>382</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<a name='L375'></a><a href='#L375'>375</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -719,11 +709,8 @@
 <span class="cline-any cline-yes">36x</span>
 <span class="cline-any cline-yes">36x</span>
 <span class="cline-any cline-yes">36x</span>
-<span class="cline-any cline-yes">36x</span>
-<span class="cline-any cline-yes">36x</span>
-<span class="cline-any cline-yes">36x</span>
-<span class="cline-any cline-yes">36x</span>
-<span class="cline-any cline-yes">36x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -813,7 +800,6 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">166x</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -826,10 +812,8 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { difference, tinyassert } from "@hiogawa/utils";
-import { sql } from "drizzle-orm";
-import * as E from "drizzle-orm/expressions";
+import { InferModel, SQL, StringChunk, sql } from "drizzle-orm";
 import {
-  InferModel,
   MySqlDialect,
   boolean,
   customType,
@@ -841,8 +825,7 @@ import {
   text,
   timestamp,
 } from "drizzle-orm/mysql-core";
-import { MySql2Database, MySql2Session, drizzle } from "drizzle-orm/mysql2";
-import { SQL } from "drizzle-orm/sql";
+import { MySql2Database, drizzle } from "drizzle-orm/mysql2";
 import type { Connection } from "mysql2";
 import { createConnection } from "mysql2/promise";
 import { uninitialized } from "../utils/misc";
@@ -973,7 +956,7 @@ const decks = mysqlTable("decks", {
   easeBonus: float("easeBonus").notNull().default(DUMMY_DEFAULT),
   randomMode: boolean("randomMode").notNull().default(DUMMY_DEFAULT),
   // cache various things to reduce repeating heavy SELECT queries
-  cache: json&lt;DeckCache&gt;("cache").notNull(),
+  cache: json("cache").$type&lt;DeckCache&gt;().notNull(),
 });
 &nbsp;
 const practiceEntries = mysqlTable("practiceEntries", {
@@ -982,7 +965,7 @@ const practiceEntries = mysqlTable("practiceEntries", {
   bookmarkEntryId: int("bookmarkEntryId").notNull(),
   ...timestampColumns,
   //
-  queueType: text&lt;PracticeQueueType&gt;("queueType").notNull(),
+  queueType: text("queueType").$type&lt;PracticeQueueType&gt;().notNull(),
   easeFactor: float("easeFactor").notNull(),
   scheduledAt: datetimeUtc("scheduledAt").notNull(),
   practiceActionsCount: int("practiceActionsCount").notNull(),
@@ -995,8 +978,8 @@ const practiceActions = mysqlTable("practiceActions", {
   userId: int("userId").notNull(),
   ...timestampColumns,
   //
-  queueType: text&lt;PracticeQueueType&gt;("queueType").notNull(),
-  actionType: text&lt;PracticeActionType&gt;("actionType").notNull(),
+  queueType: text("queueType").$type&lt;PracticeQueueType&gt;().notNull(),
+  actionType: text("actionType").$type&lt;PracticeActionType&gt;().notNull(),
 });
 &nbsp;
 const knex_migrations = mysqlTable("knex_migrations", {
@@ -1031,7 +1014,7 @@ export type TT = { [K in keyof typeof T]: InferModel&lt;(typeof T)[K]&gt; };
 // utils (TODO: move to db/helper.ts?)
 //
 &nbsp;
-// re-export expressions since eq, isNull etc.. sounds too general
+import * as E from "./drizzle-expressions";
 export { E };
 &nbsp;
 export async function limitOne&lt;
@@ -1095,12 +1078,7 @@ export async function toCountSql&lt;Q extends { execute: () =&gt; Promise&lt;unk
   query: Q
 ): Promise&lt;number&gt; {
   const q = query as any;
-  q.config.fieldsList = [
-    {
-      path: ["count"],
-      field: sql`COUNT(0)`,
-    },
-  ];
+  q.config.fields = { count: sql&lt;number&gt;`COUNT(0)` };
   const [{ count }] = await q.execute();
   tinyassert(typeof count === "number");
   return count;
@@ -1109,14 +1087,16 @@ export async function toCountSql&lt;Q extends { execute: () =&gt; Promise&lt;unk
 // a little hack to make DELETE query based on SELECT since drizzle doesn't support complicated DELETE query with JOIN.
 export function toDeleteSqlInner(sql: SQL, tableName: string): SQL {
   // replace
-  //   select ... from
+  //   select xxx from
   // with
-  //   delete from
-  const [, c1, c2, c3] = sql.queryChunks;
-  tinyassert(c1 === "select ");
+  //   delete yyy from
+  const [, , c1, c2, c3] = sql.queryChunks;
+  tinyassert(c1 instanceof StringChunk);
+  tinyassert(c1.value[0] === "select ");
   tinyassert(c2 instanceof SQL);
-  tinyassert(c3 === " from ");
-  sql.queryChunks.splice(1, 2, " delete `", tableName, "` ");
+  tinyassert(c3 instanceof StringChunk);
+  tinyassert(c3.value[0] === " from ");
+  sql.queryChunks.splice(0, 4, new StringChunk("delete `" + tableName + "`"));
   return sql;
 }
 &nbsp;
@@ -1202,7 +1182,6 @@ export async function finalizeDrizzleClient() {
 export function __dbExtra() {
   return {
     connection: (db as any).session.client as Connection,
-    session: (db as any).session as MySql2Session,
     dialect: (db as any).dialect as MySqlDialect,
   };
 }
@@ -1213,7 +1192,7 @@ export function __dbExtra() {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-06-03T07:58:34.420Z
+                at 2023-06-03T12:20:01.420Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>
