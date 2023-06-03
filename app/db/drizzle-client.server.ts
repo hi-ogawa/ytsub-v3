@@ -1,5 +1,5 @@
 import { difference, tinyassert } from "@hiogawa/utils";
-import { InferModel, SQL, sql } from "drizzle-orm";
+import { InferModel, SQL, StringChunk, sql } from "drizzle-orm";
 import {
   MySqlDialect,
   boolean,
@@ -201,9 +201,7 @@ export type TT = { [K in keyof typeof T]: InferModel<(typeof T)[K]> };
 // utils (TODO: move to db/helper.ts?)
 //
 
-// re-export expressions since eq, isNull etc.. sounds too general
-// TODO: import only https://github.com/drizzle-team/drizzle-orm/blob/1f8ff173a08b562cc64e41970c55f0dba0ac56f6/drizzle-orm/src/sql/expressions/index.ts
-const E = require("drizzle-orm") as typeof import("drizzle-orm");
+import * as E from "./drizzle-expressions";
 export { E };
 
 export async function limitOne<
@@ -284,10 +282,12 @@ export function toDeleteSqlInner(sql: SQL, tableName: string): SQL {
   //   select ... from
   // with
   //   delete from
-  const [, c1, c2, c3] = sql.queryChunks;
-  tinyassert(c1 === "select ");
+  const [, , c1, c2, c3] = sql.queryChunks;
+  tinyassert(c1 instanceof StringChunk);
+  tinyassert(c1.value[0] === "select ");
   tinyassert(c2 instanceof SQL);
-  tinyassert(c3 === " from ");
+  tinyassert(c3 instanceof StringChunk);
+  tinyassert(c3.value[0] === " from ");
   sql.queryChunks.splice(1, 2, " delete `", tableName, "` ");
   return sql;
 }
