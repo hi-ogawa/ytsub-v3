@@ -160,7 +160,7 @@ export function CaptionEditor(props: { videoId: string }) {
   // auto-save in localstorage
   //
   const draft = createDraftUtils(props.videoId);
-  const draftSet = useDebounce(draft.set, 1000);
+  const draftSet = useDebounce(draft.set, 300);
 
   // initial loading
   useEffectNoStrict(() => {
