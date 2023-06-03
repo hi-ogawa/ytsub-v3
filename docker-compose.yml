@@ -10,6 +10,19 @@ services:
     volumes:
       - mysql-volume:/var/lib/mysql
 
+  # for testing open-telemetry integration locally
+  # https://www.jaegertracing.io/docs/1.39/getting-started/
+  jaeger:
+    image: jaegertracing/all-in-one:1.39
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true
+    ports:
+      # OTLP over HTTP http://localhost:4318
+      - 4318:4318
+      # UI http://localhost:16686
+      - 16686:16686
+    profiles: ["tools"]
+
   dockerize:
     image: jwilder/dockerize:0.6.1
     profiles: ["tools"]

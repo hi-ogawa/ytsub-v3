@@ -2,6 +2,7 @@ import { tinyassert } from "@hiogawa/utils";
 import type { SendEmailV3_1 } from "node-mailjet";
 import { z } from "zod";
 import { serverConfig } from "./config";
+import { wrapTraceAsyncSimple } from "./opentelemetry-utils";
 
 // we only borrow their typing and fetch it by ourselves
 // https://dev.mailjet.com/email/guides/send-api-v31
@@ -25,7 +26,7 @@ export async function sendEmail(email: Email) {
 // mailjet client
 //
 
-async function sendMailjet(email: Email) {
+let sendMailjet = async (email: Email) => {
   const username = serverConfig.MJ_APIKEY_PUBLIC;
   const password = serverConfig.MJ_APIKEY_PRIVATE;
   if (!username || !password) {
@@ -44,7 +45,9 @@ async function sendMailjet(email: Email) {
   const resJson = await res.json();
   const parsed = Z_MAILJET_RESPONSE.parse(resJson);
   tinyassert(parsed.Messages.every((e) => e.Status === "success"));
-}
+};
+
+sendMailjet = wrapTraceAsyncSimple(sendMailjet);
 
 const Z_MAILJET_RESPONSE = z
   .object({

@@ -1,4 +1,4 @@
-import { range } from "@hiogawa/utils";
+import { escapeRegExp, mapRegExp, range } from "@hiogawa/utils";
 
 export function createGetProxy(
   propHandler: (prop: string | symbol) => unknown
@@ -80,4 +80,21 @@ export function splitFirst(s: string, sep: string): [string, string] {
     i = s.length;
   }
   return [s.slice(0, i), s.slice(i + sep.length)];
+}
+
+export function pathToRegExp(pattern: string) {
+  const keys: string[] = [];
+  let source = "";
+  mapRegExp(
+    pattern,
+    /:\w+/g,
+    (match) => {
+      keys.push(match[0].slice(1));
+      source += `(\\w+)`;
+    },
+    (other) => {
+      source += escapeRegExp(other);
+    }
+  );
+  return { regexp: new RegExp(`^${source}$`), keys };
 }
