@@ -16,7 +16,7 @@ import { NodeSDK } from "@opentelemetry/sdk-node";
 OTEL_SERVICE_NAME=dev OTEL_TRACES_EXPORTER=console pnpm dev
 
 # see logs on local jaeger
-docker-compose up jaeger
+docker-compose up jaeger  # open http://localhost:16686
 OTEL_SERVICE_NAME=dev OTEL_TRACES_EXPORTER=otlp OTEL_EXPORTER_OTLP_TRACES_PROTOCOL=http/json pnpm dev
 ```
 */

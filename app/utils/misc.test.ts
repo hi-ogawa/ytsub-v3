@@ -5,7 +5,7 @@ describe(pathToRegExp.name, () => {
   it("basic", () => {
     const re = pathToRegExp("/hello/:param/world");
     expect(re).toMatchInlineSnapshot(
-      '/\\^\\\\/hello\\\\/\\(\\\\w\\+\\)\\\\/world\\$/'
+      "/\\^\\\\/hello\\\\/\\(\\\\w\\+\\)\\\\/world\\$/"
     );
     expect("/hello/xxx/world".match(re)).toMatchInlineSnapshot(`
       [
