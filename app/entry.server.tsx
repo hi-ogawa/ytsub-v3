@@ -1,6 +1,7 @@
 import { RemixServer } from "@remix-run/react";
 import type { HandleDocumentRequestFunction } from "@remix-run/server-runtime";
 import { renderToString } from "react-dom/server";
+import { wrapTraceAsync } from "./utils/opentelemetry-utils";
 
 const handler: HandleDocumentRequestFunction = (
   request,
@@ -19,4 +20,6 @@ const handler: HandleDocumentRequestFunction = (
   });
 };
 
-export default handler;
+export default wrapTraceAsync(handler, () => ({
+  name: "HandleDocumentRequest",
+}));

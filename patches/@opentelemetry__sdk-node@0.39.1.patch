@@ -1,0 +1,19 @@
+diff --git a/build/src/TracerProviderWithEnvExporter.js b/build/src/TracerProviderWithEnvExporter.js
+index 13b7cc1a33e9f3f1667e0befceb45c0235d4dae6..d003b9a033102dc622a5484ebaccac39ea001d9f 100644
+--- a/build/src/TracerProviderWithEnvExporter.js
++++ b/build/src/TracerProviderWithEnvExporter.js
+@@ -21,10 +21,11 @@ const api_1 = require("@opentelemetry/api");
+ const core_1 = require("@opentelemetry/core");
+ const sdk_trace_base_1 = require("@opentelemetry/sdk-trace-base");
+ const sdk_trace_node_1 = require("@opentelemetry/sdk-trace-node");
+-const exporter_trace_otlp_proto_1 = require("@opentelemetry/exporter-trace-otlp-proto");
++// (patch) strip out unnecessary dependencies from server bundle
++// const exporter_trace_otlp_proto_1 = require("@opentelemetry/exporter-trace-otlp-proto");
+ const exporter_trace_otlp_http_1 = require("@opentelemetry/exporter-trace-otlp-http");
+-const exporter_trace_otlp_grpc_1 = require("@opentelemetry/exporter-trace-otlp-grpc");
+-const exporter_zipkin_1 = require("@opentelemetry/exporter-zipkin");
++// const exporter_trace_otlp_grpc_1 = require("@opentelemetry/exporter-trace-otlp-grpc");
++// const exporter_zipkin_1 = require("@opentelemetry/exporter-zipkin");
+ class TracerProviderWithEnvExporters extends sdk_trace_node_1.NodeTracerProvider {
+     constructor(config = {}) {
+         super(config);
