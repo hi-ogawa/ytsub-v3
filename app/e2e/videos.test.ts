@@ -285,9 +285,9 @@ test("captions-editor-auto-save", async ({ page }) => {
   await page.getByText("[EDIT] Alright 일단 system check").click();
 
   // export
+  await page.context().grantPermissions(["clipboard-read", "clipboard-write"]);
   await page.getByRole("button", { name: "Export" }).click();
   await page.getByText("Caption data is copied to clipboard!").click();
-  await page.context().grantPermissions(["clipboard-read"]);
   const clipboardText = await page.evaluate(() =>
     navigator.clipboard.readText()
   );
