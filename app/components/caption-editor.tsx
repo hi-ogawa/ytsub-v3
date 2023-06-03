@@ -157,12 +157,12 @@ export function CaptionEditor(props: { videoId: string }) {
   });
 
   //
-  // auto-save in localstorage
+  // auto load/save in localstorage
   //
   const draft = createDraftUtils(props.videoId);
   const draftSet = useDebounce(draft.set, 300);
 
-  // initial loading
+  // auto load on mount
   useEffectNoStrict(() => {
     tinyassert(entries.length === 0);
     const found = draft.get();
