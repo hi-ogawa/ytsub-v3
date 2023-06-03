@@ -162,7 +162,8 @@ export function CaptionEditor(props: { videoId: string }) {
   const draft = createDraftUtils(props.videoId);
   const draftSet = useDebounce(draft.set, 1000);
 
-  React.useEffect(() => {
+  // initial loading
+  useEffectNoStrict(() => {
     tinyassert(entries.length === 0);
     const found = draft.get();
     if (found) {
@@ -170,6 +171,7 @@ export function CaptionEditor(props: { videoId: string }) {
     }
   }, []);
 
+  // auto save on change
   useEffectNoStrict(() => {
     draftSet(entries);
   }, [entries]);
@@ -341,12 +343,14 @@ function createDraftUtils(key: string) {
       if (parsed.ok) {
         return parsed.value;
       }
+      console.error("createDraftUtils", parsed.value);
     }
     return;
   }
 
   function set(data: CaptionEditorEntry[]) {
-    window.localStorage.setItem(draftKey, JSON.stringify(data));
+    const item = JSON.stringify(data);
+    window.localStorage.setItem(draftKey, item);
   }
 
   return { get, set };
