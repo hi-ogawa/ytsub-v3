@@ -1,11 +1,18 @@
 import { Transition } from "@headlessui/react";
-import { toArraySetState, useRafLoop } from "@hiogawa/utils-react";
+import { tinyassert, wrapError } from "@hiogawa/utils";
+import {
+  toArraySetState,
+  useRafLoop,
+  useStableCallback,
+} from "@hiogawa/utils-react";
 import { useMutation } from "@tanstack/react-query";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
+import { z } from "zod";
 import { useDocumentEvent } from "../utils/hooks-client-utils";
 import { cls, zipMax } from "../utils/misc";
+import { useEffectNoStrict } from "../utils/misc-react";
 import type { CaptionEntry } from "../utils/types";
 import {
   YoutubePlayer,
@@ -148,6 +155,24 @@ export function CaptionEditor(props: { videoId: string }) {
       player.seekTo(player.getCurrentTime() + 5);
     }
   });
+
+  //
+  // auto-save in localstorage
+  //
+  const draft = createDraftUtils(props.videoId);
+  const draftSet = useDebounce(draft.set, 1000);
+
+  React.useEffect(() => {
+    tinyassert(entries.length === 0);
+    const found = draft.get();
+    if (found) {
+      setEntries(found);
+    }
+  }, []);
+
+  useEffectNoStrict(() => {
+    draftSet(entries);
+  }, [entries]);
 
   return (
     <div className="h-full flex flex-col items-center h-full">
@@ -304,6 +329,50 @@ export function CaptionEditor(props: { videoId: string }) {
   );
 }
 
+function createDraftUtils(key: string) {
+  const draftKey = `ytsub:useDraft:${key}`;
+
+  function get(): CaptionEditorEntry[] | undefined {
+    const item = window.localStorage.getItem(draftKey);
+    if (item) {
+      const parsed = wrapError(() =>
+        Z_CAPTION_EDITOR_ENTRY.array().parse(JSON.parse(item))
+      );
+      if (parsed.ok) {
+        return parsed.value;
+      }
+    }
+    return;
+  }
+
+  function set(data: CaptionEditorEntry[]) {
+    window.localStorage.setItem(draftKey, JSON.stringify(data));
+  }
+
+  return { get, set };
+}
+
+// TODO: utils
+function debounce<F extends (...args: any[]) => void>(f: F, ms: number): F {
+  let subscription: any;
+
+  function wrapper(this: unknown, ...args: unknown[]) {
+    if (typeof subscription !== "undefined") {
+      clearTimeout(subscription);
+    }
+    subscription = setTimeout(() => f.apply(this, args), ms);
+  }
+
+  return wrapper as any;
+}
+
+// TODO: utils-react
+function useDebounce<F extends (...args: any[]) => void>(f: F, ms: number) {
+  // TODO: pending?
+  f = useStableCallback(f);
+  return React.useCallback(debounce(f, ms), [ms]);
+}
+
 function createInitialEntries(
   text1: string,
   text2: string
@@ -377,13 +446,15 @@ function ImportModalForm(props: {
   );
 }
 
-interface CaptionEditorEntry {
-  begin: number;
-  end: number;
-  endLocked: boolean;
-  text1: string;
-  text2: string;
-}
+const Z_CAPTION_EDITOR_ENTRY = z.object({
+  begin: z.number(),
+  end: z.number(),
+  endLocked: z.boolean(),
+  text1: z.string(),
+  text2: z.string(),
+});
+
+type CaptionEditorEntry = z.infer<typeof Z_CAPTION_EDITOR_ENTRY>;
 
 function parseCaptionInput(input: string): string[] {
   return input
