@@ -220,7 +220,9 @@ export function CaptionEditor(props: { videoId: string }) {
                           );
                         }}
                       ></button>
-                      <span>{stringifyTimestamp(e.begin)}</span>
+                      <span className={cls(e.begin === 0 && "text-colorError")}>
+                        {stringifyTimestamp(e.begin)}
+                      </span>
                     </div>
                     <span>-</span>
                     <div className="flex items-center gap-1.5">
