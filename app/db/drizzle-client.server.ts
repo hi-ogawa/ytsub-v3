@@ -1,8 +1,7 @@
 import { difference, tinyassert } from "@hiogawa/utils";
-import { sql } from "drizzle-orm";
-import * as E from "drizzle-orm/expressions";
+import { sql, SQL, InferModel } from "drizzle-orm";
+import * as E from "drizzle-orm"; // TODO: import only https://github.com/drizzle-team/drizzle-orm/blob/1f8ff173a08b562cc64e41970c55f0dba0ac56f6/drizzle-orm/src/sql/expressions/index.ts
 import {
-  InferModel,
   MySqlDialect,
   boolean,
   customType,
@@ -14,8 +13,7 @@ import {
   text,
   timestamp,
 } from "drizzle-orm/mysql-core";
-import { MySql2Database, MySql2Session, drizzle } from "drizzle-orm/mysql2";
-import { SQL } from "drizzle-orm/sql";
+import { MySql2Database, drizzle } from "drizzle-orm/mysql2";
 import type { Connection } from "mysql2";
 import { createConnection } from "mysql2/promise";
 import { uninitialized } from "../utils/misc";
@@ -146,7 +144,7 @@ const decks = mysqlTable("decks", {
   easeBonus: float("easeBonus").notNull().default(DUMMY_DEFAULT),
   randomMode: boolean("randomMode").notNull().default(DUMMY_DEFAULT),
   // cache various things to reduce repeating heavy SELECT queries
-  cache: json<DeckCache>("cache").notNull(),
+  cache: json("cache").$type<DeckCache>().notNull(),
 });
 
 const practiceEntries = mysqlTable("practiceEntries", {
@@ -155,7 +153,7 @@ const practiceEntries = mysqlTable("practiceEntries", {
   bookmarkEntryId: int("bookmarkEntryId").notNull(),
   ...timestampColumns,
   //
-  queueType: text<PracticeQueueType>("queueType").notNull(),
+  queueType: text("queueType").$type<PracticeQueueType>().notNull(),
   easeFactor: float("easeFactor").notNull(),
   scheduledAt: datetimeUtc("scheduledAt").notNull(),
   practiceActionsCount: int("practiceActionsCount").notNull(),
@@ -168,8 +166,8 @@ const practiceActions = mysqlTable("practiceActions", {
   userId: int("userId").notNull(),
   ...timestampColumns,
   //
-  queueType: text<PracticeQueueType>("queueType").notNull(),
-  actionType: text<PracticeActionType>("actionType").notNull(),
+  queueType: text("queueType").$type<PracticeQueueType>().notNull(),
+  actionType: text("actionType").$type<PracticeActionType>().notNull(),
 });
 
 const knex_migrations = mysqlTable("knex_migrations", {
@@ -375,7 +373,6 @@ export async function finalizeDrizzleClient() {
 export function __dbExtra() {
   return {
     connection: (db as any).session.client as Connection,
-    session: (db as any).session as MySql2Session,
     dialect: (db as any).dialect as MySqlDialect,
   };
 }

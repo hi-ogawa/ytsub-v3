@@ -101,7 +101,7 @@ async function importDeck(userId: number, data: ExportDeckData) {
   });
 
   const [videoInsert] = await db.insert(T.videos).values(
-    ...videos.map((e) => ({
+    videos.map((e) => ({
       ...objectOmit(e, ["id"]),
       userId: user.id,
     }))
@@ -112,7 +112,7 @@ async function importDeck(userId: number, data: ExportDeckData) {
   );
 
   const [captionEntryInsert] = await db.insert(T.captionEntries).values(
-    ...captionEntries.map((e) => ({
+    captionEntries.map((e) => ({
       ...objectOmit(e, ["id"]),
       videoId: videoIdMap.get(e.videoId),
     }))
@@ -123,7 +123,7 @@ async function importDeck(userId: number, data: ExportDeckData) {
   );
 
   const [bookmarkEntryInsert] = await db.insert(T.bookmarkEntries).values(
-    ...bookmarkEntries.map((e) => ({
+    bookmarkEntries.map((e) => ({
       ...objectOmit(e, ["id"]),
       userId: user.id,
       videoId: videoIdMap.get(e.videoId),
@@ -136,7 +136,7 @@ async function importDeck(userId: number, data: ExportDeckData) {
   );
 
   const [practiceEntriesInsert] = await db.insert(T.practiceEntries).values(
-    ...practiceEntries.map((e) => ({
+    practiceEntries.map((e) => ({
       ...objectOmit(e, ["id"]),
       deckId: deckInsert.insertId,
       bookmarkEntryId: bookmarkEntryIdMap.get(e.bookmarkEntryId),
@@ -148,7 +148,7 @@ async function importDeck(userId: number, data: ExportDeckData) {
   );
 
   const [practiceActionsInsert] = await db.insert(T.practiceActions).values(
-    ...practiceActions.map((e) => ({
+    practiceActions.map((e) => ({
       ...objectOmit(e, ["id"]),
       userId: user.id,
       deckId: deckInsert.insertId,
