@@ -279,16 +279,17 @@ export async function toCountSql<Q extends { execute: () => Promise<unknown> }>(
 // a little hack to make DELETE query based on SELECT since drizzle doesn't support complicated DELETE query with JOIN.
 export function toDeleteSqlInner(sql: SQL, tableName: string): SQL {
   // replace
-  //   select ... from
+  //   select xxx from
   // with
-  //   delete from
+  //   delete yyy from
   const [, , c1, c2, c3] = sql.queryChunks;
+  console.log(sql.queryChunks);
   tinyassert(c1 instanceof StringChunk);
   tinyassert(c1.value[0] === "select ");
   tinyassert(c2 instanceof SQL);
   tinyassert(c3 instanceof StringChunk);
   tinyassert(c3.value[0] === " from ");
-  sql.queryChunks.splice(1, 2, " delete `", tableName, "` ");
+  sql.queryChunks.splice(0, 4, new StringChunk(" delete `" + tableName + "` "));
   return sql;
 }
 
