@@ -2,7 +2,7 @@ lockfileVersion: '6.0'
 
 patchedDependencies:
   '@opentelemetry/sdk-node@0.39.1':
-    hash: kcrnjahu2vdmldx7kv7maqwbcu
+    hash: opznjwpbsym5sugb4owpkabxrq
     path: patches/@opentelemetry__sdk-node@0.39.1.patch
   '@remix-run/dev@1.15.0':
     hash: 7w7em752ihak5gwkomtllfrbhe
@@ -47,7 +47,7 @@ dependencies:
     version: 1.4.1
   '@opentelemetry/sdk-node':
     specifier: ^0.39.1
-    version: 0.39.1(patch_hash=kcrnjahu2vdmldx7kv7maqwbcu)(@opentelemetry/api@1.4.1)
+    version: 0.39.1(patch_hash=opznjwpbsym5sugb4owpkabxrq)(@opentelemetry/api@1.4.1)
   '@opentelemetry/semantic-conventions':
     specifier: ^1.13.0
     version: 1.13.0
@@ -2599,7 +2599,7 @@ packages:
       lodash.merge: 4.6.2
     dev: false
 
-  /@opentelemetry/sdk-node@0.39.1(patch_hash=kcrnjahu2vdmldx7kv7maqwbcu)(@opentelemetry/api@1.4.1):
+  /@opentelemetry/sdk-node@0.39.1(patch_hash=opznjwpbsym5sugb4owpkabxrq)(@opentelemetry/api@1.4.1):
     resolution: {integrity: sha512-qODReBGNSdfRS5gvCFj1SdiIi/3ZFTZb0H1KvWE/OrTkklyL5RhIs7vDwvEGHmha+YpUu0Y2+R2+itSBSu/jCA==}
     engines: {node: '>=14'}
     peerDependencies:
