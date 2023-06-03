@@ -173,7 +173,9 @@ export function CaptionEditor(props: { videoId: string }) {
 
   // auto save on change
   useEffectNoStrict(() => {
-    draftSet(entries);
+    if (entries.length > 0) {
+      draftSet(entries);
+    }
   }, [entries]);
 
   return (
