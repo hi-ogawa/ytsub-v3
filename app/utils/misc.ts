@@ -96,5 +96,5 @@ export function pathToRegExp(pattern: string): RegExp {
       source += escapeRegExp(other);
     }
   );
-  return new RegExp(source);
+  return new RegExp(`^${source}$`);
 }

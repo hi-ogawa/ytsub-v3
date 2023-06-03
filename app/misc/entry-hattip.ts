@@ -1,5 +1,5 @@
 import { type RequestHandler, compose } from "@hattip/compose";
-import { once, zip } from "@hiogawa/utils";
+import { once } from "@hiogawa/utils";
 import { SpanKind, SpanStatusCode, trace } from "@opentelemetry/api";
 import { SemanticAttributes } from "@opentelemetry/semantic-conventions";
 import * as build from "@remix-run/dev/server-build";
@@ -140,10 +140,10 @@ function createTraceRequestHandler(): RequestHandler {
 function createRemixRouteResolver() {
   const paths = Object.values(build.routes)
     .map((r) => r.path)
-    .filter((r): r is string => typeof r === "string");
+    .filter((r): r is string => typeof r === "string")
+    .map((r) => "/" + r);
 
-  const exps = paths.map((p) => pathToRegExp("/" + p));
-  const mapping = new Map(zip(paths, exps));
+  const mapping = new Map(paths.map((p) => [p, pathToRegExp(p)] as const));
 
   return (pathname: string): string | undefined => {
     for (const [k, v] of mapping) {

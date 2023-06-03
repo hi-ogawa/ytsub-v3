@@ -8,7 +8,18 @@ import {
 } from "@opentelemetry/api";
 import { NodeSDK } from "@opentelemetry/sdk-node";
 
-// based on https://github.com/hi-ogawa/youtube-dl-web-v2/blob/979f62c0384a9fbf382103fa1f447883669cbf10/packages/app/src/utils/otel-utils.ts#L92-L100
+// based on https://github.com/hi-ogawa/youtube-dl-web-v2/blob/979f62c0384a9fbf382103fa1f447883669cbf10/packages/app/src/utils/otel-utils.ts
+
+/*
+```sh
+# see logs on console
+OTEL_SERVICE_NAME=dev OTEL_TRACES_EXPORTER=console pnpm dev
+
+# see logs on local jaeger
+docker-compose up jaeger
+OTEL_SERVICE_NAME=dev OTEL_TRACES_EXPORTER=otlp OTEL_EXPORTER_OTLP_TRACES_PROTOCOL=http/json pnpm dev
+```
+*/
 
 let sdk: NodeSDK | undefined;
 
