@@ -62,7 +62,7 @@
     "@trpc/client": "^10.29.0",
     "@trpc/server": "^10.29.0",
     "bcryptjs": "^2.4.3",
-    "drizzle-orm": "^0.22.0",
+    "drizzle-orm": "^0.26.5",
     "echarts": "^5.4.2",
     "fast-xml-parser": "^4.2.2",
     "jotai": "^2.1.0",
