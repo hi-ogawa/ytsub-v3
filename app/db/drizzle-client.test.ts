@@ -9,6 +9,7 @@ import {
   dbShowTables,
   selectMany,
   selectOne,
+  toCountSql,
   toDeleteSql,
   toDeleteSqlInner,
 } from "./drizzle-client.server";
@@ -60,6 +61,12 @@ describe(selectOne.name, () => {
       E.eq(T.bookmarkEntries.userId, 0)
     );
     row satisfies TT["bookmarkEntries"] | undefined;
+  });
+});
+
+describe(toCountSql.name, () => {
+  it("basic", async () => {
+    await toCountSql(db.select().from(T.videos));
   });
 });
 

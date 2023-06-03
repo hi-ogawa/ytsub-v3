@@ -265,12 +265,7 @@ export async function toCountSql<Q extends { execute: () => Promise<unknown> }>(
   query: Q
 ): Promise<number> {
   const q = query as any;
-  q.config.fieldsList = [
-    {
-      path: ["count"],
-      field: sql`COUNT(0)`,
-    },
-  ];
+  q.config.fields = { count: sql<number>`COUNT(0)` };
   const [{ count }] = await q.execute();
   tinyassert(typeof count === "number");
   return count;
