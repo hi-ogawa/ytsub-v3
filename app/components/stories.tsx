@@ -37,7 +37,7 @@ export function TestMenu() {
   );
 }
 
-export function StoryPagination() {
+export function TestPagination() {
   const page = 1;
   const totalPage = 3;
   const total = 25;
