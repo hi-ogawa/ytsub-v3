@@ -283,6 +283,17 @@ test("captions-editor-auto-save", async ({ page }) => {
   // reload and verify draft
   await page.reload();
   await page.getByText("[EDIT] Alright 일단 system check").click();
+
+  // export
+  await page.getByRole("button", { name: "Export" }).click();
+  await page.getByText("Caption data is copied to clipboard!").click();
+  await page.context().grantPermissions(["clipboard-read"]);
+  const clipboardText = await page.evaluate(() =>
+    navigator.clipboard.readText()
+  );
+  expect(clipboardText).toContain(
+    `"text1": "[EDIT] Alright 일단 system check"`
+  );
 });
 
 test("invalid videoId input", async ({ page }) => {
