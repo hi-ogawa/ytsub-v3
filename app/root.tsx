@@ -19,7 +19,11 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { Drawer } from "./components/drawer";
 import { PopoverSimple } from "./components/popover";
-import { ThemeSelect, injectThemeScript } from "./components/theme-select";
+import {
+  ThemeLinkRelIcon,
+  ThemeSelect,
+  injectThemeScript,
+} from "./components/theme-select";
 import { TopProgressBarRemix } from "./components/top-progress-bar";
 import type { UserTable } from "./db/models";
 import { $R, R } from "./misc/routes";
@@ -40,7 +44,6 @@ export const links: LinksFunction = () => {
   // prettier-ignore
   return [
     { rel: "stylesheet", href: require("../build/css/index.css") },
-    { rel: "icon", href: require("./assets/icon-32.png"), sizes: "32x32" },
     { rel: "manifest", href: "/manifest.json" },
   ];
 };
@@ -78,6 +81,7 @@ export default function DefaultComponent() {
         </title>
         <Meta />
         <Links />
+        <ThemeLinkRelIcon />
         {/* only server needs to do script injection but let client do as well */}
         <script dangerouslySetInnerHTML={{ __html: injectThemeScript() }} />
         <script
