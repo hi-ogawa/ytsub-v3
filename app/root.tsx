@@ -36,6 +36,7 @@ import {
 import { RootLoaderData, useRootLoaderData } from "./utils/loader-utils";
 import { makeLoader } from "./utils/loader-utils.server";
 import { cls } from "./utils/misc";
+import { navigateRefresh } from "./utils/misc-client";
 import type { PageHandle } from "./utils/page-handle";
 import { QueryClientWrapper } from "./utils/react-query-utils";
 import { ToastWrapper } from "./utils/toast-utils";
@@ -315,13 +316,14 @@ function SignoutComponent() {
   const signoutMutation = useMutation({
     ...trpc.users_signout.mutationOptions(),
     onSuccess: () => {
-      window.location.href =
+      const href =
         $R["/"]() +
         "?" +
         encodeFlashMessage({
           variant: "success",
           content: "Successfully signed out",
         });
+      navigateRefresh(href);
     },
   });
 

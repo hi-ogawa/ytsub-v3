@@ -1,6 +1,7 @@
 import { useSearchParams } from "@remix-run/react";
 import { toast } from "react-hot-toast";
 import { z } from "zod";
+import { STATE_NO_PROGRESS_BAR } from "../components/top-progress-bar";
 import { splitFirst } from "./misc";
 import { useEffectNoStrict } from "./misc-react";
 import { toastInfo } from "./toast-utils";
@@ -58,7 +59,7 @@ export function useFlashMessageHandler() {
       // remix might refetch redundantly (we can tweak shouldRevalidate if we need want to avoid that)
       const newParams = new URLSearchParams(params);
       newParams.delete(MSG_KEY);
-      setParams(newParams, { replace: true });
+      setParams(newParams, { replace: true, state: STATE_NO_PROGRESS_BAR });
     }
   }, [params]);
 }
