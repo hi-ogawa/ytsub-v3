@@ -5,6 +5,7 @@ import { $R } from "../../misc/routes";
 import { trpc } from "../../trpc/client";
 import { encodeFlashMessage } from "../../utils/flash-message";
 import { cls } from "../../utils/misc";
+import { navigateRefresh } from "../../utils/misc-client";
 import type { PageHandle } from "../../utils/page-handle";
 
 export const handle: PageHandle = {
@@ -22,13 +23,14 @@ export default function DefaultComponent() {
   const signinMutation = useMutation({
     ...trpc.users_signin.mutationOptions(),
     onSuccess: () => {
-      window.location.href =
+      const href =
         $R["/"]() +
         "?" +
         encodeFlashMessage({
           variant: "success",
           content: "Successfully signed in",
         });
+      navigateRefresh(href);
     },
   });
 
