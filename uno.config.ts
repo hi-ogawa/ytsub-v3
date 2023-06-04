@@ -22,7 +22,7 @@ export default defineConfig({
       /^antd-spin-overlay-(\d+)$/,
       ([, size]) => `
         absolute inset-0 grid place-content-center
-        after:(content-none antd-spin h-${size})
+        after:(content-empty antd-spin h-${size})
       `,
     ],
   ],
