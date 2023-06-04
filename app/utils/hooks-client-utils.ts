@@ -46,23 +46,16 @@ export function useIntersectionObserver(
   });
 }
 
-export function useMatchMedia(options: {
-  query: string;
-  defaultValue: boolean;
-}): boolean {
-  const result = React.useMemo(
-    () =>
-      typeof window === "undefined"
-        ? ({ matches: options.defaultValue } as MediaQueryList)
-        : window.matchMedia(options.query),
-    [options.query]
-  );
-  const rerender = React.useReducer((prev) => !prev, false)[1];
+export function useMatchMedia(query: string): boolean | undefined {
+  const [value, setValue] = React.useState<boolean>();
 
   React.useEffect(() => {
-    result.addEventListener("change", rerender);
-    return () => result.removeEventListener("change", rerender);
-  }, [result]);
+    const media = window.matchMedia(query);
+    const handler = () => setValue(media.matches);
+    handler();
+    media.addEventListener("change", handler);
+    return () => media.removeEventListener("change", handler);
+  }, [query]);
 
-  return result.matches;
+  return value;
 }
