@@ -8,6 +8,7 @@ import { trpcClient } from "../../trpc/client-internal.client";
 import { encodeFlashMessage } from "../../utils/flash-message";
 import { makeLoader } from "../../utils/loader-utils.server";
 import { cls } from "../../utils/misc";
+import { navigateRefresh } from "../../utils/misc-client";
 import type { PageHandle } from "../../utils/page-handle";
 import { useTurnstile } from "../../utils/turnstile-utils";
 
@@ -57,13 +58,14 @@ export default function DefaultComponent() {
       });
     },
     onSuccess: () => {
-      window.location.href =
+      const href =
         $R["/"]() +
         "?" +
         encodeFlashMessage({
           variant: "success",
           content: "Successfully registered",
         });
+      navigateRefresh(href);
     },
   });
 

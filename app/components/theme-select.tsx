@@ -1,5 +1,6 @@
 import { capitalize } from "@hiogawa/utils";
 import React from "react";
+import { useMatchMedia } from "../utils/hooks-client-utils";
 import { SelectWrapper } from "./misc";
 
 // by @hiogawa/utils-experimental/dist/theme-script.global.js
@@ -34,4 +35,17 @@ export function injectThemeScript() {
 globalThis.__themeStorageKey = "ytsub:theme";
 ${require("@hiogawa/utils-experimental/dist/theme-script.global.js?loader=text")}
 `;
+}
+
+// update favicon based on system color scheme regardless of app's theme in order to have a proper contrast in the browser tab list.
+export function ThemeLinkRelIcon() {
+  const matches = useMatchMedia("(prefers-color-scheme: dark)");
+
+  return (
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href={matches ? "/icon-dark.svg" : "/icon.svg"}
+    />
+  );
 }

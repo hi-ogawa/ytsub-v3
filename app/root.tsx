@@ -19,7 +19,11 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { Drawer } from "./components/drawer";
 import { PopoverSimple } from "./components/popover";
-import { ThemeSelect, injectThemeScript } from "./components/theme-select";
+import {
+  ThemeLinkRelIcon,
+  ThemeSelect,
+  injectThemeScript,
+} from "./components/theme-select";
 import { TopProgressBarRemix } from "./components/top-progress-bar";
 import type { UserTable } from "./db/models";
 import { $R, R } from "./misc/routes";
@@ -32,6 +36,7 @@ import {
 import { RootLoaderData, useRootLoaderData } from "./utils/loader-utils";
 import { makeLoader } from "./utils/loader-utils.server";
 import { cls } from "./utils/misc";
+import { navigateRefresh } from "./utils/misc-client";
 import type { PageHandle } from "./utils/page-handle";
 import { QueryClientWrapper } from "./utils/react-query-utils";
 import { ToastWrapper } from "./utils/toast-utils";
@@ -40,7 +45,6 @@ export const links: LinksFunction = () => {
   // prettier-ignore
   return [
     { rel: "stylesheet", href: require("../build/css/index.css") },
-    { rel: "icon", href: require("./assets/icon-32.png"), sizes: "32x32" },
     { rel: "manifest", href: "/manifest.json" },
   ];
 };
@@ -78,6 +82,7 @@ export default function DefaultComponent() {
         </title>
         <Meta />
         <Links />
+        <ThemeLinkRelIcon />
         {/* only server needs to do script injection but let client do as well */}
         <script dangerouslySetInnerHTML={{ __html: injectThemeScript() }} />
         <script
@@ -311,13 +316,14 @@ function SignoutComponent() {
   const signoutMutation = useMutation({
     ...trpc.users_signout.mutationOptions(),
     onSuccess: () => {
-      window.location.href =
+      const href =
         $R["/"]() +
         "?" +
         encodeFlashMessage({
           variant: "success",
           content: "Successfully signed out",
         });
+      navigateRefresh(href);
     },
   });
 

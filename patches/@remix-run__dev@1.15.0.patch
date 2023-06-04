@@ -38,7 +38,7 @@ index 4127eef2a81df8ea28f6c71f3f98d614dd31ef46..76e6a8d0df63498a8a690af476d66072
    let future = {
      unstable_cssModules: ((_appConfig$future5 = appConfig.future) === null || _appConfig$future5 === void 0 ? void 0 : _appConfig$future5.unstable_cssModules) === true,
 diff --git a/dist/devServer/serve.js b/dist/devServer/serve.js
-index f51422abcb9ccf72399c97d5b391871e54daf0c0..21a346e698dfe9e379f35133fc2d2091f2d0500a 100644
+index f51422abcb9ccf72399c97d5b391871e54daf0c0..c4fe59497faa7a1aa847cea57ca9c69a55f07386 100644
 --- a/dist/devServer/serve.js
 +++ b/dist/devServer/serve.js
 @@ -37,14 +37,16 @@ function tryImport(packageName) {
@@ -66,7 +66,7 @@ index f51422abcb9ccf72399c97d5b391871e54daf0c0..21a346e698dfe9e379f35133fc2d2091
    // eslint-disable-next-line @typescript-eslint/consistent-type-imports
    let express = tryImport("express");
    await env.loadEnv(config.rootDirectory);
-@@ -53,11 +55,19 @@ async function serve(config, mode, portPreference) {
+@@ -53,11 +55,20 @@ async function serve(config, mode, portPreference) {
    });
    let app = express();
    app.disable("x-powered-by");
@@ -77,6 +77,7 @@ index f51422abcb9ccf72399c97d5b391871e54daf0c0..21a346e698dfe9e379f35133fc2d2091
 +      maxAge: "1y",
 +    })
 +  );
++  app.use(express.static("public"));
    app.use((_, __, next) => {
      purgeAppRequireCache(config.serverBuildPath);
      next();

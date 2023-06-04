@@ -10,7 +10,7 @@ set -eu -o pipefail
 #   project.json
 #   output/
 #     config.json
-#     static/                = (remix-outdir)/public
+#     static/                = (remix-outdir)/public + (project)/public
 #     functions/
 #       index.func/
 #         .vc-config.json
@@ -34,6 +34,7 @@ cp misc/vercel/config.json .vercel/output/config.json
 
 # static
 cp -r ./build/remix/production/public .vercel/output/static
+cp ./public/* .vercel/output/static
 
 # serverless
 cp build/remix/production/server/index.js .vercel/output/functions/index.func
