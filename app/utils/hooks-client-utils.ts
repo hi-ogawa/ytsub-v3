@@ -45,3 +45,24 @@ export function useIntersectionObserver(
     };
   });
 }
+
+export function useMatchMedia(options: {
+  query: string;
+  defaultValue: boolean;
+}): boolean {
+  const result = React.useMemo(
+    () =>
+      typeof window === "undefined"
+        ? ({ matches: options.defaultValue } as MediaQueryList)
+        : window.matchMedia(options.query),
+    [options.query]
+  );
+  const rerender = React.useReducer((prev) => !prev, false)[1];
+
+  React.useEffect(() => {
+    result.addEventListener("change", rerender);
+    return () => result.removeEventListener("change", rerender);
+  }, [result]);
+
+  return result.matches;
+}
