@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">16.17% </span>
+                <span class="strong">18.03% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>11/68</span>
+                <span class='fraction'>11/61</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">16.17% </span>
+                <span class="strong">18.03% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>11/68</span>
+                <span class='fraction'>11/61</span>
             </div>
         
             
@@ -124,14 +124,7 @@
 <a name='L59'></a><a href='#L59'>59</a>
 <a name='L60'></a><a href='#L60'>60</a>
 <a name='L61'></a><a href='#L61'>61</a>
-<a name='L62'></a><a href='#L62'>62</a>
-<a name='L63'></a><a href='#L63'>63</a>
-<a name='L64'></a><a href='#L64'>64</a>
-<a name='L65'></a><a href='#L65'>65</a>
-<a name='L66'></a><a href='#L66'>66</a>
-<a name='L67'></a><a href='#L67'>67</a>
-<a name='L68'></a><a href='#L68'>68</a>
-<a name='L69'></a><a href='#L69'>69</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L62'></a><a href='#L62'>62</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -180,13 +173,6 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -247,25 +233,18 @@ export <span class="fstat-no" title="function not covered" >function useIntersec
 <span class="cstat-no" title="statement not covered" >  });</span>
 <span class="cstat-no" title="statement not covered" >}</span>
 &nbsp;
-export <span class="fstat-no" title="function not covered" >function useMatchMedia(options: {</span>
-<span class="cstat-no" title="statement not covered" >  query: string;</span>
-<span class="cstat-no" title="statement not covered" >  defaultValue: boolean;</span>
-<span class="cstat-no" title="statement not covered" >}): boolean {</span>
-<span class="cstat-no" title="statement not covered" >  const result = React.useMemo(</span>
-<span class="cstat-no" title="statement not covered" >    () =&gt;</span>
-<span class="cstat-no" title="statement not covered" >      typeof window === "undefined"</span>
-<span class="cstat-no" title="statement not covered" >        ? ({ matches: options.defaultValue } as MediaQueryList)</span>
-<span class="cstat-no" title="statement not covered" >        : window.matchMedia(options.query),</span>
-<span class="cstat-no" title="statement not covered" >    [options.query]</span>
-<span class="cstat-no" title="statement not covered" >  );</span>
-<span class="cstat-no" title="statement not covered" >  const rerender = React.useReducer((prev) =&gt; !prev, false)[1];</span>
+export <span class="fstat-no" title="function not covered" >function useMatchMedia(query: string): boolean | undefined {</span>
+<span class="cstat-no" title="statement not covered" >  const [value, setValue] = React.useState&lt;boolean&gt;();</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  React.useEffect(() =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >    result.addEventListener("change", rerender);</span>
-<span class="cstat-no" title="statement not covered" >    return () =&gt; result.removeEventListener("change", rerender);</span>
-<span class="cstat-no" title="statement not covered" >  }, [result]);</span>
+<span class="cstat-no" title="statement not covered" >    const media = window.matchMedia(query);</span>
+<span class="cstat-no" title="statement not covered" >    const handler = () =&gt; setValue(media.matches);</span>
+<span class="cstat-no" title="statement not covered" >    handler();</span>
+<span class="cstat-no" title="statement not covered" >    media.addEventListener("change", handler);</span>
+<span class="cstat-no" title="statement not covered" >    return () =&gt; media.removeEventListener("change", handler);</span>
+<span class="cstat-no" title="statement not covered" >  }, [query]);</span>
 <span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >  return result.matches;</span>
+<span class="cstat-no" title="statement not covered" >  return value;</span>
 <span class="cstat-no" title="statement not covered" >}</span>
 &nbsp;</pre></td></tr></table></pre>
 
@@ -274,7 +253,7 @@ export <span class="fstat-no" title="function not covered" >function useMatchMed
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-06-04T01:32:12.713Z
+                at 2023-06-04T05:11:27.652Z
             </div>
         <script src="../prettify.js"></script>
         <script>
