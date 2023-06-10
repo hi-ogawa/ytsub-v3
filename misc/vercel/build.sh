@@ -34,6 +34,7 @@ NODE_ENV=production BUILD_VERCEL=1 npx remix build
 echo "* building argon2 native module..."
 argon2_version=$(jq -r .version node_modules/argon2/package.json)
 docker-compose run --rm node bash -c "npm i -g 'argon2@$argon2_version' &>/dev/null && cat /usr/local/lib/node_modules/argon2/lib/binding/napi-v3/argon2.node" > .vercel/output/functions/index.func/argon2.node
+file .vercel/output/functions/index.func/argon2.node
 
 # config.json
 cp misc/vercel/config.json .vercel/output/config.json
@@ -47,4 +48,5 @@ cp build/remix/production/server/index.js .vercel/output/functions/index.func
 cp misc/vercel/.vc-config.json .vercel/output/functions/index.func/.vc-config.json
 
 # output server size
+echo "* serverless files"
 ls -lh .vercel/output/functions/index.func
