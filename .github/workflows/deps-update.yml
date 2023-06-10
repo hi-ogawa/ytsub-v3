@@ -19,7 +19,7 @@ jobs:
       - run: pnpm i
 
       # just output major change for now
-      - run: npx npm-check-updates
+      - run: npx npm-check-updates --format group
 
       # TODO: support "ignoreDeps" like renovate?
       # TODO: "--latest" to bump major?
