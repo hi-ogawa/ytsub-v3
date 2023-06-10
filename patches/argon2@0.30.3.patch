@@ -1,17 +1,23 @@
 diff --git a/argon2.js b/argon2.js
-index 65ac4b1f61537cb758d933b7795276faaaee3a55..08baa199008bdb0b9abe6d3bd76d8e77a10039b7 100644
+index 65ac4b1f61537cb758d933b7795276faaaee3a55..ea62eec8ff15512a0784bf1dd3bc6d0067bf3ac9 100644
 --- a/argon2.js
 +++ b/argon2.js
-@@ -3,9 +3,15 @@ const assert = require("assert");
+@@ -3,9 +3,21 @@ const assert = require("assert");
  const { randomBytes, timingSafeEqual } = require("crypto");
  const path = require("path");
  const { promisify } = require("util");
 -const binary = require("@mapbox/node-pre-gyp");
  
 -const bindingPath = binary.find(path.resolve(__dirname, "./package.json"));
++// (patch)
++// load prebuilt "argon2.node" in working directory
++// to skip "@mapbox/node-pre-gyp" dependency since it's not bundler-friendly
++
 +let bindingPath;
-+if (process.env["ARGON2_BINDING_PATH"]) {
-+  bindingPath = path.resolve(process.env["ARGON2_BINDING_PATH"]);
++const fs = require("fs");
++if (fs.existsSync("argon2.node")) {
++  bindingPath = path.resolve("argon2.node");
++
 +} else {
 +  // "slice" to hide it from bundler
 +  const binary = require("@mapbox/node-pre-gyp".slice());
