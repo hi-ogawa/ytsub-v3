@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">49.18% </span>
+                <span class="strong">58.06% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>30/61</span>
+                <span class='fraction'>36/62</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>3/3</span>
+                <span class='fraction'>2/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">60% </span>
+                <span class="strong">50% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>3/5</span>
+                <span class='fraction'>2/4</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">49.18% </span>
+                <span class="strong">58.06% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>30/61</span>
+                <span class='fraction'>36/62</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line medium'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -124,7 +124,8 @@
 <a name='L59'></a><a href='#L59'>59</a>
 <a name='L60'></a><a href='#L60'>60</a>
 <a name='L61'></a><a href='#L61'>61</a>
-<a name='L62'></a><a href='#L62'>62</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L62'></a><a href='#L62'>62</a>
+<a name='L63'></a><a href='#L63'>63</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -173,18 +174,19 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">45x</span>
-<span class="cline-any cline-yes">45x</span>
-<span class="cline-any cline-yes">45x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-yes">45x</span>
-<span class="cline-any cline-yes">45x</span>
-<span class="cline-any cline-yes">45x</span>
-<span class="cline-any cline-yes">45x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { useRefCallbackEffect, useStableCallback } from "@hiogawa/utils-react";
 import React from "react";
 &nbsp;
@@ -233,15 +235,16 @@ export <span class="fstat-no" title="function not covered" >function useIntersec
 <span class="cstat-no" title="statement not covered" >  });</span>
 <span class="cstat-no" title="statement not covered" >}</span>
 &nbsp;
+// ts-prune-ignore-next
 export function useMatchMedia(query: string): boolean | undefined {
   const [value, setValue] = React.useState&lt;boolean&gt;();
 &nbsp;
   React.useEffect(() =&gt; {
-<span class="cstat-no" title="statement not covered" >    const media = window.matchMedia(query);</span>
-<span class="cstat-no" title="statement not covered" >    const handler = () =&gt; setValue(media.matches);</span>
-<span class="cstat-no" title="statement not covered" >    handler();</span>
-<span class="cstat-no" title="statement not covered" >    media.addEventListener("change", handler);</span>
-<span class="cstat-no" title="statement not covered" >    return () =&gt; media.removeEventListener("change", handler);</span>
+    const media = window.matchMedia(query);
+    const handler = () =&gt; setValue(media.matches);
+    handler();
+    media.addEventListener("change", handler);
+    return () =&gt; media.removeEventListener("change", handler);
   }, [query]);
 &nbsp;
   return value;
@@ -253,7 +256,7 @@ export function useMatchMedia(query: string): boolean | undefined {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-06-10T11:38:15.147Z
+                at 2023-06-10T11:56:08.477Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>
