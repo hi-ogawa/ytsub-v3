@@ -15,6 +15,7 @@ set -eu -o pipefail
 #       index.func/
 #         .vc-config.json
 #         index.js           = (remix-outdir)/server/index.js
+#         argon2.node
 #
 
 # cleanup
@@ -28,6 +29,11 @@ pnpm build:css
 
 # remix build with custom server entry
 NODE_ENV=production BUILD_VERCEL=1 npx remix build
+
+# build argon2 native module
+echo "* building argon2 native module..."
+argon2_version=$(jq -r .version node_modules/argon2/package.json)
+docker-compose run --rm node bash -c "npm i -g 'argon2@$argon2_version' &>/dev/null && cat /usr/local/lib/node_modules/argon2/lib/binding/napi-v3/argon2.node" > .vercel/output/functions/index.func/argon2.node
 
 # config.json
 cp misc/vercel/config.json .vercel/output/config.json
