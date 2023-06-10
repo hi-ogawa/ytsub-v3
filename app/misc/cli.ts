@@ -19,13 +19,9 @@ import {
   filterNewVideo,
   insertVideoAndCaptionEntries,
 } from "../db/helper";
-import {
-  createUserCookie,
-  findByUsername,
-  register,
-  toPasswordHash,
-} from "../utils/auth";
+import { createUserCookie, findByUsername, register } from "../utils/auth";
 import { exec, streamToString } from "../utils/node.server";
+import { toPasswordHash } from "../utils/password-utils";
 import {
   queryNextPracticeEntryRandomModeBatch,
   resetDeckCache,
@@ -130,6 +126,17 @@ cli
       await printSession(username);
     }
   );
+
+cli
+  .command("resetPassword <username> <password>")
+  .action(async (username: string, password: string) => {
+    const user = await findByUsername(username);
+    tinyassert(user);
+    await db
+      .update(T.usersCredentials)
+      .set({ passwordHash: await toPasswordHash(password) })
+      .where(E.eq(T.users.id, user.id));
+  });
 
 cli.command("print-session <username>").action(async (username: string) => {
   await printSession(username);
@@ -654,6 +661,10 @@ async function main() {
   try {
     await initializeServer();
     cli.parse(undefined, { run: false });
+    if (!cli.matchedCommandName) {
+      cli.outputHelp();
+      process.exit(1);
+    }
     await cli.runMatchedCommand();
   } catch (e) {
     consola.error(e);
