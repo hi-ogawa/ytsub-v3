@@ -32,7 +32,7 @@ NODE_ENV=production BUILD_VERCEL=1 npx remix build
 
 # build argon2 native module
 echo "* Building argon2 native module"
-bash misc/vercel/build-argon2.sh
+bash misc/vercel/build-argon2.sh .vercel/output/functions/index.func/argon2.node
 
 # config.json
 cp misc/vercel/config.json .vercel/output/config.json
