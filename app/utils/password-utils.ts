@@ -8,8 +8,7 @@ import * as argon2 from "argon2";
 
 export async function toPasswordHash(password: string): Promise<string> {
   // use default parameters https://github.com/ranisalt/node-argon2/blob/e16fde8f1d2fff63803558e72ba043b85564eec9/argon2.js#L15-L23
-  // argon2id (m = 64MB, t = 3, p = 4)
-  // TODO: isn't it too heavy for aws lambda to do 4 threads with 64MB per thread?
+  // argon2id, m = 64MB, t = 3, p = 4
   return argon2.hash(password);
 }
 
