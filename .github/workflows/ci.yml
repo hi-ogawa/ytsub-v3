@@ -58,7 +58,7 @@ jobs:
         id: cache-playwright
         with:
           path: ~/.cache/ms-playwright
-          key: cache-playwright
+          key: playwright-${{ hashFiles('./node_modules/@playwright/test/package.json') }}
       - if: steps.cache-playwright.outputs.cache-hit != 'true'
         run: npx playwright install --with-deps
       - run: make docker/up db/reset/test db/seed-download

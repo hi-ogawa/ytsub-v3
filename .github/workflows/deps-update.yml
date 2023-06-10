@@ -11,8 +11,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: pnpm/action-setup@v2
         with:
-          # workaround https://github.com/pnpm/pnpm/issues/6609
-          version: 8.5
+          version: 8
       - uses: actions/setup-node@v3
         with:
           node-version: 18
@@ -20,7 +19,7 @@ jobs:
       - run: pnpm i
 
       # just output major change for now
-      - run: npx npm-check-updates
+      - run: npx npm-check-updates --format group
 
       # TODO: support "ignoreDeps" like renovate?
       # TODO: "--latest" to bump major?
