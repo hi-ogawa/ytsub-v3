@@ -2,9 +2,7 @@ import { FloatingTree } from "@floating-ui/react";
 import { Compose } from "@hiogawa/utils-react";
 import {
   Link,
-  Links,
   LiveReload,
-  Meta,
   NavLink,
   Outlet,
   Scripts,
@@ -12,18 +10,13 @@ import {
   useMatches,
   useNavigate,
 } from "@remix-run/react";
-import type { LinksFunction } from "@remix-run/server-runtime";
 import { useMutation } from "@tanstack/react-query";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { Drawer } from "./components/drawer";
 import { PopoverSimple } from "./components/popover";
-import {
-  ThemeLinkRelIcon,
-  ThemeSelect,
-  injectThemeScript,
-} from "./components/theme-select";
+import { ThemeSelect, injectThemeScript } from "./components/theme-select";
 import { TopProgressBarRemix } from "./components/top-progress-bar";
 import type { UserTable } from "./db/models";
 import { $R, R } from "./misc/routes";
@@ -40,14 +33,6 @@ import { navigateRefresh } from "./utils/misc-client";
 import type { PageHandle } from "./utils/page-handle";
 import { QueryClientWrapper } from "./utils/react-query-utils";
 import { ToastWrapper } from "./utils/toast-utils";
-
-export const links: LinksFunction = () => {
-  // prettier-ignore
-  return [
-    { rel: "stylesheet", href: require("../build/css/index.css") },
-    { rel: "manifest", href: "/manifest.json" },
-  ];
-};
 
 //
 // loader
@@ -80,9 +65,13 @@ export default function DefaultComponent() {
         <title>
           {publicConfig.VERCEL_ENV === "preview" ? "[PREVIEW] Ytsub" : "Ytsub"}
         </title>
-        <Meta />
-        <Links />
-        <ThemeLinkRelIcon />
+        <link rel="manifest" href="/manifest.json" />
+        <link rel="stylesheet" href={require("../build/css/index.css")} />
+        <link
+          rel="icon"
+          type="image/svg+xml"
+          href={require("../public/icon.svg")}
+        />
         {/* only server needs to do script injection but let client do as well */}
         <script dangerouslySetInnerHTML={{ __html: injectThemeScript() }} />
         <script
