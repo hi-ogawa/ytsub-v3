@@ -70,7 +70,7 @@ export default function DefaultComponent() {
         <link
           rel="icon"
           type="image/svg+xml"
-          href={require("../public/icon.svg")}
+          href={`data:image/svg+xml;base64,${require("../public/icon.svg?loader=base64")}`}
         />
         {/* only server needs to do script injection but let client do as well */}
         <script dangerouslySetInnerHTML={{ __html: injectThemeScript() }} />
