@@ -1,7 +1,7 @@
 import { sortBy } from "@hiogawa/utils";
 import type { LoaderFunction } from "@remix-run/server-runtime";
-import { verifyPassword } from "../../utils/auth";
 import { prettierJson } from "../../utils/loader-utils";
+import { verifyPassword } from "../../utils/password-utils";
 
 // pnpm console
 // > await require("./app/utils/auth.ts").toPasswordHash("Basic " + Buffer.from("<user>:<pass>").toString("base64"))

@@ -5,17 +5,16 @@ import { z } from "zod";
 import { E, T, db, selectOne } from "../../db/drizzle-client.server";
 import { $R } from "../../misc/routes";
 import {
-  PASSWORD_MAX_LENGTH,
-  USERNAME_MAX_LENGTH,
   findByUsername,
   register,
   signinSession,
   signoutSession,
-  toPasswordHash,
   verifySignin,
 } from "../../utils/auth";
+import { Z_PASSWORD, Z_USERNAME } from "../../utils/auth-common";
 import { serverConfig } from "../../utils/config";
 import { sendEmail } from "../../utils/email-utils";
+import { toPasswordHash } from "../../utils/password-utils";
 import { isValidTimezone } from "../../utils/temporal-utils";
 import { verifyTurnstile } from "../../utils/turnstile-utils.server";
 import { middlewares } from "../context";
@@ -27,12 +26,8 @@ export const trpcRoutesUsers = {
     .input(
       z
         .object({
-          username: z
-            .string()
-            .nonempty()
-            .max(USERNAME_MAX_LENGTH)
-            .regex(/^[a-zA-Z0-9_.-]+$/),
-          password: z.string().nonempty().max(PASSWORD_MAX_LENGTH),
+          username: Z_USERNAME,
+          password: Z_PASSWORD,
           passwordConfirmation: z.string(),
           token: z.string(),
           timezone: z.string().refine(isValidTimezone),
@@ -54,8 +49,8 @@ export const trpcRoutesUsers = {
     .use(middlewares.currentUser)
     .input(
       z.object({
-        username: z.string(),
-        password: z.string(),
+        username: Z_USERNAME,
+        password: Z_PASSWORD,
       })
     )
     .mutation(async ({ input, ctx }) => {
