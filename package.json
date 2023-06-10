@@ -125,7 +125,8 @@
     "patchedDependencies": {
       "@remix-run/dev@1.15.0": "patches/@remix-run__dev@1.15.0.patch",
       "@remix-run/node@1.15.0": "patches/@remix-run__node@1.15.0.patch",
-      "@opentelemetry/sdk-node@0.39.1": "patches/@opentelemetry__sdk-node@0.39.1.patch"
+      "@opentelemetry/sdk-node@0.39.1": "patches/@opentelemetry__sdk-node@0.39.1.patch",
+      "argon2@0.30.3": "patches/argon2@0.30.3.patch"
     }
   }
 }
