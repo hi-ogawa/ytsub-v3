@@ -5,7 +5,7 @@ import type { Email } from "../utils/email-utils";
 import { test } from "./coverage";
 import { useUserE2E } from "./helper";
 
-test("/users/register", async ({ page }) => {
+test("/users/register success", async ({ page }) => {
   await page.goto("/");
 
   // navigate to signin
@@ -29,6 +29,19 @@ test("/users/register", async ({ page }) => {
   // navgiate to root
   await expect(page).toHaveURL("/");
   await page.waitForSelector(`"Successfully registered"`);
+});
+
+test("/users/register error", async ({ page }) => {
+  await page.goto("/users/register");
+  await page.getByLabel("Username").fill("hello");
+  await page.getByLabel("Password", { exact: true }).fill("hi");
+  await page.getByLabel("Password confirmation").fill("hi");
+  await page.getByRole("button", { name: "Register" }).click();
+  await page
+    .getByText(
+      'Error: [ { "code": "too_small", "minimum": 3, "type": "string", "inclusive": tru'
+    )
+    .click();
 });
 
 test.describe("/users/signin", () => {
@@ -62,6 +75,14 @@ test.describe("/users/signin", () => {
     await page
       .getByText(`Already signed in as '${user.data.username}'`)
       .click();
+  });
+
+  test("invalid credentials", async ({ page }) => {
+    await page.goto("/users/signin");
+    await page.getByLabel("Username").fill(user.data.username);
+    await page.getByLabel("Password").fill("asdfjkl;asdf-wrong");
+    await page.getByRole("button", { name: "Sign in" }).click();
+    await page.getByText("Invalid username or password").click();
   });
 });
 
