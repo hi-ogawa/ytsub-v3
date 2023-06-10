@@ -1,9 +1,7 @@
 import childProcess from "node:child_process";
-import crypto from "node:crypto";
 import type { Readable } from "node:stream";
 import { promisify } from "node:util";
 
-export { crypto as crypto };
 export const exec = promisify(childProcess.exec);
 
 // cf. https://nodejs.org/docs/latest-v14.x/api/stream.html#stream_readable_symbol_asynciterator
