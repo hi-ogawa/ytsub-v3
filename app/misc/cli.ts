@@ -19,13 +19,9 @@ import {
   filterNewVideo,
   insertVideoAndCaptionEntries,
 } from "../db/helper";
-import {
-  createUserCookie,
-  findByUsername,
-  register,
-  toPasswordHash,
-} from "../utils/auth";
+import { createUserCookie, findByUsername, register } from "../utils/auth";
 import { exec, streamToString } from "../utils/node.server";
+import { toPasswordHash } from "../utils/password-utils";
 import {
   queryNextPracticeEntryRandomModeBatch,
   resetDeckCache,
@@ -654,6 +650,10 @@ async function main() {
   try {
     await initializeServer();
     cli.parse(undefined, { run: false });
+    if (!cli.matchedCommandName) {
+      cli.outputHelp();
+      process.exit(1);
+    }
     await cli.runMatchedCommand();
   } catch (e) {
     consola.error(e);
