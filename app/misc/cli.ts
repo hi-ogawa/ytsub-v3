@@ -127,6 +127,17 @@ cli
     }
   );
 
+cli
+  .command("resetPassword <username> <password>")
+  .action(async (username: string, password: string) => {
+    const user = await findByUsername(username);
+    tinyassert(user);
+    await db
+      .update(T.usersCredentials)
+      .set({ passwordHash: await toPasswordHash(password) })
+      .where(E.eq(T.users.id, user.id));
+  });
+
 cli.command("print-session <username>").action(async (username: string) => {
   await printSession(username);
 });
