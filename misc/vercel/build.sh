@@ -32,7 +32,7 @@ NODE_ENV=production BUILD_VERCEL=1 npx remix build
 
 # build argon2 native module
 echo "* Building argon2 native module"
-bash misc/vercel/build-argon2.sh .vercel/output/functions/index.func/argon2.node
+bash misc/vercel/build-argon2.sh "$PWD/.vercel/output/functions/index.func/argon2.node"
 
 # config.json
 cp misc/vercel/config.json .vercel/output/config.json
@@ -47,4 +47,4 @@ cp misc/vercel/.vc-config.json .vercel/output/functions/index.func/.vc-config.js
 
 # output server size
 echo "* Serverless files"
-ls -lha .vercel/output/functions/index.func
+ls -lhA .vercel/output/functions/index.func
