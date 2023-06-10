@@ -180,6 +180,58 @@ describe(trpc.users_register.mutationKey, () => {
       `);
     });
 
+    describe("password length", () => {
+      it("short", async () => {
+        const trpc = await testTrpcClientWithContext();
+        await expect(
+          trpc.caller.users_register({
+            ...credentials,
+            password: "x",
+            passwordConfirmation: "x",
+          })
+        ).rejects.toMatchInlineSnapshot(`
+          [TRPCError: [
+            {
+              "code": "too_small",
+              "minimum": 3,
+              "type": "string",
+              "inclusive": true,
+              "exact": false,
+              "message": "String must contain at least 3 character(s)",
+              "path": [
+                "password"
+              ]
+            }
+          ]]
+        `);
+      });
+
+      it("long", async () => {
+        const trpc = await testTrpcClientWithContext();
+        await expect(
+          trpc.caller.users_register({
+            ...credentials,
+            password: "x".repeat(200),
+            passwordConfirmation: "x".repeat(200),
+          })
+        ).rejects.toMatchInlineSnapshot(`
+          [TRPCError: [
+            {
+              "code": "too_big",
+              "maximum": 128,
+              "type": "string",
+              "inclusive": true,
+              "exact": false,
+              "message": "String must contain at most 128 character(s)",
+              "path": [
+                "password"
+              ]
+            }
+          ]]
+        `);
+      });
+    });
+
     it("unique username case insensitive", async () => {
       {
         const trpc = await testTrpcClientWithContext();
