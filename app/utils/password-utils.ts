@@ -7,6 +7,8 @@ import { once } from "@hiogawa/utils";
 // https://github.com/bitwarden/clients/pull/4468
 // https://github.com/bitwarden/server/pull/2583
 // https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html#argon2id
+// https://github.com/RustCrypto/password-hashes/blob/dc23aa160f010bcb02050ae230be868d84367c1d/argon2/README.md
+// https://github.com/hi-ogawa/argon2-wasm-bindgen
 
 const initializeArgon2WasmOnce = once(async () => {
   await argon2Wasm.initializeBundle();
