@@ -1,6 +1,6 @@
 import { randomBytes } from "node:crypto";
 import { promisify } from "node:util";
-import * as argon2Wasm from "@hiogawa/argon2-wasm-bindgen/dist/index-wasm-bundle";
+import * as argon2 from "@hiogawa/argon2-wasm-bindgen/dist/index-wasm-bundle";
 import { once } from "@hiogawa/utils";
 
 // argon2 password hashing
@@ -11,7 +11,7 @@ import { once } from "@hiogawa/utils";
 // https://github.com/hi-ogawa/argon2-wasm-bindgen
 
 const initializeArgon2WasmOnce = once(async () => {
-  await argon2Wasm.initializeBundle();
+  await argon2.initializeBundle();
 });
 
 const randomBytesPromise = promisify(randomBytes);
@@ -26,7 +26,7 @@ export async function toPasswordHash(password: string): Promise<string> {
   await initializeArgon2WasmOnce();
 
   const salt = await generateSalt();
-  return argon2Wasm.wasmBindgenModule.hash_password(password, salt);
+  return argon2.hash_password(password, salt);
 }
 
 export async function verifyPassword(
@@ -35,7 +35,7 @@ export async function verifyPassword(
 ): Promise<boolean> {
   await initializeArgon2WasmOnce();
 
-  return argon2Wasm.wasmBindgenModule.verify_password(password, passwordHash);
+  return argon2.verify_password(password, passwordHash);
 }
 
 // fake verification for timing safety?
