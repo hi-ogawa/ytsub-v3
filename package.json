@@ -45,6 +45,7 @@
     "@hattip/adapter-node": "^0.0.34",
     "@hattip/compose": "^0.0.34",
     "@headlessui/react": "^1.7.15",
+    "@hiogawa/argon2-wasm-bindgen": "0.0.3",
     "@hiogawa/utils": "1.4.2-pre.11",
     "@hiogawa/utils-experimental": "^0.0.1",
     "@hiogawa/utils-react": "1.2.1-pre.5",
@@ -61,7 +62,6 @@
     "@tanstack/react-virtual": "3.0.0-beta.54",
     "@trpc/client": "^10.29.1",
     "@trpc/server": "^10.29.1",
-    "argon2": "^0.30.3",
     "bcryptjs": "^2.4.3",
     "drizzle-orm": "^0.22.0",
     "echarts": "^5.4.2",
@@ -125,8 +125,7 @@
     "patchedDependencies": {
       "@remix-run/dev@1.15.0": "patches/@remix-run__dev@1.15.0.patch",
       "@remix-run/node@1.15.0": "patches/@remix-run__node@1.15.0.patch",
-      "@opentelemetry/sdk-node@0.39.1": "patches/@opentelemetry__sdk-node@0.39.1.patch",
-      "argon2@0.30.3": "patches/argon2@0.30.3.patch"
+      "@opentelemetry/sdk-node@0.39.1": "patches/@opentelemetry__sdk-node@0.39.1.patch"
     }
   }
 }

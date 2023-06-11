@@ -15,7 +15,6 @@ set -eu -o pipefail
 #       index.func/
 #         .vc-config.json
 #         index.js           = (remix-outdir)/server/index.js
-#         argon2.node
 #
 
 # cleanup
@@ -29,10 +28,6 @@ pnpm build:css
 
 # remix build with custom server entry
 NODE_ENV=production BUILD_VERCEL=1 npx remix build
-
-# build argon2 native module
-echo "* Building argon2 native module"
-bash misc/vercel/build-argon2.sh "$PWD/.vercel/output/functions/index.func/argon2.node"
 
 # config.json
 cp misc/vercel/config.json .vercel/output/config.json
