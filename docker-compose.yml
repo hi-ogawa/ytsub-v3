@@ -27,10 +27,5 @@ services:
     image: jwilder/dockerize:0.6.1
     profiles: ["tools"]
 
-  # build argon2 native module for aws lambda
-  node:
-    image: node:18-buster-slim
-    profiles: ["tools"]
-
 volumes:
   mysql-volume:
