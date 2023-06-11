@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for ytsub-v3/app/misc/initialize-server.ts</title>
+    <title>Code coverage report for ytsub-v3/app/db/drizzle-expressions.ts</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../../../prettify.css" />
     <link rel="stylesheet" href="../../../base.css" />
@@ -19,34 +19,34 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../../../index.html">All files</a> / <a href="index.html">ytsub-v3/app/misc</a> initialize-server.ts</h1>
+        <h1><a href="../../../index.html">All files</a> / <a href="index.html">ytsub-v3/app/db</a> drizzle-expressions.ts</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">96.55% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>22/22</span>
+                <span class='fraction'>28/29</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>1/1</span>
+                <span class='fraction'>10/10</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">45.45% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>1/1</span>
+                <span class='fraction'>10/22</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">96.55% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>22/22</span>
+                <span class='fraction'>28/29</span>
             </div>
         
             
@@ -85,7 +85,14 @@
 <a name='L20'></a><a href='#L20'>20</a>
 <a name='L21'></a><a href='#L21'>21</a>
 <a name='L22'></a><a href='#L22'>22</a>
-<a name='L23'></a><a href='#L23'>23</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L23'></a><a href='#L23'>23</a>
+<a name='L24'></a><a href='#L24'>24</a>
+<a name='L25'></a><a href='#L25'>25</a>
+<a name='L26'></a><a href='#L26'>26</a>
+<a name='L27'></a><a href='#L27'>27</a>
+<a name='L28'></a><a href='#L28'>28</a>
+<a name='L29'></a><a href='#L29'>29</a>
+<a name='L30'></a><a href='#L30'>30</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -96,39 +103,53 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">170x</span>
-<span class="cline-any cline-yes">170x</span>
-<span class="cline-any cline-yes">170x</span>
-<span class="cline-any cline-yes">170x</span>
-<span class="cline-any cline-yes">170x</span>
-<span class="cline-any cline-yes">170x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import {
-  finalizeDrizzleClient,
-  initializeDrizzleClient,
-} from "../db/drizzle-client.server";
-import { initializeConfigServer } from "../utils/config";
-import {
-  finalizeOpentelemetry,
-  initializeOpentelemetry,
-} from "../utils/opentelemetry-utils";
-import { initializeSessionStore } from "../utils/session.server";
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" >// manually re-export all expressions for convenience https://github.com/drizzle-team/drizzle-orm/blob/1f8ff173a08b562cc64e41970c55f0dba0ac56f6/drizzle-orm/src/sql/expressions/index.ts</span></span></span></span></span></span></span></span></span></span></span></span></span>
+// note that it was possible to do `import "drizzle-orm/expressions"` in old version but it was removed later.
 &nbsp;
-export async function initializeServer() {
-  initializeOpentelemetry();
-  initializeConfigServer();
-  initializeSessionStore();
-  await initializeDrizzleClient();
-}
-&nbsp;
-export async function finalizeServer() {
-  await finalizeDrizzleClient();
-  finalizeOpentelemetry();
-}
+export {
+  asc,
+  desc,
+  // generated by
+  //   curl -sfL https://raw.githubusercontent.com/drizzle-team/drizzle-orm-docs/master/pages/docs/operators.mdx | grep '###' | awk '{ print $2 "," }'
+  eq,
+  ne,
+  gt,
+  gte,
+  lt,
+  lte,
+  isNull,
+  isNotNull,
+  inArray,
+  notInArray,
+  exists,
+  notExists,
+  between,
+  notBetween,
+  like,
+  ilike,
+  notIlike,
+  not,
+  and,
+  or,
+} from "drizzle-orm";
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
