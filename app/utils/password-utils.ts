@@ -1,6 +1,6 @@
 import { randomBytes } from "node:crypto";
 import { promisify } from "node:util";
-import * as argon2 from "@hiogawa/argon2-wasm-bindgen/dist/index-wasm-bundle";
+import * as argon2 from "@hiogawa/argon2-wasm-bindgen";
 import { once } from "@hiogawa/utils";
 
 // argon2 password hashing
@@ -10,8 +10,8 @@ import { once } from "@hiogawa/utils";
 // https://github.com/RustCrypto/password-hashes/blob/dc23aa160f010bcb02050ae230be868d84367c1d/argon2/README.md
 // https://github.com/hi-ogawa/argon2-wasm-bindgen
 
-const initializeArgon2WasmOnce = once(async () => {
-  await argon2.initializeBundle();
+const initializeArgon2Once = once(async () => {
+  await argon2.initBundle();
 });
 
 const randomBytesPromise = promisify(randomBytes);
@@ -23,7 +23,7 @@ async function generateSalt(): Promise<string> {
 }
 
 export async function toPasswordHash(password: string): Promise<string> {
-  await initializeArgon2WasmOnce();
+  await initializeArgon2Once();
 
   const salt = await generateSalt();
   return argon2.hash_password(password, salt);
@@ -33,7 +33,7 @@ export async function verifyPassword(
   password: string,
   passwordHash: string
 ): Promise<boolean> {
-  await initializeArgon2WasmOnce();
+  await initializeArgon2Once();
 
   return argon2.verify_password(password, passwordHash);
 }

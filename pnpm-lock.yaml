@@ -35,8 +35,8 @@ dependencies:
     specifier: ^1.7.15
     version: 1.7.15(react-dom@18.2.0)(react@18.2.0)
   '@hiogawa/argon2-wasm-bindgen':
-    specifier: 0.0.3
-    version: 0.0.3
+    specifier: 0.0.4-pre.0
+    version: 0.0.4-pre.0
   '@hiogawa/utils':
     specifier: 1.4.2-pre.11
     version: 1.4.2-pre.11
@@ -2149,8 +2149,8 @@ packages:
       react-dom: 18.2.0(react@18.2.0)
     dev: false
 
-  /@hiogawa/argon2-wasm-bindgen@0.0.3:
-    resolution: {integrity: sha512-WjOwiTj5FyCQUCLxZF3pxdN500NkE45l9VxXpT92DcXfXmW6l6Of9YB5hlF702rwX/WU0KnubKxh5sPNBkBCpw==}
+  /@hiogawa/argon2-wasm-bindgen@0.0.4-pre.0:
+    resolution: {integrity: sha512-W8hJIQKfOJCBfJtBaWTzOhtmKedT6ipH7MQy0y1bYaRIc6TuXiK9Tgc5GxMSyaJ+ZxpEgwQ0m4f0xt2STk6OeA==}
     dev: false
 
   /@hiogawa/isort-ts@1.0.2-pre.1(prettier@2.8.8)(typescript@5.1.3):
