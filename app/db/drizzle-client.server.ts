@@ -1,8 +1,6 @@
 import { difference, tinyassert } from "@hiogawa/utils";
-import { sql } from "drizzle-orm";
-import * as E from "drizzle-orm/expressions";
+import { InferModel, SQL, StringChunk, sql } from "drizzle-orm";
 import {
-  InferModel,
   MySqlDialect,
   boolean,
   customType,
@@ -14,8 +12,7 @@ import {
   text,
   timestamp,
 } from "drizzle-orm/mysql-core";
-import { MySql2Database, MySql2Session, drizzle } from "drizzle-orm/mysql2";
-import { SQL } from "drizzle-orm/sql";
+import { MySql2Database, drizzle } from "drizzle-orm/mysql2";
 import type { Connection } from "mysql2";
 import { createConnection } from "mysql2/promise";
 import { uninitialized } from "../utils/misc";
@@ -146,7 +143,7 @@ const decks = mysqlTable("decks", {
   easeBonus: float("easeBonus").notNull().default(DUMMY_DEFAULT),
   randomMode: boolean("randomMode").notNull().default(DUMMY_DEFAULT),
   // cache various things to reduce repeating heavy SELECT queries
-  cache: json<DeckCache>("cache").notNull(),
+  cache: json("cache").$type<DeckCache>().notNull(),
 });
 
 const practiceEntries = mysqlTable("practiceEntries", {
@@ -155,7 +152,7 @@ const practiceEntries = mysqlTable("practiceEntries", {
   bookmarkEntryId: int("bookmarkEntryId").notNull(),
   ...timestampColumns,
   //
-  queueType: text<PracticeQueueType>("queueType").notNull(),
+  queueType: text("queueType").$type<PracticeQueueType>().notNull(),
   easeFactor: float("easeFactor").notNull(),
   scheduledAt: datetimeUtc("scheduledAt").notNull(),
   practiceActionsCount: int("practiceActionsCount").notNull(),
@@ -168,8 +165,8 @@ const practiceActions = mysqlTable("practiceActions", {
   userId: int("userId").notNull(),
   ...timestampColumns,
   //
-  queueType: text<PracticeQueueType>("queueType").notNull(),
-  actionType: text<PracticeActionType>("actionType").notNull(),
+  queueType: text("queueType").$type<PracticeQueueType>().notNull(),
+  actionType: text("actionType").$type<PracticeActionType>().notNull(),
 });
 
 const knex_migrations = mysqlTable("knex_migrations", {
@@ -204,7 +201,7 @@ export type TT = { [K in keyof typeof T]: InferModel<(typeof T)[K]> };
 // utils (TODO: move to db/helper.ts?)
 //
 
-// re-export expressions since eq, isNull etc.. sounds too general
+import * as E from "./drizzle-expressions";
 export { E };
 
 export async function limitOne<
@@ -268,12 +265,7 @@ export async function toCountSql<Q extends { execute: () => Promise<unknown> }>(
   query: Q
 ): Promise<number> {
   const q = query as any;
-  q.config.fieldsList = [
-    {
-      path: ["count"],
-      field: sql`COUNT(0)`,
-    },
-  ];
+  q.config.fields = { count: sql<number>`COUNT(0)` };
   const [{ count }] = await q.execute();
   tinyassert(typeof count === "number");
   return count;
@@ -282,14 +274,16 @@ export async function toCountSql<Q extends { execute: () => Promise<unknown> }>(
 // a little hack to make DELETE query based on SELECT since drizzle doesn't support complicated DELETE query with JOIN.
 export function toDeleteSqlInner(sql: SQL, tableName: string): SQL {
   // replace
-  //   select ... from
+  //   select xxx from
   // with
-  //   delete from
-  const [, c1, c2, c3] = sql.queryChunks;
-  tinyassert(c1 === "select ");
+  //   delete yyy from
+  const [, , c1, c2, c3] = sql.queryChunks;
+  tinyassert(c1 instanceof StringChunk);
+  tinyassert(c1.value[0] === "select ");
   tinyassert(c2 instanceof SQL);
-  tinyassert(c3 === " from ");
-  sql.queryChunks.splice(1, 2, " delete `", tableName, "` ");
+  tinyassert(c3 instanceof StringChunk);
+  tinyassert(c3.value[0] === " from ");
+  sql.queryChunks.splice(0, 4, new StringChunk("delete `" + tableName + "`"));
   return sql;
 }
 
@@ -375,7 +369,6 @@ export async function finalizeDrizzleClient() {
 export function __dbExtra() {
   return {
     connection: (db as any).session.client as Connection,
-    session: (db as any).session as MySql2Session,
     dialect: (db as any).dialect as MySqlDialect,
   };
 }
