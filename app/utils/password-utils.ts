@@ -2,7 +2,6 @@ import { randomBytes } from "node:crypto";
 import { promisify } from "node:util";
 import { Worker } from "node:worker_threads";
 import type { Argon2 } from "@hiogawa/argon2-wasm-bindgen/dist/comlink-node";
-import { once } from "@hiogawa/utils";
 import { type Remote, wrap } from "comlink";
 import comlinkNodeAdapter from "comlink/dist/umd/node-adapter";
 
@@ -16,14 +15,14 @@ import comlinkNodeAdapter from "comlink/dist/umd/node-adapter";
 let worker: Worker;
 let argon2: Remote<Argon2>;
 
-const initializeArgon2 = once(async () => {
+export async function initializeArgon2() {
   // use prebuilt comlink worker code
   worker = new Worker(
     "./node_modules/@hiogawa/argon2-wasm-bindgen/dist/comlink-node.cjs"
   );
   argon2 = wrap(comlinkNodeAdapter(worker));
   await argon2.initBundle();
-});
+}
 
 export async function finalizeArgon2() {
   if (worker) {
@@ -40,8 +39,6 @@ async function generateSalt(): Promise<string> {
 }
 
 export async function toPasswordHash(password: string): Promise<string> {
-  await initializeArgon2();
-
   const salt = await generateSalt();
   return argon2.hash_password(password, salt);
 }
@@ -50,8 +47,6 @@ export async function verifyPassword(
   password: string,
   passwordHash: string
 ): Promise<boolean> {
-  await initializeArgon2();
-
   // check old bcrypt hash and show specific message
   if (passwordHash.startsWith("$2a$")) {
     throw new Error(
