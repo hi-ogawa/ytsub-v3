@@ -13,18 +13,23 @@ import comlinkNodeAdapter from "comlink/dist/umd/node-adapter";
 // https://github.com/RustCrypto/password-hashes/blob/dc23aa160f010bcb02050ae230be868d84367c1d/argon2/README.md
 // https://github.com/hi-ogawa/argon2-wasm-bindgen
 
+let worker: Worker;
 let argon2: Remote<Argon2>;
 
 const initializeArgon2 = once(async () => {
-  // TODO: terminate worker
-
   // use prebuilt comlink worker code
-  const worker = new Worker(
+  worker = new Worker(
     "./node_modules/@hiogawa/argon2-wasm-bindgen/dist/comlink-node.cjs"
   );
   argon2 = wrap(comlinkNodeAdapter(worker));
   await argon2.initBundle();
 });
+
+export async function finalizeArgon2() {
+  if (worker) {
+    await worker.terminate();
+  }
+}
 
 const randomBytesPromise = promisify(randomBytes);
 

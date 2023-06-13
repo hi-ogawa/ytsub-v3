@@ -7,6 +7,7 @@ import {
   finalizeOpentelemetry,
   initializeOpentelemetry,
 } from "../utils/opentelemetry-utils";
+import { finalizeArgon2 } from "../utils/password-utils";
 import { initializeSessionStore } from "../utils/session.server";
 
 export async function initializeServer() {
@@ -18,5 +19,6 @@ export async function initializeServer() {
 
 export async function finalizeServer() {
   await finalizeDrizzleClient();
+  await finalizeArgon2();
   finalizeOpentelemetry();
 }
