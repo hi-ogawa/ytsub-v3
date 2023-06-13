@@ -15,14 +15,13 @@ set -eu -o pipefail
 #       index.func/
 #         .vc-config.json
 #         index.js           = (remix-outdir)/server/index.js
-#         node_modules/...   = worker entrypoint for @hiogawa/argon2-wasm-bindgen
 #
 
 # cleanup
 rm -rf build/remix/production
 rm -rf build/css
 rm -rf .vercel/output
-mkdir -p .vercel/output/functions/index.func/node_modules/@hiogawa/argon2-wasm-bindgen/dist
+mkdir -p .vercel/output/functions/index.func
 
 # css
 pnpm build:css
@@ -40,7 +39,6 @@ cp ./public/* .vercel/output/static
 # serverless
 cp build/remix/production/server/index.js .vercel/output/functions/index.func
 cp misc/vercel/.vc-config.json .vercel/output/functions/index.func/.vc-config.json
-cp node_modules/@hiogawa/argon2-wasm-bindgen/dist/comlink-node.cjs .vercel/output/functions/index.func/node_modules/@hiogawa/argon2-wasm-bindgen/dist
 
 # output server size
 echo "* Serverless files"
