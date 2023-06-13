@@ -1,6 +1,6 @@
 import { randomBytes } from "node:crypto";
 import { promisify } from "node:util";
-import { initComlinkProxy } from "@hiogawa/argon2-wasm-bindgen/dist/comlink-node-proxy";
+import { initWorker } from "@hiogawa/argon2-wasm-bindgen/dist/worker-node";
 
 // argon2 password hashing
 // https://github.com/bitwarden/clients/pull/4468
@@ -9,16 +9,16 @@ import { initComlinkProxy } from "@hiogawa/argon2-wasm-bindgen/dist/comlink-node
 // https://github.com/RustCrypto/password-hashes/blob/dc23aa160f010bcb02050ae230be868d84367c1d/argon2/README.md
 // https://github.com/hi-ogawa/argon2-wasm-bindgen
 
-let proxy: Awaited<ReturnType<typeof initComlinkProxy>>;
+let worker: Awaited<ReturnType<typeof initWorker>>;
 
 export async function initializeArgon2() {
-  proxy = await initComlinkProxy();
-  await proxy.argon2.initBundle();
+  worker = await initWorker();
+  await worker.argon2.initBundle();
 }
 
 export async function finalizeArgon2() {
-  if (proxy) {
-    await proxy.worker.terminate();
+  if (worker) {
+    await worker.worker.terminate();
   }
 }
 
@@ -32,7 +32,7 @@ async function generateSalt(): Promise<string> {
 
 export async function toPasswordHash(password: string): Promise<string> {
   const salt = await generateSalt();
-  return proxy.argon2.hash_password(password, salt);
+  return worker.argon2.hash_password(password, salt);
 }
 
 export async function verifyPassword(
@@ -46,7 +46,7 @@ export async function verifyPassword(
     );
   }
 
-  return proxy.argon2.verify_password(password, passwordHash);
+  return worker.argon2.verify_password(password, passwordHash);
 }
 
 // fake verification for timing safety?
