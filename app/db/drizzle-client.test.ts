@@ -9,6 +9,7 @@ import {
   dbShowTables,
   selectMany,
   selectOne,
+  toCountSql,
   toDeleteSql,
   toDeleteSqlInner,
 } from "./drizzle-client.server";
@@ -35,8 +36,7 @@ describe(toDeleteSql.name, () => {
     expect(deleteSql2).toMatchInlineSnapshot(`
       {
         "params": [],
-        "sql": " delete \`videos\`  from \`videos\` left join \`users\`  on \`users\`.\`id\` = \`videos\`.\`userId\` where (FALSE and \`users\`.\`id\` is null and \`videos\`.\`userId\` is not null)",
-        "typings": [],
+        "sql": "delete \`videos\` from \`videos\` left join \`users\` on \`users\`.\`id\` = \`videos\`.\`userId\` where (FALSE and \`users\`.\`id\` is null and \`videos\`.\`userId\` is not null)",
       }
     `);
   });
@@ -61,6 +61,12 @@ describe(selectOne.name, () => {
       E.eq(T.bookmarkEntries.userId, 0)
     );
     row satisfies TT["bookmarkEntries"] | undefined;
+  });
+});
+
+describe(toCountSql.name, () => {
+  it("basic", async () => {
+    await toCountSql(db.select().from(T.videos));
   });
 });
 

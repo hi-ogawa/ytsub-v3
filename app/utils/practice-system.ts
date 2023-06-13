@@ -9,8 +9,7 @@ import {
   typedBoolean,
 } from "@hiogawa/utils";
 import { Temporal } from "@js-temporal/polyfill";
-import { AnyColumn, GetColumnData, sql } from "drizzle-orm";
-import type { SQL } from "drizzle-orm/sql";
+import { AnyColumn, GetColumnData, type SQL, sql } from "drizzle-orm";
 import { E, T, TT, db, selectOne } from "../db/drizzle-client.server";
 import type {
   BookmarkEntryTable,
@@ -136,7 +135,7 @@ export class PracticeSystem {
       return [];
     }
     const [{ insertId }] = await db.insert(T.practiceEntries).values(
-      ...newIds.map((bookmarkEntryId) => ({
+      newIds.map((bookmarkEntryId) => ({
         deckId,
         bookmarkEntryId,
         queueType: "NEW" as const,

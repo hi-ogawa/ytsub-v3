@@ -92,8 +92,8 @@ dependencies:
     specifier: ^4.4.1
     version: 4.4.1
   drizzle-orm:
-    specifier: ^0.22.0
-    version: 0.22.0(mysql2@3.3.3)
+    specifier: ^0.26.5
+    version: 0.26.5(@opentelemetry/api@1.4.1)(knex@2.4.2)(mysql2@3.3.3)
   echarts:
     specifier: ^5.4.2
     version: 5.4.2
@@ -4713,29 +4713,38 @@ packages:
     resolution: {integrity: sha512-m55RtE8AsPeJBpOIFKihEmqUcoVncQIwo7x9U8ZwLEZw9ZpXboz2c+rvog+jUaJvVrZ5kBOeYQBX5+8Aa/OZQw==}
     engines: {node: '>=12'}
 
-  /drizzle-orm@0.22.0(mysql2@3.3.3):
-    resolution: {integrity: sha512-oZ/CNbv3NXoCxmBWTPNAZHZkuzhacT+eXM0ywemkHSTiqEJe79VQ1jvGVd0fQthfOt1UHRMuAW0CeIizhQpb2Q==}
+  /drizzle-orm@0.26.5(@opentelemetry/api@1.4.1)(knex@2.4.2)(mysql2@3.3.3):
+    resolution: {integrity: sha512-ajjbOIoXqldWoWBn0RbVQCCT732R4Ad+gUjUrlmMpzWYwgnbG/qqPy84NhHntQ/MR//z3xfvT1Z2fD8uCAPX3g==}
     peerDependencies:
-      '@aws-sdk/client-rds-data': '>=3 <4'
+      '@aws-sdk/client-rds-data': '>=3'
       '@cloudflare/workers-types': '>=3'
-      '@neondatabase/serverless': '>=0.1 <0.2'
-      '@planetscale/database': '>=1 <2'
+      '@libsql/client': '*'
+      '@neondatabase/serverless': '>=0.1'
+      '@opentelemetry/api': ^1.4.1
+      '@planetscale/database': '>=1'
       '@types/better-sqlite3': '*'
       '@types/pg': '*'
       '@types/sql.js': '*'
-      better-sqlite3: '>=7 <9'
+      '@vercel/postgres': '*'
+      better-sqlite3: '>=7'
       bun-types: '*'
-      mysql2: '>=2 <3'
-      pg: '>=8 <9'
-      postgres: '>=3 <4'
-      sql.js: '>=1 <2'
-      sqlite3: '>=5 <6'
+      knex: '*'
+      kysely: '*'
+      mysql2: '>=2'
+      pg: '>=8'
+      postgres: '>=3'
+      sql.js: '>=1'
+      sqlite3: '>=5'
     peerDependenciesMeta:
       '@aws-sdk/client-rds-data':
         optional: true
       '@cloudflare/workers-types':
         optional: true
+      '@libsql/client':
+        optional: true
       '@neondatabase/serverless':
+        optional: true
+      '@opentelemetry/api':
         optional: true
       '@planetscale/database':
         optional: true
@@ -4745,9 +4754,15 @@ packages:
         optional: true
       '@types/sql.js':
         optional: true
+      '@vercel/postgres':
+        optional: true
       better-sqlite3:
         optional: true
       bun-types:
+        optional: true
+      knex:
+        optional: true
+      kysely:
         optional: true
       mysql2:
         optional: true
@@ -4760,6 +4775,8 @@ packages:
       sqlite3:
         optional: true
     dependencies:
+      '@opentelemetry/api': 1.4.1
+      knex: 2.4.2(mysql2@3.3.3)
       mysql2: 3.3.3
     dev: false
 

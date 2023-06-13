@@ -127,7 +127,7 @@ export async function insertVideoAndCaptionEntries(
   });
 
   await db.insert(T.captionEntries).values(
-    ...captionEntries.map((entry) => ({
+    captionEntries.map((entry) => ({
       ...entry,
       videoId,
     }))
