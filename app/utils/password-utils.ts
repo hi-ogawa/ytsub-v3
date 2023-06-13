@@ -1,7 +1,10 @@
 import { randomBytes } from "node:crypto";
 import { promisify } from "node:util";
-import * as argon2 from "@hiogawa/argon2-wasm-bindgen";
+import { Worker } from "node:worker_threads";
+import type { Argon2 } from "@hiogawa/argon2-wasm-bindgen/dist/comlink-node";
 import { once } from "@hiogawa/utils";
+import { type Remote, wrap } from "comlink";
+import comlinkNodeAdapter from "comlink/dist/umd/node-adapter";
 
 // argon2 password hashing
 // https://github.com/bitwarden/clients/pull/4468
@@ -10,7 +13,16 @@ import { once } from "@hiogawa/utils";
 // https://github.com/RustCrypto/password-hashes/blob/dc23aa160f010bcb02050ae230be868d84367c1d/argon2/README.md
 // https://github.com/hi-ogawa/argon2-wasm-bindgen
 
-const initializeArgon2Once = once(async () => {
+let argon2: Remote<Argon2>;
+
+const initializeArgon2 = once(async () => {
+  // TODO: terminate worker
+
+  // use prebuilt comlink worker code
+  const worker = new Worker(
+    "./node_modules/@hiogawa/argon2-wasm-bindgen/dist/comlink-node.cjs"
+  );
+  argon2 = wrap(comlinkNodeAdapter(worker));
   await argon2.initBundle();
 });
 
@@ -23,7 +35,7 @@ async function generateSalt(): Promise<string> {
 }
 
 export async function toPasswordHash(password: string): Promise<string> {
-  await initializeArgon2Once();
+  await initializeArgon2();
 
   const salt = await generateSalt();
   return argon2.hash_password(password, salt);
@@ -33,7 +45,14 @@ export async function verifyPassword(
   password: string,
   passwordHash: string
 ): Promise<boolean> {
-  await initializeArgon2Once();
+  await initializeArgon2();
+
+  // check old bcrypt hash and show specific message
+  if (passwordHash.startsWith("$2a$")) {
+    throw new Error(
+      "Your password has been reset. Please create a new password from 'Forget your password'."
+    );
+  }
 
   return argon2.verify_password(password, passwordHash);
 }
