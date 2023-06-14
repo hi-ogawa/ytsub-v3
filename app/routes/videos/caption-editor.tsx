@@ -32,6 +32,8 @@ export const loader = makeLoader(async ({ ctx }) => {
 export default function Page() {
   const { videoId } = useLoaderDataExtra() as LoaderData;
 
+  // TODO: move draft loading logic to outside of CaptionEditor?
+
   return (
     <div className="p-2 h-full">
       <CaptionEditor videoId={videoId} />

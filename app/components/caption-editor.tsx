@@ -23,7 +23,6 @@ import { transitionProps } from "./misc";
 import { useModal } from "./modal";
 
 // TODO: virtualize list? (no perf problem when used for short 3 min song)
-// TODO: save draft in localstorage?
 // TODO: support "half manual" mode
 
 export function CaptionEditor(props: { videoId: string }) {
