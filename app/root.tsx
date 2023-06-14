@@ -110,19 +110,14 @@ function Root() {
   return (
     <>
       <TopProgressBarRemix />
-      <div className="h-full flex flex-col relative z-0">
+      <div className="flex flex-col relative z-0">
         <Navbar
           title={handle.navBarTitle?.()}
           user={data.currentUser}
           menu={handle.navBarMenu?.()}
         />
-        <div className="flex-[1_0_0] flex flex-col" data-test="main">
-          <div
-            className="w-full flex-[1_0_0] h-full overflow-y-auto"
-            data-testid="main-scroll"
-          >
-            <Outlet />
-          </div>
+        <div className="flex flex-col" data-test="main">
+          <Outlet />
         </div>
       </div>
       <Scripts />
@@ -143,7 +138,7 @@ function Navbar({
   const [drawerOpen, setDrawerOpen] = React.useState(false);
 
   return (
-    <header className="w-full h-12 flex-none bg-primary text-primary-content flex items-center p-2 px-6 gap-4 shadow-md shadow-black/[0.05] dark:shadow-black/[0.7] z-1">
+    <header className="sticky top-0 z-1 antd-body w-full h-12 flex-none flex items-center p-2 px-6 gap-4 shadow-md shadow-black/[0.05] dark:shadow-black/[0.7]">
       <button
         data-testid="Navbar-drawer-button"
         className="antd-btn antd-btn-ghost i-ri-menu-line w-6 h-6"
