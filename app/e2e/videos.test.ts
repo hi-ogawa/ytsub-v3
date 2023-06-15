@@ -218,7 +218,7 @@ test("captions-editor-basic", async ({ page }) => {
   // check link
   await expect(
     page.getByRole("link", { name: "Open caption editor" })
-  ).toHaveAttribute("href", "/videos/caption-editor?videoId=UY3N52CrTPE");
+  ).toHaveAttribute("href", "/caption-editor/watch?v=UY3N52CrTPE");
 
   // input form
   await page
@@ -260,7 +260,7 @@ test("captions-editor-basic", async ({ page }) => {
 
 test("captions-editor-auto-save", async ({ page }) => {
   // PAXXWORD (NMIXX) https://www.youtube.com/watch?v=sLd0jl6zv80
-  await page.goto("/videos/caption-editor?videoId=sLd0jl6zv80");
+  await page.goto("/caption-editor/watch?v=sLd0jl6zv80");
 
   // import a few lines
   await page.getByRole("button", { name: "Import" }).click();
