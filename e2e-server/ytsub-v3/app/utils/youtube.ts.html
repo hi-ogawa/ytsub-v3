@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">81.17% </span>
+                <span class="strong">76.61% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>427/526</span>
+                <span class='fraction'>403/526</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">88.23% </span>
+                <span class="strong">88% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>45/51</span>
+                <span class='fraction'>44/50</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">72% </span>
+                <span class="strong">73.91% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>18/25</span>
+                <span class='fraction'>17/23</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">81.17% </span>
+                <span class="strong">76.61% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>427/526</span>
+                <span class='fraction'>403/526</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line high'></div>
+    <div class='status-line medium'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -1085,36 +1085,36 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import {
   HashKeyDefaultMap,
   newPromiseWithResolvers,
@@ -1610,37 +1610,37 @@ const loadYoutubeIframeApi = once(async () =&gt; {
 <span class="cstat-no" title="statement not covered" >  return player;</span>
 <span class="cstat-no" title="statement not covered" >}</span>
 &nbsp;
-export function usePlayerLoader(
-  playerOptions: YoutubePlayerOptions,
-  { onReady }: { onReady: (player: YoutubePlayer) =&gt; void }
-) {
-  onReady = useStableCallback(onReady);
-&nbsp;
-  const ref = useRefCallbackEffect&lt;HTMLElement&gt;((el) =&gt; {
+export <span class="fstat-no" title="function not covered" >function usePlayerLoader(</span>
+<span class="cstat-no" title="statement not covered" >  playerOptions: YoutubePlayerOptions,</span>
+<span class="cstat-no" title="statement not covered" >  { onReady }: { onReady: (player: YoutubePlayer) =&gt; void }</span>
+<span class="cstat-no" title="statement not covered" >) {</span>
+<span class="cstat-no" title="statement not covered" >  onReady = useStableCallback(onReady);</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >  const ref = useRefCallbackEffect&lt;HTMLElement&gt;((el) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >    if (el &amp;&amp; mutation.isIdle) {</span>
 <span class="cstat-no" title="statement not covered" >      mutation.mutate(el);</span>
 <span class="cstat-no" title="statement not covered" >    }</span>
-  });
-&nbsp;
-  const mutation = useMutation(
-<span class="fstat-no" title="function not covered" >    (el: HTMLElement) =&gt; loadYoutubePlayer(el, playerOptions),</span>
-    {
-      onSuccess: onReady,
-      onError: <span class="fstat-no" title="function not covered" >() =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >  });</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >  const mutation = useMutation(</span>
+<span class="cstat-no" title="statement not covered" >    (el: HTMLElement) =&gt; loadYoutubePlayer(el, playerOptions),</span>
+<span class="cstat-no" title="statement not covered" >    {</span>
+<span class="cstat-no" title="statement not covered" >      onSuccess: onReady,</span>
+<span class="cstat-no" title="statement not covered" >      onError: () =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >        toast.error("Failed to initialize youtube player");</span>
 <span class="cstat-no" title="statement not covered" >      },</span>
-    }
-  );
-&nbsp;
-  React.useEffect(() =&gt; {
+<span class="cstat-no" title="statement not covered" >    }</span>
+<span class="cstat-no" title="statement not covered" >  );</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >  React.useEffect(() =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >    return () =&gt; mutation.data?.destroy();</span>
-  }, []);
-&nbsp;
-  return {
-    ref,
-    isLoading: !mutation.isSuccess,
-  };
-}
+<span class="cstat-no" title="statement not covered" >  }, []);</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >  return {</span>
+<span class="cstat-no" title="statement not covered" >    ref,</span>
+<span class="cstat-no" title="statement not covered" >    isLoading: !mutation.isSuccess,</span>
+<span class="cstat-no" title="statement not covered" >  };</span>
+<span class="cstat-no" title="statement not covered" >}</span>
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -1648,7 +1648,7 @@ export function usePlayerLoader(
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-06-15T09:03:51.343Z
+                at 2023-06-15T12:49:53.974Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

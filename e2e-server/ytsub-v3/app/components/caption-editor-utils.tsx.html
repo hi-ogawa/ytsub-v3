@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">76.92% </span>
+                <span class="strong">53.84% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>40/52</span>
+                <span class='fraction'>28/52</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">66.66% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>2/3</span>
+                <span class='fraction'>0/0</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">50% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>1/2</span>
+                <span class='fraction'>0/1</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">76.92% </span>
+                <span class="strong">53.84% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>40/52</span>
+                <span class='fraction'>28/52</span>
             </div>
         
             
@@ -143,11 +143,6 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -157,16 +152,21 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { wrapError } from "@hiogawa/utils";
 import React from "react";
 import { z } from "zod";
@@ -194,12 +194,12 @@ export const STORAGE_KEYS = z.enum([
   "captionEditorDraftList",
 ]).enum;
 &nbsp;
-export function useLocalStorage&lt;Z extends z.ZodType, T = z.infer&lt;Z&gt;&gt;(
-  schema: Z,
-  key: string
-) {
-  const [state, setState] = React.useState(() =&gt; {
-    if (typeof window !== "undefined") <span class="branch-0 cbranch-no" title="branch not covered" >{</span>
+export <span class="fstat-no" title="function not covered" >function useLocalStorage&lt;Z extends z.ZodType, T = z.infer&lt;Z&gt;&gt;(</span>
+<span class="cstat-no" title="statement not covered" >  schema: Z,</span>
+<span class="cstat-no" title="statement not covered" >  key: string</span>
+<span class="cstat-no" title="statement not covered" >) {</span>
+<span class="cstat-no" title="statement not covered" >  const [state, setState] = React.useState(() =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >    if (typeof window !== "undefined") {</span>
 <span class="cstat-no" title="statement not covered" >      const item = window.localStorage.getItem(key);</span>
 <span class="cstat-no" title="statement not covered" >      if (item) {</span>
 <span class="cstat-no" title="statement not covered" >        const result = wrapError(() =&gt; schema.parse(JSON.parse(item)) as T);</span>
@@ -209,16 +209,16 @@ export function useLocalStorage&lt;Z extends z.ZodType, T = z.infer&lt;Z&gt;&gt;
 <span class="cstat-no" title="statement not covered" >        console.error(result.value);</span>
 <span class="cstat-no" title="statement not covered" >      }</span>
 <span class="cstat-no" title="statement not covered" >    }</span>
-    return;
-  });
-&nbsp;
-<span class="fstat-no" title="function not covered" >  function setStateWrapper(v: T) {</span>
+<span class="cstat-no" title="statement not covered" >    return;</span>
+<span class="cstat-no" title="statement not covered" >  });</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >  function setStateWrapper(v: T) {</span>
 <span class="cstat-no" title="statement not covered" >    window.localStorage.setItem(key, JSON.stringify(v));</span>
 <span class="cstat-no" title="statement not covered" >    setState(v);</span>
 <span class="cstat-no" title="statement not covered" >  }</span>
-&nbsp;
-  return [state, setStateWrapper] as const;
-}
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >  return [state, setStateWrapper] as const;</span>
+<span class="cstat-no" title="statement not covered" >}</span>
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -226,7 +226,7 @@ export function useLocalStorage&lt;Z extends z.ZodType, T = z.infer&lt;Z&gt;&gt;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-06-15T09:03:51.343Z
+                at 2023-06-15T12:49:53.974Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>
