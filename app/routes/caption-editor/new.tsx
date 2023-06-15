@@ -6,6 +6,7 @@ import {
   useLocalStorage,
 } from "../../components/caption-editor-utils";
 import { $R } from "../../misc/routes";
+import { ClientOnly } from "../../utils/misc-react";
 import type { PageHandle } from "../../utils/page-handle";
 
 export const handle: PageHandle = {
@@ -15,11 +16,6 @@ export const handle: PageHandle = {
 export default function Page() {
   const form = useForm({ defaultValues: { videoId: "" } });
   const navigate = useNavigate();
-
-  const [draftList = [], setDraftList] = useLocalStorage(
-    Z_CAPTION_EDITOR_DRAFT_LIST,
-    `${STORAGE_KEYS.captionEditorDraftList}`
-  );
 
   return (
     <div className="w-full flex justify-center">
@@ -46,39 +42,54 @@ export default function Page() {
             </button>
           </form>
           <div className="border-t my-3"></div>
-          <div className="text-2xl">Draft</div>
-          {!draftList.length && <div>Empty</div>}
-          {!!draftList.length && (
-            <ul className="flex flex-col gap-2">
-              {draftList.map((e) => (
-                <li
-                  key={e.videoId}
-                  className="flex items-center border antd-btn antd-btn-text p-2"
-                >
-                  <Link
-                    className="flex-1"
-                    to={$R["/caption-editor/watch"](null, {
-                      v: e.videoId,
-                    })}
-                  >
-                    {e.videoId}
-                  </Link>
-                  <button
-                    className="antd-btn antd-btn-ghost i-ri-close-line w-5 h-5"
-                    onClick={() => {
-                      if (window.confirm("Are you sure to delete 'xxx'?")) {
-                        setDraftList(
-                          draftList.filter((e2) => e2.videoId !== e.videoId)
-                        );
-                      }
-                    }}
-                  ></button>
-                </li>
-              ))}
-            </ul>
-          )}
+          <ClientOnly>
+            <DraftList />
+          </ClientOnly>
         </div>
       </div>
     </div>
+  );
+}
+
+function DraftList() {
+  const [draftList = [], setDraftList] = useLocalStorage(
+    Z_CAPTION_EDITOR_DRAFT_LIST,
+    `${STORAGE_KEYS.captionEditorDraftList}`
+  );
+
+  return (
+    <>
+      <div className="text-2xl">Draft</div>
+      {!draftList.length && <div>Empty</div>}
+      {!!draftList.length && (
+        <ul className="flex flex-col gap-2">
+          {draftList.map((e) => (
+            <li
+              key={e.videoId}
+              className="flex items-center border antd-btn antd-btn-text p-2"
+            >
+              <Link
+                className="flex-1"
+                to={$R["/caption-editor/watch"](null, {
+                  v: e.videoId,
+                })}
+              >
+                {e.videoId}
+              </Link>
+              <button
+                className="antd-btn antd-btn-ghost i-ri-close-line w-5 h-5"
+                onClick={() => {
+                  if (window.confirm("Are you sure to delete 'xxx'?")) {
+                    setDraftList(
+                      draftList.filter((e2) => e2.videoId !== e.videoId)
+                    );
+                  }
+                }}
+              ></button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </>
   );
 }

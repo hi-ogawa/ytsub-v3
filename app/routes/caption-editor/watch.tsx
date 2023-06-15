@@ -9,6 +9,7 @@ import {
 import { ROUTE_DEF } from "../../misc/routes";
 import { useLoaderDataExtra } from "../../utils/loader-utils";
 import { makeLoader } from "../../utils/loader-utils.server";
+import { ClientOnly } from "../../utils/misc-react";
 import type { PageHandle } from "../../utils/page-handle";
 import { parseVideoId } from "../../utils/youtube";
 
@@ -36,6 +37,14 @@ export const loader = makeLoader(async ({ ctx }) => {
 //
 
 export default function Page() {
+  return (
+    <ClientOnly>
+      <PageInner />
+    </ClientOnly>
+  );
+}
+
+function PageInner() {
   const { videoId } = useLoaderDataExtra() as LoaderData;
 
   const [draftData = [], setDraftData] = useLocalStorage(
