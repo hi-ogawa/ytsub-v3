@@ -2,7 +2,7 @@ import { wrapError } from "@hiogawa/utils";
 import React from "react";
 import { z } from "zod";
 
-export const Z_CAPTION_EDITOR_ENTRY = z.object({
+const Z_CAPTION_EDITOR_ENTRY = z.object({
   begin: z.number(),
   end: z.number(),
   endLocked: z.boolean(),
