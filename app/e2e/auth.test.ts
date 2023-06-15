@@ -132,6 +132,7 @@ test.describe("/users/me", () => {
 
   test("without-session", async ({ page }) => {
     await page.goto("/users/me");
+    await page.getByText("Signin required").click();
     await expect(page).toHaveURL("/users/signin");
   });
 });
