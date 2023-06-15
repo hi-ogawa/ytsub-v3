@@ -277,7 +277,7 @@ const SIDE_MENU_ENTRIES: SideMenuEntry[] = [
     to: R["/caption-editor"],
     icon: <span className="i-ri-closed-captioning-line w-6 h-6" />,
     title: "Caption Editor",
-    requireSignin: true,
+    requireSignin: false,
   },
 ];
 

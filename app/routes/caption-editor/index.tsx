@@ -66,10 +66,10 @@ function DraftList() {
           {draftList.map((e) => (
             <li
               key={e.videoId}
-              className="flex items-center border antd-btn antd-btn-text p-2"
+              className="flex items-center border antd-btn antd-btn-text pr-2"
             >
               <Link
-                className="flex-1"
+                className="flex-1 p-2"
                 to={$R["/caption-editor/watch"](null, {
                   v: e.videoId,
                 })}
