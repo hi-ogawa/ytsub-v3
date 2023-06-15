@@ -8,7 +8,7 @@ export function useEffectNoStrict(...args: Parameters<typeof React.useEffect>) {
 
 let __hydrated = false;
 
-export function useHydrated() {
+function useHydrated() {
   const [ok, setOk] = React.useState(__hydrated);
 
   React.useEffect(() => {
