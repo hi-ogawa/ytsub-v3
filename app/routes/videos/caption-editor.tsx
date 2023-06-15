@@ -1,7 +1,11 @@
-import { tinyassert } from "@hiogawa/utils";
-import React from "react";
+import { tinyassert, uniqBy } from "@hiogawa/utils";
 import { CaptionEditor } from "../../components/caption-editor";
-import { createDraftUtils } from "../../components/caption-editor-utils";
+import {
+  STORAGE_KEYS,
+  Z_CAPTION_EDITOR_DRAFT_LIST,
+  Z_CAPTION_EDITOR_ENTRY_LIST,
+  useLocalStorage,
+} from "../../components/caption-editor-utils";
 import { ROUTE_DEF } from "../../misc/routes";
 import { useLoaderDataExtra } from "../../utils/loader-utils";
 import { makeLoader } from "../../utils/loader-utils.server";
@@ -34,15 +38,25 @@ export const loader = makeLoader(async ({ ctx }) => {
 export default function Page() {
   const { videoId } = useLoaderDataExtra() as LoaderData;
 
-  const draftUtils = createDraftUtils(videoId);
-  const draftData = React.useMemo(() => draftUtils.get() ?? [], []);
+  const [draftData = [], setDraftData] = useLocalStorage(
+    Z_CAPTION_EDITOR_ENTRY_LIST,
+    `${STORAGE_KEYS.captionEditorEntryListByVideoId}:${videoId}`
+  );
+
+  const [draftList = [], setDraftList] = useLocalStorage(
+    Z_CAPTION_EDITOR_DRAFT_LIST,
+    `${STORAGE_KEYS.captionEditorDraftList}`
+  );
 
   return (
     <div className="p-2 h-full">
       <CaptionEditor
         videoId={videoId}
         defaultValue={draftData}
-        onChange={(data) => draftUtils.set(data)}
+        onChange={(data) => {
+          setDraftData(data);
+          setDraftList(uniqBy([...draftList, { videoId }], (e) => e.videoId));
+        }}
       />
     </div>
   );

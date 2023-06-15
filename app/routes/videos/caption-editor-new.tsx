@@ -1,5 +1,10 @@
-import { useNavigate } from "@remix-run/react";
+import { Link, useNavigate } from "@remix-run/react";
 import { useForm } from "react-hook-form";
+import {
+  STORAGE_KEYS,
+  Z_CAPTION_EDITOR_DRAFT_LIST,
+  useLocalStorage,
+} from "../../components/caption-editor-utils";
 import { $R } from "../../misc/routes";
 import type { PageHandle } from "../../utils/page-handle";
 
@@ -11,7 +16,10 @@ export default function Page() {
   const form = useForm({ defaultValues: { videoId: "" } });
   const navigate = useNavigate();
 
-  // TODO: list draft from localstorage
+  const [draftList = [], setDraftList] = useLocalStorage(
+    Z_CAPTION_EDITOR_DRAFT_LIST,
+    `${STORAGE_KEYS.captionEditorDraftList}`
+  );
 
   return (
     <div className="w-full flex justify-center">
@@ -39,6 +47,35 @@ export default function Page() {
               Load
             </button>
           </form>
+          <div className="border-t my-3"></div>
+          <div className="text-2xl">Draft</div>
+          {!draftList.length && <div>Empty</div>}
+          {!!draftList.length && (
+            <ul className="flex flex-col gap-2">
+              {draftList.map((e) => (
+                <li className="flex items-center border antd-btn antd-btn-text p-2">
+                  <Link
+                    className="flex-1"
+                    to={$R["/videos/caption-editor"](null, {
+                      videoId: e.videoId,
+                    })}
+                  >
+                    {e.videoId}
+                  </Link>
+                  <button
+                    className="antd-btn antd-btn-ghost i-ri-close-line w-5 h-5"
+                    onClick={() => {
+                      if (window.confirm("Are you sure to delete 'xxx'?")) {
+                        setDraftList(
+                          draftList.filter((e2) => e2.videoId !== e.videoId)
+                        );
+                      }
+                    }}
+                  ></button>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       </div>
     </div>

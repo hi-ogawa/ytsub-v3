@@ -18,6 +18,7 @@ import { useModal } from "./modal";
 
 // TODO: virtualize list? (no perf problem when used for short 3 min song)
 // TODO: support "half manual" mode
+// TODO: auto-translate from one side to the other?
 
 export function CaptionEditor(props: {
   videoId: string;

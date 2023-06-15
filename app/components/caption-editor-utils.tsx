@@ -1,4 +1,5 @@
 import { wrapError } from "@hiogawa/utils";
+import React from "react";
 import { z } from "zod";
 
 export const Z_CAPTION_EDITOR_ENTRY = z.object({
@@ -9,29 +10,43 @@ export const Z_CAPTION_EDITOR_ENTRY = z.object({
   text2: z.string(),
 });
 
+export const Z_CAPTION_EDITOR_ENTRY_LIST = Z_CAPTION_EDITOR_ENTRY.array();
+
 export type CaptionEditorEntry = z.infer<typeof Z_CAPTION_EDITOR_ENTRY>;
 
-export function createDraftUtils(key: string) {
-  const draftKey = `ytsub:useDraft:${key}`;
+const Z_CAPTION_EDITOR_DRAFT_ITEM = z.object({
+  videoId: z.string(),
+});
 
-  function get(): CaptionEditorEntry[] | undefined {
-    const item = window.localStorage.getItem(draftKey);
-    if (item) {
-      const parsed = wrapError(() =>
-        Z_CAPTION_EDITOR_ENTRY.array().parse(JSON.parse(item))
-      );
-      if (parsed.ok) {
-        return parsed.value;
+export const Z_CAPTION_EDITOR_DRAFT_LIST = Z_CAPTION_EDITOR_DRAFT_ITEM.array();
+
+export const STORAGE_KEYS = z.enum([
+  "captionEditorEntryListByVideoId",
+  "captionEditorDraftList",
+]).enum;
+
+export function useLocalStorage<Z extends z.ZodType, T = z.infer<Z>>(
+  schema: Z,
+  key: string
+) {
+  const [state, setState] = React.useState(() => {
+    if (typeof window !== "undefined") {
+      const item = window.localStorage.getItem(key);
+      if (item) {
+        const result = wrapError(() => schema.parse(JSON.parse(item)) as T);
+        if (result.ok) {
+          return result.value;
+        }
+        console.error(result.value);
       }
-      console.error("createDraftUtils", parsed.value);
     }
     return;
+  });
+
+  function setStateWrapper(v: T) {
+    window.localStorage.setItem(key, JSON.stringify(v));
+    setState(v);
   }
 
-  function set(data: CaptionEditorEntry[]) {
-    const item = JSON.stringify(data);
-    window.localStorage.setItem(draftKey, item);
-  }
-
-  return { get, set };
+  return [state, setStateWrapper] as const;
 }
