@@ -205,7 +205,7 @@ test("captions-editor-basic", async ({ page }) => {
 
   // navigated to /vides/new
   await page.waitForURL(
-    "http://localhost:3001/videos/new?videoId=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DUY3N52CrTPE"
+    "/videos/new?videoId=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DUY3N52CrTPE"
   );
   await expect(page.getByLabel("Title")).toHaveValue(
     `TWICE 5th Anniversary Special Live 'WITH' "SAY SOMETHING"`
@@ -294,6 +294,13 @@ test("captions-editor-auto-save", async ({ page }) => {
   expect(clipboardText).toContain(
     `"text1": "[EDIT] Alright 일단 system check"`
   );
+
+  // check draft list
+  await page.getByTestId("Navbar-drawer-button").click();
+  await page.getByRole("link", { name: "Caption Editor" }).click();
+  await page.waitForURL("/caption-editor");
+  await page.getByRole("link", { name: "sLd0jl6zv80" }).click();
+  await page.waitForURL("/caption-editor/watch?v=sLd0jl6zv80");
 });
 
 test("invalid videoId input", async ({ page }) => {

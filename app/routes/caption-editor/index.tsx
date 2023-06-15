@@ -10,7 +10,7 @@ import { ClientOnly } from "../../utils/misc-react";
 import type { PageHandle } from "../../utils/page-handle";
 
 export const handle: PageHandle = {
-  navBarTitle: () => "Caption editor",
+  navBarTitle: () => "Caption Editor",
 };
 
 export default function Page() {

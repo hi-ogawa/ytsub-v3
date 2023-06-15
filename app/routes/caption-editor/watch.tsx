@@ -14,7 +14,7 @@ import type { PageHandle } from "../../utils/page-handle";
 import { parseVideoId } from "../../utils/youtube";
 
 export const handle: PageHandle = {
-  navBarTitle: () => "Caption editor",
+  navBarTitle: () => "Caption Editor",
 };
 
 //
