@@ -25,8 +25,8 @@ type LoaderData = {
 };
 
 export const loader = makeLoader(async ({ ctx }) => {
-  const query = ROUTE_DEF["/videos/caption-editor"].query.parse(ctx.query);
-  const videoId = parseVideoId(query.videoId);
+  const query = ROUTE_DEF["/caption-editor/watch"].query.parse(ctx.query);
+  const videoId = parseVideoId(query.v);
   tinyassert(videoId);
   return { videoId } satisfies LoaderData;
 });

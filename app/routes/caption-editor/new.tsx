@@ -29,9 +29,7 @@ export default function Page() {
           <form
             className="w-full flex flex-col gap-3"
             onSubmit={form.handleSubmit((data) => {
-              navigate(
-                $R["/videos/caption-editor"](null, { videoId: data.videoId })
-              );
+              navigate($R["/caption-editor/watch"](null, { v: data.videoId }));
             })}
           >
             <label className="flex flex-col gap-1">
@@ -53,11 +51,14 @@ export default function Page() {
           {!!draftList.length && (
             <ul className="flex flex-col gap-2">
               {draftList.map((e) => (
-                <li className="flex items-center border antd-btn antd-btn-text p-2">
+                <li
+                  key={e.videoId}
+                  className="flex items-center border antd-btn antd-btn-text p-2"
+                >
                   <Link
                     className="flex-1"
-                    to={$R["/videos/caption-editor"](null, {
-                      videoId: e.videoId,
+                    to={$R["/caption-editor/watch"](null, {
+                      v: e.videoId,
                     })}
                   >
                     {e.videoId}
