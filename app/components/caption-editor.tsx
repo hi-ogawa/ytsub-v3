@@ -1,27 +1,36 @@
 import { Transition } from "@headlessui/react";
+import { mapOption, range, tinyassert } from "@hiogawa/utils";
 import { toArraySetState, useRafLoop } from "@hiogawa/utils-react";
 import { useMutation } from "@tanstack/react-query";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
+import { z } from "zod";
+import { trpcClient } from "../trpc/client-internal.client";
 import { useDocumentEvent } from "../utils/hooks-client-utils";
 import { cls, zipMax } from "../utils/misc";
-import type { CaptionEntry } from "../utils/types";
+import type { CaptionEntry, VideoMetadata } from "../utils/types";
 import {
   YoutubePlayer,
+  mergeTtmlEntries,
+  mergeTtmlEntriesHalfManual,
   stringifyTimestamp,
+  toCaptionConfigOptions,
   usePlayerLoader,
 } from "../utils/youtube";
-import { CaptionEditorEntry } from "./caption-editor-utils";
-import { transitionProps } from "./misc";
+import {
+  CaptionEditorEntry,
+  toCaptionEditorEntry,
+} from "./caption-editor-utils";
+import { SelectWrapper, transitionProps } from "./misc";
 import { useModal } from "./modal";
 
 // TODO: virtualize list? (no perf problem when used for short 3 min song)
-// TODO: support "half manual" mode
 // TODO: auto-translate from one side to the other?
 
 export function CaptionEditor(props: {
   videoId: string;
+  videoMetadata: VideoMetadata;
   defaultValue: CaptionEditorEntry[];
   onChange: (v: CaptionEditorEntry[]) => void;
 }) {
@@ -191,8 +200,9 @@ export function CaptionEditor(props: {
           <importModal.Wrapper className="!max-w-3xl">
             <div className="flex flex-col max-h-[80vh]">
               <ImportModalForm
-                onSubmit={(data) => {
-                  setEntries(createInitialEntries(data.text1, data.text2));
+                videoMetadata={props.videoMetadata}
+                onSubmit={(entries) => {
+                  setEntries(entries);
                   importModal.setOpen(false);
                 }}
               />
@@ -332,62 +342,179 @@ function createInitialEntries(
   );
 }
 
+const Z_IMPORT_MODE = z.enum(["manual", "download"]);
+type ImportMode = z.infer<typeof Z_IMPORT_MODE>;
+
 interface ImportModalFormType {
+  mode1: ImportMode;
+  mode2: ImportMode;
   text1: string;
   text2: string;
+  download1?: number;
+  download2?: number;
 }
 
 function ImportModalForm(props: {
-  onSubmit: (data: ImportModalFormType) => void;
+  videoMetadata: VideoMetadata;
+  onSubmit: (entries: CaptionEditorEntry[]) => void;
 }) {
   const form = useForm<ImportModalFormType>({
     defaultValues: {
+      mode1: "manual",
+      mode2: "download",
       text1: "",
       text2: "",
+      download1: undefined,
+      download2: undefined,
+    },
+  });
+
+  // work with index since "useForm" breaks object identity
+  const downloadOptions = toCaptionConfigOptions(props.videoMetadata).captions;
+  const downloadOptionIndices = range(downloadOptions.length);
+
+  const importEntriesMutation = useMutation({
+    mutationFn: async (data: ImportModalFormType) => {
+      if (data.mode1 === "manual" && data.mode2 === "manual") {
+        return createInitialEntries(data.text1, data.text2);
+      }
+
+      const videoId = props.videoMetadata.videoDetails.videoId;
+      function fetchEntries(index?: number) {
+        if (typeof index !== "number") {
+          throw new Error("Please select a lanauge");
+        }
+        return trpcClient.videos_fetchTtmlEntries.query({
+          videoId,
+          language: downloadOptions[index].captionConfig,
+        });
+      }
+
+      const [downloadEntries1, downloadEntries2] = await Promise.all([
+        data.mode1 === "download" ? fetchEntries(data.download1) : [],
+        data.mode2 === "download" ? fetchEntries(data.download2) : [],
+      ]);
+
+      if (data.mode1 === "download" && data.mode2 === "download") {
+        return mergeTtmlEntries(downloadEntries1, downloadEntries2).map((e) =>
+          toCaptionEditorEntry(e)
+        );
+      }
+
+      if (data.mode1 === "manual" && data.mode2 === "download") {
+        return mergeTtmlEntriesHalfManual(data.text1, downloadEntries2).map(
+          (e) => toCaptionEditorEntry(e)
+        );
+      }
+
+      if (data.mode1 === "download" && data.mode2 === "manual") {
+        const entries = mergeTtmlEntriesHalfManual(
+          data.text2,
+          downloadEntries1
+        );
+        return entries
+          .map((e) => ({
+            ...e,
+            text1: e.text2,
+            text2: e.text1,
+          }))
+          .map((e) => toCaptionEditorEntry(e));
+      }
+
+      tinyassert(false, "unreachable");
+    },
+    onSuccess: (data) => {
+      props.onSubmit(data);
     },
   });
 
   return (
     <form
-      className="flex flex-col gap-4 p-4 m-0"
+      className="flex flex-col gap-4 p-4 m-0 min-h-[406px]"
       onSubmit={form.handleSubmit((data) => {
-        props.onSubmit(data);
+        importEntriesMutation.mutate(data);
       })}
     >
       <div className="flex items-center">
-        <h2 className="text-lg">Import Captions</h2>
+        <h2 className="text-xl">Import Captions</h2>
         <span className="flex-1"></span>
         <button
           type="button"
           className="antd-btn antd-btn-default px-2"
           onClick={() => {
-            props.onSubmit({ text1: EXAMPLE_KO, text2: EXAMPLE_EN });
+            form.setValue("mode1", "manual");
+            form.setValue("mode2", "manual");
+            form.setValue("text1", EXAMPLE_KO);
+            form.setValue("text2", EXAMPLE_EN);
           }}
         >
           use sample
         </button>
       </div>
-      <div className="flex gap-2">
-        <label className="flex-1 flex flex-col gap-1">
-          Left
-          <textarea
-            className="antd-input p-1"
-            rows={10}
-            {...form.register("text1")}
-          />
-        </label>
-        <label className="flex-1 flex flex-col gap-1">
-          Right
-          <textarea
-            className="antd-input p-1"
-            rows={10}
-            {...form.register("text2")}
-          />
-        </label>
+      <div className="flex-1 flex gap-3 px-1">
+        {renderSide("1")}
+        <div className="border-r"></div>
+        {renderSide("2")}
       </div>
-      <button className="antd-btn antd-btn-primary p-1">Submit</button>
+      <button
+        className={cls(
+          "antd-btn antd-btn-primary p-1",
+          importEntriesMutation.isLoading && "antd-btn-loading"
+        )}
+        disabled={importEntriesMutation.isLoading}
+      >
+        Import
+      </button>
     </form>
   );
+
+  function renderSide(side: "1" | "2") {
+    const mode = form.watch(`mode${side}`);
+
+    return (
+      <div className="flex-1 flex flex-col gap-1">
+        <span className="flex items-center gap-2">
+          <span className="text-lg">
+            {side === "1" ? "Left" : "Right"} side
+          </span>
+          <SelectWrapper
+            className="antd-input capitalize"
+            options={Z_IMPORT_MODE.options}
+            value={mode}
+            onChange={(v) => {
+              form.setValue(`mode${side}`, v);
+            }}
+          />
+        </span>
+        {mode === "manual" && (
+          <textarea
+            className="antd-input p-1"
+            rows={10}
+            {...form.register(`text${side}`)}
+          />
+        )}
+        {mode === "download" && (
+          <div className="flex flex-col gap-1">
+            <span className="text-colorTextLabel">Select Language</span>
+            <SelectWrapper
+              className="antd-input p-1"
+              options={[undefined, ...downloadOptionIndices]}
+              value={form.watch(`download${side}`)}
+              onChange={(v) => form.setValue(`download${side}`, v)}
+              labelFn={(v) =>
+                mapOption(v, (v) => downloadOptions[v].name) ?? ""
+              }
+            />
+            {downloadOptions.length === 0 && (
+              <span className="text-sm text-colorErrorText">
+                No caption is available to download for this video.
+              </span>
+            )}
+          </div>
+        )}
+      </div>
+    );
+  }
 }
 
 function parseCaptionInput(input: string): string[] {

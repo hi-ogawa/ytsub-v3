@@ -396,7 +396,7 @@ export async function fetchCaptionEntriesHalfManual({
   };
 }
 
-function mergeTtmlEntriesHalfManual(
+export function mergeTtmlEntriesHalfManual(
   input: string,
   entries2: TtmlEntry[]
 ): CaptionEntry[] {

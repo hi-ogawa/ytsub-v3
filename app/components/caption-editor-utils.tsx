@@ -1,6 +1,7 @@
 import { wrapError } from "@hiogawa/utils";
 import React from "react";
 import { z } from "zod";
+import { CaptionEntry } from "../utils/types";
 
 const Z_CAPTION_EDITOR_ENTRY = z.object({
   begin: z.number(),
@@ -13,6 +14,10 @@ const Z_CAPTION_EDITOR_ENTRY = z.object({
 export const Z_CAPTION_EDITOR_ENTRY_LIST = Z_CAPTION_EDITOR_ENTRY.array();
 
 export type CaptionEditorEntry = z.infer<typeof Z_CAPTION_EDITOR_ENTRY>;
+
+export function toCaptionEditorEntry(e: CaptionEntry): CaptionEditorEntry {
+  return { ...e, endLocked: true };
+}
 
 const Z_CAPTION_EDITOR_DRAFT_ITEM = z.object({
   videoId: z.string(),

@@ -333,17 +333,24 @@ export function TestYoutubePlayer() {
 }
 
 export function TestCaptionEditor() {
-  const videoId = "UY3N52CrTPE";
+  // https://www.youtube.com/watch?v=UY3N52CrTPE
+  const [videoId] = React.useState(
+    () => new URLSearchParams(window.location.search).get("v") || "UY3N52CrTPE"
+  );
 
   const [draftData = [], setDraftData] = useLocalStorage(
     Z_CAPTION_EDITOR_ENTRY_LIST,
     `${STORAGE_KEYS.captionEditorEntryListByVideoId}:${videoId}`
   );
 
-  // https://www.youtube.com/watch?v=UY3N52CrTPE
+  if ("todo") {
+    return "todo";
+  }
+
   return (
+    // @ts-ignore
     <CaptionEditor
-      videoId="UY3N52CrTPE"
+      videoId={videoId}
       defaultValue={draftData}
       onChange={(data) => setDraftData(data)}
     />

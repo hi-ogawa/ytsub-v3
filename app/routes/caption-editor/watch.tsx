@@ -11,7 +11,8 @@ import { useLoaderDataExtra } from "../../utils/loader-utils";
 import { makeLoader } from "../../utils/loader-utils.server";
 import { ClientOnly } from "../../utils/misc-react";
 import type { PageHandle } from "../../utils/page-handle";
-import { parseVideoId } from "../../utils/youtube";
+import { VideoMetadata } from "../../utils/types";
+import { fetchVideoMetadata, parseVideoId } from "../../utils/youtube";
 
 export const handle: PageHandle = {
   navBarTitle: () => "Caption Editor",
@@ -23,13 +24,15 @@ export const handle: PageHandle = {
 
 type LoaderData = {
   videoId: string;
+  videoMetadata: VideoMetadata;
 };
 
 export const loader = makeLoader(async ({ ctx }) => {
   const query = ROUTE_DEF["/caption-editor/watch"].query.parse(ctx.query);
   const videoId = parseVideoId(query.v);
   tinyassert(videoId);
-  return { videoId } satisfies LoaderData;
+  const videoMetadata = await fetchVideoMetadata(videoId);
+  return { videoId, videoMetadata } satisfies LoaderData;
 });
 
 //
@@ -45,7 +48,7 @@ export default function Page() {
 }
 
 function PageInner() {
-  const { videoId } = useLoaderDataExtra() as LoaderData;
+  const { videoId, videoMetadata } = useLoaderDataExtra() as LoaderData;
 
   const [draftData = [], setDraftData] = useLocalStorage(
     Z_CAPTION_EDITOR_ENTRY_LIST,
@@ -61,6 +64,7 @@ function PageInner() {
     <div className="p-2 h-full">
       <CaptionEditor
         videoId={videoId}
+        videoMetadata={videoMetadata}
         defaultValue={draftData}
         onChange={(data) => {
           setDraftData(data);

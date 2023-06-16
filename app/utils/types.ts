@@ -37,17 +37,16 @@ export interface CaptionConfig {
   translation?: string;
 }
 
+interface CaptionConfigOption {
+  name: string;
+  captionConfig: CaptionConfig;
+}
+
 export interface CaptionConfigOptions {
-  captions: {
-    name: string;
-    captionConfig: CaptionConfig;
-  }[];
+  captions: CaptionConfigOption[];
   translationGroups: {
     name: string;
-    translations: {
-      name: string;
-      captionConfig: CaptionConfig;
-    }[];
+    translations: CaptionConfigOption[];
   }[];
 }
 
