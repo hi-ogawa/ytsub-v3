@@ -38,9 +38,10 @@ export const ROUTE_DEF = {
       videoId: z.string(),
     }),
   },
-  "/videos/caption-editor": {
+  "/caption-editor": {},
+  "/caption-editor/watch": {
     query: z.object({
-      videoId: z.string(),
+      v: z.string(),
     }),
   },
   "/videos/$id": {

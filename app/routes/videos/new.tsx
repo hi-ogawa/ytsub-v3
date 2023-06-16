@@ -319,7 +319,7 @@ function AdvancedModeFormV2({ videoId }: { videoId: string }) {
           <span>Input</span>
           <a
             className="antd-link text-sm flex items-center gap-1"
-            href={$R["/videos/caption-editor"](null, { videoId })}
+            href={$R["/caption-editor/watch"](null, { v: videoId })}
             target="_blank"
           >
             Open caption editor

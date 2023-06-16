@@ -10,9 +10,10 @@ import {
 
 describe("fetchVideoMetadata", () => {
   it("basic", async () => {
-    const res = await fetchVideoMetadata("EnPYXckiUVg");
+    // Cookie (NewJeans) https://www.youtube.com/watch?v=VOmIplFAGeg
+    const res = await fetchVideoMetadata("VOmIplFAGeg");
     expect(res.videoDetails.title).toMatchInlineSnapshot(
-      '"Are French People Really That Mean?! // French Girls React to Emily In Paris (in FR w/ FR & EN subs)"'
+      "\"NewJeans (뉴진스) 'Cookie' Official MV\""
     );
     expect(res.playabilityStatus).toMatchInlineSnapshot(`
       {

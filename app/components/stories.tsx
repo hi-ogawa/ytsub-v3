@@ -5,6 +5,11 @@ import { useForm } from "react-hook-form";
 import { cls } from "../utils/misc";
 import { YoutubePlayer, usePlayerLoader } from "../utils/youtube";
 import { CaptionEditor } from "./caption-editor";
+import {
+  STORAGE_KEYS,
+  Z_CAPTION_EDITOR_ENTRY_LIST,
+  useLocalStorage,
+} from "./caption-editor-utils";
 import { SelectWrapper, VideoComponent, transitionProps } from "./misc";
 import { PopoverSimple } from "./popover";
 import {
@@ -328,6 +333,19 @@ export function TestYoutubePlayer() {
 }
 
 export function TestCaptionEditor() {
+  const videoId = "UY3N52CrTPE";
+
+  const [draftData = [], setDraftData] = useLocalStorage(
+    Z_CAPTION_EDITOR_ENTRY_LIST,
+    `${STORAGE_KEYS.captionEditorEntryListByVideoId}:${videoId}`
+  );
+
   // https://www.youtube.com/watch?v=UY3N52CrTPE
-  return <CaptionEditor videoId="UY3N52CrTPE" />;
+  return (
+    <CaptionEditor
+      videoId="UY3N52CrTPE"
+      defaultValue={draftData}
+      onChange={(data) => setDraftData(data)}
+    />
+  );
 }

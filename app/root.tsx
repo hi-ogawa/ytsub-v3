@@ -258,7 +258,7 @@ const SIDE_MENU_ENTRIES: SideMenuEntry[] = [
   {
     to: R["/videos"],
     icon: <span className="i-ri-vidicon-line w-6 h-6" />,
-    title: "Your Videos",
+    title: "Videos",
     requireSignin: true,
   },
   {
@@ -272,6 +272,12 @@ const SIDE_MENU_ENTRIES: SideMenuEntry[] = [
     icon: <span className="i-ri-book-open-line w-6 h-6" />,
     title: "Practice",
     requireSignin: true,
+  },
+  {
+    to: R["/caption-editor"],
+    icon: <span className="i-ri-closed-captioning-line w-6 h-6" />,
+    title: "Caption Editor",
+    requireSignin: false,
   },
 ];
 
