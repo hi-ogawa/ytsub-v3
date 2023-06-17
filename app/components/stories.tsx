@@ -343,13 +343,14 @@ export function TestCaptionEditor() {
     `${STORAGE_KEYS.captionEditorEntryListByVideoId}:${videoId}`
   );
 
+  // TODO: CaptionEditor now requires `videoMetadata` and `fetchTtmlEntries`
   if ("todo") {
     return "todo";
   }
 
   return (
-    // @ts-ignore
     <CaptionEditor
+      videoMetadata={0 as any}
       videoId={videoId}
       defaultValue={draftData}
       onChange={(data) => setDraftData(data)}
