@@ -1,7 +1,8 @@
 import { wrapError } from "@hiogawa/utils";
 import React from "react";
 import { z } from "zod";
-import { CaptionEntry } from "../utils/types";
+import { zipMax } from "../utils/misc";
+import { TtmlEntry } from "../utils/youtube";
 
 const Z_CAPTION_EDITOR_ENTRY = z.object({
   begin: z.number(),
@@ -15,8 +16,28 @@ export const Z_CAPTION_EDITOR_ENTRY_LIST = Z_CAPTION_EDITOR_ENTRY.array();
 
 export type CaptionEditorEntry = z.infer<typeof Z_CAPTION_EDITOR_ENTRY>;
 
-export function toCaptionEditorEntry(e: CaptionEntry): CaptionEditorEntry {
-  return { ...e, endLocked: true };
+export type CaptionEditorEntrySimple = Omit<CaptionEditorEntry, "endLocked">;
+
+export function mergePartialTtmlEntries(
+  input: string,
+  entries2: TtmlEntry[]
+): CaptionEditorEntry[] {
+  const entries1 = parseManualInput(input);
+
+  return zipMax(entries1, entries2).map(([line, e]) => ({
+    begin: e?.begin ?? 0,
+    end: e?.end ?? 0,
+    text1: line ?? "",
+    text2: e?.text ?? "",
+    endLocked: true,
+  }));
+}
+
+export function parseManualInput(input: string): string[] {
+  return input
+    .split("\n")
+    .map((s) => s.trim())
+    .filter((s) => s);
 }
 
 const Z_CAPTION_EDITOR_DRAFT_ITEM = z.object({

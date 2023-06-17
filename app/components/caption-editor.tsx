@@ -13,14 +13,15 @@ import type { CaptionEntry, VideoMetadata } from "../utils/types";
 import {
   YoutubePlayer,
   mergeTtmlEntries,
-  mergeTtmlEntriesHalfManual,
   stringifyTimestamp,
   toCaptionConfigOptions,
   usePlayerLoader,
 } from "../utils/youtube";
 import {
   CaptionEditorEntry,
-  toCaptionEditorEntry,
+  CaptionEditorEntrySimple,
+  mergePartialTtmlEntries,
+  parseManualInput,
 } from "./caption-editor-utils";
 import { SelectWrapper, transitionProps } from "./misc";
 import { useModal } from "./modal";
@@ -202,7 +203,7 @@ export function CaptionEditor(props: {
               <ImportModalForm
                 videoMetadata={props.videoMetadata}
                 onSubmit={(entries) => {
-                  setEntries(entries);
+                  setEntries(entries.map((e) => ({ ...e, endLocked: true })));
                   importModal.setOpen(false);
                 }}
               />
@@ -330,12 +331,11 @@ export function CaptionEditor(props: {
 function createInitialEntries(
   text1: string,
   text2: string
-): CaptionEditorEntry[] {
-  return zipMax(parseCaptionInput(text1), parseCaptionInput(text2)).map(
+): CaptionEditorEntrySimple[] {
+  return zipMax(parseManualInput(text1), parseManualInput(text2)).map(
     ([text1 = "", text2 = ""]) => ({
       begin: 0,
       end: 0,
-      endLocked: true,
       text1,
       text2,
     })
@@ -356,7 +356,7 @@ interface ImportModalFormType {
 
 function ImportModalForm(props: {
   videoMetadata: VideoMetadata;
-  onSubmit: (entries: CaptionEditorEntry[]) => void;
+  onSubmit: (entries: CaptionEditorEntrySimple[]) => void;
 }) {
   const form = useForm<ImportModalFormType>({
     defaultValues: {
@@ -396,29 +396,21 @@ function ImportModalForm(props: {
       ]);
 
       if (data.mode1 === "download" && data.mode2 === "download") {
-        return mergeTtmlEntries(downloadEntries1, downloadEntries2).map((e) =>
-          toCaptionEditorEntry(e)
-        );
+        return mergeTtmlEntries(downloadEntries1, downloadEntries2);
       }
 
       if (data.mode1 === "manual" && data.mode2 === "download") {
-        return mergeTtmlEntriesHalfManual(data.text1, downloadEntries2).map(
-          (e) => toCaptionEditorEntry(e)
-        );
+        return mergePartialTtmlEntries(data.text1, downloadEntries2);
       }
 
       if (data.mode1 === "download" && data.mode2 === "manual") {
-        const entries = mergeTtmlEntriesHalfManual(
-          data.text2,
-          downloadEntries1
-        );
-        return entries
-          .map((e) => ({
+        return mergePartialTtmlEntries(data.text2, downloadEntries1).map(
+          (e) => ({
             ...e,
             text1: e.text2,
             text2: e.text1,
-          }))
-          .map((e) => toCaptionEditorEntry(e));
+          })
+        );
       }
 
       tinyassert(false, "unreachable");
@@ -515,14 +507,6 @@ function ImportModalForm(props: {
       </div>
     );
   }
-}
-
-function parseCaptionInput(input: string): string[] {
-  return input
-    .trim()
-    .split("\n")
-    .map((line) => line.trim())
-    .filter(Boolean);
 }
 
 // copied from https://lyricstranslate.com/en/twice-say-something-lyrics.html

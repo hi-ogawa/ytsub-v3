@@ -182,7 +182,7 @@ export function findCaptionConfigPair(
   return { language1, language2 };
 }
 
-interface TtmlEntry {
+export interface TtmlEntry {
   begin: number;
   end: number;
   text: string;
@@ -396,7 +396,7 @@ export async function fetchCaptionEntriesHalfManual({
   };
 }
 
-export function mergeTtmlEntriesHalfManual(
+function mergeTtmlEntriesHalfManual(
   input: string,
   entries2: TtmlEntry[]
 ): CaptionEntry[] {
