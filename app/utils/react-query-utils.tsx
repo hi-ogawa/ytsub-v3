@@ -41,8 +41,7 @@ function createQueryClient() {
       mutations: {
         onError(error, _variables, _context) {
           console.error("[mutation error]", error);
-          const extra = error instanceof Error ? `\n(${error.message})` : "";
-          toast.error("Something went wrong..." + extra);
+          toast.error("Something went wrong...");
         },
       },
     },
