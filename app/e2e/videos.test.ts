@@ -139,60 +139,6 @@ test("anonymouse: / => /videos/new => /videos/id", async ({ page }) => {
   await page.getByText("Hey you 지금 뭐 해").click();
 });
 
-test("captions-manual-mode", async ({ page }) => {
-  await page.goto("/");
-
-  // input videoId
-  await page.getByTestId("Navbar-drawer-button").click();
-  await page
-    .getByPlaceholder("Enter Video ID or URL")
-    .fill("https://www.youtube.com/watch?v=AQt4K08L_m8");
-  await page.getByPlaceholder("Enter Video ID or URL").press("Enter");
-
-  // navigated to /vides/new
-  await page.waitForURL(
-    "/videos/new?videoId=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DAQt4K08L_m8"
-  );
-  await expect(page.getByLabel("Title")).toHaveValue(
-    "조유리 (JO YURI) | 'GLASSY' MV"
-  );
-
-  // enable manual mode
-  await page.getByTestId("video-menu-reference").click();
-  await page.getByRole("button", { name: "Manual input", exact: true }).click();
-
-  // input form
-  await page
-    .getByRole("combobox", { name: "1st language" })
-    .selectOption({ label: "Korean" });
-  await page
-    .getByRole("combobox", { name: "2nd language" })
-    .selectOption('{"id":".en"}');
-  await page.locator('textarea[name="input"]').fill(`\
-기분이 들떠
-Like a star like a star
-걸음에 시선이 쏟아져
-`);
-
-  // edit preview
-  await page.getByRole("button", { name: "Preview" }).click();
-  await page.getByText("기분이 들떠").click();
-  await page.getByText("걸음에 시선이 쏟아져").click();
-  await page
-    .locator("div:nth-child(4) > div > .w-full")
-    .fill("아닌척해도 살짝살짝");
-  await page.keyboard.press("Escape");
-
-  // submit and navigated to /videos/$id
-  await page.getByRole("button", { name: "Save and Play" }).click();
-  await page.getByText("Created a new video").click();
-  await page.waitForURL(/\/videos\/\d+$/);
-
-  // check created captions
-  await page.getByText("아닌척해도 살짝살짝").click();
-  await page.getByText("Even if you’re pretending not to").click();
-});
-
 test("captions-editor-basic", async ({ page }) => {
   await page.goto("/");
 
@@ -211,9 +157,9 @@ test("captions-editor-basic", async ({ page }) => {
     `TWICE 5th Anniversary Special Live 'WITH' "SAY SOMETHING"`
   );
 
-  // enable manual mode
+  // enable caption editor mode
   await page.getByTestId("video-menu-reference").click();
-  await page.getByRole("button", { name: "Manual input (v2)" }).click();
+  await page.getByRole("button", { name: "Use caption editor" }).click();
 
   // check link
   await expect(
@@ -259,20 +205,27 @@ test("captions-editor-basic", async ({ page }) => {
 });
 
 test("captions-editor-auto-save", async ({ page }) => {
-  // PAXXWORD (NMIXX) https://www.youtube.com/watch?v=sLd0jl6zv80
-  await page.goto("/caption-editor/watch?v=sLd0jl6zv80");
+  // PAXXWORD (NMIXX) https://www.youtube.com/watch?v=lH_n29wkT_4
+  await page.goto("/caption-editor/watch?v=lH_n29wkT_4");
 
-  // import a few lines
+  // import with manual + download
   await page.getByRole("button", { name: "Import" }).click();
   await page
-    .getByLabel("Left")
+    .locator('textarea[name="text1"]')
     .fill("Alright 일단 system check\n시작하기 전 stretching 해");
   await page
-    .getByLabel("Right")
-    .fill(
-      "Alright, First, system check\nBefore you start, go stretching, yeah"
-    );
-  await page.getByRole("button", { name: "Submit" }).click();
+    .locator('select[name="mode2"]')
+    .selectOption({ label: "download" });
+  await page
+    .locator('select[name="download2"]')
+    .selectOption({ label: "English" });
+  await page
+    .locator('[data-test="modal"]')
+    .getByRole("button", { name: "Import" })
+    .click();
+
+  // check downloaded captions
+  await page.getByText("Alright, First, system check").click();
 
   // edit
   await page
@@ -299,8 +252,8 @@ test("captions-editor-auto-save", async ({ page }) => {
   await page.getByTestId("Navbar-drawer-button").click();
   await page.getByRole("link", { name: "Caption Editor" }).click();
   await page.waitForURL("/caption-editor");
-  await page.getByRole("link", { name: "sLd0jl6zv80" }).click();
-  await page.waitForURL("/caption-editor/watch?v=sLd0jl6zv80");
+  await page.getByRole("link", { name: "lH_n29wkT_4" }).click();
+  await page.waitForURL("/caption-editor/watch?v=lH_n29wkT_4");
 });
 
 test("invalid videoId input", async ({ page }) => {

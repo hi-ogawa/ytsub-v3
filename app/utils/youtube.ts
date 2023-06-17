@@ -182,7 +182,7 @@ export function findCaptionConfigPair(
   return { language1, language2 };
 }
 
-interface TtmlEntry {
+export interface TtmlEntry {
   begin: number;
   end: number;
   text: string;
@@ -369,53 +369,6 @@ export async function fetchCaptionEntries({
   ]);
   const captionEntries = mergeTtmlEntries(ttmlEntries1, ttmlEntries2);
   return { videoMetadata, captionEntries };
-}
-
-// very ad-hoc support for providing captions externally
-export async function fetchCaptionEntriesHalfManual({
-  videoId,
-  language1,
-  language2,
-}: {
-  videoId: string;
-  language1: NewVideo["language1"] & { input: string };
-  language2: NewVideo["language2"];
-}): Promise<{
-  videoMetadata: VideoMetadata;
-  captionEntries: CaptionEntry[];
-}> {
-  const videoMetadata = await fetchVideoMetadata(videoId);
-  const ttmlEntries = await fetchTtmlEntries(language2, videoMetadata);
-  const captionEntries = mergeTtmlEntriesHalfManual(
-    language1.input,
-    ttmlEntries
-  );
-  return {
-    videoMetadata,
-    captionEntries,
-  };
-}
-
-function mergeTtmlEntriesHalfManual(
-  input: string,
-  entries2: TtmlEntry[]
-): CaptionEntry[] {
-  const entries1 = splitManualInputEntries(input);
-
-  return zip(entries1, entries2).map(([line, e], i) => ({
-    index: i,
-    begin: e.begin,
-    end: e.end,
-    text1: line,
-    text2: e.text ?? "",
-  }));
-}
-
-export function splitManualInputEntries(input: string): string[] {
-  return input
-    .split("\n")
-    .map((s) => s.trim())
-    .filter((s) => s);
 }
 
 export async function fetchTtmlEntries(

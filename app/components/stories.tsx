@@ -3,6 +3,7 @@ import { useRafLoop } from "@hiogawa/utils-react";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { cls } from "../utils/misc";
+import { DUMMY_VIDEO_METADATA } from "../utils/types";
 import { YoutubePlayer, usePlayerLoader } from "../utils/youtube";
 import { CaptionEditor } from "./caption-editor";
 import {
@@ -333,17 +334,20 @@ export function TestYoutubePlayer() {
 }
 
 export function TestCaptionEditor() {
-  const videoId = "UY3N52CrTPE";
+  // https://www.youtube.com/watch?v=UY3N52CrTPE
+  const [videoId] = React.useState(
+    () => new URLSearchParams(window.location.search).get("v") || "UY3N52CrTPE"
+  );
 
   const [draftData = [], setDraftData] = useLocalStorage(
     Z_CAPTION_EDITOR_ENTRY_LIST,
     `${STORAGE_KEYS.captionEditorEntryListByVideoId}:${videoId}`
   );
 
-  // https://www.youtube.com/watch?v=UY3N52CrTPE
   return (
     <CaptionEditor
-      videoId="UY3N52CrTPE"
+      videoMetadata={DUMMY_VIDEO_METADATA}
+      videoId={videoId}
       defaultValue={draftData}
       onChange={(data) => setDraftData(data)}
     />
