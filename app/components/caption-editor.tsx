@@ -206,13 +206,13 @@ export function CaptionEditor(props: {
               floating={
                 <div className="p-3">
                   <div className="flex items-center gap-2">
-                    <div className="font-mono bg-colorBgSpotlight text-sm px-1">
+                    <div className="font-mono bg-colorFill text-sm px-1">
                       Ctrl+Enter
                     </div>{" "}
                     Add a new entry
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="font-mono bg-colorBgSpotlight text-sm px-1">
+                    <div className="font-mono bg-colorFill text-sm px-1">
                       Ctrl+D
                     </div>{" "}
                     Remove a current entry

@@ -3,6 +3,7 @@ import { useRafLoop } from "@hiogawa/utils-react";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { cls } from "../utils/misc";
+import { DUMMY_VIDEO_METADATA } from "../utils/types";
 import { YoutubePlayer, usePlayerLoader } from "../utils/youtube";
 import { CaptionEditor } from "./caption-editor";
 import {
@@ -343,14 +344,9 @@ export function TestCaptionEditor() {
     `${STORAGE_KEYS.captionEditorEntryListByVideoId}:${videoId}`
   );
 
-  // TODO: CaptionEditor now requires `videoMetadata` and `fetchTtmlEntries`
-  if ("todo") {
-    return "todo";
-  }
-
   return (
     <CaptionEditor
-      videoMetadata={0 as any}
+      videoMetadata={DUMMY_VIDEO_METADATA}
       videoId={videoId}
       defaultValue={draftData}
       onChange={(data) => setDraftData(data)}

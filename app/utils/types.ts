@@ -30,6 +30,22 @@ export const Z_VIDEO_METADATA = z.object({
     .default({ playerCaptionsTracklistRenderer: { captionTracks: [] } }),
 });
 
+export const DUMMY_VIDEO_METADATA: VideoMetadata = {
+  videoDetails: {
+    videoId: "(videoId)",
+    title: "(title)",
+    author: "(author)",
+    channelId: "(channelId)",
+  },
+  playabilityStatus: {
+    status: "OK",
+    playableInEmbed: true,
+  },
+  captions: {
+    playerCaptionsTracklistRenderer: { captionTracks: [] },
+  },
+};
+
 export type VideoMetadata = z.infer<typeof Z_VIDEO_METADATA>;
 
 export interface CaptionConfig {
