@@ -6,7 +6,6 @@ import { Z_CAPTION_ENTRY } from "../../utils/types";
 import {
   Z_NEW_VIDEO,
   fetchCaptionEntries,
-  fetchCaptionEntriesHalfManual,
   fetchTtmlEntries,
   fetchVideoMetadata,
 } from "../../utils/youtube";
@@ -16,30 +15,13 @@ import { procedureBuilder } from "../factory";
 export const trpcRoutesVideos = {
   videos_create: procedureBuilder
     .use(middlewares.currentUser)
-    .input(
-      Z_NEW_VIDEO.merge(
-        z.object({
-          input: z.string().optional(),
-        })
-      )
-    )
+    .input(Z_NEW_VIDEO)
     .mutation(async ({ input, ctx }) => {
       const [found] = await filterNewVideo(input, ctx.user?.id);
       if (found) {
         return { id: found.id, created: false };
       }
-      let data: Awaited<ReturnType<typeof fetchCaptionEntries>>;
-      if (input.input) {
-        data = await fetchCaptionEntriesHalfManual({
-          ...input,
-          language1: {
-            ...input.language1,
-            input: input.input,
-          },
-        });
-      } else {
-        data = await fetchCaptionEntries(input);
-      }
+      const data = await fetchCaptionEntries(input);
       const id = await insertVideoAndCaptionEntries(input, data, ctx.user?.id);
       return { id, created: true };
     }),

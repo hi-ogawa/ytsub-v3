@@ -1,14 +1,11 @@
 import { tinyassert, wrapPromise } from "@hiogawa/utils";
-import { toArraySetState } from "@hiogawa/utils-react";
 import { useNavigate } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { atom, useAtom } from "jotai";
-import React from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { SelectWrapper } from "../../components/misc";
-import { useModal } from "../../components/modal";
 import { PopoverSimple } from "../../components/popover";
 import type { UserTable } from "../../db/models";
 import { $R, R, ROUTE_DEF } from "../../misc/routes";
@@ -23,7 +20,7 @@ import {
 } from "../../utils/language";
 import { useLoaderDataExtra } from "../../utils/loader-utils";
 import { makeLoader } from "../../utils/loader-utils.server";
-import { cls, zipMax } from "../../utils/misc";
+import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 import { toastInfo } from "../../utils/toast-utils";
 import type { CaptionConfig, VideoMetadata } from "../../utils/types";
@@ -32,7 +29,6 @@ import {
   fetchVideoMetadata,
   findCaptionConfigPair,
   parseVideoId,
-  splitManualInputEntries,
   toCaptionConfigOptions,
 } from "../../utils/youtube";
 
@@ -181,64 +177,42 @@ export default function DefaultComponent() {
               />
             </label>
             {!showAdvancedMode && (
-              <label className="flex flex-col gap-1">
-                1st language
-                <LanguageSelectComponent
-                  className="antd-input p-1"
-                  required
-                  value={language1}
-                  onChange={(value) => form.setValue("language1", value)}
-                  videoMetadata={videoMetadata}
-                />
-              </label>
-            )}
-            {showAdvancedMode !== 2 && (
-              <label className="flex flex-col gap-1">
-                2nd language
-                <LanguageSelectComponent
-                  className="antd-input p-1"
-                  required
-                  value={language2}
-                  onChange={(value) => form.setValue("language2", value)}
-                  videoMetadata={videoMetadata}
-                />
-              </label>
-            )}
-            {!showAdvancedMode && (
-              <button
-                type="submit"
-                className={cls(
-                  "antd-btn antd-btn-primary p-1",
-                  createMutation.isLoading && "antd-btn-loading"
-                )}
-                disabled={createMutation.isLoading || !form.formState.isValid}
-              >
-                Save and Play
-              </button>
+              <>
+                <label className="flex flex-col gap-1">
+                  1st language
+                  <LanguageSelectComponent
+                    className="antd-input p-1"
+                    required
+                    value={language1}
+                    onChange={(value) => form.setValue("language1", value)}
+                    videoMetadata={videoMetadata}
+                  />
+                </label>
+                <label className="flex flex-col gap-1">
+                  2nd language
+                  <LanguageSelectComponent
+                    className="antd-input p-1"
+                    required
+                    value={language2}
+                    onChange={(value) => form.setValue("language2", value)}
+                    videoMetadata={videoMetadata}
+                  />
+                </label>
+                <button
+                  type="submit"
+                  className={cls(
+                    "antd-btn antd-btn-primary p-1",
+                    createMutation.isLoading && "antd-btn-loading"
+                  )}
+                  disabled={createMutation.isLoading || !form.formState.isValid}
+                >
+                  Save and Play
+                </button>
+              </>
             )}
           </form>
         </div>
-        {showAdvancedMode === 1 && (
-          <>
-            <div className="border-t mx-3"></div>
-            <AdvancedModeForm
-              videoId={videoId}
-              language2={language2}
-              isLoading={createMutation.isLoading}
-              onSubmit={(data) => {
-                createMutation.mutate({
-                  videoId,
-                  language1: {
-                    id: data.id,
-                  },
-                  language2,
-                  input: data.input,
-                });
-              }}
-            />
-          </>
-        )}
-        {showAdvancedMode === 2 && (
+        {showAdvancedMode && (
           <>
             <div className="border-t mx-3"></div>
             <AdvancedModeFormV2 videoId={videoId} />
@@ -347,189 +321,6 @@ function AdvancedModeFormV2({ videoId }: { videoId: string }) {
   );
 }
 
-function AdvancedModeForm(props: {
-  videoId: string;
-  language2: CaptionConfig;
-  isLoading: boolean;
-  onSubmit: (data: { id: string; input: string }) => void;
-}) {
-  interface FormType {
-    language?: LanguageCode;
-    input: string;
-  }
-
-  const form = useForm<FormType>({
-    defaultValues: {
-      language: undefined,
-      input: "",
-    },
-  });
-  const { language, input } = form.watch();
-
-  const previewModal = useModal();
-
-  return (
-    <>
-      <form
-        className="p-6 flex flex-col gap-3"
-        onSubmit={form.handleSubmit((data) => {
-          tinyassert(data.language);
-          const id = encodeAdvancedModeLanguageCode(data.language);
-          props.onSubmit({ id, input: data.input });
-        })}
-      >
-        <div className="text-lg">Manual input</div>
-        <label className="flex flex-col gap-1">
-          <span>1st language</span>
-          <SelectWrapper
-            className="antd-input p-1"
-            value={language}
-            options={[undefined, ...FILTERED_LANGUAGE_CODES]}
-            onChange={(v) => form.setValue("language", v)}
-            labelFn={(v) => v && languageCodeToName(v)}
-          />
-        </label>
-        <div className="flex flex-col gap-1">
-          <div className="flex items-center gap-2">
-            <span>Captions</span>
-            <button
-              type="button"
-              className="antd-btn antd-btn-default text-sm px-1"
-              onClick={() => previewModal.setOpen(true)}
-            >
-              Preview
-            </button>
-          </div>
-          <textarea
-            className="antd-input p-1"
-            rows={8}
-            {...form.register("input", { required: true })}
-          />
-        </div>
-        <button
-          type="submit"
-          className={cls(
-            "antd-btn antd-btn-primary p-1",
-            props.isLoading && "antd-btn-loading"
-          )}
-          disabled={!language || !input}
-        >
-          Save and Play
-        </button>
-      </form>
-      <previewModal.Wrapper>
-        <div className="flex flex-col p-4 relative max-h-[90vh]">
-          <AdvancedModePreview
-            videoId={props.videoId}
-            language2={props.language2}
-            input={input}
-            setInput={(v) => form.setValue("input", v)}
-          />
-        </div>
-      </previewModal.Wrapper>
-    </>
-  );
-}
-
-function AdvancedModePreview(props: {
-  input: string;
-  setInput: (input: string) => void;
-  videoId: string;
-  language2: CaptionConfig;
-}) {
-  const previewEntriesQuery = useQuery({
-    ...trpc.videos_fetchTtmlEntries.queryOptions({
-      videoId: props.videoId,
-      language: props.language2,
-    }),
-  });
-
-  const entries1 = splitManualInputEntries(props.input);
-  const entries2 = previewEntriesQuery.data?.map((e) => e.text) ?? [];
-
-  return (
-    <div className="flex flex-col gap-2 overflow-hidden">
-      <div className="flex-none text-lg flex items-center gap-2">
-        <span>Preview</span>
-        <PopoverSimple
-          placement="bottom"
-          reference={<button className="i-ri-question-line w-5 h-5"></button>}
-          floatingClassName="!bg-colorBgSpotlight"
-          floating={
-            <div className="p-1 px-2 text-sm">
-              <div>Add: Ctrl + Enter</div>
-              <div>Remove: Ctrl + D</div>
-            </div>
-          }
-        />
-      </div>
-      {previewEntriesQuery.isFetching && (
-        <div className="antd-spin w-10 h-10 m-2 self-center"></div>
-      )}
-      {previewEntriesQuery.isFetchedAfterMount &&
-        previewEntriesQuery.isSuccess && (
-          <AdvancedModePreviewEditor
-            defaultValue={entries1}
-            onChange={(entries1) => {
-              const newInput = entries1
-                .map((e) => e.replaceAll("\n", " "))
-                .join("\n");
-              props.setInput(newInput);
-            }}
-            entries2={entries2}
-          />
-        )}
-    </div>
-  );
-}
-
-function AdvancedModePreviewEditor(props: {
-  defaultValue: string[];
-  onChange: (entries1: string[]) => void;
-  entries2: string[];
-}) {
-  const [entries1, setEntries1] = React.useState(() => props.defaultValue);
-  const { splice } = toArraySetState(setEntries1);
-
-  React.useEffect(() => {
-    props.onChange(entries1);
-  }, [entries1]);
-
-  return (
-    <div className="flex flex-col gap-2 overflow-hidden">
-      <div className="border p-1 overflow-y-auto">
-        <div className="flex flex-col">
-          {zipMax(entries1, props.entries2).map(([t1, t2], i) => (
-            <div
-              key={i}
-              className="border-t first:border-0 flex gap-2 p-1 py-2"
-            >
-              <div className="flex-1 p-0.5 border-r">
-                <textarea
-                  className="w-full h-full p-0.5"
-                  value={t1 ?? ""}
-                  onChange={(e) => {
-                    splice(i, 1, e.target.value);
-                  }}
-                  onKeyDown={(e) => {
-                    if (e.ctrlKey && e.key === "Enter") {
-                      splice(i + 1, 0, "");
-                    }
-                    if (e.ctrlKey && e.key === "d") {
-                      splice(i, 1);
-                    }
-                  }}
-                />
-              </div>
-              <div className="flex-1 p-1">{t2}</div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
-
 function LanguageSelectComponent({
   value,
   onChange,
@@ -594,25 +385,10 @@ function NavBarMenuComponent() {
             <li>
               <button
                 className="w-full antd-menu-item p-2 flex gap-2"
-                onClick={() =>
-                  setShowAdvancedMode((prev) => (prev !== 1 ? 1 : false))
-                }
+                onClick={() => setShowAdvancedMode((prev) => !prev)}
               >
-                Manual input
-                {showAdvancedMode === 1 && (
-                  <span className="i-ri-check-line w-5 h-5"></span>
-                )}
-              </button>
-            </li>
-            <li>
-              <button
-                className="w-full antd-menu-item p-2 flex gap-2"
-                onClick={() =>
-                  setShowAdvancedMode((prev) => (prev !== 2 ? 2 : false))
-                }
-              >
-                Manual input (v2)
-                {showAdvancedMode === 2 && (
+                Use caption editor
+                {showAdvancedMode && (
                   <span className="i-ri-check-line w-5 h-5"></span>
                 )}
               </button>
@@ -628,4 +404,4 @@ function NavBarMenuComponent() {
 // page local state
 //
 
-const showAdvancedModeAtom = atom<false | 1 | 2>(false);
+const showAdvancedModeAtom = atom<boolean>(false);
