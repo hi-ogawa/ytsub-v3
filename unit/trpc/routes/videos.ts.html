@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">64.39% </span>
+                <span class="strong">66.84% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>132/205</span>
+                <span class='fraction'>125/187</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">64.39% </span>
+                <span class="strong">66.84% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>132/205</span>
+                <span class='fraction'>125/187</span>
             </div>
         
             
@@ -250,25 +250,7 @@
 <a name='L185'></a><a href='#L185'>185</a>
 <a name='L186'></a><a href='#L186'>186</a>
 <a name='L187'></a><a href='#L187'>187</a>
-<a name='L188'></a><a href='#L188'>188</a>
-<a name='L189'></a><a href='#L189'>189</a>
-<a name='L190'></a><a href='#L190'>190</a>
-<a name='L191'></a><a href='#L191'>191</a>
-<a name='L192'></a><a href='#L192'>192</a>
-<a name='L193'></a><a href='#L193'>193</a>
-<a name='L194'></a><a href='#L194'>194</a>
-<a name='L195'></a><a href='#L195'>195</a>
-<a name='L196'></a><a href='#L196'>196</a>
-<a name='L197'></a><a href='#L197'>197</a>
-<a name='L198'></a><a href='#L198'>198</a>
-<a name='L199'></a><a href='#L199'>199</a>
-<a name='L200'></a><a href='#L200'>200</a>
-<a name='L201'></a><a href='#L201'>201</a>
-<a name='L202'></a><a href='#L202'>202</a>
-<a name='L203'></a><a href='#L203'>203</a>
-<a name='L204'></a><a href='#L204'>204</a>
-<a name='L205'></a><a href='#L205'>205</a>
-<a name='L206'></a><a href='#L206'>206</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L188'></a><a href='#L188'>188</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -287,24 +269,6 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -481,7 +445,6 @@ import { Z_CAPTION_ENTRY } from "../../utils/types";
 import {
   Z_NEW_VIDEO,
   fetchCaptionEntries,
-  fetchCaptionEntriesHalfManual,
   fetchTtmlEntries,
   fetchVideoMetadata,
 } from "../../utils/youtube";
@@ -491,30 +454,13 @@ import { procedureBuilder } from "../factory";
 export const trpcRoutesVideos = {
   videos_create: procedureBuilder
     .use(middlewares.currentUser)
-    .input(
-      Z_NEW_VIDEO.merge(
-        z.object({
-          input: z.string().optional(),
-        })
-      )
-    )
+    .input(Z_NEW_VIDEO)
     .mutation(async ({ input, ctx }) =&gt; {
 <span class="cstat-no" title="statement not covered" >      const [found] = await filterNewVideo(input, ctx.user?.id);</span>
 <span class="cstat-no" title="statement not covered" >      if (found) {</span>
 <span class="cstat-no" title="statement not covered" >        return { id: found.id, created: false };</span>
 <span class="cstat-no" title="statement not covered" >      }</span>
-<span class="cstat-no" title="statement not covered" >      let data: Awaited&lt;ReturnType&lt;typeof fetchCaptionEntries&gt;&gt;;</span>
-<span class="cstat-no" title="statement not covered" >      if (input.input) {</span>
-<span class="cstat-no" title="statement not covered" >        data = await fetchCaptionEntriesHalfManual({</span>
-<span class="cstat-no" title="statement not covered" >          ...input,</span>
-<span class="cstat-no" title="statement not covered" >          language1: {</span>
-<span class="cstat-no" title="statement not covered" >            ...input.language1,</span>
-<span class="cstat-no" title="statement not covered" >            input: input.input,</span>
-<span class="cstat-no" title="statement not covered" >          },</span>
-<span class="cstat-no" title="statement not covered" >        });</span>
-<span class="cstat-no" title="statement not covered" >      } else {</span>
-<span class="cstat-no" title="statement not covered" >        data = await fetchCaptionEntries(input);</span>
-<span class="cstat-no" title="statement not covered" >      }</span>
+<span class="cstat-no" title="statement not covered" >      const data = await fetchCaptionEntries(input);</span>
 <span class="cstat-no" title="statement not covered" >      const id = await insertVideoAndCaptionEntries(input, data, ctx.user?.id);</span>
 <span class="cstat-no" title="statement not covered" >      return { id, created: true };</span>
     }),
@@ -685,7 +631,7 @@ function findUserVideo({
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-06-17T00:34:40.756Z
+                at 2023-06-17T03:21:55.561Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
