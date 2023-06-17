@@ -259,20 +259,27 @@ test("captions-editor-basic", async ({ page }) => {
 });
 
 test("captions-editor-auto-save", async ({ page }) => {
-  // PAXXWORD (NMIXX) https://www.youtube.com/watch?v=sLd0jl6zv80
-  await page.goto("/caption-editor/watch?v=sLd0jl6zv80");
+  // PAXXWORD (NMIXX) https://www.youtube.com/watch?v=lH_n29wkT_4
+  await page.goto("/caption-editor/watch?v=lH_n29wkT_4");
 
-  // import a few lines
+  // import with manual + download
   await page.getByRole("button", { name: "Import" }).click();
   await page
-    .getByLabel("Left")
+    .locator('textarea[name="text1"]')
     .fill("Alright 일단 system check\n시작하기 전 stretching 해");
   await page
-    .getByLabel("Right")
-    .fill(
-      "Alright, First, system check\nBefore you start, go stretching, yeah"
-    );
-  await page.getByRole("button", { name: "Submit" }).click();
+    .locator('select[name="mode2"]')
+    .selectOption({ label: "download" });
+  await page
+    .locator('select[name="download2"]')
+    .selectOption({ label: "English" });
+  await page
+    .locator('[data-test="modal"]')
+    .getByRole("button", { name: "Import" })
+    .click();
+
+  // check downloaded captions
+  await page.getByText("Alright, First, system check").click();
 
   // edit
   await page
@@ -299,8 +306,8 @@ test("captions-editor-auto-save", async ({ page }) => {
   await page.getByTestId("Navbar-drawer-button").click();
   await page.getByRole("link", { name: "Caption Editor" }).click();
   await page.waitForURL("/caption-editor");
-  await page.getByRole("link", { name: "sLd0jl6zv80" }).click();
-  await page.waitForURL("/caption-editor/watch?v=sLd0jl6zv80");
+  await page.getByRole("link", { name: "lH_n29wkT_4" }).click();
+  await page.waitForURL("/caption-editor/watch?v=lH_n29wkT_4");
 });
 
 test("invalid videoId input", async ({ page }) => {

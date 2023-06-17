@@ -361,7 +361,7 @@ function ImportModalForm(props: {
   const form = useForm<ImportModalFormType>({
     defaultValues: {
       mode1: "manual",
-      mode2: "download",
+      mode2: "manual",
       text1: "",
       text2: "",
       download1: undefined,
@@ -470,6 +470,7 @@ function ImportModalForm(props: {
             {side === "1" ? "Left" : "Right"} side
           </span>
           <SelectWrapper
+            name={`mode${side}`}
             className="antd-input capitalize"
             options={Z_IMPORT_MODE.options}
             value={mode}
@@ -489,6 +490,7 @@ function ImportModalForm(props: {
           <div className="flex flex-col gap-1">
             <span className="text-colorTextLabel">Select Language</span>
             <SelectWrapper
+              name={`download${side}`}
               className="antd-input p-1"
               options={[undefined, ...downloadOptionIndices]}
               value={form.watch(`download${side}`)}
