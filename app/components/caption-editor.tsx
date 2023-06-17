@@ -25,6 +25,7 @@ import {
 } from "./caption-editor-utils";
 import { SelectWrapper, transitionProps } from "./misc";
 import { useModal } from "./modal";
+import { PopoverSimple } from "./popover";
 
 // TODO: virtualize list? (no perf problem when used for short 3 min song)
 // TODO: auto-translate from one side to the other?
@@ -197,6 +198,28 @@ export function CaptionEditor(props: {
             >
               Export
             </button>
+            <PopoverSimple
+              placement="bottom"
+              reference={
+                <button className="atnd-btn antd-btn-default px-3">Help</button>
+              }
+              floating={
+                <div className="p-3">
+                  <div className="flex items-center gap-2">
+                    <div className="font-mono bg-colorBgSpotlight text-sm px-1">
+                      Ctrl+Enter
+                    </div>{" "}
+                    Add a new entry
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="font-mono bg-colorBgSpotlight text-sm px-1">
+                      Ctrl+D
+                    </div>{" "}
+                    Remove a current entry
+                  </div>
+                </div>
+              }
+            />
           </div>
           <importModal.Wrapper className="!max-w-3xl">
             <div className="flex flex-col max-h-[80vh]">
