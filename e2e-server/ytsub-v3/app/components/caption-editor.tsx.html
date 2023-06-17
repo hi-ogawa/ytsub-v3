@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">26.61% </span>
+                <span class="strong">25.83% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>169/635</span>
+                <span class='fraction'>170/658</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">26.61% </span>
+                <span class="strong">25.83% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>169/635</span>
+                <span class='fraction'>170/658</span>
             </div>
         
             
@@ -698,7 +698,30 @@
 <a name='L633'></a><a href='#L633'>633</a>
 <a name='L634'></a><a href='#L634'>634</a>
 <a name='L635'></a><a href='#L635'>635</a>
-<a name='L636'></a><a href='#L636'>636</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L636'></a><a href='#L636'>636</a>
+<a name='L637'></a><a href='#L637'>637</a>
+<a name='L638'></a><a href='#L638'>638</a>
+<a name='L639'></a><a href='#L639'>639</a>
+<a name='L640'></a><a href='#L640'>640</a>
+<a name='L641'></a><a href='#L641'>641</a>
+<a name='L642'></a><a href='#L642'>642</a>
+<a name='L643'></a><a href='#L643'>643</a>
+<a name='L644'></a><a href='#L644'>644</a>
+<a name='L645'></a><a href='#L645'>645</a>
+<a name='L646'></a><a href='#L646'>646</a>
+<a name='L647'></a><a href='#L647'>647</a>
+<a name='L648'></a><a href='#L648'>648</a>
+<a name='L649'></a><a href='#L649'>649</a>
+<a name='L650'></a><a href='#L650'>650</a>
+<a name='L651'></a><a href='#L651'>651</a>
+<a name='L652'></a><a href='#L652'>652</a>
+<a name='L653'></a><a href='#L653'>653</a>
+<a name='L654'></a><a href='#L654'>654</a>
+<a name='L655'></a><a href='#L655'>655</a>
+<a name='L656'></a><a href='#L656'>656</a>
+<a name='L657'></a><a href='#L657'>657</a>
+<a name='L658'></a><a href='#L658'>658</a>
+<a name='L659'></a><a href='#L659'>659</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -730,6 +753,29 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -1360,6 +1406,7 @@ import {
 } from "./caption-editor-utils";
 import { SelectWrapper, transitionProps } from "./misc";
 import { useModal } from "./modal";
+import { PopoverSimple } from "./popover";
 &nbsp;
 // TODO: virtualize list? (no perf problem when used for short 3 min song)
 // TODO: auto-translate from one side to the other?
@@ -1532,6 +1579,28 @@ export <span class="fstat-no" title="function not covered" >function CaptionEdit
 <span class="cstat-no" title="statement not covered" >            &gt;</span>
 <span class="cstat-no" title="statement not covered" >              Export</span>
 <span class="cstat-no" title="statement not covered" >            &lt;/button&gt;</span>
+<span class="cstat-no" title="statement not covered" >            &lt;PopoverSimple</span>
+<span class="cstat-no" title="statement not covered" >              placement="bottom"</span>
+<span class="cstat-no" title="statement not covered" >              reference={</span>
+<span class="cstat-no" title="statement not covered" >                &lt;button className="atnd-btn antd-btn-default px-3"&gt;Help&lt;/button&gt;</span>
+<span class="cstat-no" title="statement not covered" >              }</span>
+<span class="cstat-no" title="statement not covered" >              floating={</span>
+<span class="cstat-no" title="statement not covered" >                &lt;div className="p-3"&gt;</span>
+<span class="cstat-no" title="statement not covered" >                  &lt;div className="flex items-center gap-2"&gt;</span>
+<span class="cstat-no" title="statement not covered" >                    &lt;div className="font-mono bg-colorBgSpotlight text-sm px-1"&gt;</span>
+<span class="cstat-no" title="statement not covered" >                      Ctrl+Enter</span>
+<span class="cstat-no" title="statement not covered" >                    &lt;/div&gt;{" "}</span>
+<span class="cstat-no" title="statement not covered" >                    Add a new entry</span>
+<span class="cstat-no" title="statement not covered" >                  &lt;/div&gt;</span>
+<span class="cstat-no" title="statement not covered" >                  &lt;div className="flex items-center gap-2"&gt;</span>
+<span class="cstat-no" title="statement not covered" >                    &lt;div className="font-mono bg-colorBgSpotlight text-sm px-1"&gt;</span>
+<span class="cstat-no" title="statement not covered" >                      Ctrl+D</span>
+<span class="cstat-no" title="statement not covered" >                    &lt;/div&gt;{" "}</span>
+<span class="cstat-no" title="statement not covered" >                    Remove a current entry</span>
+<span class="cstat-no" title="statement not covered" >                  &lt;/div&gt;</span>
+<span class="cstat-no" title="statement not covered" >                &lt;/div&gt;</span>
+<span class="cstat-no" title="statement not covered" >              }</span>
+<span class="cstat-no" title="statement not covered" >            /&gt;</span>
 <span class="cstat-no" title="statement not covered" >          &lt;/div&gt;</span>
 <span class="cstat-no" title="statement not covered" >          &lt;importModal.Wrapper className="!max-w-3xl"&gt;</span>
 <span class="cstat-no" title="statement not covered" >            &lt;div className="flex flex-col max-h-[80vh]"&gt;</span>
@@ -1975,7 +2044,7 @@ Say something
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-06-17T03:23:50.325Z
+                at 2023-06-17T04:04:08.468Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>
