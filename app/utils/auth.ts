@@ -87,6 +87,7 @@ export async function getSessionUser(
   return;
 }
 
+// for testing
 // TODO: should be sync for cookie storage?
 export async function createUserCookie(user: Pick<UserTable, "id">) {
   const session = await sessionStore.getSession();

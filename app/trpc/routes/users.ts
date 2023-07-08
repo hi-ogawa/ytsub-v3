@@ -63,6 +63,16 @@ export const trpcRoutesUsers = {
       return user;
     }),
 
+  users_refreshSession: procedureBuilder
+    .use(middlewares.requireUser)
+    .mutation(async ({ ctx }) => {
+      const user = await selectOne(T.users, E.eq(T.users.id, ctx.user.id));
+      tinyassert(user, "User not found");
+      signinSession(ctx.session, user);
+      await ctx.commitSession();
+      return user;
+    }),
+
   users_signout: procedureBuilder
     .use(middlewares.currentUser)
     .input(z.null())
