@@ -5,7 +5,6 @@ import { cac } from "cac";
 import consola from "consola";
 import { sql } from "drizzle-orm";
 import { z } from "zod";
-import * as zx from "zx";
 import {
   E,
   T,
@@ -31,10 +30,8 @@ import {
   NewVideo,
   captionConfigToUrl,
   fetchCaptionEntries,
-  fetchVideoMetadata,
   fetchVideoMetadataRaw,
   toCaptionConfigOptions,
-  ttmlToEntries,
 } from "../utils/youtube";
 import { finalizeServer, initializeServer } from "./initialize-server";
 import { exportDeckJson, importDeckJson } from "./seed-utils";
@@ -207,70 +204,13 @@ async function commandFetchCaptionEntries(rawArgs: unknown) {
 }
 
 //
-// scrapeCaptionEntries
-//   pnpm cli scrapeCaptionEntries --videoId='-UroBRG1rY8' --id .ko --outFile misc/youtube/data/zombie-ko.ttml
-//   pnpm cli scrapeCaptionEntries --videoId='-UroBRG1rY8' --id .en --outFile misc/youtube/data/zombie-en.ttml
-//
-
-const scrapeCaptionEntriesArgs = z.object({
-  videoId: z.string(),
-  id: z.string().optional(),
-  translation: z.string().optional(),
-  formatJson: z.boolean().optional(),
-  outFile: z.string().optional(),
-});
-
-// prettier-ignore
-cli
-  .command(scrapeCaptionEntries.name)
-  .option(`--${scrapeCaptionEntriesArgs.keyof().enum.videoId} [string]`, "")
-  .option(`--${scrapeCaptionEntriesArgs.keyof().enum.id} [string]`, "")
-  .option(`--${scrapeCaptionEntriesArgs.keyof().enum.translation} [string]`, "")
-  .option(`--${scrapeCaptionEntriesArgs.keyof().enum.formatJson}`, "")
-  .option(`--${scrapeCaptionEntriesArgs.keyof().enum.outFile} [string]`, "")
-  .action(scrapeCaptionEntries);
-
-async function scrapeCaptionEntries(rawArgs: unknown) {
-  const args = scrapeCaptionEntriesArgs.parse(rawArgs);
-
-  console.error(":: fetching metadata...");
-  const videoMetadata = await fetchVideoMetadata(args.videoId);
-
-  // list available captions and pick interactively
-  let id = args.id;
-  if (!id) {
-    const options = toCaptionConfigOptions(videoMetadata);
-    console.error(":: available languages");
-    console.error(options.captions);
-    id = await zx.question(":: please select a language > ");
-  }
-
-  // fetch caption and format
-  const url = captionConfigToUrl(
-    { id, translation: args.translation },
-    videoMetadata
-  );
-  tinyassert(url);
-  const ttml = await fetch(url).then((res) => res.text());
-  let output = ttml;
-  if (args.formatJson) {
-    const entries = ttmlToEntries(ttml);
-    output = JSON.stringify(entries, null, 2);
-  }
-
-  if (args.outFile) {
-    await fs.promises.writeFile(args.outFile, output);
-  } else {
-    console.log(output);
-  }
-}
-
-//
 // pnpm cli scrapeYoutube --videoId='-UroBRG1rY8'
 //
 
 const scrapeYoutubeArgs = z.object({
   videoId: z.string(),
+  id: z.string().optional(),
+  translation: z.string().optional(),
   outDir: z.string().default("./misc/youtube/data"),
 });
 
@@ -278,13 +218,15 @@ const scrapeYoutubeArgs = z.object({
 cli
   .command(scrapeYoutube.name)
   .option(`--${scrapeYoutubeArgs.keyof().enum.videoId} [string]`, "")
+  .option(`--${scrapeYoutubeArgs.keyof().enum.id} [string]`, "")
+  .option(`--${scrapeYoutubeArgs.keyof().enum.translation} [string]`, "")
   .option(`--${scrapeYoutubeArgs.keyof().enum.outDir} [string]`, "")
   .action(scrapeYoutube);
 
 async function scrapeYoutube(rawArgs: unknown) {
   const args = scrapeYoutubeArgs.parse(rawArgs);
   const dir = `${args.outDir}/${args.videoId}`;
-  await zx.$`mkdir -p ${dir}`;
+  await exec(`mkdir -p '${dir}'`);
 
   console.log(`:: fetching metadata to '${dir}/metadata.json'...`);
   const metadataRaw = await fetchVideoMetadataRaw(args.videoId);
@@ -299,21 +241,29 @@ async function scrapeYoutube(rawArgs: unknown) {
   console.log(":: available languages");
   console.log(options.captions);
 
+  if (args.id) {
+    await download(args.id, args.translation);
+    return;
+  }
+
   while (true) {
-    const input = await zx.question(
-      ":: please input language+translation (e.g. .en, .en_fr) > "
+    const input = await consola.prompt(
+      ":: please input language (+ translation) to download (e.g. .ko, .ko_en) >"
     );
-    if (!input) {
+    if (!input || typeof input !== "string") {
       break;
     }
     const [id, translation] = input.split("_");
+    await download(id, translation);
+  }
 
-    // fetch caption and format
+  async function download(id: string, translation?: string) {
     const url = captionConfigToUrl({ id, translation }, videoMetadata);
     tinyassert(url);
     const ttml = await fetch(url).then((res) => res.text());
-    const filepath = `${dir}/${input}.ttml`;
-    console.log(`:: writing to '${filepath}'...`);
+    const name = [id, translation].filter(Boolean).join("_");
+    const filepath = `${dir}/${name}.ttml`;
+    console.log(`:: fetching ttml to '${filepath}'...`);
     await fs.promises.writeFile(filepath, ttml);
   }
 }
