@@ -1,12 +1,11 @@
 import { type RequestHandler, compose } from "@hattip/compose";
 import { once } from "@hiogawa/utils";
+import { loggerMiddleware } from "@hiogawa/utils-experimental";
 import { SpanKind, SpanStatusCode, trace } from "@opentelemetry/api";
 import { SemanticAttributes } from "@opentelemetry/semantic-conventions";
 import * as build from "@remix-run/dev/server-build";
 import { createRequestHandler } from "@remix-run/server-runtime";
 import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
-import type { Context } from "hono";
-import { logger } from "hono/logger";
 import { TRPC_ENDPOINT } from "../trpc/common";
 import { createTrpcAppContext } from "../trpc/context";
 import { trpcApp } from "../trpc/server";
@@ -18,7 +17,7 @@ import { initializeServer } from "./initialize-server";
 
 export function createHattipEntry() {
   return compose(
-    createLogger(),
+    loggerMiddleware(),
     bootstrapHandler(),
     createTraceRequestHandler(),
     createTrpchandler(),
@@ -72,31 +71,6 @@ function bootstrapHandler(): RequestHandler {
   return async (ctx) => {
     await initializeServerOnce();
     return ctx.next();
-  };
-}
-
-//
-// logger
-//
-
-function createLogger(): RequestHandler {
-  // borrow hono's logger with minimal compatibility hack
-  // https://github.com/honojs/hono/blob/0ffd795ec6cfb67d38ab902197bb5461a4740b8f/src/middleware/logger/index.ts
-  const honoLogger = logger();
-  return async (ctx) => {
-    let res!: Response;
-    await honoLogger(
-      {
-        req: { method: ctx.method, raw: ctx.request },
-        get res() {
-          return res;
-        },
-      } as Context,
-      async () => {
-        res = await ctx.next();
-      }
-    );
-    return res;
   };
 }
 
