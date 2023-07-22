@@ -41,8 +41,8 @@ dependencies:
     specifier: 1.4.2-pre.11
     version: 1.4.2-pre.11
   '@hiogawa/utils-experimental':
-    specifier: ^0.0.1
-    version: 0.0.1
+    specifier: ^0.1.0
+    version: 0.1.0
   '@hiogawa/utils-react':
     specifier: 1.2.1-pre.5
     version: 1.2.1-pre.5(react@18.2.0)
@@ -210,9 +210,6 @@ devDependencies:
   happy-dom:
     specifier: ^9.20.3
     version: 9.20.3
-  hono:
-    specifier: ^3.2.7
-    version: 3.2.7
   node-mailjet:
     specifier: ^6.0.2
     version: 6.0.2
@@ -2181,8 +2178,8 @@ packages:
       unocss: 0.52.7(postcss@8.4.24)(vite@4.3.9)
     dev: true
 
-  /@hiogawa/utils-experimental@0.0.1:
-    resolution: {integrity: sha512-7YNq6WRghFuuZYRK1FvSWlL4w9Qu32OE40FgBpxQjrwaXw9U5efU/jyZI7WaJ/RbqL3PCHr2InFc2SVpyXHG9g==}
+  /@hiogawa/utils-experimental@0.1.0:
+    resolution: {integrity: sha512-/iXmtdJlhBGfNK+bt4gNipdRPaHGkHeXbW+yY9RLB4dC2kOWoEpKY2aZjFugFRXEGtz3luEYVeLpV4VWEuq5kA==}
     dev: false
 
   /@hiogawa/utils-react@1.2.1-pre.5(react@18.2.0):
@@ -5831,11 +5828,6 @@ packages:
       process: 0.10.1
       xtend: 4.0.2
     dev: false
-
-  /hono@3.2.7:
-    resolution: {integrity: sha512-7YCF9t4oMF3L3ghvcmlEBx2hoC9VyBBLuVrPZiOkU7PtFBrnQtkFEnYCRcPKCJiMoXHX3bDhU9R3HQbw+WnQJg==}
-    engines: {node: '>=16.0.0'}
-    dev: true
 
   /hosted-git-info@2.8.9:
     resolution: {integrity: sha512-mxIDAb9Lsm6DoOJ7xH+5+X4y1LU/4Hi50L9C5sIswK3JzULS4bwk1FvjdBgvYR4bzT4tuUQiC15FE2f5HbLvYw==}
