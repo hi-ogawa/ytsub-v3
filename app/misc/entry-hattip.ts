@@ -1,5 +1,6 @@
 import { type RequestHandler, compose } from "@hattip/compose";
 import { once } from "@hiogawa/utils";
+import { loggerMiddleware } from "@hiogawa/utils-experimental";
 import { SpanKind, SpanStatusCode, trace } from "@opentelemetry/api";
 import { SemanticAttributes } from "@opentelemetry/semantic-conventions";
 import * as build from "@remix-run/dev/server-build";
@@ -11,7 +12,6 @@ import { trpcApp } from "../trpc/server";
 import { pathToRegExp } from "../utils/misc";
 import { traceAsync } from "../utils/opentelemetry-utils";
 import { initializeServer } from "./initialize-server";
-import { loggerMiddleware } from "@hiogawa/utils-experimental"
 
 // based on https://github.com/hi-ogawa/vite-fullstack-example/blob/92649f99b041820ec86650c99cfcd49a72e79f71/src/server/hattip.ts#L16-L28
 
