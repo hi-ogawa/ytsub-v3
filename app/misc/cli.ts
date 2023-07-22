@@ -312,7 +312,9 @@ async function scrapeYoutube(rawArgs: unknown) {
     const url = captionConfigToUrl({ id, translation }, videoMetadata);
     tinyassert(url);
     const ttml = await fetch(url).then((res) => res.text());
-    await fs.promises.writeFile(`${dir}/${input}.ttml`, ttml);
+    const filepath = `${dir}/${input}.ttml`;
+    console.log(`:: writing to '${filepath}'...`);
+    await fs.promises.writeFile(filepath, ttml);
   }
 }
 
