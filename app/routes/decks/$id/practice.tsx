@@ -92,10 +92,10 @@ export default function DefaultComponent() {
             </>
           )}
         </div>
-        {/* spinner for initial mount */}
+        {/* spinner for initial mount and refetch */}
         <Transition
           show={nextPracticeQuery.isFetching}
-          className="duration-500 antd-body antd-spin-overlay-20"
+          className="fixed w-100 h-100 duration-500 antd-body antd-spin-overlay-20"
           {...transitionProps("opacity-0", "opacity-50")}
         />
       </div>
@@ -140,7 +140,7 @@ function PracticeComponent({
     <>
       <div className="grow w-full flex flex-col">
         <BookmarkEntryComponent
-          // force remount when going next practice
+          // force remount when going to next practice
           key={practiceEntry.id}
           video={video}
           captionEntry={captionEntry}
