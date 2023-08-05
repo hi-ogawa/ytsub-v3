@@ -1,5 +1,7 @@
 import { deepEqual } from "assert/strict";
 import fs from "node:fs";
+import { defineCommand, defineSubCommands } from "@hiogawa/tiny-cli";
+import { setupZodExtendArg, zodArgs } from "@hiogawa/tiny-cli/dist/zod";
 import { groupBy, objectPick, range, tinyassert, zip } from "@hiogawa/utils";
 import { cac } from "cac";
 import consola from "consola";
@@ -35,6 +37,8 @@ import {
 } from "../utils/youtube";
 import { finalizeServer, initializeServer } from "./initialize-server";
 import { exportDeckJson, importDeckJson } from "./seed-utils";
+
+setupZodExtendArg(z);
 
 const cli = cac("cli").help();
 
@@ -204,27 +208,33 @@ async function commandFetchCaptionEntries(rawArgs: unknown) {
 }
 
 //
-// pnpm cli scrapeYoutube --videoId='-UroBRG1rY8'
+// pnpm cli scrapeYoutube hr-325mclek
 //
 
 const scrapeYoutubeArgs = z.object({
-  videoId: z.string(),
+  videoId: z.string().asArg({ type: "positional" }),
   id: z.string().optional(),
   translation: z.string().optional(),
   outDir: z.string().default("./misc/youtube/data"),
 });
 
-// prettier-ignore
-cli
-  .command(scrapeYoutube.name)
-  .option(`--${scrapeYoutubeArgs.keyof().enum.videoId} [string]`, "")
-  .option(`--${scrapeYoutubeArgs.keyof().enum.id} [string]`, "")
-  .option(`--${scrapeYoutubeArgs.keyof().enum.translation} [string]`, "")
-  .option(`--${scrapeYoutubeArgs.keyof().enum.outDir} [string]`, "")
-  .action(scrapeYoutube);
+const scrapeYoutube = defineCommand(
+  {
+    args: zodArgs(scrapeYoutubeArgs),
+  },
+  ({ args }) => scrapeYoutubeImpl(args)
+);
 
-async function scrapeYoutube(rawArgs: unknown) {
-  const args = scrapeYoutubeArgs.parse(rawArgs);
+// prettier-ignore
+// cli
+//   .command(scrapeYoutube.name)
+//   .option(`--${scrapeYoutubeArgs.keyof().enum.videoId} [string]`, "")
+//   .option(`--${scrapeYoutubeArgs.keyof().enum.id} [string]`, "")
+//   .option(`--${scrapeYoutubeArgs.keyof().enum.translation} [string]`, "")
+//   .option(`--${scrapeYoutubeArgs.keyof().enum.outDir} [string]`, "")
+//   .action(scrapeYoutube);
+
+async function scrapeYoutubeImpl(args: z.infer<typeof scrapeYoutubeArgs>) {
   const dir = `${args.outDir}/${args.videoId}`;
   await exec(`mkdir -p '${dir}'`);
 
@@ -609,23 +619,38 @@ async function fixBookmarkEntriesOffset(rawArgs: unknown) {
 // main
 //
 
+const tinyCli = defineSubCommands({
+  autoHelp: true,
+  commands: {
+    scrapeYoutube,
+  },
+});
+
 async function main() {
   try {
     await initializeServer();
-    cli.parse(undefined, { run: false });
-    if (!cli.matchedCommandName) {
-      cli.outputHelp();
-      process.exit(1);
-    }
-    await cli.runMatchedCommand();
+    await tinyCli.parse(process.argv.slice(2));
   } catch (e) {
     consola.error(e);
     process.exit(1);
   } finally {
     await finalizeServer();
   }
+
+  // try {
+  //   await initializeServer();
+  //   cli.parse(undefined, { run: false });
+  //   if (!cli.matchedCommandName) {
+  //     cli.outputHelp();
+  //     process.exit(1);
+  //   }
+  //   await cli.runMatchedCommand();
+  // } catch (e) {
+  //   consola.error(e);
+  //   process.exit(1);
+  // } finally {
+  //   await finalizeServer();
+  // }
 }
 
-if (require.main === module) {
-  main();
-}
+main();

@@ -3,5 +3,5 @@
 download metadata and captions for debugging
 
 ```sh
-pnpm cli scrapeYoutube --videoId='-UroBRG1rY8'
+pnpm cli scrapeYoutube hr-325mclek
 ```
