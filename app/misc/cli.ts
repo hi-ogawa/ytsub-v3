@@ -1,7 +1,7 @@
 import { deepEqual } from "assert/strict";
 import fs from "node:fs";
 import { defineCommand, defineSubCommands } from "@hiogawa/tiny-cli";
-import { setupZodExtendArg, zodArgs } from "@hiogawa/tiny-cli/dist/zod";
+import { setupZodArg, zodArgObject } from "@hiogawa/tiny-cli/dist/zod";
 import { groupBy, objectPick, range, tinyassert, zip } from "@hiogawa/utils";
 import { cac } from "cac";
 import consola from "consola";
@@ -38,7 +38,7 @@ import {
 import { finalizeServer, initializeServer } from "./initialize-server";
 import { exportDeckJson, importDeckJson } from "./seed-utils";
 
-setupZodExtendArg(z);
+setupZodArg(z);
 
 const cli = cac("cli").help();
 
@@ -220,7 +220,7 @@ const scrapeYoutubeArgs = z.object({
 
 const scrapeYoutube = defineCommand(
   {
-    args: zodArgs(scrapeYoutubeArgs),
+    args: zodArgObject(scrapeYoutubeArgs),
   },
   ({ args }) => scrapeYoutubeImpl(args)
 );
