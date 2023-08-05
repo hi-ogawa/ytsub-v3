@@ -211,18 +211,20 @@ async function commandFetchCaptionEntries(rawArgs: unknown) {
 // pnpm cli scrapeYoutube hr-325mclek
 //
 
-const scrapeYoutubeArgs = z.object({
+// prettier-ignore
+const scrapeYoutube = defineCommand(
+  {
+    args: zodArgObject(
+
+z.object({
   videoId: z.string().asArg({ type: "positional" }),
   id: z.string().optional(),
   translation: z.string().optional(),
   outDir: z.string().default("./misc/youtube/data"),
-});
+})
 
-const scrapeYoutube = defineCommand(
-  {
-    args: zodArgObject(scrapeYoutubeArgs),
+    ),
   },
-  // prettier-ignore
   async ({ args }) => {
 
   const dir = `${args.outDir}/${args.videoId}`;
@@ -276,41 +278,38 @@ const scrapeYoutube = defineCommand(
 //   pnpm cli db-seed-import --username dev-import --inFile misc/db/dev.json
 //
 
-//
-// db-seed-export
-//
+// prettier-ignore
+const dbSeedExport = defineCommand(
+  {
+    args: zodArgObject(
 
-const commandDbSeedExportArgs = z.object({
+z.object({
   deckId: z.coerce.number().int(),
   outFile: z.string(),
-});
+})
 
-cli
-  .command("db-seed-export")
-  .option(`--${commandDbSeedExportArgs.keyof().enum.deckId} [number]`, "")
-  .option(`--${commandDbSeedExportArgs.keyof().enum.outFile} [string]`, "")
-  .action(commandDbSeedExport);
+    ),
+  },
+  async ({ args }) => {
 
-async function commandDbSeedExport(rawArgs: unknown) {
-  const args = commandDbSeedExportArgs.parse(rawArgs);
   const data = await exportDeckJson(args.deckId);
   await fs.promises.writeFile(args.outFile, JSON.stringify(data, null, 2));
-}
 
-//
-// db-seed-import
-//
+  }
+);
 
+// prettier-ignore
 const dbSeedImport = defineCommand(
   {
     args: zodArgObject(
-      z.object({
-        username: z.string(),
-        inFile: z.string(),
-      })
+
+z.object({
+  username: z.string(),
+  inFile: z.string(),
+})
+
     ),
   },
-  // prettier-ignore
   async ({ args }) => {
 
   const user = await findByUsername(args.username);
@@ -616,6 +615,7 @@ const tinyCli = defineSubCommands({
   autoHelp: true,
   commands: {
     scrapeYoutube,
+    dbSeedExport,
     dbSeedImport,
   },
 });
