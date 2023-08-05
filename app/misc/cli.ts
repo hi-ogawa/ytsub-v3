@@ -279,8 +279,8 @@ z.object({
 
 //
 // seed export/import e.g.
-//   pnpm cli db-seed-export --deckId 1 --outFile misc/db/dev.json
-//   pnpm cli db-seed-import --username dev-import --inFile misc/db/dev.json
+//   pnpm cli dbSeedExport --deckId 1 --outFile misc/db/dev.json
+//   pnpm cli dbSeedImport --username dev-import --inFile misc/db/dev.json
 //
 
 // prettier-ignore
