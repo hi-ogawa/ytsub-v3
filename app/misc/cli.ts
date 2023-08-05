@@ -46,7 +46,6 @@ const cli = cac("cli").help();
 // pnpm cli dbTestMigrations
 //
 
-// prettier-ignore
 const dbTestMigrations = defineCommand(
   {
     args: zodArgObject(
@@ -58,60 +57,58 @@ const dbTestMigrations = defineCommand(
     ),
   },
   async ({ args: options }) => {
+    const { completedFiles, pendingFiles } = await dbGetMigrationStatus();
 
-  const { completedFiles, pendingFiles } = await dbGetMigrationStatus();
-
-  console.error(":: list completed");
-  for (const file of completedFiles) {
-    console.error(file);
-  }
-
-  console.error(":: list pending");
-  for (const file of pendingFiles) {
-    console.error(file);
-  }
-
-  const ups = [];
-  const downs = [];
-
-  console.error(":: running migrations");
-  if (options.unitTest) {
-    process.env.MIGRATION_UNIT_TEST = "1";
-  }
-
-  const n = pendingFiles.length;
-  ups.push(await dbGetSchema());
-  for (const i of range(n)) {
-    console.error(`(⇑:${i + 1}/${n}) ${pendingFiles[i]}`);
-    await exec("pnpm knex migrate:up");
-    ups.push(await dbGetSchema());
-  }
-
-  downs.unshift(await dbGetSchema());
-  for (const i of range(n)) {
-    console.error(`(⇓:${i + 1}/${n}) ${pendingFiles[n - i - 1]}`);
-    await exec("pnpm knex migrate:down");
-    downs.unshift(await dbGetSchema());
-  }
-
-  if (options.showSchema) {
-    console.log(JSON.stringify(zip(ups, downs), null, 2));
-  }
-
-  if (options.reversibilityTest) {
-    for (const [up, down] of zip(ups, downs)) {
-      deepEqual(up, down);
+    console.error(":: list completed");
+    for (const file of completedFiles) {
+      console.error(file);
     }
-    console.error(":: reversibility test success");
+
+    console.error(":: list pending");
+    for (const file of pendingFiles) {
+      console.error(file);
+    }
+
+    const ups = [];
+    const downs = [];
+
+    console.error(":: running migrations");
+    if (options.unitTest) {
+      process.env.MIGRATION_UNIT_TEST = "1";
+    }
+
+    const n = pendingFiles.length;
+    ups.push(await dbGetSchema());
+    for (const i of range(n)) {
+      console.error(`(⇑:${i + 1}/${n}) ${pendingFiles[i]}`);
+      await exec("pnpm knex migrate:up");
+      ups.push(await dbGetSchema());
+    }
+
+    downs.unshift(await dbGetSchema());
+    for (const i of range(n)) {
+      console.error(`(⇓:${i + 1}/${n}) ${pendingFiles[n - i - 1]}`);
+      await exec("pnpm knex migrate:down");
+      downs.unshift(await dbGetSchema());
+    }
+
+    if (options.showSchema) {
+      console.log(JSON.stringify(zip(ups, downs), null, 2));
+    }
+
+    if (options.reversibilityTest) {
+      for (const [up, down] of zip(ups, downs)) {
+        deepEqual(up, down);
+      }
+      console.error(":: reversibility test success");
+    }
   }
-}
 );
 
 //
 // create-user
 //
 
-// prettier-ignore
 const createUser = defineCommand(
   {
     args: zodArgObject(
@@ -124,12 +121,12 @@ const createUser = defineCommand(
     ),
   },
   async ({ args: { username, password, language1, language2 } }) => {
-      const user = await register({ username, password });
-      await db
-        .update(T.users)
-        .set({ language1, language2 })
-        .where(E.eq(T.users.id, user.id));
-      await printSession(username);
+    const user = await register({ username, password });
+    await db
+      .update(T.users)
+      .set({ language1, language2 })
+      .where(E.eq(T.users.id, user.id));
+    await printSession(username);
   }
 );
 
@@ -216,64 +213,59 @@ async function commandFetchCaptionEntries(rawArgs: unknown) {
 // pnpm cli scrapeYoutube --videoId='-UroBRG1rY8'
 //
 
-// prettier-ignore
 const scrapeYoutube = defineCommand(
   {
     args: zodArgObject(
-
-z.object({
-  videoId: z.string(),
-  id: z.string().optional(),
-  translation: z.string().optional(),
-  outDir: z.string().default("./misc/youtube/data"),
-})
-
+      z.object({
+        videoId: z.string(),
+        id: z.string().optional(),
+        translation: z.string().optional(),
+        outDir: z.string().default("./misc/youtube/data"),
+      })
     ),
   },
   async ({ args }) => {
+    const dir = `${args.outDir}/${args.videoId}`;
+    await exec(`mkdir -p '${dir}'`);
 
-  const dir = `${args.outDir}/${args.videoId}`;
-  await exec(`mkdir -p '${dir}'`);
-
-  console.log(`:: fetching metadata to '${dir}/metadata.json'...`);
-  const metadataRaw = await fetchVideoMetadataRaw(args.videoId);
-  await fs.promises.writeFile(
-    `${dir}/metadata.json`,
-    JSON.stringify(metadataRaw, null, 2)
-  );
-
-  // list available captions and pick interactively
-  const videoMetadata = Z_VIDEO_METADATA.parse(metadataRaw);
-  const options = toCaptionConfigOptions(videoMetadata);
-  console.log(":: available languages");
-  console.log(options.captions);
-
-  if (args.id) {
-    await download(args.id, args.translation);
-    return;
-  }
-
-  while (true) {
-    const input = await consola.prompt(
-      ":: please input language (+ translation) to download (e.g. .ko, .ko_en) >"
+    console.log(`:: fetching metadata to '${dir}/metadata.json'...`);
+    const metadataRaw = await fetchVideoMetadataRaw(args.videoId);
+    await fs.promises.writeFile(
+      `${dir}/metadata.json`,
+      JSON.stringify(metadataRaw, null, 2)
     );
-    if (!input || typeof input !== "string") {
-      break;
+
+    // list available captions and pick interactively
+    const videoMetadata = Z_VIDEO_METADATA.parse(metadataRaw);
+    const options = toCaptionConfigOptions(videoMetadata);
+    console.log(":: available languages");
+    console.log(options.captions);
+
+    if (args.id) {
+      await download(args.id, args.translation);
+      return;
     }
-    const [id, translation] = input.split("_");
-    await download(id, translation);
-  }
 
-  async function download(id: string, translation?: string) {
-    const url = captionConfigToUrl({ id, translation }, videoMetadata);
-    tinyassert(url);
-    const ttml = await fetch(url).then((res) => res.text());
-    const name = [id, translation].filter(Boolean).join("_");
-    const filepath = `${dir}/${name}.ttml`;
-    console.log(`:: fetching ttml to '${filepath}'...`);
-    await fs.promises.writeFile(filepath, ttml);
-  }
+    while (true) {
+      const input = await consola.prompt(
+        ":: please input language (+ translation) to download (e.g. .ko, .ko_en) >"
+      );
+      if (!input || typeof input !== "string") {
+        break;
+      }
+      const [id, translation] = input.split("_");
+      await download(id, translation);
+    }
 
+    async function download(id: string, translation?: string) {
+      const url = captionConfigToUrl({ id, translation }, videoMetadata);
+      tinyassert(url);
+      const ttml = await fetch(url).then((res) => res.text());
+      const name = [id, translation].filter(Boolean).join("_");
+      const filepath = `${dir}/${name}.ttml`;
+      console.log(`:: fetching ttml to '${filepath}'...`);
+      await fs.promises.writeFile(filepath, ttml);
+    }
   }
 );
 
@@ -283,45 +275,35 @@ z.object({
 //   pnpm cli dbSeedImport --username dev-import --inFile misc/db/dev.json
 //
 
-// prettier-ignore
 const dbSeedExport = defineCommand(
   {
     args: zodArgObject(
-
-z.object({
-  deckId: z.coerce.number().int(),
-  outFile: z.string(),
-})
-
+      z.object({
+        deckId: z.coerce.number().int(),
+        outFile: z.string(),
+      })
     ),
   },
   async ({ args }) => {
-
-  const data = await exportDeckJson(args.deckId);
-  await fs.promises.writeFile(args.outFile, JSON.stringify(data, null, 2));
-
+    const data = await exportDeckJson(args.deckId);
+    await fs.promises.writeFile(args.outFile, JSON.stringify(data, null, 2));
   }
 );
 
-// prettier-ignore
 const dbSeedImport = defineCommand(
   {
     args: zodArgObject(
-
-z.object({
-  username: z.string(),
-  inFile: z.string(),
-})
-
+      z.object({
+        username: z.string(),
+        inFile: z.string(),
+      })
     ),
   },
   async ({ args }) => {
-
-  const user = await findByUsername(args.username);
-  tinyassert(user);
-  const fileDataRaw = await fs.promises.readFile(args.inFile, "utf-8");
-  await importDeckJson(user.id, JSON.parse(fileDataRaw));
-
+    const user = await findByUsername(args.username);
+    tinyassert(user);
+    const fileDataRaw = await fs.promises.readFile(args.inFile, "utf-8");
+    await importDeckJson(user.id, JSON.parse(fileDataRaw));
   }
 );
 
