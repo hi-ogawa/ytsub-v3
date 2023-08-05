@@ -130,25 +130,47 @@ const createUser = defineCommand(
   }
 );
 
-cli
-  .command("resetPassword <username> <password>")
-  .action(async (username: string, password: string) => {
+const resetPassword = defineCommand(
+  {
+    args: zodArgObject(
+      z.object({
+        username: z.string().asArg({ type: "positional" }),
+        password: z.string().asArg({ type: "positional" }),
+      })
+    ),
+  },
+  async ({ args: { username, password } }) => {
     const user = await findByUsername(username);
     tinyassert(user);
     await db
       .update(T.usersCredentials)
       .set({ passwordHash: await toPasswordHash(password) })
       .where(E.eq(T.users.id, user.id));
-  });
+  }
+);
 
-cli.command("print-session <username>").action(async (username: string) => {
-  await printSession(username);
-});
+const printSessionCommand = defineCommand(
+  {
+    args: zodArgObject(
+      z.object({
+        username: z.string().asArg({ type: "positional" }),
+      })
+    ),
+  },
+  async ({ args: { username } }) => {
+    await printSession(username);
+  }
+);
 
-cli
-  .command("create-videos")
-  .option("--username <username>", "[string]")
-  .action(async (options: { username?: string }) => {
+const createVideoCommand = defineCommand(
+  {
+    args: zodArgObject(
+      z.object({
+        username: z.string().asArg({ type: "positional" }),
+      })
+    ),
+  },
+  async ({ args: options }) => {
     const input = await streamToString(process.stdin);
     const newVideos: NewVideo[] = JSON.parse(input);
     let userId = undefined;
@@ -173,7 +195,8 @@ cli
       const data = await fetchCaptionEntries(newVideo);
       await insertVideoAndCaptionEntries(newVideo, data, userId);
     }
-  });
+  }
+);
 
 //
 // fetchCaptionEntries
@@ -604,6 +627,9 @@ const tinyCli = defineSubCommands({
   commands: {
     dbTestMigrations,
     createUser,
+    resetPassword,
+    printSession: printSessionCommand,
+    createVideo: createVideoCommand,
     scrapeYoutube,
     dbSeedExport,
     dbSeedImport,
