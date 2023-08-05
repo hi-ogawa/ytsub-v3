@@ -630,21 +630,6 @@ async function main() {
   } finally {
     await finalizeServer();
   }
-
-  // try {
-  //   await initializeServer();
-  //   cli.parse(undefined, { run: false });
-  //   if (!cli.matchedCommandName) {
-  //     cli.outputHelp();
-  //     process.exit(1);
-  //   }
-  //   await cli.runMatchedCommand();
-  // } catch (e) {
-  //   consola.error(e);
-  //   process.exit(1);
-  // } finally {
-  //   await finalizeServer();
-  // }
 }
 
 main();
