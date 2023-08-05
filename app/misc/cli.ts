@@ -43,21 +43,22 @@ setupZodArg(z);
 const cli = cac("cli").help();
 
 //
-// db:test-migrations
+// pnpm cli dbTestMigrations
 //
 
-cli
-  .command("db:test-migrations")
-  .option("--show-schema", "[boolean]", { default: false })
-  .option("--unit-test", "[boolean]", { default: false })
-  .option("--reversibility-test", "[boolean]", { default: false })
-  .action(clieDbTestMigrations);
+// prettier-ignore
+const dbTestMigrations = defineCommand(
+  {
+    args: zodArgObject(
+      z.object({
+        showSchema: z.coerce.boolean().asArg({ type: "flag" }),
+        unitTest: z.coerce.boolean().asArg({ type: "flag" }),
+        reversibilityTest: z.coerce.boolean().asArg({ type: "flag" }),
+      })
+    ),
+  },
+  async ({ args: options }) => {
 
-async function clieDbTestMigrations(options: {
-  showSchema: boolean;
-  unitTest: boolean;
-  reversibilityTest: boolean;
-}) {
   const { completedFiles, pendingFiles } = await dbGetMigrationStatus();
 
   console.error(":: list completed");
@@ -104,6 +105,7 @@ async function clieDbTestMigrations(options: {
     console.error(":: reversibility test success");
   }
 }
+);
 
 //
 // create-user
@@ -614,6 +616,7 @@ async function fixBookmarkEntriesOffset(rawArgs: unknown) {
 const tinyCli = defineSubCommands({
   autoHelp: true,
   commands: {
+    dbTestMigrations,
     scrapeYoutube,
     dbSeedExport,
     dbSeedImport,
