@@ -599,6 +599,7 @@ async function fixBookmarkEntriesOffset(rawArgs: unknown) {
 //
 
 const tinyCli = defineSubCommands({
+  program: "(cli)",
   autoHelp: true,
   commands: {
     dbTestMigrations,
