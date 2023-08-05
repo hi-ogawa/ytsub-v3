@@ -178,14 +178,14 @@ describe("fetchCaptionEntries", () => {
           "end": 11.011,
           "index": 0,
           "text1": "Hey you 지금 뭐 해",
-          "text2": "",
+          "text2": "Hey you, what are you doing right now? I want to",
         },
         {
           "begin": 11.545,
           "end": 13.51,
           "index": 1,
           "text1": "잠깐 밖으로 나올래",
-          "text2": "",
+          "text2": "go outside for a bit I miss you",
         },
         {
           "begin": 13.646,
