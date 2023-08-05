@@ -95,7 +95,7 @@ export default function DefaultComponent() {
         {/* spinner for initial mount and refetch */}
         <Transition
           show={nextPracticeQuery.isFetching}
-          className="fixed w-100 h-100 duration-500 antd-body antd-spin-overlay-20"
+          className="fixed w-full h-full duration-500 antd-body antd-spin-overlay-20"
           {...transitionProps("opacity-0", "opacity-50")}
         />
       </div>
