@@ -222,19 +222,9 @@ const scrapeYoutube = defineCommand(
   {
     args: zodArgObject(scrapeYoutubeArgs),
   },
-  ({ args }) => scrapeYoutubeImpl(args)
-);
+  // prettier-ignore
+  async ({ args }) => {
 
-// prettier-ignore
-// cli
-//   .command(scrapeYoutube.name)
-//   .option(`--${scrapeYoutubeArgs.keyof().enum.videoId} [string]`, "")
-//   .option(`--${scrapeYoutubeArgs.keyof().enum.id} [string]`, "")
-//   .option(`--${scrapeYoutubeArgs.keyof().enum.translation} [string]`, "")
-//   .option(`--${scrapeYoutubeArgs.keyof().enum.outDir} [string]`, "")
-//   .action(scrapeYoutube);
-
-async function scrapeYoutubeImpl(args: z.infer<typeof scrapeYoutubeArgs>) {
   const dir = `${args.outDir}/${args.videoId}`;
   await exec(`mkdir -p '${dir}'`);
 
@@ -276,7 +266,9 @@ async function scrapeYoutubeImpl(args: z.infer<typeof scrapeYoutubeArgs>) {
     console.log(`:: fetching ttml to '${filepath}'...`);
     await fs.promises.writeFile(filepath, ttml);
   }
-}
+
+  }
+);
 
 //
 // seed export/import e.g.
@@ -309,24 +301,25 @@ async function commandDbSeedExport(rawArgs: unknown) {
 // db-seed-import
 //
 
-const commandDbSeedImportArgs = z.object({
-  username: z.string(),
-  inFile: z.string(),
-});
+const dbSeedImport = defineCommand(
+  {
+    args: zodArgObject(
+      z.object({
+        username: z.string(),
+        inFile: z.string(),
+      })
+    ),
+  },
+  // prettier-ignore
+  async ({ args }) => {
 
-cli
-  .command("db-seed-import")
-  .option(`--${commandDbSeedImportArgs.keyof().enum.username} [string]`, "")
-  .option(`--${commandDbSeedImportArgs.keyof().enum.inFile} [string]`, "")
-  .action(commandDbSeedImport);
-
-async function commandDbSeedImport(argsRaw: unknown) {
-  const args = commandDbSeedImportArgs.parse(argsRaw);
   const user = await findByUsername(args.username);
   tinyassert(user);
   const fileDataRaw = await fs.promises.readFile(args.inFile, "utf-8");
   await importDeckJson(user.id, JSON.parse(fileDataRaw));
-}
+
+  }
+);
 
 //
 // clean-data
@@ -623,6 +616,7 @@ const tinyCli = defineSubCommands({
   autoHelp: true,
   commands: {
     scrapeYoutube,
+    dbSeedImport,
   },
 });
 
