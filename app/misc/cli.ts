@@ -111,24 +111,27 @@ const dbTestMigrations = defineCommand(
 // create-user
 //
 
-cli
-  .command("create-user <username> <password>")
-  .option("--language1 <language1>", "[string]", { default: "fr" })
-  .option("--language2 <language2>", "[string]", { default: "en" })
-  .action(
-    async (
-      username: string,
-      password: string,
-      { language1, language2 }: { language1: string; language2: string }
-    ) => {
+// prettier-ignore
+const createUser = defineCommand(
+  {
+    args: zodArgObject(
+      z.object({
+        username: z.string().asArg({ type: "positional" }),
+        password: z.string().asArg({ type: "positional" }),
+        language1: z.string().default("fr"),
+        language2: z.string().default("en"),
+      })
+    ),
+  },
+  async ({ args: { username, password, language1, language2 } }) => {
       const user = await register({ username, password });
       await db
         .update(T.users)
         .set({ language1, language2 })
         .where(E.eq(T.users.id, user.id));
       await printSession(username);
-    }
-  );
+  }
+);
 
 cli
   .command("resetPassword <username> <password>")
@@ -617,6 +620,7 @@ const tinyCli = defineSubCommands({
   autoHelp: true,
   commands: {
     dbTestMigrations,
+    createUser,
     scrapeYoutube,
     dbSeedExport,
     dbSeedImport,

@@ -28,9 +28,9 @@ lint/github-workflow:
 #
 
 db/seed: db/seed-download
-	pnpm cli create-user dev dev
-	pnpm cli db-seed-import --username dev --inFile misc/db/export/ytsub-deck-export--Korean.txt
-	pnpm cli db-seed-import --username dev --inFile misc/db/export/ytsub-deck-export--French.txt
+	pnpm cli createUser dev dev
+	pnpm cli dbSeedImport --username dev --inFile misc/db/export/ytsub-deck-export--Korean.txt
+	pnpm cli dbSeedImport --username dev --inFile misc/db/export/ytsub-deck-export--French.txt
 
 db/seed-download:
 	@# https://github.com/hi-ogawa/ytsub-v3/pull/214
