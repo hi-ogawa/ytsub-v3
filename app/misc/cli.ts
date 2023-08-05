@@ -208,7 +208,7 @@ async function commandFetchCaptionEntries(rawArgs: unknown) {
 }
 
 //
-// pnpm cli scrapeYoutube hr-325mclek
+// pnpm cli scrapeYoutube --videoId='-UroBRG1rY8'
 //
 
 // prettier-ignore
@@ -217,7 +217,7 @@ const scrapeYoutube = defineCommand(
     args: zodArgObject(
 
 z.object({
-  videoId: z.string().asArg({ type: "positional" }),
+  videoId: z.string(),
   id: z.string().optional(),
   translation: z.string().optional(),
   outDir: z.string().default("./misc/youtube/data"),
