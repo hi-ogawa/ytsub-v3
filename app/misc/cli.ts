@@ -3,7 +3,6 @@ import fs from "node:fs";
 import { defineCommand, defineSubCommands } from "@hiogawa/tiny-cli";
 import { zArg } from "@hiogawa/tiny-cli/dist/zod";
 import { groupBy, objectPick, range, tinyassert, zip } from "@hiogawa/utils";
-import { cac } from "cac";
 import consola from "consola";
 import { sql } from "drizzle-orm";
 import { z } from "zod";
@@ -37,12 +36,6 @@ import {
 } from "../utils/youtube";
 import { finalizeServer, initializeServer } from "./initialize-server";
 import { exportDeckJson, importDeckJson } from "./seed-utils";
-
-const cli = cac("cli").help();
-
-//
-// pnpm cli dbTestMigrations
-//
 
 const dbTestMigrations = defineCommand(
   {
@@ -101,9 +94,12 @@ const dbTestMigrations = defineCommand(
   }
 );
 
-//
-// create-user
-//
+async function printSession(username: string) {
+  const user = await findByUsername(username);
+  tinyassert(user);
+  const cookie = await createUserCookie(user);
+  console.log(cookie);
+}
 
 const createUser = defineCommand(
   {
@@ -186,44 +182,30 @@ const createVideoCommand = defineCommand(
   }
 );
 
-//
-// fetchCaptionEntries
-//
-
-const commandFetchCaptionEntriesArgs = z.object({
-  videoId: z.string(),
-  language1: z.string(),
-  language2: z.string(),
-  outFile: z.string(),
-});
-
-// prettier-ignore
-cli
-  .command("fetchCaptionEntries")
-  .option(`--${commandFetchCaptionEntriesArgs.keyof().enum.videoId} [string]`, "")
-  .option(`--${commandFetchCaptionEntriesArgs.keyof().enum.language1} [string]`, "")
-  .option(`--${commandFetchCaptionEntriesArgs.keyof().enum.language2} [string]`, "")
-  .option(`--${commandFetchCaptionEntriesArgs.keyof().enum.outFile} [string]`, "")
-  .action(commandFetchCaptionEntries);
-
-async function commandFetchCaptionEntries(rawArgs: unknown) {
-  const args = commandFetchCaptionEntriesArgs.parse(rawArgs);
-  const data = await fetchCaptionEntries({
-    videoId: args.videoId,
-    language1: {
-      id: args.language1,
+const fetchCaptionEntriesCommand = defineCommand(
+  {
+    args: {
+      videoId: z.string(),
+      language1: z.string(),
+      language2: z.string(),
+      outFile: z.string(),
     },
-    language2: {
-      id: args.language2,
-    },
-  });
-  await fs.promises.writeFile(args.outFile, JSON.stringify(data, null, 2));
-}
+  },
+  async ({ args }) => {
+    const data = await fetchCaptionEntries({
+      videoId: args.videoId,
+      language1: {
+        id: args.language1,
+      },
+      language2: {
+        id: args.language2,
+      },
+    });
+    await fs.promises.writeFile(args.outFile, JSON.stringify(data, null, 2));
+  }
+);
 
-//
 // pnpm cli scrapeYoutube --videoId='-UroBRG1rY8'
-//
-
 const scrapeYoutube = defineCommand(
   {
     args: {
@@ -312,42 +294,32 @@ const dbSeedImport = defineCommand(
   }
 );
 
-//
-// clean-data
-//
-
-cli
-  .command("clean-data <only-username>")
-  .option("--delete-anonymous-videos", "[boolean]", { default: false })
-  .action(
-    async (
-      onlyUsername: string,
-      options: { deleteAnonymousVideos: boolean }
-    ) => {
-      // delete except `onlyUsername`
-      await db
-        .delete(T.users)
-        .where(E.not(E.eq(T.users.username, onlyUsername)));
-      if (options.deleteAnonymousVideos) {
-        // delete anonymous videos
-        await db.delete(T.videos).where(E.isNull(T.videos.userId));
-      }
-      await deleteOrphans();
-      // rename to "dev"
-      await db
-        .update(T.usersCredentials)
-        .set({ username: "dev", passwordHash: await toPasswordHash("dev") })
-        .where(E.eq(T.users.username, onlyUsername));
+const cleanData = defineCommand(
+  {
+    args: {
+      onlyUsername: zArg(z.string(), { type: "positional" }),
+      deleteAnonymousVideos: zArg(z.coerce.boolean(), { type: "flag" }),
+    },
+  },
+  async ({ args: { onlyUsername, deleteAnonymousVideos } }) => {
+    // delete except `onlyUsername`
+    await db.delete(T.users).where(E.not(E.eq(T.users.username, onlyUsername)));
+    if (deleteAnonymousVideos) {
+      // delete anonymous videos
+      await db.delete(T.videos).where(E.isNull(T.videos.userId));
     }
-  );
+    await deleteOrphans();
+    // rename to "dev"
+    await db
+      .update(T.usersCredentials)
+      .set({ username: "dev", passwordHash: await toPasswordHash("dev") })
+      .where(E.eq(T.users.username, onlyUsername));
+  }
+);
 
-//
-// reset-counter-cache:videos.bookmarkEntriesCount
-//
-
-cli
-  .command("reset-counter-cache:videos.bookmarkEntriesCount")
-  .action(async () => {
+const resetCounterCache_videos_bookmarkEntriesCount = defineCommand(
+  { args: {} },
+  async () => {
     // TODO: single UPDATE statement with sub query?
     const rows = await db
       .select({
@@ -367,15 +339,12 @@ cli
         })
         .where(E.eq(T.videos.id, row.id));
     }
-  });
+  }
+);
 
-//
-// reset-counter-cache:practiceEntries.practiceActionsCount
-//
-
-cli
-  .command("reset-counter-cache:practiceEntries.practiceActionsCount")
-  .action(async () => {
+const resetCounterCache_practiceEntries_practiceActionsCount = defineCommand(
+  { args: {} },
+  async () => {
     const rows = await db
       .select({
         id: T.practiceEntries.id,
@@ -398,206 +367,170 @@ cli
         })
         .where(E.eq(T.practiceEntries.id, row.id));
     }
-  });
-
-async function printSession(username: string) {
-  const user = await findByUsername(username);
-  tinyassert(user);
-  const cookie = await createUserCookie(user);
-  console.log(cookie);
-}
-
-//
-// resetDeckCache
-//
-
-const resetDeckCacheArgs = z.object({
-  deckId: z.coerce.number().int().optional(),
-});
-
-cli
-  .command(resetDeckCache.name)
-  .option(`--${resetDeckCacheArgs.keyof().enum.deckId} [number]`, "")
-  .action(resetDeckCacheCommand);
-
-async function resetDeckCacheCommand(rawArgs: unknown) {
-  const args = resetDeckCacheArgs.parse(rawArgs);
-  if (args.deckId) {
-    console.log("::", JSON.stringify(args));
-    await resetDeckCache(args.deckId);
-    return;
   }
+);
 
-  const decks = await db.select().from(T.decks);
-  for (const deck of decks) {
-    console.log(
-      "::",
-      JSON.stringify(objectPick(deck, ["userId", "id", "name"]))
-    );
-    await resetDeckCache(deck.id);
-  }
-}
+const resetDeckCacheCommand = defineCommand(
+  {
+    args: {
+      deckId: z.coerce.number().optional(),
+    },
+  },
+  async ({ args }) => {
+    if (args.deckId) {
+      console.log("::", JSON.stringify(args));
+      await resetDeckCache(args.deckId);
+      return;
+    }
 
-//
-// debugCacheNextEntries
-//
-
-const debugCacheNextEntriesArgs = z.object({
-  deckId: z.coerce.number().int(),
-});
-
-cli
-  .command(debugCacheNextEntries.name)
-  .option(`--${debugCacheNextEntriesArgs.keyof().enum.deckId} [number]`, "")
-  .action(debugCacheNextEntries);
-
-async function debugCacheNextEntries(rawArgs: unknown) {
-  const args = debugCacheNextEntriesArgs.parse(rawArgs);
-  const deck = await selectOne(T.decks, E.eq(T.decks.id, args.deckId));
-  tinyassert(deck);
-
-  const ids = deck.cache.nextEntriesRandomMode;
-  console.log({ ids });
-  if (ids.length === 0) {
-    return;
-  }
-
-  const entries = await db
-    .select()
-    .from(T.practiceEntries)
-    .where(E.inArray(T.practiceEntries.id, ids));
-  console.log(entries);
-}
-
-//
-// debugRandomMode
-//
-
-const debugRandomModeArgs = z.object({
-  deckId: z.coerce.number().int(),
-  count: z.coerce.number().default(10),
-  seed: z.coerce.number().default(Date.now()),
-});
-
-cli
-  .command(debugRandomMode.name)
-  .option(`--${debugRandomModeArgs.keyof().enum.deckId} [number]`, "")
-  .option(`--${debugRandomModeArgs.keyof().enum.count} [number]`, "")
-  .option(`--${debugRandomModeArgs.keyof().enum.seed} [number]`, "")
-  .action(debugRandomMode);
-
-async function debugRandomMode(rawArgs: unknown) {
-  const args = debugRandomModeArgs.parse(rawArgs);
-  const deck = await selectOne(T.decks, E.eq(T.decks.id, args.deckId));
-  tinyassert(deck);
-
-  // get practice order
-  const scoredEntries = await queryNextPracticeEntryRandomModeBatch(
-    args.deckId,
-    new Date(),
-    args.count,
-    args.seed
-  );
-
-  // get all rows
-  const rows = await db
-    .select()
-    .from(T.practiceEntries)
-    .innerJoin(
-      T.bookmarkEntries,
-      E.eq(T.bookmarkEntries.id, T.practiceEntries.bookmarkEntryId)
-    )
-    .innerJoin(
-      T.captionEntries,
-      E.eq(T.captionEntries.id, T.bookmarkEntries.captionEntryId)
-    )
-    .innerJoin(T.videos, E.eq(T.videos.id, T.bookmarkEntries.videoId))
-    .where(E.eq(T.practiceEntries.deckId, args.deckId));
-
-  const rowsById = groupBy(rows, (row) => row.practiceEntries.id);
-
-  // format
-  const formatted = scoredEntries.map((s) => {
-    const e = rowsById.get(s.id)![0];
-    const picked = [
-      objectPick(e.bookmarkEntries, ["text"]),
-      objectPick(e.captionEntries, ["text1", "text2", "begin"]),
-      objectPick(e.videos, ["title", "bookmarkEntriesCount"]),
-      objectPick(e.practiceEntries, [
-        "scheduledAt",
-        "queueType",
-        "practiceActionsCount",
-      ]),
-      objectPick(s, ["score"]),
-    ];
-    const combined = Object.assign({}, ...picked);
-    return combined;
-  });
-  console.log(JSON.stringify(formatted, null, 2));
-}
-
-//
-// fixBookmarkEntriesOffset
-//
-
-const fixBookmarkEntriesOffsetArgs = z.object({
-  update: z.boolean().default(false),
-});
-
-cli
-  .command(fixBookmarkEntriesOffset.name)
-  .option(`--${fixBookmarkEntriesOffsetArgs.keyof().enum.update} [boolean]`, "")
-  .action(fixBookmarkEntriesOffset);
-
-async function fixBookmarkEntriesOffset(rawArgs: unknown) {
-  const args = fixBookmarkEntriesOffsetArgs.parse(rawArgs);
-  const rows = await db
-    .select()
-    .from(T.bookmarkEntries)
-    .innerJoin(
-      T.captionEntries,
-      E.eq(T.captionEntries.id, T.bookmarkEntries.captionEntryId)
-    );
-
-  const stats = {
-    total: 0,
-    fixable: 0,
-  };
-
-  for (const row of rows) {
-    const { id, text, offset, side } = row.bookmarkEntries;
-    const captionText = [row.captionEntries.text1, row.captionEntries.text2][
-      side
-    ];
-
-    const textByOffset = captionText.slice(offset).slice(0, text.length);
-    if (textByOffset !== text) {
-      const newOffset = offset - text.length;
-      const textByNewOffset = captionText
-        .slice(newOffset)
-        .slice(0, text.length);
-
-      const fixable = textByNewOffset === text;
-      stats.total++;
-      stats.fixable += Number(fixable);
-
+    const decks = await db.select().from(T.decks);
+    for (const deck of decks) {
       console.log(
-        fixable ? "[ok]" : "[no]",
-        { text, textByOffset, textByNewOffset },
-        row
+        "::",
+        JSON.stringify(objectPick(deck, ["userId", "id", "name"]))
       );
-
-      if (args.update) {
-        await db
-          .update(T.bookmarkEntries)
-          .set({ offset: newOffset })
-          .where(E.eq(T.bookmarkEntries.id, id));
-      }
+      await resetDeckCache(deck.id);
     }
   }
+);
 
-  console.log({ stats });
-}
+const debugCacheNextEntries = defineCommand(
+  {
+    args: {
+      deckId: z.coerce.number(),
+    },
+  },
+  async ({ args }) => {
+    const deck = await selectOne(T.decks, E.eq(T.decks.id, args.deckId));
+    tinyassert(deck);
+
+    const ids = deck.cache.nextEntriesRandomMode;
+    console.log({ ids });
+    if (ids.length === 0) {
+      return;
+    }
+
+    const entries = await db
+      .select()
+      .from(T.practiceEntries)
+      .where(E.inArray(T.practiceEntries.id, ids));
+    console.log(entries);
+  }
+);
+
+const debugRandomMode = defineCommand(
+  {
+    args: {
+      deckId: z.coerce.number().int(),
+      count: z.coerce.number().default(10),
+      seed: z.coerce.number().default(Date.now()),
+    },
+  },
+  async ({ args }) => {
+    const deck = await selectOne(T.decks, E.eq(T.decks.id, args.deckId));
+    tinyassert(deck);
+
+    // get practice order
+    const scoredEntries = await queryNextPracticeEntryRandomModeBatch(
+      args.deckId,
+      new Date(),
+      args.count,
+      args.seed
+    );
+
+    // get all rows
+    const rows = await db
+      .select()
+      .from(T.practiceEntries)
+      .innerJoin(
+        T.bookmarkEntries,
+        E.eq(T.bookmarkEntries.id, T.practiceEntries.bookmarkEntryId)
+      )
+      .innerJoin(
+        T.captionEntries,
+        E.eq(T.captionEntries.id, T.bookmarkEntries.captionEntryId)
+      )
+      .innerJoin(T.videos, E.eq(T.videos.id, T.bookmarkEntries.videoId))
+      .where(E.eq(T.practiceEntries.deckId, args.deckId));
+
+    const rowsById = groupBy(rows, (row) => row.practiceEntries.id);
+
+    // format
+    const formatted = scoredEntries.map((s) => {
+      const e = rowsById.get(s.id)![0];
+      const picked = [
+        objectPick(e.bookmarkEntries, ["text"]),
+        objectPick(e.captionEntries, ["text1", "text2", "begin"]),
+        objectPick(e.videos, ["title", "bookmarkEntriesCount"]),
+        objectPick(e.practiceEntries, [
+          "scheduledAt",
+          "queueType",
+          "practiceActionsCount",
+        ]),
+        objectPick(s, ["score"]),
+      ];
+      const combined = Object.assign({}, ...picked);
+      return combined;
+    });
+    console.log(JSON.stringify(formatted, null, 2));
+  }
+);
+
+const fixBookmarkEntriesOffset = defineCommand(
+  {
+    args: {
+      update: z.coerce.boolean(),
+    },
+  },
+  async ({ args }) => {
+    const rows = await db
+      .select()
+      .from(T.bookmarkEntries)
+      .innerJoin(
+        T.captionEntries,
+        E.eq(T.captionEntries.id, T.bookmarkEntries.captionEntryId)
+      );
+
+    const stats = {
+      total: 0,
+      fixable: 0,
+    };
+
+    for (const row of rows) {
+      const { id, text, offset, side } = row.bookmarkEntries;
+      const captionText = [row.captionEntries.text1, row.captionEntries.text2][
+        side
+      ];
+
+      const textByOffset = captionText.slice(offset).slice(0, text.length);
+      if (textByOffset !== text) {
+        const newOffset = offset - text.length;
+        const textByNewOffset = captionText
+          .slice(newOffset)
+          .slice(0, text.length);
+
+        const fixable = textByNewOffset === text;
+        stats.total++;
+        stats.fixable += Number(fixable);
+
+        console.log(
+          fixable ? "[ok]" : "[no]",
+          { text, textByOffset, textByNewOffset },
+          row
+        );
+
+        if (args.update) {
+          await db
+            .update(T.bookmarkEntries)
+            .set({ offset: newOffset })
+            .where(E.eq(T.bookmarkEntries.id, id));
+        }
+      }
+    }
+
+    console.log({ stats });
+  }
+);
 
 //
 // main
@@ -613,8 +546,16 @@ const tinyCli = defineSubCommands({
     printSession: printSessionCommand,
     createVideo: createVideoCommand,
     scrapeYoutube,
+    fetchCaptionEntries: fetchCaptionEntriesCommand,
     dbSeedExport,
     dbSeedImport,
+    cleanData,
+    resetCounterCache_videos_bookmarkEntriesCount,
+    resetCounterCache_practiceEntries_practiceActionsCount,
+    resetDeckCache: resetDeckCacheCommand,
+    debugCacheNextEntries,
+    debugRandomMode,
+    fixBookmarkEntriesOffset,
   },
 });
 
