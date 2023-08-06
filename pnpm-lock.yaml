@@ -139,8 +139,8 @@ devDependencies:
     specifier: 1.0.2-pre.1
     version: 1.0.2-pre.1(prettier@2.8.8)(typescript@5.1.6)
   '@hiogawa/tiny-cli':
-    specifier: 0.0.1-pre.6
-    version: 0.0.1-pre.6(zod@3.21.4)
+    specifier: 0.0.1-pre.8
+    version: 0.0.1-pre.8
   '@hiogawa/unocss-preset-antd':
     specifier: 2.2.1-pre.3
     version: 2.2.1-pre.3(@unocss/preset-uno@0.53.6)(unocss@0.52.7)
@@ -2163,15 +2163,8 @@ packages:
       typescript: 5.1.6
     dev: true
 
-  /@hiogawa/tiny-cli@0.0.1-pre.6(zod@3.21.4):
-    resolution: {integrity: sha512-Lw80BMM6640M7NtmHgNLAmubXcixd2Sc/g05m3Im3uuHodkeuCSSKuiD8f5wVe6yxHOdNNuh+qibTtfbR3+UHw==}
-    peerDependencies:
-      zod: '*'
-    peerDependenciesMeta:
-      zod:
-        optional: true
-    dependencies:
-      zod: 3.21.4
+  /@hiogawa/tiny-cli@0.0.1-pre.8:
+    resolution: {integrity: sha512-R9iOwR8PT/LhaWFrVxpTSE0TIKLGzFQNJfTGUUtDVyjh3bJFBXsogfbo3tgiQBGaX7jOKbuzy9T9UNgN50nnsQ==}
     dev: true
 
   /@hiogawa/unocss-preset-antd@2.2.1-pre.3(@unocss/preset-uno@0.53.6)(unocss@0.52.7):
@@ -10073,6 +10066,7 @@ packages:
 
   /zod@3.21.4:
     resolution: {integrity: sha512-m46AKbrzKVzOzs/DZgVnG5H55N1sv1M8qZU3A8RIKbs3mrACDNeIOeilDymVb2HdmP8uwshOCF4uJ8uM9rCqJw==}
+    dev: false
 
   /zrender@5.4.3:
     resolution: {integrity: sha512-DRUM4ZLnoaT0PBVvGBDO9oWIDBKFdAVieNWxWwK0niYzJCMwGchRk21/hsE+RKkIveH3XHCyvXcJDkgLVvfizQ==}

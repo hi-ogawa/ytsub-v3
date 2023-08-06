@@ -1,7 +1,6 @@
 import { deepEqual } from "assert/strict";
 import fs from "node:fs";
-import { defineCommand, defineSubCommands } from "@hiogawa/tiny-cli";
-import { zArg } from "@hiogawa/tiny-cli/dist/zod";
+import { defineArg, defineCommand, defineSubCommands } from "@hiogawa/tiny-cli";
 import { groupBy, objectPick, range, tinyassert, zip } from "@hiogawa/utils";
 import consola from "consola";
 import { sql } from "drizzle-orm";
@@ -40,9 +39,9 @@ import { exportDeckJson, importDeckJson } from "./seed-utils";
 const dbTestMigrations = defineCommand(
   {
     args: {
-      showSchema: zArg(z.coerce.boolean(), { type: "flag" }),
-      unitTest: zArg(z.coerce.boolean(), { type: "flag" }),
-      reversibilityTest: zArg(z.coerce.boolean(), { type: "flag" }),
+      showSchema: defineArg(z.coerce.boolean(), { type: "flag" }),
+      unitTest: defineArg(z.coerce.boolean(), { type: "flag" }),
+      reversibilityTest: defineArg(z.coerce.boolean(), { type: "flag" }),
     },
   },
   async ({ args: options }) => {
@@ -104,8 +103,8 @@ async function printSession(username: string) {
 const createUser = defineCommand(
   {
     args: {
-      username: zArg(z.string(), { type: "positional" }),
-      password: zArg(z.string(), { type: "positional" }),
+      username: defineArg(z.string(), { type: "positional" }),
+      password: defineArg(z.string(), { type: "positional" }),
       language1: z.string().default("fr"),
       language2: z.string().default("en"),
     },
@@ -123,8 +122,8 @@ const createUser = defineCommand(
 const resetPassword = defineCommand(
   {
     args: {
-      username: zArg(z.string(), { type: "positional" }),
-      password: zArg(z.string(), { type: "positional" }),
+      username: defineArg(z.string(), { type: "positional" }),
+      password: defineArg(z.string(), { type: "positional" }),
     },
   },
   async ({ args: { username, password } }) => {
@@ -140,7 +139,7 @@ const resetPassword = defineCommand(
 const printSessionCommand = defineCommand(
   {
     args: {
-      username: zArg(z.string(), { type: "positional" }),
+      username: defineArg(z.string(), { type: "positional" }),
     },
   },
   async ({ args: { username } }) => {
@@ -151,7 +150,7 @@ const printSessionCommand = defineCommand(
 const createVideoCommand = defineCommand(
   {
     args: {
-      username: zArg(z.string(), { type: "positional" }),
+      username: defineArg(z.string(), { type: "positional" }),
     },
   },
   async ({ args: options }) => {
@@ -297,8 +296,8 @@ const dbSeedImport = defineCommand(
 const cleanData = defineCommand(
   {
     args: {
-      onlyUsername: zArg(z.string(), { type: "positional" }),
-      deleteAnonymousVideos: zArg(z.coerce.boolean(), { type: "flag" }),
+      onlyUsername: defineArg(z.string(), { type: "positional" }),
+      deleteAnonymousVideos: defineArg(z.coerce.boolean(), { type: "flag" }),
     },
   },
   async ({ args: { onlyUsername, deleteAnonymousVideos } }) => {
