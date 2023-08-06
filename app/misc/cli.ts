@@ -1,7 +1,7 @@
 import { deepEqual } from "assert/strict";
 import fs from "node:fs";
 import { defineCommand, defineSubCommands } from "@hiogawa/tiny-cli";
-import { setupZodArg, zodArgObject } from "@hiogawa/tiny-cli/dist/zod";
+import { zArg } from "@hiogawa/tiny-cli/dist/zod";
 import { groupBy, objectPick, range, tinyassert, zip } from "@hiogawa/utils";
 import { cac } from "cac";
 import consola from "consola";
@@ -38,8 +38,6 @@ import {
 import { finalizeServer, initializeServer } from "./initialize-server";
 import { exportDeckJson, importDeckJson } from "./seed-utils";
 
-setupZodArg(z);
-
 const cli = cac("cli").help();
 
 //
@@ -48,13 +46,11 @@ const cli = cac("cli").help();
 
 const dbTestMigrations = defineCommand(
   {
-    args: zodArgObject(
-      z.object({
-        showSchema: z.coerce.boolean().asArg({ type: "flag" }),
-        unitTest: z.coerce.boolean().asArg({ type: "flag" }),
-        reversibilityTest: z.coerce.boolean().asArg({ type: "flag" }),
-      })
-    ),
+    args: {
+      showSchema: zArg(z.coerce.boolean(), { type: "flag" }),
+      unitTest: zArg(z.coerce.boolean(), { type: "flag" }),
+      reversibilityTest: zArg(z.coerce.boolean(), { type: "flag" }),
+    },
   },
   async ({ args: options }) => {
     const { completedFiles, pendingFiles } = await dbGetMigrationStatus();
@@ -111,14 +107,12 @@ const dbTestMigrations = defineCommand(
 
 const createUser = defineCommand(
   {
-    args: zodArgObject(
-      z.object({
-        username: z.string().asArg({ type: "positional" }),
-        password: z.string().asArg({ type: "positional" }),
-        language1: z.string().default("fr"),
-        language2: z.string().default("en"),
-      })
-    ),
+    args: {
+      username: zArg(z.string(), { type: "positional" }),
+      password: zArg(z.string(), { type: "positional" }),
+      language1: z.string().default("fr"),
+      language2: z.string().default("en"),
+    },
   },
   async ({ args: { username, password, language1, language2 } }) => {
     const user = await register({ username, password });
@@ -132,12 +126,10 @@ const createUser = defineCommand(
 
 const resetPassword = defineCommand(
   {
-    args: zodArgObject(
-      z.object({
-        username: z.string().asArg({ type: "positional" }),
-        password: z.string().asArg({ type: "positional" }),
-      })
-    ),
+    args: {
+      username: zArg(z.string(), { type: "positional" }),
+      password: zArg(z.string(), { type: "positional" }),
+    },
   },
   async ({ args: { username, password } }) => {
     const user = await findByUsername(username);
@@ -151,11 +143,9 @@ const resetPassword = defineCommand(
 
 const printSessionCommand = defineCommand(
   {
-    args: zodArgObject(
-      z.object({
-        username: z.string().asArg({ type: "positional" }),
-      })
-    ),
+    args: {
+      username: zArg(z.string(), { type: "positional" }),
+    },
   },
   async ({ args: { username } }) => {
     await printSession(username);
@@ -164,11 +154,9 @@ const printSessionCommand = defineCommand(
 
 const createVideoCommand = defineCommand(
   {
-    args: zodArgObject(
-      z.object({
-        username: z.string().asArg({ type: "positional" }),
-      })
-    ),
+    args: {
+      username: zArg(z.string(), { type: "positional" }),
+    },
   },
   async ({ args: options }) => {
     const input = await streamToString(process.stdin);
@@ -238,14 +226,12 @@ async function commandFetchCaptionEntries(rawArgs: unknown) {
 
 const scrapeYoutube = defineCommand(
   {
-    args: zodArgObject(
-      z.object({
-        videoId: z.string(),
-        id: z.string().optional(),
-        translation: z.string().optional(),
-        outDir: z.string().default("./misc/youtube/data"),
-      })
-    ),
+    args: {
+      videoId: z.string(),
+      id: z.string().optional(),
+      translation: z.string().optional(),
+      outDir: z.string().default("./misc/youtube/data"),
+    },
   },
   async ({ args }) => {
     const dir = `${args.outDir}/${args.videoId}`;
@@ -300,12 +286,10 @@ const scrapeYoutube = defineCommand(
 
 const dbSeedExport = defineCommand(
   {
-    args: zodArgObject(
-      z.object({
-        deckId: z.coerce.number().int(),
-        outFile: z.string(),
-      })
-    ),
+    args: {
+      deckId: z.coerce.number().int(),
+      outFile: z.string(),
+    },
   },
   async ({ args }) => {
     const data = await exportDeckJson(args.deckId);
@@ -315,12 +299,10 @@ const dbSeedExport = defineCommand(
 
 const dbSeedImport = defineCommand(
   {
-    args: zodArgObject(
-      z.object({
-        username: z.string(),
-        inFile: z.string(),
-      })
-    ),
+    args: {
+      username: z.string(),
+      inFile: z.string(),
+    },
   },
   async ({ args }) => {
     const user = await findByUsername(args.username);

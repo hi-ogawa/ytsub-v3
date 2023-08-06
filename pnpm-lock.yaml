@@ -139,8 +139,8 @@ devDependencies:
     specifier: 1.0.2-pre.1
     version: 1.0.2-pre.1(prettier@2.8.8)(typescript@5.1.6)
   '@hiogawa/tiny-cli':
-    specifier: 0.0.1-pre.5
-    version: 0.0.1-pre.5(zod@3.21.4)
+    specifier: 0.0.1-pre.6
+    version: 0.0.1-pre.6(zod@3.21.4)
   '@hiogawa/unocss-preset-antd':
     specifier: 2.2.1-pre.3
     version: 2.2.1-pre.3(@unocss/preset-uno@0.53.6)(unocss@0.52.7)
@@ -2166,8 +2166,8 @@ packages:
       typescript: 5.1.6
     dev: true
 
-  /@hiogawa/tiny-cli@0.0.1-pre.5(zod@3.21.4):
-    resolution: {integrity: sha512-gAMnQ88AWGwlVDw9PB6o0m+m+F0K2qIQA89tFsA1f17APf08N46em2P1NufCo3PwqRGhPzrKClQpdQbBwmYXZg==}
+  /@hiogawa/tiny-cli@0.0.1-pre.6(zod@3.21.4):
+    resolution: {integrity: sha512-Lw80BMM6640M7NtmHgNLAmubXcixd2Sc/g05m3Im3uuHodkeuCSSKuiD8f5wVe6yxHOdNNuh+qibTtfbR3+UHw==}
     peerDependencies:
       zod: '*'
     peerDependenciesMeta:
