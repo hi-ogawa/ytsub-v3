@@ -99,7 +99,6 @@
     "@vitejs/plugin-react": "^4.0.1",
     "@vitest/coverage-c8": "^0.31.4",
     "c8": "^7.14.0",
-    "cac": "^6.7.14",
     "consola": "^3.2.2",
     "esbuild": "^0.17.19",
     "esbuild-register": "^3.4.2",
