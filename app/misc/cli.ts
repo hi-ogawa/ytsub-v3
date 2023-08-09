@@ -1,7 +1,7 @@
 import { deepEqual } from "assert/strict";
 import fs from "node:fs";
+import { TinyCli, TinyCliParseError, arg, zArg } from "@hiogawa/tiny-cli";
 import { groupBy, objectPick, range, tinyassert, zip } from "@hiogawa/utils";
-import { cac } from "cac";
 import consola from "consola";
 import { sql } from "drizzle-orm";
 import { z } from "zod";
@@ -36,113 +36,133 @@ import {
 import { finalizeServer, initializeServer } from "./initialize-server";
 import { exportDeckJson, importDeckJson } from "./seed-utils";
 
-const cli = cac("cli").help();
+const cli = new TinyCli({
+  program: "(cli)",
+});
 
-//
-// db:test-migrations
-//
+cli.defineCommand(
+  {
+    name: "dbTestMigrations",
+    args: {
+      showSchema: arg.boolean(),
+      unitTest: arg.boolean(),
+      reversibilityTest: arg.boolean(),
+    },
+  },
+  async ({ args: options }) => {
+    const { completedFiles, pendingFiles } = await dbGetMigrationStatus();
 
-cli
-  .command("db:test-migrations")
-  .option("--show-schema", "[boolean]", { default: false })
-  .option("--unit-test", "[boolean]", { default: false })
-  .option("--reversibility-test", "[boolean]", { default: false })
-  .action(clieDbTestMigrations);
-
-async function clieDbTestMigrations(options: {
-  showSchema: boolean;
-  unitTest: boolean;
-  reversibilityTest: boolean;
-}) {
-  const { completedFiles, pendingFiles } = await dbGetMigrationStatus();
-
-  console.error(":: list completed");
-  for (const file of completedFiles) {
-    console.error(file);
-  }
-
-  console.error(":: list pending");
-  for (const file of pendingFiles) {
-    console.error(file);
-  }
-
-  const ups = [];
-  const downs = [];
-
-  console.error(":: running migrations");
-  if (options.unitTest) {
-    process.env.MIGRATION_UNIT_TEST = "1";
-  }
-
-  const n = pendingFiles.length;
-  ups.push(await dbGetSchema());
-  for (const i of range(n)) {
-    console.error(`(⇑:${i + 1}/${n}) ${pendingFiles[i]}`);
-    await exec("pnpm knex migrate:up");
-    ups.push(await dbGetSchema());
-  }
-
-  downs.unshift(await dbGetSchema());
-  for (const i of range(n)) {
-    console.error(`(⇓:${i + 1}/${n}) ${pendingFiles[n - i - 1]}`);
-    await exec("pnpm knex migrate:down");
-    downs.unshift(await dbGetSchema());
-  }
-
-  if (options.showSchema) {
-    console.log(JSON.stringify(zip(ups, downs), null, 2));
-  }
-
-  if (options.reversibilityTest) {
-    for (const [up, down] of zip(ups, downs)) {
-      deepEqual(up, down);
+    console.error(":: list completed");
+    for (const file of completedFiles) {
+      console.error(file);
     }
-    console.error(":: reversibility test success");
+
+    console.error(":: list pending");
+    for (const file of pendingFiles) {
+      console.error(file);
+    }
+
+    const ups = [];
+    const downs = [];
+
+    console.error(":: running migrations");
+    if (options.unitTest) {
+      process.env.MIGRATION_UNIT_TEST = "1";
+    }
+
+    const n = pendingFiles.length;
+    ups.push(await dbGetSchema());
+    for (const i of range(n)) {
+      console.error(`(⇑:${i + 1}/${n}) ${pendingFiles[i]}`);
+      await exec("pnpm knex migrate:up");
+      ups.push(await dbGetSchema());
+    }
+
+    downs.unshift(await dbGetSchema());
+    for (const i of range(n)) {
+      console.error(`(⇓:${i + 1}/${n}) ${pendingFiles[n - i - 1]}`);
+      await exec("pnpm knex migrate:down");
+      downs.unshift(await dbGetSchema());
+    }
+
+    if (options.showSchema) {
+      console.log(JSON.stringify(zip(ups, downs), null, 2));
+    }
+
+    if (options.reversibilityTest) {
+      for (const [up, down] of zip(ups, downs)) {
+        deepEqual(up, down);
+      }
+      console.error(":: reversibility test success");
+    }
   }
+);
+
+async function printSession(username: string) {
+  const user = await findByUsername(username);
+  tinyassert(user);
+  const cookie = await createUserCookie(user);
+  console.log(cookie);
 }
 
-//
-// create-user
-//
+cli.defineCommand(
+  {
+    name: "createUser",
+    args: {
+      username: zArg(z.string(), { positional: true }),
+      password: zArg(z.string(), { positional: true }),
+      language1: z.string().default("fr"),
+      language2: z.string().default("en"),
+    },
+  },
+  async ({ args: { username, password, language1, language2 } }) => {
+    const user = await register({ username, password });
+    await db
+      .update(T.users)
+      .set({ language1, language2 })
+      .where(E.eq(T.users.id, user.id));
+    await printSession(username);
+  }
+);
 
-cli
-  .command("create-user <username> <password>")
-  .option("--language1 <language1>", "[string]", { default: "fr" })
-  .option("--language2 <language2>", "[string]", { default: "en" })
-  .action(
-    async (
-      username: string,
-      password: string,
-      { language1, language2 }: { language1: string; language2: string }
-    ) => {
-      const user = await register({ username, password });
-      await db
-        .update(T.users)
-        .set({ language1, language2 })
-        .where(E.eq(T.users.id, user.id));
-      await printSession(username);
-    }
-  );
-
-cli
-  .command("resetPassword <username> <password>")
-  .action(async (username: string, password: string) => {
+cli.defineCommand(
+  {
+    name: "resetPassword",
+    args: {
+      username: zArg(z.string(), { positional: true }),
+      password: zArg(z.string(), { positional: true }),
+    },
+  },
+  async ({ args: { username, password } }) => {
     const user = await findByUsername(username);
     tinyassert(user);
     await db
       .update(T.usersCredentials)
       .set({ passwordHash: await toPasswordHash(password) })
       .where(E.eq(T.users.id, user.id));
-  });
+  }
+);
 
-cli.command("print-session <username>").action(async (username: string) => {
-  await printSession(username);
-});
+cli.defineCommand(
+  {
+    name: "printSession",
+    args: {
+      username: zArg(z.string(), { positional: true }),
+    },
+  },
+  async ({ args: { username } }) => {
+    await printSession(username);
+  }
+);
 
-cli
-  .command("create-videos")
-  .option("--username <username>", "[string]")
-  .action(async (options: { username?: string }) => {
+cli.defineCommand(
+  {
+    name: "createVideo",
+    args: {
+      username: zArg(z.string(), { positional: true }),
+    },
+  },
+  async ({ args: options }) => {
     const input = await streamToString(process.stdin);
     const newVideos: NewVideo[] = JSON.parse(input);
     let userId = undefined;
@@ -167,193 +187,155 @@ cli
       const data = await fetchCaptionEntries(newVideo);
       await insertVideoAndCaptionEntries(newVideo, data, userId);
     }
-  });
+  }
+);
 
-//
-// fetchCaptionEntries
-//
-
-const commandFetchCaptionEntriesArgs = z.object({
-  videoId: z.string(),
-  language1: z.string(),
-  language2: z.string(),
-  outFile: z.string(),
-});
-
-// prettier-ignore
-cli
-  .command("fetchCaptionEntries")
-  .option(`--${commandFetchCaptionEntriesArgs.keyof().enum.videoId} [string]`, "")
-  .option(`--${commandFetchCaptionEntriesArgs.keyof().enum.language1} [string]`, "")
-  .option(`--${commandFetchCaptionEntriesArgs.keyof().enum.language2} [string]`, "")
-  .option(`--${commandFetchCaptionEntriesArgs.keyof().enum.outFile} [string]`, "")
-  .action(commandFetchCaptionEntries);
-
-async function commandFetchCaptionEntries(rawArgs: unknown) {
-  const args = commandFetchCaptionEntriesArgs.parse(rawArgs);
-  const data = await fetchCaptionEntries({
-    videoId: args.videoId,
-    language1: {
-      id: args.language1,
+cli.defineCommand(
+  {
+    name: "fetchCaptionEntries",
+    args: {
+      videoId: z.string(),
+      language1: z.string(),
+      language2: z.string(),
+      outFile: z.string(),
     },
-    language2: {
-      id: args.language2,
-    },
-  });
-  await fs.promises.writeFile(args.outFile, JSON.stringify(data, null, 2));
-}
+  },
+  async ({ args }) => {
+    const data = await fetchCaptionEntries({
+      videoId: args.videoId,
+      language1: {
+        id: args.language1,
+      },
+      language2: {
+        id: args.language2,
+      },
+    });
+    await fs.promises.writeFile(args.outFile, JSON.stringify(data, null, 2));
+  }
+);
 
-//
 // pnpm cli scrapeYoutube --videoId='-UroBRG1rY8'
-//
+cli.defineCommand(
+  {
+    name: "scrapeYoutube",
+    args: {
+      videoId: z.string(),
+      id: z.string().optional(),
+      translation: z.string().optional(),
+      outDir: z.string().default("./misc/youtube/data"),
+    },
+  },
+  async ({ args }) => {
+    const dir = `${args.outDir}/${args.videoId}`;
+    await exec(`mkdir -p '${dir}'`);
 
-const scrapeYoutubeArgs = z.object({
-  videoId: z.string(),
-  id: z.string().optional(),
-  translation: z.string().optional(),
-  outDir: z.string().default("./misc/youtube/data"),
-});
-
-// prettier-ignore
-cli
-  .command(scrapeYoutube.name)
-  .option(`--${scrapeYoutubeArgs.keyof().enum.videoId} [string]`, "")
-  .option(`--${scrapeYoutubeArgs.keyof().enum.id} [string]`, "")
-  .option(`--${scrapeYoutubeArgs.keyof().enum.translation} [string]`, "")
-  .option(`--${scrapeYoutubeArgs.keyof().enum.outDir} [string]`, "")
-  .action(scrapeYoutube);
-
-async function scrapeYoutube(rawArgs: unknown) {
-  const args = scrapeYoutubeArgs.parse(rawArgs);
-  const dir = `${args.outDir}/${args.videoId}`;
-  await exec(`mkdir -p '${dir}'`);
-
-  console.log(`:: fetching metadata to '${dir}/metadata.json'...`);
-  const metadataRaw = await fetchVideoMetadataRaw(args.videoId);
-  await fs.promises.writeFile(
-    `${dir}/metadata.json`,
-    JSON.stringify(metadataRaw, null, 2)
-  );
-
-  // list available captions and pick interactively
-  const videoMetadata = Z_VIDEO_METADATA.parse(metadataRaw);
-  const options = toCaptionConfigOptions(videoMetadata);
-  console.log(":: available languages");
-  console.log(options.captions);
-
-  if (args.id) {
-    await download(args.id, args.translation);
-    return;
-  }
-
-  while (true) {
-    const input = await consola.prompt(
-      ":: please input language (+ translation) to download (e.g. .ko, .ko_en) >"
+    console.log(`:: fetching metadata to '${dir}/metadata.json'...`);
+    const metadataRaw = await fetchVideoMetadataRaw(args.videoId);
+    await fs.promises.writeFile(
+      `${dir}/metadata.json`,
+      JSON.stringify(metadataRaw, null, 2)
     );
-    if (!input || typeof input !== "string") {
-      break;
-    }
-    const [id, translation] = input.split("_");
-    await download(id, translation);
-  }
 
-  async function download(id: string, translation?: string) {
-    const url = captionConfigToUrl({ id, translation }, videoMetadata);
-    tinyassert(url);
-    const ttml = await fetch(url).then((res) => res.text());
-    const name = [id, translation].filter(Boolean).join("_");
-    const filepath = `${dir}/${name}.ttml`;
-    console.log(`:: fetching ttml to '${filepath}'...`);
-    await fs.promises.writeFile(filepath, ttml);
+    // list available captions and pick interactively
+    const videoMetadata = Z_VIDEO_METADATA.parse(metadataRaw);
+    const options = toCaptionConfigOptions(videoMetadata);
+    console.log(":: available languages");
+    console.log(options.captions);
+
+    if (args.id) {
+      await download(args.id, args.translation);
+      return;
+    }
+
+    while (true) {
+      const input = await consola.prompt(
+        ":: please input language (+ translation) to download (e.g. .ko, .ko_en) >"
+      );
+      if (!input || typeof input !== "string") {
+        break;
+      }
+      const [id, translation] = input.split("_");
+      await download(id, translation);
+    }
+
+    async function download(id: string, translation?: string) {
+      const url = captionConfigToUrl({ id, translation }, videoMetadata);
+      tinyassert(url);
+      const ttml = await fetch(url).then((res) => res.text());
+      const name = [id, translation].filter(Boolean).join("_");
+      const filepath = `${dir}/${name}.ttml`;
+      console.log(`:: fetching ttml to '${filepath}'...`);
+      await fs.promises.writeFile(filepath, ttml);
+    }
   }
-}
+);
 
 //
 // seed export/import e.g.
-//   pnpm cli db-seed-export --deckId 1 --outFile misc/db/dev.json
-//   pnpm cli db-seed-import --username dev-import --inFile misc/db/dev.json
+//   pnpm cli dbSeedExport --deckId 1 --outFile misc/db/dev.json
+//   pnpm cli dbSeedImport --username dev-import --inFile misc/db/dev.json
 //
 
-//
-// db-seed-export
-//
+cli.defineCommand(
+  {
+    name: "dbSeedExport",
+    args: {
+      deckId: z.coerce.number().int(),
+      outFile: z.string(),
+    },
+  },
+  async ({ args }) => {
+    const data = await exportDeckJson(args.deckId);
+    await fs.promises.writeFile(args.outFile, JSON.stringify(data, null, 2));
+  }
+);
 
-const commandDbSeedExportArgs = z.object({
-  deckId: z.coerce.number().int(),
-  outFile: z.string(),
-});
+cli.defineCommand(
+  {
+    name: "dbSeedImport",
+    args: {
+      username: z.string(),
+      inFile: z.string(),
+    },
+  },
+  async ({ args }) => {
+    const user = await findByUsername(args.username);
+    tinyassert(user);
+    const fileDataRaw = await fs.promises.readFile(args.inFile, "utf-8");
+    await importDeckJson(user.id, JSON.parse(fileDataRaw));
+  }
+);
 
-cli
-  .command("db-seed-export")
-  .option(`--${commandDbSeedExportArgs.keyof().enum.deckId} [number]`, "")
-  .option(`--${commandDbSeedExportArgs.keyof().enum.outFile} [string]`, "")
-  .action(commandDbSeedExport);
-
-async function commandDbSeedExport(rawArgs: unknown) {
-  const args = commandDbSeedExportArgs.parse(rawArgs);
-  const data = await exportDeckJson(args.deckId);
-  await fs.promises.writeFile(args.outFile, JSON.stringify(data, null, 2));
-}
-
-//
-// db-seed-import
-//
-
-const commandDbSeedImportArgs = z.object({
-  username: z.string(),
-  inFile: z.string(),
-});
-
-cli
-  .command("db-seed-import")
-  .option(`--${commandDbSeedImportArgs.keyof().enum.username} [string]`, "")
-  .option(`--${commandDbSeedImportArgs.keyof().enum.inFile} [string]`, "")
-  .action(commandDbSeedImport);
-
-async function commandDbSeedImport(argsRaw: unknown) {
-  const args = commandDbSeedImportArgs.parse(argsRaw);
-  const user = await findByUsername(args.username);
-  tinyassert(user);
-  const fileDataRaw = await fs.promises.readFile(args.inFile, "utf-8");
-  await importDeckJson(user.id, JSON.parse(fileDataRaw));
-}
-
-//
-// clean-data
-//
-
-cli
-  .command("clean-data <only-username>")
-  .option("--delete-anonymous-videos", "[boolean]", { default: false })
-  .action(
-    async (
-      onlyUsername: string,
-      options: { deleteAnonymousVideos: boolean }
-    ) => {
-      // delete except `onlyUsername`
-      await db
-        .delete(T.users)
-        .where(E.not(E.eq(T.users.username, onlyUsername)));
-      if (options.deleteAnonymousVideos) {
-        // delete anonymous videos
-        await db.delete(T.videos).where(E.isNull(T.videos.userId));
-      }
-      await deleteOrphans();
-      // rename to "dev"
-      await db
-        .update(T.usersCredentials)
-        .set({ username: "dev", passwordHash: await toPasswordHash("dev") })
-        .where(E.eq(T.users.username, onlyUsername));
+cli.defineCommand(
+  {
+    name: "cleanData",
+    args: {
+      onlyUsername: arg.string("", { positional: true }),
+      deleteAnonymousVideos: arg.boolean(),
+    },
+  },
+  async ({ args: { onlyUsername, deleteAnonymousVideos } }) => {
+    // delete except `onlyUsername`
+    await db.delete(T.users).where(E.not(E.eq(T.users.username, onlyUsername)));
+    if (deleteAnonymousVideos) {
+      // delete anonymous videos
+      await db.delete(T.videos).where(E.isNull(T.videos.userId));
     }
-  );
+    await deleteOrphans();
+    // rename to "dev"
+    await db
+      .update(T.usersCredentials)
+      .set({ username: "dev", passwordHash: await toPasswordHash("dev") })
+      .where(E.eq(T.users.username, onlyUsername));
+  }
+);
 
-//
-// reset-counter-cache:videos.bookmarkEntriesCount
-//
-
-cli
-  .command("reset-counter-cache:videos.bookmarkEntriesCount")
-  .action(async () => {
+cli.defineCommand(
+  {
+    name: "resetCounterCache_videos_bookmarkEntriesCount",
+    args: {},
+  },
+  async () => {
     // TODO: single UPDATE statement with sub query?
     const rows = await db
       .select({
@@ -373,15 +355,15 @@ cli
         })
         .where(E.eq(T.videos.id, row.id));
     }
-  });
+  }
+);
 
-//
-// reset-counter-cache:practiceEntries.practiceActionsCount
-//
-
-cli
-  .command("reset-counter-cache:practiceEntries.practiceActionsCount")
-  .action(async () => {
+cli.defineCommand(
+  {
+    name: "resetCounterCache_practiceEntries_practiceActionsCount",
+    args: {},
+  },
+  async () => {
     const rows = await db
       .select({
         id: T.practiceEntries.id,
@@ -404,206 +386,174 @@ cli
         })
         .where(E.eq(T.practiceEntries.id, row.id));
     }
-  });
-
-async function printSession(username: string) {
-  const user = await findByUsername(username);
-  tinyassert(user);
-  const cookie = await createUserCookie(user);
-  console.log(cookie);
-}
-
-//
-// resetDeckCache
-//
-
-const resetDeckCacheArgs = z.object({
-  deckId: z.coerce.number().int().optional(),
-});
-
-cli
-  .command(resetDeckCache.name)
-  .option(`--${resetDeckCacheArgs.keyof().enum.deckId} [number]`, "")
-  .action(resetDeckCacheCommand);
-
-async function resetDeckCacheCommand(rawArgs: unknown) {
-  const args = resetDeckCacheArgs.parse(rawArgs);
-  if (args.deckId) {
-    console.log("::", JSON.stringify(args));
-    await resetDeckCache(args.deckId);
-    return;
   }
+);
 
-  const decks = await db.select().from(T.decks);
-  for (const deck of decks) {
-    console.log(
-      "::",
-      JSON.stringify(objectPick(deck, ["userId", "id", "name"]))
-    );
-    await resetDeckCache(deck.id);
-  }
-}
+cli.defineCommand(
+  {
+    name: "resetDeckCache",
+    args: {
+      deckId: z.coerce.number().optional(),
+    },
+  },
+  async ({ args }) => {
+    if (args.deckId) {
+      console.log("::", JSON.stringify(args));
+      await resetDeckCache(args.deckId);
+      return;
+    }
 
-//
-// debugCacheNextEntries
-//
-
-const debugCacheNextEntriesArgs = z.object({
-  deckId: z.coerce.number().int(),
-});
-
-cli
-  .command(debugCacheNextEntries.name)
-  .option(`--${debugCacheNextEntriesArgs.keyof().enum.deckId} [number]`, "")
-  .action(debugCacheNextEntries);
-
-async function debugCacheNextEntries(rawArgs: unknown) {
-  const args = debugCacheNextEntriesArgs.parse(rawArgs);
-  const deck = await selectOne(T.decks, E.eq(T.decks.id, args.deckId));
-  tinyassert(deck);
-
-  const ids = deck.cache.nextEntriesRandomMode;
-  console.log({ ids });
-  if (ids.length === 0) {
-    return;
-  }
-
-  const entries = await db
-    .select()
-    .from(T.practiceEntries)
-    .where(E.inArray(T.practiceEntries.id, ids));
-  console.log(entries);
-}
-
-//
-// debugRandomMode
-//
-
-const debugRandomModeArgs = z.object({
-  deckId: z.coerce.number().int(),
-  count: z.coerce.number().default(10),
-  seed: z.coerce.number().default(Date.now()),
-});
-
-cli
-  .command(debugRandomMode.name)
-  .option(`--${debugRandomModeArgs.keyof().enum.deckId} [number]`, "")
-  .option(`--${debugRandomModeArgs.keyof().enum.count} [number]`, "")
-  .option(`--${debugRandomModeArgs.keyof().enum.seed} [number]`, "")
-  .action(debugRandomMode);
-
-async function debugRandomMode(rawArgs: unknown) {
-  const args = debugRandomModeArgs.parse(rawArgs);
-  const deck = await selectOne(T.decks, E.eq(T.decks.id, args.deckId));
-  tinyassert(deck);
-
-  // get practice order
-  const scoredEntries = await queryNextPracticeEntryRandomModeBatch(
-    args.deckId,
-    new Date(),
-    args.count,
-    args.seed
-  );
-
-  // get all rows
-  const rows = await db
-    .select()
-    .from(T.practiceEntries)
-    .innerJoin(
-      T.bookmarkEntries,
-      E.eq(T.bookmarkEntries.id, T.practiceEntries.bookmarkEntryId)
-    )
-    .innerJoin(
-      T.captionEntries,
-      E.eq(T.captionEntries.id, T.bookmarkEntries.captionEntryId)
-    )
-    .innerJoin(T.videos, E.eq(T.videos.id, T.bookmarkEntries.videoId))
-    .where(E.eq(T.practiceEntries.deckId, args.deckId));
-
-  const rowsById = groupBy(rows, (row) => row.practiceEntries.id);
-
-  // format
-  const formatted = scoredEntries.map((s) => {
-    const e = rowsById.get(s.id)![0];
-    const picked = [
-      objectPick(e.bookmarkEntries, ["text"]),
-      objectPick(e.captionEntries, ["text1", "text2", "begin"]),
-      objectPick(e.videos, ["title", "bookmarkEntriesCount"]),
-      objectPick(e.practiceEntries, [
-        "scheduledAt",
-        "queueType",
-        "practiceActionsCount",
-      ]),
-      objectPick(s, ["score"]),
-    ];
-    const combined = Object.assign({}, ...picked);
-    return combined;
-  });
-  console.log(JSON.stringify(formatted, null, 2));
-}
-
-//
-// fixBookmarkEntriesOffset
-//
-
-const fixBookmarkEntriesOffsetArgs = z.object({
-  update: z.boolean().default(false),
-});
-
-cli
-  .command(fixBookmarkEntriesOffset.name)
-  .option(`--${fixBookmarkEntriesOffsetArgs.keyof().enum.update} [boolean]`, "")
-  .action(fixBookmarkEntriesOffset);
-
-async function fixBookmarkEntriesOffset(rawArgs: unknown) {
-  const args = fixBookmarkEntriesOffsetArgs.parse(rawArgs);
-  const rows = await db
-    .select()
-    .from(T.bookmarkEntries)
-    .innerJoin(
-      T.captionEntries,
-      E.eq(T.captionEntries.id, T.bookmarkEntries.captionEntryId)
-    );
-
-  const stats = {
-    total: 0,
-    fixable: 0,
-  };
-
-  for (const row of rows) {
-    const { id, text, offset, side } = row.bookmarkEntries;
-    const captionText = [row.captionEntries.text1, row.captionEntries.text2][
-      side
-    ];
-
-    const textByOffset = captionText.slice(offset).slice(0, text.length);
-    if (textByOffset !== text) {
-      const newOffset = offset - text.length;
-      const textByNewOffset = captionText
-        .slice(newOffset)
-        .slice(0, text.length);
-
-      const fixable = textByNewOffset === text;
-      stats.total++;
-      stats.fixable += Number(fixable);
-
+    const decks = await db.select().from(T.decks);
+    for (const deck of decks) {
       console.log(
-        fixable ? "[ok]" : "[no]",
-        { text, textByOffset, textByNewOffset },
-        row
+        "::",
+        JSON.stringify(objectPick(deck, ["userId", "id", "name"]))
       );
-
-      if (args.update) {
-        await db
-          .update(T.bookmarkEntries)
-          .set({ offset: newOffset })
-          .where(E.eq(T.bookmarkEntries.id, id));
-      }
+      await resetDeckCache(deck.id);
     }
   }
+);
 
-  console.log({ stats });
-}
+cli.defineCommand(
+  {
+    name: "debugCacheNextEntries",
+    args: {
+      deckId: z.coerce.number(),
+    },
+  },
+  async ({ args }) => {
+    const deck = await selectOne(T.decks, E.eq(T.decks.id, args.deckId));
+    tinyassert(deck);
+
+    const ids = deck.cache.nextEntriesRandomMode;
+    console.log({ ids });
+    if (ids.length === 0) {
+      return;
+    }
+
+    const entries = await db
+      .select()
+      .from(T.practiceEntries)
+      .where(E.inArray(T.practiceEntries.id, ids));
+    console.log(entries);
+  }
+);
+
+cli.defineCommand(
+  {
+    name: "debugRandomMode",
+    args: {
+      deckId: z.coerce.number().int(),
+      count: z.coerce.number().default(10),
+      seed: z.coerce.number().default(Date.now()),
+    },
+  },
+  async ({ args }) => {
+    const deck = await selectOne(T.decks, E.eq(T.decks.id, args.deckId));
+    tinyassert(deck);
+
+    // get practice order
+    const scoredEntries = await queryNextPracticeEntryRandomModeBatch(
+      args.deckId,
+      new Date(),
+      args.count,
+      args.seed
+    );
+
+    // get all rows
+    const rows = await db
+      .select()
+      .from(T.practiceEntries)
+      .innerJoin(
+        T.bookmarkEntries,
+        E.eq(T.bookmarkEntries.id, T.practiceEntries.bookmarkEntryId)
+      )
+      .innerJoin(
+        T.captionEntries,
+        E.eq(T.captionEntries.id, T.bookmarkEntries.captionEntryId)
+      )
+      .innerJoin(T.videos, E.eq(T.videos.id, T.bookmarkEntries.videoId))
+      .where(E.eq(T.practiceEntries.deckId, args.deckId));
+
+    const rowsById = groupBy(rows, (row) => row.practiceEntries.id);
+
+    // format
+    const formatted = scoredEntries.map((s) => {
+      const e = rowsById.get(s.id)![0];
+      const picked = [
+        objectPick(e.bookmarkEntries, ["text"]),
+        objectPick(e.captionEntries, ["text1", "text2", "begin"]),
+        objectPick(e.videos, ["title", "bookmarkEntriesCount"]),
+        objectPick(e.practiceEntries, [
+          "scheduledAt",
+          "queueType",
+          "practiceActionsCount",
+        ]),
+        objectPick(s, ["score"]),
+      ];
+      const combined = Object.assign({}, ...picked);
+      return combined;
+    });
+    console.log(JSON.stringify(formatted, null, 2));
+  }
+);
+
+cli.defineCommand(
+  {
+    name: "fixBookmarkEntriesOffset",
+    args: {
+      update: z.coerce.boolean(),
+    },
+  },
+  async ({ args }) => {
+    const rows = await db
+      .select()
+      .from(T.bookmarkEntries)
+      .innerJoin(
+        T.captionEntries,
+        E.eq(T.captionEntries.id, T.bookmarkEntries.captionEntryId)
+      );
+
+    const stats = {
+      total: 0,
+      fixable: 0,
+    };
+
+    for (const row of rows) {
+      const { id, text, offset, side } = row.bookmarkEntries;
+      const captionText = [row.captionEntries.text1, row.captionEntries.text2][
+        side
+      ];
+
+      const textByOffset = captionText.slice(offset).slice(0, text.length);
+      if (textByOffset !== text) {
+        const newOffset = offset - text.length;
+        const textByNewOffset = captionText
+          .slice(newOffset)
+          .slice(0, text.length);
+
+        const fixable = textByNewOffset === text;
+        stats.total++;
+        stats.fixable += Number(fixable);
+
+        console.log(
+          fixable ? "[ok]" : "[no]",
+          { text, textByOffset, textByNewOffset },
+          row
+        );
+
+        if (args.update) {
+          await db
+            .update(T.bookmarkEntries)
+            .set({ offset: newOffset })
+            .where(E.eq(T.bookmarkEntries.id, id));
+        }
+      }
+    }
+
+    console.log({ stats });
+  }
+);
 
 //
 // main
@@ -612,20 +562,16 @@ async function fixBookmarkEntriesOffset(rawArgs: unknown) {
 async function main() {
   try {
     await initializeServer();
-    cli.parse(undefined, { run: false });
-    if (!cli.matchedCommandName) {
-      cli.outputHelp();
-      process.exit(1);
-    }
-    await cli.runMatchedCommand();
+    await cli.parse(process.argv.slice(2));
   } catch (e) {
     consola.error(e);
+    if (e instanceof TinyCliParseError) {
+      console.error("See '--help' for more info.");
+    }
     process.exit(1);
   } finally {
     await finalizeServer();
   }
 }
 
-if (require.main === module) {
-  main();
-}
+main();

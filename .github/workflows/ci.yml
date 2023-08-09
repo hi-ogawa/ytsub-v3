@@ -88,8 +88,8 @@ jobs:
       - run: pnpm i
       - run: make docker/up db/recreate
       - run: pnpm knex migrate:status # initialize knex migration management tables
-      - run: pnpm cli db:test-migrations --unit-test
-      - run: pnpm cli db:test-migrations --reversibility-test
+      - run: pnpm cli dbTestMigrations --unitTest
+      - run: pnpm cli dbTestMigrations --reversibilityTest
       - run: make db/reset/dev
       - name: install skeema
         run: |
