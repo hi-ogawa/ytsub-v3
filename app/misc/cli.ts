@@ -1,6 +1,6 @@
 import { deepEqual } from "assert/strict";
 import fs from "node:fs";
-import { arg, defineCommand, defineSubCommands, zArg } from "@hiogawa/tiny-cli";
+import { TinyCli, TinyCliParseError, arg, zArg } from "@hiogawa/tiny-cli";
 import { groupBy, objectPick, range, tinyassert, zip } from "@hiogawa/utils";
 import consola from "consola";
 import { sql } from "drizzle-orm";
@@ -36,8 +36,13 @@ import {
 import { finalizeServer, initializeServer } from "./initialize-server";
 import { exportDeckJson, importDeckJson } from "./seed-utils";
 
-const dbTestMigrations = defineCommand(
+const cli = new TinyCli({
+  program: "(cli)",
+});
+
+cli.defineCommand(
   {
+    name: "dbTestMigrations",
     args: {
       showSchema: arg.boolean(),
       unitTest: arg.boolean(),
@@ -100,8 +105,9 @@ async function printSession(username: string) {
   console.log(cookie);
 }
 
-const createUser = defineCommand(
+cli.defineCommand(
   {
+    name: "createUser",
     args: {
       username: zArg(z.string(), { positional: true }),
       password: zArg(z.string(), { positional: true }),
@@ -119,8 +125,9 @@ const createUser = defineCommand(
   }
 );
 
-const resetPassword = defineCommand(
+cli.defineCommand(
   {
+    name: "resetPassword",
     args: {
       username: zArg(z.string(), { positional: true }),
       password: zArg(z.string(), { positional: true }),
@@ -136,8 +143,9 @@ const resetPassword = defineCommand(
   }
 );
 
-const printSessionCommand = defineCommand(
+cli.defineCommand(
   {
+    name: "printSession",
     args: {
       username: zArg(z.string(), { positional: true }),
     },
@@ -147,8 +155,9 @@ const printSessionCommand = defineCommand(
   }
 );
 
-const createVideoCommand = defineCommand(
+cli.defineCommand(
   {
+    name: "createVideo",
     args: {
       username: zArg(z.string(), { positional: true }),
     },
@@ -181,8 +190,9 @@ const createVideoCommand = defineCommand(
   }
 );
 
-const fetchCaptionEntriesCommand = defineCommand(
+cli.defineCommand(
   {
+    name: "fetchCaptionEntries",
     args: {
       videoId: z.string(),
       language1: z.string(),
@@ -205,8 +215,9 @@ const fetchCaptionEntriesCommand = defineCommand(
 );
 
 // pnpm cli scrapeYoutube --videoId='-UroBRG1rY8'
-const scrapeYoutube = defineCommand(
+cli.defineCommand(
   {
+    name: "scrapeYoutube",
     args: {
       videoId: z.string(),
       id: z.string().optional(),
@@ -265,8 +276,9 @@ const scrapeYoutube = defineCommand(
 //   pnpm cli dbSeedImport --username dev-import --inFile misc/db/dev.json
 //
 
-const dbSeedExport = defineCommand(
+cli.defineCommand(
   {
+    name: "dbSeedExport",
     args: {
       deckId: z.coerce.number().int(),
       outFile: z.string(),
@@ -278,8 +290,9 @@ const dbSeedExport = defineCommand(
   }
 );
 
-const dbSeedImport = defineCommand(
+cli.defineCommand(
   {
+    name: "dbSeedImport",
     args: {
       username: z.string(),
       inFile: z.string(),
@@ -293,8 +306,9 @@ const dbSeedImport = defineCommand(
   }
 );
 
-const cleanData = defineCommand(
+cli.defineCommand(
   {
+    name: "cleanData",
     args: {
       onlyUsername: arg.string("", { positional: true }),
       deleteAnonymousVideos: arg.boolean(),
@@ -316,8 +330,11 @@ const cleanData = defineCommand(
   }
 );
 
-const resetCounterCache_videos_bookmarkEntriesCount = defineCommand(
-  { args: {} },
+cli.defineCommand(
+  {
+    name: "resetCounterCache_videos_bookmarkEntriesCount",
+    args: {},
+  },
   async () => {
     // TODO: single UPDATE statement with sub query?
     const rows = await db
@@ -341,8 +358,11 @@ const resetCounterCache_videos_bookmarkEntriesCount = defineCommand(
   }
 );
 
-const resetCounterCache_practiceEntries_practiceActionsCount = defineCommand(
-  { args: {} },
+cli.defineCommand(
+  {
+    name: "resetCounterCache_practiceEntries_practiceActionsCount",
+    args: {},
+  },
   async () => {
     const rows = await db
       .select({
@@ -369,8 +389,9 @@ const resetCounterCache_practiceEntries_practiceActionsCount = defineCommand(
   }
 );
 
-const resetDeckCacheCommand = defineCommand(
+cli.defineCommand(
   {
+    name: "resetDeckCache",
     args: {
       deckId: z.coerce.number().optional(),
     },
@@ -393,8 +414,9 @@ const resetDeckCacheCommand = defineCommand(
   }
 );
 
-const debugCacheNextEntries = defineCommand(
+cli.defineCommand(
   {
+    name: "debugCacheNextEntries",
     args: {
       deckId: z.coerce.number(),
     },
@@ -417,8 +439,9 @@ const debugCacheNextEntries = defineCommand(
   }
 );
 
-const debugRandomMode = defineCommand(
+cli.defineCommand(
   {
+    name: "debugRandomMode",
     args: {
       deckId: z.coerce.number().int(),
       count: z.coerce.number().default(10),
@@ -475,8 +498,9 @@ const debugRandomMode = defineCommand(
   }
 );
 
-const fixBookmarkEntriesOffset = defineCommand(
+cli.defineCommand(
   {
+    name: "fixBookmarkEntriesOffset",
     args: {
       update: z.coerce.boolean(),
     },
@@ -535,35 +559,15 @@ const fixBookmarkEntriesOffset = defineCommand(
 // main
 //
 
-const tinyCli = defineSubCommands({
-  program: "(cli)",
-  autoHelp: true,
-  commands: {
-    dbTestMigrations,
-    createUser,
-    resetPassword,
-    printSession: printSessionCommand,
-    createVideo: createVideoCommand,
-    scrapeYoutube,
-    fetchCaptionEntries: fetchCaptionEntriesCommand,
-    dbSeedExport,
-    dbSeedImport,
-    cleanData,
-    resetCounterCache_videos_bookmarkEntriesCount,
-    resetCounterCache_practiceEntries_practiceActionsCount,
-    resetDeckCache: resetDeckCacheCommand,
-    debugCacheNextEntries,
-    debugRandomMode,
-    fixBookmarkEntriesOffset,
-  },
-});
-
 async function main() {
   try {
     await initializeServer();
-    await tinyCli.parse(process.argv.slice(2));
+    await cli.parse(process.argv.slice(2));
   } catch (e) {
     consola.error(e);
+    if (e instanceof TinyCliParseError) {
+      console.error("See '--help' for more info.");
+    }
     process.exit(1);
   } finally {
     await finalizeServer();
