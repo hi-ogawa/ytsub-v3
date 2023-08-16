@@ -77,7 +77,7 @@ describe(trpc.users_signin.mutationKey, () => {
   });
 });
 
-describe(rpcRoutes.users_signin, () => {
+describe(rpcRoutes.users_signin.name, () => {
   const credentials = { username: "test-trpc-signin-v2", password: "correct" };
   const userHook = useUser(credentials);
 
