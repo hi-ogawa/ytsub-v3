@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for ytsub-v3/app/utils/session.server.ts</title>
+    <title>Code coverage report for ytsub-v3/app/server/request-context-response-headers.ts</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../../../prettify.css" />
     <link rel="stylesheet" href="../../../base.css" />
@@ -19,34 +19,34 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../../../index.html">All files</a> / <a href="index.html">ytsub-v3/app/utils</a> session.server.ts</h1>
+        <h1><a href="../../../index.html">All files</a> / <a href="index.html">ytsub-v3/app/server</a> request-context-response-headers.ts</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">85.29% </span>
+                <span class="strong">97.36% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>29/34</span>
+                <span class='fraction'>37/38</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">80% </span>
+                <span class="quiet">Branches</span>
+                <span class='fraction'>4/5</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
-                <span class="quiet">Branches</span>
+                <span class="quiet">Functions</span>
                 <span class='fraction'>2/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">66.66% </span>
-                <span class="quiet">Functions</span>
-                <span class='fraction'>2/3</span>
-            </div>
-        
-            
-            <div class='fl pad1y space-right2'>
-                <span class="strong">85.29% </span>
+                <span class="strong">97.36% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>29/34</span>
+                <span class='fraction'>37/38</span>
             </div>
         
             
@@ -97,7 +97,18 @@
 <a name='L32'></a><a href='#L32'>32</a>
 <a name='L33'></a><a href='#L33'>33</a>
 <a name='L34'></a><a href='#L34'>34</a>
-<a name='L35'></a><a href='#L35'>35</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L35'></a><a href='#L35'>35</a>
+<a name='L36'></a><a href='#L36'>36</a>
+<a name='L37'></a><a href='#L37'>37</a>
+<a name='L38'></a><a href='#L38'>38</a>
+<a name='L39'></a><a href='#L39'>39</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -110,61 +121,62 @@
 <span class="cline-any cline-yes">165x</span>
 <span class="cline-any cline-yes">165x</span>
 <span class="cline-any cline-yes">165x</span>
-<span class="cline-any cline-yes">165x</span>
-<span class="cline-any cline-yes">165x</span>
-<span class="cline-any cline-yes">165x</span>
-<span class="cline-any cline-yes">165x</span>
-<span class="cline-any cline-yes">165x</span>
-<span class="cline-any cline-yes">165x</span>
-<span class="cline-any cline-yes">165x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">200x</span>
-<span class="cline-any cline-yes">200x</span>
-<span class="cline-any cline-yes">200x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import {
-  Session,
-  SessionStorage,
-  createCookieSessionStorage,
-} from "@remix-run/node";
-import { serverConfig } from "./config";
-&nbsp;
-export let sessionStore: SessionStorage;
-&nbsp;
-export function initializeSessionStore() {
-  sessionStore = createCookieSessionStorage({
-    cookie: {
-      httpOnly: true,
-      secure: true,
-      sameSite: "lax",
-      maxAge: 14 * 24 * 60 * 60, // two weeks
-      secrets: [serverConfig.APP_SESSION_SECRET],
-    },
-  });
-}
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">165x</span>
+<span class="cline-any cline-yes">165x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">165x</span>
+<span class="cline-any cline-yes">165x</span>
+<span class="cline-any cline-yes">165x</span>
+<span class="cline-any cline-yes">165x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import type { RequestHandler } from "@hattip/compose";
 &nbsp;
 //
-// utils
+// allow manipulating response headers via context
+// e.g. for set-cookie, cache-control, ...
 //
 &nbsp;
-export async function getRequestSession(request: Request): Promise&lt;Session&gt; {
-  return sessionStore.getSession(request.headers.get("cookie"));
+declare module "@hattip/compose" {
+  interface RequestContextExtensions {
+    responseHeaders: Headers;
+    setResponseHeader: (k: HeaderKeys, v: string | null) =&gt; void;
+  }
 }
 &nbsp;
-<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >export async function getResponseSession(</span></span>
-<span class="cstat-no" title="statement not covered" >  response: Pick&lt;Response, "headers"&gt;</span>
-<span class="cstat-no" title="statement not covered" >): Promise&lt;Session&gt; {</span>
-<span class="cstat-no" title="statement not covered" >  return sessionStore.getSession(response.headers.get("set-cookie"));</span>
-<span class="cstat-no" title="statement not covered" >}</span>
+type HeaderKeys = "cache-control" | "set-cookie";
+&nbsp;
+export function responseHeadersContextHandler(): RequestHandler {
+  return async (ctx) =&gt; {
+    ctx.responseHeaders = new Headers();
+    ctx.setResponseHeader = (k, v) =&gt; {
+      if (v === <span class="branch-0 cbranch-no" title="branch not covered" >null) {</span>
+<span class="cstat-no" title="statement not covered" >        ctx.responseHeaders.delete(k);</span>
+      } else {
+        ctx.responseHeaders.set(k, v);
+      }
+    };
+    const res = await ctx.next();
+    ctx.responseHeaders.forEach((v, k) =&gt; {
+      res.headers.set(k, v);
+    });
+    return res;
+  };
+}
+&nbsp;
+export const CACHE_CONTROL = {
+  // full cache only on CDN (cf. https://vercel.com/docs/concepts/functions/serverless-functions/edge-caching)
+  cdn: "public, max-age=0, s-max-age=31536000",
+};
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
