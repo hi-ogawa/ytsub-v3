@@ -4,7 +4,7 @@ import {
   exposeTinyRpc,
   httpServerAdapter,
 } from "@hiogawa/tiny-rpc";
-import { RPC_ENDPOINT } from "./client-v2";
+import { RPC_ENDPOINT, RPC_GET_PATHS } from "./client-v2";
 import { rpcRoutesVideos } from "./routes/videos";
 
 export const rpcRoutes = {
@@ -17,7 +17,7 @@ export function rpcHandler(): RequestHandler {
     routes: rpcRoutes,
     adapter: httpServerAdapter({
       endpoint: RPC_ENDPOINT,
-      method: "GET",
+      pathsForGET: RPC_GET_PATHS,
       onError(e) {
         console.error(e);
       },
