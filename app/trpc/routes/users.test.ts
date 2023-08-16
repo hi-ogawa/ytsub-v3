@@ -83,7 +83,7 @@ describe("users_signin-v2", () => {
 
   it("basic", async () => {
     await mockRequestContext()(async () => {
-      const output = rpcRoutes.users_signin(credentials);
+      const output = await rpcRoutes.users_signin(credentials);
 
       expect(Object.keys(output)).toMatchInlineSnapshot(`
         [
@@ -104,6 +104,14 @@ describe("users_signin-v2", () => {
         await getResponseSession({ headers: ctx_get().responseHeaders })
       );
       expect(sessionUser).toEqual(userHook.data);
+    });
+  });
+
+  it("error already signed in", async () => {
+    await mockRequestContext({ user: userHook.data })(async () => {
+      await expect(
+        rpcRoutes.users_signin(credentials)
+      ).rejects.toMatchInlineSnapshot("[Error: Already signed in]");
     });
   });
 });
