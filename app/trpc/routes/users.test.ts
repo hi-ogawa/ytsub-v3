@@ -78,7 +78,7 @@ describe(trpc.users_signin.mutationKey, () => {
 });
 
 describe("users_signin-v2", () => {
-  const credentials = { username: "test-trpc-signin", password: "correct" };
+  const credentials = { username: "test-trpc-signin-v2", password: "correct" };
   const userHook = useUser(credentials);
 
   it("basic", async () => {
