@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">68.42% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>13/19</span>
+                <span class='fraction'>20/20</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/0</span>
+                <span class='fraction'>4/4</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/2</span>
+                <span class='fraction'>2/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">68.42% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>13/19</span>
+                <span class='fraction'>20/20</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line medium'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -82,7 +82,8 @@
 <a name='L17'></a><a href='#L17'>17</a>
 <a name='L18'></a><a href='#L18'>18</a>
 <a name='L19'></a><a href='#L19'>19</a>
-<a name='L20'></a><a href='#L20'>20</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L20'></a><a href='#L20'>20</a>
+<a name='L21'></a><a href='#L21'>21</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -93,14 +94,15 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { AsyncLocalStorage } from "node:async_hooks";
 import type { RequestContext, RequestHandler } from "@hattip/compose";
 import { tinyassert } from "@hiogawa/utils";
@@ -111,15 +113,16 @@ import { tinyassert } from "@hiogawa/utils";
 &nbsp;
 const requestContextStorage = new AsyncLocalStorage&lt;RequestContext&gt;();
 &nbsp;
-export <span class="fstat-no" title="function not covered" >function requestContextStorageHandler(): RequestHandler {</span>
-<span class="cstat-no" title="statement not covered" >  return async (ctx) =&gt; requestContextStorage.run(ctx, () =&gt; ctx.next());</span>
-<span class="cstat-no" title="statement not covered" >}</span>
+export function requestContextStorageHandler(): RequestHandler {
+  return async (ctx) =&gt; requestContextStorage.run(ctx, () =&gt; ctx.next());
+}
 &nbsp;
-export <span class="fstat-no" title="function not covered" >function ctx_get() {</span>
-<span class="cstat-no" title="statement not covered" >  const value = requestContextStorage.getStore();</span>
-<span class="cstat-no" title="statement not covered" >  tinyassert(value, `forgot to setup '${requestContextStorageHandler.name}'?`);</span>
-<span class="cstat-no" title="statement not covered" >  return value;</span>
-<span class="cstat-no" title="statement not covered" >}</span>
+// internal convention to prefix "ctx_" for async context utility
+export function ctx_get() {
+  const value = requestContextStorage.getStore();
+  tinyassert(value, `forgot to setup '${requestContextStorageHandler.name}'?`);
+  return value;
+}
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -127,7 +130,7 @@ export <span class="fstat-no" title="function not covered" >function ctx_get() {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-08-16T07:07:03.032Z
+                at 2023-08-16T08:58:42.523Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
