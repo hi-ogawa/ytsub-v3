@@ -6,10 +6,8 @@ import { SemanticAttributes } from "@opentelemetry/semantic-conventions";
 import * as build from "@remix-run/dev/server-build";
 import { createRequestHandler } from "@remix-run/server-runtime";
 import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
-import {
-  requestContextStorageHandler,
-  responseHeadersContextHandler,
-} from "../server/request-context";
+import { requestContextStorageHandler } from "../server/request-context";
+import { responseHeadersContextHandler } from "../server/request-context-response-headers";
 import { TRPC_ENDPOINT } from "../trpc/common";
 import { createTrpcAppContext } from "../trpc/context";
 import { trpcApp } from "../trpc/server";

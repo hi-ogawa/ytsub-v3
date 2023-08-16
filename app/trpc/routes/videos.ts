@@ -3,7 +3,8 @@ import { tinyassert } from "@hiogawa/utils";
 import { z } from "zod";
 import { E, T, db, limitOne, selectOne } from "../../db/drizzle-client.server";
 import { filterNewVideo, insertVideoAndCaptionEntries } from "../../db/helper";
-import { cacheResponse, getRequestContext } from "../../server/request-context";
+import { getRequestContext } from "../../server/request-context";
+import { CACHE_CONTROL } from "../../server/request-context-response-headers";
 import { Z_CAPTION_ENTRY } from "../../utils/types";
 import {
   Z_NEW_VIDEO,
@@ -164,7 +165,10 @@ export const rpcRoutesVideos = {
       .from(T.captionEntries)
       .where(E.eq(T.captionEntries.videoId, input.videoId))
       .orderBy(T.captionEntries.index);
-    cacheResponse(getRequestContext().responseHeaders);
+    getRequestContext().setResponseHeader(
+      "cache-control",
+      CACHE_CONTROL.cdn
+    );
     return rows;
   }),
 } satisfies TinyRpcRoutes;
