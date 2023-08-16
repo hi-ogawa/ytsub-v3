@@ -97,27 +97,6 @@ export const trpcRoutesVideos = {
       ]);
     }),
 
-  // TODO: remove
-  videos_getCaptionEntries: procedureBuilder
-    .input(
-      z.object({
-        videoId: z.number().int(),
-      })
-    )
-    .query(async ({ input, ctx }) => {
-      const video = await selectOne(T.videos, E.eq(T.videos.id, input.videoId));
-      tinyassert(video);
-
-      const rows = await db
-        .select()
-        .from(T.captionEntries)
-        .where(E.eq(T.captionEntries.videoId, input.videoId))
-        .orderBy(T.captionEntries.index);
-      // not fully immutable since videos can be deleted
-      ctx.cacheResponse();
-      return rows;
-    }),
-
   videos_getBookmarkEntries: procedureBuilder
     .use(middlewares.requireUser)
     .input(
