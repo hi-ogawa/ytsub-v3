@@ -9,6 +9,7 @@ import { rpcRoutesVideos } from "./routes/videos";
 
 export const rpcRoutes = {
   ...rpcRoutesVideos,
+  // ts-prune-ignore-next (satisfies unsupported)
 } satisfies TinyRpcRoutes;
 
 export function rpcHandler(): RequestHandler {

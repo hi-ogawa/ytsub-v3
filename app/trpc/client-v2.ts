@@ -7,7 +7,7 @@ export const RPC_ENDPOINT = "/rpc";
 // TODO: merge interface of GET and POST endpoint into one?
 //       just "merge Proxy" instead of "object spreads"
 
-export const rpcClient = proxyTinyRpc<typeof rpcRoutes>({
+const rpcClient = proxyTinyRpc<typeof rpcRoutes>({
   adapter: httpClientAdapter({
     url: RPC_ENDPOINT,
     method: "GET",

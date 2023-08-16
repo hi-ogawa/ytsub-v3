@@ -165,12 +165,10 @@ export const rpcRoutesVideos = {
       .from(T.captionEntries)
       .where(E.eq(T.captionEntries.videoId, input.videoId))
       .orderBy(T.captionEntries.index);
-    getRequestContext().setResponseHeader(
-      "cache-control",
-      CACHE_CONTROL.cdn
-    );
+    getRequestContext().setResponseHeader("cache-control", CACHE_CONTROL.cdn);
     return rows;
   }),
+  // ts-prune-ignore-next (satisfies unsupported)
 } satisfies TinyRpcRoutes;
 
 //

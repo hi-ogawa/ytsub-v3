@@ -6,7 +6,7 @@ import { tinyassert } from "@hiogawa/utils";
 // https://github.com/hi-ogawa/vite-plugins/blob/af678d076200dac924cb0c2dda5746505ca869d2/packages/demo/src/server/request-context.ts
 // https://github.com/hi-ogawa/vite-plugins/blob/af678d076200dac924cb0c2dda5746505ca869d2/packages/demo/src/server/session.ts
 
-export const requestContextStorage = new AsyncLocalStorage<RequestContext>();
+const requestContextStorage = new AsyncLocalStorage<RequestContext>();
 
 export function getRequestContext() {
   const value = requestContextStorage.getStore();
