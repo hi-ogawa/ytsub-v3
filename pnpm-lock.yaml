@@ -37,6 +37,12 @@ dependencies:
   '@hiogawa/argon2-wasm-bindgen':
     specifier: 0.0.5
     version: 0.0.5
+  '@hiogawa/query-proxy':
+    specifier: 0.1.1-pre.3
+    version: 0.1.1-pre.3(@trpc/server@10.33.0)
+  '@hiogawa/tiny-rpc':
+    specifier: 0.2.3-pre.6
+    version: 0.2.3-pre.6
   '@hiogawa/utils':
     specifier: 1.4.2-pre.11
     version: 1.4.2-pre.11
@@ -2163,9 +2169,24 @@ packages:
       typescript: 5.1.6
     dev: true
 
+  /@hiogawa/query-proxy@0.1.1-pre.3(@trpc/server@10.33.0):
+    resolution: {integrity: sha512-0m7KSB2Tn8eC7rCnzbL3NwuyAgC3HWIweyMkltazGQ0ZMLZTNpIKbIwkaFzRCuZraAw66ysSnU4K0dWL2vLHrg==}
+    peerDependencies:
+      '@trpc/server': '*'
+    peerDependenciesMeta:
+      '@trpc/server':
+        optional: true
+    dependencies:
+      '@trpc/server': 10.33.0
+    dev: false
+
   /@hiogawa/tiny-cli@0.0.3:
     resolution: {integrity: sha512-5ZRDn0XW12mV+rov25z1oksyRP6IeW6ydEki81lHxbDEGrE/IGcrvkGTCXtbeSWIYmclNpVpuLee01KeB2jyvQ==}
     dev: true
+
+  /@hiogawa/tiny-rpc@0.2.3-pre.6:
+    resolution: {integrity: sha512-7eWRu+g08yByU/ZjFyiCqFzy43Bl8mjHi2UslHW/ioGLKnmXPRSZnPzwmeCYaX+8rw1NrhL7gZ3WjsWqWn8X8Q==}
+    dev: false
 
   /@hiogawa/unocss-preset-antd@2.2.1-pre.3(@unocss/preset-uno@0.53.6)(unocss@0.52.7):
     resolution: {integrity: sha512-NjJ0uKIA6tqmDTXQkO52Hb83tBJjwjOCUx9cgodxiROjTCuEP+yfkmJyzMlDzfxRUl8DnHd8IijnZl2cAX7s9Q==}

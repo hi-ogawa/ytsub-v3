@@ -6,9 +6,14 @@ import { SemanticAttributes } from "@opentelemetry/semantic-conventions";
 import * as build from "@remix-run/dev/server-build";
 import { createRequestHandler } from "@remix-run/server-runtime";
 import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
+import {
+  requestContextStorageHandler,
+  responseHeadersContextHandler,
+} from "../server/request-context";
 import { TRPC_ENDPOINT } from "../trpc/common";
 import { createTrpcAppContext } from "../trpc/context";
 import { trpcApp } from "../trpc/server";
+import { rpcHandler } from "../trpc/server-v2";
 import { pathToRegExp } from "../utils/misc";
 import { traceAsync } from "../utils/opentelemetry-utils";
 import { initializeServer } from "./initialize-server";
@@ -20,6 +25,9 @@ export function createHattipEntry() {
     loggerMiddleware(),
     bootstrapHandler(),
     createTraceRequestHandler(),
+    requestContextStorageHandler(),
+    responseHeadersContextHandler(),
+    rpcHandler(),
     createTrpchandler(),
     createRemixHandler()
   );

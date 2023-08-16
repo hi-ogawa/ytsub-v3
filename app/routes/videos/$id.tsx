@@ -20,6 +20,7 @@ import { E, T, TT, selectOne } from "../../db/drizzle-client.server";
 import type { UserTable, VideoTable } from "../../db/models";
 import { $R, ROUTE_DEF } from "../../misc/routes";
 import { trpc } from "../../trpc/client";
+import { rpcClientQuery } from "../../trpc/client-v2";
 import { useDocumentEvent } from "../../utils/hooks-client-utils";
 import { intl } from "../../utils/intl";
 import {
@@ -104,7 +105,9 @@ function PageComponent({
 
   // fetch caption entries on client
   const captionEntriesQuery = useQuery({
-    ...trpc.videos_getCaptionEntries.queryOptions({ videoId: video.id }),
+    ...rpcClientQuery.videos_getCaptionEntries.queryOptions({
+      videoId: video.id,
+    }),
   });
   const captionEntries = React.useMemo(
     () => captionEntriesQuery.data ?? [],

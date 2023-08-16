@@ -16,6 +16,7 @@ import type {
 } from "../../db/models";
 import { $R, ROUTE_DEF } from "../../misc/routes";
 import { trpc } from "../../trpc/client";
+import { rpcClientQuery } from "../../trpc/client-v2";
 import {
   disableUrlQueryRevalidation,
   useTypedUrlQuery,
@@ -238,7 +239,9 @@ export function MiniPlayer({
   const [queryEnabled, setQueryEnabled] = React.useState(false);
 
   const captionEntriesQuery = useQuery({
-    ...trpc.videos_getCaptionEntries.queryOptions({ videoId: video.id }),
+    ...rpcClientQuery.videos_getCaptionEntries.queryOptions({
+      videoId: video.id,
+    }),
     enabled: queryEnabled,
   });
 

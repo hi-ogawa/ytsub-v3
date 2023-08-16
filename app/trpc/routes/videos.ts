@@ -1,7 +1,9 @@
+import { TinyRpcRoutes, validateFn } from "@hiogawa/tiny-rpc";
 import { tinyassert } from "@hiogawa/utils";
 import { z } from "zod";
 import { E, T, db, limitOne, selectOne } from "../../db/drizzle-client.server";
 import { filterNewVideo, insertVideoAndCaptionEntries } from "../../db/helper";
+import { cacheResponse, getRequestContext } from "../../server/request-context";
 import { Z_CAPTION_ENTRY } from "../../utils/types";
 import {
   Z_NEW_VIDEO,
@@ -95,6 +97,7 @@ export const trpcRoutesVideos = {
       ]);
     }),
 
+  // TODO: remove
   videos_getCaptionEntries: procedureBuilder
     .input(
       z.object({
@@ -167,6 +170,25 @@ export const trpcRoutesVideos = {
       return limitOne(query);
     }),
 };
+
+export const rpcRoutesVideos = {
+  videos_getCaptionEntries: validateFn(
+    z.object({
+      videoId: z.number().int(),
+    })
+  )(async (input) => {
+    const video = await selectOne(T.videos, E.eq(T.videos.id, input.videoId));
+    tinyassert(video);
+
+    const rows = await db
+      .select()
+      .from(T.captionEntries)
+      .where(E.eq(T.captionEntries.videoId, input.videoId))
+      .orderBy(T.captionEntries.index);
+    cacheResponse(getRequestContext().responseHeaders);
+    return rows;
+  }),
+} satisfies TinyRpcRoutes;
 
 //
 // utils
