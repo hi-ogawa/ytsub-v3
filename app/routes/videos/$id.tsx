@@ -139,7 +139,9 @@ function PageComponent({
   const highlightBookmarkEnabled = highlightBookmark && Boolean(currentUser);
 
   const bookmarkEntriesQueryOptions =
-    trpc.videos_getBookmarkEntries.queryOptions({ videoId: video.id });
+    rpcClientQuery.videos_getBookmarkEntries.queryOptions({
+      videoId: video.id,
+    });
 
   const bookmarkEntriesQuery = useQuery({
     ...bookmarkEntriesQueryOptions,

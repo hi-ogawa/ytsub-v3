@@ -31,12 +31,12 @@ export function sessionHandler(): RequestHandler {
   };
 }
 
-export function ctx_currentUser() {
+export async function ctx_currentUser() {
   return getSessionUser(ctx_get().session);
 }
 
-export function ctx_requireUser() {
-  const user = ctx_currentUser();
+export async function ctx_requireUser() {
+  const user = await ctx_currentUser();
   tinyassert(user, "require user");
   return user;
 }
