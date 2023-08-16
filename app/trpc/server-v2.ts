@@ -5,10 +5,12 @@ import {
   httpServerAdapter,
 } from "@hiogawa/tiny-rpc";
 import { RPC_ENDPOINT, RPC_GET_PATHS } from "./client-v2";
+import { rpcRoutesUsers } from "./routes/users";
 import { rpcRoutesVideos } from "./routes/videos";
 
 export const rpcRoutes = {
   ...rpcRoutesVideos,
+  ...rpcRoutesUsers,
   // ts-prune-ignore-next (satisfies unsupported)
 } satisfies TinyRpcRoutes;
 

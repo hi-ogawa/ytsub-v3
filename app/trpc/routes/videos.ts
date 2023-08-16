@@ -1,4 +1,4 @@
-import { TinyRpcRoutes, validateFn } from "@hiogawa/tiny-rpc";
+import { validateFn } from "@hiogawa/tiny-rpc";
 import { tinyassert } from "@hiogawa/utils";
 import { z } from "zod";
 import { E, T, db, limitOne, selectOne } from "../../db/drizzle-client.server";
@@ -166,9 +166,7 @@ export const rpcRoutesVideos = {
       );
     return rows;
   }),
-
-  // ts-prune-ignore-next (satisfies unsupported)
-} satisfies TinyRpcRoutes;
+};
 
 //
 // utils

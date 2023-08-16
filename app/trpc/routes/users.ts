@@ -1,9 +1,12 @@
 import crypto from "crypto";
+import { validateFn } from "@hiogawa/tiny-rpc";
 import { tinyassert } from "@hiogawa/utils";
 import showdown from "showdown";
 import { z } from "zod";
 import { E, T, db, selectOne } from "../../db/drizzle-client.server";
 import { $R } from "../../misc/routes";
+import { ctx_currentUser } from "../../server/request-context/session";
+import { ctx_get } from "../../server/request-context/storage";
 import {
   findByUsername,
   register,
@@ -187,6 +190,24 @@ export const trpcRoutesUsers = {
       // TODO: send email to notify password has changed
       // TODO: reset existing sessions
     }),
+};
+
+export const rpcRoutesUsers = {
+  users_signin: validateFn(
+    z.object({
+      username: Z_USERNAME,
+      password: Z_PASSWORD,
+    })
+  )(async (input) => {
+    const currentUser = await ctx_currentUser();
+    tinyassert(!currentUser, "Already signed in");
+    tinyassert(await verifySignin(input), "Invalid username or password");
+    const user = await findByUsername(input.username);
+    tinyassert(user);
+    signinSession(ctx_get().session, user);
+    await ctx_get().commitSession();
+    return user;
+  }),
 };
 
 // check collision in application layer first
