@@ -3,8 +3,8 @@ import { tinyassert } from "@hiogawa/utils";
 import { z } from "zod";
 import { E, T, db, limitOne, selectOne } from "../../db/drizzle-client.server";
 import { filterNewVideo, insertVideoAndCaptionEntries } from "../../db/helper";
-import { getRequestContext } from "../../server/request-context";
-import { CACHE_CONTROL } from "../../server/request-context-response-headers";
+import { CACHE_CONTROL } from "../../server/request-context/response-headers";
+import { getRequestContext } from "../../server/request-context/storage";
 import { Z_CAPTION_ENTRY } from "../../utils/types";
 import {
   Z_NEW_VIDEO,
