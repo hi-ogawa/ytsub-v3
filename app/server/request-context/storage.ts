@@ -12,6 +12,7 @@ export function requestContextStorageHandler(): RequestHandler {
   return async (ctx) => requestContextStorage.run(ctx, () => ctx.next());
 }
 
+// internal convention to prefix "ctx_" for async context utility
 export function ctx_get() {
   const value = requestContextStorage.getStore();
   tinyassert(value, `forgot to setup '${requestContextStorageHandler.name}'?`);

@@ -2,8 +2,12 @@ import { tinyassert } from "@hiogawa/utils";
 import { beforeEach, describe, expect, it } from "vitest";
 import { E, T, db } from "../../db/drizzle-client.server";
 import { useUser } from "../../misc/test-helper";
+import { mockRequestContext } from "../../server/request-context/mock";
+import { ctx_get } from "../../server/request-context/storage";
 import { findByUsername, getSessionUser } from "../../utils/auth";
+import { getResponseSession } from "../../utils/session.server";
 import { TrpcInputs, trpc } from "../client";
+import { rpcRoutes } from "../server-v2";
 import { testTrpcClient, testTrpcClientWithContext } from "../test-helper";
 
 describe(trpc.users_signin.mutationKey, () => {
@@ -69,6 +73,37 @@ describe(trpc.users_signin.mutationKey, () => {
           password: "bad",
         })
       ).rejects.toMatchInlineSnapshot("[TRPCError: Already signed in]");
+    });
+  });
+});
+
+describe("users_signin-v2", () => {
+  const credentials = { username: "test-trpc-signin", password: "correct" };
+  const userHook = useUser(credentials);
+
+  it("basic", async () => {
+    await mockRequestContext()(async () => {
+      const output = rpcRoutes.users_signin(credentials);
+
+      expect(Object.keys(output)).toMatchInlineSnapshot(`
+        [
+          "id",
+          "createdAt",
+          "updatedAt",
+          "username",
+          "email",
+          "language1",
+          "language2",
+          "timezone",
+        ]
+      `);
+      expect(output).toEqual(userHook.data);
+
+      // check session cookie in response header
+      const sessionUser = await getSessionUser(
+        await getResponseSession({ headers: ctx_get().responseHeaders })
+      );
+      expect(sessionUser).toEqual(userHook.data);
     });
   });
 });

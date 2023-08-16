@@ -17,17 +17,11 @@ declare module "@hattip/compose" {
 export function sessionHandler(): RequestHandler {
   return async (ctx) => {
     ctx.session = await getRequestSession(ctx.request);
-
-    let setCookie: string | undefined;
     ctx.commitSession = async () => {
-      setCookie = await sessionStore.commitSession(ctx.session);
+      const setCookie = await sessionStore.commitSession(ctx.session);
+      ctx.responseHeaders.set("set-cookie", setCookie);
     };
-
-    const res = await ctx.next();
-    if (setCookie) {
-      res.headers.set("set-cookie", setCookie);
-    }
-    return res;
+    return ctx.next();
   };
 }
 
