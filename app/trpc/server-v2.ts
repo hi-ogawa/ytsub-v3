@@ -26,3 +26,8 @@ export function rpcHandler(): RequestHandler {
     }),
   });
 }
+
+// fix up Function.name for the direct use of `describe` test title
+for (const [k, v] of Object.entries(rpcRoutes)) {
+  Object.defineProperty(v, "name", { value: k });
+}
