@@ -1,3 +1,5 @@
+import { parse } from "@brillout/json-serializer/parse";
+import { stringify } from "@brillout/json-serializer/stringify";
 import { RequestHandler } from "@hattip/compose";
 import {
   TinyRpcRoutes,
@@ -24,6 +26,10 @@ export function rpcHandler(): RequestHandler {
     adapter: httpServerAdapter({
       endpoint: RPC_ENDPOINT,
       pathsForGET: RPC_GET_PATHS,
+      JSON: {
+        parse,
+        stringify,
+      },
       onError(e) {
         console.error(e);
       },

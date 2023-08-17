@@ -1,3 +1,5 @@
+import { parse } from "@brillout/json-serializer/parse";
+import { stringify } from "@brillout/json-serializer/stringify";
 import { createFnRecordQueryProxy } from "@hiogawa/query-proxy";
 import { httpClientAdapter, proxyTinyRpc } from "@hiogawa/tiny-rpc";
 import { type rpcRoutes } from "./server-v2";
@@ -11,6 +13,10 @@ export const rpcClient = proxyTinyRpc<typeof rpcRoutes>({
   adapter: httpClientAdapter({
     url: RPC_ENDPOINT,
     pathsForGET: RPC_GET_PATHS,
+    JSON: {
+      parse,
+      stringify,
+    },
   }),
 });
 
