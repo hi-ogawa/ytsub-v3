@@ -20,7 +20,7 @@ import { ThemeSelect, injectThemeScript } from "./components/theme-select";
 import { TopProgressBarRemix } from "./components/top-progress-bar";
 import type { UserTable } from "./db/models";
 import { $R, R } from "./misc/routes";
-import { trpc } from "./trpc/client";
+import { rpcClientQuery } from "./trpc/client-v2";
 import { injectPublicConfigScript, publicConfig } from "./utils/config-public";
 import {
   encodeFlashMessage,
@@ -309,7 +309,7 @@ function SearchComponent(props: { closeDrawer: () => void }) {
 
 function SignoutComponent() {
   const signoutMutation = useMutation({
-    ...trpc.users_signout.mutationOptions(),
+    ...rpcClientQuery.users_signout.mutationOptions(),
     onSuccess: () => {
       const href =
         $R["/"]() +
@@ -325,7 +325,7 @@ function SignoutComponent() {
   return (
     <button
       className="w-full antd-menu-item flex items-center gap-2 p-2"
-      onClick={() => signoutMutation.mutate(null)}
+      onClick={() => signoutMutation.mutate()}
       disabled={signoutMutation.isLoading}
     >
       <span
