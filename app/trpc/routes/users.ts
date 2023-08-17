@@ -5,7 +5,11 @@ import showdown from "showdown";
 import { z } from "zod";
 import { E, T, db, selectOne } from "../../db/drizzle-client.server";
 import { $R } from "../../misc/routes";
-import { ctx_currentUser } from "../../server/request-context/session";
+import {
+  ctx_commitSession,
+  ctx_requireSignout,
+  ctx_requireUser,
+} from "../../server/request-context/session";
 import { ctx_get } from "../../server/request-context/storage";
 import {
   findByUsername,
@@ -181,15 +185,41 @@ export const rpcRoutesUsers = {
       password: Z_PASSWORD,
     })
   )(async (input) => {
-    const currentUser = await ctx_currentUser();
-    tinyassert(!currentUser, "Already signed in");
+    await ctx_requireSignout();
     tinyassert(await verifySignin(input), "Invalid username or password");
     const user = await findByUsername(input.username);
     tinyassert(user);
     signinSession(ctx_get().session, user);
-    await ctx_get().commitSession();
+    await ctx_commitSession();
     return user;
   }),
+
+  users_register: validateFn(
+    z
+      .object({
+        username: Z_USERNAME,
+        password: Z_PASSWORD,
+        passwordConfirmation: z.string(),
+        token: z.string(),
+        timezone: z.string().refine(isValidTimezone),
+      })
+      .refine((obj) => obj.password === obj.passwordConfirmation, {
+        message: "Invalid",
+        path: ["passwordConfirmation"],
+      })
+  )(async (input) => {
+    await ctx_requireSignout();
+    await verifyTurnstile({ response: input.token });
+    const user = await register(input);
+    signinSession(ctx_get().session, user);
+    await ctx_commitSession();
+  }),
+
+  users_signout: async () => {
+    await ctx_requireUser("Not signed in");
+    signoutSession(ctx_get().session);
+    await ctx_commitSession();
+  },
 };
 
 // check collision in application layer first

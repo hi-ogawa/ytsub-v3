@@ -10,27 +10,33 @@ import { ctx_get } from "./storage";
 declare module "@hattip/compose" {
   interface RequestContextExtensions {
     session: Session;
-    commitSession: () => Promise<void>;
   }
 }
 
 export function sessionHandler(): RequestHandler {
   return async (ctx) => {
     ctx.session = await getRequestSession(ctx.request);
-    ctx.commitSession = async () => {
-      const setCookie = await sessionStore.commitSession(ctx.session);
-      ctx.responseHeaders.set("set-cookie", setCookie);
-    };
     return ctx.next();
   };
 }
 
-export async function ctx_currentUser() {
+export async function ctx_commitSession() {
+  const ctx = ctx_get();
+  const setCookie = await sessionStore.commitSession(ctx.session);
+  ctx.responseHeaders.set("set-cookie", setCookie);
+}
+
+async function ctx_currentUser() {
   return getSessionUser(ctx_get().session);
 }
 
-export async function ctx_requireUser() {
+export async function ctx_requireUser(message = "require user") {
   const user = await ctx_currentUser();
-  tinyassert(user, "require user");
+  tinyassert(user, message); // TODO: TinyRpcError
   return user;
+}
+
+export async function ctx_requireSignout(message = "Already signed in") {
+  const user = await ctx_currentUser();
+  tinyassert(!user, message);
 }
