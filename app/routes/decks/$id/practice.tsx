@@ -12,6 +12,7 @@ import type {
 } from "../../../db/models";
 import { PRACTICE_ACTION_TYPES, PracticeActionType } from "../../../db/types";
 import { trpc } from "../../../trpc/client";
+import { rpcClientQuery } from "../../../trpc/client-v2";
 import { requireUserAndDeck } from "../../../utils/loader-deck-utils";
 import {
   useLeafLoaderData,
@@ -60,7 +61,9 @@ export default function DefaultComponent() {
 
   function refetch() {
     queryClient.invalidateQueries([trpc.decks_nextPracticeEntry.queryKey]);
-    queryClient.invalidateQueries([trpc.decks_practiceStatistics.queryKey]);
+    queryClient.invalidateQueries([
+      rpcClientQuery.decks_practiceStatistics.queryKey,
+    ]);
   }
 
   return (

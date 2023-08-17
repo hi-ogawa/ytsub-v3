@@ -9,6 +9,7 @@ import type { DeckTable } from "../../../db/models";
 import { PRACTICE_ACTION_TYPES, PracticeActionType } from "../../../db/types";
 import { ROUTE_DEF } from "../../../misc/routes";
 import { trpc } from "../../../trpc/client";
+import { rpcClientQuery } from "../../../trpc/client-v2";
 import { useIntersectionObserver } from "../../../utils/hooks-client-utils";
 import { formatRelativeDate } from "../../../utils/intl";
 import { requireUserAndDeck } from "../../../utils/loader-deck-utils";
@@ -150,7 +151,7 @@ function ActionStatisticsComponent({
   currentActionType?: PracticeActionType;
 }) {
   const practiceStatisticsQuery = useQuery(
-    trpc.decks_practiceStatistics.queryOptions({ deckId })
+    rpcClientQuery.decks_practiceStatistics.queryOptions({ deckId })
   );
 
   return (

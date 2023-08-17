@@ -20,7 +20,7 @@ import type {
 } from "../../../db/models";
 import type { PracticeActionType, PracticeQueueType } from "../../../db/types";
 import { $R, ROUTE_DEF } from "../../../misc/routes";
-import { trpc } from "../../../trpc/client";
+import { rpcClientQuery } from "../../../trpc/client-v2";
 import { intl, intlWrapper } from "../../../utils/intl";
 import { requireUserAndDeck } from "../../../utils/loader-deck-utils";
 import {
@@ -130,7 +130,7 @@ export function QueueStatisticsComponent({
   currentQueueType?: PracticeQueueType;
 }) {
   const practiceStatisticsQuery = useQuery(
-    trpc.decks_practiceStatistics.queryOptions({ deckId })
+    rpcClientQuery.decks_practiceStatistics.queryOptions({ deckId })
   );
 
   return (

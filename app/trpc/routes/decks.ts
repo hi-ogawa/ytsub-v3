@@ -262,39 +262,6 @@ export const trpcRoutesDecks = {
       } as const;
     }),
 
-  decks_practiceStatistics: procedureBuilder
-    .use(middlewares.requireUser)
-    .input(
-      z.object({
-        deckId: z.number().int(),
-        __now: z.date().optional(), // for testing
-      })
-    )
-    .query(async ({ input, ctx }) => {
-      const deck = await findUserDeck({
-        deckId: input.deckId,
-        userId: ctx.user.id,
-      });
-      tinyassert(deck);
-
-      const now = input.__now ?? new Date();
-      const startOfToday = fromTemporal(
-        toZdt(now, ctx.user.timezone).startOfDay()
-      );
-
-      const total = {
-        byActionType: deck.cache.practiceActionsCountByActionType,
-        byQueueType: deck.cache.practiceEntriesCountByQueueType,
-      };
-
-      const daily = await getDailyPracticeStatistics(deck.id, startOfToday);
-
-      return {
-        total,
-        daily,
-      };
-    }),
-
   decks_practiceActions: procedureBuilder
     .use(middlewares.requireUser)
     .input(
