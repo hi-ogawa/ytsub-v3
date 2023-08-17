@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">44.63% </span>
+                <span class="strong">44.91% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>158/354</span>
+                <span class='fraction'>159/354</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">14.28% </span>
+                <span class="strong">28.57% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>1/7</span>
+                <span class='fraction'>2/7</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">44.63% </span>
+                <span class="strong">44.91% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>158/354</span>
+                <span class='fraction'>159/354</span>
             </div>
         
             
@@ -464,20 +464,20 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -627,18 +627,18 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -812,26 +812,26 @@ export const trpcRoutesUsers = {
           token: z.string(),
           timezone: z.string().refine(isValidTimezone),
         })
-        .refine((obj) =&gt; obj.password === obj.passwordConfirmation, {
+        .refine(<span class="fstat-no" title="function not covered" >(obj) =&gt; obj.password === obj.passwordConfirmation, {</span>
           message: "Invalid",
           path: ["passwordConfirmation"],
         })
     )
     .mutation(async ({ input, ctx }) =&gt; {
-      tinyassert(!ctx.user, "Already signed in");
-      await verifyTurnstile({ response: input.token });
-      const user = await register(input);
-      signinSession(ctx.session, user);
-      await ctx.commitSession();
+<span class="cstat-no" title="statement not covered" >      tinyassert(!ctx.user, "Already signed in");</span>
+<span class="cstat-no" title="statement not covered" >      await verifyTurnstile({ response: input.token });</span>
+<span class="cstat-no" title="statement not covered" >      const user = await register(input);</span>
+<span class="cstat-no" title="statement not covered" >      signinSession(ctx.session, user);</span>
+<span class="cstat-no" title="statement not covered" >      await ctx.commitSession();</span>
     }),
 &nbsp;
   users_signout: procedureBuilder
     .use(middlewares.currentUser)
     .input(z.null())
     .mutation(async ({ ctx }) =&gt; {
-      tinyassert(ctx.user, "Not signed in");
-      signoutSession(ctx.session);
-      await ctx.commitSession();
+<span class="cstat-no" title="statement not covered" >      tinyassert(ctx.user, "Not signed in");</span>
+<span class="cstat-no" title="statement not covered" >      signoutSession(ctx.session);</span>
+<span class="cstat-no" title="statement not covered" >      await ctx.commitSession();</span>
     }),
 &nbsp;
   users_update: procedureBuilder
@@ -976,23 +976,23 @@ export const rpcRoutesUsers = {
         token: z.string(),
         timezone: z.string().refine(isValidTimezone),
       })
-      .refine(<span class="fstat-no" title="function not covered" >(obj) =&gt; obj.password === obj.passwordConfirmation, {</span>
+      .refine((obj) =&gt; obj.password === obj.passwordConfirmation, {
         message: "Invalid",
         path: ["passwordConfirmation"],
       })
   )(async (input) =&gt; {
-<span class="cstat-no" title="statement not covered" >    await ctx_requireSignout();</span>
-<span class="cstat-no" title="statement not covered" >    await verifyTurnstile({ response: input.token });</span>
-<span class="cstat-no" title="statement not covered" >    const user = await register(input);</span>
-<span class="cstat-no" title="statement not covered" >    signinSession(ctx_get().session, user);</span>
-<span class="cstat-no" title="statement not covered" >    await ctx_commitSession();</span>
+    await ctx_requireSignout();
+    await verifyTurnstile({ response: input.token });
+    const user = await register(input);
+    signinSession(ctx_get().session, user);
+    await ctx_commitSession();
   }),
 &nbsp;
-  users_signout: <span class="fstat-no" title="function not covered" >async () =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >    await ctx_requireUser("Not signed in");</span>
-<span class="cstat-no" title="statement not covered" >    signoutSession(ctx_get().session);</span>
-<span class="cstat-no" title="statement not covered" >    await ctx_commitSession();</span>
-<span class="cstat-no" title="statement not covered" >  },</span>
+  users_signout: async () =&gt; {
+    await ctx_requireUser("Not signed in");
+    signoutSession(ctx_get().session);
+    await ctx_commitSession();
+  },
 };
 &nbsp;
 // check collision in application layer first
@@ -1132,7 +1132,7 @@ const EMAIL_FROM = {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-08-17T01:47:09.118Z
+                at 2023-08-17T04:07:19.095Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
