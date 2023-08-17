@@ -27,7 +27,7 @@ export function rpcHandler(): RequestHandler {
   });
 }
 
-// fix up Function.name so that it can be used in tests e.g.
+// fix up Function.name so that it can be used as a test title e.g.
 //   describe(rpcRoutes.users_singin.name, () => {})
 for (const [k, v] of Object.entries(rpcRoutes)) {
   Object.defineProperty(v, "name", { value: k });

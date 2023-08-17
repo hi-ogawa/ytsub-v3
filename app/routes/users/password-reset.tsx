@@ -3,7 +3,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { $R } from "../../misc/routes";
-import { trpcClient } from "../../trpc/client-internal.client";
+import { rpcClient } from "../../trpc/client-v2";
 import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 import { useTurnstile } from "../../utils/turnstile-utils";
@@ -24,7 +24,7 @@ export default function Page() {
   const mutation = useMutation({
     mutationFn: async ({ email }: { email: string }) => {
       const token = await turnstile.render();
-      return trpcClient.users_requestResetPassword.mutate({
+      return rpcClient.users_requestResetPassword({
         email,
         token,
       });
