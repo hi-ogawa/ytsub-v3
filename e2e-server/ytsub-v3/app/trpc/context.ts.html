@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">93.75% </span>
+                <span class="strong">85.93% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>60/64</span>
+                <span class='fraction'>55/64</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>4/4</span>
+                <span class='fraction'>3/3</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">50% </span>
+                <span class="strong">25% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>2/4</span>
+                <span class='fraction'>1/4</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">93.75% </span>
+                <span class="strong">85.93% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>60/64</span>
+                <span class='fraction'>55/64</span>
             </div>
         
             
@@ -142,45 +142,45 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">194x</span>
-<span class="cline-any cline-yes">194x</span>
-<span class="cline-any cline-yes">194x</span>
-<span class="cline-any cline-yes">194x</span>
-<span class="cline-any cline-yes">194x</span>
-<span class="cline-any cline-yes">194x</span>
-<span class="cline-any cline-yes">194x</span>
-<span class="cline-any cline-yes">194x</span>
-<span class="cline-any cline-yes">194x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">194x</span>
-<span class="cline-any cline-yes">194x</span>
+<span class="cline-any cline-yes">192x</span>
+<span class="cline-any cline-yes">192x</span>
+<span class="cline-any cline-yes">192x</span>
+<span class="cline-any cline-yes">192x</span>
+<span class="cline-any cline-yes">192x</span>
+<span class="cline-any cline-yes">192x</span>
+<span class="cline-any cline-yes">192x</span>
+<span class="cline-any cline-yes">192x</span>
+<span class="cline-any cline-yes">192x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-yes">194x</span>
-<span class="cline-any cline-yes">194x</span>
-<span class="cline-any cline-yes">194x</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-yes">194x</span>
-<span class="cline-any cline-yes">194x</span>
-<span class="cline-any cline-yes">194x</span>
-<span class="cline-any cline-yes">194x</span>
-<span class="cline-any cline-yes">194x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">192x</span>
+<span class="cline-any cline-yes">192x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">192x</span>
+<span class="cline-any cline-yes">192x</span>
+<span class="cline-any cline-yes">192x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">192x</span>
+<span class="cline-any cline-yes">192x</span>
+<span class="cline-any cline-yes">192x</span>
+<span class="cline-any cline-yes">192x</span>
+<span class="cline-any cline-yes">192x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">36x</span>
@@ -214,12 +214,12 @@ export const createTrpcAppContext = async ({
 &nbsp;
     user: none&lt;TT["users"]&gt;(),
 &nbsp;
-    commitSession: async () =&gt; {
-      resHeaders.set(
-        "set-cookie",
-        await sessionStore.commitSession(ctx.session)
-      );
-    },
+    commitSession: <span class="fstat-no" title="function not covered" >async () =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >      resHeaders.set(</span>
+<span class="cstat-no" title="statement not covered" >        "set-cookie",</span>
+<span class="cstat-no" title="statement not covered" >        await sessionStore.commitSession(ctx.session)</span>
+<span class="cstat-no" title="statement not covered" >      );</span>
+<span class="cstat-no" title="statement not covered" >    },</span>
 &nbsp;
     cacheResponse: <span class="fstat-no" title="function not covered" >() =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >      // full cache only on CDN (cf. https://vercel.com/docs/concepts/functions/serverless-functions/edge-caching)</span>
@@ -262,7 +262,7 @@ export const middlewares = { requireUser, currentUser };
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-08-17T04:09:23.465Z
+                at 2023-08-17T04:10:42.289Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>
