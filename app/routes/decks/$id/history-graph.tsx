@@ -10,7 +10,7 @@ import {
 } from "../../../components/practice-history-chart";
 import type { DeckTable } from "../../../db/models";
 import { ROUTE_DEF } from "../../../misc/routes";
-import { trpc } from "../../../trpc/client";
+import { rpcClientQuery } from "../../../trpc/client-v2";
 import { useClickOutside } from "../../../utils/hooks-client-utils";
 import { requireUserAndDeck } from "../../../utils/loader-deck-utils";
 import {
@@ -72,7 +72,7 @@ export default function DefaultComponent() {
   };
 
   const historyChartQuery = useQuery({
-    ...trpc.decks_practiceHistoryChart.queryOptions({
+    ...rpcClientQuery.decks_practiceHistoryChart.queryOptions({
       deckId: deck.id,
       rangeType: params.rangeType,
       page: params.page,

@@ -1,3 +1,4 @@
+import { validateFn } from "@hiogawa/tiny-rpc";
 import { mapOption, tinyassert } from "@hiogawa/utils";
 import { sql } from "drizzle-orm";
 import { z } from "zod";
@@ -9,6 +10,7 @@ import { E, T, db, limitOne, selectOne } from "../../db/drizzle-client.server";
 import { DEFAULT_DECK_CACHE, Z_PRACTICE_ACTION_TYPES } from "../../db/types";
 import { Z_DATE_RANGE_TYPE } from "../../misc/routes";
 import { importDeckJson } from "../../misc/seed-utils";
+import { ctx_requireUser } from "../../server/request-context/session";
 import {
   PracticeSystem,
   getDailyPracticeStatistics,
@@ -210,60 +212,6 @@ export const trpcRoutesDecks = {
       return results;
     }),
 
-  decks_practiceHistoryChart: procedureBuilder
-    .use(middlewares.requireUser)
-    .input(
-      z.object({
-        deckId: z.number().int(),
-        rangeType: Z_DATE_RANGE_TYPE,
-        page: z.number().int().optional().default(0), // 0 => this week/month, 1 => last week/month, ...
-        __now: z.date().optional(), // for testing
-      })
-    )
-    .query(async ({ input, ctx }) => {
-      const timezone = ctx.user.timezone;
-      const now = input.__now ?? new Date();
-      const dateRange = getZonedDateRange(
-        toZdt(now, timezone),
-        input.rangeType,
-        input.page
-      );
-      const dates = dateRange.dates.map((d) => d.toPlainDate().toString());
-
-      // aggregate count in js
-      const rows = await db
-        .select()
-        .from(T.practiceActions)
-        .where(
-          E.and(
-            E.eq(T.practiceActions.deckId, input.deckId),
-            E.gt(T.practiceActions.createdAt, fromTemporal(dateRange.begin)),
-            E.lt(T.practiceActions.createdAt, fromTemporal(dateRange.end))
-          )
-        );
-
-      const countMap = Object.fromEntries(
-        dates.map((date) => [date, { date }])
-      ) as Record<string, PracticeHistoryChartDataEntry>;
-
-      for (const v of Object.values(countMap)) {
-        for (const k of PRACTICE_HISTORY_DATASET_KEYS) {
-          v[k] = 0;
-        }
-      }
-
-      for (const row of rows) {
-        const date = toZdt(row.createdAt, ctx.user.timezone)
-          .toPlainDate()
-          .toString();
-        countMap[date].total++;
-        countMap[date][`queue-${row.queueType}`]++;
-        countMap[date][`action-${row.actionType}`]++;
-      }
-
-      return Object.values(countMap);
-    }),
-
   decks_nextPracticeEntry: procedureBuilder
     .use(middlewares.requireUser)
     .input(
@@ -402,6 +350,58 @@ export const trpcRoutesDecks = {
       const nextCursor = rows.length > 0 ? input.cursor + rows.length : null;
       return { rows, nextCursor };
     }),
+};
+
+export const rpcRoutesDecks = {
+  decks_practiceHistoryChart: validateFn(
+    z.object({
+      deckId: z.number().int(),
+      rangeType: Z_DATE_RANGE_TYPE,
+      page: z.number().int().optional().default(0), // 0 => this week/month, 1 => last week/month, ...
+      __now: z.date().optional(), // for testing
+    })
+  )(async (input) => {
+    const user = await ctx_requireUser();
+    const timezone = user.timezone;
+    const now = input.__now ?? new Date();
+    const dateRange = getZonedDateRange(
+      toZdt(now, timezone),
+      input.rangeType,
+      input.page
+    );
+    const dates = dateRange.dates.map((d) => d.toPlainDate().toString());
+
+    // aggregate count in js
+    const rows = await db
+      .select()
+      .from(T.practiceActions)
+      .where(
+        E.and(
+          E.eq(T.practiceActions.deckId, input.deckId),
+          E.gt(T.practiceActions.createdAt, fromTemporal(dateRange.begin)),
+          E.lt(T.practiceActions.createdAt, fromTemporal(dateRange.end))
+        )
+      );
+
+    const countMap = Object.fromEntries(
+      dates.map((date) => [date, { date }])
+    ) as Record<string, PracticeHistoryChartDataEntry>;
+
+    for (const v of Object.values(countMap)) {
+      for (const k of PRACTICE_HISTORY_DATASET_KEYS) {
+        v[k] = 0;
+      }
+    }
+
+    for (const row of rows) {
+      const date = toZdt(row.createdAt, user.timezone).toPlainDate().toString();
+      countMap[date].total++;
+      countMap[date][`queue-${row.queueType}`]++;
+      countMap[date][`action-${row.actionType}`]++;
+    }
+
+    return Object.values(countMap);
+  }),
 };
 
 //
