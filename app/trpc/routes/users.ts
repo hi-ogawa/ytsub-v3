@@ -28,39 +28,6 @@ import { middlewares } from "../context";
 import { procedureBuilder } from "../factory";
 
 export const trpcRoutesUsers = {
-  users_register: procedureBuilder
-    .use(middlewares.currentUser)
-    .input(
-      z
-        .object({
-          username: Z_USERNAME,
-          password: Z_PASSWORD,
-          passwordConfirmation: z.string(),
-          token: z.string(),
-          timezone: z.string().refine(isValidTimezone),
-        })
-        .refine((obj) => obj.password === obj.passwordConfirmation, {
-          message: "Invalid",
-          path: ["passwordConfirmation"],
-        })
-    )
-    .mutation(async ({ input, ctx }) => {
-      tinyassert(!ctx.user, "Already signed in");
-      await verifyTurnstile({ response: input.token });
-      const user = await register(input);
-      signinSession(ctx.session, user);
-      await ctx.commitSession();
-    }),
-
-  users_signout: procedureBuilder
-    .use(middlewares.currentUser)
-    .input(z.null())
-    .mutation(async ({ ctx }) => {
-      tinyassert(ctx.user, "Not signed in");
-      signoutSession(ctx.session);
-      await ctx.commitSession();
-    }),
-
   users_update: procedureBuilder
     .use(middlewares.requireUser)
     .input(
