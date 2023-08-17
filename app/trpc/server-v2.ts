@@ -1,11 +1,10 @@
-import { parse } from "@brillout/json-serializer/parse";
-import { stringify } from "@brillout/json-serializer/stringify";
 import { RequestHandler } from "@hattip/compose";
 import {
   TinyRpcRoutes,
   exposeTinyRpc,
   httpServerAdapter,
 } from "@hiogawa/tiny-rpc";
+import * as superjson from "superjson";
 import { RPC_ENDPOINT, RPC_GET_PATHS } from "./client-v2";
 import { rpcRoutesBookmarks } from "./routes/bookmarks";
 import { rpcRoutesDecks } from "./routes/decks";
@@ -26,10 +25,7 @@ export function rpcHandler(): RequestHandler {
     adapter: httpServerAdapter({
       endpoint: RPC_ENDPOINT,
       pathsForGET: RPC_GET_PATHS,
-      JSON: {
-        parse,
-        stringify,
-      },
+      JSON: superjson,
       onError(e) {
         console.error(e);
       },
