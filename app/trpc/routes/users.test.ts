@@ -20,14 +20,16 @@ describe(rpcRoutes.users_signin.name, () => {
     await mockRequestContext()(async () => {
       const output = await rpcRoutes.users_signin(credentials);
 
-      const cleanSnapshot = z
-        .object({
-          id: zSnapshotType,
-          createdAt: zSnapshotType,
-          updatedAt: zSnapshotType,
-        })
-        .passthrough();
-      expect(cleanSnapshot.parse(output)).toMatchInlineSnapshot(`
+      expect(
+        z
+          .object({
+            id: zSnapshotType,
+            createdAt: zSnapshotType,
+            updatedAt: zSnapshotType,
+          })
+          .passthrough()
+          .parse(output)
+      ).toMatchInlineSnapshot(`
         {
           "createdAt": "[Date]",
           "email": null,

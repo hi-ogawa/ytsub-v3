@@ -1,8 +1,10 @@
 import { z } from "zod";
 
-export const zSnapshotType = z.any().transform((v) => `[${toPrettyType(v)}]`);
+// helper to snapshot non-deterministic values e.g.
+//   expect(z.object({ id: zSnapshotType }).passthrough().parse(userWithId)).toMatchInlineSnapshot()
+export const zSnapshotType = z.any().transform((v) => `[${prettyTypeof(v)}]`);
 
-function toPrettyType(v: unknown) {
+function prettyTypeof(v: unknown) {
   if (
     ["undefined", "boolean", "number", "string", "function"].includes(typeof v)
   ) {
