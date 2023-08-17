@@ -48,24 +48,6 @@ export const trpcRoutesUsers = {
       await ctx.commitSession();
     }),
 
-  users_signin: procedureBuilder
-    .use(middlewares.currentUser)
-    .input(
-      z.object({
-        username: Z_USERNAME,
-        password: Z_PASSWORD,
-      })
-    )
-    .mutation(async ({ input, ctx }) => {
-      tinyassert(!ctx.user, "Already signed in");
-      tinyassert(await verifySignin(input), "Invalid username or password");
-      const user = await findByUsername(input.username);
-      tinyassert(user);
-      signinSession(ctx.session, user);
-      await ctx.commitSession();
-      return user;
-    }),
-
   users_signout: procedureBuilder
     .use(middlewares.currentUser)
     .input(z.null())
