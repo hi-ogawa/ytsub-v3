@@ -1,5 +1,6 @@
 import { tinyassert } from "@hiogawa/utils";
 import { beforeEach, describe, expect, it } from "vitest";
+import { z } from "zod";
 import { E, T, db } from "../../db/drizzle-client.server";
 import { useUser } from "../../misc/test-helper";
 import { mockRequestContext } from "../../server/request-context/mock";
@@ -18,17 +19,24 @@ describe(rpcRoutes.users_signin.name, () => {
     await mockRequestContext()(async () => {
       const output = await rpcRoutes.users_signin(credentials);
 
-      expect(Object.keys(output)).toMatchInlineSnapshot(`
-        [
-          "id",
-          "createdAt",
-          "updatedAt",
-          "username",
-          "email",
-          "language1",
-          "language2",
-          "timezone",
-        ]
+      const cleanSnapshot = z
+        .object({
+          id: z.any().transform(() => "[...]"),
+          createdAt: z.any().transform(() => "[...]"),
+          updatedAt: z.any().transform(() => "[...]"),
+        })
+        .passthrough();
+      expect(cleanSnapshot.parse(output)).toMatchInlineSnapshot(`
+        {
+          "createdAt": "[...]",
+          "email": null,
+          "id": "[...]",
+          "language1": null,
+          "language2": null,
+          "timezone": "+00:00",
+          "updatedAt": "[...]",
+          "username": "test-trpc-signin-v2",
+        }
       `);
       expect(output).toEqual(userHook.data);
 
