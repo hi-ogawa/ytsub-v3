@@ -26,21 +26,6 @@ import { isValidTimezone } from "../../utils/temporal-utils";
 import { verifyTurnstile } from "../../utils/turnstile-utils.server";
 
 export const rpcRoutesUsers = {
-  users_signin: validateFn(
-    z.object({
-      username: Z_USERNAME,
-      password: Z_PASSWORD,
-    })
-  )(async (input) => {
-    await ctx_requireSignout();
-    tinyassert(await verifySignin(input), "Invalid username or password");
-    const user = await findByUsername(input.username);
-    tinyassert(user);
-    signinSession(ctx_get().session, user);
-    await ctx_commitSession();
-    return user;
-  }),
-
   users_register: validateFn(
     z
       .object({
@@ -60,6 +45,21 @@ export const rpcRoutesUsers = {
     const user = await register(input);
     signinSession(ctx_get().session, user);
     await ctx_commitSession();
+  }),
+
+  users_signin: validateFn(
+    z.object({
+      username: Z_USERNAME,
+      password: Z_PASSWORD,
+    })
+  )(async (input) => {
+    await ctx_requireSignout();
+    tinyassert(await verifySignin(input), "Invalid username or password");
+    const user = await findByUsername(input.username);
+    tinyassert(user);
+    signinSession(ctx_get().session, user);
+    await ctx_commitSession();
+    return user;
   }),
 
   users_signout: async () => {
