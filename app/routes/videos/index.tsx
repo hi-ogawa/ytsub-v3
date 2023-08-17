@@ -12,6 +12,7 @@ import { E, T, db, toPaginationResult } from "../../db/drizzle-client.server";
 import type { DeckTable, UserTable, VideoTable } from "../../db/models";
 import { R } from "../../misc/routes";
 import { trpc } from "../../trpc/client";
+import { rpcClientQuery } from "../../trpc/client-v2";
 import {
   useLoaderDataExtra,
   useRootLoaderData,
@@ -118,7 +119,7 @@ function VideoComponentExtra({
 }) {
   const navigate = useNavigate();
   const deleteVideoMutation = useMutation({
-    ...trpc.videos_destroy.mutationOptions(),
+    ...rpcClientQuery.videos_destroy.mutationOptions(),
     onSuccess: () => {
       toast.success("Successfully deleted a video");
       navigate(R["/videos"]); // refetch
