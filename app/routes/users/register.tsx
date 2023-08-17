@@ -4,7 +4,7 @@ import { redirect } from "@remix-run/server-runtime";
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { $R, R } from "../../misc/routes";
-import { trpcClient } from "../../trpc/client-internal.client";
+import { rpcClient } from "../../trpc/client-v2";
 import { encodeFlashMessage } from "../../utils/flash-message";
 import { makeLoader } from "../../utils/loader-utils.server";
 import { cls } from "../../utils/misc";
@@ -51,7 +51,7 @@ export default function DefaultComponent() {
   const registerMutation = useMutation({
     mutationFn: async (data: FormState) => {
       const token = await turnstile.render();
-      await trpcClient.users_register.mutate({
+      await rpcClient.users_register({
         ...data,
         token,
         timezone: Temporal.Now.zonedDateTimeISO().offset,

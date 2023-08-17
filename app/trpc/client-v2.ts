@@ -7,7 +7,7 @@ export const RPC_GET_PATHS: (keyof typeof rpcRoutes)[] = [
   "videos_getCaptionEntries",
 ];
 
-const rpcClient = proxyTinyRpc<typeof rpcRoutes>({
+export const rpcClient = proxyTinyRpc<typeof rpcRoutes>({
   adapter: httpClientAdapter({
     url: RPC_ENDPOINT,
     pathsForGET: RPC_GET_PATHS,
