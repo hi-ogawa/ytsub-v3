@@ -10,9 +10,7 @@ export async function testTrpcClient(
   return caller;
 }
 
-export async function testTrpcClientWithContext(options?: {
-  user?: TT["users"];
-}) {
+async function testTrpcClientWithContext(options?: { user?: TT["users"] }) {
   const req = new Request("http://example.com"); // dummy
   if (options?.user) {
     const cookie = await createUserCookie(options.user);
