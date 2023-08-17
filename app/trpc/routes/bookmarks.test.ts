@@ -1,8 +1,79 @@
+import { objectPick } from "@hiogawa/utils";
 import { beforeAll, describe, expect, it } from "vitest";
+import { E, T, db } from "../../db/drizzle-client.server";
 import { importSeed } from "../../misc/seed-utils";
-import { useUser } from "../../misc/test-helper";
+import { useUser, useUserVideo } from "../../misc/test-helper";
 import { mockRequestContext } from "../../server/request-context/mock";
 import { rpcRoutes } from "../server-v2";
+
+describe(rpcRoutes.bookmarks_create.name, () => {
+  const hook = useUserVideo({
+    seed: __filename + "bookmarks_create",
+  });
+
+  it("basic", async () => {
+    await mockRequestContext({ user: hook.user })(async () => {
+      await rpcRoutes.bookmarks_create({
+        videoId: hook.video.id,
+        captionEntryId: hook.captionEntries[0].id,
+        text: "Bonjour à tous",
+        side: 0,
+        offset: 8,
+      });
+
+      const rows = await db
+        .select()
+        .from(T.bookmarkEntries)
+        .innerJoin(T.videos, E.eq(T.videos.id, T.bookmarkEntries.videoId))
+        .where(E.eq(T.videos.id, hook.video.id));
+      expect(
+        rows.map((row) => [
+          row.videos.bookmarkEntriesCount,
+          objectPick(row.bookmarkEntries, ["text", "side", "offset"]),
+        ])
+      ).toMatchInlineSnapshot(`
+        [
+          [
+            1,
+            {
+              "offset": 8,
+              "side": 0,
+              "text": "Bonjour à tous",
+            },
+          ],
+        ]
+      `);
+    });
+  });
+
+  it("error-no-video", async () => {
+    await mockRequestContext({ user: hook.user })(async () => {
+      await expect(
+        rpcRoutes.bookmarks_create({
+          videoId: -1, // invalid video id
+          captionEntryId: hook.captionEntries[0].id,
+          text: "Bonjour à tous",
+          side: 0 as const,
+          offset: 8,
+        })
+      ).rejects.toMatchInlineSnapshot("[Error: not found]");
+    });
+  });
+
+  it("error-no-user", async () => {
+    await mockRequestContext()(async () => {
+      await expect(
+        rpcRoutes.bookmarks_create({
+          videoId: -1, // invalid video id
+          captionEntryId: hook.captionEntries[0].id,
+          text: "Bonjour à tous",
+          side: 0 as const,
+          offset: 8,
+        })
+      ).rejects.toMatchInlineSnapshot("[Error: require user]");
+    });
+  });
+});
 
 describe(rpcRoutes.bookmarks_historyChart.name, () => {
   const user = useUser({

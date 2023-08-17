@@ -14,53 +14,6 @@ import { middlewares } from "../context";
 import { procedureBuilder } from "../factory";
 
 export const trpcRoutesBookmarks = {
-  bookmarks_create: procedureBuilder
-    .use(middlewares.requireUser)
-    .input(
-      z.object({
-        videoId: z.number().int(),
-        captionEntryId: z.number().int(),
-        text: z.string().nonempty(),
-        side: z.number().refine((v) => v === 0 || v === 1),
-        offset: z.number().int(),
-      })
-    )
-    .mutation(async ({ input, ctx }) => {
-      const found = await limitOne(
-        db
-          .select()
-          .from(T.captionEntries)
-          .innerJoin(T.videos, E.eq(T.videos.id, T.captionEntries.videoId))
-          .where(
-            E.and(
-              E.eq(T.captionEntries.id, input.captionEntryId),
-              E.eq(T.videos.id, input.videoId),
-              E.eq(T.videos.userId, ctx.user.id)
-            )
-          )
-      );
-      tinyassert(found, "not found");
-
-      // insert with counter cache increment
-      const [{ insertId }] = await db.insert(T.bookmarkEntries).values({
-        ...input,
-        userId: ctx.user.id,
-      });
-      await db
-        .update(T.videos)
-        .set({
-          bookmarkEntriesCount: sql`${T.videos.bookmarkEntriesCount} + 1`,
-        })
-        .where(E.eq(T.videos.id, input.videoId));
-
-      const row = await selectOne(
-        T.bookmarkEntries,
-        E.eq(T.bookmarkEntries.id, insertId)
-      );
-      tinyassert(row);
-      return row;
-    }),
-
   bookmarks_index: procedureBuilder
     .use(middlewares.requireUser)
     .input(
