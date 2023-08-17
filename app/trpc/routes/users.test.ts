@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it } from "vitest";
 import { z } from "zod";
 import { E, T, db } from "../../db/drizzle-client.server";
 import { useUser } from "../../misc/test-helper";
+import { zSnapshotType } from "../../misc/test-helper-snapshot";
 import { mockRequestContext } from "../../server/request-context/mock";
 import { ctx_get } from "../../server/request-context/storage";
 import { findByUsername, getSessionUser } from "../../utils/auth";
@@ -21,20 +22,20 @@ describe(rpcRoutes.users_signin.name, () => {
 
       const cleanSnapshot = z
         .object({
-          id: z.any().transform(() => "[...]"),
-          createdAt: z.any().transform(() => "[...]"),
-          updatedAt: z.any().transform(() => "[...]"),
+          id: zSnapshotType,
+          createdAt: zSnapshotType,
+          updatedAt: zSnapshotType,
         })
         .passthrough();
       expect(cleanSnapshot.parse(output)).toMatchInlineSnapshot(`
         {
-          "createdAt": "[...]",
+          "createdAt": "[Date]",
           "email": null,
-          "id": "[...]",
+          "id": "[number]",
           "language1": null,
           "language2": null,
           "timezone": "+00:00",
-          "updatedAt": "[...]",
+          "updatedAt": "[Date]",
           "username": "test-trpc-signin-v2",
         }
       `);
