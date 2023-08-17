@@ -151,7 +151,7 @@ function PageComponent({
   const queryClient = useQueryClient();
 
   const newBookmarkMutation = useMutation({
-    ...trpc.bookmarks_create.mutationOptions(),
+    ...rpcClientQuery.bookmarks_create.mutationOptions(),
     onSuccess: (newBookmark) => {
       toast.success("Bookmark success");
 
