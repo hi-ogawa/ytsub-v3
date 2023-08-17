@@ -107,6 +107,28 @@ describe(rpcRoutes.users_signin.name, () => {
     });
   });
 
+  it("error invalid username", async () => {
+    await mockRequestContext()(async () => {
+      await expect(
+        rpcRoutes.users_signin({
+          ...credentials,
+          username: "wrong",
+        })
+      ).rejects.toMatchInlineSnapshot("[Error: Invalid username or password]");
+    });
+  });
+
+  it("error invalid password", async () => {
+    await mockRequestContext()(async () => {
+      await expect(
+        rpcRoutes.users_signin({
+          ...credentials,
+          password: "wrong",
+        })
+      ).rejects.toMatchInlineSnapshot("[Error: Invalid username or password]");
+    });
+  });
+
   it("error already signed in", async () => {
     await mockRequestContext({ user: userHook.data })(async () => {
       await expect(
