@@ -10,7 +10,7 @@ import { findByUsername, getSessionUser } from "../../utils/auth";
 import { getResponseSession } from "../../utils/session.server";
 import { TrpcInputs, trpc } from "../client";
 import { rpcRoutes } from "../server-v2";
-import { testTrpcClient, testTrpcClientWithContext } from "../test-helper";
+import { testTrpcClientWithContext } from "../test-helper";
 
 describe(rpcRoutes.users_signin.name, () => {
   const credentials = { username: "test-trpc-signin-v2", password: "correct" };
@@ -82,28 +82,27 @@ describe(rpcRoutes.users_signin.name, () => {
   });
 });
 
-describe(trpc.users_signout.mutationKey, () => {
+describe(rpcRoutes.users_signout.name, () => {
   const credentials = { username: "test-trpc-signout", password: "correct" };
   const userHook = useUser(credentials);
 
-  describe("success", () => {
-    it("basic", async () => {
-      const trpc = await testTrpcClientWithContext({ user: userHook.data });
-      await trpc.caller.users_signout(null);
+  it("basic", async () => {
+    await mockRequestContext({ user: userHook.data })(async () => {
+      const output = await rpcRoutes.users_signout();
+      expect(output).toMatchInlineSnapshot("undefined");
 
       // check session cookie in response header
       const sessionUser = await getSessionUser(
-        await trpc.ctx.__getRepsonseSession()
+        await getResponseSession({ headers: ctx_get().responseHeaders })
       );
-      expect(sessionUser).toBeUndefined();
+      tinyassert(!sessionUser);
     });
   });
 
-  describe("error", () => {
-    it("not signed in", async () => {
-      const trpc = await testTrpcClient();
-      await expect(trpc.users_signout(null)).rejects.toMatchInlineSnapshot(
-        "[TRPCError: Not signed in]"
+  it("error", async () => {
+    await mockRequestContext()(async () => {
+      await expect(rpcRoutes.users_signout()).rejects.toMatchInlineSnapshot(
+        "[Error: Not signed in]"
       );
     });
   });
