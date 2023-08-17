@@ -4,7 +4,7 @@ import { E, T, db, selectOne } from "../db/drizzle-client.server";
 import { DEFAULT_DECK_CACHE } from "../db/types";
 import { importSeed } from "../misc/seed-utils";
 import { useUser, useUserVideo } from "../misc/test-helper";
-import { testTrpcClient } from "../trpc/test-helper";
+import { getUserDeckPracticeStatistics } from "../trpc/routes/decks";
 import {
   PracticeSystem,
   queryNextPracticeEntryRandomModeBatch,
@@ -21,8 +21,7 @@ describe("PracticeSystem", () => {
   });
 
   async function getStatistics(deckId: number) {
-    const trpc = await testTrpcClient({ user: hook.user });
-    return trpc.decks_practiceStatistics({ deckId, __now: NOW });
+    return getUserDeckPracticeStatistics(hook.user, deckId, NOW);
   }
 
   it("basic", async () => {

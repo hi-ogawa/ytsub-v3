@@ -6,7 +6,14 @@ import {
   PRACTICE_HISTORY_DATASET_KEYS,
   PracticeHistoryChartDataEntry,
 } from "../../components/practice-history-chart";
-import { E, T, db, limitOne, selectOne } from "../../db/drizzle-client.server";
+import {
+  E,
+  T,
+  TT,
+  db,
+  limitOne,
+  selectOne,
+} from "../../db/drizzle-client.server";
 import { DEFAULT_DECK_CACHE, Z_PRACTICE_ACTION_TYPES } from "../../db/types";
 import { Z_DATE_RANGE_TYPE } from "../../misc/routes";
 import { importDeckJson } from "../../misc/seed-utils";
@@ -353,6 +360,17 @@ export const trpcRoutesDecks = {
 };
 
 export const rpcRoutesDecks = {
+  decks_practiceStatistics: validateFn(
+    z.object({
+      deckId: z.number().int(),
+      __now: z.date().optional(), // for testing
+    })
+  )(async (input) => {
+    const user = await ctx_requireUser();
+    const now = input.__now ?? new Date();
+    return getUserDeckPracticeStatistics(user, input.deckId, now);
+  }),
+
   decks_practiceHistoryChart: validateFn(
     z.object({
       deckId: z.number().int(),
@@ -414,4 +432,31 @@ function findUserDeck({ deckId, userId }: { deckId: number; userId: number }) {
     E.eq(T.decks.id, deckId),
     E.eq(T.decks.userId, userId)
   );
+}
+
+// also used for testing
+export async function getUserDeckPracticeStatistics(
+  user: Pick<TT["users"], "id" | "timezone">,
+  deckId: number,
+  now: Date
+) {
+  const deck = await findUserDeck({
+    deckId,
+    userId: user.id,
+  });
+  tinyassert(deck);
+
+  const startOfToday = fromTemporal(toZdt(now, user.timezone).startOfDay());
+
+  const total = {
+    byActionType: deck.cache.practiceActionsCountByActionType,
+    byQueueType: deck.cache.practiceEntriesCountByQueueType,
+  };
+
+  const daily = await getDailyPracticeStatistics(deck.id, startOfToday);
+
+  return {
+    total,
+    daily,
+  };
 }
