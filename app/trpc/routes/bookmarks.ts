@@ -1,8 +1,10 @@
+import { validateFn } from "@hiogawa/tiny-rpc";
 import { mapOption, tinyassert } from "@hiogawa/utils";
 import { sql } from "drizzle-orm";
 import { z } from "zod";
 import { E, T, db, limitOne, selectOne } from "../../db/drizzle-client.server";
 import { Z_DATE_RANGE_TYPE } from "../../misc/routes";
+import { ctx_requireUser } from "../../server/request-context/session";
 import {
   fromTemporal,
   getZonedDateRange,
@@ -59,50 +61,6 @@ export const trpcRoutesBookmarks = {
       return row;
     }),
 
-  bookmarks_historyChart: procedureBuilder
-    .use(middlewares.requireUser)
-    .input(
-      z.object({
-        rangeType: Z_DATE_RANGE_TYPE,
-        page: z.coerce.number().int().optional().default(0), // 0 => this week/month, 1 => last week/month, ...
-        __now: z.coerce.date().optional(), // for testing
-      })
-    )
-    .query(async ({ input, ctx }) => {
-      const timezone = ctx.user.timezone;
-      const now = input.__now ?? new Date();
-      const dateRange = getZonedDateRange(
-        toZdt(now, timezone),
-        input.rangeType,
-        input.page
-      );
-      const dates = dateRange.dates.map((d) => d.toPlainDate().toString());
-
-      // aggregate in js
-      const rows = await db
-        .select()
-        .from(T.bookmarkEntries)
-        .where(
-          E.and(
-            E.eq(T.bookmarkEntries.userId, ctx.user.id),
-            E.gt(T.bookmarkEntries.createdAt, fromTemporal(dateRange.begin)),
-            E.lt(T.bookmarkEntries.createdAt, fromTemporal(dateRange.end))
-          )
-        );
-
-      const countMap = Object.fromEntries(
-        dates.map((date) => [date, { date, total: 0 }])
-      );
-
-      // TODO: group by video? language?
-      for (const row of rows) {
-        const date = toZdt(row.createdAt, timezone).toPlainDate().toString();
-        countMap[date].total++;
-      }
-
-      return Object.values(countMap);
-    }),
-
   bookmarks_index: procedureBuilder
     .use(middlewares.requireUser)
     .input(
@@ -144,4 +102,48 @@ export const trpcRoutesBookmarks = {
       const nextCursor = rows.length === limit ? input.cursor + limit : null;
       return { rows, nextCursor };
     }),
+};
+
+export const rpcRoutesBookmarks = {
+  bookmarks_historyChart: validateFn(
+    z.object({
+      rangeType: Z_DATE_RANGE_TYPE,
+      page: z.coerce.number().int().optional().default(0), // 0 => this week/month, 1 => last week/month, ...
+      __now: z.coerce.date().optional(), // for testing
+    })
+  )(async (input) => {
+    const user = await ctx_requireUser();
+    const timezone = user.timezone;
+    const now = input.__now ?? new Date();
+    const dateRange = getZonedDateRange(
+      toZdt(now, timezone),
+      input.rangeType,
+      input.page
+    );
+    const dates = dateRange.dates.map((d) => d.toPlainDate().toString());
+
+    // aggregate in js
+    const rows = await db
+      .select()
+      .from(T.bookmarkEntries)
+      .where(
+        E.and(
+          E.eq(T.bookmarkEntries.userId, user.id),
+          E.gt(T.bookmarkEntries.createdAt, fromTemporal(dateRange.begin)),
+          E.lt(T.bookmarkEntries.createdAt, fromTemporal(dateRange.end))
+        )
+      );
+
+    const countMap = Object.fromEntries(
+      dates.map((date) => [date, { date, total: 0 }])
+    );
+
+    // TODO: group by video? language?
+    for (const row of rows) {
+      const date = toZdt(row.createdAt, timezone).toPlainDate().toString();
+      countMap[date].total++;
+    }
+
+    return Object.values(countMap);
+  }),
 };

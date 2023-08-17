@@ -8,7 +8,7 @@ import {
   createBookmarkHistoryChartOption,
 } from "../../components/practice-history-chart";
 import { ROUTE_DEF } from "../../misc/routes";
-import { trpc } from "../../trpc/client";
+import { rpcClientQuery } from "../../trpc/client-v2";
 import { useClickOutside } from "../../utils/hooks-client-utils";
 import { useTypedUrlQuery } from "../../utils/loader-utils";
 import { makeLoader } from "../../utils/loader-utils.server";
@@ -53,7 +53,7 @@ export default function PageComponent() {
   };
 
   const historyChartQuery = useQuery({
-    ...trpc.bookmarks_historyChart.queryOptions(params),
+    ...rpcClientQuery.bookmarks_historyChart.queryOptions(params),
     keepPreviousData: true,
   });
 
