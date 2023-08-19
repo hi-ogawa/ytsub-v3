@@ -10,54 +10,48 @@ import {
   getZonedDateRange,
   toZdt,
 } from "../../utils/temporal-utils";
-import { middlewares } from "../context";
-import { procedureBuilder } from "../factory";
-
-export const trpcRoutesBookmarks = {
-  bookmarks_index: procedureBuilder
-    .use(middlewares.requireUser)
-    .input(
-      z.object({
-        q: z.string().optional(),
-        cursor: z.number().int().default(0),
-      })
-    )
-    .query(async ({ input, ctx }) => {
-      const limit = 15;
-
-      // deferred join
-      const subQueryIds = db
-        .select({ id: T.bookmarkEntries.id })
-        .from(T.bookmarkEntries)
-        .where(
-          E.and(
-            E.eq(T.bookmarkEntries.userId, ctx.user.id),
-            // TODO: index
-            mapOption(input.q, (v) => E.like(T.bookmarkEntries.text, `%${v}%`))
-          )
-        )
-        .orderBy(E.desc(T.bookmarkEntries.createdAt))
-        .offset(input.cursor)
-        .limit(limit)
-        .as("__subQueryIds");
-
-      const rows = await db
-        .select()
-        .from(T.bookmarkEntries)
-        .innerJoin(subQueryIds, E.eq(subQueryIds.id, T.bookmarkEntries.id))
-        .innerJoin(T.videos, E.eq(T.videos.id, T.bookmarkEntries.videoId))
-        .innerJoin(
-          T.captionEntries,
-          E.eq(T.captionEntries.id, T.bookmarkEntries.captionEntryId)
-        )
-        .orderBy(E.desc(T.bookmarkEntries.createdAt));
-
-      const nextCursor = rows.length === limit ? input.cursor + limit : null;
-      return { rows, nextCursor };
-    }),
-};
 
 export const rpcRoutesBookmarks = {
+  bookmarks_index: validateFn(
+    z.object({
+      q: z.string().optional(),
+      cursor: z.number().int().default(0),
+    })
+  )(async (input) => {
+    const user = await ctx_requireUser();
+    const limit = 15;
+
+    // deferred join
+    const subQueryIds = db
+      .select({ id: T.bookmarkEntries.id })
+      .from(T.bookmarkEntries)
+      .where(
+        E.and(
+          E.eq(T.bookmarkEntries.userId, user.id),
+          // TODO: index
+          mapOption(input.q, (v) => E.like(T.bookmarkEntries.text, `%${v}%`))
+        )
+      )
+      .orderBy(E.desc(T.bookmarkEntries.createdAt))
+      .offset(input.cursor)
+      .limit(limit)
+      .as("__subQueryIds");
+
+    const rows = await db
+      .select()
+      .from(T.bookmarkEntries)
+      .innerJoin(subQueryIds, E.eq(subQueryIds.id, T.bookmarkEntries.id))
+      .innerJoin(T.videos, E.eq(T.videos.id, T.bookmarkEntries.videoId))
+      .innerJoin(
+        T.captionEntries,
+        E.eq(T.captionEntries.id, T.bookmarkEntries.captionEntryId)
+      )
+      .orderBy(E.desc(T.bookmarkEntries.createdAt));
+
+    const nextCursor = rows.length === limit ? input.cursor + limit : null;
+    return { rows, nextCursor };
+  }),
+
   bookmarks_create: validateFn(
     z.object({
       videoId: z.number().int(),
