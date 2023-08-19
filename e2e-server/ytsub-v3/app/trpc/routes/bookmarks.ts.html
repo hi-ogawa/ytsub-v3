@@ -224,46 +224,6 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -343,6 +303,46 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { validateFn } from "@hiogawa/tiny-rpc";
@@ -359,46 +359,6 @@ import {
 } from "../../utils/temporal-utils";
 &nbsp;
 export const rpcRoutesBookmarks = {
-  bookmarks_index: validateFn(
-    z.object({
-      q: z.string().optional(),
-      cursor: z.number().int().default(0),
-    })
-  )(async (input) =&gt; {
-    const user = await ctx_requireUser();
-    const limit = 15;
-&nbsp;
-    // deferred join
-    const subQueryIds = db
-      .select({ id: T.bookmarkEntries.id })
-      .from(T.bookmarkEntries)
-      .where(
-        E.and(
-          E.eq(T.bookmarkEntries.userId, user.id),
-          // TODO: index
-          mapOption(input.q, (v) =&gt; E.like(T.bookmarkEntries.text, `%${v}%`))
-        )
-      )
-      .orderBy(E.desc(T.bookmarkEntries.createdAt))
-      .offset(input.cursor)
-      .limit(limit)
-      .as("__subQueryIds");
-&nbsp;
-    const rows = await db
-      .select()
-      .from(T.bookmarkEntries)
-      .innerJoin(subQueryIds, E.eq(subQueryIds.id, T.bookmarkEntries.id))
-      .innerJoin(T.videos, E.eq(T.videos.id, T.bookmarkEntries.videoId))
-      .innerJoin(
-        T.captionEntries,
-        E.eq(T.captionEntries.id, T.bookmarkEntries.captionEntryId)
-      )
-      .orderBy(E.desc(T.bookmarkEntries.createdAt));
-&nbsp;
-    const nextCursor = rows.length === limit ? input.cursor + limit : null;
-    return { rows, nextCursor };
-  }),
-&nbsp;
   bookmarks_create: validateFn(
     z.object({
       videoId: z.number().int(),
@@ -485,6 +445,46 @@ export const rpcRoutesBookmarks = {
 &nbsp;
     return Object.values(countMap);
   }),
+&nbsp;
+  bookmarks_index: validateFn(
+    z.object({
+      q: z.string().optional(),
+      cursor: z.number().int().default(0),
+    })
+  )(async (input) =&gt; {
+    const user = await ctx_requireUser();
+    const limit = 15;
+&nbsp;
+    // deferred join
+    const subQueryIds = db
+      .select({ id: T.bookmarkEntries.id })
+      .from(T.bookmarkEntries)
+      .where(
+        E.and(
+          E.eq(T.bookmarkEntries.userId, user.id),
+          // TODO: index
+          mapOption(input.q, (v) =&gt; E.like(T.bookmarkEntries.text, `%${v}%`))
+        )
+      )
+      .orderBy(E.desc(T.bookmarkEntries.createdAt))
+      .offset(input.cursor)
+      .limit(limit)
+      .as("__subQueryIds");
+&nbsp;
+    const rows = await db
+      .select()
+      .from(T.bookmarkEntries)
+      .innerJoin(subQueryIds, E.eq(subQueryIds.id, T.bookmarkEntries.id))
+      .innerJoin(T.videos, E.eq(T.videos.id, T.bookmarkEntries.videoId))
+      .innerJoin(
+        T.captionEntries,
+        E.eq(T.captionEntries.id, T.bookmarkEntries.captionEntryId)
+      )
+      .orderBy(E.desc(T.bookmarkEntries.createdAt));
+&nbsp;
+    const nextCursor = rows.length === limit ? input.cursor + limit : null;
+    return { rows, nextCursor };
+  }),
 };
 &nbsp;</pre></td></tr></table></pre>
 
@@ -493,7 +493,7 @@ export const rpcRoutesBookmarks = {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-08-19T04:06:08.316Z
+                at 2023-08-19T04:06:31.589Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>

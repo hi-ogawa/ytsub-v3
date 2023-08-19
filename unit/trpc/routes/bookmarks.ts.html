@@ -224,46 +224,6 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -345,6 +305,46 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { validateFn } from "@hiogawa/tiny-rpc";
 import { mapOption, tinyassert } from "@hiogawa/utils";
 import { sql } from "drizzle-orm";
@@ -359,46 +359,6 @@ import {
 } from "../../utils/temporal-utils";
 &nbsp;
 export const rpcRoutesBookmarks = {
-  bookmarks_index: validateFn(
-    z.object({
-      q: z.string().optional(),
-      cursor: z.number().int().default(0),
-    })
-  )(async (input) =&gt; {
-<span class="cstat-no" title="statement not covered" >    const user = await ctx_requireUser();</span>
-<span class="cstat-no" title="statement not covered" >    const limit = 15;</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >    // deferred join</span>
-<span class="cstat-no" title="statement not covered" >    const subQueryIds = db</span>
-<span class="cstat-no" title="statement not covered" >      .select({ id: T.bookmarkEntries.id })</span>
-<span class="cstat-no" title="statement not covered" >      .from(T.bookmarkEntries)</span>
-<span class="cstat-no" title="statement not covered" >      .where(</span>
-<span class="cstat-no" title="statement not covered" >        E.and(</span>
-<span class="cstat-no" title="statement not covered" >          E.eq(T.bookmarkEntries.userId, user.id),</span>
-<span class="cstat-no" title="statement not covered" >          // TODO: index</span>
-<span class="cstat-no" title="statement not covered" >          mapOption(input.q, (v) =&gt; E.like(T.bookmarkEntries.text, `%${v}%`))</span>
-<span class="cstat-no" title="statement not covered" >        )</span>
-<span class="cstat-no" title="statement not covered" >      )</span>
-<span class="cstat-no" title="statement not covered" >      .orderBy(E.desc(T.bookmarkEntries.createdAt))</span>
-<span class="cstat-no" title="statement not covered" >      .offset(input.cursor)</span>
-<span class="cstat-no" title="statement not covered" >      .limit(limit)</span>
-<span class="cstat-no" title="statement not covered" >      .as("__subQueryIds");</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >    const rows = await db</span>
-<span class="cstat-no" title="statement not covered" >      .select()</span>
-<span class="cstat-no" title="statement not covered" >      .from(T.bookmarkEntries)</span>
-<span class="cstat-no" title="statement not covered" >      .innerJoin(subQueryIds, E.eq(subQueryIds.id, T.bookmarkEntries.id))</span>
-<span class="cstat-no" title="statement not covered" >      .innerJoin(T.videos, E.eq(T.videos.id, T.bookmarkEntries.videoId))</span>
-<span class="cstat-no" title="statement not covered" >      .innerJoin(</span>
-<span class="cstat-no" title="statement not covered" >        T.captionEntries,</span>
-<span class="cstat-no" title="statement not covered" >        E.eq(T.captionEntries.id, T.bookmarkEntries.captionEntryId)</span>
-<span class="cstat-no" title="statement not covered" >      )</span>
-<span class="cstat-no" title="statement not covered" >      .orderBy(E.desc(T.bookmarkEntries.createdAt));</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >    const nextCursor = rows.length === limit ? input.cursor + limit : null;</span>
-<span class="cstat-no" title="statement not covered" >    return { rows, nextCursor };</span>
-  }),
-&nbsp;
   bookmarks_create: validateFn(
     z.object({
       videoId: z.number().int(),
@@ -485,6 +445,46 @@ export const rpcRoutesBookmarks = {
 &nbsp;
     return Object.values(countMap);
   }),
+&nbsp;
+  bookmarks_index: validateFn(
+    z.object({
+      q: z.string().optional(),
+      cursor: z.number().int().default(0),
+    })
+  )(async (input) =&gt; {
+<span class="cstat-no" title="statement not covered" >    const user = await ctx_requireUser();</span>
+<span class="cstat-no" title="statement not covered" >    const limit = 15;</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >    // deferred join</span>
+<span class="cstat-no" title="statement not covered" >    const subQueryIds = db</span>
+<span class="cstat-no" title="statement not covered" >      .select({ id: T.bookmarkEntries.id })</span>
+<span class="cstat-no" title="statement not covered" >      .from(T.bookmarkEntries)</span>
+<span class="cstat-no" title="statement not covered" >      .where(</span>
+<span class="cstat-no" title="statement not covered" >        E.and(</span>
+<span class="cstat-no" title="statement not covered" >          E.eq(T.bookmarkEntries.userId, user.id),</span>
+<span class="cstat-no" title="statement not covered" >          // TODO: index</span>
+<span class="cstat-no" title="statement not covered" >          mapOption(input.q, (v) =&gt; E.like(T.bookmarkEntries.text, `%${v}%`))</span>
+<span class="cstat-no" title="statement not covered" >        )</span>
+<span class="cstat-no" title="statement not covered" >      )</span>
+<span class="cstat-no" title="statement not covered" >      .orderBy(E.desc(T.bookmarkEntries.createdAt))</span>
+<span class="cstat-no" title="statement not covered" >      .offset(input.cursor)</span>
+<span class="cstat-no" title="statement not covered" >      .limit(limit)</span>
+<span class="cstat-no" title="statement not covered" >      .as("__subQueryIds");</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >    const rows = await db</span>
+<span class="cstat-no" title="statement not covered" >      .select()</span>
+<span class="cstat-no" title="statement not covered" >      .from(T.bookmarkEntries)</span>
+<span class="cstat-no" title="statement not covered" >      .innerJoin(subQueryIds, E.eq(subQueryIds.id, T.bookmarkEntries.id))</span>
+<span class="cstat-no" title="statement not covered" >      .innerJoin(T.videos, E.eq(T.videos.id, T.bookmarkEntries.videoId))</span>
+<span class="cstat-no" title="statement not covered" >      .innerJoin(</span>
+<span class="cstat-no" title="statement not covered" >        T.captionEntries,</span>
+<span class="cstat-no" title="statement not covered" >        E.eq(T.captionEntries.id, T.bookmarkEntries.captionEntryId)</span>
+<span class="cstat-no" title="statement not covered" >      )</span>
+<span class="cstat-no" title="statement not covered" >      .orderBy(E.desc(T.bookmarkEntries.createdAt));</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >    const nextCursor = rows.length === limit ? input.cursor + limit : null;</span>
+<span class="cstat-no" title="statement not covered" >    return { rows, nextCursor };</span>
+  }),
 };
 &nbsp;</pre></td></tr></table></pre>
 
@@ -493,7 +493,7 @@ export const rpcRoutesBookmarks = {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-08-19T04:03:19.026Z
+                at 2023-08-19T04:04:24.388Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
