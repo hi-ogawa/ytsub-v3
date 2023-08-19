@@ -1,6 +1,6 @@
 import { type RequestHandler, compose } from "@hattip/compose";
 import { once } from "@hiogawa/utils";
-import { loggerMiddleware } from "@hiogawa/utils-experimental";
+import { createLoggerHandler } from "@hiogawa/utils-hattip";
 import { SpanKind, SpanStatusCode, trace } from "@opentelemetry/api";
 import { SemanticAttributes } from "@opentelemetry/semantic-conventions";
 import * as build from "@remix-run/dev/server-build";
@@ -17,7 +17,7 @@ import { initializeServer } from "./initialize-server";
 
 export function createHattipEntry() {
   return compose(
-    loggerMiddleware(),
+    createLoggerHandler(),
     bootstrapHandler(),
     createTraceRequestHandler(),
     createTrpchandler(),

@@ -1,4 +1,5 @@
 import { FloatingTree } from "@floating-ui/react";
+import { generateThemeScript } from "@hiogawa/theme-script";
 import { Compose } from "@hiogawa/utils-react";
 import {
   Link,
@@ -16,7 +17,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { Drawer } from "./components/drawer";
 import { PopoverSimple } from "./components/popover";
-import { ThemeSelect, injectThemeScript } from "./components/theme-select";
+import { ThemeSelect } from "./components/theme-select";
 import { TopProgressBarRemix } from "./components/top-progress-bar";
 import type { UserTable } from "./db/models";
 import { $R, R } from "./misc/routes";
@@ -73,7 +74,14 @@ export default function DefaultComponent() {
           href={`data:image/svg+xml;base64,${require("../public/icon.svg?loader=base64")}`}
         />
         {/* only server needs to do script injection but let client do as well */}
-        <script dangerouslySetInnerHTML={{ __html: injectThemeScript() }} />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: generateThemeScript({
+              noScriptTag: true,
+              defaultTheme: "ytsub:them",
+            }),
+          }}
+        />
         <script
           dangerouslySetInnerHTML={{ __html: injectPublicConfigScript() }}
         />
