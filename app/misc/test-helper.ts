@@ -8,43 +8,18 @@ import {
   insertVideoAndCaptionEntries,
 } from "../db/helper";
 import type { CaptionEntryTable, UserTable, VideoTable } from "../db/models";
+import { ctx_get } from "../server/request-context/storage";
 import { createUserCookie } from "../utils/auth";
 import type { NewVideo, fetchCaptionEntries } from "../utils/youtube";
 import { useUserImpl } from "./test-helper-common";
 
-export function testLoader(
-  loader: LoaderFunction,
-  {
-    query,
-    params,
-    transform,
-  }: {
-    query?: Record<string, unknown>;
-    params?: Record<string, unknown>;
-    transform?: (request: Request) => Request;
-  } = {}
-) {
-  let url = "http://localhost:3000"; // dummy url
-  if (query) {
-    url += "?" + new URLSearchParams(stringifyValues(query));
-  }
-  let request = new Request(url);
-  if (transform) {
-    request = transform(request);
-  }
+export function testLoader(loader: LoaderFunction) {
+  const { request } = ctx_get();
   return loader({
     request,
     context: {},
-    params: stringifyValues(params ?? {}),
+    params: {},
   });
-}
-
-function stringifyValues(
-  data: Record<string, unknown>
-): Record<string, string> {
-  return Object.fromEntries(
-    Object.entries(data).map(([k, v]) => [k, String(v)])
-  );
 }
 
 export function useUser(...args: Parameters<typeof useUserImpl>) {
