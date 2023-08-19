@@ -6,9 +6,9 @@ import {
 } from "@remix-run/server-runtime";
 import { serialize } from "superjson";
 import { $R } from "../misc/routes";
-import { createTrpcAppContext } from "../trpc/context";
 import { getSessionUser } from "./auth";
 import { encodeFlashMessage } from "./flash-message";
+import { getRequestSession } from "./session.server";
 
 // TODO: replace with async storage context
 
@@ -33,13 +33,8 @@ async function createLoaderContext(loaderArgs: DataFunctionArgs) {
   const resHeaders = new Headers();
   const reqUrl = new URL(req.url);
 
-  const trpcCtx = await createTrpcAppContext({
-    req,
-    resHeaders,
-  });
-
   const ctx = {
-    ...trpcCtx,
+    session: await getRequestSession(req),
 
     params: loaderArgs.params,
 
