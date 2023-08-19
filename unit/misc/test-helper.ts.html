@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">98.59% </span>
+                <span class="strong">95.07% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>140/142</span>
+                <span class='fraction'>135/142</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">94.44% </span>
+                <span class="strong">88.88% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>17/18</span>
+                <span class='fraction'>16/18</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">92.3% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>13/13</span>
+                <span class='fraction'>12/13</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">98.59% </span>
+                <span class="strong">95.07% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>140/142</span>
+                <span class='fraction'>135/142</span>
             </div>
         
             
@@ -237,6 +237,8 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -253,8 +255,6 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-yes">11x</span>
@@ -272,16 +272,16 @@
 <span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-yes">11x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-yes">11x</span>
-<span class="cline-any cline-yes">27x</span>
-<span class="cline-any cline-yes">27x</span>
+<span class="cline-any cline-yes">28x</span>
+<span class="cline-any cline-yes">28x</span>
 <span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -337,8 +337,8 @@
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">10x</span>
-<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-yes">6x</span>
@@ -378,9 +378,9 @@ export function testLoader(
 <span class="cstat-no" title="statement not covered" >    url += "?" + new URLSearchParams(stringifyValues(query));</span>
 <span class="cstat-no" title="statement not covered" >  }</span>
   let request = new Request(url);
-  if (transform) {
-    request = transform(request);
-  }
+  if (transform) <span class="branch-0 cbranch-no" title="branch not covered" >{</span>
+<span class="cstat-no" title="statement not covered" >    request = transform(request);</span>
+<span class="cstat-no" title="statement not covered" >  }</span>
   return loader({
     request,
     context: {},
@@ -413,10 +413,10 @@ export function useUser(...args: Parameters&lt;typeof useUserImpl&gt;) {
     await after();
   });
 &nbsp;
-  function signin(request: Request): Request {
-    request.headers.set("cookie", cookie);
-    return request;
-  }
+<span class="fstat-no" title="function not covered" >  function signin(request: Request): Request {</span>
+<span class="cstat-no" title="statement not covered" >    request.headers.set("cookie", cookie);</span>
+<span class="cstat-no" title="statement not covered" >    return request;</span>
+<span class="cstat-no" title="statement not covered" >  }</span>
 &nbsp;
   return {
     signin,
@@ -496,7 +496,7 @@ export function useUserVideo(args: Parameters&lt;typeof useUser&gt;[0]) {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-08-19T04:53:40.224Z
+                at 2023-08-19T05:12:53.786Z
             </div>
         <script src="../prettify.js"></script>
         <script>
