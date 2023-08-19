@@ -8,7 +8,7 @@ import {
   createBookmarkHistoryChartOption,
 } from "../../components/practice-history-chart";
 import { ROUTE_DEF } from "../../misc/routes";
-import { rpcClientQuery } from "../../trpc/client-v2";
+import { rpcClientQuery } from "../../trpc/client";
 import { useClickOutside } from "../../utils/hooks-client-utils";
 import { useTypedUrlQuery } from "../../utils/loader-utils";
 import { makeLoader } from "../../utils/loader-utils.server";

@@ -20,7 +20,7 @@ import type {
 } from "../../../db/models";
 import type { PracticeActionType, PracticeQueueType } from "../../../db/types";
 import { $R, ROUTE_DEF } from "../../../misc/routes";
-import { rpcClientQuery } from "../../../trpc/client-v2";
+import { rpcClientQuery } from "../../../trpc/client";
 import { intl, intlWrapper } from "../../../utils/intl";
 import { requireUserAndDeck } from "../../../utils/loader-deck-utils";
 import {

@@ -8,7 +8,7 @@ import type { TT } from "../../../db/drizzle-client.server";
 import type { DeckTable } from "../../../db/models";
 import { PRACTICE_ACTION_TYPES, PracticeActionType } from "../../../db/types";
 import { ROUTE_DEF } from "../../../misc/routes";
-import { rpcClientQuery } from "../../../trpc/client-v2";
+import { rpcClientQuery } from "../../../trpc/client";
 import { useIntersectionObserver } from "../../../utils/hooks-client-utils";
 import { formatRelativeDate } from "../../../utils/intl";
 import { requireUserAndDeck } from "../../../utils/loader-deck-utils";

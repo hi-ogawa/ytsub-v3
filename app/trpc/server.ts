@@ -6,7 +6,7 @@ import {
 } from "@hiogawa/tiny-rpc";
 import { SpanStatusCode, trace } from "@opentelemetry/api";
 import { JSON_EXTRA } from "../utils/json-extra";
-import { RPC_ENDPOINT, RPC_GET_PATHS } from "./client-v2";
+import { RPC_ENDPOINT, RPC_GET_PATHS } from "./client";
 import { rpcRoutesBookmarks } from "./routes/bookmarks";
 import { rpcRoutesDecks } from "./routes/decks";
 import { rpcRoutesUsers } from "./routes/users";

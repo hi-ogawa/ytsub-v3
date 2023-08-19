@@ -10,7 +10,7 @@ import {
 } from "../../../components/practice-history-chart";
 import type { DeckTable } from "../../../db/models";
 import { ROUTE_DEF } from "../../../misc/routes";
-import { rpcClientQuery } from "../../../trpc/client-v2";
+import { rpcClientQuery } from "../../../trpc/client";
 import { useClickOutside } from "../../../utils/hooks-client-utils";
 import { requireUserAndDeck } from "../../../utils/loader-deck-utils";
 import {

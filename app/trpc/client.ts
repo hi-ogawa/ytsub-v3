@@ -1,7 +1,7 @@
 import { createFnRecordQueryProxy } from "@hiogawa/query-proxy";
 import { httpClientAdapter, proxyTinyRpc } from "@hiogawa/tiny-rpc";
 import { JSON_EXTRA } from "../utils/json-extra";
-import { type rpcRoutes } from "./server-v2";
+import { type rpcRoutes } from "./server";
 
 export const RPC_ENDPOINT = "/rpc";
 export const RPC_GET_PATHS: (keyof typeof rpcRoutes)[] = [

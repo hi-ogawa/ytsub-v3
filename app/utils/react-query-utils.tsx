@@ -6,7 +6,7 @@ import {
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import React from "react";
 import { toast } from "react-hot-toast";
-import { rpcClientQuery } from "../trpc/client-v2";
+import { rpcClientQuery } from "../trpc/client";
 import { useDocumentEvent } from "./hooks-client-utils";
 
 export function QueryClientWrapper({ children }: React.PropsWithChildren) {

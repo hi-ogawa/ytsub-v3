@@ -6,7 +6,7 @@ import { SemanticAttributes } from "@opentelemetry/semantic-conventions";
 import * as build from "@remix-run/dev/server-build";
 import { createRequestHandler } from "@remix-run/server-runtime";
 import { requestContextHandler } from "../server/request-context";
-import { rpcHandler } from "../trpc/server-v2";
+import { rpcHandler } from "../trpc/server";
 import { pathToRegExp } from "../utils/misc";
 import { traceAsync } from "../utils/opentelemetry-utils";
 import { initializeServer } from "./initialize-server";

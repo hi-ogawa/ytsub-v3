@@ -2,7 +2,7 @@ import { beforeAll, describe, expect, it } from "vitest";
 import { importSeed } from "../../misc/seed-utils";
 import { useUser } from "../../misc/test-helper";
 import { mockRequestContext } from "../../server/request-context/mock";
-import { rpcRoutes } from "../server-v2";
+import { rpcRoutes } from "../server";
 
 describe(rpcRoutes.decks_practiceHistoryChart.name, () => {
   const user = useUser({

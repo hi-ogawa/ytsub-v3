@@ -3,7 +3,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { $R, ROUTE_DEF } from "../../misc/routes";
-import { rpcClientQuery } from "../../trpc/client-v2";
+import { rpcClientQuery } from "../../trpc/client";
 import { useLoaderDataExtra } from "../../utils/loader-utils";
 import { makeLoader } from "../../utils/loader-utils.server";
 import { cls } from "../../utils/misc";

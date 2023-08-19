@@ -9,7 +9,7 @@ import { SelectWrapper } from "../../components/misc";
 import { PopoverSimple } from "../../components/popover";
 import type { UserTable } from "../../db/models";
 import { $R, R, ROUTE_DEF } from "../../misc/routes";
-import { rpcClient, rpcClientQuery } from "../../trpc/client-v2";
+import { rpcClient, rpcClientQuery } from "../../trpc/client";
 import { encodeFlashMessage } from "../../utils/flash-message";
 import {
   FILTERED_LANGUAGE_CODES,

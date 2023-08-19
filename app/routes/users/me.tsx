@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 import { useModal } from "../../components/modal";
 import { PopoverSimple } from "../../components/popover";
 import type { UserTable } from "../../db/models";
-import { rpcClient, rpcClientQuery } from "../../trpc/client-v2";
+import { rpcClient, rpcClientQuery } from "../../trpc/client";
 import { intl } from "../../utils/intl";
 import {
   FILTERED_LANGUAGE_CODES,

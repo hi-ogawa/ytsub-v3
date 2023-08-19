@@ -11,7 +11,7 @@ import { useModal } from "../../components/modal";
 import { E, T, db, toPaginationResult } from "../../db/drizzle-client.server";
 import type { DeckTable, UserTable, VideoTable } from "../../db/models";
 import { R } from "../../misc/routes";
-import { rpcClientQuery } from "../../trpc/client-v2";
+import { rpcClientQuery } from "../../trpc/client";
 import {
   useLoaderDataExtra,
   useRootLoaderData,

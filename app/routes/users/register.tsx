@@ -4,7 +4,7 @@ import { redirect } from "@remix-run/server-runtime";
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { $R, R } from "../../misc/routes";
-import { rpcClient } from "../../trpc/client-v2";
+import { rpcClient } from "../../trpc/client";
 import { encodeFlashMessage } from "../../utils/flash-message";
 import { makeLoader } from "../../utils/loader-utils.server";
 import { cls } from "../../utils/misc";

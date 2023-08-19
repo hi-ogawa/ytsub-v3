@@ -11,7 +11,7 @@ import type {
   VideoTable,
 } from "../../../db/models";
 import { PRACTICE_ACTION_TYPES, PracticeActionType } from "../../../db/types";
-import { rpcClientQuery } from "../../../trpc/client-v2";
+import { rpcClientQuery } from "../../../trpc/client";
 import { requireUserAndDeck } from "../../../utils/loader-deck-utils";
 import {
   useLeafLoaderData,

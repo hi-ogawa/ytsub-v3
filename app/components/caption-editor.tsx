@@ -6,7 +6,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { z } from "zod";
-import { rpcClient } from "../trpc/client-v2";
+import { rpcClient } from "../trpc/client";
 import { useDocumentEvent } from "../utils/hooks-client-utils";
 import { cls, zipMax } from "../utils/misc";
 import type { CaptionEntry, VideoMetadata } from "../utils/types";

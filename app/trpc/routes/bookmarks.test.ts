@@ -4,7 +4,7 @@ import { E, T, db } from "../../db/drizzle-client.server";
 import { importSeed } from "../../misc/seed-utils";
 import { useUser, useUserVideo } from "../../misc/test-helper";
 import { mockRequestContext } from "../../server/request-context/mock";
-import { rpcRoutes } from "../server-v2";
+import { rpcRoutes } from "../server";
 
 describe(rpcRoutes.bookmarks_create.name, () => {
   const hook = useUserVideo({

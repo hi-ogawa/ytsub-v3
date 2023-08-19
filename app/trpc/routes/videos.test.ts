@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { E, T, selectMany } from "../../db/drizzle-client.server";
 import { useUserVideo } from "../../misc/test-helper";
 import { mockRequestContext } from "../../server/request-context/mock";
-import { rpcRoutes } from "../server-v2";
+import { rpcRoutes } from "../server";
 
 describe(rpcRoutes.videos_destroy.name, () => {
   const hook = useUserVideo({

@@ -5,7 +5,7 @@ import { toast } from "react-hot-toast";
 import { DeckNavBarMenuComponent } from ".";
 import type { DeckTable } from "../../../db/models";
 import { $R, R } from "../../../misc/routes";
-import { rpcClientQuery } from "../../../trpc/client-v2";
+import { rpcClientQuery } from "../../../trpc/client";
 import { intl } from "../../../utils/intl";
 import { requireUserAndDeck } from "../../../utils/loader-deck-utils";
 import { useLoaderDataExtra } from "../../../utils/loader-utils";

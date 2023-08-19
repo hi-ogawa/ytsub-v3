@@ -20,7 +20,7 @@ import { ThemeSelect, injectThemeScript } from "./components/theme-select";
 import { TopProgressBarRemix } from "./components/top-progress-bar";
 import type { UserTable } from "./db/models";
 import { $R, R } from "./misc/routes";
-import { rpcClientQuery } from "./trpc/client-v2";
+import { rpcClientQuery } from "./trpc/client";
 import { injectPublicConfigScript, publicConfig } from "./utils/config-public";
 import {
   encodeFlashMessage,

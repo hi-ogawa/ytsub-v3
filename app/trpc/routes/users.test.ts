@@ -8,7 +8,7 @@ import { mockRequestContext } from "../../server/request-context/mock";
 import { ctx_get } from "../../server/request-context/storage";
 import { findByUsername, getSessionUser } from "../../utils/auth";
 import { getResponseSession } from "../../utils/session.server";
-import { rpcRoutes } from "../server-v2";
+import { rpcRoutes } from "../server";
 
 describe(rpcRoutes.users_signin.name, () => {
   const credentials = { username: "test-trpc-signin-v2", password: "correct" };
