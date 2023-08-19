@@ -3,7 +3,7 @@ import type { PageHandle } from "../utils/page-handle";
 import { VideoListComponent } from "./videos";
 import type { VideosLoaderData } from "./videos/index.server";
 
-export * from "./index.server";
+export { loader } from "./index.server";
 
 export const handle: PageHandle = {
   navBarTitle: () => "Examples",

@@ -10,13 +10,18 @@ import {
 import { ROUTE_DEF } from "../../misc/routes";
 import { trpc } from "../../trpc/client";
 import { useClickOutside } from "../../utils/hooks-client-utils";
-import { useTypedUrlQuery } from "../../utils/loader-utils";
+import {
+  disableUrlQueryRevalidation,
+  useTypedUrlQuery,
+} from "../../utils/loader-utils";
 import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 import { formatDateRange } from "../../utils/temporal-utils";
 import { BookmarksMenuItems } from "./index";
 
-export * from "./history-chart.server";
+export { loader } from "./history-chart.server";
+
+export const shouldRevalidate = disableUrlQueryRevalidation;
 
 //
 // handle

@@ -7,6 +7,7 @@ import {
   NavLink,
   Outlet,
   Scripts,
+  ShouldRevalidateFunction,
   useMatches,
   useNavigate,
 } from "@remix-run/react";
@@ -33,7 +34,10 @@ import type { PageHandle } from "./utils/page-handle";
 import { QueryClientWrapper } from "./utils/react-query-utils";
 import { ToastWrapper } from "./utils/toast-utils";
 
-export * from "./root.server";
+export { loader } from "./root.server";
+
+// no need to revalidate `currentUser` since app refreshes on user session change (signin/signout)
+export const shouldRevalidate: ShouldRevalidateFunction = () => false;
 
 export default function DefaultComponent() {
   // hydration error for theme class (dark, light)

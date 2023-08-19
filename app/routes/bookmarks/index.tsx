@@ -16,14 +16,19 @@ import type {
 } from "../../db/models";
 import { $R, ROUTE_DEF } from "../../misc/routes";
 import { trpc } from "../../trpc/client";
-import { useTypedUrlQuery } from "../../utils/loader-utils";
+import {
+  disableUrlQueryRevalidation,
+  useTypedUrlQuery,
+} from "../../utils/loader-utils";
 import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 import type { CaptionEntry } from "../../utils/types";
 import { YoutubePlayer, usePlayerLoader } from "../../utils/youtube";
 import { CaptionEntryComponent, findCurrentEntry } from "../videos/$id";
 
-export * from "./index.server";
+export { loader } from "./index.server";
+
+export const shouldRevalidate = disableUrlQueryRevalidation;
 
 export const handle: PageHandle = {
   navBarTitle: () => "Bookmarks",
