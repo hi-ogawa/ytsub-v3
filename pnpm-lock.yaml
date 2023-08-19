@@ -19,9 +19,6 @@ dependencies:
   '@badrap/bar-of-progress':
     specifier: ^0.2.2
     version: 0.2.2
-  '@brillout/json-serializer':
-    specifier: ^0.5.4
-    version: 0.5.4
   '@floating-ui/react':
     specifier: ^0.24.3
     version: 0.24.3(react-dom@18.2.0)(react@18.2.0)
@@ -1449,10 +1446,6 @@ packages:
   /@bcoe/v8-coverage@0.2.3:
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
     dev: true
-
-  /@brillout/json-serializer@0.5.4:
-    resolution: {integrity: sha512-Lz/gQXKSoykR4g0PmBHpa+ILNJU7K0mZpWfBpDg5NnmPyHiDVnipwoH90Zv613FAwgUaV5HMCgYns6Lh78M+Yw==}
-    dev: false
 
   /@colors/colors@1.5.0:
     resolution: {integrity: sha512-ooWCrlZP11i8GImSjTHYHLkvFDP48nS4+204nGb1RiX/WXYHmJA2III9/e2DWVabCESdW7hBAEzHRqUn9OUVvQ==}
