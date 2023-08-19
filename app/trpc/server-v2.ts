@@ -4,6 +4,7 @@ import {
   exposeTinyRpc,
   httpServerAdapter,
 } from "@hiogawa/tiny-rpc";
+import { SpanStatusCode, trace } from "@opentelemetry/api";
 import { JSON_EXTRA } from "../utils/json-extra";
 import { RPC_ENDPOINT, RPC_GET_PATHS } from "./client-v2";
 import { rpcRoutesBookmarks } from "./routes/bookmarks";
@@ -31,6 +32,11 @@ export function rpcHandler(): RequestHandler {
       },
       onError(e) {
         console.error(e);
+        const span = trace.getActiveSpan();
+        if (span) {
+          span.setStatus({ code: SpanStatusCode.ERROR });
+          span.recordException(e as Error);
+        }
       },
     }),
   });

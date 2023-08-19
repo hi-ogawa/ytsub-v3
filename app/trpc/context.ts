@@ -7,8 +7,6 @@ import {
   sessionStore,
 } from "../utils/session.server";
 
-export type TrpcAppContext = Awaited<ReturnType<typeof createTrpcAppContext>>;
-
 export const createTrpcAppContext = async ({
   req,
   resHeaders,

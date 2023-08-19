@@ -1,15 +1,11 @@
 import { type RequestHandler, compose } from "@hattip/compose";
 import { once } from "@hiogawa/utils";
 import { loggerMiddleware } from "@hiogawa/utils-experimental";
-import { SpanKind, SpanStatusCode, trace } from "@opentelemetry/api";
+import { SpanKind } from "@opentelemetry/api";
 import { SemanticAttributes } from "@opentelemetry/semantic-conventions";
 import * as build from "@remix-run/dev/server-build";
 import { createRequestHandler } from "@remix-run/server-runtime";
-import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
 import { requestContextHandler } from "../server/request-context";
-import { TRPC_ENDPOINT } from "../trpc/common";
-import { createTrpcAppContext } from "../trpc/context";
-import { trpcApp } from "../trpc/server";
 import { rpcHandler } from "../trpc/server-v2";
 import { pathToRegExp } from "../utils/misc";
 import { traceAsync } from "../utils/opentelemetry-utils";
@@ -24,7 +20,6 @@ export function createHattipEntry() {
     createTraceRequestHandler(),
     requestContextHandler(),
     rpcHandler(),
-    createTrpchandler(),
     createRemixHandler()
   );
 }
@@ -38,32 +33,6 @@ function createRemixHandler(): RequestHandler {
     process.env.NODE_ENV === "production" ? "production" : "development";
   const remixHandler = createRequestHandler(build, mode);
   return (ctx) => remixHandler(ctx.request);
-}
-
-//
-// trpc
-//
-
-function createTrpchandler(): RequestHandler {
-  return async (ctx) => {
-    if (!ctx.url.pathname.startsWith(TRPC_ENDPOINT)) {
-      return ctx.next();
-    }
-    return fetchRequestHandler({
-      endpoint: TRPC_ENDPOINT,
-      req: ctx.request,
-      router: trpcApp,
-      createContext: createTrpcAppContext,
-      onError: (e) => {
-        console.error(e);
-        const span = trace.getActiveSpan();
-        if (span) {
-          span.setStatus({ code: SpanStatusCode.ERROR });
-          span.recordException(e.error);
-        }
-      },
-    });
-  };
 }
 
 //
