@@ -1,4 +1,4 @@
-import { objectOmit, tinyassert, wrapPromise } from "@hiogawa/utils";
+import { objectOmit, tinyassert, wrapErrorAsync } from "@hiogawa/utils";
 import { describe, expect, it } from "vitest";
 import {
   fetchCaptionEntries,
@@ -24,7 +24,7 @@ describe("fetchVideoMetadata", () => {
 
   it("no-caption", async () => {
     // https://www.youtube.com/watch?v=s1FGPvIwrnY
-    const res = await wrapPromise(fetchVideoMetadata("s1FGPvIwrnY"));
+    const res = await wrapErrorAsync(() => fetchVideoMetadata("s1FGPvIwrnY"));
     tinyassert(res.ok);
     expect(res.value.captions).toMatchInlineSnapshot(`
       {
@@ -42,7 +42,7 @@ describe("fetchVideoMetadata", () => {
   });
 
   it("invalid-video-id", async () => {
-    const res = await wrapPromise(fetchVideoMetadata("XXXXXXXXXXX"));
+    const res = await wrapErrorAsync(() => fetchVideoMetadata("XXXXXXXXXXX"));
     expect(res).toMatchInlineSnapshot(`
       {
         "ok": false,
@@ -73,7 +73,7 @@ describe("fetchVideoMetadata", () => {
 
   it("iframe-embed-disabled", async () => {
     // https://www.youtube.com/watch?v=_TZN41ojF8A
-    const res = await wrapPromise(fetchVideoMetadata("_TZN41ojF8A"));
+    const res = await wrapErrorAsync(() => fetchVideoMetadata("_TZN41ojF8A"));
     tinyassert(res.ok);
     expect(res.value.playabilityStatus).toMatchInlineSnapshot(`
       {
