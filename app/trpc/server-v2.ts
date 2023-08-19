@@ -25,9 +25,8 @@ export function rpcHandler(): RequestHandler {
     adapter: httpServerAdapter({
       endpoint: RPC_ENDPOINT,
       pathsForGET: RPC_GET_PATHS,
-      // only extend server -> client payload
       JSON: {
-        parse: JSON.parse, // TODO: filter out proto https://github.com/fastify/secure-json-parse
+        // only extend server -> client payload
         stringify: JSON_EXTRA.stringify,
       },
       onError(e) {

@@ -13,7 +13,6 @@ export const rpcClient = proxyTinyRpc<typeof rpcRoutes>({
     url: RPC_ENDPOINT,
     pathsForGET: RPC_GET_PATHS,
     JSON: {
-      stringify: JSON.stringify,
       parse: JSON_EXTRA.parse,
     },
   }),
