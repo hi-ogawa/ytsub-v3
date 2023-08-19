@@ -8,7 +8,6 @@ import {
   transitionProps,
 } from "../../components/misc";
 import { useModal } from "../../components/modal";
-import { E, T, db, toPaginationResult } from "../../db/drizzle-client.server";
 import type { DeckTable, UserTable, VideoTable } from "../../db/models";
 import { R } from "../../misc/routes";
 import { trpc } from "../../trpc/client";
@@ -16,18 +15,8 @@ import {
   useLoaderDataExtra,
   useRootLoaderData,
 } from "../../utils/loader-utils";
-import { makeLoader } from "../../utils/loader-utils.server";
 import type { PageHandle } from "../../utils/page-handle";
-import {
-  PAGINATION_PARAMS_SCHEMA,
-  PaginationMetadata,
-  PaginationParams,
-} from "../../utils/pagination";
 import { toastInfo } from "../../utils/toast-utils";
-
-export const handle: PageHandle = {
-  navBarTitle: () => "Your Videos",
-};
 
 // TODO
 // - filter (`<Filter />` in `navBarMenuComponent`)
@@ -37,39 +26,12 @@ export const handle: PageHandle = {
 //   - by "lastWatchedAt"
 // - better layout for desktop
 
-export interface VideosLoaderData {
-  videos: VideoTable[];
-  pagination: PaginationMetadata;
-}
+export { loader } from "./index.server";
+import type { VideosLoaderData } from "./index.server";
 
-export async function getVideosLoaderData(
-  paginationParams: PaginationParams,
-  userId?: number
-): Promise<VideosLoaderData> {
-  const [videos, pagination] = await toPaginationResult(
-    db
-      .select()
-      .from(T.videos)
-      .where(userId ? E.eq(T.videos.userId, userId) : E.isNull(T.videos.userId))
-      .orderBy(E.desc(T.videos.updatedAt), E.desc(T.videos.id)),
-    paginationParams
-  );
-  return { videos, pagination };
-}
-
-export const loader = makeLoader(async ({ ctx }) => {
-  const user = await ctx.requireUser();
-  const query = PAGINATION_PARAMS_SCHEMA.parse(ctx.query);
-  const loaderData: VideosLoaderData = await getVideosLoaderData(
-    query,
-    user.id
-  );
-  return loaderData;
-});
-
-//
-// component
-//
+export const handle: PageHandle = {
+  navBarTitle: () => "Your Videos",
+};
 
 export default function DefaultComponent() {
   const { currentUser } = useRootLoaderData();

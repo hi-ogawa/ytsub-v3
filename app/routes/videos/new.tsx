@@ -1,89 +1,31 @@
-import { tinyassert, wrapErrorAsync } from "@hiogawa/utils";
+import { tinyassert } from "@hiogawa/utils";
 import { useNavigate } from "@remix-run/react";
-import { redirect } from "@remix-run/server-runtime";
 import { useMutation } from "@tanstack/react-query";
 import { atom, useAtom } from "jotai";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { SelectWrapper } from "../../components/misc";
 import { PopoverSimple } from "../../components/popover";
-import type { UserTable } from "../../db/models";
-import { $R, R, ROUTE_DEF } from "../../misc/routes";
+import { $R } from "../../misc/routes";
 import { trpc } from "../../trpc/client";
 import { trpcClient } from "../../trpc/client-internal.client";
-import { encodeFlashMessage } from "../../utils/flash-message";
 import {
   FILTERED_LANGUAGE_CODES,
   LanguageCode,
-  isLanguageCode,
   languageCodeToName,
 } from "../../utils/language";
 import { useLoaderDataExtra } from "../../utils/loader-utils";
-import { makeLoader } from "../../utils/loader-utils.server";
 import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 import { toastInfo } from "../../utils/toast-utils";
 import type { CaptionConfig, VideoMetadata } from "../../utils/types";
 import {
   encodeAdvancedModeLanguageCode,
-  fetchVideoMetadata,
-  findCaptionConfigPair,
-  parseVideoId,
   toCaptionConfigOptions,
 } from "../../utils/youtube";
 
-//
-// loader
-//
-
-type LoaderData = {
-  videoMetadata: VideoMetadata;
-  userCaptionConfigs?: { language1?: CaptionConfig; language2?: CaptionConfig };
-};
-
-export const loader = makeLoader(async ({ ctx }) => {
-  const query = ROUTE_DEF["/videos/new"].query.parse(ctx.query);
-  const videoId = parseVideoId(query.videoId);
-  tinyassert(videoId);
-  const user = await ctx.currentUser();
-  const result = await wrapErrorAsync(() => fetchVideoMetadata(videoId));
-  if (!result.ok) {
-    // either invalid videoId or youtube api failure
-    return redirect(
-      R["/"] +
-        "?" +
-        encodeFlashMessage({
-          content: `Failed to load a video`,
-          variant: "error",
-        })
-    );
-  }
-  const videoMetadata = result.value;
-  const loaderData: LoaderData = {
-    videoMetadata,
-    userCaptionConfigs: user && findUserCaptionConfigs(videoMetadata, user),
-  };
-  return loaderData;
-});
-
-function findUserCaptionConfigs(videoMetadata: VideoMetadata, user: UserTable) {
-  if (
-    user.language1 &&
-    user.language2 &&
-    isLanguageCode(user.language1) &&
-    isLanguageCode(user.language2)
-  ) {
-    return findCaptionConfigPair(videoMetadata, {
-      code1: user.language1,
-      code2: user.language2,
-    });
-  }
-  return;
-}
-
-//
-// component
-//
+import type { LoaderData } from "./new.server";
+export * from "./new.server";
 
 export const handle: PageHandle = {
   navBarTitle: () => "Select languages",

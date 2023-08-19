@@ -1,22 +1,13 @@
 import { useLoaderDataExtra } from "../utils/loader-utils";
-import { makeLoader } from "../utils/loader-utils.server";
 import type { PageHandle } from "../utils/page-handle";
-import { PAGINATION_PARAMS_SCHEMA } from "../utils/pagination";
-import {
-  VideoListComponent,
-  VideosLoaderData,
-  getVideosLoaderData,
-} from "./videos";
+import { VideoListComponent } from "./videos";
+import type { VideosLoaderData } from "./videos/index.server";
+
+export * from "./index.server";
 
 export const handle: PageHandle = {
   navBarTitle: () => "Examples",
 };
-
-export const loader = makeLoader(async ({ ctx }) => {
-  const query = PAGINATION_PARAMS_SCHEMA.parse(ctx.query);
-  const loaderData: VideosLoaderData = await getVideosLoaderData(query);
-  return loaderData;
-});
 
 export default function DefaultComponent() {
   const data = useLoaderDataExtra() as VideosLoaderData;
