@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for ytsub-v3/app/routes/users/verify.server.tsx</title>
+    <title>Code coverage report for ytsub-v3/app/routes/decks/index.server.tsx</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../../../../prettify.css" />
     <link rel="stylesheet" href="../../../../base.css" />
@@ -19,20 +19,20 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../../../../index.html">All files</a> / <a href="index.html">ytsub-v3/app/routes/users</a> verify.server.tsx</h1>
+        <h1><a href="../../../../index.html">All files</a> / <a href="index.html">ytsub-v3/app/routes/decks</a> index.server.tsx</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>20/20</span>
+                <span class='fraction'>18/18</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">75% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>3/4</span>
+                <span class='fraction'>2/2</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>20/20</span>
+                <span class='fraction'>18/18</span>
             </div>
         
             
@@ -81,47 +81,41 @@
 <a name='L16'></a><a href='#L16'>16</a>
 <a name='L17'></a><a href='#L17'>17</a>
 <a name='L18'></a><a href='#L18'>18</a>
-<a name='L19'></a><a href='#L19'>19</a>
-<a name='L20'></a><a href='#L20'>20</a>
-<a name='L21'></a><a href='#L21'>21</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L19'></a><a href='#L19'>19</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">161x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { redirect } from "@remix-run/server-runtime";
-import { R, ROUTE_DEF } from "../../misc/routes";
-import { updateEmailByCode } from "../../trpc/routes/users";
-import { encodeFlashMessage } from "../../utils/flash-message";
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { E, T, db } from "../../db/drizzle-client.server";
+import type { DeckTable } from "../../db/models";
 import { makeLoader } from "../../utils/loader-utils.server";
 &nbsp;
+export interface DecksLoaderData {
+  decks: DeckTable[];
+}
+&nbsp;
 export const loader = makeLoader(async ({ ctx }) =&gt; {
-  const { code } = ROUTE_DEF["/users/verify"].query.parse(ctx.query);
-  await updateEmailByCode(code);
-  const user = await ctx.currentUser();
-  const url = user ? R[<span class="branch-0 cbranch-no" title="branch not covered" >"/users/me"] : R["/users/signin"];</span>
-  return redirect(
-    url +
-      "?" +
-      encodeFlashMessage({
-        variant: "success",
-        content: `Successfully updated an email`,
-      })
-  );
+  const user = await ctx.requireUser();
+  const decks = await db
+    .select()
+    .from(T.decks)
+    .where(E.eq(T.decks.userId, user.id))
+    .orderBy(E.desc(T.decks.createdAt));
+  const loaderData: DecksLoaderData = { decks };
+  return loaderData;
 });
 &nbsp;</pre></td></tr></table></pre>
 
