@@ -12,10 +12,6 @@ export const handle: PageHandle = {
   navBarTitle: () => "Reset password",
 };
 
-//
-// component
-//
-
 export default function Page() {
   const navigate = useNavigate();
 
