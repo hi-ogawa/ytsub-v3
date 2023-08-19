@@ -327,6 +327,276 @@ export const trpcRoutesDecks = {
 };
 
 export const rpcRoutesDecks = {
+  decks_practiceEntriesCreate: validateFn(
+    z.object({
+      deckId: z.number().int(),
+      videoId: z.number().int(),
+    })
+  )(async (input) => {
+    const user = await ctx_requireUser();
+    const deck = await findUserDeck({
+      deckId: input.deckId,
+      userId: user.id,
+    });
+    tinyassert(deck);
+
+    const rows = await db
+      .select()
+      .from(T.bookmarkEntries)
+      .innerJoin(
+        T.captionEntries,
+        E.eq(T.captionEntries.id, T.bookmarkEntries.captionEntryId)
+      )
+      .where(E.eq(T.bookmarkEntries.videoId, input.videoId))
+      .orderBy(E.asc(T.captionEntries.index), E.asc(T.bookmarkEntries.offset));
+    const bookmarkEntries = rows.map((row) => row.bookmarkEntries);
+
+    const system = new PracticeSystem(user, deck);
+    const practiceEntryIds = await system.createPracticeEntries(
+      bookmarkEntries,
+      new Date()
+    );
+    return { practiceEntryIds };
+  }),
+
+  decks_practiceActionsCreate: validateFn(
+    z.object({
+      deckId: z.number().int(),
+      practiceEntryId: z.number().int(),
+      actionType: Z_PRACTICE_ACTION_TYPES,
+    })
+  )(async (input) => {
+    const user = await ctx_requireUser();
+    const deck = await findUserDeck({
+      deckId: input.deckId,
+      userId: user.id,
+    });
+    tinyassert(deck);
+
+    const practiceEntry = await selectOne(
+      T.practiceEntries,
+      E.eq(T.practiceEntries.id, input.practiceEntryId)
+    );
+    tinyassert(practiceEntry);
+
+    const system = new PracticeSystem(user, deck);
+    await system.createPracticeAction(
+      practiceEntry,
+      input.actionType,
+      new Date()
+    );
+  }),
+
+  decks_create: validateFn(
+    z.object({
+      name: z.string().nonempty(),
+      newEntriesPerDay: z.number().int(),
+      reviewsPerDay: z.number().int(),
+      easeMultiplier: z.number(),
+      easeBonus: z.number(),
+      randomMode: z.boolean(),
+    })
+  )(async (input) => {
+    const user = await ctx_requireUser();
+    const [{ insertId: deckId }] = await db.insert(T.decks).values({
+      ...input,
+      userId: user.id,
+      cache: DEFAULT_DECK_CACHE,
+    });
+    return { deckId };
+  }),
+
+  decks_update: validateFn(
+    z.object({
+      id: z.number().int(),
+      name: z.string().nonempty(),
+      newEntriesPerDay: z.number().int(),
+      reviewsPerDay: z.number().int(),
+      randomMode: z.boolean(),
+    })
+  )(async (input) => {
+    const user = await ctx_requireUser();
+    const deck = await findUserDeck({
+      deckId: input.id,
+      userId: user.id,
+    });
+    tinyassert(deck);
+
+    const { id, ...rest } = input;
+    await db
+      .update(T.decks)
+      .set(rest)
+      .where(E.and(E.eq(T.decks.id, id)));
+    await updateDeckCache(id, {}, {}, "clear");
+  }),
+
+  decks_destroy: validateFn(
+    z.object({
+      id: z.number().int(),
+    })
+  )(async (input) => {
+    const user = await ctx_requireUser();
+    const deck = await findUserDeck({
+      deckId: input.id,
+      userId: user.id,
+    });
+    tinyassert(deck);
+    await db
+      .delete(T.decks)
+      .where(E.and(E.eq(T.decks.id, input.id), E.eq(T.decks.userId, user.id)));
+  }),
+
+  decks_import: validateFn(
+    z.object({
+      data: z.string(),
+    })
+  )(async (input) => {
+    const user = await ctx_requireUser();
+    await importDeckJson(user.id, JSON.parse(input.data));
+  }),
+
+  decks_practiceEntriesCount: validateFn(
+    z.object({
+      videoId: z.number().int(),
+    })
+  )(async (input) => {
+    const user = await ctx_requireUser();
+    const rows = await db
+      .select({
+        deckId: T.decks.id,
+        practiceEntriesCount: sql<number>`COUNT(0)`,
+      })
+      .from(T.practiceEntries)
+      .innerJoin(T.decks, E.eq(T.decks.id, T.practiceEntries.deckId))
+      .innerJoin(
+        T.bookmarkEntries,
+        E.eq(T.bookmarkEntries.id, T.practiceEntries.bookmarkEntryId)
+      )
+      .where(
+        E.and(
+          E.eq(T.decks.userId, user.id),
+          E.eq(T.bookmarkEntries.videoId, input.videoId)
+        )
+      )
+      .groupBy(T.decks.id);
+
+    const decks = await db
+      .select()
+      .from(T.decks)
+      .where(E.eq(T.decks.userId, user.id))
+      .orderBy(E.desc(T.decks.createdAt));
+
+    const results = decks.map((deck) => ({
+      deck,
+      practiceEntriesCount:
+        rows.find((row) => row.deckId === deck.id)?.practiceEntriesCount ?? 0,
+    }));
+
+    return results;
+  }),
+
+  decks_nextPracticeEntry: validateFn(
+    z.object({
+      deckId: z.number().int(),
+    })
+  )(async (input) => {
+    const user = await ctx_requireUser();
+    const deck = await findUserDeck({
+      deckId: input.deckId,
+      userId: user.id,
+    });
+    tinyassert(deck);
+    const system = new PracticeSystem(user, deck);
+
+    const now = new Date();
+    const practiceEntry = await system.getNextPracticeEntry(now);
+    if (!practiceEntry) {
+      return { finished: true } as const;
+    }
+
+    const row = await limitOne(
+      db
+        .select()
+        .from(T.bookmarkEntries)
+        .innerJoin(
+          T.captionEntries,
+          E.eq(T.captionEntries.id, T.bookmarkEntries.captionEntryId)
+        )
+        .innerJoin(T.videos, E.eq(T.videos.id, T.captionEntries.videoId))
+        .where(E.eq(T.bookmarkEntries.id, practiceEntry.bookmarkEntryId))
+    );
+    tinyassert(row);
+
+    return {
+      finished: false,
+      practiceEntry,
+      bookmarkEntry: row.bookmarkEntries,
+      captionEntry: row.captionEntries,
+      video: row.videos,
+    } as const;
+  }),
+
+  decks_practiceActions: validateFn(
+    z.object({
+      deckId: z.number().int(),
+      actionType: Z_PRACTICE_ACTION_TYPES.optional(),
+      practiceEntryId: z.coerce.number().int().optional(),
+      cursor: z.number().int().default(0), // TODO(perf): index cursor instead of limit/offset
+    })
+  )(async (input) => {
+    const user = await ctx_requireUser();
+    const deck = await findUserDeck({
+      deckId: input.deckId,
+      userId: user.id,
+    });
+    tinyassert(deck);
+
+    const limit = 15;
+
+    // deferred join
+    const subQueryIds = db
+      .select({ id: T.practiceActions.id })
+      .from(T.practiceActions)
+      .where(
+        E.and(
+          E.eq(T.practiceActions.deckId, deck.id),
+          mapOption(input.actionType, (t) =>
+            E.eq(T.practiceActions.actionType, t)
+          ),
+          mapOption(input.practiceEntryId, (t) =>
+            E.eq(T.practiceActions.practiceEntryId, t)
+          )
+        )
+      )
+      .offset(input.cursor)
+      .limit(limit)
+      .orderBy(E.desc(T.practiceActions.createdAt))
+      .as("__subQuery_ids");
+
+    // TODO: sub query can include orphan data
+    const rows = await db
+      .select()
+      .from(T.practiceActions)
+      .innerJoin(subQueryIds, E.eq(subQueryIds.id, T.practiceActions.id))
+      .innerJoin(
+        T.practiceEntries,
+        E.eq(T.practiceEntries.id, T.practiceActions.practiceEntryId)
+      )
+      .innerJoin(
+        T.bookmarkEntries,
+        E.eq(T.bookmarkEntries.id, T.practiceEntries.bookmarkEntryId)
+      )
+      .innerJoin(
+        T.captionEntries,
+        E.eq(T.captionEntries.id, T.bookmarkEntries.captionEntryId)
+      )
+      .innerJoin(T.videos, E.eq(T.videos.id, T.captionEntries.videoId))
+      .orderBy(E.desc(T.practiceActions.createdAt));
+
+    const nextCursor = rows.length > 0 ? input.cursor + rows.length : null;
+    return { rows, nextCursor };
+  }),
+
   decks_practiceStatistics: validateFn(
     z.object({
       deckId: z.number().int(),
