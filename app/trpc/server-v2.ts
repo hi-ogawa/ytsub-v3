@@ -4,7 +4,7 @@ import {
   exposeTinyRpc,
   httpServerAdapter,
 } from "@hiogawa/tiny-rpc";
-import * as superjson from "superjson";
+import { JSON_EXTRA } from "../utils/json-extra";
 import { RPC_ENDPOINT, RPC_GET_PATHS } from "./client-v2";
 import { rpcRoutesBookmarks } from "./routes/bookmarks";
 import { rpcRoutesDecks } from "./routes/decks";
@@ -25,7 +25,11 @@ export function rpcHandler(): RequestHandler {
     adapter: httpServerAdapter({
       endpoint: RPC_ENDPOINT,
       pathsForGET: RPC_GET_PATHS,
-      JSON: superjson,
+      // only extend server -> client payload
+      JSON: {
+        parse: JSON.parse, // TODO: filter out proto https://github.com/fastify/secure-json-parse
+        stringify: JSON_EXTRA.stringify,
+      },
       onError(e) {
         console.error(e);
       },
