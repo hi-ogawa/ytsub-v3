@@ -4,7 +4,10 @@ import { z } from "zod";
 import { E, T, db, limitOne, selectOne } from "../../db/drizzle-client.server";
 import { filterNewVideo, insertVideoAndCaptionEntries } from "../../db/helper";
 import { ctx_cacheResponse } from "../../server/request-context/response-headers";
-import { ctx_requireUser } from "../../server/request-context/session";
+import {
+  ctx_currentUser,
+  ctx_requireUser,
+} from "../../server/request-context/session";
 import { Z_CAPTION_ENTRY } from "../../utils/types";
 import {
   Z_NEW_VIDEO,
@@ -94,6 +97,74 @@ export const trpcRoutesVideos = {
 };
 
 export const rpcRoutesVideos = {
+  videos_create: validateFn(Z_NEW_VIDEO)(async (input) => {
+    const user = await ctx_currentUser();
+    const [found] = await filterNewVideo(input, user?.id);
+    if (found) {
+      return { id: found.id, created: false };
+    }
+    const data = await fetchCaptionEntries(input);
+    const id = await insertVideoAndCaptionEntries(input, data, user?.id);
+    return { id, created: true };
+  }),
+
+  videos_createDirect: validateFn(
+    Z_NEW_VIDEO.merge(
+      z.object({
+        captionEntries: Z_CAPTION_ENTRY.array(),
+      })
+    )
+  )(async (input) => {
+    const user = await ctx_currentUser();
+    const id = await insertVideoAndCaptionEntries(
+      input,
+      {
+        videoMetadata: await fetchVideoMetadata(input.videoId),
+        captionEntries: input.captionEntries,
+      },
+      user?.id
+    );
+    return { id };
+  }),
+
+  videos_fetchTtmlEntries: validateFn(
+    z.object({
+      videoId: z.string(),
+      language: z.object({
+        id: z.string(),
+        translation: z.string().optional(),
+      }),
+    })
+  )(async (input) => {
+    const videoMetadata = await fetchVideoMetadata(input.videoId);
+    const ttmlEntries = await fetchTtmlEntries(input.language, videoMetadata);
+    return ttmlEntries;
+  }),
+
+  videos_getLastBookmark: validateFn(
+    z.object({
+      videoId: z.number().int(),
+    })
+  )(async (input) => {
+    const user = await ctx_requireUser();
+    const query = db
+      .select()
+      .from(T.bookmarkEntries)
+      .innerJoin(
+        T.captionEntries,
+        E.eq(T.captionEntries.id, T.bookmarkEntries.captionEntryId)
+      )
+      .where(
+        E.and(
+          E.eq(T.bookmarkEntries.videoId, input.videoId),
+          E.eq(T.bookmarkEntries.userId, user.id)
+        )
+      )
+      // TODO: also probably fine to just use E.desc(T.bookmarkEntries.createdAt)
+      .orderBy(E.desc(T.captionEntries.index));
+    return limitOne(query);
+  }),
+
   videos_getCaptionEntries: validateFn(
     z.object({
       videoId: z.number().int(),

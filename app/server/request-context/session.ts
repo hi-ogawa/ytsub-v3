@@ -26,7 +26,7 @@ export async function ctx_commitSession() {
   ctx.responseHeaders.set("set-cookie", setCookie);
 }
 
-async function ctx_currentUser() {
+export async function ctx_currentUser() {
   return getSessionUser(ctx_get().session);
 }
 

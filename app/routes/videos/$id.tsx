@@ -19,7 +19,6 @@ import { PopoverSimple } from "../../components/popover";
 import { E, T, TT, selectOne } from "../../db/drizzle-client.server";
 import type { UserTable, VideoTable } from "../../db/models";
 import { $R, ROUTE_DEF } from "../../misc/routes";
-import { trpc } from "../../trpc/client";
 import { rpcClientQuery } from "../../trpc/client-v2";
 import { useDocumentEvent } from "../../utils/hooks-client-utils";
 import { intl } from "../../utils/intl";
@@ -847,7 +846,7 @@ function DetailsComponent({
   const navigate = useNavigate();
 
   const lastBookmarkQuery = useMutation({
-    ...trpc.videos_getLastBookmark.mutationOptions(),
+    ...rpcClientQuery.videos_getLastBookmark.mutationOptions(),
     onSuccess: (data) => {
       if (data) {
         onClose();
