@@ -6,11 +6,12 @@ import {
 } from "@remix-run/server-runtime";
 import { serialize } from "superjson";
 import { $R } from "../misc/routes";
-import { getSessionUser } from "./auth";
+import { ctx_currentUser } from "../server/request-context/session";
 import { encodeFlashMessage } from "./flash-message";
-import { getRequestSession } from "./session.server";
 
-// TODO: replace with async storage context
+// TODO
+// - replace LoaderContext with async storage `ctx_xxx` helper
+// - loader error redirection logic can be moved to client error boundary?
 
 // tree-shake from client bundle via `pureCommentPlugin`
 export function makeLoader(
@@ -21,7 +22,7 @@ export function makeLoader(
     return ctx.redirectOnError(async () => {
       let resRaw = await inner({ ctx });
       const res = resRaw instanceof Response ? resRaw : json(serialize(resRaw));
-      return ctx.__finalizeResponse(res);
+      return res;
     });
   };
 }
@@ -30,22 +31,17 @@ export type LoaderContext = Awaited<ReturnType<typeof createLoaderContext>>;
 
 async function createLoaderContext(loaderArgs: DataFunctionArgs) {
   const { request: req } = loaderArgs;
-  const resHeaders = new Headers();
   const reqUrl = new URL(req.url);
 
-  const ctx = {
-    session: await getRequestSession(req),
-
+  return {
     params: loaderArgs.params,
 
     query: Object.fromEntries(reqUrl.searchParams.entries()),
 
-    currentUser: () => {
-      return getSessionUser(ctx.session);
-    },
+    currentUser: () => ctx_currentUser(),
 
     requireUser: async () => {
-      const user = await ctx.currentUser();
+      const user = await ctx_currentUser();
       if (!user) {
         throw redirect(
           $R["/users/signin"]() +
@@ -79,21 +75,8 @@ async function createLoaderContext(loaderArgs: DataFunctionArgs) {
               })
           );
         }
-        throw ctx.__finalizeResponse(res);
+        throw res;
       }
     },
-
-    __finalizeResponse: (res: Response): Response => {
-      mergeHeaders(res.headers, resHeaders);
-      return res;
-    },
   };
-
-  return ctx;
-}
-
-function mergeHeaders(dst: Headers, src: Headers) {
-  src.forEach((value, key) => {
-    dst.set(key, value);
-  });
 }
