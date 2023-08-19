@@ -10,6 +10,8 @@ import { createTrpcAppContext } from "../trpc/context";
 import { getSessionUser } from "./auth";
 import { encodeFlashMessage } from "./flash-message";
 
+// TODO: replace with async storage context
+
 // tree-shake from client bundle via `pureCommentPlugin`
 export function makeLoader(
   inner: (args: { ctx: LoaderContext }) => unknown
