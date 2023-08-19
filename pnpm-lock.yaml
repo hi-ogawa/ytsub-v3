@@ -42,7 +42,7 @@ dependencies:
     version: 0.0.1
   '@hiogawa/query-proxy':
     specifier: 0.1.1-pre.3
-    version: 0.1.1-pre.3(@trpc/server@10.33.0)
+    version: 0.1.1-pre.3
   '@hiogawa/tiny-rpc':
     specifier: 0.2.3-pre.10
     version: 0.2.3-pre.10
@@ -88,18 +88,6 @@ dependencies:
   '@tanstack/react-virtual':
     specifier: 3.0.0-beta.54
     version: 3.0.0-beta.54(react@18.2.0)
-  '@trpc/client':
-    specifier: ^10.33.0
-    version: 10.33.0(@trpc/server@10.33.0)
-  '@trpc/server':
-    specifier: ^10.33.0
-    version: 10.33.0
-  bcryptjs:
-    specifier: ^2.4.3
-    version: 2.4.3
-  comlink:
-    specifier: ^4.4.1
-    version: 4.4.1
   drizzle-orm:
     specifier: ^0.26.5
     version: 0.26.5(@opentelemetry/api@1.4.1)(knex@2.4.2)(mysql2@3.4.3)
@@ -165,18 +153,12 @@ devDependencies:
   '@tsconfig/strictest':
     specifier: ^2.0.1
     version: 2.0.1
-  '@types/bcryptjs':
-    specifier: ^2.4.2
-    version: 2.4.2
   '@types/express':
     specifier: ^4.17.17
     version: 4.17.17
   '@types/node':
     specifier: ^18.16.19
     version: 18.16.19
-  '@types/qs':
-    specifier: ^6.9.7
-    version: 6.9.7
   '@types/react':
     specifier: ^18.2.14
     version: 18.2.14
@@ -2176,15 +2158,13 @@ packages:
     resolution: {integrity: sha512-LFh/FLhj0s0LqxCeHPD6xk8j+01oSkqKOwTH2+lQtxbMW6b7Br6TynMlTQ9RUT9d3Ih4+IcqNeopudwRUMnuvQ==}
     dev: false
 
-  /@hiogawa/query-proxy@0.1.1-pre.3(@trpc/server@10.33.0):
+  /@hiogawa/query-proxy@0.1.1-pre.3:
     resolution: {integrity: sha512-0m7KSB2Tn8eC7rCnzbL3NwuyAgC3HWIweyMkltazGQ0ZMLZTNpIKbIwkaFzRCuZraAw66ysSnU4K0dWL2vLHrg==}
     peerDependencies:
       '@trpc/server': '*'
     peerDependenciesMeta:
       '@trpc/server':
         optional: true
-    dependencies:
-      '@trpc/server': 10.33.0
     dev: false
 
   /@hiogawa/tiny-cli@0.0.3:
@@ -3062,18 +3042,6 @@ packages:
     engines: {node: '>= 10'}
     dev: true
 
-  /@trpc/client@10.33.0(@trpc/server@10.33.0):
-    resolution: {integrity: sha512-gHKe/5MEdoi1HEF7gsviFdHC7IyVRYjS39C0uXYHlM9rJ9It+KQpz8+wu9XkORte/lbBCScOGOPLNqb5IvSF/g==}
-    peerDependencies:
-      '@trpc/server': 10.33.0
-    dependencies:
-      '@trpc/server': 10.33.0
-    dev: false
-
-  /@trpc/server@10.33.0:
-    resolution: {integrity: sha512-3EN7hiYFy1FsMqGIHEkRqtjxLhTRc/E73mdE+F/vqJWNwigM8UmAvZgFC0YTw87PYpztYzA1vxxK7LQfhXHeog==}
-    dev: false
-
   /@ts-morph/common@0.12.3:
     resolution: {integrity: sha512-4tUmeLyXJnJWvTFOKtcNJ1yh0a3SsTLi2MUoyj8iUNznFRN1ZquaNe7Oukqrnki2FzZkm0J9adCNLDZxUzvj+w==}
     dependencies:
@@ -3104,10 +3072,6 @@ packages:
     resolution: {integrity: sha512-veQTnWP+1D/xbxVrPC3zHnCZRjSrKfhbMUlEA43iMZLu7EsnTtkJklIuwrCPbOi8YkvDQAiW05VQQFvvz9oieQ==}
     dependencies:
       '@types/estree': 1.0.1
-
-  /@types/bcryptjs@2.4.2:
-    resolution: {integrity: sha512-LiMQ6EOPob/4yUL66SZzu6Yh77cbzJFYll+ZfaPiPPFswtIlA/Fs1MzdKYA7JApHU49zQTbJGX3PDmCpIdDBRQ==}
-    dev: true
 
   /@types/body-parser@1.19.2:
     resolution: {integrity: sha512-ALYone6pm6QmwZoAgeyNksccT9Q4AWZQ6PvfwR37GT6r6FWUPguq6sUmNGSMV2Wr761oQoBxwGGa6DR5o1DC9g==}
@@ -3895,10 +3859,6 @@ packages:
   /base64-js@1.5.1:
     resolution: {integrity: sha512-AKpaYlHn8t4SVbOHCy+b5+KKgvR4vrsD8vbvrbiQJps7fKDTkjkDry6ji0rUJjC0kzbNePLwzxq8iypo41qeWA==}
 
-  /bcryptjs@2.4.3:
-    resolution: {integrity: sha512-V/Hy/X9Vt7f3BbPJEi8BdVFMByHi+jNXrYkW3huaybV/kQ0KJg0Y6PkEMbn+zeT+i+SiKZ/HMqJGIIt4LZDqNQ==}
-    dev: false
-
   /big.js@5.2.2:
     resolution: {integrity: sha512-vyL2OymJxmarO8gxMr0mhChsO9QGwhynfuu4+MHTAW6czfq9humCB7rKpUjDd9YUiDPU4mzpyupFSvOClAwbmQ==}
 
@@ -4320,10 +4280,6 @@ packages:
     dependencies:
       delayed-stream: 1.0.0
     dev: true
-
-  /comlink@4.4.1:
-    resolution: {integrity: sha512-+1dlx0aY5Jo1vHy/tSsIGpSkN4tS9rZSW8FIhG0JH/crs9wwweswIo/POr451r7bZww3hFbPAKnTpimzL/mm4Q==}
-    dev: false
 
   /comma-separated-tokens@2.0.3:
     resolution: {integrity: sha512-Fu4hJdvzeylCfQPp9SGWidpzrMs7tTrlu6Vb8XGaRGck8QSNZJJp538Wrb60Lax4fPwR64ViY468OIUTbRlGZg==}
