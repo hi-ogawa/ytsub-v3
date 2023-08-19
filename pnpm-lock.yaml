@@ -52,9 +52,6 @@ dependencies:
   '@hiogawa/utils':
     specifier: 1.4.2-pre.11
     version: 1.4.2-pre.11
-  '@hiogawa/utils-experimental':
-    specifier: ^0.1.0
-    version: 0.1.0
   '@hiogawa/utils-hattip':
     specifier: 0.0.1-pre.1
     version: 0.0.1-pre.1
@@ -2224,10 +2221,6 @@ packages:
       local-pkg: 0.4.3
       unocss: 0.52.7(postcss@8.4.27)(vite@4.3.9)
     dev: true
-
-  /@hiogawa/utils-experimental@0.1.0:
-    resolution: {integrity: sha512-/iXmtdJlhBGfNK+bt4gNipdRPaHGkHeXbW+yY9RLB4dC2kOWoEpKY2aZjFugFRXEGtz3luEYVeLpV4VWEuq5kA==}
-    dev: false
 
   /@hiogawa/utils-hattip@0.0.1-pre.1:
     resolution: {integrity: sha512-kzZ6U7PZ0/m+0bYFdG+/o2F73jRgDxf3gO7Ggwr3XxDZMHH22DttQzaPre1v+kxwuSF7MQ/s8DXk5nr1SD+7hQ==}
