@@ -71,7 +71,7 @@ export default function DefaultComponent() {
         <link
           rel="icon"
           type="image/svg+xml"
-          href={`data:image/svg+xml;base64,${require("../public/icon.svg?loader=base64")}`}
+          href="https://iconify-dark-hiro18181.vercel.app/icon/ri/translate-2"
         />
         {/* only server needs to do script injection but let client do as well */}
         <script
