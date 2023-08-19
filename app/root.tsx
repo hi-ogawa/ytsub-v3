@@ -7,7 +7,6 @@ import {
   NavLink,
   Outlet,
   Scripts,
-  ShouldRevalidateFunction,
   useMatches,
   useNavigate,
 } from "@remix-run/react";
@@ -27,31 +26,14 @@ import {
   encodeFlashMessage,
   useFlashMessageHandler,
 } from "./utils/flash-message";
-import { RootLoaderData, useRootLoaderData } from "./utils/loader-utils";
-import { makeLoader } from "./utils/loader-utils.server";
+import { useRootLoaderData } from "./utils/loader-utils";
 import { cls } from "./utils/misc";
 import { navigateRefresh } from "./utils/misc-client";
 import type { PageHandle } from "./utils/page-handle";
 import { QueryClientWrapper } from "./utils/react-query-utils";
 import { ToastWrapper } from "./utils/toast-utils";
 
-//
-// loader
-//
-
-export const loader = makeLoader(async ({ ctx }) => {
-  const loaderData: RootLoaderData = {
-    currentUser: await ctx.currentUser(),
-  };
-  return loaderData;
-});
-
-// no need to revalidate `currentUser` since app refreshes on user session change (signin/signout)
-export const shouldRevalidate: ShouldRevalidateFunction = () => false;
-
-//
-// component
-//
+export * from "./root.server";
 
 export default function DefaultComponent() {
   // hydration error for theme class (dark, light)

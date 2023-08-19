@@ -11,20 +11,12 @@ import { ROUTE_DEF } from "../../misc/routes";
 import { trpc } from "../../trpc/client";
 import { useClickOutside } from "../../utils/hooks-client-utils";
 import { useTypedUrlQuery } from "../../utils/loader-utils";
-import { makeLoader } from "../../utils/loader-utils.server";
 import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 import { formatDateRange } from "../../utils/temporal-utils";
 import { BookmarksMenuItems } from "./index";
 
-//
-// loader
-//
-
-export const loader = makeLoader(async ({ ctx }) => {
-  await ctx.requireUser();
-  return null;
-});
+export * from "./history-chart.server";
 
 //
 // handle
