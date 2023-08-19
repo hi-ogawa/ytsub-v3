@@ -1,4 +1,4 @@
-import { tinyassert, wrapPromise } from "@hiogawa/utils";
+import { tinyassert, wrapErrorAsync } from "@hiogawa/utils";
 import { useNavigate } from "@remix-run/react";
 import { redirect } from "@remix-run/server-runtime";
 import { useMutation } from "@tanstack/react-query";
@@ -45,7 +45,7 @@ export const loader = makeLoader(async ({ ctx }) => {
   const videoId = parseVideoId(query.videoId);
   tinyassert(videoId);
   const user = await ctx.currentUser();
-  const result = await wrapPromise(fetchVideoMetadata(videoId));
+  const result = await wrapErrorAsync(() => fetchVideoMetadata(videoId));
   if (!result.ok) {
     // either invalid videoId or youtube api failure
     return redirect(
