@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">28.06% </span>
+                <span class="strong">28.64% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>55/196</span>
+                <span class='fraction'>55/192</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">28.06% </span>
+                <span class="strong">28.64% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>55/196</span>
+                <span class='fraction'>55/192</span>
             </div>
         
             
@@ -255,11 +255,7 @@
 <a name='L190'></a><a href='#L190'>190</a>
 <a name='L191'></a><a href='#L191'>191</a>
 <a name='L192'></a><a href='#L192'>192</a>
-<a name='L193'></a><a href='#L193'>193</a>
-<a name='L194'></a><a href='#L194'>194</a>
-<a name='L195'></a><a href='#L195'>195</a>
-<a name='L196'></a><a href='#L196'>196</a>
-<a name='L197'></a><a href='#L197'>197</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L193'></a><a href='#L193'>193</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -308,10 +304,6 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -468,7 +460,7 @@ import type {
   VideoTable,
 } from "../../../db/models";
 import { PRACTICE_ACTION_TYPES, PracticeActionType } from "../../../db/types";
-import { rpcClientQuery } from "../../../trpc/client";
+import { trpc } from "../../../trpc/client";
 import { requireUserAndDeck } from "../../../utils/loader-deck-utils";
 import {
   useLeafLoaderData,
@@ -507,7 +499,7 @@ export default <span class="fstat-no" title="function not covered" >function Def
 <span class="cstat-no" title="statement not covered" >  const { deck } = useLoaderDataExtra() as LoaderData;</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  const nextPracticeQuery = useQuery({</span>
-<span class="cstat-no" title="statement not covered" >    ...rpcClientQuery.decks_nextPracticeEntry.queryOptions({</span>
+<span class="cstat-no" title="statement not covered" >    ...trpc.decks_nextPracticeEntry.queryOptions({</span>
 <span class="cstat-no" title="statement not covered" >      deckId: deck.id,</span>
 <span class="cstat-no" title="statement not covered" >    }),</span>
 <span class="cstat-no" title="statement not covered" >    keepPreviousData: true,</span>
@@ -516,12 +508,8 @@ export default <span class="fstat-no" title="function not covered" >function Def
 <span class="cstat-no" title="statement not covered" >  const queryClient = useQueryClient();</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  function refetch() {</span>
-<span class="cstat-no" title="statement not covered" >    queryClient.invalidateQueries(</span>
-<span class="cstat-no" title="statement not covered" >      rpcClientQuery.decks_nextPracticeEntry.queryKey</span>
-<span class="cstat-no" title="statement not covered" >    );</span>
-<span class="cstat-no" title="statement not covered" >    queryClient.invalidateQueries(</span>
-<span class="cstat-no" title="statement not covered" >      rpcClientQuery.decks_practiceStatistics.queryKey</span>
-<span class="cstat-no" title="statement not covered" >    );</span>
+<span class="cstat-no" title="statement not covered" >    queryClient.invalidateQueries([trpc.decks_nextPracticeEntry.queryKey]);</span>
+<span class="cstat-no" title="statement not covered" >    queryClient.invalidateQueries([trpc.decks_practiceStatistics.queryKey]);</span>
 <span class="cstat-no" title="statement not covered" >  }</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  return (</span>
@@ -582,7 +570,7 @@ export default <span class="fstat-no" title="function not covered" >function Def
 <span class="cstat-no" title="statement not covered" >  isLoadingNext: boolean;</span>
 <span class="cstat-no" title="statement not covered" >}) {</span>
 <span class="cstat-no" title="statement not covered" >  const newPracticeActionMutation = useMutation({</span>
-<span class="cstat-no" title="statement not covered" >    ...rpcClientQuery.decks_practiceActionsCreate.mutationOptions(),</span>
+<span class="cstat-no" title="statement not covered" >    ...trpc.decks_practiceActionsCreate.mutationOptions(),</span>
 <span class="cstat-no" title="statement not covered" >    onSuccess: () =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >      loadNext();</span>
 <span class="cstat-no" title="statement not covered" >    },</span>
@@ -658,7 +646,7 @@ export default <span class="fstat-no" title="function not covered" >function Def
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-08-19T06:56:27.121Z
+                at 2023-08-19T07:10:10.400Z
             </div>
         <script src="../../../../../prettify.js"></script>
         <script>
