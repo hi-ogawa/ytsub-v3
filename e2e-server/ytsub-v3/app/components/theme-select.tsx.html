@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">51.35% </span>
+                <span class="strong">33.33% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>19/37</span>
+                <span class='fraction'>9/27</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>1/1</span>
+                <span class='fraction'>0/0</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">50% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>1/2</span>
+                <span class='fraction'>0/1</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">51.35% </span>
+                <span class="strong">33.33% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>19/37</span>
+                <span class='fraction'>9/27</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line medium'></div>
+    <div class='status-line low'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -90,20 +90,7 @@
 <a name='L25'></a><a href='#L25'>25</a>
 <a name='L26'></a><a href='#L26'>26</a>
 <a name='L27'></a><a href='#L27'>27</a>
-<a name='L28'></a><a href='#L28'>28</a>
-<a name='L29'></a><a href='#L29'>29</a>
-<a name='L30'></a><a href='#L30'>30</a>
-<a name='L31'></a><a href='#L31'>31</a>
-<a name='L32'></a><a href='#L32'>32</a>
-<a name='L33'></a><a href='#L33'>33</a>
-<a name='L34'></a><a href='#L34'>34</a>
-<a name='L35'></a><a href='#L35'>35</a>
-<a name='L36'></a><a href='#L36'>36</a>
-<a name='L37'></a><a href='#L37'>37</a>
-<a name='L38'></a><a href='#L38'>38</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<a name='L28'></a><a href='#L28'>28</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -130,20 +117,10 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">44x</span>
-<span class="cline-any cline-yes">44x</span>
-<span class="cline-any cline-yes">44x</span>
-<span class="cline-any cline-yes">44x</span>
-<span class="cline-any cline-yes">44x</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { capitalize } from "@hiogawa/utils";
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { getTheme, setTheme } from "@hiogawa/theme-script";
+import { capitalize } from "@hiogawa/utils";
 import React from "react";
 import { SelectWrapper } from "./misc";
-&nbsp;
-// by @hiogawa/utils-experimental/dist/theme-script.global.js
-declare let __themeSet: (theme: string) =&gt; void;
-declare let __themeGet: () =&gt; string;
 &nbsp;
 const THEME_OPTIONS = ["system", "dark", "light"];
 &nbsp;
@@ -157,23 +134,16 @@ export <span class="fstat-no" title="function not covered" >function ThemeSelect
 <span class="cstat-no" title="statement not covered" >      &lt;SelectWrapper</span>
 <span class="cstat-no" title="statement not covered" >        className="antd-input p-1"</span>
 <span class="cstat-no" title="statement not covered" >        options={THEME_OPTIONS}</span>
-<span class="cstat-no" title="statement not covered" >        value={__themeGet()}</span>
+<span class="cstat-no" title="statement not covered" >        value={getTheme()}</span>
 <span class="cstat-no" title="statement not covered" >        labelFn={(v) =&gt; capitalize(v)}</span>
 <span class="cstat-no" title="statement not covered" >        onChange={(selected) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >          __themeSet(selected);</span>
+<span class="cstat-no" title="statement not covered" >          setTheme(selected);</span>
 <span class="cstat-no" title="statement not covered" >          rerender();</span>
 <span class="cstat-no" title="statement not covered" >        }}</span>
 <span class="cstat-no" title="statement not covered" >      /&gt;</span>
 <span class="cstat-no" title="statement not covered" >    &lt;/label&gt;</span>
 <span class="cstat-no" title="statement not covered" >  );</span>
 <span class="cstat-no" title="statement not covered" >}</span>
-&nbsp;
-export function injectThemeScript() {
-  return `\
-globalThis.__themeStorageKey = "ytsub:theme";
-${require("@hiogawa/utils-experimental/dist/theme-script.global.js?loader=text")}
-`;
-}
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -181,7 +151,7 @@ ${require("@hiogawa/utils-experimental/dist/theme-script.global.js?loader=text")
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-08-19T05:20:14.978Z
+                at 2023-08-19T06:56:27.121Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>
