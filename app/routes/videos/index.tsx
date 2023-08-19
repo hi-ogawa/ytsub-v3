@@ -11,7 +11,6 @@ import { useModal } from "../../components/modal";
 import { E, T, db, toPaginationResult } from "../../db/drizzle-client.server";
 import type { DeckTable, UserTable, VideoTable } from "../../db/models";
 import { R } from "../../misc/routes";
-import { trpc } from "../../trpc/client";
 import { rpcClientQuery } from "../../trpc/client-v2";
 import {
   useLoaderDataExtra,
@@ -200,12 +199,12 @@ function AddToDeckComponent({
 }) {
   // get decks
   const decksQuery = useQuery(
-    trpc.decks_practiceEntriesCount.queryOptions({ videoId })
+    rpcClientQuery.decks_practiceEntriesCount.queryOptions({ videoId })
   );
 
   // create new practice entries
   const newPracticeEntryMutation = useMutation({
-    ...trpc.decks_practiceEntriesCreate.mutationOptions(),
+    ...rpcClientQuery.decks_practiceEntriesCreate.mutationOptions(),
     onSuccess: (data) => {
       toast.success(`Added ${data.practiceEntryIds.length} to a deck`);
       decksQuery.refetch();
