@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">22.74% </span>
+                <span class="strong">23.33% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>63/277</span>
+                <span class='fraction'>63/270</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">22.74% </span>
+                <span class="strong">23.33% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>63/277</span>
+                <span class='fraction'>63/270</span>
             </div>
         
             
@@ -333,14 +333,7 @@
 <a name='L268'></a><a href='#L268'>268</a>
 <a name='L269'></a><a href='#L269'>269</a>
 <a name='L270'></a><a href='#L270'>270</a>
-<a name='L271'></a><a href='#L271'>271</a>
-<a name='L272'></a><a href='#L272'>272</a>
-<a name='L273'></a><a href='#L273'>273</a>
-<a name='L274'></a><a href='#L274'>274</a>
-<a name='L275'></a><a href='#L275'>275</a>
-<a name='L276'></a><a href='#L276'>276</a>
-<a name='L277'></a><a href='#L277'>277</a>
-<a name='L278'></a><a href='#L278'>278</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L271'></a><a href='#L271'>271</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -396,13 +389,6 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -627,7 +613,7 @@ import type { TT } from "../../../db/drizzle-client.server";
 import type { DeckTable } from "../../../db/models";
 import { PRACTICE_ACTION_TYPES, PracticeActionType } from "../../../db/types";
 import { ROUTE_DEF } from "../../../misc/routes";
-import { trpc } from "../../../trpc/client";
+import { rpcClientQuery } from "../../../trpc/client";
 import { useIntersectionObserver } from "../../../utils/hooks-client-utils";
 import { formatRelativeDate } from "../../../utils/intl";
 import { requireUserAndDeck } from "../../../utils/loader-deck-utils";
@@ -680,20 +666,13 @@ export default <span class="fstat-no" title="function not covered" >function Def
 <span class="cstat-no" title="statement not covered" >  );</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  const practiceActionsQuery = useInfiniteQuery({</span>
-<span class="cstat-no" title="statement not covered" >    ...trpc.decks_practiceActions.infiniteQueryOptions(</span>
-<span class="cstat-no" title="statement not covered" >      {</span>
-<span class="cstat-no" title="statement not covered" >        deckId: deck.id,</span>
-<span class="cstat-no" title="statement not covered" >        actionType: urlQuery?.actionType,</span>
-<span class="cstat-no" title="statement not covered" >        practiceEntryId: urlQuery?.practiceEntryId,</span>
-<span class="cstat-no" title="statement not covered" >      },</span>
-<span class="cstat-no" title="statement not covered" >      {</span>
-<span class="cstat-no" title="statement not covered" >        getNextPageParam: (lastPage) =&gt; lastPage.nextCursor ?? undefined,</span>
-<span class="cstat-no" title="statement not covered" >        setPageParam: (input, pageParam) =&gt; ({</span>
-<span class="cstat-no" title="statement not covered" >          ...input,</span>
-<span class="cstat-no" title="statement not covered" >          cursor: pageParam as any,</span>
-<span class="cstat-no" title="statement not covered" >        }),</span>
-<span class="cstat-no" title="statement not covered" >      }</span>
-<span class="cstat-no" title="statement not covered" >    ),</span>
+<span class="cstat-no" title="statement not covered" >    ...rpcClientQuery.decks_practiceActions.infiniteQueryOptions((context) =&gt; ({</span>
+<span class="cstat-no" title="statement not covered" >      deckId: deck.id,</span>
+<span class="cstat-no" title="statement not covered" >      actionType: urlQuery?.actionType,</span>
+<span class="cstat-no" title="statement not covered" >      practiceEntryId: urlQuery?.practiceEntryId,</span>
+<span class="cstat-no" title="statement not covered" >      cursor: context?.pageParam as any,</span>
+<span class="cstat-no" title="statement not covered" >    })),</span>
+<span class="cstat-no" title="statement not covered" >    getNextPageParam: (lastPage) =&gt; lastPage.nextCursor ?? undefined,</span>
 <span class="cstat-no" title="statement not covered" >    keepPreviousData: true,</span>
 <span class="cstat-no" title="statement not covered" >  });</span>
 <span class="cstat-no" title="statement not covered" >  const rows = practiceActionsQuery.data?.pages.flatMap((res) =&gt; res.rows);</span>
@@ -769,7 +748,7 @@ export default <span class="fstat-no" title="function not covered" >function Def
 <span class="cstat-no" title="statement not covered" >  currentActionType?: PracticeActionType;</span>
 <span class="cstat-no" title="statement not covered" >}) {</span>
 <span class="cstat-no" title="statement not covered" >  const practiceStatisticsQuery = useQuery(</span>
-<span class="cstat-no" title="statement not covered" >    trpc.decks_practiceStatistics.queryOptions({ deckId })</span>
+<span class="cstat-no" title="statement not covered" >    rpcClientQuery.decks_practiceStatistics.queryOptions({ deckId })</span>
 <span class="cstat-no" title="statement not covered" >  );</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  return (</span>
@@ -901,7 +880,7 @@ export default <span class="fstat-no" title="function not covered" >function Def
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-08-19T07:59:54.380Z
+                at 2023-08-19T08:03:42.605Z
             </div>
         <script src="../../../../../prettify.js"></script>
         <script>

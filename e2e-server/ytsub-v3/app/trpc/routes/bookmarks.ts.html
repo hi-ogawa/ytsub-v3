@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">97.95% </span>
+                <span class="strong">97.87% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>144/147</span>
+                <span class='fraction'>138/141</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">97.95% </span>
+                <span class="strong">97.87% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>144/147</span>
+                <span class='fraction'>138/141</span>
             </div>
         
             
@@ -204,16 +204,7 @@
 <a name='L139'></a><a href='#L139'>139</a>
 <a name='L140'></a><a href='#L140'>140</a>
 <a name='L141'></a><a href='#L141'>141</a>
-<a name='L142'></a><a href='#L142'>142</a>
-<a name='L143'></a><a href='#L143'>143</a>
-<a name='L144'></a><a href='#L144'>144</a>
-<a name='L145'></a><a href='#L145'>145</a>
-<a name='L146'></a><a href='#L146'>146</a>
-<a name='L147'></a><a href='#L147'>147</a>
-<a name='L148'></a><a href='#L148'>148</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<a name='L142'></a><a href='#L142'>142</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -269,6 +260,7 @@
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -278,9 +270,7 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
@@ -321,9 +311,7 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-yes">6x</span>
@@ -357,152 +345,146 @@
 <span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { mapOption, tinyassert } from "@hiogawa/utils";
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { validateFn } from "@hiogawa/tiny-rpc";
+import { mapOption, tinyassert } from "@hiogawa/utils";
 import { sql } from "drizzle-orm";
 import { z } from "zod";
 import { E, T, db, limitOne, selectOne } from "../../db/drizzle-client.server";
 import { Z_DATE_RANGE_TYPE } from "../../misc/routes";
+import { ctx_requireUser } from "../../server/request-context/session";
 import {
   fromTemporal,
   getZonedDateRange,
   toZdt,
 } from "../../utils/temporal-utils";
-import { middlewares } from "../context";
-import { procedureBuilder } from "../factory";
 &nbsp;
-export const trpcRoutesBookmarks = {
-  bookmarks_create: procedureBuilder
-    .use(middlewares.requireUser)
-    .input(
-      z.object({
-        videoId: z.number().int(),
-        captionEntryId: z.number().int(),
-        text: z.string().nonempty(),
-        side: z.number().refine((v) =&gt; v === <span class="branch-0 cbranch-no" title="branch not covered" >0 || v === 1)</span>,
-        offset: z.number().int(),
-      })
-    )
-    .mutation(async ({ input, ctx }) =&gt; {
-      const found = await limitOne(
-        db
-          .select()
-          .from(T.captionEntries)
-          .innerJoin(T.videos, E.eq(T.videos.id, T.captionEntries.videoId))
-          .where(
-            E.and(
-              E.eq(T.captionEntries.id, input.captionEntryId),
-              E.eq(T.videos.id, input.videoId),
-              E.eq(T.videos.userId, ctx.user.id)
-            )
-          )
-      );
-      tinyassert(found, "not found");
-&nbsp;
-      // insert with counter cache increment
-      const [{ insertId }] = await db.insert(T.bookmarkEntries).values({
-        ...input,
-        userId: ctx.user.id,
-      });
-      await db
-        .update(T.videos)
-        .set({
-          bookmarkEntriesCount: sql`${T.videos.bookmarkEntriesCount} + 1`,
-        })
-        .where(E.eq(T.videos.id, input.videoId));
-&nbsp;
-      const row = await selectOne(
-        T.bookmarkEntries,
-        E.eq(T.bookmarkEntries.id, insertId)
-      );
-      tinyassert(row);
-      return row;
-    }),
-&nbsp;
-  bookmarks_historyChart: procedureBuilder
-    .use(middlewares.requireUser)
-    .input(
-      z.object({
-        rangeType: Z_DATE_RANGE_TYPE,
-        page: z.coerce.number().int().optional().default(0), // 0 =&gt; this week/month, 1 =&gt; last week/month, ...
-        __now: z.coerce.date().optional(), // for testing
-      })
-    )
-    .query(async ({ input, ctx }) =&gt; {
-      const timezone = ctx.user.timezone;
-      const now = input.__now ?? new Date();
-      const dateRange = getZonedDateRange(
-        toZdt(now, timezone),
-        input.rangeType,
-        input.page
-      );
-      const dates = dateRange.dates.map((d) =&gt; d.toPlainDate().toString());
-&nbsp;
-      // aggregate in js
-      const rows = await db
+export const rpcRoutesBookmarks = {
+  bookmarks_create: validateFn(
+    z.object({
+      videoId: z.number().int(),
+      captionEntryId: z.number().int(),
+      text: z.string().nonempty(),
+      side: z.number().refine((v) =&gt; v === <span class="branch-0 cbranch-no" title="branch not covered" >0 || v === 1)</span>,
+      offset: z.number().int(),
+    })
+  )(async (input) =&gt; {
+    const user = await ctx_requireUser();
+    const found = await limitOne(
+      db
         .select()
-        .from(T.bookmarkEntries)
+        .from(T.captionEntries)
+        .innerJoin(T.videos, E.eq(T.videos.id, T.captionEntries.videoId))
         .where(
           E.and(
-            E.eq(T.bookmarkEntries.userId, ctx.user.id),
-            E.gt(T.bookmarkEntries.createdAt, fromTemporal(dateRange.begin)),
-            E.lt(T.bookmarkEntries.createdAt, fromTemporal(dateRange.end))
+            E.eq(T.captionEntries.id, input.captionEntryId),
+            E.eq(T.videos.id, input.videoId),
+            E.eq(T.videos.userId, user.id)
           )
-        );
+        )
+    );
+    tinyassert(found, "not found");
 &nbsp;
-      const countMap = Object.fromEntries(
-        dates.map((date) =&gt; [date, { date, total: 0 }])
+    // insert with counter cache increment
+    const [{ insertId }] = await db.insert(T.bookmarkEntries).values({
+      ...input,
+      userId: user.id,
+    });
+    await db
+      .update(T.videos)
+      .set({
+        bookmarkEntriesCount: sql`${T.videos.bookmarkEntriesCount} + 1`,
+      })
+      .where(E.eq(T.videos.id, input.videoId));
+&nbsp;
+    const row = await selectOne(
+      T.bookmarkEntries,
+      E.eq(T.bookmarkEntries.id, insertId)
+    );
+    tinyassert(row);
+    return row;
+  }),
+&nbsp;
+  bookmarks_historyChart: validateFn(
+    z.object({
+      rangeType: Z_DATE_RANGE_TYPE,
+      page: z.coerce.number().int().optional().default(0), // 0 =&gt; this week/month, 1 =&gt; last week/month, ...
+      __now: z.coerce.date().optional(), // for testing
+    })
+  )(async (input) =&gt; {
+    const user = await ctx_requireUser();
+    const timezone = user.timezone;
+    const now = input.__now ?? new Date();
+    const dateRange = getZonedDateRange(
+      toZdt(now, timezone),
+      input.rangeType,
+      input.page
+    );
+    const dates = dateRange.dates.map((d) =&gt; d.toPlainDate().toString());
+&nbsp;
+    // aggregate in js
+    const rows = await db
+      .select()
+      .from(T.bookmarkEntries)
+      .where(
+        E.and(
+          E.eq(T.bookmarkEntries.userId, user.id),
+          E.gt(T.bookmarkEntries.createdAt, fromTemporal(dateRange.begin)),
+          E.lt(T.bookmarkEntries.createdAt, fromTemporal(dateRange.end))
+        )
       );
 &nbsp;
-      // TODO: group by video? language?
-      for (const row of rows) <span class="branch-0 cbranch-no" title="branch not covered" >{</span>
-<span class="cstat-no" title="statement not covered" >        const date = toZdt(row.createdAt, timezone).toPlainDate().toString();</span>
-<span class="cstat-no" title="statement not covered" >        countMap[date].total++;</span>
-<span class="cstat-no" title="statement not covered" >      }</span>
+    const countMap = Object.fromEntries(
+      dates.map((date) =&gt; [date, { date, total: 0 }])
+    );
 &nbsp;
-      return Object.values(countMap);
-    }),
+    // TODO: group by video? language?
+    for (const row of rows) <span class="branch-0 cbranch-no" title="branch not covered" >{</span>
+<span class="cstat-no" title="statement not covered" >      const date = toZdt(row.createdAt, timezone).toPlainDate().toString();</span>
+<span class="cstat-no" title="statement not covered" >      countMap[date].total++;</span>
+<span class="cstat-no" title="statement not covered" >    }</span>
 &nbsp;
-  bookmarks_index: procedureBuilder
-    .use(middlewares.requireUser)
-    .input(
-      z.object({
-        q: z.string().optional(),
-        cursor: z.number().int().default(0),
-      })
-    )
-    .query(async ({ input, ctx }) =&gt; {
-      const limit = 15;
+    return Object.values(countMap);
+  }),
 &nbsp;
-      // deferred join
-      const subQueryIds = db
-        .select({ id: T.bookmarkEntries.id })
-        .from(T.bookmarkEntries)
-        .where(
-          E.and(
-            E.eq(T.bookmarkEntries.userId, ctx.user.id),
-            // TODO: index
-            mapOption(input.q, (v) =&gt; E.like(T.bookmarkEntries.text, `%${v}%`))
-          )
+  bookmarks_index: validateFn(
+    z.object({
+      q: z.string().optional(),
+      cursor: z.number().int().default(0),
+    })
+  )(async (input) =&gt; {
+    const user = await ctx_requireUser();
+    const limit = 15;
+&nbsp;
+    // deferred join
+    const subQueryIds = db
+      .select({ id: T.bookmarkEntries.id })
+      .from(T.bookmarkEntries)
+      .where(
+        E.and(
+          E.eq(T.bookmarkEntries.userId, user.id),
+          // TODO: index
+          mapOption(input.q, (v) =&gt; E.like(T.bookmarkEntries.text, `%${v}%`))
         )
-        .orderBy(E.desc(T.bookmarkEntries.createdAt))
-        .offset(input.cursor)
-        .limit(limit)
-        .as("__subQueryIds");
+      )
+      .orderBy(E.desc(T.bookmarkEntries.createdAt))
+      .offset(input.cursor)
+      .limit(limit)
+      .as("__subQueryIds");
 &nbsp;
-      const rows = await db
-        .select()
-        .from(T.bookmarkEntries)
-        .innerJoin(subQueryIds, E.eq(subQueryIds.id, T.bookmarkEntries.id))
-        .innerJoin(T.videos, E.eq(T.videos.id, T.bookmarkEntries.videoId))
-        .innerJoin(
-          T.captionEntries,
-          E.eq(T.captionEntries.id, T.bookmarkEntries.captionEntryId)
-        )
-        .orderBy(E.desc(T.bookmarkEntries.createdAt));
+    const rows = await db
+      .select()
+      .from(T.bookmarkEntries)
+      .innerJoin(subQueryIds, E.eq(subQueryIds.id, T.bookmarkEntries.id))
+      .innerJoin(T.videos, E.eq(T.videos.id, T.bookmarkEntries.videoId))
+      .innerJoin(
+        T.captionEntries,
+        E.eq(T.captionEntries.id, T.bookmarkEntries.captionEntryId)
+      )
+      .orderBy(E.desc(T.bookmarkEntries.createdAt));
 &nbsp;
-      const nextCursor = rows.length === limit ? input.cursor + limit : null;
-      return { rows, nextCursor };
-    }),
+    const nextCursor = rows.length === limit ? input.cursor + limit : null;
+    return { rows, nextCursor };
+  }),
 };
 &nbsp;</pre></td></tr></table></pre>
 
@@ -511,7 +493,7 @@ export const trpcRoutesBookmarks = {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-08-19T07:59:54.380Z
+                at 2023-08-19T08:03:42.605Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>

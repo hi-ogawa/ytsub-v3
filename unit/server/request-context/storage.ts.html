@@ -3,15 +3,15 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for trpc/test-helper.ts</title>
+    <title>Code coverage report for server/request-context/storage.ts</title>
     <meta charset="utf-8" />
-    <link rel="stylesheet" href="../prettify.css" />
-    <link rel="stylesheet" href="../base.css" />
-    <link rel="shortcut icon" type="image/x-icon" href="../favicon.png" />
+    <link rel="stylesheet" href="../../prettify.css" />
+    <link rel="stylesheet" href="../../base.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="../../favicon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <style type='text/css'>
         .coverage-summary .sorter {
-            background-image: url(../sort-arrow-sprite.png);
+            background-image: url(../../sort-arrow-sprite.png);
         }
     </style>
 </head>
@@ -19,13 +19,13 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../index.html">All files</a> / <a href="index.html">trpc</a> test-helper.ts</h1>
+        <h1><a href="../../index.html">All files</a> / <a href="index.html">server/request-context</a> storage.ts</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>27/27</span>
+                <span class='fraction'>20/20</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>27/27</span>
+                <span class='fraction'>20/20</span>
             </div>
         
             
@@ -83,66 +83,45 @@
 <a name='L18'></a><a href='#L18'>18</a>
 <a name='L19'></a><a href='#L19'>19</a>
 <a name='L20'></a><a href='#L20'>20</a>
-<a name='L21'></a><a href='#L21'>21</a>
-<a name='L22'></a><a href='#L22'>22</a>
-<a name='L23'></a><a href='#L23'>23</a>
-<a name='L24'></a><a href='#L24'>24</a>
-<a name='L25'></a><a href='#L25'>25</a>
-<a name='L26'></a><a href='#L26'>26</a>
-<a name='L27'></a><a href='#L27'>27</a>
-<a name='L28'></a><a href='#L28'>28</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L21'></a><a href='#L21'>21</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">13x</span>
-<span class="cline-any cline-yes">13x</span>
-<span class="cline-any cline-yes">13x</span>
-<span class="cline-any cline-yes">13x</span>
-<span class="cline-any cline-yes">13x</span>
-<span class="cline-any cline-yes">13x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">23x</span>
-<span class="cline-any cline-yes">23x</span>
-<span class="cline-any cline-yes">23x</span>
-<span class="cline-any cline-yes">23x</span>
-<span class="cline-any cline-yes">23x</span>
-<span class="cline-any cline-yes">10x</span>
-<span class="cline-any cline-yes">10x</span>
-<span class="cline-any cline-yes">10x</span>
-<span class="cline-any cline-yes">23x</span>
-<span class="cline-any cline-yes">23x</span>
-<span class="cline-any cline-yes">23x</span>
-<span class="cline-any cline-yes">23x</span>
-<span class="cline-any cline-yes">23x</span>
-<span class="cline-any cline-yes">23x</span>
-<span class="cline-any cline-yes">23x</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import type { TT } from "../db/drizzle-client.server";
-import { createUserCookie } from "../utils/auth";
-import { createTrpcAppContext } from "./context";
-import { trpcApp } from "./server";
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">21x</span>
+<span class="cline-any cline-yes">21x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">31x</span>
+<span class="cline-any cline-yes">31x</span>
+<span class="cline-any cline-yes">31x</span>
+<span class="cline-any cline-yes">31x</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { AsyncLocalStorage } from "node:async_hooks";
+import type { RequestContext, RequestHandler } from "@hattip/compose";
+import { tinyassert } from "@hiogawa/utils";
 &nbsp;
-export async function testTrpcClient(
-  ...args: Parameters&lt;typeof testTrpcClientWithContext&gt;
-) {
-  const { caller } = await testTrpcClientWithContext(...args);
-  return caller;
+// cf.
+// https://github.com/hi-ogawa/vite-plugins/blob/af678d076200dac924cb0c2dda5746505ca869d2/packages/demo/src/server/request-context.ts
+// https://github.com/hi-ogawa/vite-plugins/blob/af678d076200dac924cb0c2dda5746505ca869d2/packages/demo/src/server/session.ts
+&nbsp;
+const requestContextStorage = new AsyncLocalStorage&lt;RequestContext&gt;();
+&nbsp;
+export function requestContextStorageHandler(): RequestHandler {
+  return async (ctx) =&gt; requestContextStorage.run(ctx, () =&gt; ctx.next());
 }
 &nbsp;
-export async function testTrpcClientWithContext(options?: {
-  user?: TT["users"];
-}) {
-  const req = new Request("http://example.com"); // dummy
-  if (options?.user) {
-    const cookie = await createUserCookie(options.user);
-    req.headers.set("cookie", cookie);
-  }
-  const ctx = await createTrpcAppContext({
-    req,
-    resHeaders: new Headers(),
-  });
-  const caller = trpcApp.createCaller(ctx);
-  return { caller, ctx };
+// internal convention to prefix "ctx_" for async context utility
+export function ctx_get() {
+  const value = requestContextStorage.getStore();
+  tinyassert(value, `forgot to setup '${requestContextStorageHandler.name}'?`);
+  return value;
 }
 &nbsp;</pre></td></tr></table></pre>
 
@@ -151,16 +130,16 @@ export async function testTrpcClientWithContext(options?: {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-08-19T07:58:32.956Z
+                at 2023-08-19T08:00:51.307Z
             </div>
-        <script src="../prettify.js"></script>
+        <script src="../../prettify.js"></script>
         <script>
             window.onload = function () {
                 prettyPrint();
             };
         </script>
-        <script src="../sorter.js"></script>
-        <script src="../block-navigation.js"></script>
+        <script src="../../sorter.js"></script>
+        <script src="../../block-navigation.js"></script>
     </body>
 </html>
     

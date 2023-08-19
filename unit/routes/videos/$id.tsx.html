@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">13.61% </span>
+                <span class="strong">13.56% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>131/962</span>
+                <span class='fraction'>131/966</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">13.61% </span>
+                <span class="strong">13.56% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>131/962</span>
+                <span class='fraction'>131/966</span>
             </div>
         
             
@@ -1025,7 +1025,11 @@
 <a name='L960'></a><a href='#L960'>960</a>
 <a name='L961'></a><a href='#L961'>961</a>
 <a name='L962'></a><a href='#L962'>962</a>
-<a name='L963'></a><a href='#L963'>963</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L963'></a><a href='#L963'>963</a>
+<a name='L964'></a><a href='#L964'>964</a>
+<a name='L965'></a><a href='#L965'>965</a>
+<a name='L966'></a><a href='#L966'>966</a>
+<a name='L967'></a><a href='#L967'>967</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -1119,6 +1123,10 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -2008,7 +2016,7 @@ import { PopoverSimple } from "../../components/popover";
 import { E, T, TT, selectOne } from "../../db/drizzle-client.server";
 import type { UserTable, VideoTable } from "../../db/models";
 import { $R, ROUTE_DEF } from "../../misc/routes";
-import { trpc } from "../../trpc/client";
+import { rpcClientQuery } from "../../trpc/client";
 import { useDocumentEvent } from "../../utils/hooks-client-utils";
 import { intl } from "../../utils/intl";
 import {
@@ -2093,7 +2101,9 @@ interface BookmarkSelection {
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  // fetch caption entries on client</span>
 <span class="cstat-no" title="statement not covered" >  const captionEntriesQuery = useQuery({</span>
-<span class="cstat-no" title="statement not covered" >    ...trpc.videos_getCaptionEntries.queryOptions({ videoId: video.id }),</span>
+<span class="cstat-no" title="statement not covered" >    ...rpcClientQuery.videos_getCaptionEntries.queryOptions({</span>
+<span class="cstat-no" title="statement not covered" >      videoId: video.id,</span>
+<span class="cstat-no" title="statement not covered" >    }),</span>
 <span class="cstat-no" title="statement not covered" >  });</span>
 <span class="cstat-no" title="statement not covered" >  const captionEntries = React.useMemo(</span>
 <span class="cstat-no" title="statement not covered" >    () =&gt; captionEntriesQuery.data ?? [],</span>
@@ -2125,7 +2135,9 @@ interface BookmarkSelection {
 <span class="cstat-no" title="statement not covered" >  const highlightBookmarkEnabled = highlightBookmark &amp;&amp; Boolean(currentUser);</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  const bookmarkEntriesQueryOptions =</span>
-<span class="cstat-no" title="statement not covered" >    trpc.videos_getBookmarkEntries.queryOptions({ videoId: video.id });</span>
+<span class="cstat-no" title="statement not covered" >    rpcClientQuery.videos_getBookmarkEntries.queryOptions({</span>
+<span class="cstat-no" title="statement not covered" >      videoId: video.id,</span>
+<span class="cstat-no" title="statement not covered" >    });</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  const bookmarkEntriesQuery = useQuery({</span>
 <span class="cstat-no" title="statement not covered" >    ...bookmarkEntriesQueryOptions,</span>
@@ -2135,7 +2147,7 @@ interface BookmarkSelection {
 <span class="cstat-no" title="statement not covered" >  const queryClient = useQueryClient();</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  const newBookmarkMutation = useMutation({</span>
-<span class="cstat-no" title="statement not covered" >    ...trpc.bookmarks_create.mutationOptions(),</span>
+<span class="cstat-no" title="statement not covered" >    ...rpcClientQuery.bookmarks_create.mutationOptions(),</span>
 <span class="cstat-no" title="statement not covered" >    onSuccess: (newBookmark) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >      toast.success("Bookmark success");</span>
 <span class="cstat-no" title="statement not covered" ></span>
@@ -2831,7 +2843,7 @@ const BOOKMARK_DATA_ATTR = z.enum([
 <span class="cstat-no" title="statement not covered" >  const navigate = useNavigate();</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  const lastBookmarkQuery = useMutation({</span>
-<span class="cstat-no" title="statement not covered" >    ...trpc.videos_getLastBookmark.mutationOptions(),</span>
+<span class="cstat-no" title="statement not covered" >    ...rpcClientQuery.videos_getLastBookmark.mutationOptions(),</span>
 <span class="cstat-no" title="statement not covered" >    onSuccess: (data) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >      if (data) {</span>
 <span class="cstat-no" title="statement not covered" >        onClose();</span>
@@ -2956,7 +2968,7 @@ const playbackRateStateAtom = atom(INITIAL_PLAYBACK_RATE_STATE);
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-08-19T07:58:32.956Z
+                at 2023-08-19T08:00:51.307Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
