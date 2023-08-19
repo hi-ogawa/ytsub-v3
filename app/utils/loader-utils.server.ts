@@ -7,6 +7,7 @@ import {
 import { serialize } from "superjson";
 import { $R } from "../misc/routes";
 import { ctx_currentUser } from "../server/request-context/session";
+import { ctx_get } from "../server/request-context/storage";
 import { encodeFlashMessage } from "./flash-message";
 
 // TODO
@@ -29,14 +30,13 @@ export function makeLoader(
 
 export type LoaderContext = Awaited<ReturnType<typeof createLoaderContext>>;
 
-async function createLoaderContext(loaderArgs: DataFunctionArgs) {
-  const { request: req } = loaderArgs;
-  const reqUrl = new URL(req.url);
+async function createLoaderContext({ params }: DataFunctionArgs) {
+  const { url } = ctx_get();
 
   return {
-    params: loaderArgs.params,
+    params,
 
-    query: Object.fromEntries(reqUrl.searchParams.entries()),
+    query: Object.fromEntries(url.searchParams.entries()),
 
     currentUser: () => ctx_currentUser(),
 
@@ -63,7 +63,7 @@ async function createLoaderContext(loaderArgs: DataFunctionArgs) {
           console.error("redirectOnError", error);
 
           // redirect to root unless infinite redirection
-          if (reqUrl.pathname === "/") {
+          if (url.pathname === "/") {
             throw new Error("redirectOnError (infinite redirection detected)");
           }
           res = redirect(

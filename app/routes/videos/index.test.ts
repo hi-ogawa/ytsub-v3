@@ -3,6 +3,7 @@ import { deserialize } from "superjson";
 import { describe, expect, it } from "vitest";
 import { z } from "zod";
 import { testLoader, useUserVideo } from "../../misc/test-helper";
+import { mockRequestContext } from "../../server/request-context/mock";
 import { loader } from "./index";
 
 describe("videos/index.loader", () => {
@@ -11,7 +12,9 @@ describe("videos/index.loader", () => {
   });
 
   it("basic", async () => {
-    const res = await testLoader(loader, { transform: hook.signin });
+    const res = await mockRequestContext({ user: hook.user })(() =>
+      testLoader(loader)
+    );
     tinyassert(res instanceof Response);
     const loaderData = deserialize(await res.json());
 

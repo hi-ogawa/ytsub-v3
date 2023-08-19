@@ -16,6 +16,7 @@ export function mockRequestContext(options?: { user?: TT["users"] }) {
     // mock only required data for tests
     const mockCtx: Partial<RequestContext> = {
       request,
+      url: new URL(request.url),
     };
 
     // run through actual hattip handlers
