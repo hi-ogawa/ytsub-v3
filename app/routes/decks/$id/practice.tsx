@@ -59,12 +59,12 @@ export default function DefaultComponent() {
   const queryClient = useQueryClient();
 
   function refetch() {
-    queryClient.invalidateQueries([
-      rpcClientQuery.decks_nextPracticeEntry.queryKey,
-    ]);
-    queryClient.invalidateQueries([
-      rpcClientQuery.decks_practiceStatistics.queryKey,
-    ]);
+    queryClient.invalidateQueries(
+      rpcClientQuery.decks_nextPracticeEntry.queryKey
+    );
+    queryClient.invalidateQueries(
+      rpcClientQuery.decks_practiceStatistics.queryKey
+    );
   }
 
   return (
