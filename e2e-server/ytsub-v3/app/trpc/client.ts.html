@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">85.5% </span>
+                <span class="strong">62.31% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>59/69</span>
+                <span class='fraction'>43/69</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">42.85% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>3/7</span>
+                <span class='fraction'>0/0</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">25% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>1/4</span>
+                <span class='fraction'>0/0</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">85.5% </span>
+                <span class="strong">62.31% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>59/69</span>
+                <span class='fraction'>43/69</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line high'></div>
+    <div class='status-line medium'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -174,32 +174,32 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import type { GetNextPageParamFunction } from "@tanstack/react-query";
 import type { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
@@ -243,32 +243,32 @@ type ReactQueryIntegration = {
 // prettier-ignore
 export const trpc =
   createGetProxy((k) =&gt;
-    createGetProxy(prop =&gt; {
-      if (prop === "queryKey" || prop === "mutationKey") {
-<span class="branch-0 cbranch-no" title="branch not covered" >        return k;</span>
-      }
-      if (prop === "queryOptions") {
-<span class="branch-0 cbranch-no" title="branch not covered" >        return <span class="fstat-no" title="function not covered" >(input: unknown) =&gt; ({</span></span>
+<span class="cstat-no" title="statement not covered" >    createGetProxy(prop =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >      if (prop === "queryKey" || prop === "mutationKey") {</span>
+<span class="cstat-no" title="statement not covered" >        return k;</span>
+<span class="cstat-no" title="statement not covered" >      }</span>
+<span class="cstat-no" title="statement not covered" >      if (prop === "queryOptions") {</span>
+<span class="cstat-no" title="statement not covered" >        return (input: unknown) =&gt; ({</span>
 <span class="cstat-no" title="statement not covered" >          queryKey: [k, input],</span>
 <span class="cstat-no" title="statement not covered" >          queryFn: () =&gt; (trpcClient as any)[k].query(input),</span>
 <span class="cstat-no" title="statement not covered" >        })</span>
-      }
-      if (prop === "infiniteQueryOptions") {
-<span class="branch-0 cbranch-no" title="branch not covered" >        return <span class="fstat-no" title="function not covered" >(input: unknown, options: any) =&gt; ({</span></span>
+<span class="cstat-no" title="statement not covered" >      }</span>
+<span class="cstat-no" title="statement not covered" >      if (prop === "infiniteQueryOptions") {</span>
+<span class="cstat-no" title="statement not covered" >        return (input: unknown, options: any) =&gt; ({</span>
 <span class="cstat-no" title="statement not covered" >          queryKey: [k, input],</span>
 <span class="cstat-no" title="statement not covered" >          queryFn: ({ pageParam }: any) =&gt; (trpcClient as any)[k].query(options.setPageParam(input, pageParam)),</span>
 <span class="cstat-no" title="statement not covered" >          getNextPageParam: options.getNextPageParam,</span>
 <span class="cstat-no" title="statement not covered" >        })</span>
-      }
-      if (prop === "mutationOptions") {
-        return () =&gt; ({
-          mutationKey: [k],
-          mutationFn: <span class="fstat-no" title="function not covered" >(input: unknown) =&gt; (trpcClient as any)[k].mutate(input),</span>
-<span class="branch-0 cbranch-no" title="branch not covered" >        })</span>
+<span class="cstat-no" title="statement not covered" >      }</span>
+<span class="cstat-no" title="statement not covered" >      if (prop === "mutationOptions") {</span>
+<span class="cstat-no" title="statement not covered" >        return () =&gt; ({</span>
+<span class="cstat-no" title="statement not covered" >          mutationKey: [k],</span>
+<span class="cstat-no" title="statement not covered" >          mutationFn: (input: unknown) =&gt; (trpcClient as any)[k].mutate(input),</span>
+<span class="cstat-no" title="statement not covered" >        })</span>
 <span class="cstat-no" title="statement not covered" >      }</span>
 <span class="cstat-no" title="statement not covered" >      console.error({ k, prop });</span>
 <span class="cstat-no" title="statement not covered" >      throw new Error("invalid trpc react-query call");</span>
-    })
+<span class="cstat-no" title="statement not covered" >    })</span>
   ) as ReactQueryIntegration;
 &nbsp;</pre></td></tr></table></pre>
 
@@ -277,7 +277,7 @@ export const trpc =
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-08-19T04:06:31.589Z
+                at 2023-08-19T04:14:05.979Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>
