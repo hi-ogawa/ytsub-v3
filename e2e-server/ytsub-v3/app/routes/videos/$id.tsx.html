@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">11.75% </span>
+                <span class="strong">13.4% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>111/944</span>
+                <span class='fraction'>129/962</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>2/2</span>
+                <span class='fraction'>3/3</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">11.75% </span>
+                <span class="strong">13.4% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>111/944</span>
+                <span class='fraction'>129/962</span>
             </div>
         
             
@@ -1007,7 +1007,25 @@
 <a name='L942'></a><a href='#L942'>942</a>
 <a name='L943'></a><a href='#L943'>943</a>
 <a name='L944'></a><a href='#L944'>944</a>
-<a name='L945'></a><a href='#L945'>945</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L945'></a><a href='#L945'>945</a>
+<a name='L946'></a><a href='#L946'>946</a>
+<a name='L947'></a><a href='#L947'>947</a>
+<a name='L948'></a><a href='#L948'>948</a>
+<a name='L949'></a><a href='#L949'>949</a>
+<a name='L950'></a><a href='#L950'>950</a>
+<a name='L951'></a><a href='#L951'>951</a>
+<a name='L952'></a><a href='#L952'>952</a>
+<a name='L953'></a><a href='#L953'>953</a>
+<a name='L954'></a><a href='#L954'>954</a>
+<a name='L955'></a><a href='#L955'>955</a>
+<a name='L956'></a><a href='#L956'>956</a>
+<a name='L957'></a><a href='#L957'>957</a>
+<a name='L958'></a><a href='#L958'>958</a>
+<a name='L959'></a><a href='#L959'>959</a>
+<a name='L960'></a><a href='#L960'>960</a>
+<a name='L961'></a><a href='#L961'>961</a>
+<a name='L962'></a><a href='#L962'>962</a>
+<a name='L963'></a><a href='#L963'>963</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -1051,6 +1069,24 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -1952,7 +1988,7 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" >import { Transition } from "</span></span></span></span></span>@headlessui/react";
-import { groupBy, isNil, sortBy, uniq, zip } from "@hiogawa/utils";
+import { groupBy, isNil, sortBy, tinyassert, uniq, zip } from "@hiogawa/utils";
 import { toArraySetState, useRafLoop } from "@hiogawa/utils-react";
 import { Link, useNavigate } from "@remix-run/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -1969,8 +2005,8 @@ import { z } from "zod";
 import { SelectWrapper, transitionProps } from "../../components/misc";
 import { useModal } from "../../components/modal";
 import { PopoverSimple } from "../../components/popover";
-import type { TT } from "../../db/drizzle-client.server";
-import type { UserTable } from "../../db/models";
+import { E, T, TT, selectOne } from "../../db/drizzle-client.server";
+import type { UserTable, VideoTable } from "../../db/models";
 import { $R, ROUTE_DEF } from "../../misc/routes";
 import { trpc } from "../../trpc/client";
 import { useDocumentEvent } from "../../utils/hooks-client-utils";
@@ -1982,6 +2018,7 @@ import {
   useRootLoaderData,
   useTypedUrlQuery,
 } from "../../utils/loader-utils";
+import { makeLoader } from "../../utils/loader-utils.server";
 import { cls, none } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 import type { CaptionEntry } from "../../utils/types";
@@ -1992,15 +2029,32 @@ import {
   usePlayerLoader,
 } from "../../utils/youtube";
 &nbsp;
-import type { LoaderData } from "./$id.server";
-export { loader } from "./$id.server";
-&nbsp;
-export const shouldRevalidate = disableUrlQueryRevalidation;
-&nbsp;
 export const handle: PageHandle = {
   navBarTitle: <span class="fstat-no" title="function not covered" >() =&gt; "Watch",</span>
   navBarMenu: <span class="fstat-no" title="function not covered" >() =&gt; &lt;NavBarMenuComponent /&gt;,</span>
 };
+&nbsp;
+//
+// loader
+//
+&nbsp;
+type LoaderData = {
+  video: VideoTable;
+};
+&nbsp;
+export const loader = makeLoader(async ({ ctx }) =&gt; {
+  const params = ROUTE_DEF["/videos/$id"].params.parse(ctx.params);
+  const video = await selectOne(T.videos, E.eq(T.videos.id, params.id));
+  tinyassert(video);
+  const loaderData: LoaderData = { video };
+  return loaderData;
+});
+&nbsp;
+export const shouldRevalidate = disableUrlQueryRevalidation;
+&nbsp;
+//
+// component
+//
 &nbsp;
 export default <span class="fstat-no" title="function not covered" >function DeafultComponent() {</span>
 <span class="cstat-no" title="statement not covered" >  const { currentUser } = useRootLoaderData();</span>
@@ -2902,7 +2956,7 @@ const playbackRateStateAtom = atom(INITIAL_PLAYBACK_RATE_STATE);
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-08-19T18:37:16.439Z
+                at 2023-08-19T18:44:22.959Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>
