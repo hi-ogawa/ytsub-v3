@@ -9,5 +9,3 @@ const t = initTRPC.context<TrpcAppContext>().create({
 });
 
 export const routerFactory = t.router;
-export const middlewareFactory = t.middleware;
-export const procedureBuilder = t.procedure;
