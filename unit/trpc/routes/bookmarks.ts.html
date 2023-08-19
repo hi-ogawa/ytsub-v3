@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">78.91% </span>
+                <span class="strong">77.3% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>116/147</span>
+                <span class='fraction'>109/141</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">78.91% </span>
+                <span class="strong">77.3% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>116/147</span>
+                <span class='fraction'>109/141</span>
             </div>
         
             
@@ -204,13 +204,7 @@
 <a name='L139'></a><a href='#L139'>139</a>
 <a name='L140'></a><a href='#L140'>140</a>
 <a name='L141'></a><a href='#L141'>141</a>
-<a name='L142'></a><a href='#L142'>142</a>
-<a name='L143'></a><a href='#L143'>143</a>
-<a name='L144'></a><a href='#L144'>144</a>
-<a name='L145'></a><a href='#L145'>145</a>
-<a name='L146'></a><a href='#L146'>146</a>
-<a name='L147'></a><a href='#L147'>147</a>
-<a name='L148'></a><a href='#L148'>148</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L142'></a><a href='#L142'>142</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -230,11 +224,6 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -266,8 +255,7 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -369,54 +357,48 @@ import {
   getZonedDateRange,
   toZdt,
 } from "../../utils/temporal-utils";
-import { middlewares } from "../context";
-import { procedureBuilder } from "../factory";
-&nbsp;
-export const trpcRoutesBookmarks = {
-  bookmarks_index: procedureBuilder
-    .use(middlewares.requireUser)
-    .input(
-      z.object({
-        q: z.string().optional(),
-        cursor: z.number().int().default(0),
-      })
-    )
-    .query(async ({ input, ctx }) =&gt; {
-<span class="cstat-no" title="statement not covered" >      const limit = 15;</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >      // deferred join</span>
-<span class="cstat-no" title="statement not covered" >      const subQueryIds = db</span>
-<span class="cstat-no" title="statement not covered" >        .select({ id: T.bookmarkEntries.id })</span>
-<span class="cstat-no" title="statement not covered" >        .from(T.bookmarkEntries)</span>
-<span class="cstat-no" title="statement not covered" >        .where(</span>
-<span class="cstat-no" title="statement not covered" >          E.and(</span>
-<span class="cstat-no" title="statement not covered" >            E.eq(T.bookmarkEntries.userId, ctx.user.id),</span>
-<span class="cstat-no" title="statement not covered" >            // TODO: index</span>
-<span class="cstat-no" title="statement not covered" >            mapOption(input.q, (v) =&gt; E.like(T.bookmarkEntries.text, `%${v}%`))</span>
-<span class="cstat-no" title="statement not covered" >          )</span>
-<span class="cstat-no" title="statement not covered" >        )</span>
-<span class="cstat-no" title="statement not covered" >        .orderBy(E.desc(T.bookmarkEntries.createdAt))</span>
-<span class="cstat-no" title="statement not covered" >        .offset(input.cursor)</span>
-<span class="cstat-no" title="statement not covered" >        .limit(limit)</span>
-<span class="cstat-no" title="statement not covered" >        .as("__subQueryIds");</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >      const rows = await db</span>
-<span class="cstat-no" title="statement not covered" >        .select()</span>
-<span class="cstat-no" title="statement not covered" >        .from(T.bookmarkEntries)</span>
-<span class="cstat-no" title="statement not covered" >        .innerJoin(subQueryIds, E.eq(subQueryIds.id, T.bookmarkEntries.id))</span>
-<span class="cstat-no" title="statement not covered" >        .innerJoin(T.videos, E.eq(T.videos.id, T.bookmarkEntries.videoId))</span>
-<span class="cstat-no" title="statement not covered" >        .innerJoin(</span>
-<span class="cstat-no" title="statement not covered" >          T.captionEntries,</span>
-<span class="cstat-no" title="statement not covered" >          E.eq(T.captionEntries.id, T.bookmarkEntries.captionEntryId)</span>
-<span class="cstat-no" title="statement not covered" >        )</span>
-<span class="cstat-no" title="statement not covered" >        .orderBy(E.desc(T.bookmarkEntries.createdAt));</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >      const nextCursor = rows.length === limit ? input.cursor + limit : null;</span>
-<span class="cstat-no" title="statement not covered" >      return { rows, nextCursor };</span>
-    }),
-};
 &nbsp;
 export const rpcRoutesBookmarks = {
+  bookmarks_index: validateFn(
+    z.object({
+      q: z.string().optional(),
+      cursor: z.number().int().default(0),
+    })
+  )(async (input) =&gt; {
+<span class="cstat-no" title="statement not covered" >    const user = await ctx_requireUser();</span>
+<span class="cstat-no" title="statement not covered" >    const limit = 15;</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >    // deferred join</span>
+<span class="cstat-no" title="statement not covered" >    const subQueryIds = db</span>
+<span class="cstat-no" title="statement not covered" >      .select({ id: T.bookmarkEntries.id })</span>
+<span class="cstat-no" title="statement not covered" >      .from(T.bookmarkEntries)</span>
+<span class="cstat-no" title="statement not covered" >      .where(</span>
+<span class="cstat-no" title="statement not covered" >        E.and(</span>
+<span class="cstat-no" title="statement not covered" >          E.eq(T.bookmarkEntries.userId, user.id),</span>
+<span class="cstat-no" title="statement not covered" >          // TODO: index</span>
+<span class="cstat-no" title="statement not covered" >          mapOption(input.q, (v) =&gt; E.like(T.bookmarkEntries.text, `%${v}%`))</span>
+<span class="cstat-no" title="statement not covered" >        )</span>
+<span class="cstat-no" title="statement not covered" >      )</span>
+<span class="cstat-no" title="statement not covered" >      .orderBy(E.desc(T.bookmarkEntries.createdAt))</span>
+<span class="cstat-no" title="statement not covered" >      .offset(input.cursor)</span>
+<span class="cstat-no" title="statement not covered" >      .limit(limit)</span>
+<span class="cstat-no" title="statement not covered" >      .as("__subQueryIds");</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >    const rows = await db</span>
+<span class="cstat-no" title="statement not covered" >      .select()</span>
+<span class="cstat-no" title="statement not covered" >      .from(T.bookmarkEntries)</span>
+<span class="cstat-no" title="statement not covered" >      .innerJoin(subQueryIds, E.eq(subQueryIds.id, T.bookmarkEntries.id))</span>
+<span class="cstat-no" title="statement not covered" >      .innerJoin(T.videos, E.eq(T.videos.id, T.bookmarkEntries.videoId))</span>
+<span class="cstat-no" title="statement not covered" >      .innerJoin(</span>
+<span class="cstat-no" title="statement not covered" >        T.captionEntries,</span>
+<span class="cstat-no" title="statement not covered" >        E.eq(T.captionEntries.id, T.bookmarkEntries.captionEntryId)</span>
+<span class="cstat-no" title="statement not covered" >      )</span>
+<span class="cstat-no" title="statement not covered" >      .orderBy(E.desc(T.bookmarkEntries.createdAt));</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >    const nextCursor = rows.length === limit ? input.cursor + limit : null;</span>
+<span class="cstat-no" title="statement not covered" >    return { rows, nextCursor };</span>
+  }),
+&nbsp;
   bookmarks_create: validateFn(
     z.object({
       videoId: z.number().int(),
@@ -511,7 +493,7 @@ export const rpcRoutesBookmarks = {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-08-19T03:48:32.934Z
+                at 2023-08-19T04:03:19.026Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
