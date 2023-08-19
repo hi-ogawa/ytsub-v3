@@ -3,39 +3,21 @@ import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { DeckNavBarMenuComponent } from ".";
-import type { DeckTable } from "../../../db/models";
 import { $R, R } from "../../../misc/routes";
 import { trpc } from "../../../trpc/client";
 import { intl } from "../../../utils/intl";
-import { requireUserAndDeck } from "../../../utils/loader-deck-utils";
 import { useLoaderDataExtra } from "../../../utils/loader-utils";
-import { makeLoader } from "../../../utils/loader-utils.server";
 import { cls } from "../../../utils/misc";
 import type { PageHandle } from "../../../utils/page-handle";
 import { toastInfo } from "../../../utils/toast-utils";
+
+import type { LoaderData } from "./common.server";
+export { loader } from "./common.server";
 
 export const handle: PageHandle = {
   navBarTitle: () => "Edit Deck",
   navBarMenu: () => <DeckNavBarMenuComponent />,
 };
-
-//
-// loader
-//
-
-interface LoaderData {
-  deck: DeckTable;
-}
-
-export const loader = makeLoader(async ({ ctx }) => {
-  const { deck } = await requireUserAndDeck(ctx);
-  const loaderData: LoaderData = { deck };
-  return loaderData;
-});
-
-//
-// component
-//
 
 export default function DefaultComponent() {
   return (
