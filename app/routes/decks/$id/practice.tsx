@@ -11,7 +11,7 @@ import type {
   VideoTable,
 } from "../../../db/models";
 import { PRACTICE_ACTION_TYPES, PracticeActionType } from "../../../db/types";
-import { trpc } from "../../../trpc/client";
+import { rpcClientQuery } from "../../../trpc/client";
 import {
   useLeafLoaderData,
   useLoaderDataExtra,
@@ -33,7 +33,7 @@ export default function DefaultComponent() {
   const { deck } = useLoaderDataExtra() as LoaderData;
 
   const nextPracticeQuery = useQuery({
-    ...trpc.decks_nextPracticeEntry.queryOptions({
+    ...rpcClientQuery.decks_nextPracticeEntry.queryOptions({
       deckId: deck.id,
     }),
     keepPreviousData: true,
@@ -42,8 +42,12 @@ export default function DefaultComponent() {
   const queryClient = useQueryClient();
 
   function refetch() {
-    queryClient.invalidateQueries([trpc.decks_nextPracticeEntry.queryKey]);
-    queryClient.invalidateQueries([trpc.decks_practiceStatistics.queryKey]);
+    queryClient.invalidateQueries(
+      rpcClientQuery.decks_nextPracticeEntry.queryKey
+    );
+    queryClient.invalidateQueries(
+      rpcClientQuery.decks_practiceStatistics.queryKey
+    );
   }
 
   return (
@@ -104,7 +108,7 @@ function PracticeComponent({
   isLoadingNext: boolean;
 }) {
   const newPracticeActionMutation = useMutation({
-    ...trpc.decks_practiceActionsCreate.mutationOptions(),
+    ...rpcClientQuery.decks_practiceActionsCreate.mutationOptions(),
     onSuccess: () => {
       loadNext();
     },

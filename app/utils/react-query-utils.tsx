@@ -6,7 +6,7 @@ import {
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import React from "react";
 import { toast } from "react-hot-toast";
-import { trpc } from "../trpc/client";
+import { rpcClientQuery } from "../trpc/client";
 import { useDocumentEvent } from "./hooks-client-utils";
 
 export function QueryClientWrapper({ children }: React.PropsWithChildren) {
@@ -53,10 +53,13 @@ function createQueryClient() {
     }),
   });
 
-  queryClient.setQueryDefaults([trpc.videos_getCaptionEntries.queryKey], {
-    staleTime: Infinity,
-    cacheTime: Infinity,
-  });
+  queryClient.setQueryDefaults(
+    rpcClientQuery.videos_getCaptionEntries.queryKey,
+    {
+      staleTime: Infinity,
+      cacheTime: Infinity,
+    }
+  );
 
   return queryClient;
 }

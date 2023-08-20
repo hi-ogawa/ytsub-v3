@@ -1,10 +1,10 @@
 import { describe, expect, it } from "vitest";
 import { E, T, selectMany } from "../../db/drizzle-client.server";
 import { useUserVideo } from "../../misc/test-helper";
-import { trpc } from "../client";
-import { testTrpcClient } from "../test-helper";
+import { mockRequestContext } from "../../server/request-context/mock";
+import { rpcRoutes } from "../server";
 
-describe(trpc.videos_destroy.mutationKey, () => {
+describe(rpcRoutes.videos_destroy.name, () => {
   const hook = useUserVideo({
     seed: __filename + "videos_destroy",
   });
@@ -14,13 +14,14 @@ describe(trpc.videos_destroy.mutationKey, () => {
   }
 
   it("basic", async () => {
-    await expect(getVideos()).resolves.toHaveLength(1);
-
-    const trpc = await testTrpcClient({ user: hook.user });
-    await trpc.videos_destroy({
-      videoId: hook.video.id,
+    await mockRequestContext({ user: hook.user })(async () => {
+      expect(await getVideos().then((v) => v.length)).toMatchInlineSnapshot(
+        "1"
+      );
+      await rpcRoutes.videos_destroy({ videoId: hook.video.id });
+      expect(await getVideos().then((v) => v.length)).toMatchInlineSnapshot(
+        "0"
+      );
     });
-
-    await expect(getVideos()).resolves.toHaveLength(0);
   });
 });

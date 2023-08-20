@@ -3,7 +3,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { $R } from "../../misc/routes";
-import { trpc } from "../../trpc/client";
+import { rpcClientQuery } from "../../trpc/client";
 import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 
@@ -17,7 +17,7 @@ export default function DefaultComponent() {
   const navigate = useNavigate();
 
   const newDeckMutation = useMutation({
-    ...trpc.decks_create.mutationOptions(),
+    ...rpcClientQuery.decks_create.mutationOptions(),
     onSuccess: (res) => {
       toast.success("Successfully created a deck");
       navigate($R["/decks/$id"]({ id: res.deckId }));

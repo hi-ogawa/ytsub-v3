@@ -7,7 +7,7 @@ import { SelectWrapper, transitionProps } from "../../../components/misc";
 import type { TT } from "../../../db/drizzle-client.server";
 import { PRACTICE_ACTION_TYPES, PracticeActionType } from "../../../db/types";
 import { ROUTE_DEF } from "../../../misc/routes";
-import { trpc } from "../../../trpc/client";
+import { rpcClientQuery } from "../../../trpc/client";
 import { useIntersectionObserver } from "../../../utils/hooks-client-utils";
 import { formatRelativeDate } from "../../../utils/intl";
 import {
@@ -39,20 +39,13 @@ export default function DefaultComponent() {
   );
 
   const practiceActionsQuery = useInfiniteQuery({
-    ...trpc.decks_practiceActions.infiniteQueryOptions(
-      {
-        deckId: deck.id,
-        actionType: urlQuery?.actionType,
-        practiceEntryId: urlQuery?.practiceEntryId,
-      },
-      {
-        getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
-        setPageParam: (input, pageParam) => ({
-          ...input,
-          cursor: pageParam as any,
-        }),
-      }
-    ),
+    ...rpcClientQuery.decks_practiceActions.infiniteQueryOptions((context) => ({
+      deckId: deck.id,
+      actionType: urlQuery?.actionType,
+      practiceEntryId: urlQuery?.practiceEntryId,
+      cursor: context?.pageParam as any,
+    })),
+    getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
     keepPreviousData: true,
   });
   const rows = practiceActionsQuery.data?.pages.flatMap((res) => res.rows);
@@ -128,7 +121,7 @@ function ActionStatisticsComponent({
   currentActionType?: PracticeActionType;
 }) {
   const practiceStatisticsQuery = useQuery(
-    trpc.decks_practiceStatistics.queryOptions({ deckId })
+    rpcClientQuery.decks_practiceStatistics.queryOptions({ deckId })
   );
 
   return (

@@ -3,7 +3,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { $R } from "../../misc/routes";
-import { trpc } from "../../trpc/client";
+import { rpcClientQuery } from "../../trpc/client";
 import { useLoaderDataExtra } from "../../utils/loader-utils";
 import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
@@ -21,7 +21,7 @@ export default function Page() {
   const navigate = useNavigate();
 
   const mutation = useMutation({
-    ...trpc.users_resetPassword.mutationOptions(),
+    ...rpcClientQuery.users_resetPassword.mutationOptions(),
     onSuccess: () => {
       // TODO: force logging out?
       toast.success("Successfully reset your password");

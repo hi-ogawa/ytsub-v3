@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { DeckNavBarMenuComponent } from ".";
 import { $R, R } from "../../../misc/routes";
-import { trpc } from "../../../trpc/client";
+import { rpcClientQuery } from "../../../trpc/client";
 import { intl } from "../../../utils/intl";
 import { useLoaderDataExtra } from "../../../utils/loader-utils";
 import { cls } from "../../../utils/misc";
@@ -33,7 +33,7 @@ function DefaultComponentInner() {
   const form = useForm({ defaultValues: deck });
 
   const updateDeckMutation = useMutation({
-    ...trpc.decks_update.mutationOptions(),
+    ...rpcClientQuery.decks_update.mutationOptions(),
     onSuccess: () => {
       toast.success("Successfully updated a deck");
       form.reset(form.getValues());
@@ -46,7 +46,7 @@ function DefaultComponentInner() {
   const navigate = useNavigate();
 
   const deckDestroyMutation = useMutation({
-    ...trpc.decks_destroy.mutationOptions(),
+    ...rpcClientQuery.decks_destroy.mutationOptions(),
     onSuccess: () => {
       toast.success("Successfully deleted a deck");
       navigate(R["/decks"]);

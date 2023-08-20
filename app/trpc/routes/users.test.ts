@@ -1,107 +1,107 @@
 import { tinyassert } from "@hiogawa/utils";
 import { beforeEach, describe, expect, it } from "vitest";
+import { z } from "zod";
 import { E, T, db } from "../../db/drizzle-client.server";
 import { useUser } from "../../misc/test-helper";
+import { zSnapshotType } from "../../misc/test-helper-snapshot";
+import { mockRequestContext } from "../../server/request-context/mock";
+import { ctx_get } from "../../server/request-context/storage";
 import { findByUsername, getSessionUser } from "../../utils/auth";
-import { TrpcInputs, trpc } from "../client";
-import { testTrpcClient, testTrpcClientWithContext } from "../test-helper";
+import { getResponseSession } from "../../utils/session.server";
+import { rpcRoutes } from "../server";
 
-describe(trpc.users_signin.mutationKey, () => {
-  const credentials = { username: "test-trpc-signin", password: "correct" };
+describe(rpcRoutes.users_signin.name, () => {
+  const credentials = { username: "test-trpc-signin-v2", password: "correct" };
   const userHook = useUser(credentials);
 
-  describe("success", () => {
-    it("basic", async () => {
-      const trpc = await testTrpcClientWithContext();
-      const output = await trpc.caller.users_signin(credentials);
-      expect(Object.keys(output)).toMatchInlineSnapshot(`
-        [
-          "id",
-          "createdAt",
-          "updatedAt",
-          "username",
-          "email",
-          "language1",
-          "language2",
-          "timezone",
-        ]
+  it("basic", async () => {
+    await mockRequestContext()(async () => {
+      const output = await rpcRoutes.users_signin(credentials);
+
+      expect(
+        z
+          .object({
+            id: zSnapshotType,
+            createdAt: zSnapshotType,
+            updatedAt: zSnapshotType,
+          })
+          .passthrough()
+          .parse(output)
+      ).toMatchInlineSnapshot(`
+        {
+          "createdAt": "[Date]",
+          "email": null,
+          "id": "[number]",
+          "language1": null,
+          "language2": null,
+          "timezone": "+00:00",
+          "updatedAt": "[Date]",
+          "username": "test-trpc-signin-v2",
+        }
       `);
       expect(output).toEqual(userHook.data);
 
-      // check session cookie in response header
-      const sessionUser = await getSessionUser(
-        await trpc.ctx.__getRepsonseSession()
-      );
+      const sessionUser = await ctx_getResponseSessionUser();
       expect(sessionUser).toEqual(userHook.data);
     });
   });
 
-  describe("error", () => {
-    it("invalid username", async () => {
-      const trpc = await testTrpcClient();
+  it("error invalid username", async () => {
+    await mockRequestContext()(async () => {
       await expect(
-        trpc.users_signin({
+        rpcRoutes.users_signin({
           ...credentials,
           username: "wrong",
         })
-      ).rejects.toMatchInlineSnapshot(
-        "[TRPCError: Invalid username or password]"
-      );
+      ).rejects.toMatchInlineSnapshot("[Error: Invalid username or password]");
     });
+  });
 
-    it("invalid password", async () => {
-      const trpc = await testTrpcClient();
+  it("error invalid password", async () => {
+    await mockRequestContext()(async () => {
       await expect(
-        trpc.users_signin({
+        rpcRoutes.users_signin({
           ...credentials,
           password: "wrong",
         })
-      ).rejects.toMatchInlineSnapshot(
-        "[TRPCError: Invalid username or password]"
-      );
+      ).rejects.toMatchInlineSnapshot("[Error: Invalid username or password]");
     });
+  });
 
-    it("already signed in", async () => {
-      const trpc = await testTrpcClient({ user: userHook.data });
+  it("error already signed in", async () => {
+    await mockRequestContext({ user: userHook.data })(async () => {
       await expect(
-        trpc.users_signin({
-          ...credentials,
-          password: "bad",
-        })
-      ).rejects.toMatchInlineSnapshot("[TRPCError: Already signed in]");
+        rpcRoutes.users_signin(credentials)
+      ).rejects.toMatchInlineSnapshot("[Error: Already signed in]");
     });
   });
 });
 
-describe(trpc.users_signout.mutationKey, () => {
+describe(rpcRoutes.users_signout.name, () => {
   const credentials = { username: "test-trpc-signout", password: "correct" };
   const userHook = useUser(credentials);
 
-  describe("success", () => {
-    it("basic", async () => {
-      const trpc = await testTrpcClientWithContext({ user: userHook.data });
-      await trpc.caller.users_signout(null);
+  it("basic", async () => {
+    await mockRequestContext({ user: userHook.data })(async () => {
+      const output = await rpcRoutes.users_signout();
+      expect(output).toMatchInlineSnapshot("undefined");
 
-      // check session cookie in response header
-      const sessionUser = await getSessionUser(
-        await trpc.ctx.__getRepsonseSession()
-      );
-      expect(sessionUser).toBeUndefined();
+      const sessionUser = await ctx_getResponseSessionUser();
+      tinyassert(!sessionUser);
     });
   });
 
-  describe("error", () => {
-    it("not signed in", async () => {
-      const trpc = await testTrpcClient();
-      await expect(trpc.users_signout(null)).rejects.toMatchInlineSnapshot(
-        "[TRPCError: Not signed in]"
+  it("error", async () => {
+    await mockRequestContext()(async () => {
+      await expect(rpcRoutes.users_signout()).rejects.toMatchInlineSnapshot(
+        "[Error: Not signed in]"
       );
     });
   });
 });
 
-describe(trpc.users_register.mutationKey, () => {
-  const credentials: TrpcInputs["users_register"] = {
+describe(rpcRoutes.users_register.name, () => {
+  const credentials: Parameters<typeof rpcRoutes.users_register>[0] = {
     username: "test-trpc-register",
     password: "correct",
     passwordConfirmation: "correct",
@@ -115,10 +115,10 @@ describe(trpc.users_register.mutationKey, () => {
       .where(E.eq(T.users.username, credentials.username));
   });
 
-  describe("success", () => {
-    it("basic", async () => {
-      const trpc = await testTrpcClientWithContext();
-      await trpc.caller.users_register(credentials);
+  it("basic", async () => {
+    await mockRequestContext()(async () => {
+      const output = await rpcRoutes.users_register(credentials);
+      expect(output).toMatchInlineSnapshot("undefined");
 
       const found = await findByUsername(credentials.username);
       tinyassert(found);
@@ -130,134 +130,131 @@ describe(trpc.users_register.mutationKey, () => {
         5000
       );
 
-      // check session cookie in response header
-      const sessionUser = await getSessionUser(
-        await trpc.ctx.__getRepsonseSession()
-      );
+      const sessionUser = await ctx_getResponseSessionUser();
       expect(sessionUser).toEqual(found);
     });
   });
 
-  describe("error", () => {
-    it("username format", async () => {
-      const trpc = await testTrpcClientWithContext();
-      await expect(
-        trpc.caller.users_register({
+  it("error username format", async () => {
+    await mockRequestContext()(async () => {
+      expect(() =>
+        rpcRoutes.users_register({
           ...credentials,
           username: "$invalid@format#",
         })
-      ).rejects.toMatchInlineSnapshot(`
-        [TRPCError: [
+      ).toThrowErrorMatchingInlineSnapshot(`
+        "[
           {
-            "validation": "regex",
-            "code": "invalid_string",
-            "message": "Invalid",
-            "path": [
-              "username"
+            \\"validation\\": \\"regex\\",
+            \\"code\\": \\"invalid_string\\",
+            \\"message\\": \\"Invalid\\",
+            \\"path\\": [
+              \\"username\\"
             ]
           }
-        ]]
+        ]"
       `);
     });
+  });
 
-    it("password confirmation", async () => {
-      const trpc = await testTrpcClientWithContext();
-      await expect(
-        trpc.caller.users_register({
+  it("error password confirmation", async () => {
+    await mockRequestContext()(async () => {
+      expect(() =>
+        rpcRoutes.users_register({
           ...credentials,
           passwordConfirmation: "wrong",
         })
-      ).rejects.toMatchInlineSnapshot(`
-        [TRPCError: [
+      ).toThrowErrorMatchingInlineSnapshot(`
+        "[
           {
-            "code": "custom",
-            "message": "Invalid",
-            "path": [
-              "passwordConfirmation"
+            \\"code\\": \\"custom\\",
+            \\"message\\": \\"Invalid\\",
+            \\"path\\": [
+              \\"passwordConfirmation\\"
             ]
           }
-        ]]
+        ]"
       `);
     });
+  });
 
-    describe("password length", () => {
-      it("short", async () => {
-        const trpc = await testTrpcClientWithContext();
-        await expect(
-          trpc.caller.users_register({
-            ...credentials,
-            password: "x",
-            passwordConfirmation: "x",
-          })
-        ).rejects.toMatchInlineSnapshot(`
-          [TRPCError: [
-            {
-              "code": "too_small",
-              "minimum": 3,
-              "type": "string",
-              "inclusive": true,
-              "exact": false,
-              "message": "String must contain at least 3 character(s)",
-              "path": [
-                "password"
-              ]
-            }
-          ]]
-        `);
-      });
-
-      it("long", async () => {
-        const trpc = await testTrpcClientWithContext();
-        await expect(
-          trpc.caller.users_register({
-            ...credentials,
-            password: "x".repeat(200),
-            passwordConfirmation: "x".repeat(200),
-          })
-        ).rejects.toMatchInlineSnapshot(`
-          [TRPCError: [
-            {
-              "code": "too_big",
-              "maximum": 128,
-              "type": "string",
-              "inclusive": true,
-              "exact": false,
-              "message": "String must contain at most 128 character(s)",
-              "path": [
-                "password"
-              ]
-            }
-          ]]
-        `);
-      });
+  it("error password length short", async () => {
+    await mockRequestContext()(async () => {
+      expect(() =>
+        rpcRoutes.users_register({
+          ...credentials,
+          password: "x",
+          passwordConfirmation: "x",
+        })
+      ).toThrowErrorMatchingInlineSnapshot(`
+        "[
+          {
+            \\"code\\": \\"too_small\\",
+            \\"minimum\\": 3,
+            \\"type\\": \\"string\\",
+            \\"inclusive\\": true,
+            \\"exact\\": false,
+            \\"message\\": \\"String must contain at least 3 character(s)\\",
+            \\"path\\": [
+              \\"password\\"
+            ]
+          }
+        ]"
+      `);
     });
+  });
 
-    it("unique username case insensitive", async () => {
-      {
-        const trpc = await testTrpcClientWithContext();
-        await trpc.caller.users_register(credentials);
-      }
+  it("error password confirmation", async () => {
+    await mockRequestContext()(async () => {
+      expect(() =>
+        rpcRoutes.users_register({
+          ...credentials,
+          password: "x".repeat(200),
+          passwordConfirmation: "x".repeat(200),
+        })
+      ).toThrowErrorMatchingInlineSnapshot(`
+        "[
+          {
+            \\"code\\": \\"too_big\\",
+            \\"maximum\\": 128,
+            \\"type\\": \\"string\\",
+            \\"inclusive\\": true,
+            \\"exact\\": false,
+            \\"message\\": \\"String must contain at most 128 character(s)\\",
+            \\"path\\": [
+              \\"password\\"
+            ]
+          }
+        ]"
+      `);
+    });
+  });
 
-      {
-        const trpc = await testTrpcClientWithContext();
-        await expect(
-          trpc.caller.users_register(credentials)
-        ).rejects.toMatchInlineSnapshot(
-          "[TRPCError: Username 'test-trpc-register' is already taken]"
-        );
-      }
+  it("error unique case insensitive username", async () => {
+    await mockRequestContext()(async () => {
+      await rpcRoutes.users_register(credentials);
+    });
+    await mockRequestContext()(async () => {
+      await expect(
+        rpcRoutes.users_register(credentials)
+      ).rejects.toMatchInlineSnapshot(
+        "[Error: Username 'test-trpc-register' is already taken]"
+      );
 
-      {
-        const trpc = await testTrpcClientWithContext();
-        await expect(
-          trpc.caller.users_register({
-            ...credentials,
-            username: "test-tRPC-REGISTER",
-          })
-        ).rejects.toMatchInlineSnapshot(
-          "[TRPCError: Username 'test-tRPC-REGISTER' is already taken]"
-        );
-      }
+      await expect(
+        rpcRoutes.users_register({
+          ...credentials,
+          username: "test-tRPC-REGISTER",
+        })
+      ).rejects.toMatchInlineSnapshot(
+        "[Error: Username 'test-tRPC-REGISTER' is already taken]"
+      );
     });
   });
 });
+
+async function ctx_getResponseSessionUser() {
+  return await getSessionUser(
+    await getResponseSession({ headers: ctx_get().responseHeaders })
+  );
+}

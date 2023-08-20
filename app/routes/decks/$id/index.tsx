@@ -12,7 +12,7 @@ import type {
 } from "../../../db/models";
 import type { PracticeActionType, PracticeQueueType } from "../../../db/types";
 import { $R } from "../../../misc/routes";
-import { trpc } from "../../../trpc/client";
+import { rpcClientQuery } from "../../../trpc/client";
 import { intl, intlWrapper } from "../../../utils/intl";
 import {
   useLeafLoaderData,
@@ -72,7 +72,7 @@ export function QueueStatisticsComponent({
   currentQueueType?: PracticeQueueType;
 }) {
   const practiceStatisticsQuery = useQuery(
-    trpc.decks_practiceStatistics.queryOptions({ deckId })
+    rpcClientQuery.decks_practiceStatistics.queryOptions({ deckId })
   );
 
   return (

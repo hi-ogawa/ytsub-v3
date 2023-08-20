@@ -1,9 +1,16 @@
 import crypto from "crypto";
+import { validateFn } from "@hiogawa/tiny-rpc";
 import { tinyassert } from "@hiogawa/utils";
 import showdown from "showdown";
 import { z } from "zod";
 import { E, T, db, selectOne } from "../../db/drizzle-client.server";
 import { $R } from "../../misc/routes";
+import {
+  ctx_commitSession,
+  ctx_requireSignout,
+  ctx_requireUser,
+} from "../../server/request-context/session";
+import { ctx_get } from "../../server/request-context/storage";
 import {
   findByUsername,
   register,
@@ -17,176 +24,156 @@ import { sendEmail } from "../../utils/email-utils";
 import { toPasswordHash } from "../../utils/password-utils";
 import { isValidTimezone } from "../../utils/temporal-utils";
 import { verifyTurnstile } from "../../utils/turnstile-utils.server";
-import { middlewares } from "../context";
-import { procedureBuilder } from "../factory";
 
-export const trpcRoutesUsers = {
-  users_register: procedureBuilder
-    .use(middlewares.currentUser)
-    .input(
-      z
-        .object({
-          username: Z_USERNAME,
-          password: Z_PASSWORD,
-          passwordConfirmation: z.string(),
-          token: z.string(),
-          timezone: z.string().refine(isValidTimezone),
-        })
-        .refine((obj) => obj.password === obj.passwordConfirmation, {
-          message: "Invalid",
-          path: ["passwordConfirmation"],
-        })
-    )
-    .mutation(async ({ input, ctx }) => {
-      tinyassert(!ctx.user, "Already signed in");
-      await verifyTurnstile({ response: input.token });
-      const user = await register(input);
-      signinSession(ctx.session, user);
-      await ctx.commitSession();
-    }),
-
-  users_signin: procedureBuilder
-    .use(middlewares.currentUser)
-    .input(
-      z.object({
+export const rpcRoutesUsers = {
+  users_register: validateFn(
+    z
+      .object({
         username: Z_USERNAME,
         password: Z_PASSWORD,
-      })
-    )
-    .mutation(async ({ input, ctx }) => {
-      tinyassert(!ctx.user, "Already signed in");
-      tinyassert(await verifySignin(input), "Invalid username or password");
-      const user = await findByUsername(input.username);
-      tinyassert(user);
-      signinSession(ctx.session, user);
-      await ctx.commitSession();
-      return user;
-    }),
-
-  users_signout: procedureBuilder
-    .use(middlewares.currentUser)
-    .input(z.null())
-    .mutation(async ({ ctx }) => {
-      tinyassert(ctx.user, "Not signed in");
-      signoutSession(ctx.session);
-      await ctx.commitSession();
-    }),
-
-  users_update: procedureBuilder
-    .use(middlewares.requireUser)
-    .input(
-      z.object({
-        language1: z.string().nullable(),
-        language2: z.string().nullable(),
+        passwordConfirmation: z.string(),
+        token: z.string(),
         timezone: z.string().refine(isValidTimezone),
       })
-    )
-    .mutation(async ({ input, ctx }) => {
-      await db.update(T.users).set(input).where(E.eq(T.users.id, ctx.user.id));
-    }),
-
-  users_requestUpdateEmail: procedureBuilder
-    .use(middlewares.requireUser)
-    .input(
-      z.object({
-        email: z.string().email(),
+      .refine((obj) => obj.password === obj.passwordConfirmation, {
+        message: "Invalid",
+        path: ["passwordConfirmation"],
       })
-    )
-    .mutation(async ({ input, ctx }) => {
-      // we only minimally check if new email is differrnt from current email.
-      // we don't check whether new email already exists in db
-      // because showing an error for that would give away other user's email.
-      tinyassert(input.email !== ctx.user.email);
-      const code = await generateUniqueCode((code) =>
-        selectOne(
-          T.emailUpdateRequests,
-          E.eq(T.emailUpdateRequests.code, code)
-        ).then((row) => !row)
-      );
-      await db.insert(T.emailUpdateRequests).values({
-        userId: ctx.user.id,
-        email: input.email,
-        code,
-      });
-      await sendEmailChangeVerificationEmail({
-        username: ctx.user.username,
-        email: input.email,
-        code,
-      });
-    }),
+  )(async (input) => {
+    await ctx_requireSignout();
+    await verifyTurnstile({ response: input.token });
+    const user = await register(input);
+    signinSession(ctx_get().session, user);
+    await ctx_commitSession();
+  }),
 
-  users_requestResetPassword: procedureBuilder
-    .input(
-      z.object({
-        email: z.string().email(),
-        token: z.string(),
-      })
-    )
-    .mutation(async ({ input }) => {
-      await verifyTurnstile({ response: input.token });
+  users_signin: validateFn(
+    z.object({
+      username: Z_USERNAME,
+      password: Z_PASSWORD,
+    })
+  )(async (input) => {
+    await ctx_requireSignout();
+    tinyassert(await verifySignin(input), "Invalid username or password");
+    const user = await findByUsername(input.username);
+    tinyassert(user);
+    signinSession(ctx_get().session, user);
+    await ctx_commitSession();
+    return user;
+  }),
 
-      const code = await generateUniqueCode((code) =>
-        selectOne(
-          T.passwordResetRequests,
-          E.eq(T.passwordResetRequests.code, code)
-        ).then((row) => !row)
-      );
-      await db.insert(T.passwordResetRequests).values({
-        email: input.email,
-        code,
-      });
+  users_signout: async () => {
+    await ctx_requireUser("Not signed in");
+    signoutSession(ctx_get().session);
+    await ctx_commitSession();
+  },
 
-      const user = await selectOne(T.users, E.eq(T.users.email, input.email));
-      // TODO: obfuscate response time
-      if (user) {
-        await sendResetPasswordEmail({ email: input.email, code });
-      }
-    }),
+  users_update: validateFn(
+    z.object({
+      language1: z.string().nullable(),
+      language2: z.string().nullable(),
+      timezone: z.string().refine(isValidTimezone),
+    })
+  )(async (input) => {
+    const user = await ctx_requireUser();
+    await db.update(T.users).set(input).where(E.eq(T.users.id, user.id));
+  }),
 
-  users_resetPassword: procedureBuilder
-    .input(
-      z.object({
-        code: z.string(),
-        password: z.string(),
-        passwordConfirmation: z.string(),
-      })
-    )
-    .mutation(async ({ input }) => {
-      tinyassert(input.password === input.passwordConfirmation);
+  users_requestUpdateEmail: validateFn(
+    z.object({
+      email: z.string().email(),
+    })
+  )(async (input) => {
+    const user = await ctx_requireUser();
 
-      const row = await selectOne(
+    // we only minimally check if new email is differrnt from current email.
+    // we don't check whether new email already exists in db
+    // because showing an error for that would give away other user's email.
+    tinyassert(input.email !== user.email);
+    const code = await generateUniqueCode((code) =>
+      selectOne(
+        T.emailUpdateRequests,
+        E.eq(T.emailUpdateRequests.code, code)
+      ).then((row) => !row)
+    );
+    await db.insert(T.emailUpdateRequests).values({
+      userId: user.id,
+      email: input.email,
+      code,
+    });
+    await sendEmailChangeVerificationEmail({
+      username: user.username,
+      email: input.email,
+      code,
+    });
+  }),
+
+  users_requestResetPassword: validateFn(
+    z.object({
+      email: z.string().email(),
+      token: z.string(),
+    })
+  )(async (input) => {
+    await verifyTurnstile({ response: input.token });
+
+    const code = await generateUniqueCode((code) =>
+      selectOne(
         T.passwordResetRequests,
-        E.eq(T.passwordResetRequests.code, input.code)
-      );
-      tinyassert(row);
-      tinyassert(!row.invalidatedAt);
+        E.eq(T.passwordResetRequests.code, code)
+      ).then((row) => !row)
+    );
+    await db.insert(T.passwordResetRequests).values({
+      email: input.email,
+      code,
+    });
 
-      const now = new Date();
-      tinyassert(
-        now.getTime() - row.createdAt.getTime() < VERIFICATION_MAX_AGE
-      );
+    const user = await selectOne(T.users, E.eq(T.users.email, input.email));
+    // TODO: obfuscate response time
+    if (user) {
+      await sendResetPasswordEmail({ email: input.email, code });
+    }
+  }),
 
-      // find and update user
-      const user = await selectOne(T.users, E.eq(T.users.email, row.email));
-      tinyassert(user);
-      await db
-        .update(T.usersCredentials)
-        .set({
-          passwordHash: await toPasswordHash(input.password),
-        })
-        .where(E.eq(T.users.id, user.id));
+  users_resetPassword: validateFn(
+    z.object({
+      code: z.string(),
+      password: z.string(),
+      passwordConfirmation: z.string(),
+    })
+  )(async (input) => {
+    tinyassert(input.password === input.passwordConfirmation);
 
-      // invalidate request
-      await db
-        .update(T.passwordResetRequests)
-        .set({
-          invalidatedAt: now,
-        })
-        .where(E.eq(T.passwordResetRequests.id, row.id));
+    const row = await selectOne(
+      T.passwordResetRequests,
+      E.eq(T.passwordResetRequests.code, input.code)
+    );
+    tinyassert(row);
+    tinyassert(!row.invalidatedAt);
 
-      // TODO: send email to notify password has changed
-      // TODO: reset existing sessions
-    }),
+    const now = new Date();
+    tinyassert(now.getTime() - row.createdAt.getTime() < VERIFICATION_MAX_AGE);
+
+    // find and update user
+    const user = await selectOne(T.users, E.eq(T.users.email, row.email));
+    tinyassert(user);
+    await db
+      .update(T.usersCredentials)
+      .set({
+        passwordHash: await toPasswordHash(input.password),
+      })
+      .where(E.eq(T.users.id, user.id));
+
+    // invalidate request
+    await db
+      .update(T.passwordResetRequests)
+      .set({
+        invalidatedAt: now,
+      })
+      .where(E.eq(T.passwordResetRequests.id, row.id));
+
+    // TODO: send email to notify password has changed
+    // TODO: reset existing sessions
+  }),
 };
 
 // check collision in application layer first

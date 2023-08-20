@@ -15,7 +15,7 @@ import type {
   VideoTable,
 } from "../../db/models";
 import { $R, ROUTE_DEF } from "../../misc/routes";
-import { trpc } from "../../trpc/client";
+import { rpcClientQuery } from "../../trpc/client";
 import {
   disableUrlQueryRevalidation,
   useTypedUrlQuery,
@@ -42,18 +42,11 @@ export default function DefaultComponent() {
   const form = useForm({ defaultValues: urlQuery });
 
   const bookmarkEntriesQuery = useInfiniteQuery({
-    ...trpc.bookmarks_index.infiniteQueryOptions(
-      {
-        q: urlQuery?.q,
-      },
-      {
-        getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
-        setPageParam: (input, pageParam) => ({
-          ...input,
-          cursor: pageParam as any,
-        }),
-      }
-    ),
+    ...rpcClientQuery.bookmarks_index.infiniteQueryOptions((context) => ({
+      q: urlQuery?.q,
+      cursor: context?.pageParam as any,
+    })),
+    getNextPageParam: (lastPage) => lastPage.nextCursor,
     keepPreviousData: true,
   });
   const rows = bookmarkEntriesQuery.data?.pages.flatMap((page) => page.rows);
@@ -226,7 +219,9 @@ export function MiniPlayer({
   const [queryEnabled, setQueryEnabled] = React.useState(false);
 
   const captionEntriesQuery = useQuery({
-    ...trpc.videos_getCaptionEntries.queryOptions({ videoId: video.id }),
+    ...rpcClientQuery.videos_getCaptionEntries.queryOptions({
+      videoId: video.id,
+    }),
     enabled: queryEnabled,
   });
 

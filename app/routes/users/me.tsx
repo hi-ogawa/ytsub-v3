@@ -5,8 +5,7 @@ import toast from "react-hot-toast";
 import { useModal } from "../../components/modal";
 import { PopoverSimple } from "../../components/popover";
 import type { UserTable } from "../../db/models";
-import { trpc } from "../../trpc/client";
-import { trpcClient } from "../../trpc/client-internal.client";
+import { rpcClient, rpcClientQuery } from "../../trpc/client";
 import { intl } from "../../utils/intl";
 import {
   FILTERED_LANGUAGE_CODES,
@@ -29,7 +28,7 @@ export default function DefaultComponent() {
   const navigate = useNavigate();
 
   const updateMutation = useMutation({
-    ...trpc.users_update.mutationOptions(),
+    ...rpcClientQuery.users_update.mutationOptions(),
     onSuccess: () => {
       toast.success("Successfully updated settings");
       form.reset(form.getValues());
@@ -45,7 +44,7 @@ export default function DefaultComponent() {
   const resetPasswordMutation = useMutation({
     mutationFn: async ({ email }: { email: string }) => {
       const token = await turnstile.render();
-      return trpcClient.users_requestResetPassword.mutate({
+      return rpcClient.users_requestResetPassword({
         email,
         token,
       });
@@ -215,7 +214,7 @@ function UpdateEmailForm(props: { onSuccess: () => void }) {
   const formIsValid = form.formState.isValid;
 
   const mutation = useMutation({
-    ...trpc.users_requestUpdateEmail.mutationOptions(),
+    ...rpcClientQuery.users_requestUpdateEmail.mutationOptions(),
     onSuccess: () => {
       toast.success("Verification email is sent successfullly");
       props.onSuccess();

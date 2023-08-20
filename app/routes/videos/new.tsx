@@ -7,8 +7,7 @@ import { toast } from "react-hot-toast";
 import { SelectWrapper } from "../../components/misc";
 import { PopoverSimple } from "../../components/popover";
 import { $R } from "../../misc/routes";
-import { trpc } from "../../trpc/client";
-import { trpcClient } from "../../trpc/client-internal.client";
+import { rpcClient, rpcClientQuery } from "../../trpc/client";
 import {
   FILTERED_LANGUAGE_CODES,
   LanguageCode,
@@ -49,7 +48,7 @@ function DefaultComponentInner() {
   const navigate = useNavigate();
 
   const createMutation = useMutation({
-    ...trpc.videos_create.mutationOptions(),
+    ...rpcClientQuery.videos_create.mutationOptions(),
     onSuccess: (data) => {
       if (data.created) {
         toast.success("Created a new video");
@@ -197,7 +196,7 @@ function AdvancedModeFormV2({ videoId }: { videoId: string }) {
     mutationFn: async (data: FormType) => {
       tinyassert(data.language1);
       tinyassert(data.language2);
-      return trpcClient.videos_createDirect.mutate({
+      return rpcClient.videos_createDirect({
         videoId,
         language1: {
           id: encodeAdvancedModeLanguageCode(data.language1),

@@ -2,7 +2,7 @@ import { Link } from "@remix-run/react";
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { $R } from "../../misc/routes";
-import { trpc } from "../../trpc/client";
+import { rpcClientQuery } from "../../trpc/client";
 import { encodeFlashMessage } from "../../utils/flash-message";
 import { cls } from "../../utils/misc";
 import { navigateRefresh } from "../../utils/misc-client";
@@ -21,7 +21,7 @@ export { loader } from "./register";
 
 export default function DefaultComponent() {
   const signinMutation = useMutation({
-    ...trpc.users_signin.mutationOptions(),
+    ...rpcClientQuery.users_signin.mutationOptions(),
     onSuccess: () => {
       const href =
         $R["/"]() +

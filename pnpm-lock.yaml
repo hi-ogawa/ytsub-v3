@@ -37,9 +37,18 @@ dependencies:
   '@hiogawa/argon2-wasm-bindgen':
     specifier: 0.0.6-pre.5
     version: 0.0.6-pre.5
+  '@hiogawa/json-extra':
+    specifier: ^0.0.1
+    version: 0.0.1
+  '@hiogawa/query-proxy':
+    specifier: 0.1.1-pre.3
+    version: 0.1.1-pre.3
   '@hiogawa/theme-script':
     specifier: 0.0.4-pre.3
     version: 0.0.4-pre.3(vite@4.3.9)
+  '@hiogawa/tiny-rpc':
+    specifier: 0.2.3-pre.10
+    version: 0.2.3-pre.10
   '@hiogawa/utils':
     specifier: 1.6.1-pre.1
     version: 1.6.1-pre.1
@@ -82,12 +91,6 @@ dependencies:
   '@tanstack/react-virtual':
     specifier: 3.0.0-beta.54
     version: 3.0.0-beta.54(react@18.2.0)
-  '@trpc/client':
-    specifier: ^10.33.0
-    version: 10.33.0(@trpc/server@10.33.0)
-  '@trpc/server':
-    specifier: ^10.33.0
-    version: 10.33.0
   drizzle-orm:
     specifier: ^0.26.5
     version: 0.26.5(@opentelemetry/api@1.4.1)(knex@2.4.2)(mysql2@3.4.3)
@@ -2155,6 +2158,19 @@ packages:
       typescript: 5.1.6
     dev: true
 
+  /@hiogawa/json-extra@0.0.1:
+    resolution: {integrity: sha512-LFh/FLhj0s0LqxCeHPD6xk8j+01oSkqKOwTH2+lQtxbMW6b7Br6TynMlTQ9RUT9d3Ih4+IcqNeopudwRUMnuvQ==}
+    dev: false
+
+  /@hiogawa/query-proxy@0.1.1-pre.3:
+    resolution: {integrity: sha512-0m7KSB2Tn8eC7rCnzbL3NwuyAgC3HWIweyMkltazGQ0ZMLZTNpIKbIwkaFzRCuZraAw66ysSnU4K0dWL2vLHrg==}
+    peerDependencies:
+      '@trpc/server': '*'
+    peerDependenciesMeta:
+      '@trpc/server':
+        optional: true
+    dev: false
+
   /@hiogawa/theme-script@0.0.4-pre.3(vite@4.3.9):
     resolution: {integrity: sha512-2uxVhemdAMUFE/OaUcaTT2QeZsXnxtnF/CLNs+CcrlgwaUXXfsnXUTvUZCz8MTmxzzz4Vp5hfAyi4pp58XHJCQ==}
     peerDependencies:
@@ -2169,6 +2185,10 @@ packages:
   /@hiogawa/tiny-cli@0.0.3:
     resolution: {integrity: sha512-5ZRDn0XW12mV+rov25z1oksyRP6IeW6ydEki81lHxbDEGrE/IGcrvkGTCXtbeSWIYmclNpVpuLee01KeB2jyvQ==}
     dev: true
+
+  /@hiogawa/tiny-rpc@0.2.3-pre.10:
+    resolution: {integrity: sha512-yudfX7yaQQAtq+pU1ln3oxNA8LGyXFNGqdRNxVTxFBdjPAb3SNLO1E/NUWy/rEERdImqzja3z9SrJYDyOeatxQ==}
+    dev: false
 
   /@hiogawa/unocss-preset-antd@2.2.1-pre.3(@unocss/preset-uno@0.55.1)(unocss@0.52.7):
     resolution: {integrity: sha512-NjJ0uKIA6tqmDTXQkO52Hb83tBJjwjOCUx9cgodxiROjTCuEP+yfkmJyzMlDzfxRUl8DnHd8IijnZl2cAX7s9Q==}
@@ -3036,18 +3056,6 @@ packages:
     resolution: {integrity: sha512-XCuKFP5PS55gnMVu3dty8KPatLqUoy/ZYzDzAGCQ8JNFCkLXzmI7vNHCR+XpbZaMWQK/vQubr7PkYq8g470J/A==}
     engines: {node: '>= 10'}
     dev: true
-
-  /@trpc/client@10.33.0(@trpc/server@10.33.0):
-    resolution: {integrity: sha512-gHKe/5MEdoi1HEF7gsviFdHC7IyVRYjS39C0uXYHlM9rJ9It+KQpz8+wu9XkORte/lbBCScOGOPLNqb5IvSF/g==}
-    peerDependencies:
-      '@trpc/server': 10.33.0
-    dependencies:
-      '@trpc/server': 10.33.0
-    dev: false
-
-  /@trpc/server@10.33.0:
-    resolution: {integrity: sha512-3EN7hiYFy1FsMqGIHEkRqtjxLhTRc/E73mdE+F/vqJWNwigM8UmAvZgFC0YTw87PYpztYzA1vxxK7LQfhXHeog==}
-    dev: false
 
   /@ts-morph/common@0.12.3:
     resolution: {integrity: sha512-4tUmeLyXJnJWvTFOKtcNJ1yh0a3SsTLi2MUoyj8iUNznFRN1ZquaNe7Oukqrnki2FzZkm0J9adCNLDZxUzvj+w==}

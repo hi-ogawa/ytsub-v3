@@ -10,7 +10,7 @@ import {
 import { useModal } from "../../components/modal";
 import type { DeckTable, UserTable, VideoTable } from "../../db/models";
 import { R } from "../../misc/routes";
-import { trpc } from "../../trpc/client";
+import { rpcClientQuery } from "../../trpc/client";
 import {
   useLoaderDataExtra,
   useRootLoaderData,
@@ -80,7 +80,7 @@ function VideoComponentExtra({
 }) {
   const navigate = useNavigate();
   const deleteVideoMutation = useMutation({
-    ...trpc.videos_destroy.mutationOptions(),
+    ...rpcClientQuery.videos_destroy.mutationOptions(),
     onSuccess: () => {
       toast.success("Successfully deleted a video");
       navigate(R["/videos"]); // refetch
@@ -161,12 +161,12 @@ function AddToDeckComponent({
 }) {
   // get decks
   const decksQuery = useQuery(
-    trpc.decks_practiceEntriesCount.queryOptions({ videoId })
+    rpcClientQuery.decks_practiceEntriesCount.queryOptions({ videoId })
   );
 
   // create new practice entries
   const newPracticeEntryMutation = useMutation({
-    ...trpc.decks_practiceEntriesCreate.mutationOptions(),
+    ...rpcClientQuery.decks_practiceEntriesCreate.mutationOptions(),
     onSuccess: (data) => {
       toast.success(`Added ${data.practiceEntryIds.length} to a deck`);
       decksQuery.refetch();
