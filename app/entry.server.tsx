@@ -1,6 +1,7 @@
 import { RemixServer } from "@remix-run/react";
 import type { HandleDocumentRequestFunction } from "@remix-run/server-runtime";
 import { renderToString } from "react-dom/server";
+import { renderToDocument } from "./server/document";
 import { wrapTraceAsyncSimple } from "./utils/opentelemetry-utils";
 
 const handleDocumentRequest: HandleDocumentRequestFunction = (
@@ -9,12 +10,13 @@ const handleDocumentRequest: HandleDocumentRequestFunction = (
   responseHeaders,
   remixContext
 ) => {
-  // TODO: renderToPipeableStream https://github.com/remix-run/remix/blob/72c22b3deb9e84e97359b481f7f2af6cdc355877/packages/remix-dev/config/defaults/entry.server.node.tsx#L10-L11
-  let markup = renderToString(
+  // TODO: streaming
+  const ssrHtml = renderToString(
     <RemixServer context={remixContext} url={request.url} />
   );
+  const documentHtml = renderToDocument(ssrHtml);
   responseHeaders.set("content-type", "text/html");
-  return new Response("<!DOCTYPE html>" + markup, {
+  return new Response(documentHtml, {
     status: responseStatusCode,
     headers: responseHeaders,
   });

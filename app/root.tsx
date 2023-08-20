@@ -1,5 +1,4 @@
 import { FloatingTree } from "@floating-ui/react";
-import { generateThemeScript } from "@hiogawa/theme-script";
 import { Compose } from "@hiogawa/utils-react";
 import {
   Link,
@@ -22,7 +21,6 @@ import { TopProgressBarRemix } from "./components/top-progress-bar";
 import type { UserTable } from "./db/models";
 import { $R, R } from "./misc/routes";
 import { rpcClientQuery } from "./trpc/client";
-import { injectPublicConfigScript, publicConfig } from "./utils/config-public";
 import {
   encodeFlashMessage,
   useFlashMessageHandler,
@@ -40,56 +38,27 @@ export { loader } from "./root.server";
 export const shouldRevalidate: ShouldRevalidateFunction = () => false;
 
 export default function DefaultComponent() {
-  // hydration error for theme class (dark, light)
   return (
-    <html lang="en" className="h-full" suppressHydrationWarning>
-      <head>
-        <meta charSet="utf-8" />
-        <meta
-          name="viewport"
-          content="width=device-width, height=device-height, initial-scale=1.0"
-        />
-        <title>
-          {publicConfig.VERCEL_ENV === "preview" ? "[PREVIEW] Ytsub" : "Ytsub"}
-        </title>
-        <link rel="manifest" href="/manifest.json" />
-        <link rel="stylesheet" href={require("../build/css/index.css")} />
-        <link
-          rel="icon"
-          type="image/svg+xml"
-          href="https://iconify-dark-hiro18181.vercel.app/icon/ri/translate-2"
-        />
-        {/* only server needs to do script injection but let client do as well */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: generateThemeScript({
-              noScriptTag: true,
-              defaultTheme: "ytsub:them",
-            }),
-          }}
-        />
-        <script
-          dangerouslySetInnerHTML={{ __html: injectPublicConfigScript() }}
-        />
-      </head>
-      <body className="h-full">
-        <button
-          className="hidden"
-          data-testid="toast-remove"
-          onClick={() => {
-            toast.remove();
-          }}
-        />
-        <Compose
-          elements={[
-            <FloatingTree />,
-            <ToastWrapper />,
-            <QueryClientWrapper />,
-            <Root />,
-          ]}
-        />
-      </body>
-    </html>
+    <div className="h-full">
+      <TopProgressBarRemix />
+      <button
+        className="hidden"
+        data-testid="toast-remove"
+        onClick={() => {
+          toast.remove();
+        }}
+      />
+      <Compose
+        elements={[
+          <FloatingTree />,
+          <ToastWrapper />,
+          <QueryClientWrapper />,
+          <Root />,
+        ]}
+      />
+      <Scripts />
+      <LiveReload />
+    </div>
   );
 }
 
@@ -103,7 +72,6 @@ function Root() {
 
   return (
     <>
-      <TopProgressBarRemix />
       <div className="h-full flex flex-col relative z-0">
         <Navbar
           title={handle.navBarTitle?.()}
@@ -119,8 +87,6 @@ function Root() {
           </div>
         </div>
       </div>
-      <Scripts />
-      <LiveReload />
     </>
   );
 }
