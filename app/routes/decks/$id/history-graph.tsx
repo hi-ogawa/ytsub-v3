@@ -8,46 +8,28 @@ import {
   EchartsComponent,
   practiceHistoryChartDataToEchartsOption,
 } from "../../../components/practice-history-chart";
-import type { DeckTable } from "../../../db/models";
 import { ROUTE_DEF } from "../../../misc/routes";
 import { trpc } from "../../../trpc/client";
 import { useClickOutside } from "../../../utils/hooks-client-utils";
-import { requireUserAndDeck } from "../../../utils/loader-deck-utils";
 import {
   disableUrlQueryRevalidation,
   useLeafLoaderData,
   useLoaderDataExtra,
   useTypedUrlQuery,
 } from "../../../utils/loader-utils";
-import { makeLoader } from "../../../utils/loader-utils.server";
 import { cls } from "../../../utils/misc";
 import type { PageHandle } from "../../../utils/page-handle";
 import { formatDateRange } from "../../../utils/temporal-utils";
 
-//
-// handle
-//
+import type { LoaderData } from "./common.server";
+export { loader } from "./common.server";
+
+export const shouldRevalidate = disableUrlQueryRevalidation;
 
 export const handle: PageHandle = {
   navBarTitle: () => <NavBarTitleComponent />,
   navBarMenu: () => <DeckHistoryNavBarMenuComponent />,
 };
-
-//
-// loader
-//
-
-interface LoaderData {
-  deck: DeckTable;
-}
-
-export const loader = makeLoader(async ({ ctx }) => {
-  const { deck } = await requireUserAndDeck(ctx);
-  const loaderData: LoaderData = { deck };
-  return loaderData;
-});
-
-export const shouldRevalidate = disableUrlQueryRevalidation;
 
 //
 // DefaultComponent

@@ -20,32 +20,20 @@ import {
   disableUrlQueryRevalidation,
   useTypedUrlQuery,
 } from "../../utils/loader-utils";
-import { makeLoader } from "../../utils/loader-utils.server";
 import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 import type { CaptionEntry } from "../../utils/types";
 import { YoutubePlayer, usePlayerLoader } from "../../utils/youtube";
 import { CaptionEntryComponent, findCurrentEntry } from "../videos/$id";
 
+export { loader } from "./index.server";
+
+export const shouldRevalidate = disableUrlQueryRevalidation;
+
 export const handle: PageHandle = {
   navBarTitle: () => "Bookmarks",
   navBarMenu: () => <NavBarMenuComponent />,
 };
-
-//
-// loader
-//
-
-export const loader = makeLoader(async ({ ctx }) => {
-  await ctx.requireUser();
-  return null;
-});
-
-export const shouldRevalidate = disableUrlQueryRevalidation;
-
-//
-// component
-//
 
 export default function DefaultComponent() {
   const [urlQuery, setUrlQuery] = useTypedUrlQuery(

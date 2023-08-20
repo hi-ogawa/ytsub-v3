@@ -12,39 +12,22 @@ import type {
 } from "../../../db/models";
 import { PRACTICE_ACTION_TYPES, PracticeActionType } from "../../../db/types";
 import { trpc } from "../../../trpc/client";
-import { requireUserAndDeck } from "../../../utils/loader-deck-utils";
 import {
   useLeafLoaderData,
   useLoaderDataExtra,
 } from "../../../utils/loader-utils";
-import { makeLoader } from "../../../utils/loader-utils.server";
 import { cls } from "../../../utils/misc";
 import type { PageHandle } from "../../../utils/page-handle";
 import { BookmarkEntryComponent } from "../../bookmarks";
+import type { LoaderData } from "./common.server";
+
 import { DeckNavBarMenuComponent, QueueStatisticsComponent } from "./index";
+export { loader } from "./common.server";
 
 export const handle: PageHandle = {
   navBarTitle: () => <NavBarTitleComponent />,
   navBarMenu: () => <DeckNavBarMenuComponent />,
 };
-
-//
-// loader
-//
-
-interface LoaderData {
-  deck: DeckTable;
-}
-
-export const loader = makeLoader(async ({ ctx }) => {
-  const { deck } = await requireUserAndDeck(ctx);
-  const loaderData: LoaderData = { deck };
-  return loaderData;
-});
-
-//
-// component
-//
 
 export default function DefaultComponent() {
   const { deck } = useLoaderDataExtra() as LoaderData;

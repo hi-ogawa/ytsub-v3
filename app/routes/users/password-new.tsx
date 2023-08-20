@@ -2,32 +2,18 @@ import { useNavigate } from "@remix-run/react";
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import { $R, ROUTE_DEF } from "../../misc/routes";
+import { $R } from "../../misc/routes";
 import { trpc } from "../../trpc/client";
 import { useLoaderDataExtra } from "../../utils/loader-utils";
-import { makeLoader } from "../../utils/loader-utils.server";
 import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
+
+import type { LoaderData } from "./password-new.server";
+export { loader } from "./password-new.server";
 
 export const handle: PageHandle = {
   navBarTitle: () => "Reset password",
 };
-
-//
-// loader
-//
-
-type LoaderData = { code: string };
-
-export const loader = makeLoader(async ({ ctx }) => {
-  // only check the existence
-  const { code } = ROUTE_DEF["/users/password-new"].query.parse(ctx.query);
-  return { code } satisfies LoaderData;
-});
-
-//
-// component
-//
 
 export default function Page() {
   const { code } = useLoaderDataExtra() as LoaderData;
