@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">88.06% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>176/176</span>
+                <span class='fraction'>155/176</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>8/8</span>
+                <span class='fraction'>1/1</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">88.06% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>176/176</span>
+                <span class='fraction'>155/176</span>
             </div>
         
             
@@ -380,27 +380,27 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">47x</span>
-<span class="cline-any cline-yes">47x</span>
-<span class="cline-any cline-yes">47x</span>
-<span class="cline-any cline-yes">47x</span>
-<span class="cline-any cline-yes">47x</span>
-<span class="cline-any cline-yes">47x</span>
-<span class="cline-any cline-yes">23x</span>
-<span class="cline-any cline-yes">23x</span>
-<span class="cline-any cline-yes">23x</span>
-<span class="cline-any cline-yes">23x</span>
-<span class="cline-any cline-yes">23x</span>
-<span class="cline-any cline-yes">47x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">47x</span>
-<span class="cline-any cline-yes">47x</span>
-<span class="cline-any cline-yes">47x</span>
-<span class="cline-any cline-yes">47x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -556,27 +556,27 @@ type RouteFormatter = {
 }
 &nbsp;
 export const $R = createGetProxy((path) =&gt; {
-  return (params?: unknown, query?: unknown) =&gt; {
-    tinyassert(typeof path === "string");
-    tinyassert(path in ROUTE_DEF);
-    const def = ROUTE_DEF[path as keyof RouteDef];
-&nbsp;
-    if ("params" in def) {
-      tinyassert(params);
-      for (const [k, v] of Object.entries(params)) {
-        path = path.replace("$" + k, String(v));
-      }
-    }
-    if ("query" in def &amp;&amp; query) {
-      const search = new URLSearchParams(
-        Object.entries(query).map(([k, v]) =&gt; [k, String(v)])
-      );
-      path = path + "?" + search;
-    }
-&nbsp;
-    return path;
-  };
-}) as RouteFormatter;
+<span class="cstat-no" title="statement not covered" >  return (params?: unknown, query?: unknown) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >    tinyassert(typeof path === "string");</span>
+<span class="cstat-no" title="statement not covered" >    tinyassert(path in ROUTE_DEF);</span>
+<span class="cstat-no" title="statement not covered" >    const def = ROUTE_DEF[path as keyof RouteDef];</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >    if ("params" in def) {</span>
+<span class="cstat-no" title="statement not covered" >      tinyassert(params);</span>
+<span class="cstat-no" title="statement not covered" >      for (const [k, v] of Object.entries(params)) {</span>
+<span class="cstat-no" title="statement not covered" >        path = path.replace("$" + k, String(v));</span>
+<span class="cstat-no" title="statement not covered" >      }</span>
+<span class="cstat-no" title="statement not covered" >    }</span>
+<span class="cstat-no" title="statement not covered" >    if ("query" in def &amp;&amp; query) {</span>
+<span class="cstat-no" title="statement not covered" >      const search = new URLSearchParams(</span>
+<span class="cstat-no" title="statement not covered" >        Object.entries(query).map(([k, v]) =&gt; [k, String(v)])</span>
+<span class="cstat-no" title="statement not covered" >      );</span>
+<span class="cstat-no" title="statement not covered" >      path = path + "?" + search;</span>
+<span class="cstat-no" title="statement not covered" >    }</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >    return path;</span>
+<span class="cstat-no" title="statement not covered" >  };</span>
+<span class="cstat-no" title="statement not covered" >}) as RouteFormatter;</span>
 &nbsp;
 //
 // allow old usage for path without params
@@ -598,7 +598,7 @@ export const R = createGetProxy((path) =&gt; path) as RouteFormatterV1;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-08-20T04:10:18.014Z
+                at 2023-08-20T04:16:52.562Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

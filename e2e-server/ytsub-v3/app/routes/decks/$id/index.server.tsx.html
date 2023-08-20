@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">50% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>54/54</span>
+                <span class='fraction'>27/54</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>2/2</span>
+                <span class='fraction'>1/1</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">50% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>54/54</span>
+                <span class='fraction'>27/54</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line high'></div>
+    <div class='status-line medium'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -117,7 +117,7 @@
 <a name='L52'></a><a href='#L52'>52</a>
 <a name='L53'></a><a href='#L53'>53</a>
 <a name='L54'></a><a href='#L54'>54</a>
-<a name='L55'></a><a href='#L55'>55</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">161x</span>
+<a name='L55'></a><a href='#L55'>55</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -144,33 +144,33 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import {
   E,
   T,
@@ -198,33 +198,33 @@ export interface LoaderData {
 }
 &nbsp;
 export const loader = makeLoader(async ({ ctx }) =&gt; {
-  const { deck } = await requireUserAndDeck(ctx);
-  const reqQuery = ROUTE_DEF["/decks/$id"].query.parse(ctx.query);
-&nbsp;
-  const baseQuery = db
-    .select()
-    .from(T.practiceEntries)
-    .innerJoin(
-      T.bookmarkEntries,
-      E.eq(T.bookmarkEntries.id, T.practiceEntries.bookmarkEntryId)
-    )
-    .innerJoin(
-      T.captionEntries,
-      E.eq(T.captionEntries.id, T.bookmarkEntries.captionEntryId)
-    )
-    .innerJoin(T.videos, E.eq(T.videos.id, T.captionEntries.videoId))
-    .where(E.eq(T.practiceEntries.deckId, deck.id))
-    .orderBy(E.asc(T.practiceEntries.createdAt));
-&nbsp;
-  const [rows, pagination] = await toPaginationResult(baseQuery, reqQuery);
-&nbsp;
-  const loaderData: LoaderData = {
-    deck,
-    pagination,
-    rows,
-  };
-  return loaderData;
-});
+<span class="cstat-no" title="statement not covered" >  const { deck } = await requireUserAndDeck(ctx);</span>
+<span class="cstat-no" title="statement not covered" >  const reqQuery = ROUTE_DEF["/decks/$id"].query.parse(ctx.query);</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >  const baseQuery = db</span>
+<span class="cstat-no" title="statement not covered" >    .select()</span>
+<span class="cstat-no" title="statement not covered" >    .from(T.practiceEntries)</span>
+<span class="cstat-no" title="statement not covered" >    .innerJoin(</span>
+<span class="cstat-no" title="statement not covered" >      T.bookmarkEntries,</span>
+<span class="cstat-no" title="statement not covered" >      E.eq(T.bookmarkEntries.id, T.practiceEntries.bookmarkEntryId)</span>
+<span class="cstat-no" title="statement not covered" >    )</span>
+<span class="cstat-no" title="statement not covered" >    .innerJoin(</span>
+<span class="cstat-no" title="statement not covered" >      T.captionEntries,</span>
+<span class="cstat-no" title="statement not covered" >      E.eq(T.captionEntries.id, T.bookmarkEntries.captionEntryId)</span>
+<span class="cstat-no" title="statement not covered" >    )</span>
+<span class="cstat-no" title="statement not covered" >    .innerJoin(T.videos, E.eq(T.videos.id, T.captionEntries.videoId))</span>
+<span class="cstat-no" title="statement not covered" >    .where(E.eq(T.practiceEntries.deckId, deck.id))</span>
+<span class="cstat-no" title="statement not covered" >    .orderBy(E.asc(T.practiceEntries.createdAt));</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >  const [rows, pagination] = await toPaginationResult(baseQuery, reqQuery);</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >  const loaderData: LoaderData = {</span>
+<span class="cstat-no" title="statement not covered" >    deck,</span>
+<span class="cstat-no" title="statement not covered" >    pagination,</span>
+<span class="cstat-no" title="statement not covered" >    rows,</span>
+<span class="cstat-no" title="statement not covered" >  };</span>
+<span class="cstat-no" title="statement not covered" >  return loaderData;</span>
+<span class="cstat-no" title="statement not covered" >});</span>
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -232,7 +232,7 @@ export const loader = makeLoader(async ({ ctx }) =&gt; {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-08-20T04:10:18.014Z
+                at 2023-08-20T04:16:52.562Z
             </div>
         <script src="../../../../../prettify.js"></script>
         <script>
