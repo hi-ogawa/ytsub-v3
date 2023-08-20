@@ -32,6 +32,16 @@ export const handle: PageHandle = {
 };
 
 export default function DefaultComponent() {
+  // remount on parameter change to reset form state
+  const loaderData = useLoaderDataExtra() as LoaderData;
+  return (
+    <DefaultComponentInner
+      key={loaderData.videoMetadata.videoDetails.videoId}
+    />
+  );
+}
+
+function DefaultComponentInner() {
   const { videoMetadata, userCaptionConfigs } =
     useLoaderDataExtra() as LoaderData;
 
