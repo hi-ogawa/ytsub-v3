@@ -314,3 +314,25 @@ test.describe("videos deletion", () => {
       .click();
   });
 });
+
+test.describe("videos new form", () => {
+  test("reset form state", async ({ page }) => {
+    await page.goto("/");
+
+    // 1st navigation
+    await page.getByTestId("Navbar-drawer-button").click();
+    await page
+      .getByPlaceholder("Enter Video ID or URL")
+      .fill("https://www.youtube.com/watch?v=w9ueRzymcU0");
+    await page.getByPlaceholder("Enter Video ID or URL").press("Enter");
+    await expect(page.getByLabel("Video ID")).toHaveValue("w9ueRzymcU0");
+
+    // 2nd navigation within same page
+    await page.getByTestId("Navbar-drawer-button").click();
+    await page
+      .getByPlaceholder("Enter Video ID or URL")
+      .fill("https://www.youtube.com/watch?v=jyw_vrI4ySg");
+    await page.getByPlaceholder("Enter Video ID or URL").press("Enter");
+    await expect(page.getByLabel("Video ID")).toHaveValue("jyw_vrI4ySg");
+  });
+});

@@ -1,6 +1,7 @@
 import { defineConfig } from "@playwright/test";
 
 export default defineConfig({
+  forbidOnly: Boolean(process.env.CI),
   testDir: "./app/e2e",
   globalSetup: "./app/misc/test-setup-global-e2e.ts",
   use: {
