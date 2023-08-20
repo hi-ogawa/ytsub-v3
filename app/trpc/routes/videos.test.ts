@@ -4,7 +4,7 @@ import { useUserVideo } from "../../misc/test-helper";
 import { mockRequestContext } from "../../server/request-context/mock";
 import { rpcRoutes } from "../server";
 
-describe(rpcRoutes.videos_destroy.name, () => {
+describe(rpcRoutes.videos_destroy, () => {
   const hook = useUserVideo({
     seed: __filename + "videos_destroy",
   });

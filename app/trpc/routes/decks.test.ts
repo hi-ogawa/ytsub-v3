@@ -4,7 +4,7 @@ import { useUser } from "../../misc/test-helper";
 import { mockRequestContext } from "../../server/request-context/mock";
 import { rpcRoutes } from "../server";
 
-describe(rpcRoutes.decks_practiceHistoryChart.name, () => {
+describe(rpcRoutes.decks_practiceHistoryChart, () => {
   const user = useUser({
     seed: __filename,
   });
