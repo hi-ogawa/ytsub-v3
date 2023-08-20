@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">65.8% </span>
+                <span class="strong">66.47% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>229/348</span>
+                <span class='fraction'>236/355</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">60% </span>
+                <span class="strong">61.9% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>12/20</span>
+                <span class='fraction'>13/21</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">56.25% </span>
+                <span class="strong">58.82% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>9/16</span>
+                <span class='fraction'>10/17</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">65.8% </span>
+                <span class="strong">66.47% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>229/348</span>
+                <span class='fraction'>236/355</span>
             </div>
         
             
@@ -411,7 +411,21 @@
 <a name='L346'></a><a href='#L346'>346</a>
 <a name='L347'></a><a href='#L347'>347</a>
 <a name='L348'></a><a href='#L348'>348</a>
-<a name='L349'></a><a href='#L349'>349</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L349'></a><a href='#L349'>349</a>
+<a name='L350'></a><a href='#L350'>350</a>
+<a name='L351'></a><a href='#L351'>351</a>
+<a name='L352'></a><a href='#L352'>352</a>
+<a name='L353'></a><a href='#L353'>353</a>
+<a name='L354'></a><a href='#L354'>354</a>
+<a name='L355'></a><a href='#L355'>355</a>
+<a name='L356'></a><a href='#L356'>356</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -768,7 +782,8 @@ import { toast } from "react-hot-toast";
 import { SelectWrapper } from "../../components/misc";
 import { PopoverSimple } from "../../components/popover";
 import { $R } from "../../misc/routes";
-import { rpcClient, rpcClientQuery } from "../../trpc/client";
+import { trpc } from "../../trpc/client";
+import { trpcClient } from "../../trpc/client-internal.client";
 import {
   FILTERED_LANGUAGE_CODES,
   LanguageCode,
@@ -793,13 +808,19 @@ export const handle: PageHandle = {
 };
 &nbsp;
 export default function DefaultComponent() {
+  // remount on parameter change to reset form state
+  const loaderData = useLoaderDataExtra() as LoaderData;
+  return &lt;DefaultComponentInner key={loaderData.videoMetadata.videoDetails.videoId} /&gt;;
+}
+&nbsp;
+function DefaultComponentInner() {
   const { videoMetadata, userCaptionConfigs } =
     useLoaderDataExtra() as LoaderData;
 &nbsp;
   const navigate = useNavigate();
 &nbsp;
   const createMutation = useMutation({
-    ...rpcClientQuery.videos_create.mutationOptions(),
+    ...trpc.videos_create.mutationOptions(),
     onSuccess: <span class="fstat-no" title="function not covered" >(data) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >      if (data.created) {</span>
 <span class="cstat-no" title="statement not covered" >        toast.success("Created a new video");</span>
@@ -947,7 +968,7 @@ export default function DefaultComponent() {
 <span class="cstat-no" title="statement not covered" >    mutationFn: async (data: FormType) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >      tinyassert(data.language1);</span>
 <span class="cstat-no" title="statement not covered" >      tinyassert(data.language2);</span>
-<span class="cstat-no" title="statement not covered" >      return rpcClient.videos_createDirect({</span>
+<span class="cstat-no" title="statement not covered" >      return trpcClient.videos_createDirect.mutate({</span>
 <span class="cstat-no" title="statement not covered" >        videoId,</span>
 <span class="cstat-no" title="statement not covered" >        language1: {</span>
 <span class="cstat-no" title="statement not covered" >          id: encodeAdvancedModeLanguageCode(data.language1),</span>
@@ -1114,7 +1135,7 @@ const showAdvancedModeAtom = atom&lt;boolean&gt;(false);
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-08-20T03:37:24.138Z
+                at 2023-08-20T04:10:18.014Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>
