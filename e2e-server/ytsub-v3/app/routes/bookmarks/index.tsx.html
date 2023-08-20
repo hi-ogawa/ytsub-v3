@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">27.91% </span>
+                <span class="strong">27.36% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>134/480</span>
+                <span class='fraction'>130/475</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">61.53% </span>
+                <span class="strong">60% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>8/13</span>
+                <span class='fraction'>9/15</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">42.1% </span>
+                <span class="strong">44.44% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>8/19</span>
+                <span class='fraction'>8/18</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">27.91% </span>
+                <span class="strong">27.36% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>134/480</span>
+                <span class='fraction'>130/475</span>
             </div>
         
             
@@ -538,12 +538,7 @@
 <a name='L473'></a><a href='#L473'>473</a>
 <a name='L474'></a><a href='#L474'>474</a>
 <a name='L475'></a><a href='#L475'>475</a>
-<a name='L476'></a><a href='#L476'>476</a>
-<a name='L477'></a><a href='#L477'>477</a>
-<a name='L478'></a><a href='#L478'>478</a>
-<a name='L479'></a><a href='#L479'>479</a>
-<a name='L480'></a><a href='#L480'>480</a>
-<a name='L481'></a><a href='#L481'>481</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L476'></a><a href='#L476'>476</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -590,13 +585,6 @@
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
@@ -735,6 +723,8 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -1040,7 +1030,7 @@ import type {
   VideoTable,
 } from "../../db/models";
 import { $R, ROUTE_DEF } from "../../misc/routes";
-import { trpc } from "../../trpc/client";
+import { rpcClientQuery } from "../../trpc/client";
 import {
   disableUrlQueryRevalidation,
   useTypedUrlQuery,
@@ -1067,18 +1057,11 @@ export default function DefaultComponent() {
   const form = useForm({ defaultValues: urlQuery });
 &nbsp;
   const bookmarkEntriesQuery = useInfiniteQuery({
-    ...trpc.bookmarks_index.infiniteQueryOptions(
-      {
-        q: <span class="branch-0 cbranch-no" title="branch not covered" >urlQuery?.q</span>,
-      },
-      {
-        getNextPageParam: <span class="fstat-no" title="function not covered" >(lastPage) =&gt; lastPage.nextCursor ?? undefined,</span>
-        setPageParam: <span class="fstat-no" title="function not covered" >(input, pageParam) =&gt; ({</span>
-<span class="cstat-no" title="statement not covered" >          ...input,</span>
-<span class="cstat-no" title="statement not covered" >          cursor: pageParam as any,</span>
-<span class="cstat-no" title="statement not covered" >        }),</span>
-      }
-    ),
+    ...rpcClientQuery.bookmarks_index.infiniteQueryOptions((context) =&gt; ({
+      q: <span class="branch-0 cbranch-no" title="branch not covered" >urlQuery?.q</span>,
+      cursor: <span class="branch-0 cbranch-no" title="branch not covered" >context?.pageParam as any,</span>
+    })),
+    getNextPageParam: <span class="fstat-no" title="function not covered" >(lastPage) =&gt; lastPage.nextCursor,</span>
     keepPreviousData: true,
   });
   const rows = <span class="branch-0 cbranch-no" title="branch not covered" >bookmarkEntriesQuery.data?.pages.flatMap((page) =&gt; page.rows);</span>
@@ -1251,7 +1234,9 @@ export <span class="fstat-no" title="function not covered" >function MiniPlayer(
 <span class="cstat-no" title="statement not covered" >  const [queryEnabled, setQueryEnabled] = React.useState(false);</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  const captionEntriesQuery = useQuery({</span>
-<span class="cstat-no" title="statement not covered" >    ...trpc.videos_getCaptionEntries.queryOptions({ videoId: video.id }),</span>
+<span class="cstat-no" title="statement not covered" >    ...rpcClientQuery.videos_getCaptionEntries.queryOptions({</span>
+<span class="cstat-no" title="statement not covered" >      videoId: video.id,</span>
+<span class="cstat-no" title="statement not covered" >    }),</span>
 <span class="cstat-no" title="statement not covered" >    enabled: queryEnabled,</span>
 <span class="cstat-no" title="statement not covered" >  });</span>
 <span class="cstat-no" title="statement not covered" ></span>
@@ -1510,7 +1495,7 @@ export <span class="fstat-no" title="function not covered" >function BookmarksMe
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-08-20T03:29:00.066Z
+                at 2023-08-20T03:31:25.297Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>
