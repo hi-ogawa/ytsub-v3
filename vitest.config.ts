@@ -9,6 +9,7 @@ export default defineConfig({
     globalSetup: ["./app/misc/test-setup-global.ts"],
     setupFiles: ["./app/misc/test-setup.ts"],
     coverage: {
+      provider: "v8",
       reporter: ["text", "html"],
       reportsDirectory: "coverage/unit",
     },
