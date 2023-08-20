@@ -13,9 +13,13 @@ export function initializePublicConfigServer(v: PublicConfig) {
 }
 
 export function initializePublicConfigClient() {
-  publicConfig = (globalThis as any)[PUBLIC_CONFIG_VAR];
+  publicConfig = (window as any)[PUBLIC_CONFIG_VAR];
 }
 
 export function injectPublicConfigScript() {
-  return `globalThis.${PUBLIC_CONFIG_VAR} = ${JSON.stringify(publicConfig)}`;
+  return `\
+<script>
+  window.${PUBLIC_CONFIG_VAR} = ${JSON.stringify(publicConfig)};
+</script>
+`;
 }
