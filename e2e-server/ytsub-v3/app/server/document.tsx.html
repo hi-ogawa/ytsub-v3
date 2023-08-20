@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for ytsub-v3/app/components/drawer.tsx</title>
+    <title>Code coverage report for ytsub-v3/app/server/document.tsx</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../../../prettify.css" />
     <link rel="stylesheet" href="../../../base.css" />
@@ -19,34 +19,34 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../../../index.html">All files</a> / <a href="index.html">ytsub-v3/app/components</a> drawer.tsx</h1>
+        <h1><a href="../../../index.html">All files</a> / <a href="index.html">ytsub-v3/app/server</a> document.tsx</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">94.54% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>52/55</span>
+                <span class='fraction'>56/56</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">66.66% </span>
+                <span class="quiet">Branches</span>
+                <span class='fraction'>2/3</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
-                <span class="quiet">Branches</span>
-                <span class='fraction'>1/1</span>
-            </div>
-        
-            
-            <div class='fl pad1y space-right2'>
-                <span class="strong">50% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>1/2</span>
+                <span class='fraction'>2/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">94.54% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>52/55</span>
+                <span class='fraction'>56/56</span>
             </div>
         
             
@@ -118,7 +118,8 @@
 <a name='L53'></a><a href='#L53'>53</a>
 <a name='L54'></a><a href='#L54'>54</a>
 <a name='L55'></a><a href='#L55'>55</a>
-<a name='L56'></a><a href='#L56'>56</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L56'></a><a href='#L56'>56</a>
+<a name='L57'></a><a href='#L57'>57</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -129,14 +130,9 @@
 <span class="cline-any cline-yes">45x</span>
 <span class="cline-any cline-yes">45x</span>
 <span class="cline-any cline-yes">45x</span>
-<span class="cline-any cline-yes">45x</span>
-<span class="cline-any cline-yes">45x</span>
-<span class="cline-any cline-yes">45x</span>
-<span class="cline-any cline-yes">45x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-yes">45x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">45x</span>
 <span class="cline-any cline-yes">45x</span>
 <span class="cline-any cline-yes">45x</span>
@@ -173,59 +169,66 @@
 <span class="cline-any cline-yes">45x</span>
 <span class="cline-any cline-yes">45x</span>
 <span class="cline-any cline-yes">45x</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { useDismiss, useFloating, useInteractions } from "@floating-ui/react";
-import { Transition } from "@headlessui/react";
-import { tinyassert } from "@hiogawa/utils";
-import type React from "react";
-import { RemoveScroll } from "react-remove-scroll";
-import { FloatingWrapper } from "./floating-utils";
+<span class="cline-any cline-yes">45x</span>
+<span class="cline-any cline-yes">45x</span>
+<span class="cline-any cline-yes">45x</span>
+<span class="cline-any cline-yes">45x</span>
+<span class="cline-any cline-yes">45x</span>
+<span class="cline-any cline-yes">45x</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { generateThemeScript } from "@hiogawa/theme-script";
+import { renderToStaticMarkup } from "react-dom/server";
+import { injectPublicConfigScript, publicConfig } from "../utils/config-public";
 &nbsp;
-export function Drawer(props: {
-  open: boolean;
-  onClose: () =&gt; void;
-  children: React.ReactNode;
-}) {
-  const { refs, context } = useFloating({
-    open: props.open,
-    onOpenChange: <span class="fstat-no" title="function not covered" >(open) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >      tinyassert(!open); // should get only `open = false` via `useDismiss`</span>
-<span class="cstat-no" title="statement not covered" >      props.onClose();</span>
-<span class="cstat-no" title="statement not covered" >    },</span>
-  });
-  const { getFloatingProps } = useInteractions([useDismiss(context)]);
+// since we don't currently use remix's &lt;Meta /&gt; or &lt;Links /&gt; convention,
+// we can render static document html only on server like common ssr practice.
 &nbsp;
+export function renderToDocument(ssrHtml: string) {
+  const html = renderToStaticMarkup(&lt;Document /&gt;);
+  return "&lt;!DOCTYPE html&gt;" + html.replace(INJECT_SSR, ssrHtml);
+}
+&nbsp;
+const INJECT_SSR = "&lt;!--@INJECT_SSR@--&gt;";
+&nbsp;
+function Document() {
   return (
-    &lt;FloatingWrapper&gt;
-      &lt;Transition className="fixed inset-0" show={props.open}&gt;
-        {/* backdrop */}
-        &lt;Transition.Child
-          className="transition duration-300 fixed inset-0 bg-black"
-          enterFrom="opacity-0"
-          enterTo="opacity-40"
-          leaveFrom="opacity-40"
-          leaveTo="opacity-0"
+    &lt;html lang="en"&gt;
+      &lt;head&gt;
+        &lt;meta charSet="utf-8" /&gt;
+        &lt;meta
+          name="viewport"
+          content="width=device-width, height=device-height, initial-scale=1.0"
         /&gt;
-        {/* content */}
-        &lt;RemoveScroll className="fixed inset-0 overflow-hidden"&gt;
-          &lt;Transition.Child
-            className="transition duration-300 transform inline-block h-full bg-colorBgContainer shadow-lg"
-            enterFrom="translate-x-[-100%]"
-            enterTo="translate-x-[0]"
-            leaveFrom="translate-x-[0]"
-            leaveTo="translate-x-[-100%]"
-          &gt;
-            &lt;div
-              {...getFloatingProps({
-                ref: refs.setFloating,
-                className: "inline-block h-full",
-              })}
-            &gt;
-              {props.children}
-            &lt;/div&gt;
-          &lt;/Transition.Child&gt;
-        &lt;/RemoveScroll&gt;
-      &lt;/Transition&gt;
-    &lt;/FloatingWrapper&gt;
+        &lt;title&gt;
+          {publicConfig.VERCEL_ENV === <span class="branch-0 cbranch-no" title="branch not covered" >"preview" ? "[PREVIEW] Ytsub" : "</span>Ytsub"}
+        &lt;/title&gt;
+        &lt;link rel="manifest" href="/manifest.json" /&gt;
+        &lt;link rel="stylesheet" href={require("../../build/css/index.css")} /&gt;
+        &lt;link
+          rel="icon"
+          type="image/svg+xml"
+          href="https://iconify-dark-hiro18181.vercel.app/icon/ri/translate-2"
+        /&gt;
+        &lt;script
+          dangerouslySetInnerHTML={{
+            __html: generateThemeScript({
+              noScriptTag: true,
+              defaultTheme: "ytsub:them",
+            }),
+          }}
+        /&gt;
+        &lt;script
+          dangerouslySetInnerHTML={{ __html: injectPublicConfigScript() }}
+        /&gt;
+        &lt;style&gt;{`
+          html, body, #root {
+            height: 100%;
+          }
+        `}&lt;/style&gt;
+      &lt;/head&gt;
+      &lt;body&gt;
+        &lt;div id="root" dangerouslySetInnerHTML={{ __html: INJECT_SSR }}&gt;&lt;/div&gt;
+      &lt;/body&gt;
+    &lt;/html&gt;
   );
 }
 &nbsp;</pre></td></tr></table></pre>
