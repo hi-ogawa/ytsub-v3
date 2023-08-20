@@ -3,15 +3,15 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for misc/test-helper-snapshot.ts</title>
+    <title>Code coverage report for ytsub-v3/app/routes/caption-editor/watch.server.tsx</title>
     <meta charset="utf-8" />
-    <link rel="stylesheet" href="../prettify.css" />
-    <link rel="stylesheet" href="../base.css" />
-    <link rel="shortcut icon" type="image/x-icon" href="../favicon.png" />
+    <link rel="stylesheet" href="../../../../prettify.css" />
+    <link rel="stylesheet" href="../../../../base.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="../../../../favicon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <style type='text/css'>
         .coverage-summary .sorter {
-            background-image: url(../sort-arrow-sprite.png);
+            background-image: url(../../../../sort-arrow-sprite.png);
         }
     </style>
 </head>
@@ -19,20 +19,20 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../index.html">All files</a> / <a href="index.html">misc</a> test-helper-snapshot.ts</h1>
+        <h1><a href="../../../../index.html">All files</a> / <a href="index.html">ytsub-v3/app/routes/caption-editor</a> watch.server.tsx</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">84.61% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>22/26</span>
+                <span class='fraction'>18/18</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">81.81% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>9/11</span>
+                <span class='fraction'>2/2</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">84.61% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>22/26</span>
+                <span class='fraction'>18/18</span>
             </div>
         
             
@@ -81,15 +81,13 @@
 <a name='L16'></a><a href='#L16'>16</a>
 <a name='L17'></a><a href='#L17'>17</a>
 <a name='L18'></a><a href='#L18'>18</a>
-<a name='L19'></a><a href='#L19'>19</a>
-<a name='L20'></a><a href='#L20'>20</a>
-<a name='L21'></a><a href='#L21'>21</a>
-<a name='L22'></a><a href='#L22'>22</a>
-<a name='L23'></a><a href='#L23'>23</a>
-<a name='L24'></a><a href='#L24'>24</a>
-<a name='L25'></a><a href='#L25'>25</a>
-<a name='L26'></a><a href='#L26'>26</a>
-<a name='L27'></a><a href='#L27'>27</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L19'></a><a href='#L19'>19</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -99,48 +97,26 @@
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { z } from "zod";
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { tinyassert } from "@hiogawa/utils";
+import { ROUTE_DEF } from "../../misc/routes";
+import { makeLoader } from "../../utils/loader-utils.server";
+import { VideoMetadata } from "../../utils/types";
+import { fetchVideoMetadata, parseVideoId } from "../../utils/youtube";
 &nbsp;
-// helper to snapshot non-deterministic values e.g.
-//   expect(z.object({ id: zSnapshotType }).passthrough().parse(userWithId)).toMatchInlineSnapshot()
-export const zSnapshotType = z.any().transform((v) =&gt; `[${prettyTypeof(v)}]`);
+export type LoaderData = {
+  videoId: string;
+  videoMetadata: VideoMetadata;
+};
 &nbsp;
-function prettyTypeof(v: unknown) {
-  if (
-    ["undefined", "boolean", "number", "string", "function"].includes(typeof v)
-  ) {
-    return typeof v;
-  }
-  if (v === null) <span class="branch-0 cbranch-no" title="branch not covered" >{</span>
-<span class="cstat-no" title="statement not covered" >    return "null";</span>
-<span class="cstat-no" title="statement not covered" >  }</span>
-  if (
-    v &amp;&amp;
-    typeof v === "object" &amp;&amp;
-    "constructor" in v &amp;&amp;
-    typeof v.constructor === "function" &amp;&amp;
-    v.constructor.name
-  ) {
-    return v.constructor.name;
-<span class="branch-0 cbranch-no" title="branch not covered" >  }</span>
-<span class="cstat-no" title="statement not covered" >  return "unknown";</span>
-<span class="cstat-no" title="statement not covered" >}</span>
+export const loader = makeLoader(async ({ ctx }) =&gt; {
+  const query = ROUTE_DEF["/caption-editor/watch"].query.parse(ctx.query);
+  const videoId = parseVideoId(query.v);
+  tinyassert(videoId);
+  const videoMetadata = await fetchVideoMetadata(videoId);
+  return { videoId, videoMetadata } satisfies LoaderData;
+});
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -148,16 +124,16 @@ function prettyTypeof(v: unknown) {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-08-20T02:50:35.908Z
+                at 2023-08-20T03:29:00.066Z
             </div>
-        <script src="../prettify.js"></script>
+        <script src="../../../../prettify.js"></script>
         <script>
             window.onload = function () {
                 prettyPrint();
             };
         </script>
-        <script src="../sorter.js"></script>
-        <script src="../block-navigation.js"></script>
+        <script src="../../../../sorter.js"></script>
+        <script src="../../../../block-navigation.js"></script>
     </body>
 </html>
     

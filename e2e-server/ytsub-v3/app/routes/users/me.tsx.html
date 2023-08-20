@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">79.85% </span>
+                <span class="strong">79% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>218/273</span>
+                <span class='fraction'>207/262</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">60% </span>
+                <span class="strong">57.89% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>12/20</span>
+                <span class='fraction'>11/19</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">79.85% </span>
+                <span class="strong">79% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>218/273</span>
+                <span class='fraction'>207/262</span>
             </div>
         
             
@@ -325,18 +325,7 @@
 <a name='L260'></a><a href='#L260'>260</a>
 <a name='L261'></a><a href='#L261'>261</a>
 <a name='L262'></a><a href='#L262'>262</a>
-<a name='L263'></a><a href='#L263'>263</a>
-<a name='L264'></a><a href='#L264'>264</a>
-<a name='L265'></a><a href='#L265'>265</a>
-<a name='L266'></a><a href='#L266'>266</a>
-<a name='L267'></a><a href='#L267'>267</a>
-<a name='L268'></a><a href='#L268'>268</a>
-<a name='L269'></a><a href='#L269'>269</a>
-<a name='L270'></a><a href='#L270'>270</a>
-<a name='L271'></a><a href='#L271'>271</a>
-<a name='L272'></a><a href='#L272'>272</a>
-<a name='L273'></a><a href='#L273'>273</a>
-<a name='L274'></a><a href='#L274'>274</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L263'></a><a href='#L263'>263</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -354,17 +343,6 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -616,34 +594,23 @@ import toast from "react-hot-toast";
 import { useModal } from "../../components/modal";
 import { PopoverSimple } from "../../components/popover";
 import type { UserTable } from "../../db/models";
-import { rpcClient, rpcClientQuery } from "../../trpc/client";
+import { trpc } from "../../trpc/client";
+import { trpcClient } from "../../trpc/client-internal.client";
 import { intl } from "../../utils/intl";
 import {
   FILTERED_LANGUAGE_CODES,
   languageCodeToName,
 } from "../../utils/language";
 import { useLeafLoaderData } from "../../utils/loader-utils";
-import { makeLoader } from "../../utils/loader-utils.server";
 import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 import { useTurnstile } from "../../utils/turnstile-utils";
 &nbsp;
+export { loader } from "./me.server";
+&nbsp;
 export const handle: PageHandle = {
   navBarTitle: () =&gt; "Account",
 };
-&nbsp;
-//
-// loader
-//
-&nbsp;
-export const loader = makeLoader(async ({ ctx }) =&gt; {
-  const user = await ctx.requireUser();
-  return user;
-});
-&nbsp;
-//
-// component
-//
 &nbsp;
 export default function DefaultComponent() {
   const currentUser = useLeafLoaderData() as UserTable;
@@ -651,7 +618,7 @@ export default function DefaultComponent() {
   const navigate = useNavigate();
 &nbsp;
   const updateMutation = useMutation({
-    ...rpcClientQuery.users_update.mutationOptions(),
+    ...trpc.users_update.mutationOptions(),
     onSuccess: <span class="fstat-no" title="function not covered" >() =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >      toast.success("Successfully updated settings");</span>
 <span class="cstat-no" title="statement not covered" >      form.reset(form.getValues());</span>
@@ -667,7 +634,7 @@ export default function DefaultComponent() {
   const resetPasswordMutation = useMutation({
     mutationFn: <span class="fstat-no" title="function not covered" >async ({ email }: { email: string }) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >      const token = await turnstile.render();</span>
-<span class="cstat-no" title="statement not covered" >      return rpcClient.users_requestResetPassword({</span>
+<span class="cstat-no" title="statement not covered" >      return trpcClient.users_requestResetPassword.mutate({</span>
 <span class="cstat-no" title="statement not covered" >        email,</span>
 <span class="cstat-no" title="statement not covered" >        token,</span>
 <span class="cstat-no" title="statement not covered" >      });</span>
@@ -837,7 +804,7 @@ export default function DefaultComponent() {
 <span class="cstat-no" title="statement not covered" >  const formIsValid = form.formState.isValid;</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  const mutation = useMutation({</span>
-<span class="cstat-no" title="statement not covered" >    ...rpcClientQuery.users_requestUpdateEmail.mutationOptions(),</span>
+<span class="cstat-no" title="statement not covered" >    ...trpc.users_requestUpdateEmail.mutationOptions(),</span>
 <span class="cstat-no" title="statement not covered" >    onSuccess: () =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >      toast.success("Verification email is sent successfullly");</span>
 <span class="cstat-no" title="statement not covered" >      props.onSuccess();</span>
@@ -889,7 +856,7 @@ function LanguageSelectOptions() {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-08-20T02:53:27.202Z
+                at 2023-08-20T03:29:00.066Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>

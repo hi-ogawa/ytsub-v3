@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">82.18% </span>
+                <span class="strong">81.43% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>286/348</span>
+                <span class='fraction'>272/334</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">82.18% </span>
+                <span class="strong">81.43% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>286/348</span>
+                <span class='fraction'>272/334</span>
             </div>
         
             
@@ -397,35 +397,7 @@
 <a name='L332'></a><a href='#L332'>332</a>
 <a name='L333'></a><a href='#L333'>333</a>
 <a name='L334'></a><a href='#L334'>334</a>
-<a name='L335'></a><a href='#L335'>335</a>
-<a name='L336'></a><a href='#L336'>336</a>
-<a name='L337'></a><a href='#L337'>337</a>
-<a name='L338'></a><a href='#L338'>338</a>
-<a name='L339'></a><a href='#L339'>339</a>
-<a name='L340'></a><a href='#L340'>340</a>
-<a name='L341'></a><a href='#L341'>341</a>
-<a name='L342'></a><a href='#L342'>342</a>
-<a name='L343'></a><a href='#L343'>343</a>
-<a name='L344'></a><a href='#L344'>344</a>
-<a name='L345'></a><a href='#L345'>345</a>
-<a name='L346'></a><a href='#L346'>346</a>
-<a name='L347'></a><a href='#L347'>347</a>
-<a name='L348'></a><a href='#L348'>348</a>
-<a name='L349'></a><a href='#L349'>349</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<a name='L335'></a><a href='#L335'>335</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -782,44 +754,30 @@ import { ThemeSelect } from "./components/theme-select";
 import { TopProgressBarRemix } from "./components/top-progress-bar";
 import type { UserTable } from "./db/models";
 import { $R, R } from "./misc/routes";
-import { rpcClientQuery } from "./trpc/client";
+import { trpc } from "./trpc/client";
 import { injectPublicConfigScript, publicConfig } from "./utils/config-public";
 import {
   encodeFlashMessage,
   useFlashMessageHandler,
 } from "./utils/flash-message";
-import { RootLoaderData, useRootLoaderData } from "./utils/loader-utils";
-import { makeLoader } from "./utils/loader-utils.server";
+import { useRootLoaderData } from "./utils/loader-utils";
 import { cls } from "./utils/misc";
 import { navigateRefresh } from "./utils/misc-client";
 import type { PageHandle } from "./utils/page-handle";
 import { QueryClientWrapper } from "./utils/react-query-utils";
 import { ToastWrapper } from "./utils/toast-utils";
 &nbsp;
-//
-// loader
-//
-&nbsp;
-export const loader = makeLoader(async ({ ctx }) =&gt; {
-  const loaderData: RootLoaderData = {
-    currentUser: await ctx.currentUser(),
-  };
-  return loaderData;
-});
+export { loader } from "./root.server";
 &nbsp;
 // no need to revalidate `currentUser` since app refreshes on user session change (signin/signout)
-export const shouldRevalidate: ShouldRevalidateFunction = <span class="fstat-no" title="function not covered" >() =&gt; false;</span>
-&nbsp;
-//
-// component
-//
+export const shouldRevalidate: ShouldRevalidateFunction = () =&gt; false;
 &nbsp;
 export default function DefaultComponent() {
   // hydration error for theme class (dark, light)
   return (
     &lt;html lang="en" className="h-full" suppressHydrationWarning&gt;
       &lt;head&gt;
-        &lt;meta charSet="utf-8" /&gt;
+<span class="fstat-no" title="function not covered" >        &lt;m</span>eta charSet="utf-8" /&gt;
         &lt;meta
           name="viewport"
           content="width=device-width, height=device-height, initial-scale=1.0"
@@ -1078,7 +1036,7 @@ const SIDE_MENU_ENTRIES: SideMenuEntry[] = [
 &nbsp;
 <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >function SignoutComponent() {</span></span>
 <span class="cstat-no" title="statement not covered" >  const signoutMutation = useMutation({</span>
-<span class="cstat-no" title="statement not covered" >    ...rpcClientQuery.users_signout.mutationOptions(),</span>
+<span class="cstat-no" title="statement not covered" >    ...trpc.users_signout.mutationOptions(),</span>
 <span class="cstat-no" title="statement not covered" >    onSuccess: () =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >      const href =</span>
 <span class="cstat-no" title="statement not covered" >        $R["/"]() +</span>
@@ -1094,7 +1052,7 @@ const SIDE_MENU_ENTRIES: SideMenuEntry[] = [
 <span class="cstat-no" title="statement not covered" >  return (</span>
 <span class="cstat-no" title="statement not covered" >    &lt;button</span>
 <span class="cstat-no" title="statement not covered" >      className="w-full antd-menu-item flex items-center gap-2 p-2"</span>
-<span class="cstat-no" title="statement not covered" >      onClick={() =&gt; signoutMutation.mutate()}</span>
+<span class="cstat-no" title="statement not covered" >      onClick={() =&gt; signoutMutation.mutate(null)}</span>
 <span class="cstat-no" title="statement not covered" >      disabled={signoutMutation.isLoading}</span>
 <span class="cstat-no" title="statement not covered" >    &gt;</span>
 <span class="cstat-no" title="statement not covered" >      &lt;span</span>
@@ -1114,7 +1072,7 @@ const SIDE_MENU_ENTRIES: SideMenuEntry[] = [
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-08-20T02:53:27.202Z
+                at 2023-08-20T03:29:00.066Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
