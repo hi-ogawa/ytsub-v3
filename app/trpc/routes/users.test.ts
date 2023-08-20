@@ -10,7 +10,7 @@ import { findByUsername, getSessionUser } from "../../utils/auth";
 import { getResponseSession } from "../../utils/session.server";
 import { rpcRoutes } from "../server";
 
-describe(rpcRoutes.users_signin.name, () => {
+describe(rpcRoutes.users_signin, () => {
   const credentials = { username: "test-trpc-signin-v2", password: "correct" };
   const userHook = useUser(credentials);
 
@@ -77,7 +77,7 @@ describe(rpcRoutes.users_signin.name, () => {
   });
 });
 
-describe(rpcRoutes.users_signout.name, () => {
+describe(rpcRoutes.users_signout, () => {
   const credentials = { username: "test-trpc-signout", password: "correct" };
   const userHook = useUser(credentials);
 
@@ -100,7 +100,7 @@ describe(rpcRoutes.users_signout.name, () => {
   });
 });
 
-describe(rpcRoutes.users_register.name, () => {
+describe(rpcRoutes.users_register, () => {
   const credentials: Parameters<typeof rpcRoutes.users_register>[0] = {
     username: "test-trpc-register",
     password: "correct",

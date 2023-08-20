@@ -15,7 +15,7 @@ import {
 } from "./drizzle-client.server";
 import { deleteOrphans } from "./helper";
 
-describe(toDeleteSql.name, () => {
+describe(toDeleteSql, () => {
   it("basic", async () => {
     const query = db
       .select()
@@ -42,7 +42,7 @@ describe(toDeleteSql.name, () => {
   });
 });
 
-describe(selectMany.name, () => {
+describe(selectMany, () => {
   it("typing", async () => {
     const rows = await selectMany(
       T.bookmarkEntries,
@@ -53,7 +53,7 @@ describe(selectMany.name, () => {
   });
 });
 
-describe(selectOne.name, () => {
+describe(selectOne, () => {
   it("typing", async () => {
     const row = await selectOne(
       T.bookmarkEntries,
@@ -64,19 +64,19 @@ describe(selectOne.name, () => {
   });
 });
 
-describe(toCountSql.name, () => {
+describe(toCountSql, () => {
   it("basic", async () => {
     await toCountSql(db.select().from(T.videos));
   });
 });
 
-describe(deleteOrphans.name, () => {
+describe(deleteOrphans, () => {
   it("basic", async () => {
     await deleteOrphans();
   });
 });
 
-describe(dbShowTables.name, () => {
+describe(dbShowTables, () => {
   it("basic", async () => {
     await expect(dbShowTables()).resolves.toMatchInlineSnapshot(`
       [

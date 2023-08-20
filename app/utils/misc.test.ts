@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { pathToRegExp } from "./misc";
 
-describe(pathToRegExp.name, () => {
+describe(pathToRegExp, () => {
   it("basic", () => {
     const result = pathToRegExp("/hello/:param/world");
     expect(result).toMatchInlineSnapshot(`
