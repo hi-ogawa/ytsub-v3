@@ -54,7 +54,7 @@ function createQueryClient() {
   });
 
   queryClient.setQueryDefaults(
-    [rpcClientQuery.videos_getCaptionEntries.queryKey],
+    rpcClientQuery.videos_getCaptionEntries.queryKey,
     {
       staleTime: Infinity,
       cacheTime: Infinity,
