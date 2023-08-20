@@ -5,53 +5,31 @@ import { PRACTICE_ACTION_TYPE_TO_COLOR, QueueTypeIcon } from ".";
 import { CollapseTransition } from "../../../components/collapse";
 import { SelectWrapper, transitionProps } from "../../../components/misc";
 import type { TT } from "../../../db/drizzle-client.server";
-import type { DeckTable } from "../../../db/models";
 import { PRACTICE_ACTION_TYPES, PracticeActionType } from "../../../db/types";
 import { ROUTE_DEF } from "../../../misc/routes";
 import { rpcClientQuery } from "../../../trpc/client";
 import { useIntersectionObserver } from "../../../utils/hooks-client-utils";
 import { formatRelativeDate } from "../../../utils/intl";
-import { requireUserAndDeck } from "../../../utils/loader-deck-utils";
 import {
   disableUrlQueryRevalidation,
   useLeafLoaderData,
   useLoaderDataExtra,
   useTypedUrlQuery,
 } from "../../../utils/loader-utils";
-import { makeLoader } from "../../../utils/loader-utils.server";
 import { cls } from "../../../utils/misc";
 import type { PageHandle } from "../../../utils/page-handle";
 import { MiniPlayer } from "../../bookmarks";
-import { DeckHistoryNavBarMenuComponent } from "./history-graph";
+import type { LoaderData } from "./common.server";
 
-//
-// handle
-//
+import { DeckHistoryNavBarMenuComponent } from "./history-graph";
+export { loader } from "./common.server";
+
+export const shouldRevalidate = disableUrlQueryRevalidation;
 
 export const handle: PageHandle = {
   navBarTitle: () => <NavBarTitleComponent />,
   navBarMenu: () => <DeckHistoryNavBarMenuComponent />,
 };
-
-//
-// loader
-//
-
-interface LoaderData {
-  deck: DeckTable;
-}
-
-export const loader = makeLoader(async ({ ctx }) => {
-  const { deck } = await requireUserAndDeck(ctx);
-  const loaderData: LoaderData = { deck };
-  return loaderData;
-});
-
-export const shouldRevalidate = disableUrlQueryRevalidation;
-
-//
-// DefaultComponent
-//
 
 export default function DefaultComponent() {
   const { deck } = useLoaderDataExtra() as LoaderData;

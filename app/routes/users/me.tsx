@@ -12,27 +12,15 @@ import {
   languageCodeToName,
 } from "../../utils/language";
 import { useLeafLoaderData } from "../../utils/loader-utils";
-import { makeLoader } from "../../utils/loader-utils.server";
 import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 import { useTurnstile } from "../../utils/turnstile-utils";
 
+export { loader } from "./me.server";
+
 export const handle: PageHandle = {
   navBarTitle: () => "Account",
 };
-
-//
-// loader
-//
-
-export const loader = makeLoader(async ({ ctx }) => {
-  const user = await ctx.requireUser();
-  return user;
-});
-
-//
-// component
-//
 
 export default function DefaultComponent() {
   const currentUser = useLeafLoaderData() as UserTable;

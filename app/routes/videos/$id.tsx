@@ -1,5 +1,5 @@
 import { Transition } from "@headlessui/react";
-import { groupBy, isNil, sortBy, tinyassert, uniq, zip } from "@hiogawa/utils";
+import { groupBy, isNil, sortBy, uniq, zip } from "@hiogawa/utils";
 import { toArraySetState, useRafLoop } from "@hiogawa/utils-react";
 import { Link, useNavigate } from "@remix-run/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -16,8 +16,8 @@ import { z } from "zod";
 import { SelectWrapper, transitionProps } from "../../components/misc";
 import { useModal } from "../../components/modal";
 import { PopoverSimple } from "../../components/popover";
-import { E, T, TT, selectOne } from "../../db/drizzle-client.server";
-import type { UserTable, VideoTable } from "../../db/models";
+import type { TT } from "../../db/drizzle-client.server";
+import type { UserTable } from "../../db/models";
 import { $R, ROUTE_DEF } from "../../misc/routes";
 import { rpcClientQuery } from "../../trpc/client";
 import { useDocumentEvent } from "../../utils/hooks-client-utils";
@@ -29,7 +29,6 @@ import {
   useRootLoaderData,
   useTypedUrlQuery,
 } from "../../utils/loader-utils";
-import { makeLoader } from "../../utils/loader-utils.server";
 import { cls, none } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 import type { CaptionEntry } from "../../utils/types";
@@ -40,32 +39,15 @@ import {
   usePlayerLoader,
 } from "../../utils/youtube";
 
+import type { LoaderData } from "./$id.server";
+export { loader } from "./$id.server";
+
+export const shouldRevalidate = disableUrlQueryRevalidation;
+
 export const handle: PageHandle = {
   navBarTitle: () => "Watch",
   navBarMenu: () => <NavBarMenuComponent />,
 };
-
-//
-// loader
-//
-
-type LoaderData = {
-  video: VideoTable;
-};
-
-export const loader = makeLoader(async ({ ctx }) => {
-  const params = ROUTE_DEF["/videos/$id"].params.parse(ctx.params);
-  const video = await selectOne(T.videos, E.eq(T.videos.id, params.id));
-  tinyassert(video);
-  const loaderData: LoaderData = { video };
-  return loaderData;
-});
-
-export const shouldRevalidate = disableUrlQueryRevalidation;
-
-//
-// component
-//
 
 export default function DeafultComponent() {
   const { currentUser } = useRootLoaderData();

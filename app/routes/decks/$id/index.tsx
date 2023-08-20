@@ -4,89 +4,31 @@ import { useQuery } from "@tanstack/react-query";
 import React from "react";
 import { PaginationComponent, transitionProps } from "../../../components/misc";
 import { PopoverSimple } from "../../../components/popover";
-import {
-  E,
-  T,
-  TT,
-  db,
-  toPaginationResult,
-} from "../../../db/drizzle-client.server";
 import type {
   BookmarkEntryTable,
   CaptionEntryTable,
   DeckTable,
-  PracticeEntryTable,
   VideoTable,
 } from "../../../db/models";
 import type { PracticeActionType, PracticeQueueType } from "../../../db/types";
-import { $R, ROUTE_DEF } from "../../../misc/routes";
+import { $R } from "../../../misc/routes";
 import { rpcClientQuery } from "../../../trpc/client";
 import { intl, intlWrapper } from "../../../utils/intl";
-import { requireUserAndDeck } from "../../../utils/loader-deck-utils";
 import {
   useLeafLoaderData,
   useLoaderDataExtra,
 } from "../../../utils/loader-utils";
-import { makeLoader } from "../../../utils/loader-utils.server";
 import { cls } from "../../../utils/misc";
 import type { PageHandle } from "../../../utils/page-handle";
-import type { PaginationMetadata } from "../../../utils/pagination";
 import { MiniPlayer } from "../../bookmarks";
+
+import type { LoaderData, PracticeEntryTableExtra } from "./index.server";
+export { loader } from "./index.server";
 
 export const handle: PageHandle = {
   navBarTitle: () => <NavBarTitleComponent />,
   navBarMenu: () => <DeckNavBarMenuComponent />,
 };
-
-//
-// loader
-//
-
-type PracticeEntryTableExtra = PracticeEntryTable & {
-  practiceActionsCount: number;
-};
-
-interface LoaderData {
-  deck: DeckTable;
-  pagination: PaginationMetadata;
-  rows: Pick<
-    TT,
-    "practiceEntries" | "bookmarkEntries" | "captionEntries" | "videos"
-  >[];
-}
-
-export const loader = makeLoader(async ({ ctx }) => {
-  const { deck } = await requireUserAndDeck(ctx);
-  const reqQuery = ROUTE_DEF["/decks/$id"].query.parse(ctx.query);
-
-  const baseQuery = db
-    .select()
-    .from(T.practiceEntries)
-    .innerJoin(
-      T.bookmarkEntries,
-      E.eq(T.bookmarkEntries.id, T.practiceEntries.bookmarkEntryId)
-    )
-    .innerJoin(
-      T.captionEntries,
-      E.eq(T.captionEntries.id, T.bookmarkEntries.captionEntryId)
-    )
-    .innerJoin(T.videos, E.eq(T.videos.id, T.captionEntries.videoId))
-    .where(E.eq(T.practiceEntries.deckId, deck.id))
-    .orderBy(E.asc(T.practiceEntries.createdAt));
-
-  const [rows, pagination] = await toPaginationResult(baseQuery, reqQuery);
-
-  const loaderData: LoaderData = {
-    deck,
-    pagination,
-    rows,
-  };
-  return loaderData;
-});
-
-//
-// component
-//
 
 export default function DefaultComponent() {
   const { deck, pagination, rows } = useLoaderDataExtra() as LoaderData;

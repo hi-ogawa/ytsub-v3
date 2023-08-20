@@ -1,39 +1,17 @@
 import { Link } from "@remix-run/react";
-import { E, T, db } from "../../db/drizzle-client.server";
 import type { DeckTable } from "../../db/models";
 import { $R } from "../../misc/routes";
 import { useLoaderDataExtra } from "../../utils/loader-utils";
-import { makeLoader } from "../../utils/loader-utils.server";
 import type { PageHandle } from "../../utils/page-handle";
 import { DeckMenuComponent } from "./$id";
+
+import type { DecksLoaderData } from "./index.server";
+export { loader } from "./index.server";
 
 export const handle: PageHandle = {
   navBarTitle: () => "Practice Decks",
   navBarMenu: () => <NavBarMenuComponent />,
 };
-
-//
-// loader
-//
-
-interface DecksLoaderData {
-  decks: DeckTable[];
-}
-
-export const loader = makeLoader(async ({ ctx }) => {
-  const user = await ctx.requireUser();
-  const decks = await db
-    .select()
-    .from(T.decks)
-    .where(E.eq(T.decks.userId, user.id))
-    .orderBy(E.desc(T.decks.createdAt));
-  const loaderData: DecksLoaderData = { decks };
-  return loaderData;
-});
-
-//
-// component
-//
 
 export default function DefaultComponent() {
   const data = useLoaderDataExtra() as DecksLoaderData;

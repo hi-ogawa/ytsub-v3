@@ -12,10 +12,6 @@ export const handle: PageHandle = {
   navBarTitle: () => "Import Deck",
 };
 
-//
-// component
-//
-
 export default function DefaultComponent() {
   return (
     <div className="w-full flex justify-center p-4">

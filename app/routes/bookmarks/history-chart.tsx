@@ -10,21 +10,18 @@ import {
 import { ROUTE_DEF } from "../../misc/routes";
 import { rpcClientQuery } from "../../trpc/client";
 import { useClickOutside } from "../../utils/hooks-client-utils";
-import { useTypedUrlQuery } from "../../utils/loader-utils";
-import { makeLoader } from "../../utils/loader-utils.server";
+import {
+  disableUrlQueryRevalidation,
+  useTypedUrlQuery,
+} from "../../utils/loader-utils";
 import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 import { formatDateRange } from "../../utils/temporal-utils";
 import { BookmarksMenuItems } from "./index";
 
-//
-// loader
-//
+export { loader } from "./history-chart.server";
 
-export const loader = makeLoader(async ({ ctx }) => {
-  await ctx.requireUser();
-  return null;
-});
+export const shouldRevalidate = disableUrlQueryRevalidation;
 
 //
 // handle
