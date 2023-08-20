@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">59.01% </span>
+                <span class="strong">75.4% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>36/61</span>
+                <span class='fraction'>46/61</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">60% </span>
+                <span class="quiet">Branches</span>
+                <span class='fraction'>3/5</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
-                <span class="quiet">Branches</span>
-                <span class='fraction'>1/1</span>
-            </div>
-        
-            
-            <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/2</span>
+                <span class='fraction'>2/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">59.01% </span>
+                <span class="strong">75.4% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>36/61</span>
+                <span class='fraction'>46/61</span>
             </div>
         
             
@@ -141,22 +141,22 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -202,22 +202,22 @@ export const debugEmails: Email[] = ((globalThis as any).__debugEmails ??= []);
 // email utils api
 //
 &nbsp;
-<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >export async function sendEmail(email: Email) {</span></span>
-<span class="cstat-no" title="statement not covered" >  if (process.env.NODE_ENV !== "production") {</span>
-<span class="cstat-no" title="statement not covered" >    debugEmails.unshift(email);</span>
-<span class="cstat-no" title="statement not covered" >  }</span>
-<span class="cstat-no" title="statement not covered" >  await sendMailjet(email);</span>
-<span class="cstat-no" title="statement not covered" >}</span>
+export async function sendEmail(email: Email) {
+  if (process.env.NODE_ENV !== "production") {
+    debugEmails.unshift(email);
+  }
+  await sendMailjet(email);
+}
 &nbsp;
 //
 // mailjet client
 //
 &nbsp;
-let sendMailjet = <span class="fstat-no" title="function not covered" >async (email: Email) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >  const username = serverConfig.MJ_APIKEY_PUBLIC;</span>
-<span class="cstat-no" title="statement not covered" >  const password = serverConfig.MJ_APIKEY_PRIVATE;</span>
-<span class="cstat-no" title="statement not covered" >  if (!username || !password) {</span>
-<span class="cstat-no" title="statement not covered" >    return;</span>
+let sendMailjet = async (email: Email) =&gt; {
+  const username = serverConfig.MJ_APIKEY_PUBLIC;
+  const password = serverConfig.MJ_APIKEY_PRIVATE;
+  if (!<span class="branch-0 cbranch-no" title="branch not covered" >username || !password) {</span>
+<span class="branch-0 cbranch-no" title="branch not covered" >    return;</span>
 <span class="cstat-no" title="statement not covered" >  }</span>
 <span class="cstat-no" title="statement not covered" >  const res = await fetch("https://api.mailjet.com/v3.1/send", {</span>
 <span class="cstat-no" title="statement not covered" >    method: "POST",</span>
@@ -253,7 +253,7 @@ const Z_MAILJET_RESPONSE = z
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-08-20T04:16:52.562Z
+                at 2023-08-20T04:32:27.039Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

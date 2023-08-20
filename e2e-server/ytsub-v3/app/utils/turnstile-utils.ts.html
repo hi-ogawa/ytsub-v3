@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">36.92% </span>
+                <span class="strong">58.46% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>24/65</span>
+                <span class='fraction'>38/65</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/0</span>
+                <span class='fraction'>1/1</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">33.33% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/2</span>
+                <span class='fraction'>1/3</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">36.92% </span>
+                <span class="strong">58.46% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>24/65</span>
+                <span class='fraction'>38/65</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line medium'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -163,6 +163,13 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -179,20 +186,13 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { newPromiseWithResolvers, once, tinyassert } from "@hiogawa/utils";
 import { useQuery } from "@tanstack/react-query";
 import React from "react";
@@ -227,14 +227,14 @@ interface TurnstileApi {
 &nbsp;
 const loadTurnstileScriptOnce = once(loadTurnstileScript);
 &nbsp;
-export <span class="fstat-no" title="function not covered" >function useTurnstile() {</span>
-<span class="cstat-no" title="statement not covered" >  const query = useQuery({</span>
-<span class="cstat-no" title="statement not covered" >    ...usePromiseQueryOpitons(loadTurnstileScriptOnce),</span>
-<span class="cstat-no" title="statement not covered" >  });</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >  const ref = React.useRef&lt;HTMLDivElement&gt;(null);</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >  function render(): Promise&lt;string&gt; {</span>
+export function useTurnstile() {
+  const query = useQuery({
+    ...usePromiseQueryOpitons(loadTurnstileScriptOnce),
+  });
+&nbsp;
+  const ref = React.useRef&lt;HTMLDivElement&gt;(null);
+&nbsp;
+<span class="fstat-no" title="function not covered" >  function render(): Promise&lt;string&gt; {</span>
 <span class="cstat-no" title="statement not covered" >    tinyassert(query.isSuccess);</span>
 <span class="cstat-no" title="statement not covered" >    tinyassert(ref.current);</span>
 <span class="cstat-no" title="statement not covered" >    const turnstile = query.data;</span>
@@ -251,13 +251,13 @@ export <span class="fstat-no" title="function not covered" >function useTurnstil
 <span class="cstat-no" title="statement not covered" >      });</span>
 <span class="cstat-no" title="statement not covered" >    });</span>
 <span class="cstat-no" title="statement not covered" >  }</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >  return {</span>
-<span class="cstat-no" title="statement not covered" >    query,</span>
-<span class="cstat-no" title="statement not covered" >    ref,</span>
-<span class="cstat-no" title="statement not covered" >    render,</span>
-<span class="cstat-no" title="statement not covered" >  };</span>
-<span class="cstat-no" title="statement not covered" >}</span>
+&nbsp;
+  return {
+    query,
+    ref,
+    render,
+  };
+}
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -265,7 +265,7 @@ export <span class="fstat-no" title="function not covered" >function useTurnstil
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-08-20T04:16:52.562Z
+                at 2023-08-20T04:32:27.039Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>
