@@ -315,7 +315,7 @@ test.describe("videos deletion", () => {
   });
 });
 
-test.describe.only("videos new form", () => {
+test.describe("videos new form", () => {
   test("reset form state", async ({ page }) => {
     await page.goto("/");
 
