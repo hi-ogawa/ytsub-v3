@@ -67,12 +67,7 @@ function RootWrapper(props: React.PropsWithChildren) {
         }}
       />
       <Compose
-        elements={[
-          <FloatingTree />,
-          <ToastWrapper />,
-          <QueryClientWrapper />,
-          <Root />,
-        ]}
+        elements={[<FloatingTree />, <ToastWrapper />, <QueryClientWrapper />]}
       >
         {props.children}
       </Compose>
