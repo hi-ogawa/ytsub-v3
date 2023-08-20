@@ -6,7 +6,7 @@ import { useUser, useUserVideo } from "../../misc/test-helper";
 import { mockRequestContext } from "../../server/request-context/mock";
 import { rpcRoutes } from "../server";
 
-describe(rpcRoutes.bookmarks_create.name, () => {
+describe(rpcRoutes.bookmarks_create, () => {
   const hook = useUserVideo({
     seed: __filename + "bookmarks_create",
   });
@@ -75,7 +75,7 @@ describe(rpcRoutes.bookmarks_create.name, () => {
   });
 });
 
-describe(rpcRoutes.bookmarks_historyChart.name, () => {
+describe(rpcRoutes.bookmarks_historyChart, () => {
   const user = useUser({
     seed: __filename,
   });

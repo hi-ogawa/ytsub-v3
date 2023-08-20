@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { partitionRanges } from "./$id";
 
-describe(partitionRanges.name, () => {
+describe(partitionRanges, () => {
   it("basic", async () => {
     expect(
       partitionRanges(27, [

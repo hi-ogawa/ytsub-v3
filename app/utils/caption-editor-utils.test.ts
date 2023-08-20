@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { scrapeColorCodedLyrics } from "./caption-editor-utils";
 
 // it's not used currently so skip it for now since it might timeout
-describe.skip(scrapeColorCodedLyrics.name, () => {
+describe.skip(scrapeColorCodedLyrics, () => {
   it("basic", async () => {
     const res = await scrapeColorCodedLyrics(
       "https://colorcodedlyrics.com/2020/10/26/twice-say-something/"
