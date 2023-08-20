@@ -3,15 +3,15 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for utils/config.ts</title>
+    <title>Code coverage report for ytsub-v3/app/server/document.tsx</title>
     <meta charset="utf-8" />
-    <link rel="stylesheet" href="../prettify.css" />
-    <link rel="stylesheet" href="../base.css" />
-    <link rel="shortcut icon" type="image/x-icon" href="../favicon.png" />
+    <link rel="stylesheet" href="../../../prettify.css" />
+    <link rel="stylesheet" href="../../../base.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="../../../favicon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <style type='text/css'>
         .coverage-summary .sorter {
-            background-image: url(../sort-arrow-sprite.png);
+            background-image: url(../../../sort-arrow-sprite.png);
         }
     </style>
 </head>
@@ -19,7 +19,7 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../index.html">All files</a> / <a href="index.html">utils</a> config.ts</h1>
+        <h1><a href="../../../index.html">All files</a> / <a href="index.html">ytsub-v3/app/server</a> document.tsx</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
@@ -113,84 +113,84 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">26x</span>
-<span class="cline-any cline-yes">26x</span>
-<span class="cline-any cline-yes">26x</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import * as process from "process";
-import { z } from "zod";
-import { initializePublicConfigServer } from "./config-public";
-import { uninitialized } from "./misc";
+<span class="cline-any cline-yes">46x</span>
+<span class="cline-any cline-yes">46x</span>
+<span class="cline-any cline-yes">46x</span>
+<span class="cline-any cline-yes">46x</span>
+<span class="cline-any cline-yes">46x</span>
+<span class="cline-any cline-yes">46x</span>
+<span class="cline-any cline-yes">46x</span>
+<span class="cline-any cline-yes">46x</span>
+<span class="cline-any cline-yes">46x</span>
+<span class="cline-any cline-yes">46x</span>
+<span class="cline-any cline-yes">46x</span>
+<span class="cline-any cline-yes">46x</span>
+<span class="cline-any cline-yes">46x</span>
+<span class="cline-any cline-yes">46x</span>
+<span class="cline-any cline-yes">46x</span>
+<span class="cline-any cline-yes">46x</span>
+<span class="cline-any cline-yes">46x</span>
+<span class="cline-any cline-yes">46x</span>
+<span class="cline-any cline-yes">46x</span>
+<span class="cline-any cline-yes">46x</span>
+<span class="cline-any cline-yes">46x</span>
+<span class="cline-any cline-yes">46x</span>
+<span class="cline-any cline-yes">46x</span>
+<span class="cline-any cline-yes">46x</span>
+<span class="cline-any cline-yes">46x</span>
+<span class="cline-any cline-yes">46x</span>
+<span class="cline-any cline-yes">46x</span>
+<span class="cline-any cline-yes">46x</span>
+<span class="cline-any cline-yes">46x</span>
+<span class="cline-any cline-yes">46x</span>
+<span class="cline-any cline-yes">46x</span>
+<span class="cline-any cline-yes">46x</span>
+<span class="cline-any cline-yes">46x</span>
+<span class="cline-any cline-yes">46x</span>
+<span class="cline-any cline-yes">46x</span>
+<span class="cline-any cline-yes">46x</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { generateThemeScript } from "@hiogawa/theme-script";
+import { injectPublicConfigScript, publicConfig } from "../utils/config-public";
 &nbsp;
-// prettier-ignore
-const Z_SERVER_CONFIG = z.object({
-  APP_MYSQL_HOST: z.string().default("localhost"),
-  APP_MYSQL_PORT: z.coerce.number().default(3306),
-  APP_MYSQL_USER: z.string().default("root"),
-  APP_MYSQL_PASSWORD: z.string().default("password"),
-  APP_MYSQL_DATABASE: z.string().default(process.env.NODE_ENV === "test" ? <span class="branch-0 cbranch-no" title="branch not covered" >"ytsub_test" : "ytsub_development")</span>,
-  APP_MYSQL_SSL: z.coerce.boolean(),
+// since we don't currently use remix's &lt;Meta /&gt; or &lt;Links /&gt; convention,
+// we can render static document html only on server, which is probably common ssr practice.
 &nbsp;
-  APP_SESSION_SECRET: z.string().default("__sessionSecret"),
-&nbsp;
-  // captcha (default test keys always succeed https://developers.cloudflare.com/turnstile/reference/testing/)
-  APP_CAPTCHA_SITE_KEY: z.string().default("1x00000000000000000000BB"),
-  APP_CAPTCHA_SECRET_KEY: z.string().default("1x0000000000000000000000000000000AA"),
-&nbsp;
-  // mailjet
-  MJ_APIKEY_PUBLIC: z.string().optional(),
-  MJ_APIKEY_PRIVATE: z.string().optional(),
-&nbsp;
-  // used for email link
-  BASE_URL: z.string().default("https://ytsub-v3-hiro18181.vercel.app"),
-&nbsp;
-  VERCEL_ENV: z.string().optional(),
-});
-&nbsp;
-const Z_PUBLIC_CONFIG = Z_SERVER_CONFIG.pick({
-  APP_CAPTCHA_SITE_KEY: true,
-  VERCEL_ENV: true,
-});
-&nbsp;
-export type PublicConfig = z.infer&lt;typeof Z_PUBLIC_CONFIG&gt;;
-&nbsp;
-export let serverConfig = uninitialized as z.infer&lt;typeof Z_SERVER_CONFIG&gt;;
-&nbsp;
-export function initializeConfigServer() {
-  serverConfig = Z_SERVER_CONFIG.parse(process.env);
-  initializePublicConfigServer(Z_PUBLIC_CONFIG.parse(process.env));
+export function renderToDocument(ssrHtml: string) {
+  // syntax highlight by https://github.com/mjbvz/vscode-comment-tagged-templates/
+  return /* html */ `
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;meta charset="UTF-8" /&gt;
+    &lt;title&gt;${
+      publicConfig.VERCEL_ENV === <span class="branch-0 cbranch-no" title="branch not covered" >"preview" ? "[PREVIEW] Ytsub" : "</span>Ytsub"
+    }&lt;/title&gt;
+    &lt;meta
+      name="viewport"
+      content="width=device-width, height=device-height, initial-scale=1.0"
+    /&gt;
+    &lt;link rel="manifest" href="/manifest.json" /&gt;
+    &lt;link rel="stylesheet" href=${require("../../build/css/index.css")} /&gt;
+    &lt;link
+        rel="icon"
+        type="image/svg+xml"
+        href="https://iconify-dark-hiro18181.vercel.app/icon/ri/translate-2"
+    /&gt;
+    &lt;style&gt;
+      html,
+      body,
+      #root {
+        height: 100%;
+      }
+    &lt;/style&gt;
+    ${generateThemeScript({ storageKey: "ytsub:theme" })}
+    ${injectPublicConfigScript()}
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;div id="root"&gt;${ssrHtml}&lt;/div&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+`;
 }
 &nbsp;</pre></td></tr></table></pre>
 
@@ -199,16 +199,16 @@ export function initializeConfigServer() {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-08-20T07:49:44.477Z
+                at 2023-08-20T07:51:38.278Z
             </div>
-        <script src="../prettify.js"></script>
+        <script src="../../../prettify.js"></script>
         <script>
             window.onload = function () {
                 prettyPrint();
             };
         </script>
-        <script src="../sorter.js"></script>
-        <script src="../block-navigation.js"></script>
+        <script src="../../../sorter.js"></script>
+        <script src="../../../block-navigation.js"></script>
     </body>
 </html>
     
