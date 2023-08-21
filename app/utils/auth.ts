@@ -87,6 +87,10 @@ export async function getSessionUser(
   return;
 }
 
+export function findUserById(id: number) {
+  return selectOne(T.users, E.eq(T.users.id, id));
+}
+
 // for testing and dev cli
 // TODO: should be sync for cookie storage?
 export async function createUserCookie(user: Pick<UserTable, "id">) {
