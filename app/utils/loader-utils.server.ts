@@ -42,16 +42,10 @@ export function makeLoader(
 
 export type LoaderContext = Awaited<ReturnType<typeof createLoaderContext>>;
 
-async function createLoaderContext({ params }: DataFunctionArgs) {
+async function createLoaderContext({}: DataFunctionArgs) {
   const { url } = ctx_get();
 
   return {
-    params,
-
-    query: Object.fromEntries(url.searchParams.entries()),
-
-    currentUser: () => ctx_currentUser(),
-
     requireUser: async () => {
       const user = await ctx_currentUser();
       if (!user) {

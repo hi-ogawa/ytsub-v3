@@ -1,8 +1,9 @@
 import { ROUTE_DEF } from "../../misc/routes";
+import { ctx_get } from "../../server/request-context/storage";
 import {
   assertOrRespond,
-  makeLoader,
   unwrapZodResultOrRespond,
+  wrapLoader,
 } from "../../utils/loader-utils.server";
 import { VideoMetadata } from "../../utils/types";
 import { fetchVideoMetadata, parseVideoId } from "../../utils/youtube";
@@ -12,9 +13,9 @@ export type LoaderData = {
   videoMetadata: VideoMetadata;
 };
 
-export const loader = makeLoader(async ({ ctx }) => {
+export const loader = wrapLoader(async () => {
   const query = unwrapZodResultOrRespond(
-    ROUTE_DEF["/caption-editor/watch"].query.safeParse(ctx.query)
+    ROUTE_DEF["/caption-editor/watch"].query.safeParse(ctx_get().urlQuery)
   );
   const videoId = parseVideoId(query.v);
   assertOrRespond(videoId);

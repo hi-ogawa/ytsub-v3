@@ -1,9 +1,10 @@
+import { ctx_currentUser } from "./server/request-context/session";
 import { RootLoaderData } from "./utils/loader-utils";
-import { makeLoader } from "./utils/loader-utils.server";
+import { wrapLoader } from "./utils/loader-utils.server";
 
-export const loader = makeLoader(async ({ ctx }) => {
+export const loader = wrapLoader(async () => {
   const loaderData: RootLoaderData = {
-    currentUser: await ctx.currentUser(),
+    currentUser: await ctx_currentUser(),
   };
   return loaderData;
 });

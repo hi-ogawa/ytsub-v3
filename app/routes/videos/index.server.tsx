@@ -1,6 +1,10 @@
 import { E, T, db, toPaginationResult } from "../../db/drizzle-client.server";
 import type { VideoTable } from "../../db/models";
-import { makeLoader } from "../../utils/loader-utils.server";
+import { ctx_get } from "../../server/request-context/storage";
+import {
+  ctx_requireUserOrRedirect,
+  wrapLoader,
+} from "../../utils/loader-utils.server";
 import {
   PAGINATION_PARAMS_SCHEMA,
   PaginationMetadata,
@@ -27,9 +31,9 @@ export async function getVideosLoaderData(
   return { videos, pagination };
 }
 
-export const loader = makeLoader(async ({ ctx }) => {
-  const user = await ctx.requireUser();
-  const query = PAGINATION_PARAMS_SCHEMA.parse(ctx.query);
+export const loader = wrapLoader(async () => {
+  const user = await ctx_requireUserOrRedirect();
+  const query = PAGINATION_PARAMS_SCHEMA.parse(ctx_get().urlQuery);
   const loaderData: VideosLoaderData = await getVideosLoaderData(
     query,
     user.id

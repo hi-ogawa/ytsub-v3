@@ -1,10 +1,11 @@
 import { redirect } from "@remix-run/server-runtime";
 import { R } from "../../misc/routes";
+import { ctx_currentUser } from "../../server/request-context/session";
 import { encodeFlashMessage } from "../../utils/flash-message";
-import { makeLoader } from "../../utils/loader-utils.server";
+import { wrapLoader } from "../../utils/loader-utils.server";
 
-export const loader = makeLoader(async ({ ctx }) => {
-  const user = await ctx.currentUser();
+export const loader = wrapLoader(async () => {
+  const user = await ctx_currentUser();
   if (user) {
     return redirect(
       R["/users/me"] +
