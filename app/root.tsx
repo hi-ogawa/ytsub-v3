@@ -63,6 +63,7 @@ export default function DefaultComponent() {
 }
 
 function Root() {
+  // TODO: navbar user
   const data = useRootLoaderData();
   useFlashMessageHandler();
 

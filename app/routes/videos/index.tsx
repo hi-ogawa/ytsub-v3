@@ -34,6 +34,7 @@ export const handle: PageHandle = {
 };
 
 export default function DefaultComponent() {
+  // TODO: pass `currentUser` from loader
   const { currentUser } = useRootLoaderData();
   const data = useLoaderDataExtra() as VideosLoaderData;
   return <VideoListComponent {...data} currentUser={currentUser} />;

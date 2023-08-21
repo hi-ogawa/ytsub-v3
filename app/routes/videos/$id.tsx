@@ -50,6 +50,7 @@ export const handle: PageHandle = {
 };
 
 export default function DeafultComponent() {
+  // TODO: currentUser affects bookmark logic
   const { currentUser } = useRootLoaderData();
   const data = useLoaderDataExtra() as LoaderData;
   return <PageComponent currentUser={currentUser} {...data} />;
@@ -140,7 +141,7 @@ function PageComponent({
         // mutate query cache instead of refetch
         queryClient.setQueryData(
           bookmarkEntriesQueryOptions.queryKey,
-          (prev) => [...(prev as TT["bookmarkEntries"][]), newBookmark]
+          (prev: unknown) => [...(prev as TT["bookmarkEntries"][]), newBookmark]
         );
       }
     },
@@ -721,6 +722,7 @@ function extractBookmarkSelection(
 //
 
 function NavBarMenuComponent() {
+  // TODO: currentUser affects bookmark logic
   const { currentUser } = useRootLoaderData();
   const { video } = useLeafLoaderData() as LoaderData;
   const [autoScrollState, toggleAutoScrollState] = useAutoScrollState();
