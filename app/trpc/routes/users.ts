@@ -192,16 +192,19 @@ async function generateUniqueCode(
 }
 
 // not exposed as trpc since it's done directly in /users/verify loader
-export async function updateEmailByCode(code: string) {
+export async function updateEmailByCode(code: string): Promise<boolean> {
   const row = await selectOne(
     T.emailUpdateRequests,
     E.eq(T.emailUpdateRequests.code, code)
   );
-  tinyassert(row);
-  tinyassert(!row.verifiedAt);
-
   const now = new Date();
-  tinyassert(now.getTime() - row.createdAt.getTime() < VERIFICATION_MAX_AGE);
+  if (
+    !row ||
+    row.verifiedAt ||
+    now.getTime() > row.createdAt.getTime() + VERIFICATION_MAX_AGE
+  ) {
+    return false;
+  }
 
   // update user
   await db
@@ -221,6 +224,8 @@ export async function updateEmailByCode(code: string) {
 
   // TODO: send email to notify email has changed
   // TODO: reset existing sessions
+
+  return true;
 }
 
 const VERIFICATION_MAX_AGE = 1000 * 60 * 60;
