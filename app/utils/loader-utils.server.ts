@@ -25,22 +25,24 @@ export function assertOrRespond(v: unknown, status: number = 404): asserts v {
   }
 }
 
-// export function unwrapOrRespond<T>(v: T, status: number) {
-//   if (!v) {
-//     throw json(null, { status });
-//   }
-//   return v;
-// }
+// ts-prune-ignore-next
+export function unwrapOrRespond<T>(v: T, status: number) {
+  if (!v) {
+    throw json(null, { status });
+  }
+  return v;
+}
 
-// export function unwrapResultOrRespond<T1, T2>(
-//   v: { ok: true; value: T1 } | { ok: false; value: T2 },
-//   status: number = 400
-// ) {
-//   if (!v.ok) {
-//     throw json(null, { status });
-//   }
-//   return v.value;
-// }
+// ts-prune-ignore-next
+export function unwrapResultOrRespond<T1, T2>(
+  v: { ok: true; value: T1 } | { ok: false; value: T2 },
+  status: number = 400
+) {
+  if (!v.ok) {
+    throw json(null, { status });
+  }
+  return v.value;
+}
 
 export function unwrapZodResultOrRespond<T1, T2>(
   v: { success: true; data: T1 } | { success: false; error: T2 },
@@ -52,10 +54,13 @@ export function unwrapZodResultOrRespond<T1, T2>(
   return v.data;
 }
 
+//
+// context helper
+//
+
 export async function ctx_requireUserOrRedirect() {
   const user = await ctx_currentUser();
   if (!user) {
-    // TODO: reloadDocument?
     throw redirect(
       $R["/users/signin"]() +
         "?" +
