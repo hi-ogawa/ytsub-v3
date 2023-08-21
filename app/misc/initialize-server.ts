@@ -1,3 +1,4 @@
+import "@hiogawa/tiny-jwt/dist/polyfill-node";
 import {
   finalizeDrizzleClient,
   initializeDrizzleClient,
