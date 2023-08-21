@@ -1,5 +1,6 @@
 import {
   DataFunctionArgs,
+  LoaderArgs,
   LoaderFunction,
   json,
   redirect,
@@ -9,6 +10,16 @@ import { $R } from "../misc/routes";
 import { ctx_currentUser } from "../server/request-context/session";
 import { ctx_get } from "../server/request-context/storage";
 import { encodeFlashMessage } from "./flash-message";
+
+// - setup route "params" in async context
+// - custom json serializer by default
+export function wrapLoader(loader: () => unknown) {
+  return async ({ params }: LoaderArgs) => {
+    ctx_get().params = params;
+    const res = await loader();
+    return res instanceof Response ? res : json(serialize(res));
+  };
+}
 
 // TODO
 // - replace LoaderContext with async storage `ctx_xxx` helper

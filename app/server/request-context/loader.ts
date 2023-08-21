@@ -15,7 +15,7 @@ export function routeParamsContextHandler(): RequestHandler {
       {},
       {
         get(_target, _p, _receiver) {
-          throw new Error("forgot 'makeLoader'?");
+          throw new Error("forgot 'wrapLoader'?");
         },
       }
     );
