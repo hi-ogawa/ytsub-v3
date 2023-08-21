@@ -9,6 +9,7 @@ import { tinyassert, wrapErrorAsync } from "@hiogawa/utils";
 import * as cookieLib from "cookie";
 import { z } from "zod";
 import { findUserById } from "../../utils/auth";
+import { serverConfig } from "../../utils/config";
 import { ctx_get } from "./storage";
 
 const Z_SESSION_DATA = z.object({
@@ -68,12 +69,6 @@ export async function ctx_requireSignout(message = "Already signed in") {
 // session by signed jwt on cookie
 //
 
-// npx tiny-jwt keygen HS256
-const JWT_KEY = {
-  kty: "oct",
-  k: "UsahhkGSKhgcluJCHWdm2C96SLjxoEKwE8Lpn4CC9rImDC8DzDX30GG4fPimG_mgdlGDleguFEW7p-Qta46kew", // this should be runtime secret
-};
-
 const COOKIE_NAME = "__session";
 
 const COOKIE_OPTIONS = {
@@ -92,7 +87,10 @@ async function readCookieSession(cookie?: string): Promise<SessionData> {
       const parsed = await wrapErrorAsync(async () => {
         const verified = await jwsVerify({
           token,
-          key: JWT_KEY,
+          key: {
+            kty: "oct",
+            k: serverConfig.APP_SESSION_SECRET,
+          },
           algorithms: ["HS256"],
         });
         checkExpirationTime(verified.header);
@@ -113,7 +111,10 @@ export async function writeCookieSession(
   const token = await jwsSign({
     header: { alg: "HS256", ...setExpirationTime(COOKIE_OPTIONS.maxAge) },
     payload: session,
-    key: JWT_KEY,
+    key: {
+      kty: "oct",
+      k: serverConfig.APP_SESSION_SECRET,
+    },
   });
   const cookie = cookieLib.serialize(COOKIE_NAME, token, COOKIE_OPTIONS);
   tinyassert(cookie.length < 2 ** 12, "too large cookie session");
