@@ -65,7 +65,7 @@ export async function ctx_requireSignout(message = "Already signed in") {
 }
 
 //
-// signed jwt on cookie
+// session by signed jwt on cookie
 //
 
 // npx tiny-jwt keygen HS256
@@ -106,7 +106,10 @@ async function readCookieSession(cookie?: string): Promise<SessionData> {
   return {};
 }
 
-async function writeCookieSession(session: SessionData): Promise<string> {
+// also used for testing and dev cli
+export async function writeCookieSession(
+  session: SessionData
+): Promise<string> {
   const token = await jwsSign({
     header: { alg: "HS256", ...setExpirationTime(COOKIE_OPTIONS.maxAge) },
     payload: session,

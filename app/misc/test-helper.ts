@@ -8,8 +8,8 @@ import {
   insertVideoAndCaptionEntries,
 } from "../db/helper";
 import type { CaptionEntryTable, UserTable, VideoTable } from "../db/models";
+import { writeCookieSession } from "../server/request-context/session";
 import { ctx_get } from "../server/request-context/storage";
-import { createUserCookie } from "../utils/auth";
 import type { NewVideo, fetchCaptionEntries } from "../utils/youtube";
 import { useUserImpl } from "./test-helper-common";
 
@@ -31,7 +31,7 @@ export function useUser(...args: Parameters<typeof useUserImpl>) {
 
   beforeAll(async () => {
     user = await before();
-    cookie = await createUserCookie(user);
+    cookie = await writeCookieSession({ user: { id: user.id } });
     isReady.resolve();
   });
 

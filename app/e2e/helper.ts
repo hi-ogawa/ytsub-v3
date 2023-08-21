@@ -3,7 +3,7 @@ import { Page, test } from "@playwright/test";
 import type { UserTable } from "../db/models";
 import { useUserImpl } from "../misc/test-helper-common";
 import { testSetupCommon } from "../misc/test-setup-common";
-import { createUserCookie } from "../utils/auth";
+import { writeCookieSession } from "../server/request-context/session";
 
 type Test = typeof test;
 
@@ -25,7 +25,7 @@ export function useUserE2E(
 
   test.beforeAll(async () => {
     user = await before();
-    const rawCookie = await createUserCookie(user);
+    const rawCookie = await writeCookieSession({ user: { id: user.id } });
     const [name, value] = rawCookie.split(";")[0].split("=");
     cookie = { name, value, domain: "localhost", path: "/" };
     isReady.resolve();

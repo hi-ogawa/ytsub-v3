@@ -1,5 +1,4 @@
-import { isNil, tinyassert } from "@hiogawa/utils";
-import type { Session } from "@remix-run/server-runtime";
+import { tinyassert } from "@hiogawa/utils";
 import { E, T, db, selectOne } from "../db/drizzle-client.server";
 import type { UserTable } from "../db/models";
 import {
@@ -7,7 +6,6 @@ import {
   verifyPassword,
   verifyPasswordNoop,
 } from "./password-utils";
-import { sessionStore } from "./session.server";
 
 const DEFAULT_TIMEZONE = "+00:00";
 
@@ -44,6 +42,10 @@ export async function findByUsername(
   return selectOne(T.users, E.eq(T.users.username, username));
 }
 
+export function findUserById(id: number) {
+  return selectOne(T.users, E.eq(T.users.id, id));
+}
+
 export async function verifySignin(data: {
   username: string;
   password: string;
@@ -57,45 +59,4 @@ export async function verifySignin(data: {
     return false;
   }
   return await verifyPassword(data.password, user.passwordHash);
-}
-
-const SESSION_USER_KEY = "session-user-v1";
-
-export function signinSession(
-  session: Session,
-  user: Pick<UserTable, "id">
-): void {
-  session.set(SESSION_USER_KEY, user.id);
-}
-
-export function signoutSession(session: Session): void {
-  session.unset(SESSION_USER_KEY);
-}
-
-function getSessionUserId(session: Session): number | undefined {
-  const id: unknown = session.get(SESSION_USER_KEY);
-  return typeof id === "number" ? id : undefined;
-}
-
-export async function getSessionUser(
-  session: Session
-): Promise<UserTable | undefined> {
-  const id = getSessionUserId(session);
-  if (!isNil(id)) {
-    return selectOne(T.users, E.eq(T.users.id, id));
-  }
-  return;
-}
-
-export function findUserById(id: number) {
-  return selectOne(T.users, E.eq(T.users.id, id));
-}
-
-// for testing and dev cli
-// TODO: should be sync for cookie storage?
-export async function createUserCookie(user: Pick<UserTable, "id">) {
-  const session = await sessionStore.getSession();
-  signinSession(session, user);
-  const cookie = await sessionStore.commitSession(session);
-  return cookie;
 }
