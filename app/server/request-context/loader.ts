@@ -6,11 +6,13 @@ import { Params } from "@remix-run/react";
 declare module "@hattip/compose" {
   interface RequestContextExtensions {
     params: Params;
+    urlQuery: Record<string, string>;
   }
 }
 
 export function routeParamsContextHandler(): RequestHandler {
   return async (ctx) => {
+    // `params` needs to be injected later by `wrapLoader`
     ctx.params = new Proxy(
       {},
       {
@@ -19,6 +21,7 @@ export function routeParamsContextHandler(): RequestHandler {
         },
       }
     );
+    ctx.urlQuery = Object.fromEntries(ctx.url.searchParams.entries());
     return ctx.next();
   };
 }
