@@ -4,7 +4,7 @@ import { z } from "zod";
 import { testLoader, useUserVideo } from "../../misc/test-helper";
 import { zSnapshotType } from "../../misc/test-helper-snapshot";
 import { mockRequestContext } from "../../server/request-context/mock";
-import { jsonExtraDeserialize } from "../../utils/json-extra";
+import { JSON_EXTRA } from "../../utils/json-extra";
 import { loader } from "./index";
 
 describe("videos/index.loader", () => {
@@ -17,7 +17,7 @@ describe("videos/index.loader", () => {
       testLoader(loader)
     );
     tinyassert(res instanceof Response);
-    const loaderData = jsonExtraDeserialize(await res.json());
+    const loaderData = JSON_EXTRA.deserialize(await res.json());
 
     expect(
       z

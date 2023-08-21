@@ -8,7 +8,7 @@ import {
 } from "@hiogawa/utils";
 import { E, T, db, selectOne } from "../db/drizzle-client.server";
 import { DEFAULT_DECK_CACHE } from "../db/types";
-import { jsonExtraDeserialize, jsonExtraSerialize } from "../utils/json-extra";
+import { JSON_EXTRA } from "../utils/json-extra";
 import { resetDeckCache } from "../utils/practice-system";
 
 //
@@ -19,11 +19,11 @@ type ExportDeckData = Awaited<ReturnType<typeof exportDeck>>;
 
 export async function exportDeckJson(id: number) {
   const data = await exportDeck(id);
-  return jsonExtraSerialize(data);
+  return JSON_EXTRA.serialize(data);
 }
 
 export async function importDeckJson(userId: number, dataJson: any) {
-  const data: any = jsonExtraDeserialize(dataJson);
+  const data: any = JSON_EXTRA.deserialize(dataJson);
   return await importDeck(userId, data);
 }
 

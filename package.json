@@ -46,7 +46,7 @@
     "@hattip/compose": "^0.0.34",
     "@headlessui/react": "^1.7.15",
     "@hiogawa/argon2-wasm-bindgen": "0.0.6-pre.5",
-    "@hiogawa/json-extra": "^0.0.1",
+    "@hiogawa/json-extra": "^0.0.2-pre.0",
     "@hiogawa/query-proxy": "0.1.1-pre.3",
     "@hiogawa/theme-script": "0.0.4-pre.3",
     "@hiogawa/tiny-rpc": "0.2.3-pre.10",

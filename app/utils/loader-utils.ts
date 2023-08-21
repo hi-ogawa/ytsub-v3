@@ -7,7 +7,7 @@ import {
 import React from "react";
 import type { z } from "zod";
 import type { UserTable } from "../db/models";
-import { jsonExtraDeserialize } from "./json-extra";
+import { JSON_EXTRA } from "./json-extra";
 
 export interface RootLoaderData {
   currentUser?: UserTable;
@@ -15,18 +15,18 @@ export interface RootLoaderData {
 
 export function useRootLoaderData(): RootLoaderData {
   const [{ data }] = useMatches();
-  return React.useMemo(() => jsonExtraDeserialize(data), [data]);
+  return React.useMemo(() => JSON_EXTRA.deserialize(data), [data]);
 }
 
 export function useLeafLoaderData(): unknown {
   const [{ data }] = useMatches().slice(-1);
-  return React.useMemo(() => jsonExtraDeserialize(data), [data]);
+  return React.useMemo(() => JSON_EXTRA.deserialize(data), [data]);
 }
 
 // custom json serialization wrapper
 export function useLoaderDataExtra(): unknown {
   const data = useLoaderData();
-  return React.useMemo(() => jsonExtraDeserialize(data), [data]);
+  return React.useMemo(() => JSON_EXTRA.deserialize(data), [data]);
 }
 
 export const disableUrlQueryRevalidation: ShouldRevalidateFunction = (args) => {

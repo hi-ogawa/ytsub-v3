@@ -11,12 +11,3 @@ export const JSON_EXTRA = createJsonExtra({
     }),
   },
 });
-
-// TODO: json-extra only provides `unknown` <-> `string` conversion
-export function jsonExtraSerialize(data: unknown) {
-  return JSON.parse(JSON_EXTRA.stringify(data));
-}
-
-export function jsonExtraDeserialize(data: unknown) {
-  return JSON_EXTRA.parse(JSON.stringify(data));
-}
