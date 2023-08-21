@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">99.67% </span>
+                <span class="strong">99.37% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>306/307</span>
+                <span class='fraction'>316/318</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">85.71% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>6/6</span>
+                <span class='fraction'>6/7</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">99.67% </span>
+                <span class="strong">99.37% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>306/307</span>
+                <span class='fraction'>316/318</span>
             </div>
         
             
@@ -370,7 +370,24 @@
 <a name='L305'></a><a href='#L305'>305</a>
 <a name='L306'></a><a href='#L306'>306</a>
 <a name='L307'></a><a href='#L307'>307</a>
-<a name='L308'></a><a href='#L308'>308</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L308'></a><a href='#L308'>308</a>
+<a name='L309'></a><a href='#L309'>309</a>
+<a name='L310'></a><a href='#L310'>310</a>
+<a name='L311'></a><a href='#L311'>311</a>
+<a name='L312'></a><a href='#L312'>312</a>
+<a name='L313'></a><a href='#L313'>313</a>
+<a name='L314'></a><a href='#L314'>314</a>
+<a name='L315'></a><a href='#L315'>315</a>
+<a name='L316'></a><a href='#L316'>316</a>
+<a name='L317'></a><a href='#L317'>317</a>
+<a name='L318'></a><a href='#L318'>318</a>
+<a name='L319'></a><a href='#L319'>319</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -442,6 +459,11 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -690,7 +712,13 @@ import {
   ctx_requireUser,
 } from "../../server/request-context/session";
 import { ctx_get } from "../../server/request-context/storage";
-import { findByUsername, register, verifySignin } from "../../utils/auth";
+import {
+  findByUsername,
+  register,
+  signinSession,
+  signoutSession,
+  verifySignin,
+} from "../../utils/auth";
 import { Z_PASSWORD, Z_USERNAME } from "../../utils/auth-common";
 import { serverConfig } from "../../utils/config";
 import { sendEmail } from "../../utils/email-utils";
@@ -716,7 +744,7 @@ export const rpcRoutesUsers = {
     await ctx_requireSignout();
     await verifyTurnstile({ response: input.token });
     const user = await register(input);
-    ctx_get().session.user = { id: user.id };
+    signinSession(ctx_get().session, user);
     await ctx_commitSession();
   }),
 &nbsp;
@@ -730,14 +758,14 @@ export const rpcRoutesUsers = {
     tinyassert(await verifySignin(input), "Invalid username or password");
     const user = await findByUsername(input.username);
     tinyassert(user);
-    ctx_get().session.user = { id: user.id };
+    signinSession(ctx_get().session, user);
     await ctx_commitSession();
     return user;
   }),
 &nbsp;
   users_signout: async () =&gt; {
     await ctx_requireUser("Not signed in");
-    ctx_get().session.user = undefined;
+    signoutSession(ctx_get().session);
     await ctx_commitSession();
   },
 &nbsp;
@@ -751,6 +779,11 @@ export const rpcRoutesUsers = {
     const user = await ctx_requireUser();
     await db.update(T.users).set(input).where(E.eq(T.users.id, user.id));
   }),
+&nbsp;
+  users_me: <span class="fstat-no" title="function not covered" >async () =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >    const user = await ctx_requireUser();</span>
+    return user;
+  },
 &nbsp;
   users_requestUpdateEmail: validateFn(
     z.object({
@@ -991,7 +1024,7 @@ const EMAIL_FROM = {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-08-21T10:40:00.747Z
+                at 2023-08-21T10:43:24.656Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>
