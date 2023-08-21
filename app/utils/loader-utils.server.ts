@@ -64,12 +64,3 @@ export async function ctx_requireUserOrRedirect() {
   }
   return user;
 }
-
-//
-// simple loader to reuse
-//
-
-export const loader_requireUser = wrapLoader(async () => {
-  await ctx_requireUserOrRedirect();
-  return null;
-});
