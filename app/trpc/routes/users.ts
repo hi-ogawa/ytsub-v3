@@ -79,6 +79,11 @@ export const rpcRoutesUsers = {
     await db.update(T.users).set(input).where(E.eq(T.users.id, user.id));
   }),
 
+  users_me: async () => {
+    const user = await ctx_requireUser();
+    return user;
+  },
+
   users_requestUpdateEmail: validateFn(
     z.object({
       email: z.string().email(),
