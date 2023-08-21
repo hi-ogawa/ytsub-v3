@@ -127,9 +127,6 @@ dependencies:
   react-router-dom:
     specifier: ^6.14.1
     version: 6.14.1(react-dom@18.2.0)(react@18.2.0)
-  superjson:
-    specifier: ^1.12.4
-    version: 1.12.4
   zod:
     specifier: ^3.21.4
     version: 3.21.4
