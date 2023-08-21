@@ -1,6 +1,3 @@
-import { makeLoader } from "../../utils/loader-utils.server";
+import { loader_requireUser } from "../../utils/loader-utils.server";
 
-export const loader = makeLoader(async ({ ctx }) => {
-  const user = await ctx.requireUser();
-  return user;
-});
+export const loader = loader_requireUser;

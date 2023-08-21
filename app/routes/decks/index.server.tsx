@@ -1,13 +1,16 @@
 import { E, T, db } from "../../db/drizzle-client.server";
 import type { DeckTable } from "../../db/models";
-import { makeLoader } from "../../utils/loader-utils.server";
+import {
+  ctx_requireUserOrRedirect,
+  wrapLoader,
+} from "../../utils/loader-utils.server";
 
 export interface DecksLoaderData {
   decks: DeckTable[];
 }
 
-export const loader = makeLoader(async ({ ctx }) => {
-  const user = await ctx.requireUser();
+export const loader = wrapLoader(async () => {
+  const user = await ctx_requireUserOrRedirect();
   const decks = await db
     .select()
     .from(T.decks)
