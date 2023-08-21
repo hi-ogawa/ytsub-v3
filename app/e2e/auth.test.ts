@@ -186,7 +186,7 @@ test.describe("change email", () => {
 
     // cannot use a same link
     await page.goto(url.pathname + url.search);
-    await page.getByText("Invalid request").click();
+    await page.getByText("invalid email verification link").click();
   });
 });
 

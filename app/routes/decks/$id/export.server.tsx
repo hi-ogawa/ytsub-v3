@@ -1,10 +1,10 @@
 import { json } from "@remix-run/server-runtime";
 import { exportDeckJson } from "../../../misc/seed-utils";
-import { requireUserAndDeck } from "../../../utils/loader-deck-utils";
-import { makeLoader } from "../../../utils/loader-utils.server";
+import { wrapLoader } from "../../../utils/loader-utils.server";
+import { ctx_requireUserAndDeck } from "./_utils.server";
 
-export const loader = makeLoader(async ({ ctx }) => {
-  const { deck } = await requireUserAndDeck(ctx);
+export const loader = wrapLoader(async () => {
+  const { deck } = await ctx_requireUserAndDeck();
   const data = await exportDeckJson(deck.id);
   return json(data);
 });
