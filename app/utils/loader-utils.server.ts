@@ -49,7 +49,7 @@ export function unwrapZodResultOrRespond<T1, T2>(
   status: number = 400
 ) {
   if (!v.success) {
-    throw json(null, { status });
+    throw json({ error: v.error }, { status });
   }
   return v.data;
 }
