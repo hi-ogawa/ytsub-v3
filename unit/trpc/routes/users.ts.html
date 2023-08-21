@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">37.74% </span>
+                <span class="strong">38.33% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>114/302</span>
+                <span class='fraction'>120/313</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">37.74% </span>
+                <span class="strong">38.33% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>114/302</span>
+                <span class='fraction'>120/313</span>
             </div>
         
             
@@ -365,7 +365,24 @@
 <a name='L300'></a><a href='#L300'>300</a>
 <a name='L301'></a><a href='#L301'>301</a>
 <a name='L302'></a><a href='#L302'>302</a>
-<a name='L303'></a><a href='#L303'>303</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L303'></a><a href='#L303'>303</a>
+<a name='L304'></a><a href='#L304'>304</a>
+<a name='L305'></a><a href='#L305'>305</a>
+<a name='L306'></a><a href='#L306'>306</a>
+<a name='L307'></a><a href='#L307'>307</a>
+<a name='L308'></a><a href='#L308'>308</a>
+<a name='L309'></a><a href='#L309'>309</a>
+<a name='L310'></a><a href='#L310'>310</a>
+<a name='L311'></a><a href='#L311'>311</a>
+<a name='L312'></a><a href='#L312'>312</a>
+<a name='L313'></a><a href='#L313'>313</a>
+<a name='L314'></a><a href='#L314'>314</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -553,6 +570,11 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -680,7 +702,13 @@ import {
   ctx_requireUser,
 } from "../../server/request-context/session";
 import { ctx_get } from "../../server/request-context/storage";
-import { findByUsername, register, verifySignin } from "../../utils/auth";
+import {
+  findByUsername,
+  register,
+  signinSession,
+  signoutSession,
+  verifySignin,
+} from "../../utils/auth";
 import { Z_PASSWORD, Z_USERNAME } from "../../utils/auth-common";
 import { serverConfig } from "../../utils/config";
 import { sendEmail } from "../../utils/email-utils";
@@ -706,7 +734,7 @@ export const rpcRoutesUsers = {
     await ctx_requireSignout();
     await verifyTurnstile({ response: input.token });
     const user = await register(input);
-    ctx_get().session.user = { id: user.id };
+    signinSession(ctx_get().session, user);
     await ctx_commitSession();
   }),
 &nbsp;
@@ -720,14 +748,14 @@ export const rpcRoutesUsers = {
     tinyassert(await verifySignin(input), "Invalid username or password");
     const user = await findByUsername(input.username);
     tinyassert(user);
-    ctx_get().session.user = { id: user.id };
+    signinSession(ctx_get().session, user);
     await ctx_commitSession();
     return user;
   }),
 &nbsp;
   users_signout: async () =&gt; {
     await ctx_requireUser("Not signed in");
-    ctx_get().session.user = undefined;
+    signoutSession(ctx_get().session);
     await ctx_commitSession();
   },
 &nbsp;
@@ -855,16 +883,19 @@ export const rpcRoutesUsers = {
 <span class="cstat-no" title="statement not covered" >}</span>
 &nbsp;
 // not exposed as trpc since it's done directly in /users/verify loader
-<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >export async function updateEmailByCode(code: string) {</span></span>
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >export async function updateEmailByCode(code: string): Promise&lt;boolean&gt; {</span></span>
 <span class="cstat-no" title="statement not covered" >  const row = await selectOne(</span>
 <span class="cstat-no" title="statement not covered" >    T.emailUpdateRequests,</span>
 <span class="cstat-no" title="statement not covered" >    E.eq(T.emailUpdateRequests.code, code)</span>
 <span class="cstat-no" title="statement not covered" >  );</span>
-<span class="cstat-no" title="statement not covered" >  tinyassert(row);</span>
-<span class="cstat-no" title="statement not covered" >  tinyassert(!row.verifiedAt);</span>
-<span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  const now = new Date();</span>
-<span class="cstat-no" title="statement not covered" >  tinyassert(now.getTime() - row.createdAt.getTime() &lt; VERIFICATION_MAX_AGE);</span>
+<span class="cstat-no" title="statement not covered" >  if (</span>
+<span class="cstat-no" title="statement not covered" >    !row ||</span>
+<span class="cstat-no" title="statement not covered" >    row.verifiedAt ||</span>
+<span class="cstat-no" title="statement not covered" >    now.getTime() &gt; row.createdAt.getTime() + VERIFICATION_MAX_AGE</span>
+<span class="cstat-no" title="statement not covered" >  ) {</span>
+<span class="cstat-no" title="statement not covered" >    return false;</span>
+<span class="cstat-no" title="statement not covered" >  }</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  // update user</span>
 <span class="cstat-no" title="statement not covered" >  await db</span>
@@ -884,6 +915,8 @@ export const rpcRoutesUsers = {
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  // TODO: send email to notify email has changed</span>
 <span class="cstat-no" title="statement not covered" >  // TODO: reset existing sessions</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >  return true;</span>
 <span class="cstat-no" title="statement not covered" >}</span>
 &nbsp;
 const VERIFICATION_MAX_AGE = 1000 * 60 * 60;
@@ -976,7 +1009,7 @@ const EMAIL_FROM = {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-08-21T07:38:46.008Z
+                at 2023-08-21T10:39:23.362Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

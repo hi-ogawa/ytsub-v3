@@ -3,15 +3,15 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for ytsub-v3/app/db/types.ts</title>
+    <title>Code coverage report for ytsub-v3/app/server/request-context/loader.ts</title>
     <meta charset="utf-8" />
-    <link rel="stylesheet" href="../../../prettify.css" />
-    <link rel="stylesheet" href="../../../base.css" />
-    <link rel="shortcut icon" type="image/x-icon" href="../../../favicon.png" />
+    <link rel="stylesheet" href="../../../../prettify.css" />
+    <link rel="stylesheet" href="../../../../base.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="../../../../favicon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <style type='text/css'>
         .coverage-summary .sorter {
-            background-image: url(../../../sort-arrow-sprite.png);
+            background-image: url(../../../../sort-arrow-sprite.png);
         }
     </style>
 </head>
@@ -19,34 +19,34 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../../../index.html">All files</a> / <a href="index.html">ytsub-v3/app/db</a> types.ts</h1>
+        <h1><a href="../../../../index.html">All files</a> / <a href="index.html">ytsub-v3/app/server/request-context</a> loader.ts</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">92.59% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>32/32</span>
+                <span class='fraction'>25/27</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/0</span>
+                <span class='fraction'>2/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">50% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/0</span>
+                <span class='fraction'>1/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">92.59% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>32/32</span>
+                <span class='fraction'>25/27</span>
             </div>
         
             
@@ -90,12 +90,7 @@
 <a name='L25'></a><a href='#L25'>25</a>
 <a name='L26'></a><a href='#L26'>26</a>
 <a name='L27'></a><a href='#L27'>27</a>
-<a name='L28'></a><a href='#L28'>28</a>
-<a name='L29'></a><a href='#L29'>29</a>
-<a name='L30'></a><a href='#L30'>30</a>
-<a name='L31'></a><a href='#L31'>31</a>
-<a name='L32'></a><a href='#L32'>32</a>
-<a name='L33'></a><a href='#L33'>33</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L28'></a><a href='#L28'>28</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -108,57 +103,47 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { z } from "zod";
-import { defaultObject } from "../utils/misc";
+<span class="cline-any cline-yes">160x</span>
+<span class="cline-any cline-yes">160x</span>
+<span class="cline-any cline-yes">160x</span>
+<span class="cline-any cline-yes">160x</span>
+<span class="cline-any cline-yes">160x</span>
+<span class="cline-any cline-yes">160x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">160x</span>
+<span class="cline-any cline-yes">160x</span>
+<span class="cline-any cline-yes">160x</span>
+<span class="cline-any cline-yes">160x</span>
+<span class="cline-any cline-yes">160x</span>
+<span class="cline-any cline-yes">160x</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import type { RequestHandler } from "@hattip/compose";
+import { Params } from "@remix-run/react";
 &nbsp;
-// cf. Anki's practice system
-// - https://docs.ankiweb.net/studying.html
-// - https://docs.ankiweb.net/deck-options.html
+// allow accessing loader route "params" via context
 &nbsp;
-export const Z_PRACTICE_ACTION_TYPES = z.enum([
-  "AGAIN",
-  "HARD",
-  "GOOD",
-  "EASY",
-]);
-export const Z_PRACTICE_QUEUE_TYPES = z.enum(["NEW", "LEARN", "REVIEW"]);
-&nbsp;
-export const PRACTICE_ACTION_TYPES = Z_PRACTICE_ACTION_TYPES.options;
-export const PRACTICE_QUEUE_TYPES = Z_PRACTICE_QUEUE_TYPES.options;
-&nbsp;
-export type PracticeActionType = z.infer&lt;typeof Z_PRACTICE_ACTION_TYPES&gt;;
-export type PracticeQueueType = z.infer&lt;typeof Z_PRACTICE_QUEUE_TYPES&gt;;
-&nbsp;
-export interface DeckCache {
-  nextEntriesRandomMode: number[];
-  practiceEntriesCountByQueueType: Record&lt;PracticeQueueType, number&gt;;
-  practiceActionsCountByActionType: Record&lt;PracticeActionType, number&gt;;
+declare module "@hattip/compose" {
+  interface RequestContextExtensions {
+    params: Params;
+    urlQuery: Record&lt;string, string&gt;;
+  }
 }
 &nbsp;
-export const DEFAULT_DECK_CACHE: DeckCache = {
-  nextEntriesRandomMode: [],
-  practiceEntriesCountByQueueType: defaultObject(PRACTICE_QUEUE_TYPES, 0),
-  practiceActionsCountByActionType: defaultObject(PRACTICE_ACTION_TYPES, 0),
-};
+export function routeParamsContextHandler(): RequestHandler {
+  return async (ctx) =&gt; {
+    // `params` needs to be injected later by `wrapLoader`
+    ctx.params = new Proxy(
+      {},
+      {
+<span class="fstat-no" title="function not covered" >        get(_target, _p, _receiver) {</span>
+<span class="cstat-no" title="statement not covered" >          throw new Error("forgot 'wrapLoader'?");</span>
+<span class="cstat-no" title="statement not covered" >        },</span>
+      }
+    );
+    ctx.urlQuery = Object.fromEntries(ctx.url.searchParams.entries());
+    return ctx.next();
+  };
+}
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -168,14 +153,14 @@ export const DEFAULT_DECK_CACHE: DeckCache = {
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
                 at 2023-08-21T10:41:15.173Z
             </div>
-        <script src="../../../prettify.js"></script>
+        <script src="../../../../prettify.js"></script>
         <script>
             window.onload = function () {
                 prettyPrint();
             };
         </script>
-        <script src="../../../sorter.js"></script>
-        <script src="../../../block-navigation.js"></script>
+        <script src="../../../../sorter.js"></script>
+        <script src="../../../../block-navigation.js"></script>
     </body>
 </html>
     
