@@ -19,10 +19,10 @@ import {
 import { cls } from "../../../utils/misc";
 import type { PageHandle } from "../../../utils/page-handle";
 import { MiniPlayer } from "../../bookmarks";
-import type { LoaderData } from "./common.server";
+import type { LoaderData } from "./_utils.server";
 
 import { DeckHistoryNavBarMenuComponent } from "./history-graph";
-export { loader } from "./common.server";
+export { loader } from "./_utils.server";
 
 export const shouldRevalidate = disableUrlQueryRevalidation;
 

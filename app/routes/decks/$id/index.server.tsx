@@ -10,7 +10,7 @@ import { ROUTE_DEF } from "../../../misc/routes";
 import { ctx_get } from "../../../server/request-context/storage";
 import { wrapLoader } from "../../../utils/loader-utils.server";
 import type { PaginationMetadata } from "../../../utils/pagination";
-import { ctx_requireUserAndDeck } from "./common.server";
+import { ctx_requireUserAndDeck } from "./_utils.server";
 
 export type PracticeEntryTableExtra = PracticeEntryTable & {
   practiceActionsCount: number;
