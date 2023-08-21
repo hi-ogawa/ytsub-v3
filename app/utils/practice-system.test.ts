@@ -298,14 +298,14 @@ describe("DeckCache", () => {
       {
         "nextEntriesRandomMode": [],
         "practiceActionsCountByActionType": {
-          "AGAIN": 128,
+          "AGAIN": 129,
           "EASY": 0,
           "GOOD": 55,
           "HARD": 64,
         },
         "practiceEntriesCountByQueueType": {
-          "LEARN": 187,
-          "NEW": 140,
+          "LEARN": 188,
+          "NEW": 139,
           "REVIEW": 13,
         },
       }
@@ -317,14 +317,14 @@ describe("DeckCache", () => {
       {
         "nextEntriesRandomMode": [],
         "practiceActionsCountByActionType": {
-          "AGAIN": 128,
+          "AGAIN": 129,
           "EASY": 0,
           "GOOD": 56,
           "HARD": 64,
         },
         "practiceEntriesCountByQueueType": {
-          "LEARN": 188,
-          "NEW": 139,
+          "LEARN": 189,
+          "NEW": 138,
           "REVIEW": 13,
         },
       }
