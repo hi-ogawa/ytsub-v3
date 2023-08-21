@@ -19,6 +19,7 @@ export function makeLoader(
   inner: (args: { ctx: LoaderContext }) => unknown
 ): LoaderFunction {
   return async (loaderArgs) => {
+    ctx_get().params = loaderArgs.params;
     const ctx = await createLoaderContext(loaderArgs);
     return ctx.redirectOnError(async () => {
       let resRaw = await inner({ ctx });
