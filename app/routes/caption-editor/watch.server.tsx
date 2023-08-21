@@ -1,6 +1,10 @@
-import { tinyassert } from "@hiogawa/utils";
 import { ROUTE_DEF } from "../../misc/routes";
-import { makeLoader } from "../../utils/loader-utils.server";
+import { ctx_get } from "../../server/request-context/storage";
+import {
+  assertOrRespond,
+  unwrapZodResultOrRespond,
+  wrapLoader,
+} from "../../utils/loader-utils.server";
 import { VideoMetadata } from "../../utils/types";
 import { fetchVideoMetadata, parseVideoId } from "../../utils/youtube";
 
@@ -9,10 +13,12 @@ export type LoaderData = {
   videoMetadata: VideoMetadata;
 };
 
-export const loader = makeLoader(async ({ ctx }) => {
-  const query = ROUTE_DEF["/caption-editor/watch"].query.parse(ctx.query);
+export const loader = wrapLoader(async () => {
+  const query = unwrapZodResultOrRespond(
+    ROUTE_DEF["/caption-editor/watch"].query.safeParse(ctx_get().urlQuery)
+  );
   const videoId = parseVideoId(query.v);
-  tinyassert(videoId);
+  assertOrRespond(videoId);
   const videoMetadata = await fetchVideoMetadata(videoId);
   return { videoId, videoMetadata } satisfies LoaderData;
 });

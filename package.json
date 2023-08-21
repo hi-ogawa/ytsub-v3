@@ -16,7 +16,7 @@
     "lint-check:isort": "isort-ts --git --cache",
     "lint:prettier": "prettier -w --cache .",
     "lint-check:prettier": "prettier -c --cache .",
-    "lint-check:ts-prune": "ts-prune --error --ignore 'satisfies|Record|default|loader|action|handle|links|meta|CatchBoundary|shouldRevalidate|up|down' --skip drizzle-expressions",
+    "lint-check:ts-prune": "ts-prune --error --ignore 'ErrorBoundary|satisfies|Record|default|loader|action|handle|links|meta|CatchBoundary|shouldRevalidate|up|down' --skip drizzle-expressions",
     "test": "NODE_ENV=test vitest",
     "test-coverage": "NODE_ENV=test vitest --run --coverage",
     "test-e2e": "NODE_ENV=test playwright test",

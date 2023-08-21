@@ -1,10 +1,16 @@
-import { tinyassert, wrapErrorAsync } from "@hiogawa/utils";
+import { wrapErrorAsync } from "@hiogawa/utils";
 import { redirect } from "@remix-run/server-runtime";
 import type { UserTable } from "../../db/models";
 import { R, ROUTE_DEF } from "../../misc/routes";
+import { ctx_currentUser } from "../../server/request-context/session";
+import { ctx_get } from "../../server/request-context/storage";
 import { encodeFlashMessage } from "../../utils/flash-message";
 import { isLanguageCode } from "../../utils/language";
-import { makeLoader } from "../../utils/loader-utils.server";
+import {
+  assertOrRespond,
+  unwrapZodResultOrRespond,
+  wrapLoader,
+} from "../../utils/loader-utils.server";
 import type { CaptionConfig, VideoMetadata } from "../../utils/types";
 import {
   fetchVideoMetadata,
@@ -17,11 +23,13 @@ export type LoaderData = {
   userCaptionConfigs?: { language1?: CaptionConfig; language2?: CaptionConfig };
 };
 
-export const loader = makeLoader(async ({ ctx }) => {
-  const query = ROUTE_DEF["/videos/new"].query.parse(ctx.query);
+export const loader = wrapLoader(async () => {
+  const query = unwrapZodResultOrRespond(
+    ROUTE_DEF["/videos/new"].query.safeParse(ctx_get().urlQuery)
+  );
   const videoId = parseVideoId(query.videoId);
-  tinyassert(videoId);
-  const user = await ctx.currentUser();
+  assertOrRespond(videoId);
+  const user = await ctx_currentUser();
   const result = await wrapErrorAsync(() => fetchVideoMetadata(videoId));
   if (!result.ok) {
     // either invalid videoId or youtube api failure

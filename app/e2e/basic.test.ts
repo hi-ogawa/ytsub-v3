@@ -40,6 +40,6 @@ test.describe("/share-target", () => {
 
   test("error", async ({ page }) => {
     await page.goto("/share-target");
-    await page.getByText("Invalid request").click();
+    await page.getByText(`"status": 400`).click();
   });
 });

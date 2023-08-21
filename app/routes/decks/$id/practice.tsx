@@ -19,10 +19,10 @@ import {
 import { cls } from "../../../utils/misc";
 import type { PageHandle } from "../../../utils/page-handle";
 import { BookmarkEntryComponent } from "../../bookmarks";
-import type { LoaderData } from "./common.server";
+import type { LoaderData } from "./_utils.server";
 
 import { DeckNavBarMenuComponent, QueueStatisticsComponent } from "./index";
-export { loader } from "./common.server";
+export { loader } from "./_utils.server";
 
 export const handle: PageHandle = {
   navBarTitle: () => <NavBarTitleComponent />,
