@@ -4,6 +4,6 @@ import {
 } from "../../utils/loader-utils.server";
 
 export const loader = wrapLoader(async () => {
-  await ctx_requireUserOrRedirect();
-  return null;
+  const user = await ctx_requireUserOrRedirect();
+  return user;
 });
