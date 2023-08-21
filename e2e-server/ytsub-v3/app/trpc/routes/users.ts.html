@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">99.67% </span>
+                <span class="strong">99.68% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>307/308</span>
+                <span class='fraction'>312/313</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">90.47% </span>
+                <span class="strong">91.3% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>19/21</span>
+                <span class='fraction'>21/23</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">99.67% </span>
+                <span class="strong">99.68% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>307/308</span>
+                <span class='fraction'>312/313</span>
             </div>
         
             
@@ -371,7 +371,12 @@
 <a name='L306'></a><a href='#L306'>306</a>
 <a name='L307'></a><a href='#L307'>307</a>
 <a name='L308'></a><a href='#L308'>308</a>
-<a name='L309'></a><a href='#L309'>309</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L309'></a><a href='#L309'>309</a>
+<a name='L310'></a><a href='#L310'>310</a>
+<a name='L311'></a><a href='#L311'>311</a>
+<a name='L312'></a><a href='#L312'>312</a>
+<a name='L313'></a><a href='#L313'>313</a>
+<a name='L314'></a><a href='#L314'>314</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -574,27 +579,32 @@
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -873,16 +883,19 @@ async function generateUniqueCode(
 <span class="cstat-no" title="statement not covered" >}</span>
 &nbsp;
 // not exposed as trpc since it's done directly in /users/verify loader
-export async function updateEmailByCode(code: string) {
+export async function updateEmailByCode(code: string): Promise&lt;boolean&gt; {
   const row = await selectOne(
     T.emailUpdateRequests,
     E.eq(T.emailUpdateRequests.code, code)
   );
-  tinyassert(row);
-  tinyassert(!row.verifiedAt);
-&nbsp;
   const now = new Date();
-  tinyassert(now.getTime() - row.createdAt.getTime() &lt; VERIFICATION_MAX_AGE);
+  if (
+    !row ||
+    row.verifiedAt ||
+    now.getTime() &gt; row.createdAt.getTime() + VERIFICATION_MAX_AGE
+  ) {
+    return false;
+  }
 &nbsp;
   // update user
   await db
@@ -902,6 +915,8 @@ export async function updateEmailByCode(code: string) {
 &nbsp;
   // TODO: send email to notify email has changed
   // TODO: reset existing sessions
+&nbsp;
+  return true;
 }
 &nbsp;
 const VERIFICATION_MAX_AGE = 1000 * 60 * 60;
@@ -994,7 +1009,7 @@ const EMAIL_FROM = {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-08-21T01:28:27.157Z
+                at 2023-08-21T03:42:14.876Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>
