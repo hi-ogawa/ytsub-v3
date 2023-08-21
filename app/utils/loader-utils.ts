@@ -5,9 +5,9 @@ import {
   useSearchParams,
 } from "@remix-run/react";
 import React from "react";
-import { deserialize } from "superjson";
 import type { z } from "zod";
 import type { UserTable } from "../db/models";
+import { jsonExtraDeserialize } from "./json-extra";
 
 export interface RootLoaderData {
   currentUser?: UserTable;
@@ -15,18 +15,18 @@ export interface RootLoaderData {
 
 export function useRootLoaderData(): RootLoaderData {
   const [{ data }] = useMatches();
-  return React.useMemo(() => deserialize(data), [data]);
+  return React.useMemo(() => jsonExtraDeserialize(data), [data]);
 }
 
 export function useLeafLoaderData(): unknown {
   const [{ data }] = useMatches().slice(-1);
-  return React.useMemo(() => deserialize(data), [data]);
+  return React.useMemo(() => jsonExtraDeserialize(data), [data]);
 }
 
-// superjson.deserialize wrapper
+// custom json serialization wrapper
 export function useLoaderDataExtra(): unknown {
   const data = useLoaderData();
-  return React.useMemo(() => deserialize(data), [data]);
+  return React.useMemo(() => jsonExtraDeserialize(data), [data]);
 }
 
 export const disableUrlQueryRevalidation: ShouldRevalidateFunction = (args) => {

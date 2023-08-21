@@ -1,9 +1,10 @@
 import { tinyassert } from "@hiogawa/utils";
-import { deserialize } from "superjson";
 import { describe, expect, it } from "vitest";
 import { z } from "zod";
 import { testLoader, useUserVideo } from "../../misc/test-helper";
+import { zSnapshotType } from "../../misc/test-helper-snapshot";
 import { mockRequestContext } from "../../server/request-context/mock";
+import { jsonExtraDeserialize } from "../../utils/json-extra";
 import { loader } from "./index";
 
 describe("videos/index.loader", () => {
@@ -16,23 +17,24 @@ describe("videos/index.loader", () => {
       testLoader(loader)
     );
     tinyassert(res instanceof Response);
-    const loaderData = deserialize(await res.json());
+    const loaderData = jsonExtraDeserialize(await res.json());
 
-    const cleanSnapshot = z
-      .object({
-        videos: z
-          .object({
-            id: z.number().transform(() => "..."),
-            userId: z.number().transform(() => "..."),
-            createdAt: z.date().transform(() => "..."),
-            updatedAt: z.date().transform(() => "..."),
-          })
-          .passthrough()
-          .array(),
-      })
-      .passthrough();
-
-    expect(cleanSnapshot.parse(loaderData)).toMatchInlineSnapshot(`
+    expect(
+      z
+        .object({
+          videos: z
+            .object({
+              id: zSnapshotType,
+              userId: zSnapshotType,
+              createdAt: zSnapshotType,
+              updatedAt: zSnapshotType,
+            })
+            .passthrough()
+            .array(),
+        })
+        .passthrough()
+        .parse(loaderData)
+    ).toMatchInlineSnapshot(`
       {
         "pagination": {
           "page": 1,
@@ -45,15 +47,15 @@ describe("videos/index.loader", () => {
             "author": "Piece of French",
             "bookmarkEntriesCount": 0,
             "channelId": "UCVzyfpNuFF4ENY8zNTIW7ug",
-            "createdAt": "...",
-            "id": "...",
+            "createdAt": "[Date]",
+            "id": "[number]",
             "language1_id": ".fr",
             "language1_translation": null,
             "language2_id": ".en",
             "language2_translation": null,
             "title": "Are French People Really That Mean?! // French Girls React to Emily In Paris (in FR w/ FR & EN subs)",
-            "updatedAt": "...",
-            "userId": "...",
+            "updatedAt": "[Date]",
+            "userId": "[number]",
             "videoId": "EnPYXckiUVg",
           },
         ],
