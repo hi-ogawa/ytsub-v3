@@ -38,8 +38,8 @@ dependencies:
     specifier: 0.0.6-pre.5
     version: 0.0.6-pre.5
   '@hiogawa/json-extra':
-    specifier: ^0.0.1
-    version: 0.0.1
+    specifier: ^0.0.2-pre.0
+    version: 0.0.2-pre.0
   '@hiogawa/query-proxy':
     specifier: 0.1.1-pre.3
     version: 0.1.1-pre.3
@@ -133,9 +133,6 @@ dependencies:
   react-router-dom:
     specifier: ^6.14.1
     version: 6.14.1(react-dom@18.2.0)(react@18.2.0)
-  superjson:
-    specifier: ^1.12.4
-    version: 1.12.4
   zod:
     specifier: ^3.21.4
     version: 3.21.4
@@ -2167,8 +2164,8 @@ packages:
       typescript: 5.1.6
     dev: true
 
-  /@hiogawa/json-extra@0.0.1:
-    resolution: {integrity: sha512-LFh/FLhj0s0LqxCeHPD6xk8j+01oSkqKOwTH2+lQtxbMW6b7Br6TynMlTQ9RUT9d3Ih4+IcqNeopudwRUMnuvQ==}
+  /@hiogawa/json-extra@0.0.2-pre.0:
+    resolution: {integrity: sha512-+GdN9sovkBLCh8v/Iuhhgd31dO6im5BxoPWaV53trGKkOI/jA8qixE8xJnAHzPb26tuMtCfZoZ8jTa1NUM6vsw==}
     dev: false
 
   /@hiogawa/query-proxy@0.1.1-pre.3:

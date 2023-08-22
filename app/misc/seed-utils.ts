@@ -6,9 +6,9 @@ import {
   tinyassert,
   uniq,
 } from "@hiogawa/utils";
-import superjson from "superjson";
 import { E, T, db, selectOne } from "../db/drizzle-client.server";
 import { DEFAULT_DECK_CACHE } from "../db/types";
+import { JSON_EXTRA } from "../utils/json-extra";
 import { resetDeckCache } from "../utils/practice-system";
 
 //
@@ -19,11 +19,11 @@ type ExportDeckData = Awaited<ReturnType<typeof exportDeck>>;
 
 export async function exportDeckJson(id: number) {
   const data = await exportDeck(id);
-  return superjson.serialize(data);
+  return JSON_EXTRA.serialize(data);
 }
 
 export async function importDeckJson(userId: number, dataJson: any) {
-  const data: any = superjson.deserialize(dataJson);
+  const data: any = JSON_EXTRA.deserialize(dataJson);
   return await importDeck(userId, data);
 }
 
