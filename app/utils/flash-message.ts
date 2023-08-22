@@ -6,7 +6,12 @@ import { z } from "zod";
 import { useEffectNoStrict } from "./misc-react";
 import { toastInfo } from "./toast-utils";
 
-// simple trick to show flash messages on redirection
+//
+// js cookie based flash message
+// https://developer.mozilla.org/en-US/docs/Web/API/Document/cookie#example_3_do_something_only_once
+//
+
+const COOKIE_NAME = "__flash";
 
 const Z_FLASH_MESSAGE = z.object({
   variant: z.enum(["success", "error", "info"]),
@@ -21,13 +26,6 @@ export function useFlashMessageHandler() {
     handleFlashMessage();
   }, [navigation.state]);
 }
-
-//
-// js cookie based flash message
-// https://developer.mozilla.org/en-US/docs/Web/API/Document/cookie#example_3_do_something_only_once
-//
-
-const COOKIE_NAME = "__flash";
 
 export function setFlashMessage(v: FlashMessage) {
   document.cookie = serializeFlashMessageCookie(JSON.stringify(v));
