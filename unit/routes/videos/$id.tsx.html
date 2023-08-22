@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">12.52% </span>
+                <span class="strong">12.48% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>119/950</span>
+                <span class='fraction'>118/945</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">12.52% </span>
+                <span class="strong">12.48% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>119/950</span>
+                <span class='fraction'>118/945</span>
             </div>
         
             
@@ -1008,12 +1008,7 @@
 <a name='L943'></a><a href='#L943'>943</a>
 <a name='L944'></a><a href='#L944'>944</a>
 <a name='L945'></a><a href='#L945'>945</a>
-<a name='L946'></a><a href='#L946'>946</a>
-<a name='L947'></a><a href='#L947'>947</a>
-<a name='L948'></a><a href='#L948'>948</a>
-<a name='L949'></a><a href='#L949'>949</a>
-<a name='L950'></a><a href='#L950'>950</a>
-<a name='L951'></a><a href='#L951'>951</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L946'></a><a href='#L946'>946</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -1063,9 +1058,6 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -1736,8 +1728,6 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -1991,7 +1981,6 @@ import {
   disableUrlQueryRevalidation,
   useLeafLoaderData,
   useLoaderDataExtra,
-  useRootLoaderData,
   useTypedUrlQuery,
 } from "../../utils/loader-utils";
 import { cls, none } from "../../utils/misc";
@@ -2015,10 +2004,8 @@ export const handle: PageHandle = {
 };
 &nbsp;
 <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >export default function DeafultComponent() {</span></span>
-<span class="cstat-no" title="statement not covered" >  // TODO: currentUser affects bookmark logic</span>
-<span class="cstat-no" title="statement not covered" >  const { currentUser } = useRootLoaderData();</span>
-<span class="cstat-no" title="statement not covered" >  const data = useLoaderDataExtra() as LoaderData;</span>
-<span class="cstat-no" title="statement not covered" >  return &lt;PageComponent currentUser={currentUser} {...data} /&gt;;</span>
+<span class="cstat-no" title="statement not covered" >  const loaderData = useLoaderDataExtra() as LoaderData;</span>
+<span class="cstat-no" title="statement not covered" >  return &lt;PageComponent {...loaderData} /&gt;;</span>
 <span class="cstat-no" title="statement not covered" >}</span>
 &nbsp;
 export <span class="fstat-no" title="function not covered" >function findCurrentEntry(</span>
@@ -2687,9 +2674,7 @@ const BOOKMARK_DATA_ATTR = z.enum([
 //
 &nbsp;
 <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >function NavBarMenuComponent() {</span></span>
-<span class="cstat-no" title="statement not covered" >  // TODO: currentUser affects bookmark logic</span>
-<span class="cstat-no" title="statement not covered" >  const { currentUser } = useRootLoaderData();</span>
-<span class="cstat-no" title="statement not covered" >  const { video } = useLeafLoaderData() as LoaderData;</span>
+<span class="cstat-no" title="statement not covered" >  const { currentUser, video } = useLeafLoaderData() as LoaderData;</span>
 <span class="cstat-no" title="statement not covered" >  const [autoScrollState, toggleAutoScrollState] = useAutoScrollState();</span>
 <span class="cstat-no" title="statement not covered" >  const [repeatingEntries, setRepeatingEntries] = useRepeatingEntries();</span>
 <span class="cstat-no" title="statement not covered" >  const [highlightBookmark, setHighlightBookmark] = useAtom(</span>
@@ -2920,7 +2905,7 @@ const playbackRateStateAtom = atom(INITIAL_PLAYBACK_RATE_STATE);
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-08-22T00:53:52.689Z
+                at 2023-08-22T01:24:50.504Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
