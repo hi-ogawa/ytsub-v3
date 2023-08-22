@@ -61,10 +61,5 @@ function createQueryClient() {
     }
   );
 
-  queryClient.setQueryDefaults(rpcClientQuery.users_me.queryKey, {
-    staleTime: Infinity,
-    cacheTime: Infinity,
-  });
-
   return queryClient;
 }
