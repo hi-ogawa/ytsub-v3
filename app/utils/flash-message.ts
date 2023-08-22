@@ -1,4 +1,6 @@
-import { useSearchParams } from "@remix-run/react";
+import { wrapError } from "@hiogawa/utils";
+import { useNavigation, useSearchParams } from "@remix-run/react";
+import * as cookieLib from "cookie";
 import { toast } from "react-hot-toast";
 import { z } from "zod";
 import { STATE_NO_PROGRESS_BAR } from "../components/top-progress-bar";
@@ -15,7 +17,7 @@ const Z_FLASH_MESSAGE = z.object({
   content: z.string(),
 });
 
-type FlashMessage = z.infer<typeof Z_FLASH_MESSAGE>;
+export type FlashMessage = z.infer<typeof Z_FLASH_MESSAGE>;
 
 export function encodeFlashMessage(data: FlashMessage): URLSearchParams {
   const value = [data.variant, data.content].join("-");
@@ -38,6 +40,10 @@ export function useFlashMessageHandler() {
   const [params, setParams] = useSearchParams();
 
   useEffectNoStrict(() => {
+    if (true as boolean) {
+      return;
+    }
+
     const flashMessage = decodeFlashMessage(params);
     if (flashMessage) {
       const { variant, content } = flashMessage;
@@ -62,4 +68,57 @@ export function useFlashMessageHandler() {
       setParams(newParams, { replace: true, state: STATE_NO_PROGRESS_BAR });
     }
   }, [params]);
+
+  const navigation = useNavigation();
+  useEffectNoStrict(() => {
+    handleFlashMessage();
+  }, [navigation.state]);
+}
+
+//
+// js cookie based flash message
+// https://developer.mozilla.org/en-US/docs/Web/API/Document/cookie#example_3_do_something_only_once
+//
+
+const COOKIE_NAME = "__flash";
+
+export function handleFlashMessage() {
+  const cookies = cookieLib.parse(document.cookie);
+  const value = cookies[COOKIE_NAME];
+  if (!value) {
+    return;
+  }
+  const parsed = wrapError(() => Z_FLASH_MESSAGE.parse(JSON.parse(value)));
+  if (!parsed.ok) {
+    console.error(parsed.value);
+    return;
+  }
+
+  // make it empty so that it will be handled only once
+  document.cookie = serializeFlashMessageCookie("");
+
+  // show toast
+  const { variant, content } = parsed.value;
+  switch (variant) {
+    case "success": {
+      toast.success(content);
+      break;
+    }
+    case "error": {
+      toast.error(content);
+      break;
+    }
+    case "info": {
+      toastInfo(content);
+      break;
+    }
+  }
+}
+
+export function serializeFlashMessageCookie(v: string) {
+  return cookieLib.serialize(COOKIE_NAME, v, {
+    secure: true,
+    sameSite: "lax",
+    path: "/",
+  });
 }
