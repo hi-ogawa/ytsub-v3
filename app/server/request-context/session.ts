@@ -12,6 +12,8 @@ import { findUserById } from "../../utils/auth";
 import { serverConfig } from "../../utils/config";
 import { ctx_get } from "./storage";
 
+// based on https://github.com/hi-ogawa/vite-plugins/blob/e3ddf3766bcf3fbd5325623acad1d46d8a71ea23/packages/demo/src/server/session.ts
+
 const Z_SESSION_DATA = z.object({
   user: z
     .object({
