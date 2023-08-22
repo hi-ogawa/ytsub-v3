@@ -22,6 +22,7 @@ describe("videos/index.loader", () => {
     expect(
       z
         .object({
+          user: zSnapshotType,
           videos: z
             .object({
               id: zSnapshotType,
@@ -42,6 +43,7 @@ describe("videos/index.loader", () => {
           "total": 1,
           "totalPage": 1,
         },
+        "user": "[Object]",
         "videos": [
           {
             "author": "Piece of French",
