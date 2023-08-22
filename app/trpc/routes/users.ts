@@ -11,13 +11,7 @@ import {
   ctx_requireUser,
 } from "../../server/request-context/session";
 import { ctx_get } from "../../server/request-context/storage";
-import {
-  findByUsername,
-  register,
-  signinSession,
-  signoutSession,
-  verifySignin,
-} from "../../utils/auth";
+import { findByUsername, register, verifySignin } from "../../utils/auth";
 import { Z_PASSWORD, Z_USERNAME } from "../../utils/auth-common";
 import { serverConfig } from "../../utils/config";
 import { sendEmail } from "../../utils/email-utils";
@@ -43,7 +37,7 @@ export const rpcRoutesUsers = {
     await ctx_requireSignout();
     await verifyTurnstile({ response: input.token });
     const user = await register(input);
-    signinSession(ctx_get().session, user);
+    ctx_get().session.user = { id: user.id };
     await ctx_commitSession();
   }),
 
@@ -57,14 +51,14 @@ export const rpcRoutesUsers = {
     tinyassert(await verifySignin(input), "Invalid username or password");
     const user = await findByUsername(input.username);
     tinyassert(user);
-    signinSession(ctx_get().session, user);
+    ctx_get().session.user = { id: user.id };
     await ctx_commitSession();
     return user;
   }),
 
   users_signout: async () => {
     await ctx_requireUser("Not signed in");
-    signoutSession(ctx_get().session);
+    ctx_get().session.user = undefined;
     await ctx_commitSession();
   },
 

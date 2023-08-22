@@ -1,7 +1,7 @@
 import { RequestContext, composePartial } from "@hattip/compose";
 import { requestContextHandler } from ".";
 import { TT } from "../../db/drizzle-client.server";
-import { createUserCookie } from "../../utils/auth";
+import { writeCookieSession } from "./session";
 
 // mock async storage for unit tests
 
@@ -9,7 +9,9 @@ export function mockRequestContext(options?: { user?: TT["users"] }) {
   return async <T>(f: () => Promise<T>): Promise<T> => {
     const request = new Request("http://__dummy.local");
     if (options?.user) {
-      const cookie = await createUserCookie(options.user);
+      const cookie = await writeCookieSession({
+        user: { id: options.user.id },
+      });
       request.headers.set("cookie", cookie);
     }
 
