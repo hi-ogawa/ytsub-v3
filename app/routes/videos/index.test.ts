@@ -22,7 +22,7 @@ describe("videos/index.loader", () => {
     expect(
       z
         .object({
-          user: zSnapshotType,
+          currentUser: zSnapshotType,
           videos: z
             .object({
               id: zSnapshotType,
@@ -37,13 +37,13 @@ describe("videos/index.loader", () => {
         .parse(loaderData)
     ).toMatchInlineSnapshot(`
       {
+        "currentUser": "[Object]",
         "pagination": {
           "page": 1,
           "perPage": 20,
           "total": 1,
           "totalPage": 1,
         },
-        "user": "[Object]",
         "videos": [
           {
             "author": "Piece of French",
