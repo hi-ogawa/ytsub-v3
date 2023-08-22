@@ -37,7 +37,7 @@ import { ToastWrapper } from "./utils/toast-utils";
 export { loader } from "./root.server";
 import { LoaderData } from "./root.server";
 
-// no need to revalidate `currentUser` since app refreshes on user session change (signin/signout)
+// for now, we don't revalidate `currentUser` and rely on page refresh on signin/signout
 export const shouldRevalidate: ShouldRevalidateFunction = () => false;
 
 export default function DefaultComponent() {
