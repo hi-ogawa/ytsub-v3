@@ -23,6 +23,7 @@ export default function DefaultComponent() {
   const signinMutation = useMutation({
     ...rpcClientQuery.users_signin.mutationOptions(),
     onSuccess: () => {
+      // TODO: client reload flash via localstorage?
       const href =
         $R["/"]() +
         "?" +

@@ -35,6 +35,7 @@ export default function DefaultComponent() {
       });
     },
     onSuccess: () => {
+      // TODO: client reload flash
       const href =
         $R["/"]() +
         "?" +

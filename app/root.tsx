@@ -308,6 +308,7 @@ function SearchComponent(props: { closeDrawer: () => void }) {
 }
 
 function SignoutComponent() {
+  // TODO: client reload flash
   const signoutMutation = useMutation({
     ...rpcClientQuery.users_signout.mutationOptions(),
     onSuccess: () => {
