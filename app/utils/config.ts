@@ -12,7 +12,8 @@ const Z_SERVER_CONFIG = z.object({
   APP_MYSQL_DATABASE: z.string().default(process.env.NODE_ENV === "test" ? "ytsub_test" : "ytsub_development"),
   APP_MYSQL_SSL: z.coerce.boolean(),
 
-  APP_SESSION_SECRET: z.string().default("__sessionSecret"),
+  // npx tiny-jwt keygen HS256
+  APP_SESSION_SECRET: z.string().default("MPImXuGdAboqKBkWnx1Ixc41XY4esDWL4BJWgPQc4ESCcyQBmWsuH2ZsWlOZrBQ45D21J3g-GupjzgT3lhqaRw"),
 
   // captcha (default test keys always succeed https://developers.cloudflare.com/turnstile/reference/testing/)
   APP_CAPTCHA_SITE_KEY: z.string().default("1x00000000000000000000BB"),

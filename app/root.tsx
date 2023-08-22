@@ -7,8 +7,10 @@ import {
   Outlet,
   Scripts,
   ShouldRevalidateFunction,
+  useLocation,
   useMatches,
   useNavigate,
+  useRouteError,
 } from "@remix-run/react";
 import { useMutation } from "@tanstack/react-query";
 import React from "react";
@@ -39,6 +41,22 @@ export const shouldRevalidate: ShouldRevalidateFunction = () => false;
 
 export default function DefaultComponent() {
   return (
+    <RootWrapper>
+      <Root />
+    </RootWrapper>
+  );
+}
+
+export function ErrorBoundary() {
+  return (
+    <RootWrapper>
+      <ErrorRoot />
+    </RootWrapper>
+  );
+}
+
+function RootWrapper(props: React.PropsWithChildren) {
+  return (
     <div className="h-full">
       <TopProgressBarRemix />
       <button
@@ -49,13 +67,10 @@ export default function DefaultComponent() {
         }}
       />
       <Compose
-        elements={[
-          <FloatingTree />,
-          <ToastWrapper />,
-          <QueryClientWrapper />,
-          <Root />,
-        ]}
-      />
+        elements={[<FloatingTree />, <ToastWrapper />, <QueryClientWrapper />]}
+      >
+        {props.children}
+      </Compose>
       <Scripts />
       <LiveReload />
     </div>
@@ -89,6 +104,30 @@ function Root() {
         </div>
       </div>
     </>
+  );
+}
+
+function ErrorRoot() {
+  const error = useRouteError();
+  const location = useLocation();
+
+  return (
+    <div className="flex flex-col items-center p-4">
+      <div className="flex flex-col gap-3 w-full max-w-2xl">
+        {location.pathname !== "/" && (
+          <div>
+            <a href="/" className="antd-btn antd-btn-default px-2 py-1">
+              Back to Home
+            </a>
+          </div>
+        )}
+        <pre className="text-sm overflow-auto border p-2 text-colorErrorText bg-colorErrorBg border-colorErrorBorder">
+          {error instanceof Error
+            ? error.stack || error.message
+            : JSON.stringify(error, null, 2)}
+        </pre>
+      </div>
+    </div>
   );
 }
 

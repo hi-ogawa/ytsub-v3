@@ -38,14 +38,17 @@ dependencies:
     specifier: 0.0.6-pre.5
     version: 0.0.6-pre.5
   '@hiogawa/json-extra':
-    specifier: ^0.0.1
-    version: 0.0.1
+    specifier: ^0.0.2-pre.0
+    version: 0.0.2-pre.0
   '@hiogawa/query-proxy':
     specifier: 0.1.1-pre.3
     version: 0.1.1-pre.3
   '@hiogawa/theme-script':
     specifier: 0.0.4-pre.3
     version: 0.0.4-pre.3(vite@4.3.9)
+  '@hiogawa/tiny-jwt':
+    specifier: 0.2.8-pre.2
+    version: 0.2.8-pre.2
   '@hiogawa/tiny-rpc':
     specifier: 0.2.3-pre.10
     version: 0.2.3-pre.10
@@ -91,6 +94,9 @@ dependencies:
   '@tanstack/react-virtual':
     specifier: 3.0.0-beta.54
     version: 3.0.0-beta.54(react@18.2.0)
+  cookie:
+    specifier: ^0.5.0
+    version: 0.5.0
   drizzle-orm:
     specifier: ^0.26.5
     version: 0.26.5(@opentelemetry/api@1.4.1)(knex@2.4.2)(mysql2@3.4.3)
@@ -127,9 +133,6 @@ dependencies:
   react-router-dom:
     specifier: ^6.14.1
     version: 6.14.1(react-dom@18.2.0)(react@18.2.0)
-  superjson:
-    specifier: ^1.12.4
-    version: 1.12.4
   zod:
     specifier: ^3.21.4
     version: 3.21.4
@@ -156,6 +159,9 @@ devDependencies:
   '@tsconfig/strictest':
     specifier: ^2.0.1
     version: 2.0.1
+  '@types/cookie':
+    specifier: ^0.5.1
+    version: 0.5.1
   '@types/express':
     specifier: ^4.17.17
     version: 4.17.17
@@ -2158,8 +2164,8 @@ packages:
       typescript: 5.1.6
     dev: true
 
-  /@hiogawa/json-extra@0.0.1:
-    resolution: {integrity: sha512-LFh/FLhj0s0LqxCeHPD6xk8j+01oSkqKOwTH2+lQtxbMW6b7Br6TynMlTQ9RUT9d3Ih4+IcqNeopudwRUMnuvQ==}
+  /@hiogawa/json-extra@0.0.2-pre.0:
+    resolution: {integrity: sha512-+GdN9sovkBLCh8v/Iuhhgd31dO6im5BxoPWaV53trGKkOI/jA8qixE8xJnAHzPb26tuMtCfZoZ8jTa1NUM6vsw==}
     dev: false
 
   /@hiogawa/query-proxy@0.1.1-pre.3:
@@ -2185,6 +2191,11 @@ packages:
   /@hiogawa/tiny-cli@0.0.3:
     resolution: {integrity: sha512-5ZRDn0XW12mV+rov25z1oksyRP6IeW6ydEki81lHxbDEGrE/IGcrvkGTCXtbeSWIYmclNpVpuLee01KeB2jyvQ==}
     dev: true
+
+  /@hiogawa/tiny-jwt@0.2.8-pre.2:
+    resolution: {integrity: sha512-e+OdNOEdpVccsQB3NgtlzpAXpj+J4J/6ISL4K1567rWL4yn4hBM+s+YOv9Oy0TnxC8MrNV0AM4P/V2J73DCp2Q==}
+    hasBin: true
+    dev: false
 
   /@hiogawa/tiny-rpc@0.2.3-pre.10:
     resolution: {integrity: sha512-yudfX7yaQQAtq+pU1ln3oxNA8LGyXFNGqdRNxVTxFBdjPAb3SNLO1E/NUWy/rEERdImqzja3z9SrJYDyOeatxQ==}
@@ -3144,6 +3155,10 @@ packages:
 
   /@types/cookie@0.4.1:
     resolution: {integrity: sha512-XW/Aa8APYr6jSVVA1y/DEIZX0/GMKLEVekNG727R8cs56ahETkRAy/3DR7+fJyh7oUgGwNQaRfXCun0+KbWY7Q==}
+
+  /@types/cookie@0.5.1:
+    resolution: {integrity: sha512-COUnqfB2+ckwXXSFInsFdOAWQzCCx+a5hq2ruyj+Vjund94RJQd4LG2u9hnvJrTgunKAaax7ancBYlDrNYxA0g==}
+    dev: true
 
   /@types/debug@4.1.8:
     resolution: {integrity: sha512-/vPO1EPOs306Cvhwv7KfVfYvOJqA/S/AXjaHQiJboCZzcNDb+TIJFN9/2C9DZ//ijSKWioNyUxD792QmDJ+HKQ==}

@@ -7,9 +7,10 @@ import {
 } from "../../../db/drizzle-client.server";
 import type { DeckTable, PracticeEntryTable } from "../../../db/models";
 import { ROUTE_DEF } from "../../../misc/routes";
-import { requireUserAndDeck } from "../../../utils/loader-deck-utils";
-import { makeLoader } from "../../../utils/loader-utils.server";
+import { ctx_get } from "../../../server/request-context/storage";
+import { wrapLoader } from "../../../utils/loader-utils.server";
 import type { PaginationMetadata } from "../../../utils/pagination";
+import { ctx_requireUserAndDeck } from "./_utils.server";
 
 export type PracticeEntryTableExtra = PracticeEntryTable & {
   practiceActionsCount: number;
@@ -24,9 +25,9 @@ export interface LoaderData {
   >[];
 }
 
-export const loader = makeLoader(async ({ ctx }) => {
-  const { deck } = await requireUserAndDeck(ctx);
-  const reqQuery = ROUTE_DEF["/decks/$id"].query.parse(ctx.query);
+export const loader = wrapLoader(async () => {
+  const { deck } = await ctx_requireUserAndDeck();
+  const reqQuery = ROUTE_DEF["/decks/$id"].query.parse(ctx_get().urlQuery);
 
   const baseQuery = db
     .select()

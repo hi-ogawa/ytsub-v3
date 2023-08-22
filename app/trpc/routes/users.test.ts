@@ -6,8 +6,7 @@ import { useUser } from "../../misc/test-helper";
 import { zSnapshotType } from "../../misc/test-helper-snapshot";
 import { mockRequestContext } from "../../server/request-context/mock";
 import { ctx_get } from "../../server/request-context/storage";
-import { findByUsername, getSessionUser } from "../../utils/auth";
-import { getResponseSession } from "../../utils/session.server";
+import { findByUsername } from "../../utils/auth";
 import { rpcRoutes } from "../server";
 
 describe(rpcRoutes.users_signin, () => {
@@ -40,9 +39,7 @@ describe(rpcRoutes.users_signin, () => {
         }
       `);
       expect(output).toEqual(userHook.data);
-
-      const sessionUser = await ctx_getResponseSessionUser();
-      expect(sessionUser).toEqual(userHook.data);
+      expect(ctx_get().session.user?.id).toBe(userHook.data.id);
     });
   });
 
@@ -85,9 +82,7 @@ describe(rpcRoutes.users_signout, () => {
     await mockRequestContext({ user: userHook.data })(async () => {
       const output = await rpcRoutes.users_signout();
       expect(output).toMatchInlineSnapshot("undefined");
-
-      const sessionUser = await ctx_getResponseSessionUser();
-      tinyassert(!sessionUser);
+      expect(ctx_get().session.user?.id).toBe(undefined);
     });
   });
 
@@ -129,9 +124,7 @@ describe(rpcRoutes.users_register, () => {
         // ci flaky if 1000
         5000
       );
-
-      const sessionUser = await ctx_getResponseSessionUser();
-      expect(sessionUser).toEqual(found);
+      expect(ctx_get().session.user?.id).toBe(found.id);
     });
   });
 
@@ -252,9 +245,3 @@ describe(rpcRoutes.users_register, () => {
     });
   });
 });
-
-async function ctx_getResponseSessionUser() {
-  return await getSessionUser(
-    await getResponseSession({ headers: ctx_get().responseHeaders })
-  );
-}

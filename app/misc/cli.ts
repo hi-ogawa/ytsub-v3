@@ -18,7 +18,8 @@ import {
   filterNewVideo,
   insertVideoAndCaptionEntries,
 } from "../db/helper";
-import { createUserCookie, findByUsername, register } from "../utils/auth";
+import { writeCookieSession } from "../server/request-context/session";
+import { findByUsername, register } from "../utils/auth";
 import { exec, streamToString } from "../utils/node.server";
 import { toPasswordHash } from "../utils/password-utils";
 import {
@@ -101,7 +102,7 @@ cli.defineCommand(
 async function printSession(username: string) {
   const user = await findByUsername(username);
   tinyassert(user);
-  const cookie = await createUserCookie(user);
+  const cookie = await writeCookieSession({ user: { id: user.id } });
   console.log(cookie);
 }
 

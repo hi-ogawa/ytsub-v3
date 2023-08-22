@@ -154,7 +154,7 @@ test.describe("decks-seed", () => {
     await page.goto("/decks");
     await page.getByRole("link", { name: "Korean" }).click();
     await page.getByText("Progress").click();
-    await page.getByText("0 | 140").click();
+    await page.getByText("0 | 139").click();
     await page.getByRole("button", { name: "AGAIN" }).click();
   });
 });

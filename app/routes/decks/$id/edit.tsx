@@ -11,8 +11,8 @@ import { cls } from "../../../utils/misc";
 import type { PageHandle } from "../../../utils/page-handle";
 import { toastInfo } from "../../../utils/toast-utils";
 
-import type { LoaderData } from "./common.server";
-export { loader } from "./common.server";
+import type { LoaderData } from "./_utils.server";
+export { loader } from "./_utils.server";
 
 export const handle: PageHandle = {
   navBarTitle: () => "Edit Deck",
