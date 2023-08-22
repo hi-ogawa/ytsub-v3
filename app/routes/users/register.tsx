@@ -4,7 +4,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { $R, R } from "../../misc/routes";
 import { rpcClient } from "../../trpc/client";
-import { encodeFlashMessage } from "../../utils/flash-message";
+import { setFlashMessage } from "../../utils/flash-message";
 import { cls } from "../../utils/misc";
 import { navigateRefresh } from "../../utils/misc-client";
 import type { PageHandle } from "../../utils/page-handle";
@@ -35,15 +35,11 @@ export default function DefaultComponent() {
       });
     },
     onSuccess: () => {
-      // TODO: client reload flash
-      const href =
-        $R["/"]() +
-        "?" +
-        encodeFlashMessage({
-          variant: "success",
-          content: "Successfully registered",
-        });
-      navigateRefresh(href);
+      setFlashMessage({
+        variant: "success",
+        content: "Successfully registered",
+      });
+      navigateRefresh($R["/"]());
     },
   });
 

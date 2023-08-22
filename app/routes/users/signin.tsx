@@ -3,7 +3,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { $R } from "../../misc/routes";
 import { rpcClientQuery } from "../../trpc/client";
-import { encodeFlashMessage } from "../../utils/flash-message";
+import { setFlashMessage } from "../../utils/flash-message";
 import { cls } from "../../utils/misc";
 import { navigateRefresh } from "../../utils/misc-client";
 import type { PageHandle } from "../../utils/page-handle";
@@ -23,15 +23,11 @@ export default function DefaultComponent() {
   const signinMutation = useMutation({
     ...rpcClientQuery.users_signin.mutationOptions(),
     onSuccess: () => {
-      // TODO: client reload flash via localstorage?
-      const href =
-        $R["/"]() +
-        "?" +
-        encodeFlashMessage({
-          variant: "success",
-          content: "Successfully signed in",
-        });
-      navigateRefresh(href);
+      setFlashMessage({
+        variant: "success",
+        content: "Successfully signed in",
+      });
+      navigateRefresh($R["/"]());
     },
   });
 

@@ -4,7 +4,7 @@ import type { UserTable } from "../../db/models";
 import { R, ROUTE_DEF } from "../../misc/routes";
 import { ctx_currentUser } from "../../server/request-context/session";
 import { ctx_get } from "../../server/request-context/storage";
-import { encodeFlashMessage } from "../../utils/flash-message";
+import { ctx_setFlashMessage } from "../../utils/flash-message.server";
 import { isLanguageCode } from "../../utils/language";
 import {
   assertOrRespond,
@@ -33,14 +33,11 @@ export const loader = wrapLoader(async () => {
   const result = await wrapErrorAsync(() => fetchVideoMetadata(videoId));
   if (!result.ok) {
     // either invalid videoId or youtube api failure
-    return redirect(
-      R["/"] +
-        "?" +
-        encodeFlashMessage({
-          content: `Failed to load a video`,
-          variant: "error",
-        })
-    );
+    ctx_setFlashMessage({
+      content: `Failed to load a video`,
+      variant: "error",
+    });
+    throw redirect(R["/"]);
   }
   const videoMetadata = result.value;
   const loaderData: LoaderData = {

@@ -23,10 +23,7 @@ import { TopProgressBarRemix } from "./components/top-progress-bar";
 import type { UserTable } from "./db/models";
 import { $R, R } from "./misc/routes";
 import { rpcClientQuery } from "./trpc/client";
-import {
-  encodeFlashMessage,
-  useFlashMessageHandler,
-} from "./utils/flash-message";
+import { setFlashMessage, useFlashMessageHandler } from "./utils/flash-message";
 import { useLoaderDataExtra } from "./utils/loader-utils";
 import { cls } from "./utils/misc";
 import { navigateRefresh } from "./utils/misc-client";
@@ -308,18 +305,14 @@ function SearchComponent(props: { closeDrawer: () => void }) {
 }
 
 function SignoutComponent() {
-  // TODO: client reload flash
   const signoutMutation = useMutation({
     ...rpcClientQuery.users_signout.mutationOptions(),
     onSuccess: () => {
-      const href =
-        $R["/"]() +
-        "?" +
-        encodeFlashMessage({
-          variant: "success",
-          content: "Successfully signed out",
-        });
-      navigateRefresh(href);
+      setFlashMessage({
+        variant: "success",
+        content: "Successfully signed out",
+      });
+      navigateRefresh($R["/"]());
     },
   });
 
