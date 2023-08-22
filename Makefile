@@ -33,9 +33,9 @@ db/seed: db/seed-download
 	pnpm cli dbSeedImport --username dev --inFile misc/db/export/ytsub-deck-export--French.txt
 
 db/seed-download:
-	@# https://github.com/hi-ogawa/ytsub-v3/pull/214
-	wget --retry-on-http-error=403,503 -c -P misc/db/export https://github.com/hi-ogawa/ytsub-v3/files/11132552/ytsub-deck-export--Korean.txt
-	wget --retry-on-http-error=403,503 -c -P misc/db/export https://github.com/hi-ogawa/ytsub-v3/files/11132553/ytsub-deck-export--French.txt
+	@# https://github.com/hi-ogawa/ytsub-v3/pull/485
+	wget --retry-on-http-error=403,503 -c -P misc/db/export https://github.com/hi-ogawa/ytsub-v3/files/12391790/ytsub-deck-export--Korean.txt
+	wget --retry-on-http-error=403,503 -c -P misc/db/export https://github.com/hi-ogawa/ytsub-v3/files/12391791/ytsub-deck-export--French.txt
 	@# https://github.com/hi-ogawa/ytsub-v3/pull/290
 	wget --retry-on-http-error=403,503 -c -P misc/fixture https://github.com/hi-ogawa/ytsub-v3/files/11279701/fetchCaptionEntries-EnPYXckiUVg-fr-en.txt
 
