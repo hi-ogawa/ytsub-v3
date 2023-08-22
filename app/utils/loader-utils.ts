@@ -6,17 +6,7 @@ import {
 } from "@remix-run/react";
 import React from "react";
 import type { z } from "zod";
-import type { UserTable } from "../db/models";
 import { JSON_EXTRA } from "./json-extra";
-
-export interface RootLoaderData {
-  currentUser?: UserTable;
-}
-
-export function useRootLoaderData(): RootLoaderData {
-  const [{ data }] = useMatches();
-  return React.useMemo(() => JSON_EXTRA.deserialize(data), [data]);
-}
 
 export function useLeafLoaderData(): unknown {
   const [{ data }] = useMatches().slice(-1);

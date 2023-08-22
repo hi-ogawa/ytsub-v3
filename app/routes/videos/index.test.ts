@@ -22,6 +22,7 @@ describe("videos/index.loader", () => {
     expect(
       z
         .object({
+          currentUser: zSnapshotType,
           videos: z
             .object({
               id: zSnapshotType,
@@ -36,6 +37,7 @@ describe("videos/index.loader", () => {
         .parse(loaderData)
     ).toMatchInlineSnapshot(`
       {
+        "currentUser": "[Object]",
         "pagination": {
           "page": 1,
           "perPage": 20,

@@ -27,7 +27,7 @@ import {
   encodeFlashMessage,
   useFlashMessageHandler,
 } from "./utils/flash-message";
-import { useRootLoaderData } from "./utils/loader-utils";
+import { useLoaderDataExtra } from "./utils/loader-utils";
 import { cls } from "./utils/misc";
 import { navigateRefresh } from "./utils/misc-client";
 import type { PageHandle } from "./utils/page-handle";
@@ -35,8 +35,9 @@ import { QueryClientWrapper } from "./utils/react-query-utils";
 import { ToastWrapper } from "./utils/toast-utils";
 
 export { loader } from "./root.server";
+import { LoaderData } from "./root.server";
 
-// no need to revalidate `currentUser` since app refreshes on user session change (signin/signout)
+// for now, we don't revalidate `currentUser` and rely on page refresh on signin/signout
 export const shouldRevalidate: ShouldRevalidateFunction = () => false;
 
 export default function DefaultComponent() {
@@ -78,7 +79,7 @@ function RootWrapper(props: React.PropsWithChildren) {
 }
 
 function Root() {
-  const data = useRootLoaderData();
+  const data = useLoaderDataExtra() as LoaderData;
   useFlashMessageHandler();
 
   // `PageHandle` of the leaf compoment

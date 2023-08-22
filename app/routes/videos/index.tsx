@@ -11,10 +11,7 @@ import { useModal } from "../../components/modal";
 import type { DeckTable, UserTable, VideoTable } from "../../db/models";
 import { R } from "../../misc/routes";
 import { rpcClientQuery } from "../../trpc/client";
-import {
-  useLoaderDataExtra,
-  useRootLoaderData,
-} from "../../utils/loader-utils";
+import { useLoaderDataExtra } from "../../utils/loader-utils";
 import type { PageHandle } from "../../utils/page-handle";
 import { toastInfo } from "../../utils/toast-utils";
 
@@ -34,18 +31,16 @@ export const handle: PageHandle = {
 };
 
 export default function DefaultComponent() {
-  const { currentUser } = useRootLoaderData();
   const data = useLoaderDataExtra() as VideosLoaderData;
-  return <VideoListComponent {...data} currentUser={currentUser} />;
+  return <VideoListComponent {...data} />;
 }
 
+// reused for routes/index.tsx
 export function VideoListComponent({
   videos,
   pagination,
   currentUser,
-}: VideosLoaderData & {
-  currentUser?: UserTable;
-}) {
+}: VideosLoaderData) {
   return (
     <>
       <div className="w-full flex justify-center">

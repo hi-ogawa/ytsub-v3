@@ -26,7 +26,6 @@ import {
   disableUrlQueryRevalidation,
   useLeafLoaderData,
   useLoaderDataExtra,
-  useRootLoaderData,
   useTypedUrlQuery,
 } from "../../utils/loader-utils";
 import { cls, none } from "../../utils/misc";
@@ -50,9 +49,8 @@ export const handle: PageHandle = {
 };
 
 export default function DeafultComponent() {
-  const { currentUser } = useRootLoaderData();
-  const data = useLoaderDataExtra() as LoaderData;
-  return <PageComponent currentUser={currentUser} {...data} />;
+  const loaderData = useLoaderDataExtra() as LoaderData;
+  return <PageComponent {...loaderData} />;
 }
 
 export function findCurrentEntry(
@@ -140,7 +138,7 @@ function PageComponent({
         // mutate query cache instead of refetch
         queryClient.setQueryData(
           bookmarkEntriesQueryOptions.queryKey,
-          (prev) => [...(prev as TT["bookmarkEntries"][]), newBookmark]
+          (prev: unknown) => [...(prev as TT["bookmarkEntries"][]), newBookmark]
         );
       }
     },
@@ -721,8 +719,7 @@ function extractBookmarkSelection(
 //
 
 function NavBarMenuComponent() {
-  const { currentUser } = useRootLoaderData();
-  const { video } = useLeafLoaderData() as LoaderData;
+  const { currentUser, video } = useLeafLoaderData() as LoaderData;
   const [autoScrollState, toggleAutoScrollState] = useAutoScrollState();
   const [repeatingEntries, setRepeatingEntries] = useRepeatingEntries();
   const [highlightBookmark, setHighlightBookmark] = useAtom(
