@@ -39,7 +39,7 @@ export default function DefaultComponent() {
 export function VideoListComponent({
   videos,
   pagination,
-  user,
+  currentUser,
 }: VideosLoaderData) {
   return (
     <>
@@ -52,7 +52,7 @@ export function VideoListComponent({
               <VideoComponentExtra
                 key={video.id}
                 video={video}
-                currentUser={user}
+                currentUser={currentUser}
               />
             ))}
           </div>

@@ -19,7 +19,7 @@ import {
 export interface VideosLoaderData {
   videos: TT["videos"][];
   pagination: PaginationMetadata;
-  user?: TT["users"];
+  currentUser?: TT["users"];
 }
 
 export async function getVideosLoaderData(
@@ -43,7 +43,7 @@ export const loader = wrapLoader(async () => {
   const data = await getVideosLoaderData(query, user.id);
   const loaderData: VideosLoaderData = {
     ...data,
-    user,
+    currentUser: user,
   };
   return loaderData;
 });
