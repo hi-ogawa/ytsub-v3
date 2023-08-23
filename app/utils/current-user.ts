@@ -4,9 +4,9 @@ import { TT } from "../db/drizzle-client.server";
 import { none } from "./misc";
 
 // globally manage "currentUser" by
-// - initialData from root loader
-// - allow mutating on register/signin/signout without page refresh
-// - auto refresh session when expires (TODO)
+// - initially hydrate query from root loader data
+// - mutate on register/signin/signout without page refresh
+// - auto refresh session when close to expiring (TODO)
 
 const queryKey = ["useCurrentUser"];
 
