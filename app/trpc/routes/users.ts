@@ -7,7 +7,6 @@ import { E, T, db, selectOne } from "../../db/drizzle-client.server";
 import { $R } from "../../misc/routes";
 import {
   ctx_commitSession,
-  ctx_currentUser,
   ctx_requireSignout,
   ctx_requireUser,
 } from "../../server/request-context/session";
@@ -74,10 +73,6 @@ export const rpcRoutesUsers = {
     const user = await ctx_requireUser();
     await db.update(T.users).set(input).where(E.eq(T.users.id, user.id));
   }),
-
-  users_currentUser: async () => {
-    return ctx_currentUser();
-  },
 
   users_requestUpdateEmail: validateFn(
     z.object({

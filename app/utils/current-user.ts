@@ -1,7 +1,6 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import React from "react";
 import { TT } from "../db/drizzle-client.server";
-import { rpcClientQuery } from "../trpc/client";
 import { none } from "./misc";
 
 // globally manage "currentUser" by
@@ -9,9 +8,11 @@ import { none } from "./misc";
 // - allow mutating on register/signin/signout without page refresh
 // - auto refresh session when expires (TODO)
 
+const queryKey = ["useCurrentUser"];
+
 export function useCurrentUser() {
   const query = useQuery({
-    queryKey: rpcClientQuery.users_currentUser.queryKey,
+    queryKey,
     queryFn: () => none<TT["users"]>() ?? null, // tanstack query rejects `undefined`
     staleTime: Infinity,
     cacheTime: Infinity,
@@ -22,10 +23,7 @@ export function useCurrentUser() {
 export function useSetCurrentUser() {
   const queryClient = useQueryClient();
   function setCurrentUser(user?: TT["users"]) {
-    queryClient.setQueryData(
-      rpcClientQuery.users_currentUser.queryKey,
-      user ?? null
-    );
+    queryClient.setQueryData(queryKey, user ?? null);
   }
   return setCurrentUser;
 }
