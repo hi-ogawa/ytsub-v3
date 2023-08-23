@@ -39,6 +39,7 @@ export const rpcRoutesUsers = {
     const user = await register(input);
     ctx_get().session.user = { id: user.id };
     await ctx_commitSession();
+    return user;
   }),
 
   users_signin: validateFn(
