@@ -74,14 +74,6 @@ export function zipMax<T1, T2>(
   return range(length).map((i) => [ls1[i], ls2[i]]);
 }
 
-export function splitFirst(s: string, sep: string): [string, string] {
-  let i = s.indexOf(sep);
-  if (i === -1) {
-    i = s.length;
-  }
-  return [s.slice(0, i), s.slice(i + sep.length)];
-}
-
 export function pathToRegExp(pattern: string) {
   const keys: string[] = [];
   let source = "";

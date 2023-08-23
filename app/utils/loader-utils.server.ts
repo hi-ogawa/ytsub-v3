@@ -2,7 +2,7 @@ import { LoaderArgs, json, redirect } from "@remix-run/server-runtime";
 import { $R } from "../misc/routes";
 import { ctx_currentUser } from "../server/request-context/session";
 import { ctx_get } from "../server/request-context/storage";
-import { encodeFlashMessage } from "./flash-message";
+import { ctx_setFlashMessage } from "./flash-message.server";
 import { JSON_EXTRA } from "./json-extra";
 
 // - setup route "params" in async context
@@ -61,11 +61,8 @@ export function unwrapZodResultOrRespond<T1, T2>(
 export async function ctx_requireUserOrRedirect() {
   const user = await ctx_currentUser();
   if (!user) {
-    throw redirect(
-      $R["/users/signin"]() +
-        "?" +
-        encodeFlashMessage({ content: "Signin required", variant: "error" })
-    );
+    ctx_setFlashMessage({ content: "Signin required", variant: "error" });
+    throw redirect($R["/users/signin"]());
   }
   return user;
 }

@@ -18,14 +18,5 @@ function TopProgressBar({ loading }: { loading: boolean }) {
 
 export function TopProgressBarRemix() {
   const navigation = useNavigation();
-  return (
-    <TopProgressBar
-      loading={
-        navigation.location?.state !== STATE_NO_PROGRESS_BAR &&
-        navigation.state !== "idle"
-      }
-    />
-  );
+  return <TopProgressBar loading={navigation.state !== "idle"} />;
 }
-
-export const STATE_NO_PROGRESS_BAR = "__noProgressBar";

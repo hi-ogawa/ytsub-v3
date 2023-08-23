@@ -3,7 +3,7 @@ import { R, ROUTE_DEF } from "../../misc/routes";
 import { ctx_currentUser } from "../../server/request-context/session";
 import { ctx_get } from "../../server/request-context/storage";
 import { updateEmailByCode } from "../../trpc/routes/users";
-import { encodeFlashMessage } from "../../utils/flash-message";
+import { ctx_setFlashMessage } from "../../utils/flash-message.server";
 import {
   unwrapZodResultOrRespond,
   wrapLoader,
@@ -19,12 +19,9 @@ export const loader = wrapLoader(async () => {
   }
   const user = await ctx_currentUser();
   const url = user ? R["/users/me"] : R["/users/signin"];
-  return redirect(
-    url +
-      "?" +
-      encodeFlashMessage({
-        variant: "success",
-        content: `Successfully updated an email`,
-      })
-  );
+  ctx_setFlashMessage({
+    variant: "success",
+    content: `Successfully updated an email`,
+  });
+  return redirect(url);
 });
