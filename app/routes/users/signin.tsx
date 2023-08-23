@@ -1,11 +1,11 @@
-import { Link } from "@remix-run/react";
+import { Link, useNavigate } from "@remix-run/react";
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
+import { toast } from "react-hot-toast";
 import { $R } from "../../misc/routes";
 import { rpcClientQuery } from "../../trpc/client";
-import { encodeFlashMessage } from "../../utils/flash-message";
+import { useSetCurrentUser } from "../../utils/current-user";
 import { cls } from "../../utils/misc";
-import { navigateRefresh } from "../../utils/misc-client";
 import type { PageHandle } from "../../utils/page-handle";
 
 export const handle: PageHandle = {
@@ -20,17 +20,15 @@ export { loader } from "./register";
 //
 
 export default function DefaultComponent() {
+  const setCurrentUser = useSetCurrentUser();
+  const navigate = useNavigate();
+
   const signinMutation = useMutation({
     ...rpcClientQuery.users_signin.mutationOptions(),
-    onSuccess: () => {
-      const href =
-        $R["/"]() +
-        "?" +
-        encodeFlashMessage({
-          variant: "success",
-          content: "Successfully signed in",
-        });
-      navigateRefresh(href);
+    onSuccess: (data) => {
+      toast.success("Successfully signed in");
+      setCurrentUser(data);
+      navigate($R["/"]());
     },
   });
 
