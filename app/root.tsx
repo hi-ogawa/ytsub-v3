@@ -20,13 +20,16 @@ import { Drawer } from "./components/drawer";
 import { PopoverSimple } from "./components/popover";
 import { ThemeSelect } from "./components/theme-select";
 import { TopProgressBarRemix } from "./components/top-progress-bar";
-import type { UserTable } from "./db/models";
 import { $R, R } from "./misc/routes";
 import { rpcClientQuery } from "./trpc/client";
-import { setFlashMessage, useFlashMessageHandler } from "./utils/flash-message";
+import {
+  useCurrentUser,
+  useHydrateCurrentUser,
+  useSetCurrentUser,
+} from "./utils/current-user";
+import { useFlashMessageHandler } from "./utils/flash-message";
 import { useLoaderDataExtra } from "./utils/loader-utils";
 import { cls } from "./utils/misc";
-import { navigateRefresh } from "./utils/misc-client";
 import type { PageHandle } from "./utils/page-handle";
 import { QueryClientWrapper } from "./utils/react-query-utils";
 import { ToastWrapper } from "./utils/toast-utils";
@@ -34,7 +37,7 @@ import { ToastWrapper } from "./utils/toast-utils";
 export { loader } from "./root.server";
 import { LoaderData } from "./root.server";
 
-// for now, we don't revalidate `currentUser` and rely on page refresh on signin/signout
+// use root loader only for initial `currentUser` hydration (cf. app/utils/current-user.ts)
 export const shouldRevalidate: ShouldRevalidateFunction = () => false;
 
 export default function DefaultComponent() {
@@ -77,6 +80,7 @@ function RootWrapper(props: React.PropsWithChildren) {
 
 function Root() {
   const data = useLoaderDataExtra() as LoaderData;
+  useHydrateCurrentUser(data.currentUser);
   useFlashMessageHandler();
 
   // `PageHandle` of the leaf compoment
@@ -86,11 +90,7 @@ function Root() {
   return (
     <>
       <div className="h-full flex flex-col relative z-0">
-        <Navbar
-          title={handle.navBarTitle?.()}
-          user={data.currentUser}
-          menu={handle.navBarMenu?.()}
-        />
+        <Navbar title={handle.navBarTitle?.()} menu={handle.navBarMenu?.()} />
         <div className="flex-[1_0_0] flex flex-col" data-test="main">
           <div
             className="w-full flex-[1_0_0] h-full overflow-y-auto"
@@ -130,14 +130,13 @@ function ErrorRoot() {
 
 function Navbar({
   title,
-  user,
   menu,
 }: {
   title?: React.ReactNode;
-  user?: UserTable;
   menu?: React.ReactNode;
 }) {
   const [drawerOpen, setDrawerOpen] = React.useState(false);
+  const user = useCurrentUser();
 
   return (
     <header className="w-full h-12 flex-none bg-primary text-primary-content flex items-center p-2 px-6 gap-4 shadow-md shadow-black/[0.05] dark:shadow-black/[0.7] z-1">
@@ -305,14 +304,14 @@ function SearchComponent(props: { closeDrawer: () => void }) {
 }
 
 function SignoutComponent() {
+  const setCurrentUser = useSetCurrentUser();
+  const navigate = useNavigate();
   const signoutMutation = useMutation({
     ...rpcClientQuery.users_signout.mutationOptions(),
     onSuccess: () => {
-      setFlashMessage({
-        variant: "success",
-        content: "Successfully signed out",
-      });
-      navigateRefresh($R["/"]());
+      toast.success("Successfully signed out");
+      setCurrentUser();
+      navigate($R["/"]());
     },
   });
 

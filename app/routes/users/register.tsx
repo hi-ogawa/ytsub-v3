@@ -1,12 +1,12 @@
 import { Temporal } from "@js-temporal/polyfill";
-import { Link } from "@remix-run/react";
+import { Link, useNavigate } from "@remix-run/react";
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
+import { toast } from "react-hot-toast";
 import { $R, R } from "../../misc/routes";
 import { rpcClient } from "../../trpc/client";
-import { setFlashMessage } from "../../utils/flash-message";
+import { useSetCurrentUser } from "../../utils/current-user";
 import { cls } from "../../utils/misc";
-import { navigateRefresh } from "../../utils/misc-client";
 import type { PageHandle } from "../../utils/page-handle";
 import { useTurnstile } from "../../utils/turnstile-utils";
 
@@ -25,21 +25,21 @@ export default function DefaultComponent() {
 
   const turnstile = useTurnstile();
 
+  const setCurrentUser = useSetCurrentUser();
+  const navigate = useNavigate();
   const registerMutation = useMutation({
     mutationFn: async (data: FormState) => {
       const token = await turnstile.render();
-      await rpcClient.users_register({
+      return rpcClient.users_register({
         ...data,
         token,
         timezone: Temporal.Now.zonedDateTimeISO().offset,
       });
     },
-    onSuccess: () => {
-      setFlashMessage({
-        variant: "success",
-        content: "Successfully registered",
-      });
-      navigateRefresh($R["/"]());
+    onSuccess: (data) => {
+      toast.success("Successfully registered");
+      setCurrentUser(data);
+      navigate($R["/"]());
     },
   });
 
