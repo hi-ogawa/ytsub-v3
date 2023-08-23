@@ -113,12 +113,31 @@ describe(rpcRoutes.users_register, () => {
   it("basic", async () => {
     await mockRequestContext()(async () => {
       const output = await rpcRoutes.users_register(credentials);
-      expect(output).toMatchInlineSnapshot("undefined");
+      expect(
+        z
+          .object({
+            id: zSnapshotType,
+            createdAt: zSnapshotType,
+            updatedAt: zSnapshotType,
+          })
+          .passthrough()
+          .parse(output)
+      ).toMatchInlineSnapshot(`
+        {
+          "createdAt": "[Date]",
+          "email": null,
+          "id": "[number]",
+          "language1": null,
+          "language2": null,
+          "timezone": "+00:00",
+          "updatedAt": "[Date]",
+          "username": "test-trpc-register",
+        }
+      `);
 
       const found = await findByUsername(credentials.username);
       tinyassert(found);
-      expect(found.username).toBe(credentials.username);
-      expect(found.timezone).toBe("+00:00");
+      expect(found).toEqual(output);
       expect(found.createdAt).toEqual(found.updatedAt);
       expect(Math.abs(found.createdAt.getTime() - Date.now())).toBeLessThan(
         // ci flaky if 1000
