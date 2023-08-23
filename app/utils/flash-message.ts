@@ -27,10 +27,6 @@ export function useFlashMessageHandler() {
   }, [navigation.state]);
 }
 
-export function setFlashMessage(v: FlashMessage) {
-  document.cookie = serializeFlashMessageCookie(JSON.stringify(v));
-}
-
 export function handleFlashMessage() {
   const cookies = cookieLib.parse(document.cookie);
   const value = cookies[COOKIE_NAME];
