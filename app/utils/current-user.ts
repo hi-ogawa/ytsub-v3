@@ -11,7 +11,7 @@ import { none } from "./misc";
 export function useCurrentUser() {
   const query = useQuery({
     queryKey: rpcClientQuery.users_currentUser.queryKey,
-    queryFn: () => none<TT["users"]>() ?? null,
+    queryFn: () => none<TT["users"]>() ?? null, // tanstack query rejects `undefined`
     staleTime: Infinity,
     cacheTime: Infinity,
   });
