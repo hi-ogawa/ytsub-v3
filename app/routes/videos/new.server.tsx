@@ -6,17 +6,9 @@ import { ctx_currentUser } from "../../server/request-context/session";
 import { ctx_get } from "../../server/request-context/storage";
 import { ctx_setFlashMessage } from "../../utils/flash-message.server";
 import { isLanguageCode } from "../../utils/language";
-import {
-  assertOrRespond,
-  unwrapZodResultOrRespond,
-  wrapLoader,
-} from "../../utils/loader-utils.server";
+import { wrapLoader } from "../../utils/loader-utils.server";
 import type { CaptionConfig, VideoMetadata } from "../../utils/types";
-import {
-  fetchVideoMetadata,
-  findCaptionConfigPair,
-  parseVideoId,
-} from "../../utils/youtube";
+import { fetchVideoMetadata, findCaptionConfigPair } from "../../utils/youtube";
 
 export type LoaderData = {
   videoMetadata: VideoMetadata;
@@ -24,13 +16,18 @@ export type LoaderData = {
 };
 
 export const loader = wrapLoader(async () => {
-  const query = unwrapZodResultOrRespond(
-    ROUTE_DEF["/videos/new"].query.safeParse(ctx_get().urlQuery)
-  );
-  const videoId = parseVideoId(query.videoId);
-  assertOrRespond(videoId);
+  const query = ROUTE_DEF["/videos/new"].query.safeParse(ctx_get().urlQuery);
+  if (!query.success) {
+    ctx_setFlashMessage({
+      content: `Invalid Video ID`,
+      variant: "error",
+    });
+    throw redirect(R["/"]);
+  }
   const user = await ctx_currentUser();
-  const result = await wrapErrorAsync(() => fetchVideoMetadata(videoId));
+  const result = await wrapErrorAsync(() =>
+    fetchVideoMetadata(query.data.videoId)
+  );
   if (!result.ok) {
     // either invalid videoId or youtube api failure
     ctx_setFlashMessage({

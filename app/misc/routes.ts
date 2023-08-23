@@ -17,6 +17,33 @@ const Z_ID_PARAMS = z.object({
   id: z.coerce.number().int(),
 });
 
+const Z_VIDEO_ID = z
+  .string()
+  .transform((s) => parseVideoId(s))
+  .refine((s): s is string => Boolean(s), {
+    message: "Invalid Video ID",
+  });
+
+function parseVideoId(value: string): string | undefined {
+  if (value.length === 11) {
+    return value;
+  }
+  if (value.match(/youtube\.com|youtu\.be/)) {
+    try {
+      const url = new URL(value);
+      if (url.hostname === "youtu.be") {
+        return url.pathname.substring(1);
+      } else {
+        const videoId = url.searchParams.get("v");
+        if (videoId) {
+          return videoId;
+        }
+      }
+    } catch {}
+  }
+  return;
+}
+
 export const Z_PAGINATION_QUERY = z.object({
   page: z.coerce.number().int().optional().default(1),
   perPage: z.coerce.number().int().optional().default(20),
@@ -35,7 +62,7 @@ export const ROUTE_DEF = {
   "/videos": {},
   "/videos/new": {
     query: z.object({
-      videoId: z.string(),
+      videoId: Z_VIDEO_ID,
     }),
   },
   "/caption-editor": {},
