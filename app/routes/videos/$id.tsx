@@ -31,12 +31,12 @@ import {
 import { cls, none } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 import type { CaptionEntry } from "../../utils/types";
+import { stringifyTimestamp } from "../../utils/youtube";
 import {
   YoutubePlayer,
   YoutubePlayerOptions,
-  stringifyTimestamp,
   usePlayerLoader,
-} from "../../utils/youtube";
+} from "../../utils/youtube-iframe";
 
 import type { LoaderData } from "./$id.server";
 export { loader } from "./$id.server";

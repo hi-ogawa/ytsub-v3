@@ -2,6 +2,7 @@ import { tinyassert } from "@hiogawa/utils";
 import { z } from "zod";
 import { Z_PRACTICE_ACTION_TYPES, Z_PRACTICE_QUEUE_TYPES } from "../db/types";
 import { createGetProxy } from "../utils/misc";
+import { parseVideoId } from "../utils/youtube";
 
 // centralized route definitions to benefit from static analysis e.g.
 // - prevent typo by type check
@@ -23,26 +24,6 @@ const Z_VIDEO_ID = z
   .refine((s): s is string => Boolean(s), {
     message: "Invalid Video ID",
   });
-
-function parseVideoId(value: string): string | undefined {
-  if (value.length === 11) {
-    return value;
-  }
-  if (value.match(/youtube\.com|youtu\.be/)) {
-    try {
-      const url = new URL(value);
-      if (url.hostname === "youtu.be") {
-        return url.pathname.substring(1);
-      } else {
-        const videoId = url.searchParams.get("v");
-        if (videoId) {
-          return videoId;
-        }
-      }
-    } catch {}
-  }
-  return;
-}
 
 export const Z_PAGINATION_QUERY = z.object({
   page: z.coerce.number().int().optional().default(1),
@@ -68,7 +49,7 @@ export const ROUTE_DEF = {
   "/caption-editor": {},
   "/caption-editor/watch": {
     query: z.object({
-      v: z.string(),
+      v: Z_VIDEO_ID,
     }),
   },
   "/videos/$id": {

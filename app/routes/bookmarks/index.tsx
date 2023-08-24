@@ -23,7 +23,7 @@ import {
 import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 import type { CaptionEntry } from "../../utils/types";
-import { YoutubePlayer, usePlayerLoader } from "../../utils/youtube";
+import { YoutubePlayer, usePlayerLoader } from "../../utils/youtube-iframe";
 import { CaptionEntryComponent, findCurrentEntry } from "../videos/$id";
 
 export { loader } from "./index.server";

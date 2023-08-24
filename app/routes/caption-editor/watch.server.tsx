@@ -1,12 +1,10 @@
-import { ROUTE_DEF } from "../../misc/routes";
+import { redirect } from "@remix-run/server-runtime";
+import { $R, ROUTE_DEF } from "../../misc/routes";
 import { ctx_get } from "../../server/request-context/storage";
-import {
-  assertOrRespond,
-  unwrapZodResultOrRespond,
-  wrapLoader,
-} from "../../utils/loader-utils.server";
+import { ctx_setFlashMessage } from "../../utils/flash-message.server";
+import { wrapLoader } from "../../utils/loader-utils.server";
 import { VideoMetadata } from "../../utils/types";
-import { fetchVideoMetadata, parseVideoId } from "../../utils/youtube";
+import { fetchVideoMetadata } from "../../utils/youtube";
 
 export type LoaderData = {
   videoId: string;
@@ -14,11 +12,17 @@ export type LoaderData = {
 };
 
 export const loader = wrapLoader(async () => {
-  const query = unwrapZodResultOrRespond(
-    ROUTE_DEF["/caption-editor/watch"].query.safeParse(ctx_get().urlQuery)
+  const query = ROUTE_DEF["/caption-editor/watch"].query.safeParse(
+    ctx_get().urlQuery
   );
-  const videoId = parseVideoId(query.v);
-  assertOrRespond(videoId);
-  const videoMetadata = await fetchVideoMetadata(videoId);
+  if (!query.success) {
+    ctx_setFlashMessage({
+      content: `Invalid Video ID`,
+      variant: "error",
+    });
+    throw redirect($R["/caption-editor"]());
+  }
+  const videoId = query.data.v;
+  const videoMetadata = await fetchVideoMetadata(videoId); // handle error
   return { videoId, videoMetadata } satisfies LoaderData;
 });

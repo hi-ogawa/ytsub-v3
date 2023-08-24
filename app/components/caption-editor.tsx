@@ -11,12 +11,11 @@ import { useDocumentEvent } from "../utils/hooks-client-utils";
 import { cls, zipMax } from "../utils/misc";
 import type { CaptionEntry, VideoMetadata } from "../utils/types";
 import {
-  YoutubePlayer,
   mergeTtmlEntries,
   stringifyTimestamp,
   toCaptionConfigOptions,
-  usePlayerLoader,
 } from "../utils/youtube";
+import { YoutubePlayer, usePlayerLoader } from "../utils/youtube-iframe";
 import {
   CaptionEditorEntry,
   CaptionEditorEntrySimple,

@@ -4,7 +4,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { cls } from "../utils/misc";
 import { DUMMY_VIDEO_METADATA } from "../utils/types";
-import { YoutubePlayer, usePlayerLoader } from "../utils/youtube";
+import { YoutubePlayer, usePlayerLoader } from "../utils/youtube-iframe";
 import { CaptionEditor } from "./caption-editor";
 import {
   STORAGE_KEYS,
