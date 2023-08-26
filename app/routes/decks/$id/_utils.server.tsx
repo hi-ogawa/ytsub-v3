@@ -5,18 +5,17 @@ import { ctx_get } from "../../../server/request-context/storage";
 import {
   assertOrRespond,
   ctx_requireUserOrRedirect,
-  wrapLoader,
 } from "../../../utils/loader-utils.server";
 
 export interface LoaderData {
   deck: DeckTable;
 }
 
-export const loader = wrapLoader(async () => {
+export const loader = async () => {
   const { deck } = await ctx_requireUserAndDeck();
   const loaderData: LoaderData = { deck };
   return loaderData;
-});
+};
 
 export async function ctx_requireUserAndDeck() {
   const user = await ctx_requireUserOrRedirect();

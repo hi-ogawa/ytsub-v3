@@ -7,7 +7,7 @@ import * as build from "@remix-run/dev/server-build";
 import { createRequestHandler } from "@remix-run/server-runtime";
 import { requestContextHandler } from "../server/request-context";
 import { rpcHandler } from "../trpc/server";
-import { wrapLoaderV2 } from "../utils/loader-utils.server";
+import { wrapLoader } from "../utils/loader-utils.server";
 import { pathToRegExp } from "../utils/misc";
 import { traceAsync } from "../utils/opentelemetry-utils";
 import { initializeServer } from "./initialize-server";
@@ -35,7 +35,7 @@ function createRemixHandler(): RequestHandler {
     if (route.module.loader) {
       // destruct since esm module cannot be mutated
       route.module = { ...route.module };
-      route.module.loader = wrapLoaderV2(route.module.loader as any);
+      route.module.loader = wrapLoader(route.module.loader as any);
     }
   }
 

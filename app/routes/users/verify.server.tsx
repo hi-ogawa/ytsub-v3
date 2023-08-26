@@ -4,12 +4,9 @@ import { ctx_currentUser } from "../../server/request-context/session";
 import { ctx_get } from "../../server/request-context/storage";
 import { updateEmailByCode } from "../../trpc/routes/users";
 import { ctx_setFlashMessage } from "../../utils/flash-message.server";
-import {
-  unwrapZodResultOrRespond,
-  wrapLoader,
-} from "../../utils/loader-utils.server";
+import { unwrapZodResultOrRespond } from "../../utils/loader-utils.server";
 
-export const loader = wrapLoader(async () => {
+export const loader = async () => {
   const { code } = unwrapZodResultOrRespond(
     ROUTE_DEF["/users/verify"].query.safeParse(ctx_get().urlQuery)
   );
@@ -24,4 +21,4 @@ export const loader = wrapLoader(async () => {
     content: `Successfully updated an email`,
   });
   return redirect(url);
-});
+};

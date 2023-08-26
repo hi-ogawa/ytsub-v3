@@ -8,7 +8,6 @@ import {
 import type { DeckTable, PracticeEntryTable } from "../../../db/models";
 import { ROUTE_DEF } from "../../../misc/routes";
 import { ctx_get } from "../../../server/request-context/storage";
-import { wrapLoader } from "../../../utils/loader-utils.server";
 import type { PaginationMetadata } from "../../../utils/pagination";
 import { ctx_requireUserAndDeck } from "./_utils.server";
 
@@ -25,7 +24,7 @@ export interface LoaderData {
   >[];
 }
 
-export const loader = wrapLoader(async () => {
+export const loader = async () => {
   const { deck } = await ctx_requireUserAndDeck();
   const reqQuery = ROUTE_DEF["/decks/$id"].query.parse(ctx_get().urlQuery);
 
@@ -52,4 +51,4 @@ export const loader = wrapLoader(async () => {
     rows,
   };
   return loaderData;
-});
+};

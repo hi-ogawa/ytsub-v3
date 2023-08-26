@@ -6,7 +6,6 @@ import { ctx_get } from "../../server/request-context/storage";
 import {
   assertOrRespond,
   unwrapZodResultOrRespond,
-  wrapLoader,
 } from "../../utils/loader-utils.server";
 
 export type LoaderData = {
@@ -14,7 +13,7 @@ export type LoaderData = {
   video: VideoTable;
 };
 
-export const loader = wrapLoader(async () => {
+export const loader = async () => {
   const currentUser = await ctx_currentUser();
   const params = unwrapZodResultOrRespond(
     ROUTE_DEF["/videos/$id"].params.safeParse(ctx_get().params)
@@ -23,4 +22,4 @@ export const loader = wrapLoader(async () => {
   assertOrRespond(video);
   const loaderData: LoaderData = { video, currentUser };
   return loaderData;
-});
+};

@@ -5,18 +5,11 @@ import { ctx_get } from "../server/request-context/storage";
 import { ctx_setFlashMessage } from "./flash-message.server";
 import { JSON_EXTRA } from "./json-extra";
 
+// this wrapper is to
 // - setup route "params" in async context
 // - custom json serializer by default
+// note that this is injected to all loader by mutating "@remix-run/dev/server-build" in app/misc/entry-hattip.ts
 export function wrapLoader(loader: () => unknown) {
-  return loader;
-  // return async ({ params }: LoaderArgs) => {
-  //   ctx_get().params = params;
-  //   const res = await loader();
-  //   return res instanceof Response ? res : json(JSON_EXTRA.serialize(res));
-  // };
-}
-
-export function wrapLoaderV2(loader: () => unknown) {
   // make it partial for slight convenience of unit test
   return async (args?: Partial<LoaderArgs>) => {
     ctx_get().params = args?.params ?? {};

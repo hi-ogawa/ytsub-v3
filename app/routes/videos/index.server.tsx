@@ -6,10 +6,7 @@ import {
   toPaginationResult,
 } from "../../db/drizzle-client.server";
 import { ctx_get } from "../../server/request-context/storage";
-import {
-  ctx_requireUserOrRedirect,
-  wrapLoader,
-} from "../../utils/loader-utils.server";
+import { ctx_requireUserOrRedirect } from "../../utils/loader-utils.server";
 import {
   PAGINATION_PARAMS_SCHEMA,
   PaginationMetadata,
@@ -37,7 +34,7 @@ export async function getVideosLoaderData(
   return { videos, pagination };
 }
 
-export const loader = wrapLoader(async () => {
+export const loader = async () => {
   const user = await ctx_requireUserOrRedirect();
   const query = PAGINATION_PARAMS_SCHEMA.parse(ctx_get().urlQuery);
   const data = await getVideosLoaderData(query, user.id);
@@ -46,4 +43,4 @@ export const loader = wrapLoader(async () => {
     currentUser: user,
   };
   return loaderData;
-});
+};

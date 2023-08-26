@@ -5,7 +5,7 @@ import { useUserVideo } from "../../misc/test-helper";
 import { zSnapshotType } from "../../misc/test-helper-snapshot";
 import { mockRequestContext } from "../../server/request-context/mock";
 import { JSON_EXTRA } from "../../utils/json-extra";
-import { wrapLoaderV2 } from "../../utils/loader-utils.server";
+import { wrapLoader } from "../../utils/loader-utils.server";
 import { loader } from "./index";
 
 describe("videos/index.loader", () => {
@@ -15,7 +15,7 @@ describe("videos/index.loader", () => {
 
   it("basic", async () => {
     const res = await mockRequestContext({ user: hook.user })(
-      wrapLoaderV2(loader)
+      wrapLoader(loader)
     );
     tinyassert(res instanceof Response);
     const loaderData = JSON_EXTRA.deserialize(await res.json());

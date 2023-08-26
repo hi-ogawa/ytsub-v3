@@ -9,7 +9,6 @@ import { isLanguageCode } from "../../utils/language";
 import {
   assertOrRespond,
   unwrapZodResultOrRespond,
-  wrapLoader,
 } from "../../utils/loader-utils.server";
 import type { CaptionConfig, VideoMetadata } from "../../utils/types";
 import {
@@ -23,7 +22,7 @@ export type LoaderData = {
   userCaptionConfigs?: { language1?: CaptionConfig; language2?: CaptionConfig };
 };
 
-export const loader = wrapLoader(async () => {
+export const loader = async () => {
   const query = unwrapZodResultOrRespond(
     ROUTE_DEF["/videos/new"].query.safeParse(ctx_get().urlQuery)
   );
@@ -45,7 +44,7 @@ export const loader = wrapLoader(async () => {
     userCaptionConfigs: user && findUserCaptionConfigs(videoMetadata, user),
   };
   return loaderData;
-});
+};
 
 function findUserCaptionConfigs(videoMetadata: VideoMetadata, user: UserTable) {
   if (
