@@ -26,7 +26,7 @@ export function assertOrRespond(v: unknown, status: number = 404): asserts v {
   }
 }
 
-// ts-prune-ignore-next
+// icheck-ignore
 export function unwrapOrRespond<T>(v: T, status: number) {
   if (!v) {
     throw json(null, { status });
@@ -34,7 +34,7 @@ export function unwrapOrRespond<T>(v: T, status: number) {
   return v;
 }
 
-// ts-prune-ignore-next
+// icheck-ignore
 export function unwrapResultOrRespond<T1, T2>(
   v: { ok: true; value: T1 } | { ok: false; value: T2 },
   status: number = 400
