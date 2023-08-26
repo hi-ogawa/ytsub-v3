@@ -1,6 +1,5 @@
 import fs from "node:fs";
 import { newPromiseWithResolvers, tinyassert } from "@hiogawa/utils";
-import type { LoaderFunction } from "@remix-run/server-runtime";
 import { afterAll, beforeAll } from "vitest";
 import { E, T, db } from "../db/drizzle-client.server";
 import {
@@ -9,18 +8,8 @@ import {
 } from "../db/helper";
 import type { CaptionEntryTable, UserTable, VideoTable } from "../db/models";
 import { writeCookieSession } from "../server/request-context/session";
-import { ctx_get } from "../server/request-context/storage";
 import type { NewVideo, fetchCaptionEntries } from "../utils/youtube";
 import { useUserImpl } from "./test-helper-common";
-
-export function testLoader(loader: LoaderFunction) {
-  const { request } = ctx_get();
-  return loader({
-    request,
-    context: {},
-    params: {},
-  });
-}
 
 export function useUser(...args: Parameters<typeof useUserImpl>) {
   const { before, after } = useUserImpl(...args);
