@@ -7,6 +7,7 @@ import * as build from "@remix-run/dev/server-build";
 import { createRequestHandler } from "@remix-run/server-runtime";
 import { requestContextHandler } from "../server/request-context";
 import { rpcHandler } from "../trpc/server";
+import { wrapLoaderV2 } from "../utils/loader-utils.server";
 import { pathToRegExp } from "../utils/misc";
 import { traceAsync } from "../utils/opentelemetry-utils";
 import { initializeServer } from "./initialize-server";
@@ -29,6 +30,15 @@ export function createHattipEntry() {
 //
 
 function createRemixHandler(): RequestHandler {
+  // poor-man's loader middleware by mutating remix's routes
+  for (const route of Object.values(build.routes)) {
+    if (route.module.loader) {
+      // destruct since esm module cannot be mutated
+      route.module = { ...route.module };
+      route.module.loader = wrapLoaderV2(route.module.loader as any);
+    }
+  }
+
   const mode =
     process.env.NODE_ENV === "production" ? "production" : "development";
   const remixHandler = createRequestHandler(build, mode);
