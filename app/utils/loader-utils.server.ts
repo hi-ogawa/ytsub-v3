@@ -17,8 +17,8 @@ export function wrapLoader(loader: () => unknown) {
 }
 
 export function wrapLoaderV2(loader: () => unknown) {
-  return async (args?: Partial<LoaderArgs>) => {
-    ctx_get().params = args?.params ?? {};
+  return async ({ params }: LoaderArgs) => {
+    ctx_get().params = params;
     const res = await loader();
     return res instanceof Response ? res : json(JSON_EXTRA.serialize(res));
   };
