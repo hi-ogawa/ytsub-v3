@@ -14,7 +14,7 @@
     "lint-check": "run-s lint-check:*",
     "lint:isort": "pnpm lint-check:isort --fix",
     "lint-check:isort": "isort-ts --git --cache",
-    "lint-check:icheck": "icheck-ts $(git grep -l . 'app/*.ts' 'app/*.tsx') --cache --ignore 'ErrorBoundary|default|loader|handle|shouldRevalidate|up|down'",
+    "lint-check:icheck": "icheck-ts $(find app -name '*.ts' -o -name '*.tsx') --cache --ignore 'ErrorBoundary|default|loader|handle|shouldRevalidate|up|down'",
     "lint:prettier": "prettier -w --cache .",
     "lint-check:prettier": "prettier -c --cache .",
     "test": "NODE_ENV=test vitest",
