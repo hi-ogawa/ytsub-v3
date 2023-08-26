@@ -8,8 +8,9 @@ import { JSON_EXTRA } from "./json-extra";
 // - setup route "params" in async context
 // - custom json serializer by default
 export function wrapLoader(loader: () => unknown) {
-  return async ({ params }: LoaderArgs) => {
-    ctx_get().params = params;
+  // make it partial for slight convenience of unit test
+  return async (args?: Partial<LoaderArgs>) => {
+    ctx_get().params = args?.params ?? {};
     const res = await loader();
     return res instanceof Response ? res : json(JSON_EXTRA.serialize(res));
   };
