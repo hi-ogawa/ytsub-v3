@@ -45,18 +45,3 @@ export function useIntersectionObserver(
     };
   });
 }
-
-// ts-prune-ignore-next
-export function useMatchMedia(query: string): boolean | undefined {
-  const [value, setValue] = React.useState<boolean>();
-
-  React.useEffect(() => {
-    const media = window.matchMedia(query);
-    const handler = () => setValue(media.matches);
-    handler();
-    media.addEventListener("change", handler);
-    return () => media.removeEventListener("change", handler);
-  }, [query]);
-
-  return value;
-}

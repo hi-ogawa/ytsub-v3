@@ -27,7 +27,7 @@ export const disableUrlQueryRevalidation: ShouldRevalidateFunction = (args) => {
 };
 
 // Record<string, unknown> based wrapper for useSearchParams
-export function useUrlQuery() {
+function useUrlQuery() {
   const [params, setParams] = useSearchParams();
 
   const query = React.useMemo(
