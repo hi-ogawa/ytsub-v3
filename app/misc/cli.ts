@@ -1,8 +1,8 @@
 import { deepEqual } from "assert/strict";
 import fs from "node:fs";
-import readline from "node:readline";
 import { TinyCli, arg, tinyCliMain, zArg } from "@hiogawa/tiny-cli";
 import { groupBy, objectPick, range, tinyassert, zip } from "@hiogawa/utils";
+import { promptQuestion } from "@hiogawa/utils-node";
 import { sql } from "drizzle-orm";
 import { z } from "zod";
 import {
@@ -249,7 +249,7 @@ cli.defineCommand(
     }
 
     while (true) {
-      const input = await question(
+      const input = await promptQuestion(
         ":: please input language (+ translation) to download (e.g. .ko, .ko_en) > "
       );
       if (!input) {
@@ -556,24 +556,6 @@ cli.defineCommand(
     console.log({ stats });
   }
 );
-
-async function question(query: string): Promise<string> {
-  const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout,
-  });
-  // delegate SIGINT (cf. https://github.com/SBoudrias/Inquirer.js/pull/569)
-  rl.once("SIGINT", () => {
-    process.kill(process.pid, "SIGINT");
-  });
-  try {
-    return await new Promise((resolve) => {
-      rl.question(query, (v) => resolve(v));
-    });
-  } finally {
-    rl.close();
-  }
-}
 
 //
 // main
