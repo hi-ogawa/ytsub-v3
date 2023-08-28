@@ -580,12 +580,9 @@ async function question(query: string): Promise<string> {
 //
 
 async function main() {
-  try {
-    await initializeServer();
-    await tinyCliMain(cli);
-  } finally {
-    await finalizeServer();
-  }
+  await initializeServer();
+  await tinyCliMain(cli);
+  await finalizeServer();
 }
 
 main();
