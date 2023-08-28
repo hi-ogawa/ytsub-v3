@@ -195,9 +195,6 @@ devDependencies:
   c8:
     specifier: ^8.0.1
     version: 8.0.1
-  consola:
-    specifier: ^3.2.3
-    version: 3.2.3
   esbuild:
     specifier: ^0.17.19
     version: 0.17.19
