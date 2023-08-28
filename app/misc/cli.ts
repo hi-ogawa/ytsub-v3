@@ -1,9 +1,8 @@
 import { deepEqual } from "assert/strict";
 import fs from "node:fs";
 import readline from "node:readline";
-import { TinyCli, TinyCliParseError, arg, zArg } from "@hiogawa/tiny-cli";
+import { TinyCli, arg, tinyCliMain, zArg } from "@hiogawa/tiny-cli";
 import { groupBy, objectPick, range, tinyassert, zip } from "@hiogawa/utils";
-import consola from "consola";
 import { sql } from "drizzle-orm";
 import { z } from "zod";
 import {
@@ -583,13 +582,7 @@ async function question(query: string): Promise<string> {
 async function main() {
   try {
     await initializeServer();
-    await cli.parse(process.argv.slice(2));
-  } catch (e) {
-    consola.error(e);
-    if (e instanceof TinyCliParseError) {
-      console.error("See '--help' for more info.");
-    }
-    process.exit(1);
+    await tinyCliMain(cli);
   } finally {
     await finalizeServer();
   }

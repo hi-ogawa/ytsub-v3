@@ -145,8 +145,8 @@ devDependencies:
     specifier: 1.1.2-pre.0
     version: 1.1.2-pre.0(prettier@2.8.8)(typescript@5.2.2)
   '@hiogawa/tiny-cli':
-    specifier: 0.0.3
-    version: 0.0.3
+    specifier: 0.0.4-pre.1
+    version: 0.0.4-pre.1
   '@hiogawa/unocss-preset-antd':
     specifier: 2.2.1-pre.3
     version: 2.2.1-pre.3(@unocss/preset-uno@0.55.3)(unocss@0.52.7)
@@ -2346,8 +2346,8 @@ packages:
       vite: 4.4.9(@types/node@18.17.11)
     dev: false
 
-  /@hiogawa/tiny-cli@0.0.3:
-    resolution: {integrity: sha512-5ZRDn0XW12mV+rov25z1oksyRP6IeW6ydEki81lHxbDEGrE/IGcrvkGTCXtbeSWIYmclNpVpuLee01KeB2jyvQ==}
+  /@hiogawa/tiny-cli@0.0.4-pre.1:
+    resolution: {integrity: sha512-3z/qYXDyROVX8oaFdqMyiLL8ZZE9dEaEw02ZYXOxmUF6U5MM3pskzLZId/KMvT+ZnLCLI4CUBuga6AIf56JXTw==}
     dev: true
 
   /@hiogawa/tiny-jwt@0.2.8-pre.2:
