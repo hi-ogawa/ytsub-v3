@@ -1,5 +1,6 @@
 import { deepEqual } from "assert/strict";
 import fs from "node:fs";
+import readline from "node:readline";
 import { TinyCli, TinyCliParseError, arg, zArg } from "@hiogawa/tiny-cli";
 import { groupBy, objectPick, range, tinyassert, zip } from "@hiogawa/utils";
 import consola from "consola";
@@ -249,10 +250,11 @@ cli.defineCommand(
     }
 
     while (true) {
-      const input = await consola.prompt(
-        ":: please input language (+ translation) to download (e.g. .ko, .ko_en) >"
+      const input = await question(
+        ":: please input language (+ translation) to download (e.g. .ko, .ko_en) > "
       );
-      if (!input || typeof input !== "string") {
+      if (!input) {
+        console.log(":: cancelled");
         break;
       }
       const [id, translation] = input.split("_");
@@ -555,6 +557,24 @@ cli.defineCommand(
     console.log({ stats });
   }
 );
+
+async function question(query: string): Promise<string> {
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+  });
+  // delegate SIGINT (cf. https://github.com/SBoudrias/Inquirer.js/pull/569)
+  rl.once("SIGINT", () => {
+    process.kill(process.pid, "SIGINT");
+  });
+  try {
+    return await new Promise((resolve) => {
+      rl.question(query, (v) => resolve(v));
+    });
+  } finally {
+    rl.close();
+  }
+}
 
 //
 // main
