@@ -1,8 +1,8 @@
 import { deepEqual } from "assert/strict";
 import fs from "node:fs";
-import { TinyCli, TinyCliParseError, arg, zArg } from "@hiogawa/tiny-cli";
+import { TinyCli, arg, tinyCliMain, zArg } from "@hiogawa/tiny-cli";
 import { groupBy, objectPick, range, tinyassert, zip } from "@hiogawa/utils";
-import consola from "consola";
+import { promptQuestion } from "@hiogawa/utils-node";
 import { sql } from "drizzle-orm";
 import { z } from "zod";
 import {
@@ -249,10 +249,11 @@ cli.defineCommand(
     }
 
     while (true) {
-      const input = await consola.prompt(
-        ":: please input language (+ translation) to download (e.g. .ko, .ko_en) >"
+      const input = await promptQuestion(
+        ":: please input language (+ translation) to download (e.g. .ko, .ko_en) > "
       );
-      if (!input || typeof input !== "string") {
+      if (!input) {
+        console.log(":: cancelled");
         break;
       }
       const [id, translation] = input.split("_");
@@ -561,18 +562,9 @@ cli.defineCommand(
 //
 
 async function main() {
-  try {
-    await initializeServer();
-    await cli.parse(process.argv.slice(2));
-  } catch (e) {
-    consola.error(e);
-    if (e instanceof TinyCliParseError) {
-      console.error("See '--help' for more info.");
-    }
-    process.exit(1);
-  } finally {
-    await finalizeServer();
-  }
+  await initializeServer();
+  await tinyCliMain(cli);
+  await finalizeServer();
 }
 
 main();

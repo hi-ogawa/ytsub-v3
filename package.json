@@ -83,8 +83,9 @@
   "devDependencies": {
     "@hiogawa/icheck-ts": "^0.0.1-pre.2",
     "@hiogawa/isort-ts": "1.1.2-pre.0",
-    "@hiogawa/tiny-cli": "0.0.3",
+    "@hiogawa/tiny-cli": "0.0.4-pre.1",
     "@hiogawa/unocss-preset-antd": "2.2.1-pre.3",
+    "@hiogawa/utils-node": "0.0.1-pre.4",
     "@iconify-json/ri": "^1.1.12",
     "@playwright/test": "^1.37.1",
     "@remix-run/dev": "1.15.0",
@@ -100,7 +101,6 @@
     "@vitejs/plugin-react": "^4.0.4",
     "@vitest/coverage-v8": "^0.34.3",
     "c8": "^8.0.1",
-    "consola": "^3.2.3",
     "esbuild": "^0.17.19",
     "esbuild-register": "^3.4.2",
     "express": "^4.18.2",
