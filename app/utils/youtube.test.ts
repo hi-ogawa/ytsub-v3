@@ -164,7 +164,8 @@ describe("fetchCaptionEntries", () => {
     `);
   });
 
-  it("translation", async () => {
+  // skipped since translation is not stable and test becomes flaky
+  it.skip("translation", async () => {
     // https://www.youtube.com/watch?v=4gXmClk8rKI
     const entries = await fetchCaptionEntries({
       videoId: "4gXmClk8rKI",
