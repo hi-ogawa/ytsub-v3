@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for utils/hooks-client-utils.ts</title>
+    <title>Code coverage report for utils/simple-store.ts</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../prettify.css" />
     <link rel="stylesheet" href="../base.css" />
@@ -19,13 +19,13 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../index.html">All files</a> / <a href="index.html">utils</a> hooks-client-utils.ts</h1>
+        <h1><a href="../index.html">All files</a> / <a href="index.html">utils</a> simple-store.ts</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">19.14% </span>
+                <span class="strong">32.6% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>9/47</span>
+                <span class='fraction'>15/46</span>
             </div>
         
             
@@ -39,14 +39,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/4</span>
+                <span class='fraction'>0/3</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">19.14% </span>
+                <span class="strong">32.6% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>9/47</span>
+                <span class='fraction'>15/46</span>
             </div>
         
             
@@ -109,40 +109,20 @@
 <a name='L44'></a><a href='#L44'>44</a>
 <a name='L45'></a><a href='#L45'>45</a>
 <a name='L46'></a><a href='#L46'>46</a>
-<a name='L47'></a><a href='#L47'>47</a>
-<a name='L48'></a><a href='#L48'>48</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L47'></a><a href='#L47'>47</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -157,52 +137,69 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { useRefCallbackEffect, useStableCallback } from "@hiogawa/utils-react";
-import React from "react";
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import React from "react";
 &nbsp;
-<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >function documentEventEffect&lt;K extends keyof DocumentEventMap&gt;(</span></span>
-<span class="cstat-no" title="statement not covered" >  type: K,</span>
-<span class="cstat-no" title="statement not covered" >  handler: (e: DocumentEventMap[K]) =&gt; void</span>
-<span class="cstat-no" title="statement not covered" >) {</span>
-<span class="cstat-no" title="statement not covered" >  document.addEventListener(type, handler);</span>
-<span class="cstat-no" title="statement not covered" >  return () =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >    document.removeEventListener(type, handler);</span>
+export <span class="fstat-no" title="function not covered" >function useSimpleStore&lt;T&gt;(store: SimpleStore&lt;T&gt;) {</span>
+<span class="cstat-no" title="statement not covered" >  React.useSyncExternalStore(store.subscribe, store.get, store.get);</span>
+<span class="cstat-no" title="statement not covered" >  return [store.get(), store.set] as const;</span>
+<span class="cstat-no" title="statement not covered" >}</span>
+&nbsp;
+//
+// platform agnostic store utility
+//
+&nbsp;
+// TODO: composition (derive etc...)
+// TODO: localstorage backend
+&nbsp;
+export class SimpleStore&lt;T&gt; {
+<span class="fstat-no" title="function not covered" >  constructor(private value: T) {}</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >  get = () =&gt; this.value;</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >  set = (action: T | ((prev: T) =&gt; T)) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >    this.value = applyAction(this.value, action);</span>
+<span class="cstat-no" title="statement not covered" >    this.notify();</span>
 <span class="cstat-no" title="statement not covered" >  };</span>
-<span class="cstat-no" title="statement not covered" >}</span>
-&nbsp;
-export <span class="fstat-no" title="function not covered" >function useDocumentEvent&lt;K extends keyof DocumentEventMap&gt;(</span>
-<span class="cstat-no" title="statement not covered" >  type: K,</span>
-<span class="cstat-no" title="statement not covered" >  handler: (e: DocumentEventMap[K]) =&gt; void</span>
-<span class="cstat-no" title="statement not covered" >) {</span>
-<span class="cstat-no" title="statement not covered" >  const stableHanlder = useStableCallback(handler);</span>
 <span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >  React.useEffect(() =&gt; documentEventEffect(type, stableHanlder), []);</span>
-<span class="cstat-no" title="statement not covered" >}</span>
-&nbsp;
-export <span class="fstat-no" title="function not covered" >function useClickOutside(callback: (e: PointerEvent) =&gt; void) {</span>
-<span class="cstat-no" title="statement not covered" >  const stableCallback = useStableCallback(callback);</span>
+<span class="cstat-no" title="statement not covered" >  //</span>
+<span class="cstat-no" title="statement not covered" >  // api for useSyncExternalStore</span>
+<span class="cstat-no" title="statement not covered" >  //</span>
 <span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >  return useRefCallbackEffect&lt;Element&gt;((el) =&gt;</span>
-<span class="cstat-no" title="statement not covered" >    documentEventEffect("pointerdown", (e) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >      if (e.target instanceof Node &amp;&amp; el.contains(e.target)) {</span>
-<span class="cstat-no" title="statement not covered" >        stableCallback(e);</span>
-<span class="cstat-no" title="statement not covered" >      }</span>
-<span class="cstat-no" title="statement not covered" >    })</span>
-<span class="cstat-no" title="statement not covered" >  );</span>
-<span class="cstat-no" title="statement not covered" >}</span>
-&nbsp;
-export <span class="fstat-no" title="function not covered" >function useIntersectionObserver(</span>
-<span class="cstat-no" title="statement not covered" >  callback: IntersectionObserverCallback</span>
-<span class="cstat-no" title="statement not covered" >) {</span>
-<span class="cstat-no" title="statement not covered" >  const stableCallback = useStableCallback(callback);</span>
+<span class="cstat-no" title="statement not covered" >  private listeners = new Set&lt;() =&gt; void&gt;();</span>
 <span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >  return useRefCallbackEffect&lt;Element&gt;((el) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >    const observer = new IntersectionObserver(stableCallback);</span>
-<span class="cstat-no" title="statement not covered" >    observer.observe(el);</span>
+<span class="cstat-no" title="statement not covered" >  subscribe = (listener: () =&gt; void) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >    this.listeners.add(listener);</span>
 <span class="cstat-no" title="statement not covered" >    return () =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >      observer.disconnect();</span>
+<span class="cstat-no" title="statement not covered" >      this.listeners.delete(listener);</span>
 <span class="cstat-no" title="statement not covered" >    };</span>
-<span class="cstat-no" title="statement not covered" >  });</span>
+<span class="cstat-no" title="statement not covered" >  };</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >  private notify = () =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >    this.listeners.forEach((l) =&gt; l());</span>
+<span class="cstat-no" title="statement not covered" >  };</span>
+}
+&nbsp;
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >function applyAction&lt;T&gt;(v: T, action: T | ((v: T) =&gt; T)): T {</span></span>
+<span class="cstat-no" title="statement not covered" >  // @ts-expect-error it cannot narrow enough since `T` itself could be a function</span>
+<span class="cstat-no" title="statement not covered" >  return typeof action === "function" ? action(v) : action;</span>
 <span class="cstat-no" title="statement not covered" >}</span>
 &nbsp;</pre></td></tr></table></pre>
 
