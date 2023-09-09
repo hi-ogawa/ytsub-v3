@@ -89,6 +89,7 @@ class LocalStorageStoreAdapter<T> implements SimpleStoreAdapter<T> {
   constructor(
     private key: string,
     private defaultValue: T,
+    // TODO: this "deriving" part should live as "selector" feature?
     private parse = JSON.parse,
     private stringify = JSON.stringify
   ) {
