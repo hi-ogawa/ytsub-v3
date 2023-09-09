@@ -113,7 +113,7 @@ function PageComponent({
   //
 
   // fetch all bookmark entries associated to this video
-  const [highlightBookmark] = useSimpleStore(highlightBookmarkStorageAtom);
+  const [highlightBookmark] = useSimpleStore(highlightBookmarkStore);
   const highlightBookmarkEnabled = highlightBookmark && Boolean(currentUser);
 
   const bookmarkEntriesQueryOptions =
@@ -722,7 +722,7 @@ function NavBarMenuComponent() {
   const [autoScrollState, toggleAutoScrollState] = useAutoScrollState();
   const [repeatingEntries, setRepeatingEntries] = useRepeatingEntries();
   const [highlightBookmark, setHighlightBookmark] = useSimpleStore(
-    highlightBookmarkStorageAtom
+    highlightBookmarkStore
   );
   const [playbackRateState] = useSimpleStore(playbackRateStateStore);
   const modal = useModal();
@@ -921,17 +921,17 @@ function useRepeatingEntries() {
 }
 
 // auto scroll
-const autoScrollStorageAtom = SimpleStore.createWithLocalStorage(
+const autoScrollStore = SimpleStore.createWithLocalStorage(
   "ytsub:video-subtitle-auto-scroll",
   Array<number>()
 );
 function useAutoScrollState() {
-  const [state, setState] = useSimpleStore(autoScrollStorageAtom);
+  const [state, setState] = useSimpleStore(autoScrollStore);
   return [state, toArraySetState(setState).toggle] as const;
 }
 
 // highlight bookmarks
-const highlightBookmarkStorageAtom = SimpleStore.createWithLocalStorage(
+const highlightBookmarkStore = SimpleStore.createWithLocalStorage(
   "ytsub:video-highlight-bookmark",
   false
 );
