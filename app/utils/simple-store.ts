@@ -47,7 +47,10 @@ export class SimpleStore<T> {
     };
   };
 
-  getSnapshot = () => this.adapter.getSnapshot();
+  getSnapshot = () => {
+    const adapter = this.adapter;
+    return (adapter.getSnapshot ?? adapter.get).apply(adapter);
+  };
 
   protected notify = () => {
     this.listeners.forEach((l) => l());
@@ -67,19 +70,19 @@ function applyAction<T>(v: T, action: SetAction<T>): T {
 
 interface SimpleStoreAdapter<T> {
   get: () => T;
-  getSnapshot: () => unknown;
   set: (value: T) => void;
+  subscribe?: (onStoreChange: () => void) => () => void;
+  getSnapshot?: () => unknown;
 }
 
 class MemoryAdapter<T> implements SimpleStoreAdapter<T> {
   constructor(private value: T) {}
   get = () => this.value;
-  getSnapshot = () => this.get();
   set = (value: T) => (this.value = value);
 }
 
 // - no multi-tab storage sync
-// - ssr fallbacks to null which can cause hydration mismatch
+// - ssr fallbacks to `defaultValue` which can cause hydration mismatch
 // - cf. https://github.com/hi-ogawa/toy-metronome/blob/54b5f86f99432c698634de2976dda369cd829cb9/src/utils/storage.ts
 class LocalStorageStoreAdapter<T> implements SimpleStoreAdapter<T> {
   constructor(
@@ -87,7 +90,9 @@ class LocalStorageStoreAdapter<T> implements SimpleStoreAdapter<T> {
     private defaultValue: T,
     private parse = JSON.parse,
     private stringify = JSON.stringify
-  ) {}
+  ) {
+    this.parse = memoizeOne(this.parse);
+  }
 
   get() {
     const item = this.getSnapshot();
@@ -104,4 +109,15 @@ class LocalStorageStoreAdapter<T> implements SimpleStoreAdapter<T> {
   set(value: T) {
     window.localStorage.setItem(this.key, this.stringify(value));
   }
+}
+
+// make result stable for the same input i.e. memoize with cache size 1
+function memoizeOne<F extends (arg: any) => any>(f: F): F {
+  let last: { k: any; v: any } | undefined;
+  return function wrapper(arg: any) {
+    if (!last || last.k !== arg) {
+      last = { k: arg, v: f(arg) };
+    }
+    return last.v;
+  } as any;
 }
