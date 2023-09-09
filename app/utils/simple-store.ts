@@ -1,5 +1,6 @@
 import React from "react";
 
+// simple global state utilty via useSyncExternalStore
 // TODO: move to utils-react?
 
 export function useSimpleStore<T>(store: SimpleStore<T>) {
