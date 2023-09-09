@@ -356,4 +356,4 @@ function NavBarMenuComponent() {
 // page local state
 //
 
-const showAdvancedModeStore = new SimpleStore(false);
+const showAdvancedModeStore = SimpleStore.create(false);

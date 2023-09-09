@@ -67,8 +67,8 @@ function Modal(props: {
 // it feels like a huge hack but it works so conveniently
 export function useModal(defaultOpen?: boolean) {
   // create store on the fly to communicate with Wrapper component
-  const [openStore] = React.useState(
-    () => new SimpleStore(defaultOpen ?? false)
+  const [openStore] = React.useState(() =>
+    SimpleStore.create(defaultOpen ?? false)
   );
   const [open, setOpen] = useSimpleStore(openStore);
 

@@ -915,32 +915,33 @@ function DetailsComponent({
 // page local state
 //
 
-const repeatingEntriesStore = new SimpleStore(new Array<CaptionEntry>());
-
+// repeating entries
+const repeatingEntriesStore = SimpleStore.create(new Array<CaptionEntry>());
 function useRepeatingEntries() {
   const [state, setState] = useSimpleStore(repeatingEntriesStore);
   return [state, setState, toArraySetState(setState).toggle] as const;
 }
 
-const autoScrollStorageAtom = atomWithStorage(
+// auto scroll
+const autoScrollStorageAtom = SimpleStore.createWithLocalStorage(
   "ytsub:video-subtitle-auto-scroll",
   Array<number>()
 );
-
 function useAutoScrollState() {
-  const [state, setState] = useAtom(autoScrollStorageAtom);
+  const [state, setState] = useSimpleStore(autoScrollStorageAtom);
   return [state, toArraySetState(setState).toggle] as const;
 }
 
+// highlight bookmarks
 const highlightBookmarkStorageAtom = atomWithStorage(
   "ytsub:video-highlight-bookmark",
   false
 );
 
+// playback rate
 const INITIAL_PLAYBACK_RATE_STATE = {
   value: 1,
   options: [1],
   player: none<YoutubePlayer>(),
 };
-
-const playbackRateStateStore = new SimpleStore(INITIAL_PLAYBACK_RATE_STATE);
+const playbackRateStateStore = SimpleStore.create(INITIAL_PLAYBACK_RATE_STATE);
