@@ -1,3 +1,4 @@
+import { DefaultMap } from "@hiogawa/utils";
 import React from "react";
 
 // simple global state utilty via useSyncExternalStore
@@ -42,7 +43,9 @@ export class SimpleStore<T> {
 
   subscribe = (listener: () => void) => {
     this.listeners.add(listener);
+    const unsubscribeAdapter = this.adapter.subscribe?.(listener);
     return () => {
+      unsubscribeAdapter?.();
       this.listeners.delete(listener);
     };
   };
@@ -81,7 +84,6 @@ class MemoryAdapter<T> implements SimpleStoreAdapter<T> {
   set = (value: T) => (this.value = value);
 }
 
-// - no multi-tab storage sync
 // - ssr fallbacks to `defaultValue` which can cause hydration mismatch
 // - cf. https://github.com/hi-ogawa/toy-metronome/blob/54b5f86f99432c698634de2976dda369cd829cb9/src/utils/storage.ts
 class LocalStorageStoreAdapter<T> implements SimpleStoreAdapter<T> {
@@ -106,6 +108,9 @@ class LocalStorageStoreAdapter<T> implements SimpleStoreAdapter<T> {
     return window.localStorage.getItem(this.key);
   }
 
+  subscribe = (listener: () => void) =>
+    localStorageStore.subscribe(this.key, listener);
+
   set(value: T) {
     window.localStorage.setItem(this.key, this.stringify(value));
   }
@@ -120,4 +125,62 @@ function memoizeOne<F extends (arg: any) => any>(f: F): F {
     }
     return last.v;
   } as any;
+}
+
+//
+// LocalStorage wrapper to synchronize on changes (either "storage" event or "set/remove" on same runtime)
+//
+
+class LocalStorageStore {
+  listen() {
+    const handler = (e: StorageEvent) => {
+      // null when clear
+      if (e.key === null) {
+        this.notifyAll();
+      } else {
+        this.notify(e.key);
+      }
+    };
+    window.addEventListener("storage", handler);
+    return () => {
+      window.removeEventListener("storage", handler);
+    };
+  }
+
+  get(key: string): string | null {
+    return window.localStorage.getItem(key);
+  }
+
+  set(key: string, data: string) {
+    window.localStorage.setItem(key, data);
+    this.notify(key);
+  }
+
+  remove(key: string) {
+    window.localStorage.removeItem(key);
+    this.notify(key);
+  }
+
+  private listeners = new DefaultMap<string, Set<() => void>>(() => new Set());
+
+  subscribe(key: string, listener: () => void) {
+    this.listeners.get(key).add(listener);
+    return () => {
+      this.listeners.get(key).delete(listener);
+    };
+  }
+
+  private notify(key: string) {
+    this.listeners.get(key).forEach((l) => l());
+  }
+
+  private notifyAll() {
+    this.listeners.forEach((set) => set.forEach((l) => l()));
+  }
+}
+
+// unique global instance
+const localStorageStore = new LocalStorageStore();
+if (typeof window !== "undefined") {
+  localStorageStore.listen();
 }
