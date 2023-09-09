@@ -1,7 +1,6 @@
 import { tinyassert } from "@hiogawa/utils";
 import { useNavigate } from "@remix-run/react";
 import { useMutation } from "@tanstack/react-query";
-import { atom, useAtom } from "jotai";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { SelectWrapper } from "../../components/misc";
@@ -16,13 +15,14 @@ import {
 import { useLoaderDataExtra } from "../../utils/loader-utils";
 import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
+import { SimpleStore, useSimpleStore } from "../../utils/simple-store";
 import { toastInfo } from "../../utils/toast-utils";
+
 import type { CaptionConfig, VideoMetadata } from "../../utils/types";
 import {
   encodeAdvancedModeLanguageCode,
   toCaptionConfigOptions,
 } from "../../utils/youtube";
-
 import type { LoaderData } from "./new.server";
 export { loader } from "./new.server";
 
@@ -77,7 +77,7 @@ function DefaultComponentInner() {
   });
   const { videoId, language1, language2 } = form.watch();
 
-  const [showAdvancedMode] = useAtom(showAdvancedModeAtom);
+  const [showAdvancedMode] = useSimpleStore(showAdvancedModeStore);
 
   return (
     <div className="w-full p-4 flex justify-center">
@@ -166,7 +166,7 @@ function DefaultComponentInner() {
         {showAdvancedMode && (
           <>
             <div className="border-t mx-3"></div>
-            <AdvancedModeFormV2 videoId={videoId} />
+            <AdvancedModeForm videoId={videoId} />
           </>
         )}
       </div>
@@ -174,7 +174,7 @@ function DefaultComponentInner() {
   );
 }
 
-function AdvancedModeFormV2({ videoId }: { videoId: string }) {
+function AdvancedModeForm({ videoId }: { videoId: string }) {
   interface FormType {
     language1?: LanguageCode;
     language2?: LanguageCode;
@@ -218,7 +218,7 @@ function AdvancedModeFormV2({ videoId }: { videoId: string }) {
       className="p-6 flex flex-col gap-3"
       onSubmit={form.handleSubmit((data) => createMutation.mutate(data))}
     >
-      <div className="text-lg">Manual input (v2)</div>
+      <div className="text-lg">Manual input</div>
       <label className="flex flex-col gap-1">
         <span>1st language</span>
         <SelectWrapper
@@ -320,7 +320,9 @@ function LanguageSelectComponent({
 //
 
 function NavBarMenuComponent() {
-  const [showAdvancedMode, setShowAdvancedMode] = useAtom(showAdvancedModeAtom);
+  const [showAdvancedMode, setShowAdvancedMode] = useSimpleStore(
+    showAdvancedModeStore
+  );
   return (
     <div className="flex items-center">
       <PopoverSimple
@@ -355,4 +357,4 @@ function NavBarMenuComponent() {
 // page local state
 //
 
-const showAdvancedModeAtom = atom<boolean>(false);
+const showAdvancedModeStore = new SimpleStore(false);
