@@ -23,7 +23,7 @@ export class SimpleStore<T> {
   };
 
   //
-  // api for useSyncExternalStore
+  // base api for React.useSyncExternalStore
   //
 
   private listeners = new Set<() => void>();

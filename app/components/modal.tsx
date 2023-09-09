@@ -1,10 +1,10 @@
 import { useDismiss, useFloating, useInteractions } from "@floating-ui/react";
 import { Transition } from "@headlessui/react";
 import { tinyassert } from "@hiogawa/utils";
-import { atom, useAtom } from "jotai";
 import React from "react";
 import { RemoveScroll } from "react-remove-scroll";
 import { cls } from "../utils/misc";
+import { SimpleStore, useSimpleStore } from "../utils/simple-store";
 import { FloatingWrapper } from "./floating-utils";
 
 // based on https://github.com/hi-ogawa/unocss-preset-antd/blob/02adfc9dfcb7cebbc31cd4651395e1ecc67d813e/packages/app/src/components/modal.tsx
@@ -66,9 +66,11 @@ function Modal(props: {
 
 // it feels like a huge hack but it works so conveniently
 export function useModal(defaultOpen?: boolean) {
-  // create jotai-atom on the fly to communicate with Wrapper component
-  const [openAtom] = React.useState(() => atom(defaultOpen ?? false));
-  const [open, setOpen] = useAtom(openAtom);
+  // create store on the fly to communicate with Wrapper component
+  const [openStore] = React.useState(
+    () => new SimpleStore(defaultOpen ?? false)
+  );
+  const [open, setOpen] = useSimpleStore(openStore);
 
   // define Wrapper component on the fly
   const [Wrapper] = React.useState(
@@ -77,7 +79,7 @@ export function useModal(defaultOpen?: boolean) {
         className?: string;
         children: React.ReactNode;
       }) {
-        const [open] = useAtom(openAtom);
+        const [open, setOpen] = useSimpleStore(openStore);
         return <Modal open={open} onClose={() => setOpen(false)} {...props} />;
       }
   );
