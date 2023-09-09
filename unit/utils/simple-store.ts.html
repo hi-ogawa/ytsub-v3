@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">32.6% </span>
+                <span class="strong">63.04% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>15/46</span>
+                <span class='fraction'>29/46</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/0</span>
+                <span class='fraction'>1/1</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">14.28% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/3</span>
+                <span class='fraction'>1/7</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">32.6% </span>
+                <span class="strong">63.04% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>15/46</span>
+                <span class='fraction'>29/46</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line medium'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -125,28 +125,28 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
@@ -170,29 +170,29 @@ export <span class="fstat-no" title="function not covered" >function useSimpleSt
 // TODO: localstorage backend
 &nbsp;
 export class SimpleStore&lt;T&gt; {
-<span class="fstat-no" title="function not covered" >  constructor(private value: T) {}</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >  get = () =&gt; this.value;</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >  set = (action: T | ((prev: T) =&gt; T)) =&gt; {</span>
+  constructor(private value: T) {}
+&nbsp;
+  get = <span class="fstat-no" title="function not covered" >() =&gt; this.value;</span>
+&nbsp;
+  set = <span class="fstat-no" title="function not covered" >(action: T | ((prev: T) =&gt; T)) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >    this.value = applyAction(this.value, action);</span>
 <span class="cstat-no" title="statement not covered" >    this.notify();</span>
 <span class="cstat-no" title="statement not covered" >  };</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >  //</span>
-<span class="cstat-no" title="statement not covered" >  // base api for React.useSyncExternalStore</span>
-<span class="cstat-no" title="statement not covered" >  //</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >  private listeners = new Set&lt;() =&gt; void&gt;();</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >  subscribe = (listener: () =&gt; void) =&gt; {</span>
+&nbsp;
+  //
+  // base api for React.useSyncExternalStore
+  //
+&nbsp;
+  private listeners = new Set&lt;() =&gt; void&gt;();
+&nbsp;
+  subscribe = <span class="fstat-no" title="function not covered" >(listener: () =&gt; void) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >    this.listeners.add(listener);</span>
 <span class="cstat-no" title="statement not covered" >    return () =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >      this.listeners.delete(listener);</span>
 <span class="cstat-no" title="statement not covered" >    };</span>
 <span class="cstat-no" title="statement not covered" >  };</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >  private notify = () =&gt; {</span>
+&nbsp;
+  private notify = <span class="fstat-no" title="function not covered" >() =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >    this.listeners.forEach((l) =&gt; l());</span>
 <span class="cstat-no" title="statement not covered" >  };</span>
 }
@@ -208,7 +208,7 @@ export class SimpleStore&lt;T&gt; {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-09-09T05:35:49.945Z
+                at 2023-09-09T05:39:49.343Z
             </div>
         <script src="../prettify.js"></script>
         <script>
