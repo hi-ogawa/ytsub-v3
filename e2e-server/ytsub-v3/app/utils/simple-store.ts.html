@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for ytsub-v3/app/trpc/server.ts</title>
+    <title>Code coverage report for ytsub-v3/app/utils/simple-store.ts</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../../../prettify.css" />
     <link rel="stylesheet" href="../../../base.css" />
@@ -19,34 +19,34 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../../../index.html">All files</a> / <a href="index.html">ytsub-v3/app/trpc</a> server.ts</h1>
+        <h1><a href="../../../index.html">All files</a> / <a href="index.html">ytsub-v3/app/utils</a> simple-store.ts</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">95.91% </span>
+                <span class="strong">71.73% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>47/49</span>
-            </div>
-        
-            
-            <div class='fl pad1y space-right2'>
-                <span class="strong">75% </span>
-                <span class="quiet">Branches</span>
-                <span class='fraction'>3/4</span>
+                <span class='fraction'>33/46</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
-                <span class="quiet">Functions</span>
-                <span class='fraction'>2/2</span>
+                <span class="quiet">Branches</span>
+                <span class='fraction'>3/3</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">95.91% </span>
+                <span class="strong">42.85% </span>
+                <span class="quiet">Functions</span>
+                <span class='fraction'>3/7</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">71.73% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>47/49</span>
+                <span class='fraction'>33/46</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line high'></div>
+    <div class='status-line medium'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -109,22 +109,12 @@
 <a name='L44'></a><a href='#L44'>44</a>
 <a name='L45'></a><a href='#L45'>45</a>
 <a name='L46'></a><a href='#L46'>46</a>
-<a name='L47'></a><a href='#L47'>47</a>
-<a name='L48'></a><a href='#L48'>48</a>
-<a name='L49'></a><a href='#L49'>49</a>
-<a name='L50'></a><a href='#L50'>50</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L47'></a><a href='#L47'>47</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -139,77 +129,78 @@
 <span class="cline-any cline-yes">151x</span>
 <span class="cline-any cline-yes">151x</span>
 <span class="cline-any cline-yes">151x</span>
-<span class="cline-any cline-yes">151x</span>
-<span class="cline-any cline-yes">151x</span>
-<span class="cline-any cline-yes">151x</span>
-<span class="cline-any cline-yes">151x</span>
-<span class="cline-any cline-yes">151x</span>
-<span class="cline-any cline-yes">151x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">151x</span>
 <span class="cline-any cline-yes">151x</span>
 <span class="cline-any cline-yes">151x</span>
+<span class="cline-any cline-yes">151x</span>
+<span class="cline-any cline-yes">151x</span>
+<span class="cline-any cline-yes">151x</span>
+<span class="cline-any cline-yes">151x</span>
+<span class="cline-any cline-yes">151x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { RequestHandler } from "@hattip/compose";
-import {
-  TinyRpcRoutes,
-  exposeTinyRpc,
-  httpServerAdapter,
-} from "@hiogawa/tiny-rpc";
-import { SpanStatusCode, trace } from "@opentelemetry/api";
-import { JSON_EXTRA } from "../utils/json-extra";
-import { RPC_ENDPOINT, RPC_GET_PATHS } from "./client";
-import { rpcRoutesBookmarks } from "./routes/bookmarks";
-import { rpcRoutesDecks } from "./routes/decks";
-import { rpcRoutesUsers } from "./routes/users";
-import { rpcRoutesVideos } from "./routes/videos";
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import React from "react";
 &nbsp;
-export const rpcRoutes = {
-  ...rpcRoutesDecks,
-  ...rpcRoutesBookmarks,
-  ...rpcRoutesVideos,
-  ...rpcRoutesUsers,
-  // ts-prune-ignore-next (satisfies unsupported)
-} satisfies TinyRpcRoutes;
-&nbsp;
-export function rpcHandler(): RequestHandler {
-  return exposeTinyRpc({
-    routes: rpcRoutes,
-    adapter: httpServerAdapter({
-      endpoint: RPC_ENDPOINT,
-      pathsForGET: RPC_GET_PATHS,
-      JSON: {
-        // only extend server -&gt; client payload
-        stringify: JSON_EXTRA.stringify,
-      },
-      onError(e) {
-        console.error(e);
-        const span = trace.getActiveSpan();
-        if (<span class="branch-0 cbranch-no" title="branch not covered" >span) {</span>
-<span class="cstat-no" title="statement not covered" >          span.setStatus({ code: SpanStatusCode.ERROR });</span>
-<span class="cstat-no" title="statement not covered" >          span.recordException(e as Error);</span>
-        }
-      },
-    }),
-  });
+export function useSimpleStore&lt;T&gt;(store: SimpleStore&lt;T&gt;) {
+  React.useSyncExternalStore(store.subscribe, store.get, store.get);
+  return [store.get(), store.set] as const;
 }
 &nbsp;
-// fix up Function.name so that it can be used as a test title e.g.
-//   describe(rpcRoutes.users_singin, () =&gt; {})
-for (const [k, v] of Object.entries(rpcRoutes)) {
-  Object.defineProperty(v, "name", { value: k });
+//
+// platform agnostic store utility
+//
+&nbsp;
+// TODO: composition (derive etc...)
+// TODO: localstorage backend
+&nbsp;
+export class SimpleStore&lt;T&gt; {
+  constructor(private value: T) {}
+&nbsp;
+  get = () =&gt; this.value;
+&nbsp;
+  set = <span class="fstat-no" title="function not covered" >(action: T | ((prev: T) =&gt; T)) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >    this.value = applyAction(this.value, action);</span>
+<span class="cstat-no" title="statement not covered" >    this.notify();</span>
+<span class="cstat-no" title="statement not covered" >  };</span>
+&nbsp;
+  //
+  // api for useSyncExternalStore
+  //
+&nbsp;
+  private listeners = new Set&lt;() =&gt; void&gt;();
+&nbsp;
+  subscribe = <span class="fstat-no" title="function not covered" >(listener: () =&gt; void) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >    this.listeners.add(listener);</span>
+<span class="cstat-no" title="statement not covered" >    return () =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >      this.listeners.delete(listener);</span>
+<span class="cstat-no" title="statement not covered" >    };</span>
+  };
+&nbsp;
+  private <span class="fstat-no" title="function not covered" >notify() {</span>
+<span class="cstat-no" title="statement not covered" >    this.listeners.forEach((l) =&gt; l());</span>
+<span class="cstat-no" title="statement not covered" >  }</span>
 }
+&nbsp;
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >function applyAction&lt;T&gt;(v: T, action: T | ((v: T) =&gt; T)): T {</span></span>
+<span class="cstat-no" title="statement not covered" >  // @ts-expect-error it cannot narrow since `T` itself could be a function</span>
+<span class="cstat-no" title="statement not covered" >  return typeof action === "function" ? action(v) : action;</span>
+<span class="cstat-no" title="statement not covered" >}</span>
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
