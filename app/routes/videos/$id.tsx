@@ -8,7 +8,7 @@ import {
   Virtualizer,
   useVirtualizer,
 } from "@tanstack/react-virtual";
-import { atom, useAtom } from "jotai";
+import { useAtom } from "jotai";
 import { atomWithStorage } from "jotai/utils";
 import React from "react";
 import toast from "react-hot-toast";
@@ -102,8 +102,8 @@ function PageComponent({
   const [isPlaying, setIsPlaying] = React.useState(false);
   const [currentEntry, setCurrentEntry] = React.useState<CaptionEntry>();
   const [bookmarkState, setBookmarkState] = React.useState<BookmarkSelection>();
-  const [playerbackRateState, setPlaybackRateState] = useAtom(
-    playbackRateStateAtom
+  const [playerbackRateState, setPlaybackRateState] = useSimpleStore(
+    playbackRateStateStore
   );
   React.useEffect(
     () => () => setPlaybackRateState(INITIAL_PLAYBACK_RATE_STATE),
@@ -726,7 +726,7 @@ function NavBarMenuComponent() {
   const [highlightBookmark, setHighlightBookmark] = useAtom(
     highlightBookmarkStorageAtom
   );
-  const [playbackRateState] = useAtom(playbackRateStateAtom);
+  const [playbackRateState] = useSimpleStore(playbackRateStateStore);
   const modal = useModal();
 
   return (
@@ -943,4 +943,4 @@ const INITIAL_PLAYBACK_RATE_STATE = {
   player: none<YoutubePlayer>(),
 };
 
-const playbackRateStateAtom = atom(INITIAL_PLAYBACK_RATE_STATE);
+const playbackRateStateStore = new SimpleStore(INITIAL_PLAYBACK_RATE_STATE);
