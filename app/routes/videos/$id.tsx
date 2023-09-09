@@ -30,6 +30,7 @@ import {
 } from "../../utils/loader-utils";
 import { cls, none } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
+import { SimpleStore, useSimpleStore } from "../../utils/simple-store";
 import type { CaptionEntry } from "../../utils/types";
 import {
   YoutubePlayer,
@@ -914,10 +915,10 @@ function DetailsComponent({
 // page local state
 //
 
-const repeatingEntriesAtom = atom(new Array<CaptionEntry>());
+const repeatingEntriesStore = new SimpleStore(new Array<CaptionEntry>());
 
 function useRepeatingEntries() {
-  const [state, setState] = useAtom(repeatingEntriesAtom);
+  const [state, setState] = useSimpleStore(repeatingEntriesStore);
   return [state, setState, toArraySetState(setState).toggle] as const;
 }
 
