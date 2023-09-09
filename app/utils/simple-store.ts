@@ -84,8 +84,7 @@ class MemoryAdapter<T> implements SimpleStoreAdapter<T> {
   set = (value: T) => (this.value = value);
 }
 
-// - ssr fallbacks to `defaultValue` which can cause hydration mismatch
-// - cf. https://github.com/hi-ogawa/toy-metronome/blob/54b5f86f99432c698634de2976dda369cd829cb9/src/utils/storage.ts
+// ssr fallbacks to `defaultValue` which can cause hydration mismatch
 class LocalStorageStoreAdapter<T> implements SimpleStoreAdapter<T> {
   constructor(
     private key: string,
@@ -129,6 +128,7 @@ function memoizeOne<F extends (arg: any) => any>(f: F): F {
 
 //
 // LocalStorage wrapper to synchronize on changes (either "storage" event or "set/remove" on same runtime)
+// (copied from https://github.com/hi-ogawa/toy-metronome/blob/54b5f86f99432c698634de2976dda369cd829cb9/src/utils/storage.ts)
 //
 
 class LocalStorageStore {
