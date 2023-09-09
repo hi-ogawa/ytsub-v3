@@ -1,5 +1,7 @@
 import React from "react";
 
+// TODO: move to utils-react?
+
 export function useSimpleStore<T>(store: SimpleStore<T>) {
   React.useSyncExternalStore(store.subscribe, store.get, store.get);
   return [store.get(), store.set] as const;

@@ -17,7 +17,6 @@ import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 import { SimpleStore, useSimpleStore } from "../../utils/simple-store";
 import { toastInfo } from "../../utils/toast-utils";
-
 import type { CaptionConfig, VideoMetadata } from "../../utils/types";
 import {
   encodeAdvancedModeLanguageCode,
