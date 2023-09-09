@@ -8,8 +8,6 @@ import {
   Virtualizer,
   useVirtualizer,
 } from "@tanstack/react-virtual";
-import { useAtom } from "jotai";
-import { atomWithStorage } from "jotai/utils";
 import React from "react";
 import toast from "react-hot-toast";
 import { z } from "zod";
@@ -115,7 +113,7 @@ function PageComponent({
   //
 
   // fetch all bookmark entries associated to this video
-  const [highlightBookmark] = useAtom(highlightBookmarkStorageAtom);
+  const [highlightBookmark] = useSimpleStore(highlightBookmarkStorageAtom);
   const highlightBookmarkEnabled = highlightBookmark && Boolean(currentUser);
 
   const bookmarkEntriesQueryOptions =
@@ -723,7 +721,7 @@ function NavBarMenuComponent() {
   const { currentUser, video } = useLeafLoaderData() as LoaderData;
   const [autoScrollState, toggleAutoScrollState] = useAutoScrollState();
   const [repeatingEntries, setRepeatingEntries] = useRepeatingEntries();
-  const [highlightBookmark, setHighlightBookmark] = useAtom(
+  const [highlightBookmark, setHighlightBookmark] = useSimpleStore(
     highlightBookmarkStorageAtom
   );
   const [playbackRateState] = useSimpleStore(playbackRateStateStore);
@@ -933,7 +931,7 @@ function useAutoScrollState() {
 }
 
 // highlight bookmarks
-const highlightBookmarkStorageAtom = atomWithStorage(
+const highlightBookmarkStorageAtom = SimpleStore.createWithLocalStorage(
   "ytsub:video-highlight-bookmark",
   false
 );
