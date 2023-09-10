@@ -1962,6 +1962,11 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" ><span class="fstat-no" title="function not covered" >import { Transition } from "</span></span></span></span></span>@headlessui/react";
+import {
+  createTinyStore,
+  createTinyStoreWithStorage,
+} from "@hiogawa/tiny-store";
+import { useTinyStore } from "@hiogawa/tiny-store/dist/react";
 import { groupBy, isNil, sortBy, uniq, zip } from "@hiogawa/utils";
 import { toArraySetState, useRafLoop } from "@hiogawa/utils-react";
 import { Link, useNavigate } from "@remix-run/react";
@@ -1991,11 +1996,7 @@ import {
 } from "../../utils/loader-utils";
 import { cls, none } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
-import {
-  createSimpleStore,
-  createSimpleStoreWithLocalStorage,
-  useSimpleStore,
-} from "../../utils/simple-store";
+&nbsp;
 import type { CaptionEntry } from "../../utils/types";
 import {
   YoutubePlayer,
@@ -2003,7 +2004,6 @@ import {
   stringifyTimestamp,
   usePlayerLoader,
 } from "../../utils/youtube";
-&nbsp;
 import type { LoaderData } from "./$id.server";
 export { loader } from "./$id.server";
 &nbsp;
@@ -2067,7 +2067,7 @@ interface BookmarkSelection {
 <span class="cstat-no" title="statement not covered" >  const [isPlaying, setIsPlaying] = React.useState(false);</span>
 <span class="cstat-no" title="statement not covered" >  const [currentEntry, setCurrentEntry] = React.useState&lt;CaptionEntry&gt;();</span>
 <span class="cstat-no" title="statement not covered" >  const [bookmarkState, setBookmarkState] = React.useState&lt;BookmarkSelection&gt;();</span>
-<span class="cstat-no" title="statement not covered" >  const [playerbackRateState, setPlaybackRateState] = useSimpleStore(</span>
+<span class="cstat-no" title="statement not covered" >  const [playerbackRateState, setPlaybackRateState] = useTinyStore(</span>
 <span class="cstat-no" title="statement not covered" >    playbackRateStateStore</span>
 <span class="cstat-no" title="statement not covered" >  );</span>
 <span class="cstat-no" title="statement not covered" >  React.useEffect(</span>
@@ -2080,7 +2080,7 @@ interface BookmarkSelection {
 <span class="cstat-no" title="statement not covered" >  //</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  // fetch all bookmark entries associated to this video</span>
-<span class="cstat-no" title="statement not covered" >  const [highlightBookmark] = useSimpleStore(highlightBookmarkStore);</span>
+<span class="cstat-no" title="statement not covered" >  const [highlightBookmark] = useTinyStore(highlightBookmarkStore);</span>
 <span class="cstat-no" title="statement not covered" >  const highlightBookmarkEnabled = highlightBookmark &amp;&amp; Boolean(currentUser);</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  const bookmarkEntriesQueryOptions =</span>
@@ -2688,10 +2688,10 @@ const BOOKMARK_DATA_ATTR = z.enum([
 <span class="cstat-no" title="statement not covered" >  const { currentUser, video } = useLeafLoaderData() as LoaderData;</span>
 <span class="cstat-no" title="statement not covered" >  const [autoScrollState, toggleAutoScrollState] = useAutoScrollState();</span>
 <span class="cstat-no" title="statement not covered" >  const [repeatingEntries, setRepeatingEntries] = useRepeatingEntries();</span>
-<span class="cstat-no" title="statement not covered" >  const [highlightBookmark, setHighlightBookmark] = useSimpleStore(</span>
+<span class="cstat-no" title="statement not covered" >  const [highlightBookmark, setHighlightBookmark] = useTinyStore(</span>
 <span class="cstat-no" title="statement not covered" >    highlightBookmarkStore</span>
 <span class="cstat-no" title="statement not covered" >  );</span>
-<span class="cstat-no" title="statement not covered" >  const [playbackRateState] = useSimpleStore(playbackRateStateStore);</span>
+<span class="cstat-no" title="statement not covered" >  const [playbackRateState] = useTinyStore(playbackRateStateStore);</span>
 <span class="cstat-no" title="statement not covered" >  const modal = useModal();</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  return (</span>
@@ -2881,24 +2881,24 @@ const BOOKMARK_DATA_ATTR = z.enum([
 //
 &nbsp;
 // repeating entries
-const repeatingEntriesStore = createSimpleStore(new Array&lt;CaptionEntry&gt;());
+const repeatingEntriesStore = createTinyStore(new Array&lt;CaptionEntry&gt;());
 <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >function useRepeatingEntries() {</span></span>
-<span class="cstat-no" title="statement not covered" >  const [state, setState] = useSimpleStore(repeatingEntriesStore);</span>
+<span class="cstat-no" title="statement not covered" >  const [state, setState] = useTinyStore(repeatingEntriesStore);</span>
 <span class="cstat-no" title="statement not covered" >  return [state, setState, toArraySetState(setState).toggle] as const;</span>
 <span class="cstat-no" title="statement not covered" >}</span>
 &nbsp;
 // auto scroll
-const autoScrollStore = createSimpleStoreWithLocalStorage(
+const autoScrollStore = createTinyStoreWithStorage(
   "ytsub:video-subtitle-auto-scroll",
   Array&lt;number&gt;()
 );
 <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >function useAutoScrollState() {</span></span>
-<span class="cstat-no" title="statement not covered" >  const [state, setState] = useSimpleStore(autoScrollStore);</span>
+<span class="cstat-no" title="statement not covered" >  const [state, setState] = useTinyStore(autoScrollStore);</span>
 <span class="cstat-no" title="statement not covered" >  return [state, toArraySetState(setState).toggle] as const;</span>
 <span class="cstat-no" title="statement not covered" >}</span>
 &nbsp;
 // highlight bookmarks
-const highlightBookmarkStore = createSimpleStoreWithLocalStorage(
+const highlightBookmarkStore = createTinyStoreWithStorage(
   "ytsub:video-highlight-bookmark",
   false
 );
@@ -2909,7 +2909,7 @@ const INITIAL_PLAYBACK_RATE_STATE = {
   options: [1],
   player: none&lt;YoutubePlayer&gt;(),
 };
-const playbackRateStateStore = createSimpleStore(INITIAL_PLAYBACK_RATE_STATE);
+const playbackRateStateStore = createTinyStore(INITIAL_PLAYBACK_RATE_STATE);
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -2917,7 +2917,7 @@ const playbackRateStateStore = createSimpleStore(INITIAL_PLAYBACK_RATE_STATE);
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-09-10T02:47:45.020Z
+                at 2023-09-10T04:57:20.867Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>
