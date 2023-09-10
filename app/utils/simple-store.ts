@@ -3,7 +3,7 @@ import React from "react";
 
 // simple global state utilty via useSyncExternalStore
 
-export function useSimpleStore<T>(store: SimpleStore<T>) {
+export function useSimpleStore<Get, Set>(store: SimpleStore<Get, Set>) {
   React.useSyncExternalStore(store.subscribe, store.get, store.get);
   return [store.get(), store.set] as const;
 }
@@ -12,9 +12,9 @@ export function useSimpleStore<T>(store: SimpleStore<T>) {
 // platform agnostic `SimpleStore` api
 //
 
-interface SimpleStore<T> {
-  get: () => T;
-  set: (newValue: SetAction<T>) => void;
+interface SimpleStore<Get, Set = Get> {
+  get: () => Get;
+  set: (newValue: SetAction<Set>) => void; // TODO: make it `never` for readonly
   subscribe: (onStoreChange: () => void) => () => void;
 }
 
@@ -29,6 +29,7 @@ function memoizeOne<F extends (arg: any) => any>(f: F): F {
   } as any;
 }
 
+// transform read/write (e.g. for JSON.parse/stringify based local storage)
 export function storeTransform<T1, T2>(
   store: SimpleStore<T1>,
   decode: (v1: T1) => T2,
@@ -45,32 +46,20 @@ export function storeTransform<T1, T2>(
   };
 }
 
-// TODO: readonly transform (for memoized selection)
-// export function storeTransformReadonly<T1, T2>(
-//   base: StoreApi<T1, unknown>,
-//   read: (v: T1) => T2
-// ): StoreApi<T2, undefined> {
-//   read = memoizeOne(read)
-//   return {
-//     get: () => read(base.get()),
-//     set: () => {},
-//     subscribe: base.subscribe,
-//     getSnapshot: base.getSnapshot,
-//   };
-// }
-
-// TODO: writeonly transform (for no re-render)
-// export function storeTransformWriteonly<T1, T2>(
-//   base: StoreApi<unknown, T1>,
-//   write: (v: T2) => T1
-// ): StoreApi<undefined, T2> {
-//   return {
-//     get: () => {},
-//     set: (v) => base.set(write(v)),
-//     subscribe: () => () => {},
-//     getSnapshot: () => {},
-//   };
-// }
+// transform readonly (for memoized selection)
+export function storeTransformReadonly<T1, T2>(
+  store: SimpleStore<T1, any>, // unknown is strict probably because of SetAction variance
+  decode: (v: T1) => T2
+): SimpleStore<T2, never> {
+  // `subscribe` based on original store, but as long as `get` returns memoized value,
+  // `useSyncExternalStore` won't cause re-rendering
+  const decodeMemo = memoizeOne(decode);
+  return {
+    get: () => decodeMemo(store.get()),
+    set: () => {},
+    subscribe: store.subscribe,
+  };
+}
 
 //
 // factory

@@ -3,6 +3,7 @@ import {
   SimpleStoreBase,
   createSimpleStore,
   storeTransform,
+  storeTransformReadonly,
 } from "./simple-store";
 
 describe(SimpleStoreBase, () => {
@@ -101,5 +102,66 @@ describe(storeTransform, () => {
       }
     `);
     expect(res.at(-1)).toBe(store.get());
+  });
+});
+
+describe(storeTransformReadonly, () => {
+  it("basic", () => {
+    const store1 = createSimpleStore({
+      name: {
+        first: "Jane",
+        last: "Doe",
+      },
+      birth: {
+        year: 2000,
+        month: 1,
+        day: 1,
+      },
+    });
+    const store2 = storeTransformReadonly(store1, (v) => v.name);
+
+    const snapshots = [store2.get()];
+    expect(snapshots.at(-1)).toMatchInlineSnapshot(`
+      {
+        "first": "Jane",
+        "last": "Doe",
+      }
+    `);
+
+    store1.set((v) => ({ ...v, birth: { ...v.birth, day: 2 } }));
+    snapshots.push(store2.get());
+    expect(snapshots.at(-1)).toMatchInlineSnapshot(`
+      {
+        "first": "Jane",
+        "last": "Doe",
+      }
+    `);
+    expect(snapshots[0]).toBe(snapshots.at(-1));
+    expect(snapshots[0]).toEqual(snapshots.at(-1));
+
+    store1.set((v) => ({ ...v, name: { ...v.name } }));
+    snapshots.push(store2.get());
+    expect(snapshots.at(-1)).toMatchInlineSnapshot(`
+      {
+        "first": "Jane",
+        "last": "Doe",
+      }
+    `);
+    expect(snapshots[0]).not.toBe(snapshots.at(-1));
+    expect(snapshots[0]).toEqual(snapshots.at(-1));
+
+    store1.set((v) => ({ ...v, name: { ...v.name, first: "John" } }));
+    snapshots.push(store2.get());
+    expect(snapshots.at(-1)).toMatchInlineSnapshot(`
+      {
+        "first": "John",
+        "last": "Doe",
+      }
+    `);
+    expect(snapshots[0]).not.toBe(snapshots.at(-1));
+    expect(snapshots[0]).not.toEqual(snapshots.at(-1));
+
+    // @ts-expect-error not assignable to never
+    () => store2.set(snapshots[0]);
   });
 });
