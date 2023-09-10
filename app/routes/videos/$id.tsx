@@ -30,7 +30,7 @@ import { cls, none } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 import {
   createSimpleStore,
-  createSimpleStoreWithLocalStorage,
+  createSimpleStoreWithLocalStorage2,
   useSimpleStore,
 } from "../../utils/simple-store";
 import type { CaptionEntry } from "../../utils/types";
@@ -925,7 +925,7 @@ function useRepeatingEntries() {
 }
 
 // auto scroll
-const autoScrollStore = createSimpleStoreWithLocalStorage(
+const autoScrollStore = createSimpleStoreWithLocalStorage2(
   "ytsub:video-subtitle-auto-scroll",
   Array<number>()
 );
@@ -935,7 +935,7 @@ function useAutoScrollState() {
 }
 
 // highlight bookmarks
-const highlightBookmarkStore = createSimpleStoreWithLocalStorage(
+const highlightBookmarkStore = createSimpleStoreWithLocalStorage2(
   "ytsub:video-highlight-bookmark",
   false
 );

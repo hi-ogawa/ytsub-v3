@@ -21,20 +21,21 @@ interface StoreApi<T> {
   get: () => T;
   set: (newValue: SetAction<T>) => void;
   subscribe: (onStoreChange: () => void) => () => void;
+  // TODO: remove (same as get)
   getSnapshot: () => unknown;
 }
 
 export function storeTransform<T1, T2>(
-  base: StoreApi<T1>,
-  read: (v: T1) => T2,
-  write: (v: T2) => T1
+  store: StoreApi<T1>,
+  decode: (v: T1) => T2,
+  encode: (v: T2) => T1
 ): StoreApi<T2> {
-  read = memoizeOne(read);
+  decode = memoizeOne(decode);
   return {
-    get: () => read(base.get()),
-    set: (v2) => base.set((v1) => write(applyAction(() => read(v1), v2))),
-    subscribe: base.subscribe,
-    getSnapshot: base.getSnapshot,
+    get: () => decode(store.get()),
+    set: (v2) => store.set((v1) => encode(applyAction(() => decode(v1), v2))),
+    subscribe: store.subscribe,
+    getSnapshot: store.getSnapshot,
   };
 }
 
@@ -65,24 +66,37 @@ export function storeTransform<T1, T2>(
 //   };
 // }
 
-
 //
 // base store
 //
 
-export function createSimpleStore<T>(defaultValue: T) {
+export function createSimpleStore<T>(defaultValue: T): StoreApi<T> {
   return new SimpleStore(new MemoryAdapter<T>(defaultValue));
 }
 
 export function createSimpleStoreWithLocalStorage<T>(
   key: string,
   defaultValue: T
-) {
+): StoreApi<T> {
   return new SimpleStore(new LocalStorageStoreAdapter(key, defaultValue));
 }
 
+// ssr fallbacks to `defaultValue` which can cause hydration mismatch
+export function createSimpleStoreWithLocalStorage2<T>(
+  key: string,
+  defaultValue: T,
+  parse = JSON.parse,
+  stringify = JSON.stringify
+): StoreApi<T> {
+  return storeTransform<string | null, T>(
+    new SimpleStore(new LocalStorageStoreAdapter2(key)),
+    (s: string | null): T => (s === null ? defaultValue : parse(s)),
+    (t: T): string | null => stringify(t)
+  );
+}
+
 // TODO: rename to SimpleStoreBase?
-class SimpleStore<T> implements StoreApi<T> {
+export class SimpleStore<T> implements StoreApi<T> {
   constructor(private adapter: SimpleStoreAdapter<T>) {}
 
   get = () => this.adapter.get();
@@ -107,6 +121,7 @@ class SimpleStore<T> implements StoreApi<T> {
     };
   };
 
+  // TODO: remove (same as get)
   getSnapshot = () => {
     const adapter = this.adapter;
     return (adapter.getSnapshot ?? adapter.get).apply(adapter);
@@ -132,6 +147,7 @@ interface SimpleStoreAdapter<T> {
   get: () => T;
   set: (value: T) => void;
   subscribe?: (onStoreChange: () => void) => () => void;
+  // TODO: remove
   getSnapshot?: () => unknown;
 }
 
@@ -139,6 +155,28 @@ class MemoryAdapter<T> implements SimpleStoreAdapter<T> {
   constructor(private value: T) {}
   get = () => this.value;
   set = (value: T) => (this.value = value);
+}
+
+class LocalStorageStoreAdapter2 implements SimpleStoreAdapter<string | null> {
+  constructor(private key: string) {}
+
+  get() {
+    if (typeof window === "undefined") {
+      return null;
+    }
+    return window.localStorage.getItem(this.key);
+  }
+
+  subscribe = (listener: () => void) =>
+    localStorageStore.subscribe(this.key, listener);
+
+  set(value: string | null) {
+    if (value === null) {
+      window.localStorage.removeItem(this.key);
+    } else {
+      window.localStorage.setItem(this.key, value);
+    }
+  }
 }
 
 // ssr fallbacks to `defaultValue` which can cause hydration mismatch
