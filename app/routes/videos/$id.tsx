@@ -28,7 +28,11 @@ import {
 } from "../../utils/loader-utils";
 import { cls, none } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
-import { SimpleStore, useSimpleStore } from "../../utils/simple-store";
+import {
+  createSimpleStore,
+  createSimpleStoreWithLocalStorage,
+  useSimpleStore,
+} from "../../utils/simple-store";
 import type { CaptionEntry } from "../../utils/types";
 import {
   YoutubePlayer,
@@ -914,14 +918,14 @@ function DetailsComponent({
 //
 
 // repeating entries
-const repeatingEntriesStore = SimpleStore.create(new Array<CaptionEntry>());
+const repeatingEntriesStore = createSimpleStore(new Array<CaptionEntry>());
 function useRepeatingEntries() {
   const [state, setState] = useSimpleStore(repeatingEntriesStore);
   return [state, setState, toArraySetState(setState).toggle] as const;
 }
 
 // auto scroll
-const autoScrollStore = SimpleStore.createWithLocalStorage(
+const autoScrollStore = createSimpleStoreWithLocalStorage(
   "ytsub:video-subtitle-auto-scroll",
   Array<number>()
 );
@@ -931,7 +935,7 @@ function useAutoScrollState() {
 }
 
 // highlight bookmarks
-const highlightBookmarkStore = SimpleStore.createWithLocalStorage(
+const highlightBookmarkStore = createSimpleStoreWithLocalStorage(
   "ytsub:video-highlight-bookmark",
   false
 );
@@ -942,4 +946,4 @@ const INITIAL_PLAYBACK_RATE_STATE = {
   options: [1],
   player: none<YoutubePlayer>(),
 };
-const playbackRateStateStore = SimpleStore.create(INITIAL_PLAYBACK_RATE_STATE);
+const playbackRateStateStore = createSimpleStore(INITIAL_PLAYBACK_RATE_STATE);

@@ -15,7 +15,7 @@ import {
 import { useLoaderDataExtra } from "../../utils/loader-utils";
 import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
-import { SimpleStore, useSimpleStore } from "../../utils/simple-store";
+import { createSimpleStore, useSimpleStore } from "../../utils/simple-store";
 import { toastInfo } from "../../utils/toast-utils";
 import type { CaptionConfig, VideoMetadata } from "../../utils/types";
 import {
@@ -356,4 +356,4 @@ function NavBarMenuComponent() {
 // page local state
 //
 
-const showAdvancedModeStore = SimpleStore.create(false);
+const showAdvancedModeStore = createSimpleStore(false);

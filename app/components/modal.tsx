@@ -4,7 +4,7 @@ import { tinyassert } from "@hiogawa/utils";
 import React from "react";
 import { RemoveScroll } from "react-remove-scroll";
 import { cls } from "../utils/misc";
-import { SimpleStore, useSimpleStore } from "../utils/simple-store";
+import { createSimpleStore, useSimpleStore } from "../utils/simple-store";
 import { FloatingWrapper } from "./floating-utils";
 
 // based on https://github.com/hi-ogawa/unocss-preset-antd/blob/02adfc9dfcb7cebbc31cd4651395e1ecc67d813e/packages/app/src/components/modal.tsx
@@ -68,7 +68,7 @@ function Modal(props: {
 export function useModal(defaultOpen?: boolean) {
   // create store on the fly to communicate with Wrapper component
   const [openStore] = React.useState(() =>
-    SimpleStore.create(defaultOpen ?? false)
+    createSimpleStore(defaultOpen ?? false)
   );
   const [open, setOpen] = useSimpleStore(openStore);
 

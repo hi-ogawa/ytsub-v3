@@ -4,7 +4,7 @@ import React from "react";
 // simple global state utilty via useSyncExternalStore
 // TODO: move to utils-react?
 
-export function useSimpleStore<T>(store: SimpleStore<T>) {
+export function useSimpleStore<T>(store: StoreApi<T>) {
   React.useSyncExternalStore(
     store.subscribe,
     store.getSnapshot,
@@ -17,21 +17,78 @@ export function useSimpleStore<T>(store: SimpleStore<T>) {
 // platform agnostic store utility
 //
 
-export class SimpleStore<T> {
+interface StoreApi<T> {
+  get: () => T;
+  set: (newValue: SetAction<T>) => void;
+  subscribe: (onStoreChange: () => void) => () => void;
+  getSnapshot: () => unknown;
+}
+
+export function storeTransform<T1, T2>(
+  base: StoreApi<T1>,
+  read: (v: T1) => T2,
+  write: (v: T2) => T1
+): StoreApi<T2> {
+  read = memoizeOne(read);
+  return {
+    get: () => read(base.get()),
+    set: (v2) => base.set((v1) => write(applyAction(() => read(v1), v2))),
+    subscribe: base.subscribe,
+    getSnapshot: base.getSnapshot,
+  };
+}
+
+// TODO: readonly transform (for memoized selection)
+// export function storeTransformReadonly<T1, T2>(
+//   base: StoreApi<T1, unknown>,
+//   read: (v: T1) => T2
+// ): StoreApi<T2, undefined> {
+//   read = memoizeOne(read)
+//   return {
+//     get: () => read(base.get()),
+//     set: () => {},
+//     subscribe: base.subscribe,
+//     getSnapshot: base.getSnapshot,
+//   };
+// }
+
+// TODO: writeonly transform (for no re-render)
+// export function storeTransformWriteonly<T1, T2>(
+//   base: StoreApi<unknown, T1>,
+//   write: (v: T2) => T1
+// ): StoreApi<undefined, T2> {
+//   return {
+//     get: () => {},
+//     set: (v) => base.set(write(v)),
+//     subscribe: () => () => {},
+//     getSnapshot: () => {},
+//   };
+// }
+
+
+//
+// base store
+//
+
+export function createSimpleStore<T>(defaultValue: T) {
+  return new SimpleStore(new MemoryAdapter<T>(defaultValue));
+}
+
+export function createSimpleStoreWithLocalStorage<T>(
+  key: string,
+  defaultValue: T
+) {
+  return new SimpleStore(new LocalStorageStoreAdapter(key, defaultValue));
+}
+
+// TODO: rename to SimpleStoreBase?
+class SimpleStore<T> implements StoreApi<T> {
   constructor(private adapter: SimpleStoreAdapter<T>) {}
-
-  static create<T>(value: T) {
-    return new SimpleStore(new MemoryAdapter<T>(value));
-  }
-
-  static createWithLocalStorage<T>(key: string, value: T) {
-    return new SimpleStore(new LocalStorageStoreAdapter(key, value));
-  }
 
   get = () => this.adapter.get();
 
   set = (action: SetAction<T>) => {
-    this.adapter.set(applyAction(this.get(), action));
+    this.adapter.set(applyAction(this.get, action));
     this.notify();
   };
 
@@ -62,9 +119,9 @@ export class SimpleStore<T> {
 
 type SetAction<T> = T | ((prev: T) => T);
 
-function applyAction<T>(v: T, action: SetAction<T>): T {
-  // @ts-expect-error it cannot narrow enough since `T` itself could be a function
-  return typeof action === "function" ? action(v) : action;
+function applyAction<T>(v: () => T, action: SetAction<T>): T {
+  // it cannot narrow enough since `T` itself could be a function
+  return typeof action === "function" ? (action as any)(v()) : action;
 }
 
 //
