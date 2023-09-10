@@ -3,7 +3,7 @@ import React from "react";
 
 // simple global state utilty via useSyncExternalStore
 
-export function useSimpleStore<Get, Set>(store: SimpleStore<Get, Set>) {
+export function useSimpleStore<TOut, TIn>(store: SimpleStore<TOut, TIn>) {
   React.useSyncExternalStore(store.subscribe, store.get, store.get);
   return [store.get(), store.set] as const;
 }
@@ -12,9 +12,9 @@ export function useSimpleStore<Get, Set>(store: SimpleStore<Get, Set>) {
 // platform agnostic `SimpleStore` api
 //
 
-interface SimpleStore<Get, Set = Get> {
-  get: () => Get;
-  set: (newValue: SetAction<Set>) => void; // TODO: make it `never` for readonly
+interface SimpleStore<TGet, TSet = TGet> {
+  get: () => TGet;
+  set: (newValue: SetAction<TSet>) => void;
   subscribe: (onStoreChange: () => void) => () => void;
 }
 
@@ -48,7 +48,7 @@ export function storeTransform<T1, T2>(
 
 // transform readonly (for memoized selection)
 export function storeSelect<T1, T2>(
-  store: SimpleStore<T1, any>, // unknown is strict probably because of SetAction variance
+  store: Omit<SimpleStore<T1, unknown>, "set">,
   decode: (v: T1) => T2
 ): SimpleStore<T2, never> {
   // `subscribe` based on original store, but as long as `get` returns memoized value,
