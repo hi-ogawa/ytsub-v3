@@ -47,7 +47,7 @@ export function storeTransform<T1, T2>(
 }
 
 // transform readonly (for memoized selection)
-export function storeTransformReadonly<T1, T2>(
+export function storeSelect<T1, T2>(
   store: SimpleStore<T1, any>, // unknown is strict probably because of SetAction variance
   decode: (v: T1) => T2
 ): SimpleStore<T2, never> {

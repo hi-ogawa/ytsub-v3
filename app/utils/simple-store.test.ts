@@ -2,8 +2,8 @@ import { describe, expect, it, vi } from "vitest";
 import {
   SimpleStoreBase,
   createSimpleStore,
+  storeSelect,
   storeTransform,
-  storeTransformReadonly,
 } from "./simple-store";
 
 describe(SimpleStoreBase, () => {
@@ -105,7 +105,7 @@ describe(storeTransform, () => {
   });
 });
 
-describe(storeTransformReadonly, () => {
+describe(storeSelect, () => {
   it("basic", () => {
     const store1 = createSimpleStore({
       name: {
@@ -118,7 +118,7 @@ describe(storeTransformReadonly, () => {
         day: 1,
       },
     });
-    const store2 = storeTransformReadonly(store1, (v) => v.name);
+    const store2 = storeSelect(store1, (v) => v.name);
 
     const snapshots = [store2.get()];
     expect(snapshots.at(-1)).toMatchInlineSnapshot(`
