@@ -2,40 +2,46 @@ import { DefaultMap } from "@hiogawa/utils";
 import React from "react";
 
 // simple global state utilty via useSyncExternalStore
-// TODO: move to utils-react?
 
-export function useSimpleStore<T>(store: StoreApi<T>) {
-  React.useSyncExternalStore(
-    store.subscribe,
-    store.getSnapshot,
-    store.getSnapshot
-  );
+export function useSimpleStore<T>(store: SimpleStore<T>) {
+  React.useSyncExternalStore(store.subscribe, store.get, store.get);
   return [store.get(), store.set] as const;
 }
 
 //
-// platform agnostic store utility
+// platform agnostic `SimpleStore` api
 //
 
-interface StoreApi<T> {
+interface SimpleStore<T> {
   get: () => T;
   set: (newValue: SetAction<T>) => void;
   subscribe: (onStoreChange: () => void) => () => void;
-  // TODO: remove (same as get)
-  getSnapshot: () => unknown;
+}
+
+// make result stable if the input is same as last (i.e. memoize with cache size 1)
+function memoizeOne<F extends (arg: any) => any>(f: F): F {
+  let last: { k: any; v: any } | undefined;
+  return function wrapper(arg: any) {
+    if (!last || last.k !== arg) {
+      last = { k: arg, v: f(arg) };
+    }
+    return last.v;
+  } as any;
 }
 
 export function storeTransform<T1, T2>(
-  store: StoreApi<T1>,
-  decode: (v: T1) => T2,
-  encode: (v: T2) => T1
-): StoreApi<T2> {
-  decode = memoizeOne(decode);
+  store: SimpleStore<T1>,
+  decode: (v1: T1) => T2,
+  encode: (v2: T2) => T1
+): SimpleStore<T2> {
+  const decodeMemo = memoizeOne(decode);
   return {
-    get: () => decode(store.get()),
-    set: (v2) => store.set((v1) => encode(applyAction(() => decode(v1), v2))),
+    get: () => decodeMemo(store.get()),
+    set: (v2) => {
+      // TODO: invalidate cache so that next `get` will see fresh data?
+      store.set((v1) => encode(applyAction(() => decodeMemo(v1), v2)));
+    },
     subscribe: store.subscribe,
-    getSnapshot: store.getSnapshot,
   };
 }
 
@@ -67,36 +73,34 @@ export function storeTransform<T1, T2>(
 // }
 
 //
-// base store
+// factory
 //
 
-export function createSimpleStore<T>(defaultValue: T): StoreApi<T> {
-  return new SimpleStore(new MemoryAdapter<T>(defaultValue));
-}
-
-export function createSimpleStoreWithLocalStorage<T>(
-  key: string,
-  defaultValue: T
-): StoreApi<T> {
-  return new SimpleStore(new LocalStorageStoreAdapter(key, defaultValue));
+export function createSimpleStore<T>(defaultValue: T): SimpleStore<T> {
+  return new SimpleStoreBase(new MemoryAdapter<T>(defaultValue));
 }
 
 // ssr fallbacks to `defaultValue` which can cause hydration mismatch
-export function createSimpleStoreWithLocalStorage2<T>(
+export function createSimpleStoreWithLocalStorage<T>(
   key: string,
   defaultValue: T,
   parse = JSON.parse,
   stringify = JSON.stringify
-): StoreApi<T> {
+): SimpleStore<T> {
   return storeTransform<string | null, T>(
-    new SimpleStore(new LocalStorageStoreAdapter2(key)),
+    new SimpleStoreBase(new LocalStorageStoreAdapter(key)),
     (s: string | null): T => (s === null ? defaultValue : parse(s)),
     (t: T): string | null => stringify(t)
   );
 }
 
-// TODO: rename to SimpleStoreBase?
-export class SimpleStore<T> implements StoreApi<T> {
+//
+// base store
+//
+
+export class SimpleStoreBase<T> implements SimpleStore<T> {
+  private listeners = new Set<() => void>();
+
   constructor(private adapter: SimpleStoreAdapter<T>) {}
 
   get = () => this.adapter.get();
@@ -106,12 +110,6 @@ export class SimpleStore<T> implements StoreApi<T> {
     this.notify();
   };
 
-  //
-  // base api for React.useSyncExternalStore
-  //
-
-  private listeners = new Set<() => void>();
-
   subscribe = (listener: () => void) => {
     this.listeners.add(listener);
     const unsubscribeAdapter = this.adapter.subscribe?.(listener);
@@ -119,12 +117,6 @@ export class SimpleStore<T> implements StoreApi<T> {
       unsubscribeAdapter?.();
       this.listeners.delete(listener);
     };
-  };
-
-  // TODO: remove (same as get)
-  getSnapshot = () => {
-    const adapter = this.adapter;
-    return (adapter.getSnapshot ?? adapter.get).apply(adapter);
   };
 
   protected notify = () => {
@@ -140,15 +132,13 @@ function applyAction<T>(v: () => T, action: SetAction<T>): T {
 }
 
 //
-// store adapter to abstract LocalStorage backend
+// adapter abstraction to support LocalStorage
 //
 
 interface SimpleStoreAdapter<T> {
   get: () => T;
   set: (value: T) => void;
   subscribe?: (onStoreChange: () => void) => () => void;
-  // TODO: remove
-  getSnapshot?: () => unknown;
 }
 
 class MemoryAdapter<T> implements SimpleStoreAdapter<T> {
@@ -157,7 +147,7 @@ class MemoryAdapter<T> implements SimpleStoreAdapter<T> {
   set = (value: T) => (this.value = value);
 }
 
-class LocalStorageStoreAdapter2 implements SimpleStoreAdapter<string | null> {
+class LocalStorageStoreAdapter implements SimpleStoreAdapter<string | null> {
   constructor(private key: string) {}
 
   get() {
@@ -179,56 +169,15 @@ class LocalStorageStoreAdapter2 implements SimpleStoreAdapter<string | null> {
   }
 }
 
-// ssr fallbacks to `defaultValue` which can cause hydration mismatch
-class LocalStorageStoreAdapter<T> implements SimpleStoreAdapter<T> {
-  constructor(
-    private key: string,
-    private defaultValue: T,
-    // TODO: this "deriving" part should live as "selector" feature?
-    private parse = JSON.parse,
-    private stringify = JSON.stringify
-  ) {
-    this.parse = memoizeOne(this.parse);
-  }
-
-  get() {
-    const item = this.getSnapshot();
-    return item === null ? this.defaultValue : this.parse(item);
-  }
-
-  getSnapshot() {
-    if (typeof window === "undefined") {
-      return null;
-    }
-    return window.localStorage.getItem(this.key);
-  }
-
-  subscribe = (listener: () => void) =>
-    localStorageStore.subscribe(this.key, listener);
-
-  set(value: T) {
-    window.localStorage.setItem(this.key, this.stringify(value));
-  }
-}
-
-// make result stable for the same input i.e. memoize with cache size 1
-function memoizeOne<F extends (arg: any) => any>(f: F): F {
-  let last: { k: any; v: any } | undefined;
-  return function wrapper(arg: any) {
-    if (!last || last.k !== arg) {
-      last = { k: arg, v: f(arg) };
-    }
-    return last.v;
-  } as any;
-}
-
 //
-// LocalStorage wrapper to synchronize on changes (either "storage" event or "set/remove" on same runtime)
-// (copied from https://github.com/hi-ogawa/toy-metronome/blob/54b5f86f99432c698634de2976dda369cd829cb9/src/utils/storage.ts)
+// global LocalStorage wrapper to listen "storage" event
+// (based on https://github.com/hi-ogawa/toy-metronome/blob/54b5f86f99432c698634de2976dda369cd829cb9/src/utils/storage.ts)
 //
 
 class LocalStorageStore {
-  listen() {
+  private listeners = new DefaultMap<string, Set<() => void>>(() => new Set());
+
+  init() {
     const handler = (e: StorageEvent) => {
       // null when clear
       if (e.key === null) {
@@ -242,22 +191,6 @@ class LocalStorageStore {
       window.removeEventListener("storage", handler);
     };
   }
-
-  get(key: string): string | null {
-    return window.localStorage.getItem(key);
-  }
-
-  set(key: string, data: string) {
-    window.localStorage.setItem(key, data);
-    this.notify(key);
-  }
-
-  remove(key: string) {
-    window.localStorage.removeItem(key);
-    this.notify(key);
-  }
-
-  private listeners = new DefaultMap<string, Set<() => void>>(() => new Set());
 
   subscribe(key: string, listener: () => void) {
     this.listeners.get(key).add(listener);
@@ -278,5 +211,5 @@ class LocalStorageStore {
 // unique global instance
 const localStorageStore = new LocalStorageStore();
 if (typeof window !== "undefined") {
-  localStorageStore.listen();
+  localStorageStore.init();
 }
