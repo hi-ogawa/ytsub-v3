@@ -52,6 +52,9 @@ dependencies:
   '@hiogawa/tiny-rpc':
     specifier: 0.2.3-pre.10
     version: 0.2.3-pre.10
+  '@hiogawa/tiny-store':
+    specifier: 0.0.1-pre.0
+    version: 0.0.1-pre.0(react@18.2.0)
   '@hiogawa/utils':
     specifier: 1.6.1-pre.1
     version: 1.6.1-pre.1
@@ -2355,6 +2358,17 @@ packages:
 
   /@hiogawa/tiny-rpc@0.2.3-pre.10:
     resolution: {integrity: sha512-yudfX7yaQQAtq+pU1ln3oxNA8LGyXFNGqdRNxVTxFBdjPAb3SNLO1E/NUWy/rEERdImqzja3z9SrJYDyOeatxQ==}
+    dev: false
+
+  /@hiogawa/tiny-store@0.0.1-pre.0(react@18.2.0):
+    resolution: {integrity: sha512-fSsAn5I9YzIR2czQiSz2UHLsLM5D76c18JLroTFYhKTnqXp4dLR7LjUsRwf1kkQEvy53E5Mq8YP77pwZFZy1CA==}
+    peerDependencies:
+      react: ^18.0.0
+    peerDependenciesMeta:
+      react:
+        optional: true
+    dependencies:
+      react: 18.2.0
     dev: false
 
   /@hiogawa/unocss-preset-antd@2.2.1-pre.3(@unocss/preset-uno@0.55.4)(unocss@0.52.7):

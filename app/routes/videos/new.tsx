@@ -1,3 +1,5 @@
+import { createTinyStore } from "@hiogawa/tiny-store";
+import { useTinyStore } from "@hiogawa/tiny-store/dist/react";
 import { tinyassert } from "@hiogawa/utils";
 import { useNavigate } from "@remix-run/react";
 import { useMutation } from "@tanstack/react-query";
@@ -15,7 +17,6 @@ import {
 import { useLoaderDataExtra } from "../../utils/loader-utils";
 import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
-import { createSimpleStore, useSimpleStore } from "../../utils/simple-store";
 import { toastInfo } from "../../utils/toast-utils";
 import type { CaptionConfig, VideoMetadata } from "../../utils/types";
 import {
@@ -76,7 +77,7 @@ function DefaultComponentInner() {
   });
   const { videoId, language1, language2 } = form.watch();
 
-  const [showAdvancedMode] = useSimpleStore(showAdvancedModeStore);
+  const [showAdvancedMode] = useTinyStore(showAdvancedModeStore);
 
   return (
     <div className="w-full p-4 flex justify-center">
@@ -319,7 +320,7 @@ function LanguageSelectComponent({
 //
 
 function NavBarMenuComponent() {
-  const [showAdvancedMode, setShowAdvancedMode] = useSimpleStore(
+  const [showAdvancedMode, setShowAdvancedMode] = useTinyStore(
     showAdvancedModeStore
   );
   return (
@@ -356,4 +357,4 @@ function NavBarMenuComponent() {
 // page local state
 //
 
-const showAdvancedModeStore = createSimpleStore(false);
+const showAdvancedModeStore = createTinyStore(false);

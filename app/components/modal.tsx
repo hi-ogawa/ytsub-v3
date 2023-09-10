@@ -1,10 +1,11 @@
 import { useDismiss, useFloating, useInteractions } from "@floating-ui/react";
 import { Transition } from "@headlessui/react";
+import { createTinyStore } from "@hiogawa/tiny-store";
+import { useTinyStore } from "@hiogawa/tiny-store/dist/react";
 import { tinyassert } from "@hiogawa/utils";
 import React from "react";
 import { RemoveScroll } from "react-remove-scroll";
 import { cls } from "../utils/misc";
-import { createSimpleStore, useSimpleStore } from "../utils/simple-store";
 import { FloatingWrapper } from "./floating-utils";
 
 // based on https://github.com/hi-ogawa/unocss-preset-antd/blob/02adfc9dfcb7cebbc31cd4651395e1ecc67d813e/packages/app/src/components/modal.tsx
@@ -68,9 +69,9 @@ function Modal(props: {
 export function useModal(defaultOpen?: boolean) {
   // create store on the fly to communicate with Wrapper component
   const [openStore] = React.useState(() =>
-    createSimpleStore(defaultOpen ?? false)
+    createTinyStore(defaultOpen ?? false)
   );
-  const [open, setOpen] = useSimpleStore(openStore);
+  const [open, setOpen] = useTinyStore(openStore);
 
   // define Wrapper component on the fly
   const [Wrapper] = React.useState(
@@ -79,7 +80,7 @@ export function useModal(defaultOpen?: boolean) {
         className?: string;
         children: React.ReactNode;
       }) {
-        const [open, setOpen] = useSimpleStore(openStore);
+        const [open, setOpen] = useTinyStore(openStore);
         return <Modal open={open} onClose={() => setOpen(false)} {...props} />;
       }
   );

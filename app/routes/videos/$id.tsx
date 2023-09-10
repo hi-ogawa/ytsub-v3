@@ -1,4 +1,9 @@
 import { Transition } from "@headlessui/react";
+import {
+  createTinyStore,
+  createTinyStoreWithStorage,
+} from "@hiogawa/tiny-store";
+import { useTinyStore } from "@hiogawa/tiny-store/dist/react";
 import { groupBy, isNil, sortBy, uniq, zip } from "@hiogawa/utils";
 import { toArraySetState, useRafLoop } from "@hiogawa/utils-react";
 import { Link, useNavigate } from "@remix-run/react";
@@ -28,11 +33,7 @@ import {
 } from "../../utils/loader-utils";
 import { cls, none } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
-import {
-  createSimpleStore,
-  createSimpleStoreWithLocalStorage,
-  useSimpleStore,
-} from "../../utils/simple-store";
+
 import type { CaptionEntry } from "../../utils/types";
 import {
   YoutubePlayer,
@@ -40,7 +41,6 @@ import {
   stringifyTimestamp,
   usePlayerLoader,
 } from "../../utils/youtube";
-
 import type { LoaderData } from "./$id.server";
 export { loader } from "./$id.server";
 
@@ -104,7 +104,7 @@ function PageComponent({
   const [isPlaying, setIsPlaying] = React.useState(false);
   const [currentEntry, setCurrentEntry] = React.useState<CaptionEntry>();
   const [bookmarkState, setBookmarkState] = React.useState<BookmarkSelection>();
-  const [playerbackRateState, setPlaybackRateState] = useSimpleStore(
+  const [playerbackRateState, setPlaybackRateState] = useTinyStore(
     playbackRateStateStore
   );
   React.useEffect(
@@ -117,7 +117,7 @@ function PageComponent({
   //
 
   // fetch all bookmark entries associated to this video
-  const [highlightBookmark] = useSimpleStore(highlightBookmarkStore);
+  const [highlightBookmark] = useTinyStore(highlightBookmarkStore);
   const highlightBookmarkEnabled = highlightBookmark && Boolean(currentUser);
 
   const bookmarkEntriesQueryOptions =
@@ -725,10 +725,10 @@ function NavBarMenuComponent() {
   const { currentUser, video } = useLeafLoaderData() as LoaderData;
   const [autoScrollState, toggleAutoScrollState] = useAutoScrollState();
   const [repeatingEntries, setRepeatingEntries] = useRepeatingEntries();
-  const [highlightBookmark, setHighlightBookmark] = useSimpleStore(
+  const [highlightBookmark, setHighlightBookmark] = useTinyStore(
     highlightBookmarkStore
   );
-  const [playbackRateState] = useSimpleStore(playbackRateStateStore);
+  const [playbackRateState] = useTinyStore(playbackRateStateStore);
   const modal = useModal();
 
   return (
@@ -918,24 +918,24 @@ function DetailsComponent({
 //
 
 // repeating entries
-const repeatingEntriesStore = createSimpleStore(new Array<CaptionEntry>());
+const repeatingEntriesStore = createTinyStore(new Array<CaptionEntry>());
 function useRepeatingEntries() {
-  const [state, setState] = useSimpleStore(repeatingEntriesStore);
+  const [state, setState] = useTinyStore(repeatingEntriesStore);
   return [state, setState, toArraySetState(setState).toggle] as const;
 }
 
 // auto scroll
-const autoScrollStore = createSimpleStoreWithLocalStorage(
+const autoScrollStore = createTinyStoreWithStorage(
   "ytsub:video-subtitle-auto-scroll",
   Array<number>()
 );
 function useAutoScrollState() {
-  const [state, setState] = useSimpleStore(autoScrollStore);
+  const [state, setState] = useTinyStore(autoScrollStore);
   return [state, toArraySetState(setState).toggle] as const;
 }
 
 // highlight bookmarks
-const highlightBookmarkStore = createSimpleStoreWithLocalStorage(
+const highlightBookmarkStore = createTinyStoreWithStorage(
   "ytsub:video-highlight-bookmark",
   false
 );
@@ -946,4 +946,4 @@ const INITIAL_PLAYBACK_RATE_STATE = {
   options: [1],
   player: none<YoutubePlayer>(),
 };
-const playbackRateStateStore = createSimpleStore(INITIAL_PLAYBACK_RATE_STATE);
+const playbackRateStateStore = createTinyStore(INITIAL_PLAYBACK_RATE_STATE);
