@@ -1,7 +1,8 @@
 import { useDismiss, useFloating, useInteractions } from "@floating-ui/react";
 import { Transition } from "@headlessui/react";
+import { createTinyStore } from "@hiogawa/tiny-store";
+import { useTinyStore } from "@hiogawa/tiny-store/dist/react";
 import { tinyassert } from "@hiogawa/utils";
-import { atom, useAtom } from "jotai";
 import React from "react";
 import { RemoveScroll } from "react-remove-scroll";
 import { cls } from "../utils/misc";
@@ -66,9 +67,11 @@ function Modal(props: {
 
 // it feels like a huge hack but it works so conveniently
 export function useModal(defaultOpen?: boolean) {
-  // create jotai-atom on the fly to communicate with Wrapper component
-  const [openAtom] = React.useState(() => atom(defaultOpen ?? false));
-  const [open, setOpen] = useAtom(openAtom);
+  // create store on the fly to communicate with Wrapper component
+  const [openStore] = React.useState(() =>
+    createTinyStore(defaultOpen ?? false)
+  );
+  const [open, setOpen] = useTinyStore(openStore);
 
   // define Wrapper component on the fly
   const [Wrapper] = React.useState(
@@ -77,7 +80,7 @@ export function useModal(defaultOpen?: boolean) {
         className?: string;
         children: React.ReactNode;
       }) {
-        const [open] = useAtom(openAtom);
+        const [open, setOpen] = useTinyStore(openStore);
         return <Modal open={open} onClose={() => setOpen(false)} {...props} />;
       }
   );

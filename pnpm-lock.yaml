@@ -52,6 +52,9 @@ dependencies:
   '@hiogawa/tiny-rpc':
     specifier: 0.2.3-pre.10
     version: 0.2.3-pre.10
+  '@hiogawa/tiny-store':
+    specifier: 0.0.1-pre.0
+    version: 0.0.1-pre.0(react@18.2.0)
   '@hiogawa/utils':
     specifier: 1.6.1-pre.1
     version: 1.6.1-pre.1
@@ -106,9 +109,6 @@ dependencies:
   fast-xml-parser:
     specifier: ^4.2.7
     version: 4.2.7
-  jotai:
-    specifier: ^2.4.1
-    version: 2.4.1(@types/react@18.2.21)(react@18.2.0)
   knex:
     specifier: ^2.5.1
     version: 2.5.1(mysql2@3.6.0)
@@ -2358,6 +2358,17 @@ packages:
 
   /@hiogawa/tiny-rpc@0.2.3-pre.10:
     resolution: {integrity: sha512-yudfX7yaQQAtq+pU1ln3oxNA8LGyXFNGqdRNxVTxFBdjPAb3SNLO1E/NUWy/rEERdImqzja3z9SrJYDyOeatxQ==}
+    dev: false
+
+  /@hiogawa/tiny-store@0.0.1-pre.0(react@18.2.0):
+    resolution: {integrity: sha512-fSsAn5I9YzIR2czQiSz2UHLsLM5D76c18JLroTFYhKTnqXp4dLR7LjUsRwf1kkQEvy53E5Mq8YP77pwZFZy1CA==}
+    peerDependencies:
+      react: ^18.0.0
+    peerDependenciesMeta:
+      react:
+        optional: true
+    dependencies:
+      react: 18.2.0
     dev: false
 
   /@hiogawa/unocss-preset-antd@2.2.1-pre.3(@unocss/preset-uno@0.55.4)(unocss@0.52.7):
@@ -6483,22 +6494,6 @@ packages:
   /jju@1.4.0:
     resolution: {integrity: sha512-8wb9Yw966OSxApiCt0K3yNJL8pnNeIv+OEq2YMidz4FKP6nonSRoOXc80iXY4JaN2FC11B9qsNmDsm+ZOfMROA==}
     dev: true
-
-  /jotai@2.4.1(@types/react@18.2.21)(react@18.2.0):
-    resolution: {integrity: sha512-S4CTLpsZV+LABBXL5PgkMl+5jK3ljfbWmcLqtN7CQ2vio/Hrg3T6IKk/vf2/9hnp1imTPDsaFv7D54de/7Sa+w==}
-    engines: {node: '>=12.20.0'}
-    peerDependencies:
-      '@types/react': '>=17.0.0'
-      react: '>=17.0.0'
-    peerDependenciesMeta:
-      '@types/react':
-        optional: true
-      react:
-        optional: true
-    dependencies:
-      '@types/react': 18.2.21
-      react: 18.2.0
-    dev: false
 
   /js-tokens@4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}

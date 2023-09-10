@@ -1,4 +1,9 @@
 import { Transition } from "@headlessui/react";
+import {
+  createTinyStore,
+  createTinyStoreWithStorage,
+} from "@hiogawa/tiny-store";
+import { useTinyStore } from "@hiogawa/tiny-store/dist/react";
 import { groupBy, isNil, sortBy, uniq, zip } from "@hiogawa/utils";
 import { toArraySetState, useRafLoop } from "@hiogawa/utils-react";
 import { Link, useNavigate } from "@remix-run/react";
@@ -8,8 +13,6 @@ import {
   Virtualizer,
   useVirtualizer,
 } from "@tanstack/react-virtual";
-import { atom, useAtom } from "jotai";
-import { atomWithStorage } from "jotai/utils";
 import React from "react";
 import toast from "react-hot-toast";
 import { z } from "zod";
@@ -30,6 +33,7 @@ import {
 } from "../../utils/loader-utils";
 import { cls, none } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
+
 import type { CaptionEntry } from "../../utils/types";
 import {
   YoutubePlayer,
@@ -37,7 +41,6 @@ import {
   stringifyTimestamp,
   usePlayerLoader,
 } from "../../utils/youtube";
-
 import type { LoaderData } from "./$id.server";
 export { loader } from "./$id.server";
 
@@ -101,8 +104,8 @@ function PageComponent({
   const [isPlaying, setIsPlaying] = React.useState(false);
   const [currentEntry, setCurrentEntry] = React.useState<CaptionEntry>();
   const [bookmarkState, setBookmarkState] = React.useState<BookmarkSelection>();
-  const [playerbackRateState, setPlaybackRateState] = useAtom(
-    playbackRateStateAtom
+  const [playerbackRateState, setPlaybackRateState] = useTinyStore(
+    playbackRateStateStore
   );
   React.useEffect(
     () => () => setPlaybackRateState(INITIAL_PLAYBACK_RATE_STATE),
@@ -114,7 +117,7 @@ function PageComponent({
   //
 
   // fetch all bookmark entries associated to this video
-  const [highlightBookmark] = useAtom(highlightBookmarkStorageAtom);
+  const [highlightBookmark] = useTinyStore(highlightBookmarkStore);
   const highlightBookmarkEnabled = highlightBookmark && Boolean(currentUser);
 
   const bookmarkEntriesQueryOptions =
@@ -722,10 +725,10 @@ function NavBarMenuComponent() {
   const { currentUser, video } = useLeafLoaderData() as LoaderData;
   const [autoScrollState, toggleAutoScrollState] = useAutoScrollState();
   const [repeatingEntries, setRepeatingEntries] = useRepeatingEntries();
-  const [highlightBookmark, setHighlightBookmark] = useAtom(
-    highlightBookmarkStorageAtom
+  const [highlightBookmark, setHighlightBookmark] = useTinyStore(
+    highlightBookmarkStore
   );
-  const [playbackRateState] = useAtom(playbackRateStateAtom);
+  const [playbackRateState] = useTinyStore(playbackRateStateStore);
   const modal = useModal();
 
   return (
@@ -914,32 +917,33 @@ function DetailsComponent({
 // page local state
 //
 
-const repeatingEntriesAtom = atom(new Array<CaptionEntry>());
-
+// repeating entries
+const repeatingEntriesStore = createTinyStore(new Array<CaptionEntry>());
 function useRepeatingEntries() {
-  const [state, setState] = useAtom(repeatingEntriesAtom);
+  const [state, setState] = useTinyStore(repeatingEntriesStore);
   return [state, setState, toArraySetState(setState).toggle] as const;
 }
 
-const autoScrollStorageAtom = atomWithStorage(
+// auto scroll
+const autoScrollStore = createTinyStoreWithStorage(
   "ytsub:video-subtitle-auto-scroll",
   Array<number>()
 );
-
 function useAutoScrollState() {
-  const [state, setState] = useAtom(autoScrollStorageAtom);
+  const [state, setState] = useTinyStore(autoScrollStore);
   return [state, toArraySetState(setState).toggle] as const;
 }
 
-const highlightBookmarkStorageAtom = atomWithStorage(
+// highlight bookmarks
+const highlightBookmarkStore = createTinyStoreWithStorage(
   "ytsub:video-highlight-bookmark",
   false
 );
 
+// playback rate
 const INITIAL_PLAYBACK_RATE_STATE = {
   value: 1,
   options: [1],
   player: none<YoutubePlayer>(),
 };
-
-const playbackRateStateAtom = atom(INITIAL_PLAYBACK_RATE_STATE);
+const playbackRateStateStore = createTinyStore(INITIAL_PLAYBACK_RATE_STATE);
