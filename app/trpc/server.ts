@@ -6,7 +6,7 @@ import {
 } from "@hiogawa/tiny-rpc";
 import { SpanStatusCode, trace } from "@opentelemetry/api";
 import { JSON_EXTRA } from "../utils/json-extra";
-import { RPC_ENDPOINT, RPC_GET_PATHS } from "./client";
+import { RPC_ENDPOINT, RPC_GET_PATHS } from "./common";
 import { rpcRoutesBookmarks } from "./routes/bookmarks";
 import { rpcRoutesDecks } from "./routes/decks";
 import { rpcRoutesUsers } from "./routes/users";
@@ -25,7 +25,7 @@ export function rpcHandler(): RequestHandler {
     routes: rpcRoutes,
     adapter: httpServerAdapter({
       endpoint: RPC_ENDPOINT,
-      pathsForGET: RPC_GET_PATHS,
+      pathsForGET: RPC_GET_PATHS satisfies (keyof typeof rpcRoutes)[],
       JSON: {
         // only extend server -> client payload
         stringify: JSON_EXTRA.stringify,
