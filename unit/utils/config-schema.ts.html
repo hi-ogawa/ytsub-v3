@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for db/types.ts</title>
+    <title>Code coverage report for utils/config-schema.ts</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../prettify.css" />
     <link rel="stylesheet" href="../base.css" />
@@ -19,20 +19,20 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../index.html">All files</a> / <a href="index.html">db</a> types.ts</h1>
+        <h1><a href="../index.html">All files</a> / <a href="index.html">utils</a> config-schema.ts</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>32/32</span>
+                <span class='fraction'>37/37</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/0</span>
+                <span class='fraction'>0/1</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>32/32</span>
+                <span class='fraction'>37/37</span>
             </div>
         
             
@@ -95,7 +95,12 @@
 <a name='L30'></a><a href='#L30'>30</a>
 <a name='L31'></a><a href='#L31'>31</a>
 <a name='L32'></a><a href='#L32'>32</a>
-<a name='L33'></a><a href='#L33'>33</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L33'></a><a href='#L33'>33</a>
+<a name='L34'></a><a href='#L34'>34</a>
+<a name='L35'></a><a href='#L35'>35</a>
+<a name='L36'></a><a href='#L36'>36</a>
+<a name='L37'></a><a href='#L37'>37</a>
+<a name='L38'></a><a href='#L38'>38</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -127,38 +132,48 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { z } from "zod";
-import { defaultObject } from "../utils/misc";
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import * as process from "process";
+import { z } from "zod";
 &nbsp;
-// cf. Anki's practice system
-// - https://docs.ankiweb.net/studying.html
-// - https://docs.ankiweb.net/deck-options.html
+// prettier-ignore
+export const Z_SERVER_CONFIG = z.object({
+  APP_MYSQL_HOST: z.string().default("localhost"),
+  APP_MYSQL_PORT: z.coerce.number().default(3306),
+  APP_MYSQL_USER: z.string().default("root"),
+  APP_MYSQL_PASSWORD: z.string().default("password"),
+  APP_MYSQL_DATABASE: z.string().default(process.env.NODE_ENV === "test" ? <span class="branch-0 cbranch-no" title="branch not covered" >"ytsub_test" : "ytsub_development")</span>,
+  APP_MYSQL_SSL: z.coerce.boolean(),
 &nbsp;
-export const Z_PRACTICE_ACTION_TYPES = z.enum([
-  "AGAIN",
-  "HARD",
-  "GOOD",
-  "EASY",
-]);
-export const Z_PRACTICE_QUEUE_TYPES = z.enum(["NEW", "LEARN", "REVIEW"]);
+  // npx tiny-jwt keygen HS256
+  APP_SESSION_SECRET: z.string().default("MPImXuGdAboqKBkWnx1Ixc41XY4esDWL4BJWgPQc4ESCcyQBmWsuH2ZsWlOZrBQ45D21J3g-GupjzgT3lhqaRw"),
 &nbsp;
-export const PRACTICE_ACTION_TYPES = Z_PRACTICE_ACTION_TYPES.options;
-export const PRACTICE_QUEUE_TYPES = Z_PRACTICE_QUEUE_TYPES.options;
+  // captcha (default test keys always succeed https://developers.cloudflare.com/turnstile/reference/testing/)
+  APP_CAPTCHA_SITE_KEY: z.string().default("1x00000000000000000000BB"),
+  APP_CAPTCHA_SECRET_KEY: z.string().default("1x0000000000000000000000000000000AA"),
 &nbsp;
-export type PracticeActionType = z.infer&lt;typeof Z_PRACTICE_ACTION_TYPES&gt;;
-export type PracticeQueueType = z.infer&lt;typeof Z_PRACTICE_QUEUE_TYPES&gt;;
+  // mailjet
+  MJ_APIKEY_PUBLIC: z.string().optional(),
+  MJ_APIKEY_PRIVATE: z.string().optional(),
 &nbsp;
-export interface DeckCache {
-  nextEntriesRandomMode: number[];
-  practiceEntriesCountByQueueType: Record&lt;PracticeQueueType, number&gt;;
-  practiceActionsCountByActionType: Record&lt;PracticeActionType, number&gt;;
-}
+  // used for email link
+  BASE_URL: z.string().default("https://ytsub-v3-hiro18181.vercel.app"),
 &nbsp;
-export const DEFAULT_DECK_CACHE: DeckCache = {
-  nextEntriesRandomMode: [],
-  practiceEntriesCountByQueueType: defaultObject(PRACTICE_QUEUE_TYPES, 0),
-  practiceActionsCountByActionType: defaultObject(PRACTICE_ACTION_TYPES, 0),
-};
+  VERCEL_ENV: z.string().optional(),
+});
+&nbsp;
+export const Z_PUBLIC_CONFIG = Z_SERVER_CONFIG.pick({
+  APP_CAPTCHA_SITE_KEY: true,
+  VERCEL_ENV: true,
+});
+&nbsp;
+export type ServerConfig = z.infer&lt;typeof Z_SERVER_CONFIG&gt;;
+&nbsp;
+export type PublicConfig = z.infer&lt;typeof Z_PUBLIC_CONFIG&gt;;
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
