@@ -1,14 +1,13 @@
-import type { PublicConfig } from "./config";
-import { uninitialized } from "./misc";
+import { PublicConfig } from "./config-schema";
 
 // both client and server code can use it.
 // server will hand-off to client via global script.
 
 const PUBLIC_CONFIG_VAR = "__publicConfig";
 
-export let publicConfig = uninitialized as PublicConfig;
+export let publicConfig: PublicConfig;
 
-export function initializePublicConfigServer(v: PublicConfig) {
+export function setPublicConfig(v: PublicConfig) {
   publicConfig = v;
 }
 
