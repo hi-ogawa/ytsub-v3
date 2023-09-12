@@ -139,8 +139,8 @@ dependencies:
 
 devDependencies:
   '@hiogawa/icheck-ts':
-    specifier: 0.0.1-pre.4
-    version: 0.0.1-pre.4(typescript@5.2.2)
+    specifier: 0.0.1-pre.10
+    version: 0.0.1-pre.10(typescript@5.2.2)
   '@hiogawa/isort-ts':
     specifier: 1.1.2-pre.0
     version: 1.1.2-pre.0(prettier@2.8.8)(typescript@5.2.2)
@@ -2300,8 +2300,8 @@ packages:
     resolution: {integrity: sha512-zcUOvlral68ua/27HbjGWZsAwCVt9q7ShDv5bPDngARhbhOhtCrp48EhphkOkjGo2VHC3rgD2O9tHvq5qxUmmw==}
     dev: false
 
-  /@hiogawa/icheck-ts@0.0.1-pre.4(typescript@5.2.2):
-    resolution: {integrity: sha512-K2kOqLhNNUiPxd8HHyJ+cpIuzS88m9MRVNIrfX5DeIuA71qb7ORYCtZDdrG2RolB7cvFfcf+1b8l1R5ouoD6zQ==}
+  /@hiogawa/icheck-ts@0.0.1-pre.10(typescript@5.2.2):
+    resolution: {integrity: sha512-fh0Sok2icXZXHAP2NladuGfZaegI0z6j4hT59rcVpRwEI7JMQn1r2u9KJM/ijwRttO7OXwAU93Jld2swz3va9g==}
     hasBin: true
     peerDependencies:
       typescript: '*'
