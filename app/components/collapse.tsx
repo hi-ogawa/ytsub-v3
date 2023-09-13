@@ -7,9 +7,7 @@ export function CollapseTransition(
   return <Transition {...props} {...getCollapseProps()} />;
 }
 
-export function getCollapseProps(): Partial<
-  React.ComponentProps<typeof Transition>
-> {
+function getCollapseProps(): Partial<React.ComponentProps<typeof Transition>> {
   function uncollapse(el: HTMLElement) {
     if (el.firstElementChild) {
       el.style.height = el.firstElementChild.clientHeight + "px";
