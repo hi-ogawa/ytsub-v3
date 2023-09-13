@@ -27,9 +27,14 @@ function Modal(props: {
 
   return (
     <FloatingWrapper>
-      <Transition className="fixed inset-0" appear show={props.open}>
+      <Transition
+        className="transition duration-300fixed inset-0"
+        appear
+        show={props.open}
+      >
         {/* backdrop */}
-        <Transition.Child
+        <Transition
+          show={props.open}
           className="transition duration-300 fixed inset-0 bg-black"
           enterFrom="opacity-0"
           enterTo="opacity-40"
@@ -39,7 +44,8 @@ function Modal(props: {
         />
         {/* content */}
         <RemoveScroll className="fixed inset-0 overflow-hidden flex justify-center items-center">
-          <Transition.Child
+          <Transition
+            show={props.open}
             className={cls(
               props.className,
               "transition duration-300 transform w-[90%] max-w-xl antd-floating"
@@ -58,7 +64,7 @@ function Modal(props: {
             >
               {props.children}
             </div>
-          </Transition.Child>
+          </Transition>
         </RemoveScroll>
       </Transition>
     </FloatingWrapper>
