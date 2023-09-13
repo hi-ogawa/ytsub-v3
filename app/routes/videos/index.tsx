@@ -1,4 +1,4 @@
-import { Transition } from "@headlessui/react";
+import { Transition } from "@hiogawa/tiny-transition/dist/react";
 import { useNavigate } from "@remix-run/react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import toast from "react-hot-toast";

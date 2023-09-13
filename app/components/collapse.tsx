@@ -1,4 +1,4 @@
-import { Transition } from "@headlessui/react";
+import { Transition } from "@hiogawa/tiny-transition/dist/react";
 import { tinyassert } from "@hiogawa/utils";
 import React from "react";
 

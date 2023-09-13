@@ -1,5 +1,5 @@
 import type { FloatingContext } from "@floating-ui/react";
-import { Transition } from "@headlessui/react";
+import { Transition } from "@hiogawa/tiny-transition/dist/react";
 import { Link } from "@remix-run/react";
 import type { VideoTable } from "../db/models";
 import { $R, Z_PAGINATION_QUERY } from "../misc/routes";

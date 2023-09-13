@@ -1,5 +1,5 @@
 import { useDismiss, useFloating, useInteractions } from "@floating-ui/react";
-import { Transition } from "@headlessui/react";
+import { Transition } from "@hiogawa/tiny-transition/dist/react";
 import { tinyassert } from "@hiogawa/utils";
 import type React from "react";
 import { RemoveScroll } from "react-remove-scroll";

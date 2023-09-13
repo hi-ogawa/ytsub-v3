@@ -1,4 +1,4 @@
-import { Transition } from "@headlessui/react";
+import { Transition } from "@hiogawa/tiny-transition/dist/react";
 import { useQuery } from "@tanstack/react-query";
 import type { ECharts } from "echarts";
 import React from "react";

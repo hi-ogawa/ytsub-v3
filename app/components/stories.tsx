@@ -1,4 +1,4 @@
-import { Transition } from "@headlessui/react";
+import { Transition } from "@hiogawa/tiny-transition/dist/react";
 import { useRafLoop } from "@hiogawa/utils-react";
 import React from "react";
 import { useForm } from "react-hook-form";
