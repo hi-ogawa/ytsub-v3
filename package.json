@@ -44,7 +44,6 @@
     "@formatjs/intl": "^2.9.0",
     "@hattip/adapter-node": "^0.0.34",
     "@hattip/compose": "^0.0.34",
-    "@headlessui/react": "^1.7.17",
     "@hiogawa/argon2-wasm-bindgen": "0.0.6-pre.5",
     "@hiogawa/json-extra": "0.0.2-pre.1",
     "@hiogawa/query-proxy": "0.1.1-pre.3",
