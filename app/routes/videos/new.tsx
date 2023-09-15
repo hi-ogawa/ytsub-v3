@@ -1,8 +1,10 @@
+import { createTinyForm } from "@hiogawa/tiny-form";
 import { createTinyStore } from "@hiogawa/tiny-store";
 import { useTinyStore } from "@hiogawa/tiny-store/dist/react";
 import { tinyassert } from "@hiogawa/utils";
 import { useNavigate } from "@remix-run/react";
 import { useMutation } from "@tanstack/react-query";
+import React from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { SelectWrapper } from "../../components/misc";
@@ -62,8 +64,8 @@ function DefaultComponentInner() {
     },
   });
 
-  const form = useForm({
-    defaultValues: {
+  const form = createTinyForm(
+    React.useState(() => ({
       videoId: videoMetadata.videoDetails.videoId,
       language1: userCaptionConfigs?.language1 ?? {
         id: "",
@@ -73,9 +75,9 @@ function DefaultComponentInner() {
         id: "",
         translation: undefined,
       },
-    },
-  });
-  const { videoId, language1, language2 } = form.watch();
+    }))
+  );
+  const formIsValid = Boolean(form.data.language1.id && form.data.language2.id);
 
   const [showAdvancedMode] = useTinyStore(showAdvancedModeStore);
 
@@ -98,7 +100,7 @@ function DefaultComponentInner() {
           <form
             data-test="setup-form"
             className="w-full flex flex-col gap-3"
-            onSubmit={form.handleSubmit((data) => createMutation.mutate(data))}
+            onSubmit={form.handleSubmit(() => createMutation.mutate(form.data))}
           >
             <label className="flex flex-col gap-1">
               Video ID
@@ -106,7 +108,7 @@ function DefaultComponentInner() {
                 type="text"
                 className="antd-input p-1 bg-colorBgContainerDisabled"
                 readOnly
-                value={videoId}
+                value={form.data.videoId}
               />
             </label>
             <label className="flex flex-col gap-1">
@@ -134,8 +136,8 @@ function DefaultComponentInner() {
                   <LanguageSelectComponent
                     className="antd-input p-1"
                     required
-                    value={language1}
-                    onChange={(value) => form.setValue("language1", value)}
+                    value={form.fields.language1.value}
+                    onChange={form.fields.language1.onChange}
                     videoMetadata={videoMetadata}
                   />
                 </label>
@@ -144,8 +146,8 @@ function DefaultComponentInner() {
                   <LanguageSelectComponent
                     className="antd-input p-1"
                     required
-                    value={language2}
-                    onChange={(value) => form.setValue("language2", value)}
+                    value={form.fields.language2.value}
+                    onChange={form.fields.language2.onChange}
                     videoMetadata={videoMetadata}
                   />
                 </label>
@@ -155,7 +157,11 @@ function DefaultComponentInner() {
                     "antd-btn antd-btn-primary p-1",
                     createMutation.isLoading && "antd-btn-loading"
                   )}
-                  disabled={createMutation.isLoading || !form.formState.isValid}
+                  disabled={
+                    createMutation.isLoading ||
+                    createMutation.isSuccess ||
+                    !formIsValid
+                  }
                 >
                   Save and Play
                 </button>
@@ -166,7 +172,7 @@ function DefaultComponentInner() {
         {showAdvancedMode && (
           <>
             <div className="border-t mx-3"></div>
-            <AdvancedModeForm videoId={videoId} />
+            <AdvancedModeForm videoId={form.data.videoId} />
           </>
         )}
       </div>
