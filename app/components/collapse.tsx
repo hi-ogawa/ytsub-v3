@@ -21,12 +21,9 @@ function getCollapseProps(): Partial<React.ComponentProps<typeof Transition>> {
   return {
     onEnterFrom: collapse,
     onEnterTo: uncollapse,
-    // slight hack for SnackbarAnimation1
-    // without this collapse parent cannot see children's height
-    onEntered: (el) =>
-      window.requestAnimationFrame(() => {
-        uncollapse(el);
-      }),
+    onEntered: (el) => {
+      el.style.height = "";
+    },
     onLeaveFrom: uncollapse,
     onLeaveTo: collapse,
   };
