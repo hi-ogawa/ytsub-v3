@@ -1,7 +1,7 @@
 import { useDismiss, useFloating, useInteractions } from "@floating-ui/react";
-import { Transition } from "@headlessui/react";
 import { createTinyStore } from "@hiogawa/tiny-store";
 import { useTinyStore } from "@hiogawa/tiny-store/dist/react";
+import { Transition } from "@hiogawa/tiny-transition/dist/react";
 import { tinyassert } from "@hiogawa/utils";
 import React from "react";
 import { RemoveScroll } from "react-remove-scroll";
@@ -27,9 +27,14 @@ function Modal(props: {
 
   return (
     <FloatingWrapper>
-      <Transition className="fixed inset-0" appear show={props.open}>
+      <Transition
+        className="transition duration-300fixed inset-0"
+        show={props.open}
+      >
         {/* backdrop */}
-        <Transition.Child
+        <Transition
+          appear
+          show={props.open}
           className="transition duration-300 fixed inset-0 bg-black"
           enterFrom="opacity-0"
           enterTo="opacity-40"
@@ -39,7 +44,9 @@ function Modal(props: {
         />
         {/* content */}
         <RemoveScroll className="fixed inset-0 overflow-hidden flex justify-center items-center">
-          <Transition.Child
+          <Transition
+            appear
+            show={props.open}
             className={cls(
               props.className,
               "transition duration-300 transform w-[90%] max-w-xl antd-floating"
@@ -58,7 +65,7 @@ function Modal(props: {
             >
               {props.children}
             </div>
-          </Transition.Child>
+          </Transition>
         </RemoveScroll>
       </Transition>
     </FloatingWrapper>
