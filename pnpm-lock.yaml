@@ -53,8 +53,8 @@ dependencies:
     specifier: 0.0.1-pre.0
     version: 0.0.1-pre.0(react@18.2.0)
   '@hiogawa/tiny-transition':
-    specifier: 0.0.1-pre.2
-    version: 0.0.1-pre.2(@types/react@18.2.21)(react@18.2.0)
+    specifier: 0.0.1-pre.3
+    version: 0.0.1-pre.3(react@18.2.0)
   '@hiogawa/utils':
     specifier: 1.6.1-pre.1
     version: 1.6.1-pre.1
@@ -2359,18 +2359,14 @@ packages:
       react: 18.2.0
     dev: false
 
-  /@hiogawa/tiny-transition@0.0.1-pre.2(@types/react@18.2.21)(react@18.2.0):
-    resolution: {integrity: sha512-bO66joEqn827jGnf/T5J2FmHCrLusQJGNpiEXtMxI7MGsFqvdd/fbYsZOmmpoWCIhJkxI1a945J/BQ1gmiuh2w==}
+  /@hiogawa/tiny-transition@0.0.1-pre.3(react@18.2.0):
+    resolution: {integrity: sha512-tKyh/62/NKbX3SjMQJN7mpoanGJDiudyN3IloXp1w2FoEyfRAUL7K/bICoHNzdLlGjEbrVzTRRoj2gWpWVBhBA==}
     peerDependencies:
-      '@types/react': ^18.0.0
       react: ^18.0.0
     peerDependenciesMeta:
-      '@types/react':
-        optional: true
       react:
         optional: true
     dependencies:
-      '@types/react': 18.2.21
       react: 18.2.0
     dev: false
 
