@@ -1,10 +1,9 @@
-import { createTinyForm } from "@hiogawa/tiny-form";
+import { useTinyForm } from "@hiogawa/tiny-form/dist/react";
 import { createTinyStore } from "@hiogawa/tiny-store";
 import { useTinyStore } from "@hiogawa/tiny-store/dist/react";
 import { tinyassert } from "@hiogawa/utils";
 import { useNavigate } from "@remix-run/react";
 import { useMutation } from "@tanstack/react-query";
-import React from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { SelectWrapper } from "../../components/misc";
@@ -64,20 +63,17 @@ function DefaultComponentInner() {
     },
   });
 
-  const form = createTinyForm(
-    React.useState(() => ({
-      videoId: videoMetadata.videoDetails.videoId,
-      language1: userCaptionConfigs?.language1 ?? {
-        id: "",
-        translation: undefined,
-      },
-      language2: userCaptionConfigs?.language2 ?? {
-        id: "",
-        translation: undefined,
-      },
-    }))
-  );
-  const formIsValid = Boolean(form.data.language1.id && form.data.language2.id);
+  const form = useTinyForm(() => ({
+    videoId: videoMetadata.videoDetails.videoId,
+    language1: userCaptionConfigs?.language1 ?? {
+      id: "",
+      translation: undefined,
+    },
+    language2: userCaptionConfigs?.language2 ?? {
+      id: "",
+      translation: undefined,
+    },
+  }));
 
   const [showAdvancedMode] = useTinyStore(showAdvancedModeStore);
 
@@ -136,9 +132,8 @@ function DefaultComponentInner() {
                   <LanguageSelectComponent
                     className="antd-input p-1"
                     required
-                    value={form.fields.language1.value}
-                    onChange={form.fields.language1.onChange}
                     videoMetadata={videoMetadata}
+                    {...form.fields.language1.rawProps()}
                   />
                 </label>
                 <label className="flex flex-col gap-1">
@@ -146,9 +141,8 @@ function DefaultComponentInner() {
                   <LanguageSelectComponent
                     className="antd-input p-1"
                     required
-                    value={form.fields.language2.value}
-                    onChange={form.fields.language2.onChange}
                     videoMetadata={videoMetadata}
+                    {...form.fields.language2.rawProps()}
                   />
                 </label>
                 <button
@@ -158,9 +152,7 @@ function DefaultComponentInner() {
                     createMutation.isLoading && "antd-btn-loading"
                   )}
                   disabled={
-                    createMutation.isLoading ||
-                    createMutation.isSuccess ||
-                    !formIsValid
+                    createMutation.isLoading || createMutation.isSuccess
                   }
                 >
                   Save and Play

@@ -1,5 +1,5 @@
 import { FloatingTree } from "@floating-ui/react";
-import { createTinyForm } from "@hiogawa/tiny-form";
+import { useTinyForm } from "@hiogawa/tiny-form/dist/react";
 import { Compose } from "@hiogawa/utils-react";
 import {
   Link,
@@ -278,7 +278,7 @@ const SIDE_MENU_ENTRIES: SideMenuEntry[] = [
 ];
 
 function SearchComponent(props: { closeDrawer: () => void }) {
-  const form = createTinyForm(React.useState({ videoId: "" }));
+  const form = useTinyForm({ videoId: "" });
   const navigate = useNavigate();
 
   return (
