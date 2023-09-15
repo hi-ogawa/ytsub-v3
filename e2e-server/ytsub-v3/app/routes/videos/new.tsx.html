@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">66.94% </span>
+                <span class="strong">67.48% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>241/360</span>
+                <span class='fraction'>247/366</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">61.9% </span>
+                <span class="strong">60.86% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>13/21</span>
+                <span class='fraction'>14/23</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">58.82% </span>
+                <span class="strong">66.66% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>10/17</span>
+                <span class='fraction'>10/15</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">66.94% </span>
+                <span class="strong">67.48% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>241/360</span>
+                <span class='fraction'>247/366</span>
             </div>
         
             
@@ -423,7 +423,15 @@
 <a name='L358'></a><a href='#L358'>358</a>
 <a name='L359'></a><a href='#L359'>359</a>
 <a name='L360'></a><a href='#L360'>360</a>
-<a name='L361'></a><a href='#L361'>361</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L361'></a><a href='#L361'>361</a>
+<a name='L362'></a><a href='#L362'>362</a>
+<a name='L363'></a><a href='#L363'>363</a>
+<a name='L364'></a><a href='#L364'>364</a>
+<a name='L365'></a><a href='#L365'>365</a>
+<a name='L366'></a><a href='#L366'>366</a>
+<a name='L367'></a><a href='#L367'>367</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -518,6 +526,10 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -783,11 +795,13 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { createTinyStore } from "@hiogawa/tiny-store";
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { createTinyForm } from "@hiogawa/tiny-form";
+import { createTinyStore } from "@hiogawa/tiny-store";
 import { useTinyStore } from "@hiogawa/tiny-store/dist/react";
 import { tinyassert } from "@hiogawa/utils";
 import { useNavigate } from "@remix-run/react";
 import { useMutation } from "@tanstack/react-query";
+import React from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { SelectWrapper } from "../../components/misc";
@@ -847,8 +861,8 @@ function DefaultComponentInner() {
 <span class="cstat-no" title="statement not covered" >    },</span>
   });
 &nbsp;
-  const form = useForm({
-    defaultValues: {
+  const form = createTinyForm(
+    React.useState(() =&gt; ({
       videoId: videoMetadata.videoDetails.videoId,
       language1: <span class="branch-0 cbranch-no" title="branch not covered" >userCaptionConfigs?.language1 ?? {</span>
         id: "",
@@ -858,9 +872,9 @@ function DefaultComponentInner() {
         id: "",
         translation: undefined,
       },
-    },
-  });
-  const { videoId, language1, language2 } = form.watch();
+    }))
+  );
+  const formIsValid = Boolean(form.data.language1.<span class="branch-0 cbranch-no" title="branch not covered" >id &amp;&amp; form.data.language2.id)</span>;
 &nbsp;
   const [showAdvancedMode] = useTinyStore(showAdvancedModeStore);
 &nbsp;
@@ -883,7 +897,7 @@ function DefaultComponentInner() {
           &lt;form
             data-test="setup-form"
             className="w-full flex flex-col gap-3"
-            onSubmit={form.handleSubmit((data) =&gt; createMutation.mutate(data))}
+            onSubmit={form.handleSubmit(() =&gt; createMutation.mutate(form.data))}
           &gt;
             &lt;label className="flex flex-col gap-1"&gt;
               Video ID
@@ -891,7 +905,7 @@ function DefaultComponentInner() {
                 type="text"
                 className="antd-input p-1 bg-colorBgContainerDisabled"
                 readOnly
-                value={videoId}
+                value={form.data.videoId}
               /&gt;
             &lt;/label&gt;
             &lt;label className="flex flex-col gap-1"&gt;
@@ -919,8 +933,8 @@ function DefaultComponentInner() {
                   &lt;LanguageSelectComponent
                     className="antd-input p-1"
                     required
-                    value={language1}
-                    onChange={<span class="fstat-no" title="function not covered" >(value) =&gt; form.setValue("language1", value)}</span>
+                    value={form.fields.language1.value}
+                    onChange={form.fields.language1.onChange}
                     videoMetadata={videoMetadata}
                   /&gt;
                 &lt;/label&gt;
@@ -929,8 +943,8 @@ function DefaultComponentInner() {
                   &lt;LanguageSelectComponent
                     className="antd-input p-1"
                     required
-                    value={language2}
-                    onChange={<span class="fstat-no" title="function not covered" >(value) =&gt; form.setValue("language2", value)}</span>
+                    value={form.fields.language2.value}
+                    onChange={form.fields.language2.onChange}
                     videoMetadata={videoMetadata}
                   /&gt;
                 &lt;/label&gt;
@@ -940,7 +954,11 @@ function DefaultComponentInner() {
                     "antd-btn antd-btn-primary p-1",
                     createMutation.<span class="branch-0 cbranch-no" title="branch not covered" >isLoading &amp;&amp; "antd-btn-loading"</span>
                   )}
-                  disabled={createMutation.isLoading || !form.formState.isValid}
+                  disabled={
+                    createMutation.isLoading ||
+                    createMutation.isSuccess ||
+                    !formIsValid
+                  }
                 &gt;
                   Save and Play
                 &lt;/button&gt;
@@ -951,7 +969,7 @@ function DefaultComponentInner() {
         {<span class="branch-0 cbranch-no" title="branch not covered" >showAdvancedMode &amp;&amp; (</span>
 <span class="cstat-no" title="statement not covered" >          &lt;&gt;</span>
 <span class="cstat-no" title="statement not covered" >            &lt;div className="border-t mx-3"&gt;&lt;/div&gt;</span>
-<span class="cstat-no" title="statement not covered" >            &lt;AdvancedModeForm videoId={videoId} /&gt;</span>
+<span class="cstat-no" title="statement not covered" >            &lt;AdvancedModeForm videoId={form.data.videoId} /&gt;</span>
 <span class="cstat-no" title="statement not covered" >          &lt;/&gt;</span>
         )}
       &lt;/div&gt;
@@ -1150,7 +1168,7 @@ const showAdvancedModeStore = createTinyStore(false);
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-09-15T04:30:10.592Z
+                at 2023-09-15T04:46:00.928Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>
