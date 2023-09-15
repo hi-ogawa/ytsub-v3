@@ -1,6 +1,6 @@
+import { useTinyForm } from "@hiogawa/tiny-form/dist/react";
 import { useNavigate } from "@remix-run/react";
 import { useMutation } from "@tanstack/react-query";
-import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { $R } from "../../misc/routes";
 import { rpcClientQuery } from "../../trpc/client";
@@ -27,15 +27,13 @@ export default function DefaultComponent() {
     },
   });
 
-  const form = useForm({
-    defaultValues: {
-      name: "",
-      newEntriesPerDay: 50,
-      reviewsPerDay: 200,
-      easeMultiplier: 2,
-      easeBonus: 1.5,
-      randomMode: true,
-    },
+  const form = useTinyForm({
+    name: "",
+    newEntriesPerDay: 50,
+    reviewsPerDay: 200,
+    easeMultiplier: 2,
+    easeBonus: 1.5,
+    randomMode: true,
   });
 
   return (
@@ -44,7 +42,7 @@ export default function DefaultComponent() {
         method="post"
         className="flex flex-col border w-full max-w-sm p-4 px-6 gap-3"
         data-test="new-deck-form"
-        onSubmit={form.handleSubmit((data) => newDeckMutation.mutate(data))}
+        onSubmit={form.handleSubmit(() => newDeckMutation.mutate(form.data))}
       >
         <h1 className="text-lg">New Deck</h1>
         <label className="flex flex-col gap-1">
@@ -52,7 +50,8 @@ export default function DefaultComponent() {
           <input
             type="text"
             className="antd-input p-1"
-            {...form.register("name", { required: true })}
+            required
+            {...form.fields.name.valueProps()}
           />
         </label>
         <label className="flex flex-col gap-1">
@@ -60,10 +59,11 @@ export default function DefaultComponent() {
           <input
             type="number"
             className="antd-input p-1"
-            {...form.register("newEntriesPerDay", {
-              required: true,
-              valueAsNumber: true,
-            })}
+            required
+            value={form.fields.newEntriesPerDay.value}
+            onChange={(e) =>
+              form.fields.newEntriesPerDay.onChange(e.target.valueAsNumber)
+            }
           />
         </label>
         <label className="flex flex-col gap-1">
@@ -71,10 +71,11 @@ export default function DefaultComponent() {
           <input
             type="number"
             className="antd-input p-1"
-            {...form.register("reviewsPerDay", {
-              required: true,
-              valueAsNumber: true,
-            })}
+            required
+            value={form.fields.reviewsPerDay.value}
+            onChange={(e) =>
+              form.fields.reviewsPerDay.onChange(e.target.valueAsNumber)
+            }
           />
         </label>
         <button
@@ -83,7 +84,7 @@ export default function DefaultComponent() {
             "antd-btn antd-btn-primary p-1",
             newDeckMutation.isLoading && "antd-btn-loading"
           )}
-          disabled={!form.formState.isValid || newDeckMutation.isLoading}
+          disabled={newDeckMutation.isLoading || newDeckMutation.isSuccess}
         >
           Create
         </button>

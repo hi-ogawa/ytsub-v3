@@ -1,6 +1,6 @@
+import { useTinyForm } from "@hiogawa/tiny-form/dist/react";
 import { useNavigate } from "@remix-run/react";
 import { useMutation } from "@tanstack/react-query";
-import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { $R } from "../../misc/routes";
 import { rpcClient } from "../../trpc/client";
@@ -31,17 +31,15 @@ export default function Page() {
     },
   });
 
-  const form = useForm({
-    defaultValues: {
-      email: "",
-    },
+  const form = useTinyForm({
+    email: "",
   });
 
   return (
     <div className="w-full p-4 gap-4 flex flex-col items-center">
       <form
         className="h-full w-full max-w-md border"
-        onSubmit={form.handleSubmit((data) => mutation.mutate(data))}
+        onSubmit={form.handleSubmit(() => mutation.mutate(form.data))}
       >
         <div className="h-full p-6 flex flex-col gap-3">
           <h1 className="text-xl">Reset password</h1>
@@ -50,7 +48,8 @@ export default function Page() {
               Email
               <input
                 className="antd-input p-1"
-                {...form.register("email", { required: true })}
+                required
+                {...form.fields.email.valueProps()}
               />
             </label>
             <button
@@ -60,8 +59,8 @@ export default function Page() {
                 mutation.isLoading && "antd-btn-loading"
               )}
               disabled={
-                !form.formState.isValid ||
                 mutation.isLoading ||
+                mutation.isSuccess ||
                 !turnstile.query.isSuccess
               }
             >
