@@ -294,7 +294,6 @@ function SearchComponent(props: { closeDrawer: () => void }) {
         <span className="absolute text-colorTextSecondary ml-2.5 i-ri-search-line w-4 h-4"></span>
         <input
           type="text"
-          name="videoId"
           className="w-full antd-input p-1 pl-9"
           placeholder="Enter Video ID or URL"
           required
