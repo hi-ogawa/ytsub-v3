@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">66.75% </span>
+                <span class="strong">67.04% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>239/358</span>
+                <span class='fraction'>238/355</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">66.75% </span>
+                <span class="strong">67.04% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>239/358</span>
+                <span class='fraction'>238/355</span>
             </div>
         
             
@@ -418,11 +418,7 @@
 <a name='L353'></a><a href='#L353'>353</a>
 <a name='L354'></a><a href='#L354'>354</a>
 <a name='L355'></a><a href='#L355'>355</a>
-<a name='L356'></a><a href='#L356'>356</a>
-<a name='L357'></a><a href='#L357'>357</a>
-<a name='L358'></a><a href='#L358'>358</a>
-<a name='L359'></a><a href='#L359'>359</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<a name='L356'></a><a href='#L356'>356</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -595,8 +591,6 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -785,7 +779,6 @@ import { useTinyStore } from "@hiogawa/tiny-store/dist/react";
 import { tinyassert } from "@hiogawa/utils";
 import { useNavigate } from "@remix-run/react";
 import { useMutation } from "@tanstack/react-query";
-import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { SelectWrapper } from "../../components/misc";
 import { PopoverSimple } from "../../components/popover";
@@ -955,19 +948,16 @@ function DefaultComponentInner() {
 &nbsp;
 <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >function AdvancedModeForm({ videoId }: { videoId: string }) {</span></span>
 <span class="cstat-no" title="statement not covered" >  interface FormType {</span>
-<span class="cstat-no" title="statement not covered" >    language1?: LanguageCode;</span>
-<span class="cstat-no" title="statement not covered" >    language2?: LanguageCode;</span>
+<span class="cstat-no" title="statement not covered" >    language1: LanguageCode | undefined;</span>
+<span class="cstat-no" title="statement not covered" >    language2: LanguageCode | undefined;</span>
 <span class="cstat-no" title="statement not covered" >    input: string;</span>
 <span class="cstat-no" title="statement not covered" >  }</span>
 <span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >  const form = useForm&lt;FormType&gt;({</span>
-<span class="cstat-no" title="statement not covered" >    defaultValues: {</span>
-<span class="cstat-no" title="statement not covered" >      language1: undefined,</span>
-<span class="cstat-no" title="statement not covered" >      language2: undefined,</span>
-<span class="cstat-no" title="statement not covered" >      input: "",</span>
-<span class="cstat-no" title="statement not covered" >    },</span>
+<span class="cstat-no" title="statement not covered" >  const form = useTinyForm&lt;FormType&gt;({</span>
+<span class="cstat-no" title="statement not covered" >    language1: undefined,</span>
+<span class="cstat-no" title="statement not covered" >    language2: undefined,</span>
+<span class="cstat-no" title="statement not covered" >    input: "",</span>
 <span class="cstat-no" title="statement not covered" >  });</span>
-<span class="cstat-no" title="statement not covered" >  const { language1, language2, input } = form.watch();</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  const navigate = useNavigate();</span>
 <span class="cstat-no" title="statement not covered" ></span>
@@ -995,27 +985,27 @@ function DefaultComponentInner() {
 <span class="cstat-no" title="statement not covered" >  return (</span>
 <span class="cstat-no" title="statement not covered" >    &lt;form</span>
 <span class="cstat-no" title="statement not covered" >      className="p-6 flex flex-col gap-3"</span>
-<span class="cstat-no" title="statement not covered" >      onSubmit={form.handleSubmit((data) =&gt; createMutation.mutate(data))}</span>
+<span class="cstat-no" title="statement not covered" >      onSubmit={form.handleSubmit(() =&gt; createMutation.mutate(form.data))}</span>
 <span class="cstat-no" title="statement not covered" >    &gt;</span>
 <span class="cstat-no" title="statement not covered" >      &lt;div className="text-lg"&gt;Manual input&lt;/div&gt;</span>
 <span class="cstat-no" title="statement not covered" >      &lt;label className="flex flex-col gap-1"&gt;</span>
 <span class="cstat-no" title="statement not covered" >        &lt;span&gt;1st language&lt;/span&gt;</span>
 <span class="cstat-no" title="statement not covered" >        &lt;SelectWrapper</span>
 <span class="cstat-no" title="statement not covered" >          className="antd-input p-1"</span>
-<span class="cstat-no" title="statement not covered" >          value={language1}</span>
 <span class="cstat-no" title="statement not covered" >          options={[undefined, ...FILTERED_LANGUAGE_CODES]}</span>
-<span class="cstat-no" title="statement not covered" >          onChange={(v) =&gt; form.setValue("language1", v)}</span>
 <span class="cstat-no" title="statement not covered" >          labelFn={(v) =&gt; v &amp;&amp; languageCodeToName(v)}</span>
+<span class="cstat-no" title="statement not covered" >          required</span>
+<span class="cstat-no" title="statement not covered" >          {...form.fields.language1.rawProps()}</span>
 <span class="cstat-no" title="statement not covered" >        /&gt;</span>
 <span class="cstat-no" title="statement not covered" >      &lt;/label&gt;</span>
 <span class="cstat-no" title="statement not covered" >      &lt;label className="flex flex-col gap-1"&gt;</span>
 <span class="cstat-no" title="statement not covered" >        &lt;span&gt;2nd language&lt;/span&gt;</span>
 <span class="cstat-no" title="statement not covered" >        &lt;SelectWrapper</span>
 <span class="cstat-no" title="statement not covered" >          className="antd-input p-1"</span>
-<span class="cstat-no" title="statement not covered" >          value={language2}</span>
 <span class="cstat-no" title="statement not covered" >          options={[undefined, ...FILTERED_LANGUAGE_CODES]}</span>
-<span class="cstat-no" title="statement not covered" >          onChange={(v) =&gt; form.setValue("language2", v)}</span>
 <span class="cstat-no" title="statement not covered" >          labelFn={(v) =&gt; v &amp;&amp; languageCodeToName(v)}</span>
+<span class="cstat-no" title="statement not covered" >          required</span>
+<span class="cstat-no" title="statement not covered" >          {...form.fields.language2.rawProps()}</span>
 <span class="cstat-no" title="statement not covered" >        /&gt;</span>
 <span class="cstat-no" title="statement not covered" >      &lt;/label&gt;</span>
 <span class="cstat-no" title="statement not covered" >      &lt;div className="flex flex-col gap-1"&gt;</span>
@@ -1034,7 +1024,8 @@ function DefaultComponentInner() {
 <span class="cstat-no" title="statement not covered" >          className="antd-input p-1"</span>
 <span class="cstat-no" title="statement not covered" >          rows={8}</span>
 <span class="cstat-no" title="statement not covered" >          placeholder="Please copy the exported data from caption editor"</span>
-<span class="cstat-no" title="statement not covered" >          {...form.register("input", { required: true })}</span>
+<span class="cstat-no" title="statement not covered" >          required</span>
+<span class="cstat-no" title="statement not covered" >          {...form.fields.input.valueProps()}</span>
 <span class="cstat-no" title="statement not covered" >        /&gt;</span>
 <span class="cstat-no" title="statement not covered" >      &lt;/div&gt;</span>
 <span class="cstat-no" title="statement not covered" >      &lt;button</span>
@@ -1043,7 +1034,7 @@ function DefaultComponentInner() {
 <span class="cstat-no" title="statement not covered" >          "antd-btn antd-btn-primary p-1",</span>
 <span class="cstat-no" title="statement not covered" >          createMutation.isLoading &amp;&amp; "antd-btn-loading"</span>
 <span class="cstat-no" title="statement not covered" >        )}</span>
-<span class="cstat-no" title="statement not covered" >        disabled={!language1 || !language2 || !input}</span>
+<span class="cstat-no" title="statement not covered" >        disabled={createMutation.isLoading || createMutation.isSuccess}</span>
 <span class="cstat-no" title="statement not covered" >      &gt;</span>
 <span class="cstat-no" title="statement not covered" >        Save and Play</span>
 <span class="cstat-no" title="statement not covered" >      &lt;/button&gt;</span>
@@ -1144,7 +1135,7 @@ const showAdvancedModeStore = createTinyStore(false);
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-09-15T05:34:41.304Z
+                at 2023-09-15T05:39:47.189Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>
