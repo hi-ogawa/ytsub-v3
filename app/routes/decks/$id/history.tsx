@@ -1,4 +1,4 @@
-import { Transition } from "@headlessui/react";
+import { Transition } from "@hiogawa/tiny-transition/dist/react";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import React from "react";
 import { PRACTICE_ACTION_TYPE_TO_COLOR, QueueTypeIcon } from ".";

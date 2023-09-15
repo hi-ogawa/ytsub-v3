@@ -1,9 +1,9 @@
-import { Transition } from "@headlessui/react";
 import {
   createTinyStore,
   createTinyStoreWithStorage,
 } from "@hiogawa/tiny-store";
 import { useTinyStore } from "@hiogawa/tiny-store/dist/react";
+import { Transition } from "@hiogawa/tiny-transition/dist/react";
 import { groupBy, isNil, sortBy, uniq, zip } from "@hiogawa/utils";
 import { toArraySetState, useRafLoop } from "@hiogawa/utils-react";
 import { Link, useNavigate } from "@remix-run/react";

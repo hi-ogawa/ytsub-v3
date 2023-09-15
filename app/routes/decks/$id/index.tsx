@@ -1,4 +1,4 @@
-import { Transition } from "@headlessui/react";
+import { Transition } from "@hiogawa/tiny-transition/dist/react";
 import { Link, NavLink } from "@remix-run/react";
 import { useQuery } from "@tanstack/react-query";
 import React from "react";

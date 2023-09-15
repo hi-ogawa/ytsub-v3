@@ -31,9 +31,6 @@ dependencies:
   '@hattip/compose':
     specifier: ^0.0.34
     version: 0.0.34
-  '@headlessui/react':
-    specifier: ^1.7.17
-    version: 1.7.17(react-dom@18.2.0)(react@18.2.0)
   '@hiogawa/argon2-wasm-bindgen':
     specifier: 0.0.6-pre.5
     version: 0.0.6-pre.5
@@ -55,6 +52,9 @@ dependencies:
   '@hiogawa/tiny-store':
     specifier: 0.0.1-pre.0
     version: 0.0.1-pre.0(react@18.2.0)
+  '@hiogawa/tiny-transition':
+    specifier: 0.0.1-pre.3
+    version: 0.0.1-pre.3(react@18.2.0)
   '@hiogawa/utils':
     specifier: 1.6.1-pre.1
     version: 1.6.1-pre.1
@@ -2284,18 +2284,6 @@ packages:
       node-fetch-native: 1.4.0
     dev: false
 
-  /@headlessui/react@1.7.17(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-4am+tzvkqDSSgiwrsEpGWqgGo9dz8qU5M3znCkC4PgkpY4HcCZzEDEvozltGGGHIKl9jbXbZPSH5TWn4sWJdow==}
-    engines: {node: '>=10'}
-    peerDependencies:
-      react: ^16 || ^17 || ^18
-      react-dom: ^16 || ^17 || ^18
-    dependencies:
-      client-only: 0.0.1
-      react: 18.2.0
-      react-dom: 18.2.0(react@18.2.0)
-    dev: false
-
   /@hiogawa/argon2-wasm-bindgen@0.0.6-pre.5:
     resolution: {integrity: sha512-zcUOvlral68ua/27HbjGWZsAwCVt9q7ShDv5bPDngARhbhOhtCrp48EhphkOkjGo2VHC3rgD2O9tHvq5qxUmmw==}
     dev: false
@@ -2362,6 +2350,17 @@ packages:
 
   /@hiogawa/tiny-store@0.0.1-pre.0(react@18.2.0):
     resolution: {integrity: sha512-fSsAn5I9YzIR2czQiSz2UHLsLM5D76c18JLroTFYhKTnqXp4dLR7LjUsRwf1kkQEvy53E5Mq8YP77pwZFZy1CA==}
+    peerDependencies:
+      react: ^18.0.0
+    peerDependenciesMeta:
+      react:
+        optional: true
+    dependencies:
+      react: 18.2.0
+    dev: false
+
+  /@hiogawa/tiny-transition@0.0.1-pre.3(react@18.2.0):
+    resolution: {integrity: sha512-tKyh/62/NKbX3SjMQJN7mpoanGJDiudyN3IloXp1w2FoEyfRAUL7K/bICoHNzdLlGjEbrVzTRRoj2gWpWVBhBA==}
     peerDependencies:
       react: ^18.0.0
     peerDependenciesMeta:
@@ -4431,10 +4430,6 @@ packages:
   /cli-width@3.0.0:
     resolution: {integrity: sha512-FxqpkPPwu1HjuN93Omfm4h8uIanXofW0RxVEW3k5RKx+mJJYSthzNhp32Kzxxy3YAEZ/Dc/EWN1vZRY0+kOhbw==}
     engines: {node: '>= 10'}
-
-  /client-only@0.0.1:
-    resolution: {integrity: sha512-IV3Ou0jSMzZrd3pZ48nLkT9DA7Ag1pnPzaiQhpW7c3RbcqqzvzzVu+L8gfqMp/8IM2MQtSiqaCxrrcfu8I8rMA==}
-    dev: false
 
   /cliui@8.0.1:
     resolution: {integrity: sha512-BSeNnyus75C4//NQ9gQt1/csTXyo/8Sb+afLAkzAptFuMsod9HFokGNudZpi/oQV73hnVK+sR+5PVRMd+Dr7YQ==}

@@ -1,73 +1,30 @@
-import { Transition } from "@headlessui/react";
-import { tinyassert } from "@hiogawa/utils";
+import { Transition } from "@hiogawa/tiny-transition/dist/react";
 import React from "react";
 
-// copied from https://github.com/hi-ogawa/unocss-preset-antd/blob/28629d2eca2537bfb847253351ed79640d5252aa/packages/app/src/components/collapse.tsx#L5-L11
-// TODO: make @hiogawa/utils-react-ui or @hiogawa/unocss-preset-antd-react package?
-
 export function CollapseTransition(
-  props: React.ComponentProps<typeof Transition> & object
+  props: React.ComponentProps<typeof Transition>
 ) {
-  const collpaseProps = useCollapseProps();
-  return <Transition {...props} {...collpaseProps} />;
+  return <Transition {...props} {...getCollapseProps()} />;
 }
 
-function useCollapseProps(): Partial<React.ComponentProps<typeof Transition>> {
-  const refEl = React.useRef<HTMLDivElement>();
-
-  const refCallback: React.RefCallback<HTMLDivElement> = (el) => {
-    if (el) {
-      uncollapse(el);
+function getCollapseProps(): Partial<React.ComponentProps<typeof Transition>> {
+  function uncollapse(el: HTMLElement) {
+    if (el.firstElementChild) {
+      el.style.height = el.firstElementChild.clientHeight + "px";
     }
-    refEl.current = el ?? undefined;
-  };
+  }
 
-  function uncollapse(el: HTMLDivElement) {
-    const child = el.firstElementChild;
-    tinyassert(child);
+  function collapse(el: HTMLElement) {
     el.style.height = "0px";
-    forceStyle(el);
-    el.style.height = child.clientHeight + "px";
-  }
-
-  function reset(el: HTMLDivElement) {
-    el.style.height = "";
-  }
-
-  function collapse(el: HTMLDivElement) {
-    const child = el.firstElementChild;
-    tinyassert(child);
-    el.style.height = child.clientHeight + "px";
-    forceStyle(el);
-    el.style.height = "0px";
-  }
-
-  function beforeEnter() {
-    const el = refEl.current;
-    tinyassert(el);
-    uncollapse(el);
-  }
-
-  function afterEnter() {
-    const el = refEl.current;
-    tinyassert(el);
-    reset(el);
-  }
-
-  function beforeLeave() {
-    const el = refEl.current;
-    tinyassert(el);
-    collapse(el);
   }
 
   return {
-    ref: React.useCallback(refCallback, []),
-    beforeEnter,
-    afterEnter,
-    beforeLeave,
+    onEnterFrom: collapse,
+    onEnterTo: uncollapse,
+    onEntered: (el) => {
+      el.style.height = "";
+    },
+    onLeaveFrom: uncollapse,
+    onLeaveTo: collapse,
   };
-}
-
-function forceStyle(el: Element) {
-  tinyassert(window.getComputedStyle(el).height);
 }
