@@ -84,6 +84,7 @@
     "@hiogawa/icheck-ts": "0.0.1-pre.10",
     "@hiogawa/isort-ts": "1.1.2-pre.0",
     "@hiogawa/tiny-cli": "0.0.4-pre.1",
+    "@hiogawa/tiny-form": "0.0.1-pre.0",
     "@hiogawa/unocss-preset-antd": "2.2.1-pre.3",
     "@hiogawa/utils-node": "0.0.1-pre.4",
     "@iconify-json/ri": "^1.1.12",
