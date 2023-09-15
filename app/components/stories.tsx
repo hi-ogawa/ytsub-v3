@@ -1,7 +1,7 @@
+import { useTinyForm } from "@hiogawa/tiny-form/dist/react";
 import { Transition } from "@hiogawa/tiny-transition/dist/react";
 import { useRafLoop } from "@hiogawa/utils-react";
 import React from "react";
-import { useForm } from "react-hook-form";
 import { cls } from "../utils/misc";
 import { DUMMY_VIDEO_METADATA } from "../utils/types";
 import { YoutubePlayer, usePlayerLoader } from "../utils/youtube";
@@ -216,7 +216,7 @@ export function TestFab() {
 }
 
 export function TestSpinner() {
-  const form = useForm({ defaultValues: { overlay: true, button: true } });
+  const form = useTinyForm({ overlay: true, button: true });
 
   return (
     <div className="w-full flex justify-center">
@@ -232,12 +232,12 @@ export function TestSpinner() {
         <div className="flex flex-col gap-2">
           <div className="flex gap-2">
             Overlay
-            <input type="checkbox" {...form.register("overlay")} />
+            <input type="checkbox" {...form.fields.overlay.checkedProps()} />
           </div>
           <div className="relative border h-[100px] grid place-content-center">
             <div>Hello World</div>
             <Transition
-              show={form.watch("overlay")}
+              show={form.data.overlay}
               className="duration-500 antd-body antd-spin-overlay-12"
               {...transitionProps("opacity-0", "opacity-100")}
             />
@@ -246,14 +246,14 @@ export function TestSpinner() {
         <div className="flex flex-col gap-2">
           <div className="flex gap-2">
             Button
-            <input type="checkbox" {...form.register("button")} />
+            <input type="checkbox" {...form.fields.button.checkedProps()} />
           </div>
           <button
             className={cls(
               "antd-btn antd-btn-primary p-1",
-              form.watch("button") && "antd-btn-loading"
+              form.data.button && "antd-btn-loading"
             )}
-            disabled={form.watch("button")}
+            disabled={form.data.button}
           >
             Save
           </button>
