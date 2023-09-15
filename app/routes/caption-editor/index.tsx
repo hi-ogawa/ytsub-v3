@@ -1,5 +1,5 @@
+import { useTinyForm } from "@hiogawa/tiny-form/dist/react";
 import { Link, useNavigate } from "@remix-run/react";
-import { useForm } from "react-hook-form";
 import {
   STORAGE_KEYS,
   Z_CAPTION_EDITOR_DRAFT_LIST,
@@ -14,7 +14,7 @@ export const handle: PageHandle = {
 };
 
 export default function Page() {
-  const form = useForm({ defaultValues: { videoId: "" } });
+  const form = useTinyForm({ videoId: "" });
   const navigate = useNavigate();
 
   return (
@@ -24,8 +24,10 @@ export default function Page() {
           <div className="text-2xl">Caption Editor</div>
           <form
             className="w-full flex flex-col gap-3"
-            onSubmit={form.handleSubmit((data) => {
-              navigate($R["/caption-editor/watch"](null, { v: data.videoId }));
+            onSubmit={form.handleSubmit(() => {
+              navigate(
+                $R["/caption-editor/watch"](null, { v: form.data.videoId })
+              );
             })}
           >
             <label className="flex flex-col gap-1">
@@ -34,7 +36,7 @@ export default function Page() {
                 type="text"
                 className="antd-input p-1"
                 required
-                {...form.register("videoId")}
+                {...form.fields.videoId.valueProps()}
               />
             </label>
             <button type="submit" className="antd-btn antd-btn-primary p-1">

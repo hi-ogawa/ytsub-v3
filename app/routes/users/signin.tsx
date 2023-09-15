@@ -1,6 +1,6 @@
+import { useTinyForm } from "@hiogawa/tiny-form/dist/react";
 import { Link, useNavigate } from "@remix-run/react";
 import { useMutation } from "@tanstack/react-query";
-import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { $R } from "../../misc/routes";
 import { rpcClientQuery } from "../../trpc/client";
@@ -32,11 +32,9 @@ export default function DefaultComponent() {
     },
   });
 
-  const form = useForm({
-    defaultValues: {
-      username: "",
-      password: "",
-    },
+  const form = useTinyForm({
+    username: "",
+    password: "",
   });
 
   return (
@@ -44,7 +42,7 @@ export default function DefaultComponent() {
       <form
         className="flex flex-col border w-full max-w-sm p-4 px-6 gap-3"
         data-test="signin-form"
-        onSubmit={form.handleSubmit((data) => signinMutation.mutate(data))}
+        onSubmit={form.handleSubmit(() => signinMutation.mutate(form.data))}
       >
         {signinMutation.isError && (
           <div className="text-colorError">
@@ -62,7 +60,8 @@ export default function DefaultComponent() {
             type="text"
             className="antd-input p-1"
             autoFocus
-            {...form.register("username", { required: true })}
+            required
+            {...form.fields.username.valueProps()}
           />
         </label>
         <label className="flex flex-col gap-1">
@@ -70,7 +69,8 @@ export default function DefaultComponent() {
           <input
             type="password"
             className="antd-input p-1"
-            {...form.register("password", { required: true })}
+            required
+            {...form.fields.password.valueProps()}
           />
         </label>
         <div className="flex flex-col gap-1">
@@ -80,7 +80,7 @@ export default function DefaultComponent() {
               "antd-btn antd-btn-primary p-1",
               signinMutation.isLoading && "antd-btn-loading"
             )}
-            disabled={!form.formState.isValid || signinMutation.isLoading}
+            disabled={signinMutation.isLoading || signinMutation.isSuccess}
           >
             Sign in
           </button>
