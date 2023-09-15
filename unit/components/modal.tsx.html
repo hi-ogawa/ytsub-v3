@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">15% </span>
+                <span class="strong">16.12% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>15/100</span>
+                <span class='fraction'>15/93</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">15% </span>
+                <span class="strong">16.12% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>15/100</span>
+                <span class='fraction'>15/93</span>
             </div>
         
             
@@ -156,14 +156,7 @@
 <a name='L91'></a><a href='#L91'>91</a>
 <a name='L92'></a><a href='#L92'>92</a>
 <a name='L93'></a><a href='#L93'>93</a>
-<a name='L94'></a><a href='#L94'>94</a>
-<a name='L95'></a><a href='#L95'>95</a>
-<a name='L96'></a><a href='#L96'>96</a>
-<a name='L97'></a><a href='#L97'>97</a>
-<a name='L98'></a><a href='#L98'>98</a>
-<a name='L99'></a><a href='#L99'>99</a>
-<a name='L100'></a><a href='#L100'>100</a>
-<a name='L101'></a><a href='#L101'>101</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L94'></a><a href='#L94'>94</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -175,13 +168,6 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -264,9 +250,9 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { useDismiss, useFloating, useInteractions } from "@floating-ui/react";
+import { Transition } from "@headlessui/react";
 import { createTinyStore } from "@hiogawa/tiny-store";
 import { useTinyStore } from "@hiogawa/tiny-store/dist/react";
-import { Transition } from "@hiogawa/tiny-transition/dist/react";
 import { tinyassert } from "@hiogawa/utils";
 import React from "react";
 import { RemoveScroll } from "react-remove-scroll";
@@ -292,14 +278,9 @@ import { FloatingWrapper } from "./floating-utils";
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  return (</span>
 <span class="cstat-no" title="statement not covered" >    &lt;FloatingWrapper&gt;</span>
-<span class="cstat-no" title="statement not covered" >      &lt;Transition</span>
-<span class="cstat-no" title="statement not covered" >        className="transition duration-300fixed inset-0"</span>
-<span class="cstat-no" title="statement not covered" >        show={props.open}</span>
-<span class="cstat-no" title="statement not covered" >      &gt;</span>
+<span class="cstat-no" title="statement not covered" >      &lt;Transition className="fixed inset-0" appear show={props.open}&gt;</span>
 <span class="cstat-no" title="statement not covered" >        {/* backdrop */}</span>
-<span class="cstat-no" title="statement not covered" >        &lt;Transition</span>
-<span class="cstat-no" title="statement not covered" >          appear</span>
-<span class="cstat-no" title="statement not covered" >          show={props.open}</span>
+<span class="cstat-no" title="statement not covered" >        &lt;Transition.Child</span>
 <span class="cstat-no" title="statement not covered" >          className="transition duration-300 fixed inset-0 bg-black"</span>
 <span class="cstat-no" title="statement not covered" >          enterFrom="opacity-0"</span>
 <span class="cstat-no" title="statement not covered" >          enterTo="opacity-40"</span>
@@ -309,9 +290,7 @@ import { FloatingWrapper } from "./floating-utils";
 <span class="cstat-no" title="statement not covered" >        /&gt;</span>
 <span class="cstat-no" title="statement not covered" >        {/* content */}</span>
 <span class="cstat-no" title="statement not covered" >        &lt;RemoveScroll className="fixed inset-0 overflow-hidden flex justify-center items-center"&gt;</span>
-<span class="cstat-no" title="statement not covered" >          &lt;Transition</span>
-<span class="cstat-no" title="statement not covered" >            appear</span>
-<span class="cstat-no" title="statement not covered" >            show={props.open}</span>
+<span class="cstat-no" title="statement not covered" >          &lt;Transition.Child</span>
 <span class="cstat-no" title="statement not covered" >            className={cls(</span>
 <span class="cstat-no" title="statement not covered" >              props.className,</span>
 <span class="cstat-no" title="statement not covered" >              "transition duration-300 transform w-[90%] max-w-xl antd-floating"</span>
@@ -330,7 +309,7 @@ import { FloatingWrapper } from "./floating-utils";
 <span class="cstat-no" title="statement not covered" >            &gt;</span>
 <span class="cstat-no" title="statement not covered" >              {props.children}</span>
 <span class="cstat-no" title="statement not covered" >            &lt;/div&gt;</span>
-<span class="cstat-no" title="statement not covered" >          &lt;/Transition&gt;</span>
+<span class="cstat-no" title="statement not covered" >          &lt;/Transition.Child&gt;</span>
 <span class="cstat-no" title="statement not covered" >        &lt;/RemoveScroll&gt;</span>
 <span class="cstat-no" title="statement not covered" >      &lt;/Transition&gt;</span>
 <span class="cstat-no" title="statement not covered" >    &lt;/FloatingWrapper&gt;</span>
@@ -370,7 +349,7 @@ export <span class="fstat-no" title="function not covered" >function useModal(de
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-09-15T00:35:06.114Z
+                at 2023-09-15T04:28:24.222Z
             </div>
         <script src="../prettify.js"></script>
         <script>
