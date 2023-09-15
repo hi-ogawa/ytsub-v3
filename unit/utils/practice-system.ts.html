@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">96.93% </span>
+                <span class="strong">96.02% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>537/554</span>
+                <span class='fraction'>532/554</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">90.76% </span>
+                <span class="strong">85.48% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>59/65</span>
+                <span class='fraction'>53/62</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">96.93% </span>
+                <span class="strong">96.02% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>537/554</span>
+                <span class='fraction'>532/554</span>
             </div>
         
             
@@ -795,22 +795,6 @@
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
@@ -821,6 +805,22 @@
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
@@ -860,10 +860,10 @@
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
@@ -954,9 +954,9 @@
 <span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-yes">12x</span>
-<span class="cline-any cline-yes">33x</span>
-<span class="cline-any cline-yes">33x</span>
-<span class="cline-any cline-yes">33x</span>
+<span class="cline-any cline-yes">34x</span>
+<span class="cline-any cline-yes">34x</span>
+<span class="cline-any cline-yes">34x</span>
 <span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-yes">12x</span>
@@ -1348,9 +1348,9 @@ export class PracticeSystem {
     let delta = Temporal.Duration.from(
       SCHEDULE_RULES[queueType][actionType]
     ).total({ unit: "second" });
-    if (queueType === "REVIEW") {
-      delta *= practiceEntry.easeFactor;
-    }
+    if (queueType === "REVIEW") <span class="branch-0 cbranch-no" title="branch not covered" >{</span>
+<span class="cstat-no" title="statement not covered" >      delta *= practiceEntry.easeFactor;</span>
+<span class="cstat-no" title="statement not covered" >    }</span>
     const newScheduledAt = fromTemporal(toInstant(now).add({ seconds: delta }));
 &nbsp;
     // update queue type
@@ -1358,12 +1358,12 @@ export class PracticeSystem {
 &nbsp;
     // update ease factor
     let newEaseFactor = easeFactor;
-    if (newQueueType === "REVIEW") {
-      newEaseFactor *= easeMultiplier;
-      if (actionType === "EASY") <span class="branch-0 cbranch-no" title="branch not covered" >{</span>
+    if (newQueueType === "REVIEW") <span class="branch-0 cbranch-no" title="branch not covered" >{</span>
+<span class="cstat-no" title="statement not covered" >      newEaseFactor *= easeMultiplier;</span>
+<span class="cstat-no" title="statement not covered" >      if (actionType === "EASY") {</span>
 <span class="cstat-no" title="statement not covered" >        newEaseFactor *= easeBonus;</span>
 <span class="cstat-no" title="statement not covered" >      }</span>
-    }
+<span class="cstat-no" title="statement not covered" >    }</span>
     if (actionType === "AGAIN") <span class="branch-0 cbranch-no" title="branch not covered" >{</span>
 <span class="cstat-no" title="statement not covered" >      newEaseFactor = 1;</span>
 <span class="cstat-no" title="statement not covered" >    }</span>
@@ -1383,8 +1383,8 @@ export class PracticeSystem {
     const queryUpdateDeck = updateDeckCache(
       deckId,
       {
-        [queueType]: queueType !== newQueueType ? -1 : 0,
-        [newQueueType]: queueType !== newQueueType ? 1 : 0,
+        [queueType]: queueType !== newQueueType ? <span class="branch-0 cbranch-no" title="branch not covered" >-1 : 0,</span>
+        [newQueueType]: queueType !== newQueueType ? <span class="branch-0 cbranch-no" title="branch not covered" >1 : 0,</span>
       },
       {
         [actionType]: 1,
@@ -1732,7 +1732,7 @@ function prefixSum(ls: number[]): number[] {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-09-15T10:52:48.241Z
+                at 2023-09-15T11:06:48.896Z
             </div>
         <script src="../prettify.js"></script>
         <script>
