@@ -5,7 +5,7 @@ import { toast } from "react-hot-toast";
 import { DeckNavBarMenuComponent } from ".";
 import { $R, R } from "../../../misc/routes";
 import { rpcClientQuery } from "../../../trpc/client";
-import { numberFieldTransform } from "../../../utils/form-utils";
+import { asNumberInputProps } from "../../../utils/form-utils";
 import { intl } from "../../../utils/intl";
 import { useLoaderDataExtra } from "../../../utils/loader-utils";
 import { cls } from "../../../utils/misc";
@@ -79,9 +79,7 @@ function DefaultComponentInner() {
             type="number"
             className="antd-input p-1"
             required
-            {...form.fields.newEntriesPerDay.props({
-              transform: numberFieldTransform,
-            })}
+            {...asNumberInputProps(form.fields.newEntriesPerDay.rawProps())}
           />
         </label>
         <label className="flex flex-col gap-1">
@@ -90,9 +88,7 @@ function DefaultComponentInner() {
             type="number"
             className="antd-input p-1"
             required
-            {...form.fields.reviewsPerDay.props({
-              transform: numberFieldTransform,
-            })}
+            {...asNumberInputProps(form.fields.reviewsPerDay.rawProps())}
           />
         </label>
         <label className="flex gap-2">
