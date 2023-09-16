@@ -1,7 +1,6 @@
 import { useTinyForm } from "@hiogawa/tiny-form/dist/react";
 import { useNavigate } from "@remix-run/react";
 import { useMutation } from "@tanstack/react-query";
-import React from "react";
 import toast from "react-hot-toast";
 import { useModal } from "../../components/modal";
 import { PopoverSimple } from "../../components/popover";
@@ -33,7 +32,7 @@ export default function DefaultComponent() {
     onSuccess: () => {
       toast.success("Successfully updated settings");
       navigate({}, { replace: true }); // refetch root loader currentUser
-      resetDirty();
+      form.resetDirty();
     },
     onError: () => {
       toast.error("Failed to update settings");
@@ -60,7 +59,6 @@ export default function DefaultComponent() {
     language2: currentUser.language2 ?? "",
     timezone: currentUser.timezone,
   });
-  const [isDirty, resetDirty] = useDirty(form.data);
 
   const updateEmailModal = useModal();
 
@@ -160,7 +158,7 @@ export default function DefaultComponent() {
                 "antd-btn antd-btn-primary p-1 flex justify-center items-center",
                 updateMutation.isLoading && "antd-btn-loading"
               )}
-              disabled={updateMutation.isLoading || !isDirty}
+              disabled={updateMutation.isLoading || !form.isDirty}
             >
               Save
             </button>
@@ -199,30 +197,6 @@ export default function DefaultComponent() {
       </updateEmailModal.Wrapper>
     </div>
   );
-}
-
-function defaultIsEqual<T>(x: T, y: T) {
-  return JSON.stringify(x) === JSON.stringify(y);
-}
-
-// TODO: move to tiny-form?
-export function useDirty<T>(
-  data: T,
-  options?: { isEqual?: (x: T, y: T) => boolean }
-) {
-  const [freshData, setFreshData] = React.useState(() => data);
-
-  const isDirty = React.useMemo(
-    () => !(options?.isEqual ?? defaultIsEqual)(data, freshData),
-    [data, freshData]
-  );
-
-  // we could accept `newFreshData` argument
-  function resetDirty() {
-    setFreshData(data);
-  }
-
-  return [isDirty, resetDirty] as const;
 }
 
 function UpdateEmailForm(props: { onSuccess: () => void }) {

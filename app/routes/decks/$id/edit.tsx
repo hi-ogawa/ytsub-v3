@@ -10,7 +10,6 @@ import { useLoaderDataExtra } from "../../../utils/loader-utils";
 import { cls } from "../../../utils/misc";
 import type { PageHandle } from "../../../utils/page-handle";
 import { toastInfo } from "../../../utils/toast-utils";
-import { useDirty } from "../../users/me";
 import type { LoaderData } from "./_utils.server";
 export { loader } from "./_utils.server";
 
@@ -31,13 +30,12 @@ function DefaultComponentInner() {
   const { deck } = useLoaderDataExtra() as LoaderData;
 
   const form = useTinyForm(deck);
-  const [isDirty, resetDirty] = useDirty(form.data);
 
   const updateDeckMutation = useMutation({
     ...rpcClientQuery.decks_update.mutationOptions(),
     onSuccess: () => {
       toast.success("Successfully updated a deck");
-      resetDirty();
+      form.resetDirty();
     },
     onError: () => {
       toast.error("Failed to update a deck");
@@ -119,7 +117,7 @@ function DefaultComponentInner() {
             "antd-btn antd-btn-primary p-1",
             updateDeckMutation.isLoading && "antd-btn-loading"
           )}
-          disabled={!isDirty || updateDeckMutation.isLoading}
+          disabled={!form.isDirty || updateDeckMutation.isLoading}
         >
           Save
         </button>
