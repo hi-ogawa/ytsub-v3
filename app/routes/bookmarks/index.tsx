@@ -1,10 +1,10 @@
+import { useTinyForm } from "@hiogawa/tiny-form/dist/react";
 import { Transition } from "@hiogawa/tiny-transition/dist/react";
 import { typedBoolean } from "@hiogawa/utils";
 import { toArraySetState, useRafLoop } from "@hiogawa/utils-react";
 import { NavLink } from "@remix-run/react";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import React from "react";
-import { useForm } from "react-hook-form";
 import { CollapseTransition } from "../../components/collapse";
 import { SelectWrapper, transitionProps } from "../../components/misc";
 import { PopoverSimple } from "../../components/popover";
@@ -39,7 +39,7 @@ export default function DefaultComponent() {
   const [urlQuery, setUrlQuery] = useTypedUrlQuery(
     ROUTE_DEF["/bookmarks"].query
   );
-  const form = useForm({ defaultValues: urlQuery });
+  const form = useTinyForm({ q: urlQuery?.q ?? "" });
 
   const bookmarkEntriesQuery = useInfiniteQuery({
     ...rpcClientQuery.bookmarks_index.infiniteQueryOptions((context) => ({
@@ -58,8 +58,8 @@ export default function DefaultComponent() {
           <div className="h-full flex flex-col p-2 gap-2 relative">
             <div className="flex py-1">
               <form
-                onSubmit={form.handleSubmit((data) =>
-                  setUrlQuery({ q: data.q ? data.q : undefined })
+                onSubmit={form.handleSubmit(() =>
+                  setUrlQuery({ q: form.data.q || undefined })
                 )}
               >
                 <label className="relative flex items-center">
@@ -68,7 +68,7 @@ export default function DefaultComponent() {
                     className="antd-input pl-7 py-0.5"
                     type="text"
                     placeholder="Search text..."
-                    {...form.register("q")}
+                    {...form.fields.q.valueProps()}
                   />
                 </label>
               </form>
