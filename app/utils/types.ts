@@ -53,7 +53,7 @@ export interface CaptionConfig {
   translation?: string;
 }
 
-interface CaptionConfigOption {
+export interface CaptionConfigOption {
   name: string;
   captionConfig: CaptionConfig;
 }
