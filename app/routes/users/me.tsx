@@ -206,7 +206,10 @@ function defaultIsEqual<T>(x: T, y: T) {
 }
 
 // TODO: move to tiny-form?
-function useDirty<T>(data: T, options?: { isEqual?: (x: T, y: T) => boolean }) {
+export function useDirty<T>(
+  data: T,
+  options?: { isEqual?: (x: T, y: T) => boolean }
+) {
   const [freshData, setFreshData] = React.useState(() => data);
 
   const isDirty = React.useMemo(

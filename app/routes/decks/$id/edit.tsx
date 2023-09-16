@@ -1,6 +1,6 @@
+import { useTinyForm } from "@hiogawa/tiny-form/dist/react";
 import { useNavigate } from "@remix-run/react";
 import { useMutation } from "@tanstack/react-query";
-import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { DeckNavBarMenuComponent } from ".";
 import { $R, R } from "../../../misc/routes";
@@ -10,7 +10,7 @@ import { useLoaderDataExtra } from "../../../utils/loader-utils";
 import { cls } from "../../../utils/misc";
 import type { PageHandle } from "../../../utils/page-handle";
 import { toastInfo } from "../../../utils/toast-utils";
-
+import { useDirty } from "../../users/me";
 import type { LoaderData } from "./_utils.server";
 export { loader } from "./_utils.server";
 
@@ -30,13 +30,15 @@ export default function DefaultComponent() {
 function DefaultComponentInner() {
   const { deck } = useLoaderDataExtra() as LoaderData;
 
-  const form = useForm({ defaultValues: deck });
+  const form = useTinyForm(deck);
+  const [isDirty, resetDirty] = useDirty(form.data);
 
   const updateDeckMutation = useMutation({
     ...rpcClientQuery.decks_update.mutationOptions(),
     onSuccess: () => {
       toast.success("Successfully updated a deck");
-      form.reset(form.getValues());
+      // form.reset(form.getValues());
+      resetDirty();
     },
     onError: () => {
       toast.error("Failed to update a deck");
@@ -61,7 +63,7 @@ function DefaultComponentInner() {
       <form
         className="flex flex-col border w-full p-6 gap-3"
         data-test="edit-deck-form"
-        onSubmit={form.handleSubmit((data) => updateDeckMutation.mutate(data))}
+        onSubmit={form.handleSubmit(() => updateDeckMutation.mutate(form.data))}
       >
         <h1 className="text-lg">Edit Deck</h1>
         <label className="flex flex-col gap-1">
@@ -69,7 +71,8 @@ function DefaultComponentInner() {
           <input
             type="text"
             className="antd-input p-1"
-            {...form.register("name", { required: true })}
+            required
+            {...form.fields.name.valueProps()}
           />
         </label>
         <label className="flex flex-col gap-1">
@@ -77,10 +80,10 @@ function DefaultComponentInner() {
           <input
             type="number"
             className="antd-input p-1"
-            {...form.register("newEntriesPerDay", {
-              required: true,
-              valueAsNumber: true,
-            })}
+            value={form.fields.newEntriesPerDay.value}
+            onChange={(e) =>
+              form.fields.newEntriesPerDay.onChange(e.target.valueAsNumber)
+            }
           />
         </label>
         <label className="flex flex-col gap-1">
@@ -88,15 +91,15 @@ function DefaultComponentInner() {
           <input
             type="number"
             className="antd-input p-1"
-            {...form.register("reviewsPerDay", {
-              required: true,
-              valueAsNumber: true,
-            })}
+            value={form.fields.reviewsPerDay.value}
+            onChange={(e) =>
+              form.fields.reviewsPerDay.onChange(e.target.valueAsNumber)
+            }
           />
         </label>
         <label className="flex gap-2">
           <span className="text-colorTextLabel">Randomize</span>
-          <input type="checkbox" {...form.register("randomMode")} />
+          <input type="checkbox" {...form.fields.randomMode.checkedProps()} />
         </label>
         <label className="flex flex-col gap-1">
           <span className="text-colorTextLabel">Created At</span>
@@ -117,11 +120,7 @@ function DefaultComponentInner() {
             "antd-btn antd-btn-primary p-1",
             updateDeckMutation.isLoading && "antd-btn-loading"
           )}
-          disabled={
-            !form.formState.isDirty ||
-            !form.formState.isValid ||
-            updateDeckMutation.isLoading
-          }
+          disabled={!isDirty || updateDeckMutation.isLoading}
         >
           Save
         </button>
