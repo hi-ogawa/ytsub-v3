@@ -7,7 +7,7 @@ import {
   Outlet,
   RouteObject,
   RouterProvider,
-  createHashRouter,
+  createBrowserRouter,
   redirect,
 } from "react-router-dom";
 import * as stories from "./components/stories";
@@ -32,7 +32,7 @@ const storiesRoutes = Object.entries(stories).map(
   })
 );
 
-const router = createHashRouter([
+const router = createBrowserRouter([
   {
     element: <Root />,
     children: [

@@ -1,9 +1,9 @@
+import { useTinyForm } from "@hiogawa/tiny-form/dist/react";
 import { Transition } from "@hiogawa/tiny-transition/dist/react";
 import { mapOption, range, tinyassert } from "@hiogawa/utils";
 import { toArraySetState, useRafLoop } from "@hiogawa/utils-react";
 import { useMutation } from "@tanstack/react-query";
 import React from "react";
-import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { z } from "zod";
 import { rpcClient } from "../trpc/client";
@@ -373,26 +373,24 @@ interface ImportModalFormType {
   mode2: ImportMode;
   text1: string;
   text2: string;
-  download1?: number;
-  download2?: number;
+  download1: number | undefined;
+  download2: number | undefined;
 }
 
 function ImportModalForm(props: {
   videoMetadata: VideoMetadata;
   onSubmit: (entries: CaptionEditorEntrySimple[]) => void;
 }) {
-  const form = useForm<ImportModalFormType>({
-    defaultValues: {
-      mode1: "manual",
-      mode2: "manual",
-      text1: "",
-      text2: "",
-      download1: undefined,
-      download2: undefined,
-    },
+  const form = useTinyForm<ImportModalFormType>({
+    mode1: "manual",
+    mode2: "manual",
+    text1: "",
+    text2: "",
+    download1: undefined,
+    download2: undefined,
   });
 
-  // work with index since "useForm" breaks object identity
+  // work with index since "useForm" breaks object identity (TODO: obsolete)
   const downloadOptions = toCaptionConfigOptions(props.videoMetadata).captions;
   const downloadOptionIndices = range(downloadOptions.length);
 
@@ -446,8 +444,8 @@ function ImportModalForm(props: {
   return (
     <form
       className="flex flex-col gap-4 p-4 m-0 min-h-[406px]"
-      onSubmit={form.handleSubmit((data) => {
-        importEntriesMutation.mutate(data);
+      onSubmit={form.handleSubmit(() => {
+        importEntriesMutation.mutate(form.data);
       })}
     >
       <div className="flex items-center">
@@ -457,10 +455,10 @@ function ImportModalForm(props: {
           type="button"
           className="antd-btn antd-btn-default px-2"
           onClick={() => {
-            form.setValue("mode1", "manual");
-            form.setValue("mode2", "manual");
-            form.setValue("text1", EXAMPLE_KO);
-            form.setValue("text2", EXAMPLE_EN);
+            form.fields.mode1.onChange("manual");
+            form.fields.mode2.onChange("manual");
+            form.fields.text1.onChange(EXAMPLE_KO);
+            form.fields.text2.onChange(EXAMPLE_EN);
           }}
         >
           use sample
@@ -484,7 +482,7 @@ function ImportModalForm(props: {
   );
 
   function renderSide(side: "1" | "2") {
-    const mode = form.watch(`mode${side}`);
+    const modeField = form.fields[`mode${side}`];
 
     return (
       <div className="flex-1 flex flex-col gap-1">
@@ -496,31 +494,27 @@ function ImportModalForm(props: {
             name={`mode${side}`}
             className="antd-input capitalize"
             options={Z_IMPORT_MODE.options}
-            value={mode}
-            onChange={(v) => {
-              form.setValue(`mode${side}`, v);
-            }}
+            {...modeField.rawProps()}
           />
         </span>
-        {mode === "manual" && (
+        {modeField.value === "manual" && (
           <textarea
             className="antd-input p-1"
             rows={10}
-            {...form.register(`text${side}`)}
+            {...form.fields[`text${side}`].valueProps()}
           />
         )}
-        {mode === "download" && (
+        {modeField.value === "download" && (
           <div className="flex flex-col gap-1">
             <span className="text-colorTextLabel">Select Language</span>
             <SelectWrapper
               name={`download${side}`}
               className="antd-input p-1"
               options={[undefined, ...downloadOptionIndices]}
-              value={form.watch(`download${side}`)}
-              onChange={(v) => form.setValue(`download${side}`, v)}
               labelFn={(v) =>
                 mapOption(v, (v) => downloadOptions[v].name) ?? ""
               }
+              {...form.fields[`download${side}`]?.rawProps()}
             />
             {downloadOptions.length === 0 && (
               <span className="text-sm text-colorErrorText">
