@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">26.07% </span>
+                <span class="strong">26.63% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>170/652</span>
+                <span class='fraction'>175/657</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">26.07% </span>
+                <span class="strong">26.63% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>170/652</span>
+                <span class='fraction'>175/657</span>
             </div>
         
             
@@ -715,7 +715,12 @@
 <a name='L650'></a><a href='#L650'>650</a>
 <a name='L651'></a><a href='#L651'>651</a>
 <a name='L652'></a><a href='#L652'>652</a>
-<a name='L653'></a><a href='#L653'>653</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L653'></a><a href='#L653'>653</a>
+<a name='L654'></a><a href='#L654'>654</a>
+<a name='L655'></a><a href='#L655'>655</a>
+<a name='L656'></a><a href='#L656'>656</a>
+<a name='L657'></a><a href='#L657'>657</a>
+<a name='L658'></a><a href='#L658'>658</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -748,6 +753,10 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -1081,6 +1090,7 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -1369,7 +1379,7 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { useTinyForm } from "@hiogawa/tiny-form/dist/react";
 import { Transition } from "@hiogawa/tiny-transition/dist/react";
-import { mapOption, range, tinyassert } from "@hiogawa/utils";
+import { tinyassert } from "@hiogawa/utils";
 import { toArraySetState, useRafLoop } from "@hiogawa/utils-react";
 import { useMutation } from "@tanstack/react-query";
 import React from "react";
@@ -1378,7 +1388,11 @@ import { z } from "zod";
 import { rpcClient } from "../trpc/client";
 import { useDocumentEvent } from "../utils/hooks-client-utils";
 import { cls, zipMax } from "../utils/misc";
-import type { CaptionEntry, VideoMetadata } from "../utils/types";
+import type {
+  CaptionConfigOption,
+  CaptionEntry,
+  VideoMetadata,
+} from "../utils/types";
 import {
   YoutubePlayer,
   mergeTtmlEntries,
@@ -1742,10 +1756,11 @@ interface ImportModalFormType {
   mode2: ImportMode;
   text1: string;
   text2: string;
-  download1: number | undefined;
-  download2: number | undefined;
+  download1: CaptionConfigOption | undefined;
+  download2: CaptionConfigOption | undefined;
 }
 &nbsp;
+// TODO: infinite re-render?
 <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >function ImportModalForm(props: {</span></span>
 <span class="cstat-no" title="statement not covered" >  videoMetadata: VideoMetadata;</span>
 <span class="cstat-no" title="statement not covered" >  onSubmit: (entries: CaptionEditorEntrySimple[]) =&gt; void;</span>
@@ -1759,9 +1774,9 @@ interface ImportModalFormType {
 <span class="cstat-no" title="statement not covered" >    download2: undefined,</span>
 <span class="cstat-no" title="statement not covered" >  });</span>
 <span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >  // work with index since "useForm" breaks object identity (TODO: obsolete)</span>
-<span class="cstat-no" title="statement not covered" >  const downloadOptions = toCaptionConfigOptions(props.videoMetadata).captions;</span>
-<span class="cstat-no" title="statement not covered" >  const downloadOptionIndices = range(downloadOptions.length);</span>
+<span class="cstat-no" title="statement not covered" >  const [downloadOptions] = React.useState(</span>
+<span class="cstat-no" title="statement not covered" >    () =&gt; toCaptionConfigOptions(props.videoMetadata).captions</span>
+<span class="cstat-no" title="statement not covered" >  );</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  const importEntriesMutation = useMutation({</span>
 <span class="cstat-no" title="statement not covered" >    mutationFn: async (data: ImportModalFormType) =&gt; {</span>
@@ -1770,13 +1785,12 @@ interface ImportModalFormType {
 <span class="cstat-no" title="statement not covered" >      }</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >      const videoId = props.videoMetadata.videoDetails.videoId;</span>
-<span class="cstat-no" title="statement not covered" >      function fetchEntries(index?: number) {</span>
-<span class="cstat-no" title="statement not covered" >        if (typeof index !== "number") {</span>
-<span class="cstat-no" title="statement not covered" >          throw new Error("Please select a lanauge");</span>
-<span class="cstat-no" title="statement not covered" >        }</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >      function fetchEntries(option?: CaptionConfigOption) {</span>
+<span class="cstat-no" title="statement not covered" >        tinyassert(option);</span>
 <span class="cstat-no" title="statement not covered" >        return rpcClient.videos_fetchTtmlEntries({</span>
 <span class="cstat-no" title="statement not covered" >          videoId,</span>
-<span class="cstat-no" title="statement not covered" >          language: downloadOptions[index].captionConfig,</span>
+<span class="cstat-no" title="statement not covered" >          language: option.captionConfig,</span>
 <span class="cstat-no" title="statement not covered" >        });</span>
 <span class="cstat-no" title="statement not covered" >      }</span>
 <span class="cstat-no" title="statement not covered" ></span>
@@ -1870,6 +1884,7 @@ interface ImportModalFormType {
 <span class="cstat-no" title="statement not covered" >          &lt;textarea</span>
 <span class="cstat-no" title="statement not covered" >            className="antd-input p-1"</span>
 <span class="cstat-no" title="statement not covered" >            rows={10}</span>
+<span class="cstat-no" title="statement not covered" >            required</span>
 <span class="cstat-no" title="statement not covered" >            {...form.fields[`text${side}`].valueProps()}</span>
 <span class="cstat-no" title="statement not covered" >          /&gt;</span>
 <span class="cstat-no" title="statement not covered" >        )}</span>
@@ -1879,11 +1894,11 @@ interface ImportModalFormType {
 <span class="cstat-no" title="statement not covered" >            &lt;SelectWrapper</span>
 <span class="cstat-no" title="statement not covered" >              name={`download${side}`}</span>
 <span class="cstat-no" title="statement not covered" >              className="antd-input p-1"</span>
-<span class="cstat-no" title="statement not covered" >              options={[undefined, ...downloadOptionIndices]}</span>
-<span class="cstat-no" title="statement not covered" >              labelFn={(v) =&gt;</span>
-<span class="cstat-no" title="statement not covered" >                mapOption(v, (v) =&gt; downloadOptions[v].name) ?? ""</span>
-<span class="cstat-no" title="statement not covered" >              }</span>
-<span class="cstat-no" title="statement not covered" >              {...form.fields[`download${side}`]?.rawProps()}</span>
+<span class="cstat-no" title="statement not covered" >              options={[undefined, ...downloadOptions]}</span>
+<span class="cstat-no" title="statement not covered" >              labelFn={(v) =&gt; v?.name ?? ""}</span>
+<span class="cstat-no" title="statement not covered" >              required</span>
+<span class="cstat-no" title="statement not covered" >              value={form.fields[`download${side}`].value}</span>
+<span class="cstat-no" title="statement not covered" >              onChange={(v) =&gt; form.fields[`download${side}`].onChange(v)}</span>
 <span class="cstat-no" title="statement not covered" >            /&gt;</span>
 <span class="cstat-no" title="statement not covered" >            {downloadOptions.length === 0 &amp;&amp; (</span>
 <span class="cstat-no" title="statement not covered" >              &lt;span className="text-sm text-colorErrorText"&gt;</span>
@@ -2026,7 +2041,7 @@ Say something
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-09-16T01:40:35.234Z
+                at 2023-09-16T02:00:48.358Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>
