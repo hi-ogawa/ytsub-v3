@@ -51,6 +51,7 @@ function FormComponent() {
     >
       <div className="text-lg">Import Deck</div>
       <label className="flex flex-col gap-1">
+        <span className="text-colorTextSecondary">File</span>
         <input
           type="file"
           accept="application/json"
