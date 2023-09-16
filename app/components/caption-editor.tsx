@@ -381,7 +381,6 @@ interface ImportModalFormType {
   download2: CaptionConfigOption | undefined;
 }
 
-// TODO: infinite re-render?
 function ImportModalForm(props: {
   videoMetadata: VideoMetadata;
   onSubmit: (entries: CaptionEditorEntrySimple[]) => void;
