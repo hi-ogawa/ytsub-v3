@@ -36,7 +36,7 @@ export default function Page() {
                 type="text"
                 className="antd-input p-1"
                 required
-                {...form.fields.videoId.valueProps()}
+                {...form.fields.videoId.props()}
               />
             </label>
             <button type="submit" className="antd-btn antd-btn-primary p-1">

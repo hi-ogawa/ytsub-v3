@@ -145,8 +145,8 @@ devDependencies:
     specifier: 0.0.4-pre.1
     version: 0.0.4-pre.1
   '@hiogawa/tiny-form':
-    specifier: 0.0.1-pre.3
-    version: 0.0.1-pre.3(react@18.2.0)
+    specifier: 0.0.1-pre.4
+    version: 0.0.1-pre.4(react@18.2.0)
   '@hiogawa/unocss-preset-antd':
     specifier: 2.2.1-pre.3
     version: 2.2.1-pre.3(@unocss/preset-uno@0.55.4)(unocss@0.52.7)
@@ -2339,8 +2339,8 @@ packages:
     resolution: {integrity: sha512-3z/qYXDyROVX8oaFdqMyiLL8ZZE9dEaEw02ZYXOxmUF6U5MM3pskzLZId/KMvT+ZnLCLI4CUBuga6AIf56JXTw==}
     dev: true
 
-  /@hiogawa/tiny-form@0.0.1-pre.3(react@18.2.0):
-    resolution: {integrity: sha512-t2oPcE90YjShsapyulVDX6kS7LNqWxTHlS/yKNfMJmaz8Vn2rqGmpjEZfcOUPl2bJZIoewUO1pIxJiqUP2tHBw==}
+  /@hiogawa/tiny-form@0.0.1-pre.4(react@18.2.0):
+    resolution: {integrity: sha512-Zp2Yg6nfC1EIti3X40PlOTO/p0XzWOnIBS/1t2NNOexsny4pb2B55aQp5VaiDMPJeB2GA41NFedo0I92qpkk2A==}
     peerDependencies:
       react: '*'
     peerDependenciesMeta:

@@ -66,7 +66,7 @@ export default function DefaultComponent() {
             type="text"
             className="antd-input p-1"
             required
-            {...form.fields.username.valueProps()}
+            {...form.fields.username.props()}
           />
         </label>
         <label className="flex flex-col gap-1">
@@ -75,7 +75,7 @@ export default function DefaultComponent() {
             type="password"
             className="antd-input p-1"
             required
-            {...form.fields.password.valueProps()}
+            {...form.fields.password.props()}
           />
         </label>
         <label className="flex flex-col gap-1">
@@ -84,7 +84,7 @@ export default function DefaultComponent() {
             type="password"
             className="antd-input p-1"
             required
-            {...form.fields.passwordConfirmation.valueProps()}
+            {...form.fields.passwordConfirmation.props()}
           />
         </label>
         <div className="flex flex-col gap-1">

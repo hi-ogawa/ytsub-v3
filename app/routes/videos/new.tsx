@@ -250,7 +250,7 @@ function AdvancedModeForm({ videoId }: { videoId: string }) {
           rows={8}
           placeholder="Please copy the exported data from caption editor"
           required
-          {...form.fields.input.valueProps()}
+          {...form.fields.input.props()}
         />
       </div>
       <button

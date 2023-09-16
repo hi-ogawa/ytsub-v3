@@ -68,7 +68,7 @@ export default function DefaultComponent() {
                     className="antd-input pl-7 py-0.5"
                     type="text"
                     placeholder="Search text..."
-                    {...form.fields.q.valueProps()}
+                    {...form.fields.q.props()}
                   />
                 </label>
               </form>

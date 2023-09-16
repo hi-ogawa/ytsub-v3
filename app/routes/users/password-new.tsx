@@ -50,7 +50,7 @@ export default function Page() {
                 className="antd-input p-1"
                 type="password"
                 required
-                {...form.fields.password.valueProps()}
+                {...form.fields.password.props()}
               />
             </label>
             <label className="flex flex-col gap-1">
@@ -59,7 +59,7 @@ export default function Page() {
                 className="antd-input p-1"
                 type="password"
                 required
-                {...form.fields.passwordConfirmation.valueProps()}
+                {...form.fields.passwordConfirmation.props()}
               />
             </label>
             <button

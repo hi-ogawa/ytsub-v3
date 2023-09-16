@@ -232,7 +232,10 @@ export function TestSpinner() {
         <div className="flex flex-col gap-2">
           <div className="flex gap-2">
             Overlay
-            <input type="checkbox" {...form.fields.overlay.checkedProps()} />
+            <input
+              type="checkbox"
+              {...form.fields.overlay.props({ checked: true })}
+            />
           </div>
           <div className="relative border h-[100px] grid place-content-center">
             <div>Hello World</div>
@@ -246,7 +249,10 @@ export function TestSpinner() {
         <div className="flex flex-col gap-2">
           <div className="flex gap-2">
             Button
-            <input type="checkbox" {...form.fields.button.checkedProps()} />
+            <input
+              type="checkbox"
+              {...form.fields.button.props({ checked: true })}
+            />
           </div>
           <button
             className={cls(

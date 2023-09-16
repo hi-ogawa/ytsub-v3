@@ -110,7 +110,7 @@ export default function DefaultComponent() {
               <select
                 className="antd-input p-1"
                 required
-                {...form.fields.language1.valueProps()}
+                {...form.fields.language1.props()}
               >
                 <LanguageSelectOptions />
               </select>
@@ -120,7 +120,7 @@ export default function DefaultComponent() {
               <select
                 className="antd-input p-1"
                 required
-                {...form.fields.language2.valueProps()}
+                {...form.fields.language2.props()}
               >
                 <LanguageSelectOptions />
               </select>
@@ -149,7 +149,7 @@ export default function DefaultComponent() {
               <input
                 className="antd-input p-1"
                 required
-                {...form.fields.timezone.valueProps()}
+                {...form.fields.timezone.props()}
               />
             </div>
             <button
@@ -221,7 +221,7 @@ function UpdateEmailForm(props: { onSuccess: () => void }) {
           className="antd-input p-1"
           placeholder="Input new email..."
           required
-          {...form.fields.email.valueProps()}
+          {...form.fields.email.props()}
         />
       </label>
       <button

@@ -69,7 +69,7 @@ function DefaultComponentInner() {
             type="text"
             className="antd-input p-1"
             required
-            {...form.fields.name.valueProps()}
+            {...form.fields.name.props()}
           />
         </label>
         <label className="flex flex-col gap-1">
@@ -96,7 +96,10 @@ function DefaultComponentInner() {
         </label>
         <label className="flex gap-2">
           <span className="text-colorTextLabel">Randomize</span>
-          <input type="checkbox" {...form.fields.randomMode.checkedProps()} />
+          <input
+            type="checkbox"
+            {...form.fields.randomMode.props({ checked: true })}
+          />
         </label>
         <label className="flex flex-col gap-1">
           <span className="text-colorTextLabel">Created At</span>

@@ -49,7 +49,7 @@ export default function Page() {
               <input
                 className="antd-input p-1"
                 required
-                {...form.fields.email.valueProps()}
+                {...form.fields.email.props()}
               />
             </label>
             <button

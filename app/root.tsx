@@ -297,7 +297,7 @@ function SearchComponent(props: { closeDrawer: () => void }) {
           className="w-full antd-input p-1 pl-9"
           placeholder="Enter Video ID or URL"
           required
-          {...form.fields.videoId.valueProps()}
+          {...form.fields.videoId.props()}
         />
       </label>
     </form>

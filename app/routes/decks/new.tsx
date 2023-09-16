@@ -51,7 +51,7 @@ export default function DefaultComponent() {
             type="text"
             className="antd-input p-1"
             required
-            {...form.fields.name.valueProps()}
+            {...form.fields.name.props()}
           />
         </label>
         <label className="flex flex-col gap-1">

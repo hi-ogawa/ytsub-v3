@@ -506,7 +506,7 @@ function ImportModalForm(props: {
             className="antd-input p-1"
             rows={10}
             required
-            {...form.fields[`text${side}`].valueProps()}
+            {...form.fields[`text${side}`].props()}
           />
         )}
         {modeField.value === "download" && (
