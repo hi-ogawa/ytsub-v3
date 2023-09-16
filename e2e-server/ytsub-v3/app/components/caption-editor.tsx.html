@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">25.83% </span>
+                <span class="strong">26.07% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>170/658</span>
+                <span class='fraction'>170/652</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">25.83% </span>
+                <span class="strong">26.07% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>170/658</span>
+                <span class='fraction'>170/652</span>
             </div>
         
             
@@ -715,13 +715,7 @@
 <a name='L650'></a><a href='#L650'>650</a>
 <a name='L651'></a><a href='#L651'>651</a>
 <a name='L652'></a><a href='#L652'>652</a>
-<a name='L653'></a><a href='#L653'>653</a>
-<a name='L654'></a><a href='#L654'>654</a>
-<a name='L655'></a><a href='#L655'>655</a>
-<a name='L656'></a><a href='#L656'>656</a>
-<a name='L657'></a><a href='#L657'>657</a>
-<a name='L658'></a><a href='#L658'>658</a>
-<a name='L659'></a><a href='#L659'>659</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L653'></a><a href='#L653'>653</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -1250,12 +1244,6 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -1379,12 +1367,12 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { Transition } from "@hiogawa/tiny-transition/dist/react";
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { useTinyForm } from "@hiogawa/tiny-form/dist/react";
+import { Transition } from "@hiogawa/tiny-transition/dist/react";
 import { mapOption, range, tinyassert } from "@hiogawa/utils";
 import { toArraySetState, useRafLoop } from "@hiogawa/utils-react";
 import { useMutation } from "@tanstack/react-query";
 import React from "react";
-import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { z } from "zod";
 import { rpcClient } from "../trpc/client";
@@ -1754,26 +1742,24 @@ interface ImportModalFormType {
   mode2: ImportMode;
   text1: string;
   text2: string;
-  download1?: number;
-  download2?: number;
+  download1: number | undefined;
+  download2: number | undefined;
 }
 &nbsp;
 <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >function ImportModalForm(props: {</span></span>
 <span class="cstat-no" title="statement not covered" >  videoMetadata: VideoMetadata;</span>
 <span class="cstat-no" title="statement not covered" >  onSubmit: (entries: CaptionEditorEntrySimple[]) =&gt; void;</span>
 <span class="cstat-no" title="statement not covered" >}) {</span>
-<span class="cstat-no" title="statement not covered" >  const form = useForm&lt;ImportModalFormType&gt;({</span>
-<span class="cstat-no" title="statement not covered" >    defaultValues: {</span>
-<span class="cstat-no" title="statement not covered" >      mode1: "manual",</span>
-<span class="cstat-no" title="statement not covered" >      mode2: "manual",</span>
-<span class="cstat-no" title="statement not covered" >      text1: "",</span>
-<span class="cstat-no" title="statement not covered" >      text2: "",</span>
-<span class="cstat-no" title="statement not covered" >      download1: undefined,</span>
-<span class="cstat-no" title="statement not covered" >      download2: undefined,</span>
-<span class="cstat-no" title="statement not covered" >    },</span>
+<span class="cstat-no" title="statement not covered" >  const form = useTinyForm&lt;ImportModalFormType&gt;({</span>
+<span class="cstat-no" title="statement not covered" >    mode1: "manual",</span>
+<span class="cstat-no" title="statement not covered" >    mode2: "manual",</span>
+<span class="cstat-no" title="statement not covered" >    text1: "",</span>
+<span class="cstat-no" title="statement not covered" >    text2: "",</span>
+<span class="cstat-no" title="statement not covered" >    download1: undefined,</span>
+<span class="cstat-no" title="statement not covered" >    download2: undefined,</span>
 <span class="cstat-no" title="statement not covered" >  });</span>
 <span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >  // work with index since "useForm" breaks object identity</span>
+<span class="cstat-no" title="statement not covered" >  // work with index since "useForm" breaks object identity (TODO: obsolete)</span>
 <span class="cstat-no" title="statement not covered" >  const downloadOptions = toCaptionConfigOptions(props.videoMetadata).captions;</span>
 <span class="cstat-no" title="statement not covered" >  const downloadOptionIndices = range(downloadOptions.length);</span>
 <span class="cstat-no" title="statement not covered" ></span>
@@ -1827,8 +1813,8 @@ interface ImportModalFormType {
 <span class="cstat-no" title="statement not covered" >  return (</span>
 <span class="cstat-no" title="statement not covered" >    &lt;form</span>
 <span class="cstat-no" title="statement not covered" >      className="flex flex-col gap-4 p-4 m-0 min-h-[406px]"</span>
-<span class="cstat-no" title="statement not covered" >      onSubmit={form.handleSubmit((data) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >        importEntriesMutation.mutate(data);</span>
+<span class="cstat-no" title="statement not covered" >      onSubmit={form.handleSubmit(() =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >        importEntriesMutation.mutate(form.data);</span>
 <span class="cstat-no" title="statement not covered" >      })}</span>
 <span class="cstat-no" title="statement not covered" >    &gt;</span>
 <span class="cstat-no" title="statement not covered" >      &lt;div className="flex items-center"&gt;</span>
@@ -1838,10 +1824,10 @@ interface ImportModalFormType {
 <span class="cstat-no" title="statement not covered" >          type="button"</span>
 <span class="cstat-no" title="statement not covered" >          className="antd-btn antd-btn-default px-2"</span>
 <span class="cstat-no" title="statement not covered" >          onClick={() =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >            form.setValue("mode1", "manual");</span>
-<span class="cstat-no" title="statement not covered" >            form.setValue("mode2", "manual");</span>
-<span class="cstat-no" title="statement not covered" >            form.setValue("text1", EXAMPLE_KO);</span>
-<span class="cstat-no" title="statement not covered" >            form.setValue("text2", EXAMPLE_EN);</span>
+<span class="cstat-no" title="statement not covered" >            form.fields.mode1.onChange("manual");</span>
+<span class="cstat-no" title="statement not covered" >            form.fields.mode2.onChange("manual");</span>
+<span class="cstat-no" title="statement not covered" >            form.fields.text1.onChange(EXAMPLE_KO);</span>
+<span class="cstat-no" title="statement not covered" >            form.fields.text2.onChange(EXAMPLE_EN);</span>
 <span class="cstat-no" title="statement not covered" >          }}</span>
 <span class="cstat-no" title="statement not covered" >        &gt;</span>
 <span class="cstat-no" title="statement not covered" >          use sample</span>
@@ -1865,7 +1851,7 @@ interface ImportModalFormType {
 <span class="cstat-no" title="statement not covered" >  );</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  function renderSide(side: "1" | "2") {</span>
-<span class="cstat-no" title="statement not covered" >    const mode = form.watch(`mode${side}`);</span>
+<span class="cstat-no" title="statement not covered" >    const modeField = form.fields[`mode${side}`];</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >    return (</span>
 <span class="cstat-no" title="statement not covered" >      &lt;div className="flex-1 flex flex-col gap-1"&gt;</span>
@@ -1877,31 +1863,27 @@ interface ImportModalFormType {
 <span class="cstat-no" title="statement not covered" >            name={`mode${side}`}</span>
 <span class="cstat-no" title="statement not covered" >            className="antd-input capitalize"</span>
 <span class="cstat-no" title="statement not covered" >            options={Z_IMPORT_MODE.options}</span>
-<span class="cstat-no" title="statement not covered" >            value={mode}</span>
-<span class="cstat-no" title="statement not covered" >            onChange={(v) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >              form.setValue(`mode${side}`, v);</span>
-<span class="cstat-no" title="statement not covered" >            }}</span>
+<span class="cstat-no" title="statement not covered" >            {...modeField.rawProps()}</span>
 <span class="cstat-no" title="statement not covered" >          /&gt;</span>
 <span class="cstat-no" title="statement not covered" >        &lt;/span&gt;</span>
-<span class="cstat-no" title="statement not covered" >        {mode === "manual" &amp;&amp; (</span>
+<span class="cstat-no" title="statement not covered" >        {modeField.value === "manual" &amp;&amp; (</span>
 <span class="cstat-no" title="statement not covered" >          &lt;textarea</span>
 <span class="cstat-no" title="statement not covered" >            className="antd-input p-1"</span>
 <span class="cstat-no" title="statement not covered" >            rows={10}</span>
-<span class="cstat-no" title="statement not covered" >            {...form.register(`text${side}`)}</span>
+<span class="cstat-no" title="statement not covered" >            {...form.fields[`text${side}`].valueProps()}</span>
 <span class="cstat-no" title="statement not covered" >          /&gt;</span>
 <span class="cstat-no" title="statement not covered" >        )}</span>
-<span class="cstat-no" title="statement not covered" >        {mode === "download" &amp;&amp; (</span>
+<span class="cstat-no" title="statement not covered" >        {modeField.value === "download" &amp;&amp; (</span>
 <span class="cstat-no" title="statement not covered" >          &lt;div className="flex flex-col gap-1"&gt;</span>
 <span class="cstat-no" title="statement not covered" >            &lt;span className="text-colorTextLabel"&gt;Select Language&lt;/span&gt;</span>
 <span class="cstat-no" title="statement not covered" >            &lt;SelectWrapper</span>
 <span class="cstat-no" title="statement not covered" >              name={`download${side}`}</span>
 <span class="cstat-no" title="statement not covered" >              className="antd-input p-1"</span>
 <span class="cstat-no" title="statement not covered" >              options={[undefined, ...downloadOptionIndices]}</span>
-<span class="cstat-no" title="statement not covered" >              value={form.watch(`download${side}`)}</span>
-<span class="cstat-no" title="statement not covered" >              onChange={(v) =&gt; form.setValue(`download${side}`, v)}</span>
 <span class="cstat-no" title="statement not covered" >              labelFn={(v) =&gt;</span>
 <span class="cstat-no" title="statement not covered" >                mapOption(v, (v) =&gt; downloadOptions[v].name) ?? ""</span>
 <span class="cstat-no" title="statement not covered" >              }</span>
+<span class="cstat-no" title="statement not covered" >              {...form.fields[`download${side}`]?.rawProps()}</span>
 <span class="cstat-no" title="statement not covered" >            /&gt;</span>
 <span class="cstat-no" title="statement not covered" >            {downloadOptions.length === 0 &amp;&amp; (</span>
 <span class="cstat-no" title="statement not covered" >              &lt;span className="text-sm text-colorErrorText"&gt;</span>
@@ -2044,7 +2026,7 @@ Say something
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-09-16T00:47:06.326Z
+                at 2023-09-16T01:14:44.385Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

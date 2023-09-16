@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">22.22% </span>
+                <span class="strong">21.33% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>16/72</span>
+                <span class='fraction'>16/75</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">22.22% </span>
+                <span class="strong">21.33% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>16/72</span>
+                <span class='fraction'>16/75</span>
             </div>
         
             
@@ -135,7 +135,10 @@
 <a name='L70'></a><a href='#L70'>70</a>
 <a name='L71'></a><a href='#L71'>71</a>
 <a name='L72'></a><a href='#L72'>72</a>
-<a name='L73'></a><a href='#L73'>73</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L73'></a><a href='#L73'>73</a>
+<a name='L74'></a><a href='#L74'>74</a>
+<a name='L75'></a><a href='#L75'>75</a>
+<a name='L76'></a><a href='#L76'>76</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -207,14 +210,17 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="fstat-no" title="function not covered" >import { tinyassert } from "</span>@hiogawa/utils";
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="fstat-no" title="function not covered" >import { useTinyForm } from "</span>@hiogawa/tiny-form/dist/react";
+import { tinyassert } from "@hiogawa/utils";
 import { useNavigate } from "@remix-run/react";
 import { useMutation } from "@tanstack/react-query";
-import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { R } from "../../misc/routes";
 import { rpcClient } from "../../trpc/client";
-import { cls } from "../../utils/misc";
+import { cls, none } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 &nbsp;
 export const handle: PageHandle = {
@@ -232,13 +238,12 @@ export default <span class="fstat-no" title="function not covered" >function Def
 <span class="cstat-no" title="statement not covered" >}</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >function FormComponent() {</span></span>
-<span class="cstat-no" title="statement not covered" >  const form = useForm&lt;{ fileList?: FileList }&gt;();</span>
+<span class="cstat-no" title="statement not covered" >  const form = useTinyForm({ file: none&lt;File&gt;() });</span>
 <span class="cstat-no" title="statement not covered" >  const navigate = useNavigate();</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  const mutation = useMutation(</span>
 <span class="cstat-no" title="statement not covered" >    async () =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >      const { fileList } = form.getValues();</span>
-<span class="cstat-no" title="statement not covered" >      const file = fileList?.[0];</span>
+<span class="cstat-no" title="statement not covered" >      const file = form.data.file;</span>
 <span class="cstat-no" title="statement not covered" >      tinyassert(file);</span>
 <span class="cstat-no" title="statement not covered" >      const data = await file.text();</span>
 <span class="cstat-no" title="statement not covered" >      await rpcClient.decks_import({ data });</span>
@@ -261,10 +266,14 @@ export default <span class="fstat-no" title="function not covered" >function Def
 <span class="cstat-no" title="statement not covered" >    &gt;</span>
 <span class="cstat-no" title="statement not covered" >      &lt;div className="text-lg"&gt;Import Deck&lt;/div&gt;</span>
 <span class="cstat-no" title="statement not covered" >      &lt;label className="flex flex-col gap-1"&gt;</span>
+<span class="cstat-no" title="statement not covered" >        &lt;span className="text-colorTextSecondary"&gt;File&lt;/span&gt;</span>
 <span class="cstat-no" title="statement not covered" >        &lt;input</span>
 <span class="cstat-no" title="statement not covered" >          type="file"</span>
 <span class="cstat-no" title="statement not covered" >          accept="application/json"</span>
-<span class="cstat-no" title="statement not covered" >          {...form.register("fileList", { required: true })}</span>
+<span class="cstat-no" title="statement not covered" >          required</span>
+<span class="cstat-no" title="statement not covered" >          onChange={(e) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >            form.fields.file.onChange(e.target.files?.item(0) ?? undefined);</span>
+<span class="cstat-no" title="statement not covered" >          }}</span>
 <span class="cstat-no" title="statement not covered" >        /&gt;</span>
 <span class="cstat-no" title="statement not covered" >      &lt;/label&gt;</span>
 <span class="cstat-no" title="statement not covered" >      &lt;button</span>
@@ -272,7 +281,7 @@ export default <span class="fstat-no" title="function not covered" >function Def
 <span class="cstat-no" title="statement not covered" >          "antd-btn antd-btn-primary p-1 flex justify-center items-center",</span>
 <span class="cstat-no" title="statement not covered" >          mutation.isLoading &amp;&amp; "antd-btn-loading"</span>
 <span class="cstat-no" title="statement not covered" >        )}</span>
-<span class="cstat-no" title="statement not covered" >        disabled={!form.formState.isValid || mutation.isLoading}</span>
+<span class="cstat-no" title="statement not covered" >        disabled={mutation.isLoading || mutation.isSuccess}</span>
 <span class="cstat-no" title="statement not covered" >      &gt;</span>
 <span class="cstat-no" title="statement not covered" >        Import</span>
 <span class="cstat-no" title="statement not covered" >      &lt;/button&gt;</span>
@@ -286,7 +295,7 @@ export default <span class="fstat-no" title="function not covered" >function Def
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-09-16T00:47:06.326Z
+                at 2023-09-16T01:14:44.385Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>
