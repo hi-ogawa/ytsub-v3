@@ -495,7 +495,6 @@ function ImportModalForm(props: {
             {side === "1" ? "Left" : "Right"} side
           </span>
           <SelectWrapper
-            name={`mode${side}`}
             className="antd-input capitalize"
             options={Z_IMPORT_MODE.options}
             {...modeField.rawProps()}
@@ -513,13 +512,11 @@ function ImportModalForm(props: {
           <div className="flex flex-col gap-1">
             <span className="text-colorTextLabel">Select Language</span>
             <SelectWrapper
-              name={`download${side}`}
               className="antd-input p-1"
               options={[undefined, ...downloadOptions]}
               labelFn={(v) => v?.name ?? ""}
               required
-              value={form.fields[`download${side}`].value}
-              onChange={(v) => form.fields[`download${side}`].onChange(v)}
+              {...form.fields[`download${side}`].rawProps()}
             />
             {downloadOptions.length === 0 && (
               <span className="text-sm text-colorErrorText">

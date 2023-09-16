@@ -4,7 +4,7 @@ import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { $R } from "../../misc/routes";
 import { rpcClientQuery } from "../../trpc/client";
-import { asNumberInputProps } from "../../utils/form-utils";
+import { asNumberInput } from "../../utils/form-utils";
 import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 
@@ -61,7 +61,7 @@ export default function DefaultComponent() {
             type="number"
             className="antd-input p-1"
             required
-            {...asNumberInputProps(form.fields.newEntriesPerDay.rawProps())}
+            {...asNumberInput(form.fields.newEntriesPerDay.rawProps())}
           />
         </label>
         <label className="flex flex-col gap-1">
@@ -70,7 +70,7 @@ export default function DefaultComponent() {
             type="number"
             className="antd-input p-1"
             required
-            {...asNumberInputProps(form.fields.reviewsPerDay.rawProps())}
+            {...asNumberInput(form.fields.reviewsPerDay.rawProps())}
           />
         </label>
         <button

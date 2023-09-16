@@ -1,14 +1,14 @@
 import type React from "react";
 
-interface RawProps<T> {
-  value: T;
-  onChange: (v: T) => void;
-}
-
-export function asNumberInputProps(props: RawProps<number>) {
+export function asNumberInput(props: {
+  name: string;
+  value: number;
+  onChange: (v: number) => void;
+}) {
   return {
-    ...props,
-    value: Number.isFinite(props.value) ? String(props.value) : "", // force string to silence react warning on NaN
+    name: props.name,
+    // empty input will become NaN
+    value: Number.isFinite(props.value) ? String(props.value) : "",
     onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
       props.onChange(e.target.valueAsNumber),
   };
