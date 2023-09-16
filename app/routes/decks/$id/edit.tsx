@@ -37,7 +37,6 @@ function DefaultComponentInner() {
     ...rpcClientQuery.decks_update.mutationOptions(),
     onSuccess: () => {
       toast.success("Successfully updated a deck");
-      // form.reset(form.getValues());
       resetDirty();
     },
     onError: () => {
