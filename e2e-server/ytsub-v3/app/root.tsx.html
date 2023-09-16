@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">81.73% </span>
+                <span class="strong">81.98% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>273/334</span>
+                <span class='fraction'>273/333</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">81.73% </span>
+                <span class="strong">81.98% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>273/334</span>
+                <span class='fraction'>273/333</span>
             </div>
         
             
@@ -396,8 +396,7 @@
 <a name='L331'></a><a href='#L331'>331</a>
 <a name='L332'></a><a href='#L332'>332</a>
 <a name='L333'></a><a href='#L333'>333</a>
-<a name='L334'></a><a href='#L334'>334</a>
-<a name='L335'></a><a href='#L335'>335</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L334'></a><a href='#L334'>334</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -676,7 +675,6 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -732,7 +730,6 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="fstat-no" title="function not covered" >import { FloatingTree } from "</span>@floating-ui/react";
-import { useTinyForm } from "@hiogawa/tiny-form/dist/react";
 import { Compose } from "@hiogawa/utils-react";
 import {
   Link,
@@ -748,6 +745,7 @@ import {
 } from "@remix-run/react";
 import { useMutation } from "@tanstack/react-query";
 import React from "react";
+import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { Drawer } from "./components/drawer";
 import { PopoverSimple } from "./components/popover";
@@ -1011,16 +1009,16 @@ const SIDE_MENU_ENTRIES: SideMenuEntry[] = [
 ];
 &nbsp;
 <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >function SearchComponent(props: { closeDrawer: () =&gt; void }) {</span></span>
-<span class="cstat-no" title="statement not covered" >  const form = useTinyForm({ videoId: "" });</span>
+<span class="cstat-no" title="statement not covered" >  const form = useForm({ defaultValues: { videoId: "" } });</span>
 <span class="cstat-no" title="statement not covered" >  const navigate = useNavigate();</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  return (</span>
 <span class="cstat-no" title="statement not covered" >    &lt;form</span>
 <span class="cstat-no" title="statement not covered" >      className="w-full"</span>
 <span class="cstat-no" title="statement not covered" >      data-test="search-form"</span>
-<span class="cstat-no" title="statement not covered" >      onSubmit={form.handleSubmit(() =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >      onSubmit={form.handleSubmit((data) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >        props.closeDrawer();</span>
-<span class="cstat-no" title="statement not covered" >        navigate($R["/videos/new"](null, form.data));</span>
+<span class="cstat-no" title="statement not covered" >        navigate($R["/videos/new"](null, data));</span>
 <span class="cstat-no" title="statement not covered" >      })}</span>
 <span class="cstat-no" title="statement not covered" >    &gt;</span>
 <span class="cstat-no" title="statement not covered" >      &lt;label className="w-full relative text-base-content flex items-center"&gt;</span>
@@ -1029,8 +1027,7 @@ const SIDE_MENU_ENTRIES: SideMenuEntry[] = [
 <span class="cstat-no" title="statement not covered" >          type="text"</span>
 <span class="cstat-no" title="statement not covered" >          className="w-full antd-input p-1 pl-9"</span>
 <span class="cstat-no" title="statement not covered" >          placeholder="Enter Video ID or URL"</span>
-<span class="cstat-no" title="statement not covered" >          required</span>
-<span class="cstat-no" title="statement not covered" >          {...form.fields.videoId.valueProps()}</span>
+<span class="cstat-no" title="statement not covered" >          {...form.register("videoId", { required: true })}</span>
 <span class="cstat-no" title="statement not covered" >        /&gt;</span>
 <span class="cstat-no" title="statement not covered" >      &lt;/label&gt;</span>
 <span class="cstat-no" title="statement not covered" >    &lt;/form&gt;</span>
@@ -1072,7 +1069,7 @@ const SIDE_MENU_ENTRIES: SideMenuEntry[] = [
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-09-15T21:48:32.392Z
+                at 2023-09-16T00:17:53.186Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
