@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">17.89% </span>
+                <span class="strong">17.52% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>17/95</span>
+                <span class='fraction'>17/97</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">17.89% </span>
+                <span class="strong">17.52% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>17/95</span>
+                <span class='fraction'>17/97</span>
             </div>
         
             
@@ -158,7 +158,9 @@
 <a name='L93'></a><a href='#L93'>93</a>
 <a name='L94'></a><a href='#L94'>94</a>
 <a name='L95'></a><a href='#L95'>95</a>
-<a name='L96'></a><a href='#L96'>96</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L96'></a><a href='#L96'>96</a>
+<a name='L97'></a><a href='#L97'>97</a>
+<a name='L98'></a><a href='#L98'>98</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -210,6 +212,8 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -253,8 +257,8 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="fstat-no" title="function not covered" >import { Link, useNavigate } from "</span>@remix-run/react";
-import { useForm } from "react-hook-form";
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="fstat-no" title="function not covered" >import { useTinyForm } from "</span>@hiogawa/tiny-form/dist/react";
+import { Link, useNavigate } from "@remix-run/react";
 import {
   STORAGE_KEYS,
   Z_CAPTION_EDITOR_DRAFT_LIST,
@@ -269,7 +273,7 @@ export const handle: PageHandle = {
 };
 &nbsp;
 export default <span class="fstat-no" title="function not covered" >function Page() {</span>
-<span class="cstat-no" title="statement not covered" >  const form = useForm({ defaultValues: { videoId: "" } });</span>
+<span class="cstat-no" title="statement not covered" >  const form = useTinyForm({ videoId: "" });</span>
 <span class="cstat-no" title="statement not covered" >  const navigate = useNavigate();</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  return (</span>
@@ -279,8 +283,10 @@ export default <span class="fstat-no" title="function not covered" >function Pag
 <span class="cstat-no" title="statement not covered" >          &lt;div className="text-2xl"&gt;Caption Editor&lt;/div&gt;</span>
 <span class="cstat-no" title="statement not covered" >          &lt;form</span>
 <span class="cstat-no" title="statement not covered" >            className="w-full flex flex-col gap-3"</span>
-<span class="cstat-no" title="statement not covered" >            onSubmit={form.handleSubmit((data) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >              navigate($R["/caption-editor/watch"](null, { v: data.videoId }));</span>
+<span class="cstat-no" title="statement not covered" >            onSubmit={form.handleSubmit(() =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >              navigate(</span>
+<span class="cstat-no" title="statement not covered" >                $R["/caption-editor/watch"](null, { v: form.data.videoId })</span>
+<span class="cstat-no" title="statement not covered" >              );</span>
 <span class="cstat-no" title="statement not covered" >            })}</span>
 <span class="cstat-no" title="statement not covered" >          &gt;</span>
 <span class="cstat-no" title="statement not covered" >            &lt;label className="flex flex-col gap-1"&gt;</span>
@@ -289,7 +295,7 @@ export default <span class="fstat-no" title="function not covered" >function Pag
 <span class="cstat-no" title="statement not covered" >                type="text"</span>
 <span class="cstat-no" title="statement not covered" >                className="antd-input p-1"</span>
 <span class="cstat-no" title="statement not covered" >                required</span>
-<span class="cstat-no" title="statement not covered" >                {...form.register("videoId")}</span>
+<span class="cstat-no" title="statement not covered" >                {...form.fields.videoId.valueProps()}</span>
 <span class="cstat-no" title="statement not covered" >              /&gt;</span>
 <span class="cstat-no" title="statement not covered" >            &lt;/label&gt;</span>
 <span class="cstat-no" title="statement not covered" >            &lt;button type="submit" className="antd-btn antd-btn-primary p-1"&gt;</span>
@@ -355,7 +361,7 @@ export default <span class="fstat-no" title="function not covered" >function Pag
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-09-16T00:17:53.186Z
+                at 2023-09-16T00:47:06.326Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>

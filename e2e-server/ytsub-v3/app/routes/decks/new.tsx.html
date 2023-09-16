@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">17.2% </span>
+                <span class="strong">17.02% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>16/93</span>
+                <span class='fraction'>16/94</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">17.2% </span>
+                <span class="strong">17.02% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>16/93</span>
+                <span class='fraction'>16/94</span>
             </div>
         
             
@@ -156,7 +156,8 @@
 <a name='L91'></a><a href='#L91'>91</a>
 <a name='L92'></a><a href='#L92'>92</a>
 <a name='L93'></a><a href='#L93'>93</a>
-<a name='L94'></a><a href='#L94'>94</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L94'></a><a href='#L94'>94</a>
+<a name='L95'></a><a href='#L95'>95</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -249,9 +250,10 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="fstat-no" title="function not covered" >import { useNavigate } from "</span>@remix-run/react";
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="fstat-no" title="function not covered" >import { useTinyForm } from "</span>@hiogawa/tiny-form/dist/react";
+import { useNavigate } from "@remix-run/react";
 import { useMutation } from "@tanstack/react-query";
-import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { $R } from "../../misc/routes";
 import { rpcClientQuery } from "../../trpc/client";
@@ -278,15 +280,13 @@ export default <span class="fstat-no" title="function not covered" >function Def
 <span class="cstat-no" title="statement not covered" >    },</span>
 <span class="cstat-no" title="statement not covered" >  });</span>
 <span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >  const form = useForm({</span>
-<span class="cstat-no" title="statement not covered" >    defaultValues: {</span>
-<span class="cstat-no" title="statement not covered" >      name: "",</span>
-<span class="cstat-no" title="statement not covered" >      newEntriesPerDay: 50,</span>
-<span class="cstat-no" title="statement not covered" >      reviewsPerDay: 200,</span>
-<span class="cstat-no" title="statement not covered" >      easeMultiplier: 2,</span>
-<span class="cstat-no" title="statement not covered" >      easeBonus: 1.5,</span>
-<span class="cstat-no" title="statement not covered" >      randomMode: true,</span>
-<span class="cstat-no" title="statement not covered" >    },</span>
+<span class="cstat-no" title="statement not covered" >  const form = useTinyForm({</span>
+<span class="cstat-no" title="statement not covered" >    name: "",</span>
+<span class="cstat-no" title="statement not covered" >    newEntriesPerDay: 50,</span>
+<span class="cstat-no" title="statement not covered" >    reviewsPerDay: 200,</span>
+<span class="cstat-no" title="statement not covered" >    easeMultiplier: 2,</span>
+<span class="cstat-no" title="statement not covered" >    easeBonus: 1.5,</span>
+<span class="cstat-no" title="statement not covered" >    randomMode: true,</span>
 <span class="cstat-no" title="statement not covered" >  });</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  return (</span>
@@ -295,7 +295,7 @@ export default <span class="fstat-no" title="function not covered" >function Def
 <span class="cstat-no" title="statement not covered" >        method="post"</span>
 <span class="cstat-no" title="statement not covered" >        className="flex flex-col border w-full max-w-sm p-4 px-6 gap-3"</span>
 <span class="cstat-no" title="statement not covered" >        data-test="new-deck-form"</span>
-<span class="cstat-no" title="statement not covered" >        onSubmit={form.handleSubmit((data) =&gt; newDeckMutation.mutate(data))}</span>
+<span class="cstat-no" title="statement not covered" >        onSubmit={form.handleSubmit(() =&gt; newDeckMutation.mutate(form.data))}</span>
 <span class="cstat-no" title="statement not covered" >      &gt;</span>
 <span class="cstat-no" title="statement not covered" >        &lt;h1 className="text-lg"&gt;New Deck&lt;/h1&gt;</span>
 <span class="cstat-no" title="statement not covered" >        &lt;label className="flex flex-col gap-1"&gt;</span>
@@ -303,7 +303,8 @@ export default <span class="fstat-no" title="function not covered" >function Def
 <span class="cstat-no" title="statement not covered" >          &lt;input</span>
 <span class="cstat-no" title="statement not covered" >            type="text"</span>
 <span class="cstat-no" title="statement not covered" >            className="antd-input p-1"</span>
-<span class="cstat-no" title="statement not covered" >            {...form.register("name", { required: true })}</span>
+<span class="cstat-no" title="statement not covered" >            required</span>
+<span class="cstat-no" title="statement not covered" >            {...form.fields.name.valueProps()}</span>
 <span class="cstat-no" title="statement not covered" >          /&gt;</span>
 <span class="cstat-no" title="statement not covered" >        &lt;/label&gt;</span>
 <span class="cstat-no" title="statement not covered" >        &lt;label className="flex flex-col gap-1"&gt;</span>
@@ -311,10 +312,11 @@ export default <span class="fstat-no" title="function not covered" >function Def
 <span class="cstat-no" title="statement not covered" >          &lt;input</span>
 <span class="cstat-no" title="statement not covered" >            type="number"</span>
 <span class="cstat-no" title="statement not covered" >            className="antd-input p-1"</span>
-<span class="cstat-no" title="statement not covered" >            {...form.register("newEntriesPerDay", {</span>
-<span class="cstat-no" title="statement not covered" >              required: true,</span>
-<span class="cstat-no" title="statement not covered" >              valueAsNumber: true,</span>
-<span class="cstat-no" title="statement not covered" >            })}</span>
+<span class="cstat-no" title="statement not covered" >            required</span>
+<span class="cstat-no" title="statement not covered" >            value={form.fields.newEntriesPerDay.value}</span>
+<span class="cstat-no" title="statement not covered" >            onChange={(e) =&gt;</span>
+<span class="cstat-no" title="statement not covered" >              form.fields.newEntriesPerDay.onChange(e.target.valueAsNumber)</span>
+<span class="cstat-no" title="statement not covered" >            }</span>
 <span class="cstat-no" title="statement not covered" >          /&gt;</span>
 <span class="cstat-no" title="statement not covered" >        &lt;/label&gt;</span>
 <span class="cstat-no" title="statement not covered" >        &lt;label className="flex flex-col gap-1"&gt;</span>
@@ -322,10 +324,11 @@ export default <span class="fstat-no" title="function not covered" >function Def
 <span class="cstat-no" title="statement not covered" >          &lt;input</span>
 <span class="cstat-no" title="statement not covered" >            type="number"</span>
 <span class="cstat-no" title="statement not covered" >            className="antd-input p-1"</span>
-<span class="cstat-no" title="statement not covered" >            {...form.register("reviewsPerDay", {</span>
-<span class="cstat-no" title="statement not covered" >              required: true,</span>
-<span class="cstat-no" title="statement not covered" >              valueAsNumber: true,</span>
-<span class="cstat-no" title="statement not covered" >            })}</span>
+<span class="cstat-no" title="statement not covered" >            required</span>
+<span class="cstat-no" title="statement not covered" >            value={form.fields.reviewsPerDay.value}</span>
+<span class="cstat-no" title="statement not covered" >            onChange={(e) =&gt;</span>
+<span class="cstat-no" title="statement not covered" >              form.fields.reviewsPerDay.onChange(e.target.valueAsNumber)</span>
+<span class="cstat-no" title="statement not covered" >            }</span>
 <span class="cstat-no" title="statement not covered" >          /&gt;</span>
 <span class="cstat-no" title="statement not covered" >        &lt;/label&gt;</span>
 <span class="cstat-no" title="statement not covered" >        &lt;button</span>
@@ -334,7 +337,7 @@ export default <span class="fstat-no" title="function not covered" >function Def
 <span class="cstat-no" title="statement not covered" >            "antd-btn antd-btn-primary p-1",</span>
 <span class="cstat-no" title="statement not covered" >            newDeckMutation.isLoading &amp;&amp; "antd-btn-loading"</span>
 <span class="cstat-no" title="statement not covered" >          )}</span>
-<span class="cstat-no" title="statement not covered" >          disabled={!form.formState.isValid || newDeckMutation.isLoading}</span>
+<span class="cstat-no" title="statement not covered" >          disabled={newDeckMutation.isLoading || newDeckMutation.isSuccess}</span>
 <span class="cstat-no" title="statement not covered" >        &gt;</span>
 <span class="cstat-no" title="statement not covered" >          Create</span>
 <span class="cstat-no" title="statement not covered" >        &lt;/button&gt;</span>
@@ -349,7 +352,7 @@ export default <span class="fstat-no" title="function not covered" >function Def
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-09-16T00:17:53.186Z
+                at 2023-09-16T00:47:06.326Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>

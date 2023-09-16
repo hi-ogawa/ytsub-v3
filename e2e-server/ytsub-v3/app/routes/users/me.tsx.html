@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">78.92% </span>
+                <span class="strong">79.92% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>206/261</span>
+                <span class='fraction'>219/274</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">57.89% </span>
+                <span class="strong">78.94% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>11/19</span>
+                <span class='fraction'>15/19</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">42.85% </span>
+                <span class="strong">47.05% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>6/14</span>
+                <span class='fraction'>8/17</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">78.92% </span>
+                <span class="strong">79.92% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>206/261</span>
+                <span class='fraction'>219/274</span>
             </div>
         
             
@@ -324,7 +324,21 @@
 <a name='L259'></a><a href='#L259'>259</a>
 <a name='L260'></a><a href='#L260'>260</a>
 <a name='L261'></a><a href='#L261'>261</a>
-<a name='L262'></a><a href='#L262'>262</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L262'></a><a href='#L262'>262</a>
+<a name='L263'></a><a href='#L263'>263</a>
+<a name='L264'></a><a href='#L264'>264</a>
+<a name='L265'></a><a href='#L265'>265</a>
+<a name='L266'></a><a href='#L266'>266</a>
+<a name='L267'></a><a href='#L267'>267</a>
+<a name='L268'></a><a href='#L268'>268</a>
+<a name='L269'></a><a href='#L269'>269</a>
+<a name='L270'></a><a href='#L270'>270</a>
+<a name='L271'></a><a href='#L271'>271</a>
+<a name='L272'></a><a href='#L272'>272</a>
+<a name='L273'></a><a href='#L273'>273</a>
+<a name='L274'></a><a href='#L274'>274</a>
+<a name='L275'></a><a href='#L275'>275</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -482,15 +496,6 @@
 <span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-yes">6x</span>
@@ -531,6 +536,27 @@
 <span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-yes">6x</span>
@@ -585,9 +611,10 @@
 <span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-yes">12x</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { useNavigate } from "@remix-run/react";
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { useTinyForm } from "@hiogawa/tiny-form/dist/react";
+import { useNavigate } from "@remix-run/react";
 import { useMutation } from "@tanstack/react-query";
-import { useForm } from "react-hook-form";
+import React from "react";
 import toast from "react-hot-toast";
 import { useModal } from "../../components/modal";
 import { PopoverSimple } from "../../components/popover";
@@ -618,8 +645,8 @@ export default function DefaultComponent() {
     ...rpcClientQuery.users_update.mutationOptions(),
     onSuccess: <span class="fstat-no" title="function not covered" >() =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >      toast.success("Successfully updated settings");</span>
-<span class="cstat-no" title="statement not covered" >      form.reset(form.getValues());</span>
 <span class="cstat-no" title="statement not covered" >      navigate({}, { replace: true }); // refetch root loader currentUser</span>
+<span class="cstat-no" title="statement not covered" >      resetDirty();</span>
 <span class="cstat-no" title="statement not covered" >    },</span>
     onError: <span class="fstat-no" title="function not covered" >() =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >      toast.error("Failed to update settings");</span>
@@ -641,13 +668,12 @@ export default function DefaultComponent() {
 <span class="cstat-no" title="statement not covered" >    },</span>
   });
 &nbsp;
-  const form = useForm({
-    defaultValues: {
-      language1: currentUser.language1 ?? "",
-      language2: currentUser.language2 ?? "",
-      timezone: currentUser.timezone,
-    },
+  const form = useTinyForm({
+    language1: currentUser.language1 ?? "",
+    language2: currentUser.language2 ?? "",
+    timezone: currentUser.timezone,
   });
+  const [isDirty, resetDirty] = useDirty(form.data);
 &nbsp;
   const updateEmailModal = useModal();
 &nbsp;
@@ -655,7 +681,7 @@ export default function DefaultComponent() {
     &lt;div className="w-full p-4 gap-4 flex flex-col items-center"&gt;
       &lt;form
         className="h-full w-full max-w-md border"
-        onSubmit={form.handleSubmit((data) =&gt; updateMutation.mutate(data))}
+        onSubmit={form.handleSubmit(() =&gt; updateMutation.mutate(form.data))}
       &gt;
         &lt;div className="h-full p-6 flex flex-col gap-3"&gt;
           &lt;h1 className="text-xl"&gt;Account&lt;/h1&gt;
@@ -698,9 +724,8 @@ export default function DefaultComponent() {
               1st language
               &lt;select
                 className="antd-input p-1"
-                // pass defaultValue explicitly to avoid ssr flickering https://github.com/react-hook-form/react-hook-form/issues/8707
-                defaultValue={<span class="branch-0 cbranch-no" title="branch not covered" >form.f</span>ormState.defaultValues?.language1}
-                {...form.register("language1", { required: true })}
+                required
+                {...form.fields.language1.valueProps()}
               &gt;
                 &lt;LanguageSelectOptions /&gt;
               &lt;/select&gt;
@@ -709,8 +734,8 @@ export default function DefaultComponent() {
               2nd language
               &lt;select
                 className="antd-input p-1"
-                defaultValue={<span class="branch-0 cbranch-no" title="branch not covered" >form.f</span>ormState.defaultValues?.language2}
-                {...form.register("language2", { required: true })}
+                required
+                {...form.fields.language2.valueProps()}
               &gt;
                 &lt;LanguageSelectOptions /&gt;
               &lt;/select&gt;
@@ -738,8 +763,8 @@ export default function DefaultComponent() {
               &lt;/div&gt;
               &lt;input
                 className="antd-input p-1"
-                defaultValue={<span class="branch-0 cbranch-no" title="branch not covered" >form.f</span>ormState.defaultValues?.timezone}
-                {...form.register("timezone", { required: true })}
+                required
+                {...form.fields.timezone.valueProps()}
               /&gt;
             &lt;/div&gt;
             &lt;button
@@ -748,21 +773,14 @@ export default function DefaultComponent() {
                 "antd-btn antd-btn-primary p-1 flex justify-center items-center",
                 updateMutation.<span class="branch-0 cbranch-no" title="branch not covered" >isLoading &amp;&amp; "antd-btn-loading"</span>
               )}
-              disabled={
-                !form.formState.<span class="branch-0 cbranch-no" title="branch not covered" >isDirty ||</span>
-<span class="cstat-no" title="statement not covered" >                !form.formState.<span class="branch-0 cbranch-no" title="branch not covered" >isValid ||</span></span>
-<span class="cstat-no" title="statement not covered" >                updateMutation.isLoading</span>
-              }
+              disabled={updateMutation.isLoading || !isDirty}
             &gt;
               Save
             &lt;/button&gt;
           &lt;/div&gt;
         &lt;/div&gt;
       &lt;/form&gt;
-      &lt;div
-        className="h-full w-full max-w-md border p-4 flex flex-col gap-3"
-        onSubmit={form.handleSubmit((data) =&gt; updateMutation.mutate(data))}
-      &gt;
+      &lt;div className="h-full w-full max-w-md border p-4 flex flex-col gap-3"&gt;
         &lt;h1 className="text-xl"&gt;Security&lt;/h1&gt;
         &lt;button
           className="antd-btn antd-btn-default p-0.5"
@@ -796,9 +814,29 @@ export default function DefaultComponent() {
   );
 }
 &nbsp;
+function defaultIsEqual&lt;T&gt;(x: T, y: T) {
+  return JSON.stringify(x) === JSON.stringify(y);
+}
+&nbsp;
+// TODO: move to tiny-form?
+function useDirty&lt;T&gt;(data: T, options?: { isEqual?: (x: T, y: T) =&gt; boolean }) {
+  const [freshData, setFreshData] = React.useState(() =&gt; data);
+&nbsp;
+  const isDirty = React.useMemo(
+    () =&gt; !(<span class="branch-0 cbranch-no" title="branch not covered" >options?.isEqual ?? d</span>efaultIsEqual)(data, freshData),
+    [data, freshData]
+  );
+&nbsp;
+  // we could accept `newFreshData` argument
+<span class="fstat-no" title="function not covered" >  function resetDirty() {</span>
+<span class="cstat-no" title="statement not covered" >    setFreshData(data);</span>
+<span class="cstat-no" title="statement not covered" >  }</span>
+&nbsp;
+  return [isDirty, resetDirty] as const;
+}
+&nbsp;
 <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >function UpdateEmailForm(props: { onSuccess: () =&gt; void }) {</span></span>
-<span class="cstat-no" title="statement not covered" >  const form = useForm({ defaultValues: { email: "" } });</span>
-<span class="cstat-no" title="statement not covered" >  const formIsValid = form.formState.isValid;</span>
+<span class="cstat-no" title="statement not covered" >  const form = useTinyForm({ email: "" });</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  const mutation = useMutation({</span>
 <span class="cstat-no" title="statement not covered" >    ...rpcClientQuery.users_requestUpdateEmail.mutationOptions(),</span>
@@ -811,14 +849,15 @@ export default function DefaultComponent() {
 <span class="cstat-no" title="statement not covered" >  return (</span>
 <span class="cstat-no" title="statement not covered" >    &lt;form</span>
 <span class="cstat-no" title="statement not covered" >      className="flex flex-col gap-3 p-4 relative"</span>
-<span class="cstat-no" title="statement not covered" >      onSubmit={form.handleSubmit((data) =&gt; mutation.mutate(data))}</span>
+<span class="cstat-no" title="statement not covered" >      onSubmit={form.handleSubmit(() =&gt; mutation.mutate(form.data))}</span>
 <span class="cstat-no" title="statement not covered" >    &gt;</span>
 <span class="cstat-no" title="statement not covered" >      &lt;h2 className="text-xl"&gt;Update Email&lt;/h2&gt;</span>
 <span class="cstat-no" title="statement not covered" >      &lt;label className="flex flex-col gap-1"&gt;</span>
 <span class="cstat-no" title="statement not covered" >        &lt;input</span>
 <span class="cstat-no" title="statement not covered" >          className="antd-input p-1"</span>
 <span class="cstat-no" title="statement not covered" >          placeholder="Input new email..."</span>
-<span class="cstat-no" title="statement not covered" >          {...form.register("email", { required: true })}</span>
+<span class="cstat-no" title="statement not covered" >          required</span>
+<span class="cstat-no" title="statement not covered" >          {...form.fields.email.valueProps()}</span>
 <span class="cstat-no" title="statement not covered" >        /&gt;</span>
 <span class="cstat-no" title="statement not covered" >      &lt;/label&gt;</span>
 <span class="cstat-no" title="statement not covered" >      &lt;button</span>
@@ -826,7 +865,7 @@ export default function DefaultComponent() {
 <span class="cstat-no" title="statement not covered" >          "antd-btn antd-btn-primary p-1",</span>
 <span class="cstat-no" title="statement not covered" >          mutation.isLoading &amp;&amp; "antd-btn-loading"</span>
 <span class="cstat-no" title="statement not covered" >        )}</span>
-<span class="cstat-no" title="statement not covered" >        disabled={mutation.isLoading || !formIsValid}</span>
+<span class="cstat-no" title="statement not covered" >        disabled={mutation.isLoading}</span>
 <span class="cstat-no" title="statement not covered" >      &gt;</span>
 <span class="cstat-no" title="statement not covered" >        Send Verification Email</span>
 <span class="cstat-no" title="statement not covered" >      &lt;/button&gt;</span>
@@ -853,7 +892,7 @@ function LanguageSelectOptions() {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-09-16T00:17:53.186Z
+                at 2023-09-16T00:47:06.326Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>
