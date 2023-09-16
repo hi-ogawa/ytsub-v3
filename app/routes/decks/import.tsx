@@ -1,11 +1,11 @@
+import { useTinyForm } from "@hiogawa/tiny-form/dist/react";
 import { tinyassert } from "@hiogawa/utils";
 import { useNavigate } from "@remix-run/react";
 import { useMutation } from "@tanstack/react-query";
-import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { R } from "../../misc/routes";
 import { rpcClient } from "../../trpc/client";
-import { cls } from "../../utils/misc";
+import { cls, none } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 
 export const handle: PageHandle = {
@@ -23,13 +23,12 @@ export default function DefaultComponent() {
 }
 
 function FormComponent() {
-  const form = useForm<{ fileList?: FileList }>();
+  const form = useTinyForm({ file: none<File>() });
   const navigate = useNavigate();
 
   const mutation = useMutation(
     async () => {
-      const { fileList } = form.getValues();
-      const file = fileList?.[0];
+      const file = form.data.file;
       tinyassert(file);
       const data = await file.text();
       await rpcClient.decks_import({ data });
@@ -52,10 +51,14 @@ function FormComponent() {
     >
       <div className="text-lg">Import Deck</div>
       <label className="flex flex-col gap-1">
+        <span className="text-colorTextSecondary">File</span>
         <input
           type="file"
           accept="application/json"
-          {...form.register("fileList", { required: true })}
+          required
+          onChange={(e) => {
+            form.fields.file.onChange(e.target.files?.item(0) ?? undefined);
+          }}
         />
       </label>
       <button
@@ -63,7 +66,7 @@ function FormComponent() {
           "antd-btn antd-btn-primary p-1 flex justify-center items-center",
           mutation.isLoading && "antd-btn-loading"
         )}
-        disabled={!form.formState.isValid || mutation.isLoading}
+        disabled={mutation.isLoading || mutation.isSuccess}
       >
         Import
       </button>

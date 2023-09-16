@@ -1,7 +1,7 @@
+import { useTinyForm } from "@hiogawa/tiny-form/dist/react";
 import { Temporal } from "@js-temporal/polyfill";
 import { Link, useNavigate } from "@remix-run/react";
 import { useMutation } from "@tanstack/react-query";
-import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { $R, R } from "../../misc/routes";
 import { rpcClient } from "../../trpc/client";
@@ -17,21 +17,15 @@ export const handle: PageHandle = {
 };
 
 export default function DefaultComponent() {
-  type FormState = {
-    username: string;
-    password: string;
-    passwordConfirmation: string;
-  };
-
   const turnstile = useTurnstile();
 
   const setCurrentUser = useSetCurrentUser();
   const navigate = useNavigate();
   const registerMutation = useMutation({
-    mutationFn: async (data: FormState) => {
+    mutationFn: async () => {
       const token = await turnstile.render();
       return rpcClient.users_register({
-        ...data,
+        ...form.data,
         token,
         timezone: Temporal.Now.zonedDateTimeISO().offset,
       });
@@ -43,12 +37,10 @@ export default function DefaultComponent() {
     },
   });
 
-  const form = useForm<FormState>({
-    defaultValues: {
-      username: "",
-      password: "",
-      passwordConfirmation: "",
-    },
+  const form = useTinyForm({
+    username: "",
+    password: "",
+    passwordConfirmation: "",
   });
 
   return (
@@ -56,9 +48,7 @@ export default function DefaultComponent() {
       <form
         className="flex flex-col border w-full max-w-sm p-4 px-6 gap-3"
         data-test="register-form"
-        onSubmit={form.handleSubmit(async (data) => {
-          registerMutation.mutate(data);
-        })}
+        onSubmit={form.handleSubmit(() => registerMutation.mutate())}
       >
         {registerMutation.isError && (
           <div className="text-colorError">
@@ -75,7 +65,8 @@ export default function DefaultComponent() {
           <input
             type="text"
             className="antd-input p-1"
-            {...form.register("username", { required: true })}
+            required
+            {...form.fields.username.props()}
           />
         </label>
         <label className="flex flex-col gap-1">
@@ -83,7 +74,8 @@ export default function DefaultComponent() {
           <input
             type="password"
             className="antd-input p-1"
-            {...form.register("password", { required: true })}
+            required
+            {...form.fields.password.props()}
           />
         </label>
         <label className="flex flex-col gap-1">
@@ -91,7 +83,8 @@ export default function DefaultComponent() {
           <input
             type="password"
             className="antd-input p-1"
-            {...form.register("passwordConfirmation", { required: true })}
+            required
+            {...form.fields.passwordConfirmation.props()}
           />
         </label>
         <div className="flex flex-col gap-1">
@@ -102,9 +95,9 @@ export default function DefaultComponent() {
               registerMutation.isLoading && "antd-btn-loading"
             )}
             disabled={
-              !form.formState.isValid ||
               !turnstile.query.isSuccess ||
-              registerMutation.isLoading
+              registerMutation.isLoading ||
+              registerMutation.isSuccess
             }
           >
             Register

@@ -1,4 +1,5 @@
 import { FloatingTree } from "@floating-ui/react";
+import { useTinyForm } from "@hiogawa/tiny-form/dist/react";
 import { Compose } from "@hiogawa/utils-react";
 import {
   Link,
@@ -14,7 +15,6 @@ import {
 } from "@remix-run/react";
 import { useMutation } from "@tanstack/react-query";
 import React from "react";
-import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { Drawer } from "./components/drawer";
 import { PopoverSimple } from "./components/popover";
@@ -278,16 +278,16 @@ const SIDE_MENU_ENTRIES: SideMenuEntry[] = [
 ];
 
 function SearchComponent(props: { closeDrawer: () => void }) {
-  const form = useForm({ defaultValues: { videoId: "" } });
+  const form = useTinyForm({ videoId: "" });
   const navigate = useNavigate();
 
   return (
     <form
       className="w-full"
       data-test="search-form"
-      onSubmit={form.handleSubmit((data) => {
+      onSubmit={form.handleSubmit(() => {
         props.closeDrawer();
-        navigate($R["/videos/new"](null, data));
+        navigate($R["/videos/new"](null, form.data));
       })}
     >
       <label className="w-full relative text-base-content flex items-center">
@@ -296,7 +296,8 @@ function SearchComponent(props: { closeDrawer: () => void }) {
           type="text"
           className="w-full antd-input p-1 pl-9"
           placeholder="Enter Video ID or URL"
-          {...form.register("videoId", { required: true })}
+          required
+          {...form.fields.videoId.props()}
         />
       </label>
     </form>

@@ -1,9 +1,9 @@
+import { useTinyForm } from "@hiogawa/tiny-form/dist/react";
 import { createTinyStore } from "@hiogawa/tiny-store";
 import { useTinyStore } from "@hiogawa/tiny-store/dist/react";
 import { tinyassert } from "@hiogawa/utils";
 import { useNavigate } from "@remix-run/react";
 import { useMutation } from "@tanstack/react-query";
-import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { SelectWrapper } from "../../components/misc";
 import { PopoverSimple } from "../../components/popover";
@@ -62,20 +62,17 @@ function DefaultComponentInner() {
     },
   });
 
-  const form = useForm({
-    defaultValues: {
-      videoId: videoMetadata.videoDetails.videoId,
-      language1: userCaptionConfigs?.language1 ?? {
-        id: "",
-        translation: undefined,
-      },
-      language2: userCaptionConfigs?.language2 ?? {
-        id: "",
-        translation: undefined,
-      },
+  const form = useTinyForm(() => ({
+    videoId: videoMetadata.videoDetails.videoId,
+    language1: userCaptionConfigs?.language1 ?? {
+      id: "",
+      translation: undefined,
     },
-  });
-  const { videoId, language1, language2 } = form.watch();
+    language2: userCaptionConfigs?.language2 ?? {
+      id: "",
+      translation: undefined,
+    },
+  }));
 
   const [showAdvancedMode] = useTinyStore(showAdvancedModeStore);
 
@@ -98,7 +95,7 @@ function DefaultComponentInner() {
           <form
             data-test="setup-form"
             className="w-full flex flex-col gap-3"
-            onSubmit={form.handleSubmit((data) => createMutation.mutate(data))}
+            onSubmit={form.handleSubmit(() => createMutation.mutate(form.data))}
           >
             <label className="flex flex-col gap-1">
               Video ID
@@ -106,7 +103,7 @@ function DefaultComponentInner() {
                 type="text"
                 className="antd-input p-1 bg-colorBgContainerDisabled"
                 readOnly
-                value={videoId}
+                value={form.data.videoId}
               />
             </label>
             <label className="flex flex-col gap-1">
@@ -134,9 +131,8 @@ function DefaultComponentInner() {
                   <LanguageSelectComponent
                     className="antd-input p-1"
                     required
-                    value={language1}
-                    onChange={(value) => form.setValue("language1", value)}
                     videoMetadata={videoMetadata}
+                    {...form.fields.language1.rawProps()}
                   />
                 </label>
                 <label className="flex flex-col gap-1">
@@ -144,9 +140,8 @@ function DefaultComponentInner() {
                   <LanguageSelectComponent
                     className="antd-input p-1"
                     required
-                    value={language2}
-                    onChange={(value) => form.setValue("language2", value)}
                     videoMetadata={videoMetadata}
+                    {...form.fields.language2.rawProps()}
                   />
                 </label>
                 <button
@@ -155,7 +150,9 @@ function DefaultComponentInner() {
                     "antd-btn antd-btn-primary p-1",
                     createMutation.isLoading && "antd-btn-loading"
                   )}
-                  disabled={createMutation.isLoading || !form.formState.isValid}
+                  disabled={
+                    createMutation.isLoading || createMutation.isSuccess
+                  }
                 >
                   Save and Play
                 </button>
@@ -166,7 +163,7 @@ function DefaultComponentInner() {
         {showAdvancedMode && (
           <>
             <div className="border-t mx-3"></div>
-            <AdvancedModeForm videoId={videoId} />
+            <AdvancedModeForm videoId={form.data.videoId} />
           </>
         )}
       </div>
@@ -176,19 +173,16 @@ function DefaultComponentInner() {
 
 function AdvancedModeForm({ videoId }: { videoId: string }) {
   interface FormType {
-    language1?: LanguageCode;
-    language2?: LanguageCode;
+    language1: LanguageCode | undefined;
+    language2: LanguageCode | undefined;
     input: string;
   }
 
-  const form = useForm<FormType>({
-    defaultValues: {
-      language1: undefined,
-      language2: undefined,
-      input: "",
-    },
+  const form = useTinyForm<FormType>({
+    language1: undefined,
+    language2: undefined,
+    input: "",
   });
-  const { language1, language2, input } = form.watch();
 
   const navigate = useNavigate();
 
@@ -216,27 +210,27 @@ function AdvancedModeForm({ videoId }: { videoId: string }) {
   return (
     <form
       className="p-6 flex flex-col gap-3"
-      onSubmit={form.handleSubmit((data) => createMutation.mutate(data))}
+      onSubmit={form.handleSubmit(() => createMutation.mutate(form.data))}
     >
       <div className="text-lg">Manual input</div>
       <label className="flex flex-col gap-1">
         <span>1st language</span>
         <SelectWrapper
           className="antd-input p-1"
-          value={language1}
           options={[undefined, ...FILTERED_LANGUAGE_CODES]}
-          onChange={(v) => form.setValue("language1", v)}
           labelFn={(v) => v && languageCodeToName(v)}
+          required
+          {...form.fields.language1.rawProps()}
         />
       </label>
       <label className="flex flex-col gap-1">
         <span>2nd language</span>
         <SelectWrapper
           className="antd-input p-1"
-          value={language2}
           options={[undefined, ...FILTERED_LANGUAGE_CODES]}
-          onChange={(v) => form.setValue("language2", v)}
           labelFn={(v) => v && languageCodeToName(v)}
+          required
+          {...form.fields.language2.rawProps()}
         />
       </label>
       <div className="flex flex-col gap-1">
@@ -255,7 +249,8 @@ function AdvancedModeForm({ videoId }: { videoId: string }) {
           className="antd-input p-1"
           rows={8}
           placeholder="Please copy the exported data from caption editor"
-          {...form.register("input", { required: true })}
+          required
+          {...form.fields.input.props()}
         />
       </div>
       <button
@@ -264,7 +259,7 @@ function AdvancedModeForm({ videoId }: { videoId: string }) {
           "antd-btn antd-btn-primary p-1",
           createMutation.isLoading && "antd-btn-loading"
         )}
-        disabled={!language1 || !language2 || !input}
+        disabled={createMutation.isLoading || createMutation.isSuccess}
       >
         Save and Play
       </button>

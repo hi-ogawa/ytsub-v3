@@ -121,9 +121,6 @@ dependencies:
   react-dom:
     specifier: ^18.2.0
     version: 18.2.0(react@18.2.0)
-  react-hook-form:
-    specifier: ^7.45.4
-    version: 7.45.4(react@18.2.0)
   react-hot-toast:
     specifier: ^2.4.1
     version: 2.4.1(csstype@3.1.2)(react-dom@18.2.0)(react@18.2.0)
@@ -147,6 +144,9 @@ devDependencies:
   '@hiogawa/tiny-cli':
     specifier: 0.0.4-pre.1
     version: 0.0.4-pre.1
+  '@hiogawa/tiny-form':
+    specifier: 0.0.1-pre.7
+    version: 0.0.1-pre.7(react@18.2.0)
   '@hiogawa/unocss-preset-antd':
     specifier: 2.2.1-pre.3
     version: 2.2.1-pre.3(@unocss/preset-uno@0.55.4)(unocss@0.52.7)
@@ -2337,6 +2337,17 @@ packages:
 
   /@hiogawa/tiny-cli@0.0.4-pre.1:
     resolution: {integrity: sha512-3z/qYXDyROVX8oaFdqMyiLL8ZZE9dEaEw02ZYXOxmUF6U5MM3pskzLZId/KMvT+ZnLCLI4CUBuga6AIf56JXTw==}
+    dev: true
+
+  /@hiogawa/tiny-form@0.0.1-pre.7(react@18.2.0):
+    resolution: {integrity: sha512-qtsLekKBZTMVsEdcdk18gwWWL4/K6f9lHO/HHK7xwWpaKO1fl6kw9MA8CAeewDGTSaxHYYh1PHPE3CPJNSQxkQ==}
+    peerDependencies:
+      react: '*'
+    peerDependenciesMeta:
+      react:
+        optional: true
+    dependencies:
+      react: 18.2.0
     dev: true
 
   /@hiogawa/tiny-jwt@0.2.8-pre.2:
@@ -6728,7 +6739,6 @@ packages:
     hasBin: true
     dependencies:
       js-tokens: 4.0.0
-    dev: false
 
   /loupe@2.3.6:
     resolution: {integrity: sha512-RaPMZKiMy8/JruncMU5Bt6na1eftNoo++R4Y+N2FrxkDVTrGvcyzFTsaGif4QTeKESheMGegbhw6iUAq+5A8zA==}
@@ -8323,15 +8333,6 @@ packages:
       scheduler: 0.23.0
     dev: false
 
-  /react-hook-form@7.45.4(react@18.2.0):
-    resolution: {integrity: sha512-HGDV1JOOBPZj10LB3+OZgfDBTn+IeEsNOKiq/cxbQAIbKaiJUe/KV8DBUzsx0Gx/7IG/orWqRRm736JwOfUSWQ==}
-    engines: {node: '>=12.22.0'}
-    peerDependencies:
-      react: ^16.8.0 || ^17 || ^18
-    dependencies:
-      react: 18.2.0
-    dev: false
-
   /react-hot-toast@2.4.1(csstype@3.1.2)(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-j8z+cQbWIM5LY37pR6uZR6D4LfseplqnuAO4co4u8917hBUvXlEqyP1ZzqVLcqoyUesZZv/ImreoCeHVDpE5pQ==}
     engines: {node: '>=10'}
@@ -8457,7 +8458,6 @@ packages:
     engines: {node: '>=0.10.0'}
     dependencies:
       loose-envify: 1.4.0
-    dev: false
 
   /read-package-json-fast@3.0.2:
     resolution: {integrity: sha512-0J+Msgym3vrLOUB3hzQCuZHII0xkNGCtz/HJH9xZshwv9DbDwkw1KaE3gx/e2J5rpEY5rtOy6cyhKOPrkP7FZw==}

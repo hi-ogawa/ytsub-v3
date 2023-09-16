@@ -168,7 +168,7 @@ test.describe("decks-import-export", () => {
 
     // import
     await page.locator(".i-ri-file-upload-line").click();
-    await page.locator("input[name=fileList]").setInputFiles(DEFAULT_SEED_FILE);
+    await page.getByLabel("File").setInputFiles(DEFAULT_SEED_FILE);
     await page.getByRole("button", { name: "Import" }).click();
     await page.getByText("Deck imported successfully!").click();
 
