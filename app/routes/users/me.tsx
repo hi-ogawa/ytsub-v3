@@ -1,7 +1,6 @@
 import { useTinyForm } from "@hiogawa/tiny-form/dist/react";
 import { useNavigate } from "@remix-run/react";
 import { useMutation } from "@tanstack/react-query";
-import toast from "react-hot-toast";
 import { useModal } from "../../components/modal";
 import { PopoverSimple } from "../../components/popover";
 import type { UserTable } from "../../db/models";
@@ -14,6 +13,7 @@ import {
 import { useLeafLoaderData } from "../../utils/loader-utils";
 import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
+import { toast2 } from "../../utils/toast-utils";
 import { useTurnstile } from "../../utils/turnstile-utils";
 
 export { loader } from "./me.server";
@@ -30,12 +30,12 @@ export default function DefaultComponent() {
   const updateMutation = useMutation({
     ...rpcClientQuery.users_update.mutationOptions(),
     onSuccess: () => {
-      toast.success("Successfully updated settings");
+      toast2.success("Successfully updated settings");
       navigate({}, { replace: true }); // refetch root loader currentUser
       form.resetDirty();
     },
     onError: () => {
-      toast.error("Failed to update settings");
+      toast2.error("Failed to update settings");
     },
   });
 
@@ -50,7 +50,7 @@ export default function DefaultComponent() {
       });
     },
     onSuccess: () => {
-      toast.success("Please check your email to reset your password");
+      toast2.success("Please check your email to reset your password");
     },
   });
 
@@ -205,7 +205,7 @@ function UpdateEmailForm(props: { onSuccess: () => void }) {
   const mutation = useMutation({
     ...rpcClientQuery.users_requestUpdateEmail.mutationOptions(),
     onSuccess: () => {
-      toast.success("Verification email is sent successfullly");
+      toast2.success("Verification email is sent successfullly");
       props.onSuccess();
     },
   });

@@ -10,7 +10,7 @@ import { intl } from "../../../utils/intl";
 import { useLoaderDataExtra } from "../../../utils/loader-utils";
 import { cls } from "../../../utils/misc";
 import type { PageHandle } from "../../../utils/page-handle";
-import { toastInfo } from "../../../utils/toast-utils";
+import { toast2 } from "../../../utils/toast-utils";
 import type { LoaderData } from "./_utils.server";
 export { loader } from "./_utils.server";
 
@@ -145,7 +145,7 @@ function DefaultComponentInner() {
             const message = `Are you sure? Please type '${deck.name}' to delete this deck.`;
             const response = window.prompt(message);
             if (response !== deck.name) {
-              toastInfo("Deletion canceled");
+              toast2.info("Deletion canceled");
               return;
             }
             deckDestroyMutation.mutate(deck);
