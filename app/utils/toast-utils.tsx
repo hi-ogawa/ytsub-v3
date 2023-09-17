@@ -13,7 +13,7 @@ export function ToastWrapper(props: React.PropsWithChildren) {
           className: "!bg-colorBgElevated !text-colorText",
         }}
       />
-      <ReactToastContainer toast={toastManager} />
+      <ReactToastContainer toast={toast2} />
       {props.children}
     </>
   );
@@ -25,32 +25,34 @@ export function toastInfo(...args: Parameters<typeof toast>) {
   toast(...args);
 }
 
-const toastManager = new ReactToastManager();
-
 // wrapper to imitate react-hot-toast api
-export const toast2 = {
-  success: (node: React.ReactNode) =>
-    toastManager.create({
+class CustomReactToastManager extends ReactToastManager {
+  success = (node: React.ReactNode) =>
+    this.create({
       node,
       type: "success",
       ...baseOptions,
-    }),
-  error: (node: React.ReactNode) =>
-    toastManager.create({
+    });
+
+  error = (node: React.ReactNode) =>
+    this.create({
       node,
       type: "error",
       ...baseOptions,
-    }),
-  info: (node: React.ReactNode) =>
-    toastManager.create({
+    });
+
+  info = (node: React.ReactNode) =>
+    this.create({
       node,
       type: "info",
       ...baseOptions,
-    }),
-};
+    });
+}
 
 const baseOptions = {
   position: "top-center",
   duration: 4000,
   className: "!antd-floating !text-colorText",
 } as const;
+
+export const toast2 = new CustomReactToastManager();
