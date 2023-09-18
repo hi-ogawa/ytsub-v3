@@ -13,5 +13,6 @@ export function ToastWrapper(props: React.PropsWithChildren) {
   );
 }
 
-export const toast = new ReactToastManager();
-toast.defaultOptions.className = "!antd-floating";
+export const toast = new ReactToastManager({
+  className: "!antd-floating",
+});
