@@ -35,12 +35,9 @@ function DefaultComponentInner() {
   const updateDeckMutation = useMutation({
     ...rpcClientQuery.decks_update.mutationOptions(),
     onSuccess: () => {
-      toast.success("Successfully updated a deck");
+      toast2.success("Successfully updated a deck");
       form.resetDirty();
-    },
-    onError: () => {
-      toast.error("Failed to update a deck");
-    },
+    }
   });
 
   const navigate = useNavigate();
@@ -48,12 +45,9 @@ function DefaultComponentInner() {
   const deckDestroyMutation = useMutation({
     ...rpcClientQuery.decks_destroy.mutationOptions(),
     onSuccess: () => {
-      toast.success("Successfully deleted a deck");
+      toast2.success("Successfully deleted a deck");
       navigate(R["/decks"]);
-    },
-    onError: () => {
-      toast.error("Failed to delete a deck");
-    },
+    }
   });
 
   return (

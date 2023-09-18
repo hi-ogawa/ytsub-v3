@@ -7,6 +7,7 @@ import { rpcClientQuery } from "../../trpc/client";
 import { asNumberInput } from "../../utils/form-utils";
 import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
+import { toast2 } from "../../utils/toast-utils";
 
 export { loader } from "./new.server";
 
@@ -20,12 +21,9 @@ export default function DefaultComponent() {
   const newDeckMutation = useMutation({
     ...rpcClientQuery.decks_create.mutationOptions(),
     onSuccess: (res) => {
-      toast.success("Successfully created a deck");
+      toast2.success("Successfully created a deck");
       navigate($R["/decks/$id"]({ id: res.deckId }));
-    },
-    onError: () => {
-      toast.error("Failed to create a deck");
-    },
+    }
   });
 
   const form = useTinyForm({

@@ -51,14 +51,11 @@ function DefaultComponentInner() {
     ...rpcClientQuery.videos_create.mutationOptions(),
     onSuccess: (data) => {
       if (data.created) {
-        toast.success("Created a new video");
+        toast2.success("Created a new video");
       } else {
         toast2.info("Loading an already saved video");
       }
       navigate($R["/videos/$id"](data));
-    },
-    onError: () => {
-      toast.error("Failed to create a video");
     },
   });
 
@@ -202,7 +199,7 @@ function AdvancedModeForm({ videoId }: { videoId: string }) {
       });
     },
     onSuccess: (data) => {
-      toast.success("Created a new video");
+      toast2.success("Created a new video");
       navigate($R["/videos/$id"]({ id: data.id }));
     },
   });

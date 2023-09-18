@@ -64,7 +64,6 @@ function RootWrapper(props: React.PropsWithChildren) {
         className="hidden"
         data-testid="toast-remove"
         onClick={() => {
-          toast.remove();
           toast2.removeAll();
         }}
       />
@@ -311,7 +310,7 @@ function SignoutComponent() {
   const signoutMutation = useMutation({
     ...rpcClientQuery.users_signout.mutationOptions(),
     onSuccess: () => {
-      toast.success("Successfully signed out");
+      toast2.success("Successfully signed out");
       setCurrentUser();
       navigate($R["/"]());
     },

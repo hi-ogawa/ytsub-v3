@@ -26,6 +26,7 @@ import {
   VideoMetadata,
   Z_VIDEO_METADATA,
 } from "./types";
+import { toast2 } from "./toast-utils";
 
 //
 // youtube video detail scraping (based on https://github.com/hi-ogawa/youtube-dl-web-v2/blob/ca7c08ca6b144c235bdc4c7e307a0468052aa6fa/packages/app/src/utils/youtube-utils.ts#L46-L53)
@@ -463,7 +464,7 @@ export function usePlayerLoader(
     {
       onSuccess: onReady,
       onError: () => {
-        toast.error("Failed to initialize youtube player");
+        toast2.error("Failed to initialize youtube player");
       },
     }
   );

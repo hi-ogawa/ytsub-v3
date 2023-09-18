@@ -33,10 +33,7 @@ export default function DefaultComponent() {
       toast2.success("Successfully updated settings");
       navigate({}, { replace: true }); // refetch root loader currentUser
       form.resetDirty();
-    },
-    onError: () => {
-      toast2.error("Failed to update settings");
-    },
+    }
   });
 
   const turnstile = useTurnstile();

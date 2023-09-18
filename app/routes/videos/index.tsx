@@ -77,11 +77,11 @@ function VideoComponentExtra({
   const deleteVideoMutation = useMutation({
     ...rpcClientQuery.videos_destroy.mutationOptions(),
     onSuccess: () => {
-      toast.success("Successfully deleted a video");
+      toast2.success("Successfully deleted a video");
       navigate(R["/videos"]); // refetch
     },
     onError: (e) => {
-      toast.error(e instanceof Error ? e.message : "Failed to delete a video");
+      toast2.error(e instanceof Error ? e.message : "Failed to delete a video");
     },
   });
   const modal = useModal();
@@ -163,12 +163,9 @@ function AddToDeckComponent({
   const newPracticeEntryMutation = useMutation({
     ...rpcClientQuery.decks_practiceEntriesCreate.mutationOptions(),
     onSuccess: (data) => {
-      toast.success(`Added ${data.practiceEntryIds.length} to a deck`);
+      toast2.success(`Added ${data.practiceEntryIds.length} to a deck`);
       decksQuery.refetch();
       onSuccess();
-    },
-    onError: () => {
-      toast.error("Failed to add to a deck");
     },
   });
 

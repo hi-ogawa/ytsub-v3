@@ -8,6 +8,7 @@ import React from "react";
 import { toast } from "react-hot-toast";
 import { rpcClientQuery } from "../trpc/client";
 import { useDocumentEvent } from "./hooks-client-utils";
+import { toast2 } from "./toast-utils";
 
 export function QueryClientWrapper({ children }: React.PropsWithChildren) {
   const [queryClient] = React.useState(() => createQueryClient());
@@ -41,14 +42,14 @@ function createQueryClient() {
       mutations: {
         onError(error, _variables, _context) {
           console.error("[mutation error]", error);
-          toast.error("Something went wrong...");
+          toast2.error("Something went wrong...");
         },
       },
     },
     queryCache: new QueryCache({
       onError(error, _query) {
         console.error("[query error]", error);
-        toast.error("Something went wrong...");
+        toast2.error("Something went wrong...");
       },
     }),
   });

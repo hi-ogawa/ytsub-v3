@@ -34,6 +34,7 @@ import {
 import { cls, none } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 
+import { toast2 } from "../../utils/toast-utils";
 import type { CaptionEntry } from "../../utils/types";
 import {
   YoutubePlayer,
@@ -135,8 +136,7 @@ function PageComponent({
   const newBookmarkMutation = useMutation({
     ...rpcClientQuery.bookmarks_create.mutationOptions(),
     onSuccess: (newBookmark) => {
-      toast.success("Bookmark success");
-
+      toast2.success("Bookmark success");
       if (highlightBookmarkEnabled) {
         // mutate query cache instead of refetch
         queryClient.setQueryData(
@@ -144,11 +144,6 @@ function PageComponent({
           (prev: unknown) => [...(prev as TT["bookmarkEntries"][]), newBookmark]
         );
       }
-    },
-    onError: () => {
-      toast.error("Bookmark failed");
-    },
-    onSettled: () => {
       setBookmarkState(undefined);
     },
   });
@@ -840,7 +835,7 @@ function DetailsComponent({
           { replace: true }
         );
       } else {
-        toast.error("No bookmark is found");
+        toast2.error("No bookmark is found");
       }
     },
   });

@@ -46,11 +46,11 @@ export function handleFlashMessage() {
   const { variant, content } = parsed.value;
   switch (variant) {
     case "success": {
-      toast.success(content);
+      toast2.success(content);
       break;
     }
     case "error": {
-      toast.error(content);
+      toast2.error(content);
       break;
     }
     case "info": {

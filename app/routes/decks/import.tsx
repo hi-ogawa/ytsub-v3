@@ -7,6 +7,7 @@ import { R } from "../../misc/routes";
 import { rpcClient } from "../../trpc/client";
 import { cls, none } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
+import { toast2 } from "../../utils/toast-utils";
 
 export const handle: PageHandle = {
   navBarTitle: () => "Import Deck",
@@ -35,12 +36,9 @@ function FormComponent() {
     },
     {
       onSuccess: () => {
-        toast.success("Deck imported successfully!");
+        toast2.success("Deck imported successfully!");
         navigate(R["/decks"]);
-      },
-      onError: () => {
-        toast.error("Failed to import a deck");
-      },
+      }
     }
   );
 

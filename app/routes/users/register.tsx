@@ -8,6 +8,7 @@ import { rpcClient } from "../../trpc/client";
 import { useSetCurrentUser } from "../../utils/current-user";
 import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
+import { toast2 } from "../../utils/toast-utils";
 import { useTurnstile } from "../../utils/turnstile-utils";
 
 export { loader } from "./register.server";
@@ -31,7 +32,7 @@ export default function DefaultComponent() {
       });
     },
     onSuccess: (data) => {
-      toast.success("Successfully registered");
+      toast2.success("Successfully registered");
       setCurrentUser(data);
       navigate($R["/"]());
     },

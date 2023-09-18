@@ -9,6 +9,7 @@ import { z } from "zod";
 import { rpcClient } from "../trpc/client";
 import { useDocumentEvent } from "../utils/hooks-client-utils";
 import { cls, zipMax } from "../utils/misc";
+import { toast2 } from "../utils/toast-utils";
 import type {
   CaptionConfigOption,
   CaptionEntry,
@@ -116,7 +117,7 @@ export function CaptionEditor(props: {
       await navigator.clipboard.writeText(output);
     },
     onSuccess: () => {
-      toast.success("Caption data is copied to clipboard!");
+      toast2.success("Caption data is copied to clipboard!");
     },
   });
 
