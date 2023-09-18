@@ -90,3 +90,7 @@ export function pathToRegExp(pattern: string) {
   );
   return { regexp: new RegExp(`^${source}$`), keys };
 }
+
+export function isEqualArrayShallow(x: unknown[], y: unknown[]) {
+  return x.length === y.length && x.every((v, i) => v === y[i]);
+}
