@@ -7,7 +7,7 @@ import { useLoaderDataExtra } from "../../utils/loader-utils";
 import { cls } from "../../utils/misc";
 
 import type { PageHandle } from "../../utils/page-handle";
-import { toast2 } from "../../utils/toast-utils";
+import { toast } from "../../utils/toast-utils";
 import type { LoaderData } from "./password-new.server";
 export { loader } from "./password-new.server";
 
@@ -24,7 +24,7 @@ export default function Page() {
     ...rpcClientQuery.users_resetPassword.mutationOptions(),
     onSuccess: () => {
       // TODO: force logging out?
-      toast2.success("Successfully reset your password");
+      toast.success("Successfully reset your password");
       navigate($R["/"]());
     },
   });

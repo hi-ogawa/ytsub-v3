@@ -16,7 +16,7 @@ import {
 import { useLoaderDataExtra } from "../../utils/loader-utils";
 import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
-import { toast2 } from "../../utils/toast-utils";
+import { toast } from "../../utils/toast-utils";
 import type { CaptionConfig, VideoMetadata } from "../../utils/types";
 import {
   encodeAdvancedModeLanguageCode,
@@ -50,9 +50,9 @@ function DefaultComponentInner() {
     ...rpcClientQuery.videos_create.mutationOptions(),
     onSuccess: (data) => {
       if (data.created) {
-        toast2.success("Created a new video");
+        toast.success("Created a new video");
       } else {
-        toast2.info("Loading an already saved video");
+        toast.info("Loading an already saved video");
       }
       navigate($R["/videos/$id"](data));
     },
@@ -198,7 +198,7 @@ function AdvancedModeForm({ videoId }: { videoId: string }) {
       });
     },
     onSuccess: (data) => {
-      toast2.success("Created a new video");
+      toast.success("Created a new video");
       navigate($R["/videos/$id"]({ id: data.id }));
     },
   });

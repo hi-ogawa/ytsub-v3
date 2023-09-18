@@ -33,7 +33,7 @@ import {
 import { cls, none } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 
-import { toast2 } from "../../utils/toast-utils";
+import { toast } from "../../utils/toast-utils";
 import type { CaptionEntry } from "../../utils/types";
 import {
   YoutubePlayer,
@@ -135,7 +135,7 @@ function PageComponent({
   const newBookmarkMutation = useMutation({
     ...rpcClientQuery.bookmarks_create.mutationOptions(),
     onSuccess: (newBookmark) => {
-      toast2.success("Bookmark success");
+      toast.success("Bookmark success");
       if (highlightBookmarkEnabled) {
         // mutate query cache instead of refetch
         queryClient.setQueryData(
@@ -834,7 +834,7 @@ function DetailsComponent({
           { replace: true }
         );
       } else {
-        toast2.error("No bookmark is found");
+        toast.error("No bookmark is found");
       }
     },
   });

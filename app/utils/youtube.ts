@@ -18,7 +18,7 @@ import {
   languageCodeToName,
 } from "./language";
 import { uninitialized } from "./misc";
-import { toast2 } from "./toast-utils";
+import { toast } from "./toast-utils";
 import {
   CaptionConfig,
   CaptionConfigOptions,
@@ -463,7 +463,7 @@ export function usePlayerLoader(
     {
       onSuccess: onReady,
       onError: () => {
-        toast2.error("Failed to initialize youtube player");
+        toast.error("Failed to initialize youtube player");
       },
     }
   );

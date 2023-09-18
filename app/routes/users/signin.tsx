@@ -6,7 +6,7 @@ import { rpcClientQuery } from "../../trpc/client";
 import { useSetCurrentUser } from "../../utils/current-user";
 import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
-import { toast2 } from "../../utils/toast-utils";
+import { toast } from "../../utils/toast-utils";
 
 export const handle: PageHandle = {
   navBarTitle: () => "Sign in",
@@ -26,7 +26,7 @@ export default function DefaultComponent() {
   const signinMutation = useMutation({
     ...rpcClientQuery.users_signin.mutationOptions(),
     onSuccess: (data) => {
-      toast2.success("Successfully signed in");
+      toast.success("Successfully signed in");
       setCurrentUser(data);
       navigate($R["/"]());
     },

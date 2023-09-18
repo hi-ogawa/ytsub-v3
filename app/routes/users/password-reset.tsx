@@ -5,7 +5,7 @@ import { $R } from "../../misc/routes";
 import { rpcClient } from "../../trpc/client";
 import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
-import { toast2 } from "../../utils/toast-utils";
+import { toast } from "../../utils/toast-utils";
 import { useTurnstile } from "../../utils/turnstile-utils";
 
 export const handle: PageHandle = {
@@ -26,7 +26,7 @@ export default function Page() {
       });
     },
     onSuccess: () => {
-      toast2.success("Please check your email to reset your password");
+      toast.success("Please check your email to reset your password");
       navigate($R["/"]());
     },
   });

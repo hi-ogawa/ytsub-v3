@@ -31,7 +31,7 @@ import { useLoaderDataExtra } from "./utils/loader-utils";
 import { cls } from "./utils/misc";
 import type { PageHandle } from "./utils/page-handle";
 import { QueryClientWrapper } from "./utils/react-query-utils";
-import { ToastWrapper, toast2 } from "./utils/toast-utils";
+import { ToastWrapper, toast } from "./utils/toast-utils";
 
 export { loader } from "./root.server";
 import { LoaderData } from "./root.server";
@@ -63,7 +63,7 @@ function RootWrapper(props: React.PropsWithChildren) {
         className="hidden"
         data-testid="toast-remove"
         onClick={() => {
-          toast2.removeAll();
+          toast.removeAll();
         }}
       />
       <Compose
@@ -309,7 +309,7 @@ function SignoutComponent() {
   const signoutMutation = useMutation({
     ...rpcClientQuery.users_signout.mutationOptions(),
     onSuccess: () => {
-      toast2.success("Successfully signed out");
+      toast.success("Successfully signed out");
       setCurrentUser();
       navigate($R["/"]());
     },

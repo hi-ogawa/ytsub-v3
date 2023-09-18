@@ -9,7 +9,7 @@ import { intl } from "../../../utils/intl";
 import { useLoaderDataExtra } from "../../../utils/loader-utils";
 import { cls } from "../../../utils/misc";
 import type { PageHandle } from "../../../utils/page-handle";
-import { toast2 } from "../../../utils/toast-utils";
+import { toast } from "../../../utils/toast-utils";
 import type { LoaderData } from "./_utils.server";
 export { loader } from "./_utils.server";
 
@@ -34,7 +34,7 @@ function DefaultComponentInner() {
   const updateDeckMutation = useMutation({
     ...rpcClientQuery.decks_update.mutationOptions(),
     onSuccess: () => {
-      toast2.success("Successfully updated a deck");
+      toast.success("Successfully updated a deck");
       form.resetDirty();
     },
   });
@@ -44,7 +44,7 @@ function DefaultComponentInner() {
   const deckDestroyMutation = useMutation({
     ...rpcClientQuery.decks_destroy.mutationOptions(),
     onSuccess: () => {
-      toast2.success("Successfully deleted a deck");
+      toast.success("Successfully deleted a deck");
       navigate(R["/decks"]);
     },
   });
@@ -138,7 +138,7 @@ function DefaultComponentInner() {
             const message = `Are you sure? Please type '${deck.name}' to delete this deck.`;
             const response = window.prompt(message);
             if (response !== deck.name) {
-              toast2.info("Deletion canceled");
+              toast.info("Deletion canceled");
               return;
             }
             deckDestroyMutation.mutate(deck);

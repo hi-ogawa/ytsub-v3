@@ -13,7 +13,7 @@ import {
 import { useLeafLoaderData } from "../../utils/loader-utils";
 import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
-import { toast2 } from "../../utils/toast-utils";
+import { toast } from "../../utils/toast-utils";
 import { useTurnstile } from "../../utils/turnstile-utils";
 
 export { loader } from "./me.server";
@@ -30,7 +30,7 @@ export default function DefaultComponent() {
   const updateMutation = useMutation({
     ...rpcClientQuery.users_update.mutationOptions(),
     onSuccess: () => {
-      toast2.success("Successfully updated settings");
+      toast.success("Successfully updated settings");
       navigate({}, { replace: true }); // refetch root loader currentUser
       form.resetDirty();
     },
@@ -47,7 +47,7 @@ export default function DefaultComponent() {
       });
     },
     onSuccess: () => {
-      toast2.success("Please check your email to reset your password");
+      toast.success("Please check your email to reset your password");
     },
   });
 
@@ -202,7 +202,7 @@ function UpdateEmailForm(props: { onSuccess: () => void }) {
   const mutation = useMutation({
     ...rpcClientQuery.users_requestUpdateEmail.mutationOptions(),
     onSuccess: () => {
-      toast2.success("Verification email is sent successfullly");
+      toast.success("Verification email is sent successfullly");
       props.onSuccess();
     },
   });

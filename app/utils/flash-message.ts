@@ -3,7 +3,7 @@ import { useNavigation } from "@remix-run/react";
 import * as cookieLib from "cookie";
 import { z } from "zod";
 import { useEffectNoStrict } from "./misc-react";
-import { toast2 } from "./toast-utils";
+import { toast } from "./toast-utils";
 
 //
 // js cookie based flash message
@@ -45,15 +45,15 @@ export function handleFlashMessage() {
   const { variant, content } = parsed.value;
   switch (variant) {
     case "success": {
-      toast2.success(content);
+      toast.success(content);
       break;
     }
     case "error": {
-      toast2.error(content);
+      toast.error(content);
       break;
     }
     case "info": {
-      toast2.info(content);
+      toast.info(content);
       break;
     }
   }

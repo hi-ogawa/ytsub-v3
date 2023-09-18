@@ -12,7 +12,7 @@ import { R } from "../../misc/routes";
 import { rpcClientQuery } from "../../trpc/client";
 import { useLoaderDataExtra } from "../../utils/loader-utils";
 import type { PageHandle } from "../../utils/page-handle";
-import { toast2 } from "../../utils/toast-utils";
+import { toast } from "../../utils/toast-utils";
 
 // TODO
 // - filter (`<Filter />` in `navBarMenuComponent`)
@@ -76,11 +76,11 @@ function VideoComponentExtra({
   const deleteVideoMutation = useMutation({
     ...rpcClientQuery.videos_destroy.mutationOptions(),
     onSuccess: () => {
-      toast2.success("Successfully deleted a video");
+      toast.success("Successfully deleted a video");
       navigate(R["/videos"]); // refetch
     },
     onError: (e) => {
-      toast2.error(e instanceof Error ? e.message : "Failed to delete a video");
+      toast.error(e instanceof Error ? e.message : "Failed to delete a video");
     },
   });
   const modal = useModal();
@@ -162,7 +162,7 @@ function AddToDeckComponent({
   const newPracticeEntryMutation = useMutation({
     ...rpcClientQuery.decks_practiceEntriesCreate.mutationOptions(),
     onSuccess: (data) => {
-      toast2.success(`Added ${data.practiceEntryIds.length} to a deck`);
+      toast.success(`Added ${data.practiceEntryIds.length} to a deck`);
       decksQuery.refetch();
       onSuccess();
     },
@@ -170,7 +170,7 @@ function AddToDeckComponent({
 
   function onClickPlus(deck: DeckTable) {
     if (!window.confirm(`Please confirm to add bookmarks to '${deck.name}'.`)) {
-      toast2.info("Cancelled to add to a deck");
+      toast.info("Cancelled to add to a deck");
       return;
     }
     newPracticeEntryMutation.mutate({ videoId, deckId: deck.id });

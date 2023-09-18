@@ -7,7 +7,7 @@ import React from "react";
 export function ToastWrapper(props: React.PropsWithChildren) {
   return (
     <>
-      <ReactToastContainer toast={toast2} />
+      <ReactToastContainer toast={toast} />
       {props.children}
     </>
   );
@@ -43,4 +43,4 @@ const baseOptions = {
   className: "!antd-floating",
 } as const;
 
-export const toast2 = new CustomReactToastManager();
+export const toast = new CustomReactToastManager();
