@@ -1,7 +1,6 @@
 import { useTinyForm } from "@hiogawa/tiny-form/dist/react";
 import { useNavigate } from "@remix-run/react";
 import { useMutation } from "@tanstack/react-query";
-import { toast } from "react-hot-toast";
 import { DeckNavBarMenuComponent } from ".";
 import { $R, R } from "../../../misc/routes";
 import { rpcClientQuery } from "../../../trpc/client";
@@ -37,7 +36,7 @@ function DefaultComponentInner() {
     onSuccess: () => {
       toast2.success("Successfully updated a deck");
       form.resetDirty();
-    }
+    },
   });
 
   const navigate = useNavigate();
@@ -47,7 +46,7 @@ function DefaultComponentInner() {
     onSuccess: () => {
       toast2.success("Successfully deleted a deck");
       navigate(R["/decks"]);
-    }
+    },
   });
 
   return (

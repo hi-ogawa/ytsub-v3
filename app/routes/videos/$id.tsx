@@ -14,7 +14,6 @@ import {
   useVirtualizer,
 } from "@tanstack/react-virtual";
 import React from "react";
-import toast from "react-hot-toast";
 import { z } from "zod";
 import { SelectWrapper, transitionProps } from "../../components/misc";
 import { useModal } from "../../components/modal";

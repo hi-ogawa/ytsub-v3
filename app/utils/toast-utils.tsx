@@ -3,16 +3,10 @@ import {
   ReactToastManager,
 } from "@hiogawa/tiny-toast/dist/react";
 import React from "react";
-import { Toaster } from "react-hot-toast";
 
 export function ToastWrapper(props: React.PropsWithChildren) {
   return (
     <>
-      <Toaster
-        toastOptions={{
-          className: "!bg-colorBgElevated !text-colorText",
-        }}
-      />
       <ReactToastContainer toast={toast2} />
       {props.children}
     </>

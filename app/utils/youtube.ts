@@ -10,7 +10,6 @@ import { useRefCallbackEffect, useStableCallback } from "@hiogawa/utils-react";
 import { useMutation } from "@tanstack/react-query";
 import { XMLParser } from "fast-xml-parser";
 import React from "react";
-import { toast } from "react-hot-toast";
 import { z } from "zod";
 import { loadScript } from "./dom-utils";
 import {
@@ -19,6 +18,7 @@ import {
   languageCodeToName,
 } from "./language";
 import { uninitialized } from "./misc";
+import { toast2 } from "./toast-utils";
 import {
   CaptionConfig,
   CaptionConfigOptions,
@@ -26,7 +26,6 @@ import {
   VideoMetadata,
   Z_VIDEO_METADATA,
 } from "./types";
-import { toast2 } from "./toast-utils";
 
 //
 // youtube video detail scraping (based on https://github.com/hi-ogawa/youtube-dl-web-v2/blob/ca7c08ca6b144c235bdc4c7e307a0468052aa6fa/packages/app/src/utils/youtube-utils.ts#L46-L53)

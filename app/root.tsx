@@ -15,7 +15,6 @@ import {
 } from "@remix-run/react";
 import { useMutation } from "@tanstack/react-query";
 import React from "react";
-import { toast } from "react-hot-toast";
 import { Drawer } from "./components/drawer";
 import { PopoverSimple } from "./components/popover";
 import { ThemeSelect } from "./components/theme-select";

@@ -4,7 +4,6 @@ import { tinyassert } from "@hiogawa/utils";
 import { toArraySetState, useRafLoop } from "@hiogawa/utils-react";
 import { useMutation } from "@tanstack/react-query";
 import React from "react";
-import { toast } from "react-hot-toast";
 import { z } from "zod";
 import { rpcClient } from "../trpc/client";
 import { useDocumentEvent } from "../utils/hooks-client-utils";

@@ -1,7 +1,6 @@
 import { wrapError } from "@hiogawa/utils";
 import { useNavigation } from "@remix-run/react";
 import * as cookieLib from "cookie";
-import { toast } from "react-hot-toast";
 import { z } from "zod";
 import { useEffectNoStrict } from "./misc-react";
 import { toast2 } from "./toast-utils";

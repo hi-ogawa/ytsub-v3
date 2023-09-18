@@ -1,7 +1,6 @@
 import { useTinyForm } from "@hiogawa/tiny-form/dist/react";
 import { useNavigate } from "@remix-run/react";
 import { useMutation } from "@tanstack/react-query";
-import toast from "react-hot-toast";
 import { $R } from "../../misc/routes";
 import { rpcClient } from "../../trpc/client";
 import { cls } from "../../utils/misc";

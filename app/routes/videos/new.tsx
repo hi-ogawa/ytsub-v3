@@ -4,7 +4,6 @@ import { useTinyStore } from "@hiogawa/tiny-store/dist/react";
 import { tinyassert } from "@hiogawa/utils";
 import { useNavigate } from "@remix-run/react";
 import { useMutation } from "@tanstack/react-query";
-import { toast } from "react-hot-toast";
 import { SelectWrapper } from "../../components/misc";
 import { PopoverSimple } from "../../components/popover";
 import { $R } from "../../misc/routes";

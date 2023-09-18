@@ -1,7 +1,6 @@
 import { Transition } from "@hiogawa/tiny-transition/dist/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import React from "react";
-import { toast } from "react-hot-toast";
 import { transitionProps } from "../../../components/misc";
 import type {
   BookmarkEntryTable,
@@ -18,7 +17,6 @@ import {
 } from "../../../utils/loader-utils";
 import { cls } from "../../../utils/misc";
 import type { PageHandle } from "../../../utils/page-handle";
-import { toast2 } from "../../../utils/toast-utils";
 import { BookmarkEntryComponent } from "../../bookmarks";
 
 import type { LoaderData } from "./_utils.server";
