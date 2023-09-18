@@ -53,8 +53,8 @@ dependencies:
     specifier: 0.0.1-pre.0
     version: 0.0.1-pre.0(react@18.2.0)
   '@hiogawa/tiny-toast':
-    specifier: ^0.0.1-pre.3
-    version: 0.0.1-pre.3(react@18.2.0)
+    specifier: ^0.0.1-pre.5
+    version: 0.0.1-pre.5(react@18.2.0)
   '@hiogawa/tiny-transition':
     specifier: 0.0.1-pre.3
     version: 0.0.1-pre.3(react@18.2.0)
@@ -2373,8 +2373,8 @@ packages:
       react: 18.2.0
     dev: false
 
-  /@hiogawa/tiny-toast@0.0.1-pre.3(react@18.2.0):
-    resolution: {integrity: sha512-isc/U6qXTv4BxwT0zk9M0tm84CDURAVZ2nC7bVIMlSoW70fzo4Ss1SY5pjuEtsVAocOj7Ix46ucwzQwYF7Q7rw==}
+  /@hiogawa/tiny-toast@0.0.1-pre.5(react@18.2.0):
+    resolution: {integrity: sha512-c6w1lzQAJSnWQUbheaSyu8Lt8Kt4bH7GZNkY3oxFYmLei1GAffEAOnTokMWIxvvrvncxSl6xH6ZUnocfVNc4vA==}
     peerDependencies:
       react: ^18.0.0
     peerDependenciesMeta:

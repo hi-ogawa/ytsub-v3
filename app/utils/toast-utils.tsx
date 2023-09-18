@@ -26,6 +26,7 @@ export function toastInfo(...args: Parameters<typeof toast>) {
 }
 
 // wrapper to imitate react-hot-toast api
+// TODO: implement in tiny-toast
 class CustomReactToastManager extends ReactToastManager {
   success = (node: React.ReactNode) =>
     this.create({
@@ -51,8 +52,7 @@ class CustomReactToastManager extends ReactToastManager {
 
 const baseOptions = {
   position: "top-center",
-  duration: 4000,
-  className: "!antd-floating !text-colorText",
+  className: "!antd-floating",
 } as const;
 
 export const toast2 = new CustomReactToastManager();

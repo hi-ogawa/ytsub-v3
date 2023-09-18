@@ -32,7 +32,7 @@ import { useLoaderDataExtra } from "./utils/loader-utils";
 import { cls } from "./utils/misc";
 import type { PageHandle } from "./utils/page-handle";
 import { QueryClientWrapper } from "./utils/react-query-utils";
-import { ToastWrapper } from "./utils/toast-utils";
+import { ToastWrapper, toast2 } from "./utils/toast-utils";
 
 export { loader } from "./root.server";
 import { LoaderData } from "./root.server";
@@ -65,6 +65,7 @@ function RootWrapper(props: React.PropsWithChildren) {
         data-testid="toast-remove"
         onClick={() => {
           toast.remove();
+          toast2.removeAll();
         }}
       />
       <Compose
