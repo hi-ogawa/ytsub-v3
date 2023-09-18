@@ -7,7 +7,7 @@ import React from "react";
 import { z } from "zod";
 import { rpcClient } from "../trpc/client";
 import { useDocumentEvent } from "../utils/hooks-client-utils";
-import { cls, zipMax } from "../utils/misc";
+import { cls, isEqualArrayShallow, zipMax } from "../utils/misc";
 import { toast } from "../utils/toast-utils";
 import type {
   CaptionConfigOption,
@@ -133,15 +133,16 @@ export function CaptionEditor(props: {
   const [isPlaying, setIsPlayring] = React.useState(false);
 
   useRafLoop(() => {
-    setCurrentEntries((prev) => {
-      if (player) {
-        const time = player.getCurrentTime();
-        return entries.filter((e) => e.begin <= time && time < e.end);
-      }
-      return prev;
-    });
+    if (!player) return;
 
-    setIsPlayring(player?.getPlayerState() === 1);
+    const time = player.getCurrentTime();
+    const newCurrentEntires = entries.filter(
+      (e) => e.begin <= time && time < e.end
+    );
+    if (!isEqualArrayShallow(newCurrentEntires, currentEntries)) {
+      setCurrentEntries(newCurrentEntires);
+    }
+    setIsPlayring(player.getPlayerState() === 1);
   });
 
   //
