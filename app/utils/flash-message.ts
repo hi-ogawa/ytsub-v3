@@ -4,7 +4,7 @@ import * as cookieLib from "cookie";
 import { toast } from "react-hot-toast";
 import { z } from "zod";
 import { useEffectNoStrict } from "./misc-react";
-import { toastInfo } from "./toast-utils";
+import { toast2 } from "./toast-utils";
 
 //
 // js cookie based flash message
@@ -54,7 +54,7 @@ export function handleFlashMessage() {
       break;
     }
     case "info": {
-      toastInfo(content);
+      toast2.info(content);
       break;
     }
   }

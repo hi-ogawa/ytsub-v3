@@ -17,7 +17,7 @@ import {
 import { useLoaderDataExtra } from "../../utils/loader-utils";
 import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
-import { toastInfo } from "../../utils/toast-utils";
+import { toast2 } from "../../utils/toast-utils";
 import type { CaptionConfig, VideoMetadata } from "../../utils/types";
 import {
   encodeAdvancedModeLanguageCode,
@@ -53,7 +53,7 @@ function DefaultComponentInner() {
       if (data.created) {
         toast.success("Created a new video");
       } else {
-        toastInfo("Loading an already saved video");
+        toast2.info("Loading an already saved video");
       }
       navigate($R["/videos/$id"](data));
     },

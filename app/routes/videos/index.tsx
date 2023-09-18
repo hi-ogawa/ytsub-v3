@@ -13,7 +13,7 @@ import { R } from "../../misc/routes";
 import { rpcClientQuery } from "../../trpc/client";
 import { useLoaderDataExtra } from "../../utils/loader-utils";
 import type { PageHandle } from "../../utils/page-handle";
-import { toastInfo } from "../../utils/toast-utils";
+import { toast2 } from "../../utils/toast-utils";
 
 // TODO
 // - filter (`<Filter />` in `navBarMenuComponent`)
@@ -174,7 +174,7 @@ function AddToDeckComponent({
 
   function onClickPlus(deck: DeckTable) {
     if (!window.confirm(`Please confirm to add bookmarks to '${deck.name}'.`)) {
-      toastInfo("Cancelled to add to a deck");
+      toast2.info("Cancelled to add to a deck");
       return;
     }
     newPracticeEntryMutation.mutate({ videoId, deckId: deck.id });

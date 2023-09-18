@@ -3,7 +3,7 @@ import {
   ReactToastManager,
 } from "@hiogawa/tiny-toast/dist/react";
 import React from "react";
-import { Toaster, toast } from "react-hot-toast";
+import { Toaster } from "react-hot-toast";
 
 export function ToastWrapper(props: React.PropsWithChildren) {
   return (
@@ -17,12 +17,6 @@ export function ToastWrapper(props: React.PropsWithChildren) {
       {props.children}
     </>
   );
-}
-
-export function toastInfo(...args: Parameters<typeof toast>) {
-  args[1] ??= {};
-  args[1].icon = <span className="i-ri-information-line w-5 h-5"></span>;
-  toast(...args);
 }
 
 // wrapper to imitate react-hot-toast api
