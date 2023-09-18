@@ -10,7 +10,6 @@ import { useRefCallbackEffect, useStableCallback } from "@hiogawa/utils-react";
 import { useMutation } from "@tanstack/react-query";
 import { XMLParser } from "fast-xml-parser";
 import React from "react";
-import { toast } from "react-hot-toast";
 import { z } from "zod";
 import { loadScript } from "./dom-utils";
 import {
@@ -19,6 +18,7 @@ import {
   languageCodeToName,
 } from "./language";
 import { uninitialized } from "./misc";
+import { toast } from "./toast-utils";
 import {
   CaptionConfig,
   CaptionConfigOptions,

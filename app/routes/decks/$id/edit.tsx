@@ -1,7 +1,6 @@
 import { useTinyForm } from "@hiogawa/tiny-form/dist/react";
 import { useNavigate } from "@remix-run/react";
 import { useMutation } from "@tanstack/react-query";
-import { toast } from "react-hot-toast";
 import { DeckNavBarMenuComponent } from ".";
 import { $R, R } from "../../../misc/routes";
 import { rpcClientQuery } from "../../../trpc/client";
@@ -10,7 +9,7 @@ import { intl } from "../../../utils/intl";
 import { useLoaderDataExtra } from "../../../utils/loader-utils";
 import { cls } from "../../../utils/misc";
 import type { PageHandle } from "../../../utils/page-handle";
-import { toastInfo } from "../../../utils/toast-utils";
+import { toast } from "../../../utils/toast-utils";
 import type { LoaderData } from "./_utils.server";
 export { loader } from "./_utils.server";
 
@@ -38,9 +37,6 @@ function DefaultComponentInner() {
       toast.success("Successfully updated a deck");
       form.resetDirty();
     },
-    onError: () => {
-      toast.error("Failed to update a deck");
-    },
   });
 
   const navigate = useNavigate();
@@ -50,9 +46,6 @@ function DefaultComponentInner() {
     onSuccess: () => {
       toast.success("Successfully deleted a deck");
       navigate(R["/decks"]);
-    },
-    onError: () => {
-      toast.error("Failed to delete a deck");
     },
   });
 
@@ -145,7 +138,7 @@ function DefaultComponentInner() {
             const message = `Are you sure? Please type '${deck.name}' to delete this deck.`;
             const response = window.prompt(message);
             if (response !== deck.name) {
-              toastInfo("Deletion canceled");
+              toast.info("Deletion canceled");
               return;
             }
             deckDestroyMutation.mutate(deck);

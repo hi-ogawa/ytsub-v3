@@ -14,7 +14,6 @@ import {
   useVirtualizer,
 } from "@tanstack/react-virtual";
 import React from "react";
-import toast from "react-hot-toast";
 import { z } from "zod";
 import { SelectWrapper, transitionProps } from "../../components/misc";
 import { useModal } from "../../components/modal";
@@ -34,6 +33,7 @@ import {
 import { cls, none } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 
+import { toast } from "../../utils/toast-utils";
 import type { CaptionEntry } from "../../utils/types";
 import {
   YoutubePlayer,
@@ -136,7 +136,6 @@ function PageComponent({
     ...rpcClientQuery.bookmarks_create.mutationOptions(),
     onSuccess: (newBookmark) => {
       toast.success("Bookmark success");
-
       if (highlightBookmarkEnabled) {
         // mutate query cache instead of refetch
         queryClient.setQueryData(
@@ -144,11 +143,6 @@ function PageComponent({
           (prev: unknown) => [...(prev as TT["bookmarkEntries"][]), newBookmark]
         );
       }
-    },
-    onError: () => {
-      toast.error("Bookmark failed");
-    },
-    onSettled: () => {
       setBookmarkState(undefined);
     },
   });

@@ -1,7 +1,6 @@
 import { Transition } from "@hiogawa/tiny-transition/dist/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import React from "react";
-import { toast } from "react-hot-toast";
 import { transitionProps } from "../../../components/misc";
 import type {
   BookmarkEntryTable,
@@ -19,8 +18,8 @@ import {
 import { cls } from "../../../utils/misc";
 import type { PageHandle } from "../../../utils/page-handle";
 import { BookmarkEntryComponent } from "../../bookmarks";
-import type { LoaderData } from "./_utils.server";
 
+import type { LoaderData } from "./_utils.server";
 import { DeckNavBarMenuComponent, QueueStatisticsComponent } from "./index";
 export { loader } from "./_utils.server";
 
@@ -111,9 +110,6 @@ function PracticeComponent({
     ...rpcClientQuery.decks_practiceActionsCreate.mutationOptions(),
     onSuccess: () => {
       loadNext();
-    },
-    onError: () => {
-      toast.error("Failed to submit answer");
     },
   });
 

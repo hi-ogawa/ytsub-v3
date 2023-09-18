@@ -1,7 +1,6 @@
 import { Transition } from "@hiogawa/tiny-transition/dist/react";
 import { useNavigate } from "@remix-run/react";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import toast from "react-hot-toast";
 import {
   PaginationComponent,
   VideoComponent,
@@ -13,7 +12,7 @@ import { R } from "../../misc/routes";
 import { rpcClientQuery } from "../../trpc/client";
 import { useLoaderDataExtra } from "../../utils/loader-utils";
 import type { PageHandle } from "../../utils/page-handle";
-import { toastInfo } from "../../utils/toast-utils";
+import { toast } from "../../utils/toast-utils";
 
 // TODO
 // - filter (`<Filter />` in `navBarMenuComponent`)
@@ -167,14 +166,11 @@ function AddToDeckComponent({
       decksQuery.refetch();
       onSuccess();
     },
-    onError: () => {
-      toast.error("Failed to add to a deck");
-    },
   });
 
   function onClickPlus(deck: DeckTable) {
     if (!window.confirm(`Please confirm to add bookmarks to '${deck.name}'.`)) {
-      toastInfo("Cancelled to add to a deck");
+      toast.info("Cancelled to add to a deck");
       return;
     }
     newPracticeEntryMutation.mutate({ videoId, deckId: deck.id });

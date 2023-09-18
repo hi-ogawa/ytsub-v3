@@ -52,12 +52,15 @@ dependencies:
   '@hiogawa/tiny-store':
     specifier: 0.0.1-pre.0
     version: 0.0.1-pre.0(react@18.2.0)
+  '@hiogawa/tiny-toast':
+    specifier: ^0.1.1-pre.0
+    version: 0.1.1-pre.0(react@18.2.0)
   '@hiogawa/tiny-transition':
     specifier: 0.0.1-pre.3
     version: 0.0.1-pre.3(react@18.2.0)
   '@hiogawa/utils':
-    specifier: 1.6.1-pre.1
-    version: 1.6.1-pre.1
+    specifier: 1.6.1-pre.9
+    version: 1.6.1-pre.9
   '@hiogawa/utils-hattip':
     specifier: 0.0.1-pre.1
     version: 0.0.1-pre.1
@@ -2370,6 +2373,17 @@ packages:
       react: 18.2.0
     dev: false
 
+  /@hiogawa/tiny-toast@0.1.1-pre.0(react@18.2.0):
+    resolution: {integrity: sha512-p3ofH2L1xdIBrmSykHhKsuRNCtS5q+809N7v9XeIPsDMF+PxyAttc7n3xxZ1Y+q+RpIApBPAxHtm+2esGJ3viA==}
+    peerDependencies:
+      react: ^18.0.0
+    peerDependenciesMeta:
+      react:
+        optional: true
+    dependencies:
+      react: 18.2.0
+    dev: false
+
   /@hiogawa/tiny-transition@0.0.1-pre.3(react@18.2.0):
     resolution: {integrity: sha512-tKyh/62/NKbX3SjMQJN7mpoanGJDiudyN3IloXp1w2FoEyfRAUL7K/bICoHNzdLlGjEbrVzTRRoj2gWpWVBhBA==}
     peerDependencies:
@@ -2409,8 +2423,8 @@ packages:
       react: 18.2.0
     dev: false
 
-  /@hiogawa/utils@1.6.1-pre.1:
-    resolution: {integrity: sha512-bEeh1uUd8W/DAENshd4oejOBD0ZutC7JPO7GTYPDxzGFmYHBkZi2jW5XKyuq03zi3V5ygOlRIvoVaBoE4LlU0w==}
+  /@hiogawa/utils@1.6.1-pre.9:
+    resolution: {integrity: sha512-9RnMKYYp0BAK4xsRl9V9gxH6J4wQWL9hzFLfREAWiiB6let0csGruGvmXAFu8RKfhG7/0h6xkpg/TrCO1+RsYg==}
     dev: false
 
   /@iconify-json/ri@1.1.12:

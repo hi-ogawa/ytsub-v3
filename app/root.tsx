@@ -15,7 +15,6 @@ import {
 } from "@remix-run/react";
 import { useMutation } from "@tanstack/react-query";
 import React from "react";
-import { toast } from "react-hot-toast";
 import { Drawer } from "./components/drawer";
 import { PopoverSimple } from "./components/popover";
 import { ThemeSelect } from "./components/theme-select";
@@ -32,7 +31,7 @@ import { useLoaderDataExtra } from "./utils/loader-utils";
 import { cls } from "./utils/misc";
 import type { PageHandle } from "./utils/page-handle";
 import { QueryClientWrapper } from "./utils/react-query-utils";
-import { ToastWrapper } from "./utils/toast-utils";
+import { ToastWrapper, toast } from "./utils/toast-utils";
 
 export { loader } from "./root.server";
 import { LoaderData } from "./root.server";
@@ -64,7 +63,7 @@ function RootWrapper(props: React.PropsWithChildren) {
         className="hidden"
         data-testid="toast-remove"
         onClick={() => {
-          toast.remove();
+          toast.removeAll();
         }}
       />
       <Compose

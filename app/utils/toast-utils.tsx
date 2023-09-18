@@ -1,20 +1,18 @@
-import { Toaster, toast } from "react-hot-toast";
+import {
+  ReactToastContainer,
+  ReactToastManager,
+} from "@hiogawa/tiny-toast/dist/react";
+import React from "react";
 
 export function ToastWrapper(props: React.PropsWithChildren) {
   return (
     <>
-      <Toaster
-        toastOptions={{
-          className: "!bg-colorBgElevated !text-colorText",
-        }}
-      />
+      <ReactToastContainer toast={toast} />
       {props.children}
     </>
   );
 }
 
-export function toastInfo(...args: Parameters<typeof toast>) {
-  args[1] ??= {};
-  args[1].icon = <span className="i-ri-information-line w-5 h-5"></span>;
-  toast(...args);
-}
+export const toast = new ReactToastManager({
+  className: "!antd-floating",
+});

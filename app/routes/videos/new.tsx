@@ -4,7 +4,6 @@ import { useTinyStore } from "@hiogawa/tiny-store/dist/react";
 import { tinyassert } from "@hiogawa/utils";
 import { useNavigate } from "@remix-run/react";
 import { useMutation } from "@tanstack/react-query";
-import { toast } from "react-hot-toast";
 import { SelectWrapper } from "../../components/misc";
 import { PopoverSimple } from "../../components/popover";
 import { $R } from "../../misc/routes";
@@ -17,7 +16,7 @@ import {
 import { useLoaderDataExtra } from "../../utils/loader-utils";
 import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
-import { toastInfo } from "../../utils/toast-utils";
+import { toast } from "../../utils/toast-utils";
 import type { CaptionConfig, VideoMetadata } from "../../utils/types";
 import {
   encodeAdvancedModeLanguageCode,
@@ -53,12 +52,9 @@ function DefaultComponentInner() {
       if (data.created) {
         toast.success("Created a new video");
       } else {
-        toastInfo("Loading an already saved video");
+        toast.info("Loading an already saved video");
       }
       navigate($R["/videos/$id"](data));
-    },
-    onError: () => {
-      toast.error("Failed to create a video");
     },
   });
 

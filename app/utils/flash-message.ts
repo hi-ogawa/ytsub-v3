@@ -1,10 +1,9 @@
 import { wrapError } from "@hiogawa/utils";
 import { useNavigation } from "@remix-run/react";
 import * as cookieLib from "cookie";
-import { toast } from "react-hot-toast";
 import { z } from "zod";
 import { useEffectNoStrict } from "./misc-react";
-import { toastInfo } from "./toast-utils";
+import { toast } from "./toast-utils";
 
 //
 // js cookie based flash message
@@ -54,7 +53,7 @@ export function handleFlashMessage() {
       break;
     }
     case "info": {
-      toastInfo(content);
+      toast.info(content);
       break;
     }
   }
