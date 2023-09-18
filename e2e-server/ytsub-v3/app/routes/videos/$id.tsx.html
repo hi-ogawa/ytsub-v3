@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">11.9% </span>
+                <span class="strong">11.98% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>113/949</span>
+                <span class='fraction'>113/943</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">11.9% </span>
+                <span class="strong">11.98% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>113/949</span>
+                <span class='fraction'>113/943</span>
             </div>
         
             
@@ -1006,13 +1006,7 @@
 <a name='L941'></a><a href='#L941'>941</a>
 <a name='L942'></a><a href='#L942'>942</a>
 <a name='L943'></a><a href='#L943'>943</a>
-<a name='L944'></a><a href='#L944'>944</a>
-<a name='L945'></a><a href='#L945'>945</a>
-<a name='L946'></a><a href='#L946'>946</a>
-<a name='L947'></a><a href='#L947'>947</a>
-<a name='L948'></a><a href='#L948'>948</a>
-<a name='L949'></a><a href='#L949'>949</a>
-<a name='L950'></a><a href='#L950'>950</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<a name='L944'></a><a href='#L944'>944</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -1089,12 +1083,6 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -1977,7 +1965,6 @@ import {
   useVirtualizer,
 } from "@tanstack/react-virtual";
 import React from "react";
-import toast from "react-hot-toast";
 import { z } from "zod";
 import { SelectWrapper, transitionProps } from "../../components/misc";
 import { useModal } from "../../components/modal";
@@ -1997,6 +1984,7 @@ import {
 import { cls, none } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 &nbsp;
+import { toast2 } from "../../utils/toast-utils";
 import type { CaptionEntry } from "../../utils/types";
 import {
   YoutubePlayer,
@@ -2098,8 +2086,7 @@ interface BookmarkSelection {
 <span class="cstat-no" title="statement not covered" >  const newBookmarkMutation = useMutation({</span>
 <span class="cstat-no" title="statement not covered" >    ...rpcClientQuery.bookmarks_create.mutationOptions(),</span>
 <span class="cstat-no" title="statement not covered" >    onSuccess: (newBookmark) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >      toast.success("Bookmark success");</span>
-<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >      toast2.success("Bookmark success");</span>
 <span class="cstat-no" title="statement not covered" >      if (highlightBookmarkEnabled) {</span>
 <span class="cstat-no" title="statement not covered" >        // mutate query cache instead of refetch</span>
 <span class="cstat-no" title="statement not covered" >        queryClient.setQueryData(</span>
@@ -2107,11 +2094,6 @@ interface BookmarkSelection {
 <span class="cstat-no" title="statement not covered" >          (prev: unknown) =&gt; [...(prev as TT["bookmarkEntries"][]), newBookmark]</span>
 <span class="cstat-no" title="statement not covered" >        );</span>
 <span class="cstat-no" title="statement not covered" >      }</span>
-<span class="cstat-no" title="statement not covered" >    },</span>
-<span class="cstat-no" title="statement not covered" >    onError: () =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >      toast.error("Bookmark failed");</span>
-<span class="cstat-no" title="statement not covered" >    },</span>
-<span class="cstat-no" title="statement not covered" >    onSettled: () =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >      setBookmarkState(undefined);</span>
 <span class="cstat-no" title="statement not covered" >    },</span>
 <span class="cstat-no" title="statement not covered" >  });</span>
@@ -2803,7 +2785,7 @@ const BOOKMARK_DATA_ATTR = z.enum([
 <span class="cstat-no" title="statement not covered" >          { replace: true }</span>
 <span class="cstat-no" title="statement not covered" >        );</span>
 <span class="cstat-no" title="statement not covered" >      } else {</span>
-<span class="cstat-no" title="statement not covered" >        toast.error("No bookmark is found");</span>
+<span class="cstat-no" title="statement not covered" >        toast2.error("No bookmark is found");</span>
 <span class="cstat-no" title="statement not covered" >      }</span>
 <span class="cstat-no" title="statement not covered" >    },</span>
 <span class="cstat-no" title="statement not covered" >  });</span>
@@ -2917,7 +2899,7 @@ const playbackRateStateStore = createTinyStore(INITIAL_PLAYBACK_RATE_STATE);
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-09-16T23:48:15.504Z
+                at 2023-09-18T02:24:18.801Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>

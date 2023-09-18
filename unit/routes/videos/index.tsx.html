@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">16.66% </span>
+                <span class="strong">16.51% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>37/222</span>
+                <span class='fraction'>36/218</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">16.66% </span>
+                <span class="strong">16.51% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>37/222</span>
+                <span class='fraction'>36/218</span>
             </div>
         
             
@@ -281,12 +281,7 @@
 <a name='L216'></a><a href='#L216'>216</a>
 <a name='L217'></a><a href='#L217'>217</a>
 <a name='L218'></a><a href='#L218'>218</a>
-<a name='L219'></a><a href='#L219'>219</a>
-<a name='L220'></a><a href='#L220'>220</a>
-<a name='L221'></a><a href='#L221'>221</a>
-<a name='L222'></a><a href='#L222'>222</a>
-<a name='L223'></a><a href='#L223'>223</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<a name='L219'></a><a href='#L219'>219</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -432,9 +427,6 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -510,7 +502,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { Transition } from "@hiogawa/tiny-transition/dist/react";
 import { useNavigate } from "@remix-run/react";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import toast from "react-hot-toast";
 import {
   PaginationComponent,
   VideoComponent,
@@ -522,7 +513,7 @@ import { R } from "../../misc/routes";
 import { rpcClientQuery } from "../../trpc/client";
 import { useLoaderDataExtra } from "../../utils/loader-utils";
 import type { PageHandle } from "../../utils/page-handle";
-import { toastInfo } from "../../utils/toast-utils";
+import { toast2 } from "../../utils/toast-utils";
 &nbsp;
 // TODO
 // - filter (`&lt;Filter /&gt;` in `navBarMenuComponent`)
@@ -586,11 +577,11 @@ export <span class="fstat-no" title="function not covered" >function VideoListCo
 <span class="cstat-no" title="statement not covered" >  const deleteVideoMutation = useMutation({</span>
 <span class="cstat-no" title="statement not covered" >    ...rpcClientQuery.videos_destroy.mutationOptions(),</span>
 <span class="cstat-no" title="statement not covered" >    onSuccess: () =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >      toast.success("Successfully deleted a video");</span>
+<span class="cstat-no" title="statement not covered" >      toast2.success("Successfully deleted a video");</span>
 <span class="cstat-no" title="statement not covered" >      navigate(R["/videos"]); // refetch</span>
 <span class="cstat-no" title="statement not covered" >    },</span>
 <span class="cstat-no" title="statement not covered" >    onError: (e) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >      toast.error(e instanceof Error ? e.message : "Failed to delete a video");</span>
+<span class="cstat-no" title="statement not covered" >      toast2.error(e instanceof Error ? e.message : "Failed to delete a video");</span>
 <span class="cstat-no" title="statement not covered" >    },</span>
 <span class="cstat-no" title="statement not covered" >  });</span>
 <span class="cstat-no" title="statement not covered" >  const modal = useModal();</span>
@@ -672,18 +663,15 @@ export <span class="fstat-no" title="function not covered" >function VideoListCo
 <span class="cstat-no" title="statement not covered" >  const newPracticeEntryMutation = useMutation({</span>
 <span class="cstat-no" title="statement not covered" >    ...rpcClientQuery.decks_practiceEntriesCreate.mutationOptions(),</span>
 <span class="cstat-no" title="statement not covered" >    onSuccess: (data) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >      toast.success(`Added ${data.practiceEntryIds.length} to a deck`);</span>
+<span class="cstat-no" title="statement not covered" >      toast2.success(`Added ${data.practiceEntryIds.length} to a deck`);</span>
 <span class="cstat-no" title="statement not covered" >      decksQuery.refetch();</span>
 <span class="cstat-no" title="statement not covered" >      onSuccess();</span>
-<span class="cstat-no" title="statement not covered" >    },</span>
-<span class="cstat-no" title="statement not covered" >    onError: () =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >      toast.error("Failed to add to a deck");</span>
 <span class="cstat-no" title="statement not covered" >    },</span>
 <span class="cstat-no" title="statement not covered" >  });</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  function onClickPlus(deck: DeckTable) {</span>
 <span class="cstat-no" title="statement not covered" >    if (!window.confirm(`Please confirm to add bookmarks to '${deck.name}'.`)) {</span>
-<span class="cstat-no" title="statement not covered" >      toastInfo("Cancelled to add to a deck");</span>
+<span class="cstat-no" title="statement not covered" >      toast2.info("Cancelled to add to a deck");</span>
 <span class="cstat-no" title="statement not covered" >      return;</span>
 <span class="cstat-no" title="statement not covered" >    }</span>
 <span class="cstat-no" title="statement not covered" >    newPracticeEntryMutation.mutate({ videoId, deckId: deck.id });</span>
@@ -736,7 +724,7 @@ export <span class="fstat-no" title="function not covered" >function VideoListCo
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-09-16T23:45:40.578Z
+                at 2023-09-18T02:22:02.989Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

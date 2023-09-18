@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">14.46% </span>
+                <span class="strong">14.47% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>23/159</span>
+                <span class='fraction'>22/152</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">14.46% </span>
+                <span class="strong">14.47% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>23/159</span>
+                <span class='fraction'>22/152</span>
             </div>
         
             
@@ -215,15 +215,7 @@
 <a name='L150'></a><a href='#L150'>150</a>
 <a name='L151'></a><a href='#L151'>151</a>
 <a name='L152'></a><a href='#L152'>152</a>
-<a name='L153'></a><a href='#L153'>153</a>
-<a name='L154'></a><a href='#L154'>154</a>
-<a name='L155'></a><a href='#L155'>155</a>
-<a name='L156'></a><a href='#L156'>156</a>
-<a name='L157'></a><a href='#L157'>157</a>
-<a name='L158'></a><a href='#L158'>158</a>
-<a name='L159'></a><a href='#L159'>159</a>
-<a name='L160'></a><a href='#L160'>160</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<a name='L153'></a><a href='#L153'>153</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -251,12 +243,6 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -384,7 +370,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="fstat-no" title="function not covered" >import { useTinyForm } from "</span>@hiogawa/tiny-form/dist/react";
 import { useNavigate } from "@remix-run/react";
 import { useMutation } from "@tanstack/react-query";
-import { toast } from "react-hot-toast";
 import { DeckNavBarMenuComponent } from ".";
 import { $R, R } from "../../../misc/routes";
 import { rpcClientQuery } from "../../../trpc/client";
@@ -393,7 +378,7 @@ import { intl } from "../../../utils/intl";
 import { useLoaderDataExtra } from "../../../utils/loader-utils";
 import { cls } from "../../../utils/misc";
 import type { PageHandle } from "../../../utils/page-handle";
-import { toastInfo } from "../../../utils/toast-utils";
+import { toast2 } from "../../../utils/toast-utils";
 import type { LoaderData } from "./_utils.server";
 export { loader } from "./_utils.server";
 &nbsp;
@@ -418,11 +403,8 @@ export default <span class="fstat-no" title="function not covered" >function Def
 <span class="cstat-no" title="statement not covered" >  const updateDeckMutation = useMutation({</span>
 <span class="cstat-no" title="statement not covered" >    ...rpcClientQuery.decks_update.mutationOptions(),</span>
 <span class="cstat-no" title="statement not covered" >    onSuccess: () =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >      toast.success("Successfully updated a deck");</span>
+<span class="cstat-no" title="statement not covered" >      toast2.success("Successfully updated a deck");</span>
 <span class="cstat-no" title="statement not covered" >      form.resetDirty();</span>
-<span class="cstat-no" title="statement not covered" >    },</span>
-<span class="cstat-no" title="statement not covered" >    onError: () =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >      toast.error("Failed to update a deck");</span>
 <span class="cstat-no" title="statement not covered" >    },</span>
 <span class="cstat-no" title="statement not covered" >  });</span>
 <span class="cstat-no" title="statement not covered" ></span>
@@ -431,11 +413,8 @@ export default <span class="fstat-no" title="function not covered" >function Def
 <span class="cstat-no" title="statement not covered" >  const deckDestroyMutation = useMutation({</span>
 <span class="cstat-no" title="statement not covered" >    ...rpcClientQuery.decks_destroy.mutationOptions(),</span>
 <span class="cstat-no" title="statement not covered" >    onSuccess: () =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >      toast.success("Successfully deleted a deck");</span>
+<span class="cstat-no" title="statement not covered" >      toast2.success("Successfully deleted a deck");</span>
 <span class="cstat-no" title="statement not covered" >      navigate(R["/decks"]);</span>
-<span class="cstat-no" title="statement not covered" >    },</span>
-<span class="cstat-no" title="statement not covered" >    onError: () =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >      toast.error("Failed to delete a deck");</span>
 <span class="cstat-no" title="statement not covered" >    },</span>
 <span class="cstat-no" title="statement not covered" >  });</span>
 <span class="cstat-no" title="statement not covered" ></span>
@@ -528,7 +507,7 @@ export default <span class="fstat-no" title="function not covered" >function Def
 <span class="cstat-no" title="statement not covered" >            const message = `Are you sure? Please type '${deck.name}' to delete this deck.`;</span>
 <span class="cstat-no" title="statement not covered" >            const response = window.prompt(message);</span>
 <span class="cstat-no" title="statement not covered" >            if (response !== deck.name) {</span>
-<span class="cstat-no" title="statement not covered" >              toastInfo("Deletion canceled");</span>
+<span class="cstat-no" title="statement not covered" >              toast2.info("Deletion canceled");</span>
 <span class="cstat-no" title="statement not covered" >              return;</span>
 <span class="cstat-no" title="statement not covered" >            }</span>
 <span class="cstat-no" title="statement not covered" >            deckDestroyMutation.mutate(deck);</span>
@@ -547,7 +526,7 @@ export default <span class="fstat-no" title="function not covered" >function Def
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-09-16T23:48:15.504Z
+                at 2023-09-18T02:24:18.801Z
             </div>
         <script src="../../../../../prettify.js"></script>
         <script>
