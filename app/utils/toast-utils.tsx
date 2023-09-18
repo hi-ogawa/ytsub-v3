@@ -13,34 +13,5 @@ export function ToastWrapper(props: React.PropsWithChildren) {
   );
 }
 
-// wrapper to imitate react-hot-toast api
-// TODO: implement in tiny-toast
-class CustomReactToastManager extends ReactToastManager {
-  success = (node: React.ReactNode) =>
-    this.create({
-      node,
-      type: "success",
-      ...baseOptions,
-    });
-
-  error = (node: React.ReactNode) =>
-    this.create({
-      node,
-      type: "error",
-      ...baseOptions,
-    });
-
-  info = (node: React.ReactNode) =>
-    this.create({
-      node,
-      type: "info",
-      ...baseOptions,
-    });
-}
-
-const baseOptions = {
-  position: "top-center",
-  className: "!antd-floating",
-} as const;
-
-export const toast = new CustomReactToastManager();
+export const toast = new ReactToastManager();
+toast.defaultOptions.className = "!antd-floating";
