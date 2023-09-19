@@ -1,6 +1,6 @@
 import { FloatingTree } from "@floating-ui/react";
 import { useTinyForm } from "@hiogawa/tiny-form/dist/react";
-import { TinyProgressReact } from "@hiogawa/tiny-progress/dist/react";
+import { useTinyProgress } from "@hiogawa/tiny-progress/dist/react";
 import { Compose } from "@hiogawa/utils-react";
 import {
   Link,
@@ -57,10 +57,12 @@ export function ErrorBoundary() {
 }
 
 function RootWrapper(props: React.PropsWithChildren) {
-  const navigation = useNavigation();
+  useTinyProgress({
+    show: useNavigation().state !== "idle",
+  });
+
   return (
     <div className="h-full">
-      <TinyProgressReact loading={navigation.state !== "idle"} />
       <button
         className="hidden"
         data-testid="toast-remove"
