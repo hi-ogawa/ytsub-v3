@@ -44,8 +44,8 @@ dependencies:
     specifier: 0.2.8-pre.2
     version: 0.2.8-pre.2
   '@hiogawa/tiny-progress':
-    specifier: ^0.0.1-pre.0
-    version: 0.0.1-pre.0(react@18.2.0)
+    specifier: ^0.0.1-pre.1
+    version: 0.0.1-pre.1(react@18.2.0)
   '@hiogawa/tiny-rpc':
     specifier: 0.2.3-pre.10
     version: 0.2.3-pre.10
@@ -2351,8 +2351,8 @@ packages:
     hasBin: true
     dev: false
 
-  /@hiogawa/tiny-progress@0.0.1-pre.0(react@18.2.0):
-    resolution: {integrity: sha512-bUPMVEVxMkn8A50d+dg2LtkJergXfTzYLnuuPDB+7oD0XtAnDiZ12MsexEp8GB8aarZnvGbQr8K8OB2BA1ly4A==}
+  /@hiogawa/tiny-progress@0.0.1-pre.1(react@18.2.0):
+    resolution: {integrity: sha512-9g58zuVz9FAQfMZwZGqNvBdeWDoboPPZvTYD6ILQkjRbqOyQ+PxnVABt67l4SpbJZhyhz/BM94H7QU4K9V8Dyw==}
     peerDependencies:
       react: '*'
     peerDependenciesMeta:
