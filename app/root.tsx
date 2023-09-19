@@ -1,5 +1,6 @@
 import { FloatingTree } from "@floating-ui/react";
 import { useTinyForm } from "@hiogawa/tiny-form/dist/react";
+import { TinyProgressReact } from "@hiogawa/tiny-progress/dist/react";
 import { Compose } from "@hiogawa/utils-react";
 import {
   Link,
@@ -11,6 +12,7 @@ import {
   useLocation,
   useMatches,
   useNavigate,
+  useNavigation,
   useRouteError,
 } from "@remix-run/react";
 import { useMutation } from "@tanstack/react-query";
@@ -18,7 +20,6 @@ import React from "react";
 import { Drawer } from "./components/drawer";
 import { PopoverSimple } from "./components/popover";
 import { ThemeSelect } from "./components/theme-select";
-import { TopProgressBarRemix } from "./components/top-progress-bar";
 import { $R, R } from "./misc/routes";
 import { rpcClientQuery } from "./trpc/client";
 import {
@@ -56,9 +57,10 @@ export function ErrorBoundary() {
 }
 
 function RootWrapper(props: React.PropsWithChildren) {
+  const navigation = useNavigation();
   return (
     <div className="h-full">
-      <TopProgressBarRemix />
+      <TinyProgressReact loading={navigation.state !== "idle"} />
       <button
         className="hidden"
         data-testid="toast-remove"
