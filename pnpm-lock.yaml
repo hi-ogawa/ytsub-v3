@@ -16,9 +16,6 @@ patchedDependencies:
     path: patches/@remix-run__node@1.15.0.patch
 
 dependencies:
-  '@badrap/bar-of-progress':
-    specifier: ^0.2.2
-    version: 0.2.2
   '@floating-ui/react':
     specifier: ^0.24.8
     version: 0.24.8(react-dom@18.2.0)(react@18.2.0)
@@ -46,6 +43,9 @@ dependencies:
   '@hiogawa/tiny-jwt':
     specifier: 0.2.8-pre.2
     version: 0.2.8-pre.2
+  '@hiogawa/tiny-progress':
+    specifier: ^0.0.1-pre.1
+    version: 0.0.1-pre.1(react@18.2.0)
   '@hiogawa/tiny-rpc':
     specifier: 0.2.3-pre.10
     version: 0.2.3-pre.10
@@ -1376,10 +1376,6 @@ packages:
       '@babel/helper-validator-identifier': 7.22.5
       to-fast-properties: 2.0.0
 
-  /@badrap/bar-of-progress@0.2.2:
-    resolution: {integrity: sha512-Ig7MdFQM3OA7Ror5UB1ZutXNZFwxh6YExZvcd6EZloOgcXUR8PKNLH2wUVoeh92NMPnPWr6J/l9Mp+f3z7O7MQ==}
-    dev: false
-
   /@bcoe/v8-coverage@0.2.3:
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
     dev: true
@@ -2353,6 +2349,17 @@ packages:
   /@hiogawa/tiny-jwt@0.2.8-pre.2:
     resolution: {integrity: sha512-e+OdNOEdpVccsQB3NgtlzpAXpj+J4J/6ISL4K1567rWL4yn4hBM+s+YOv9Oy0TnxC8MrNV0AM4P/V2J73DCp2Q==}
     hasBin: true
+    dev: false
+
+  /@hiogawa/tiny-progress@0.0.1-pre.1(react@18.2.0):
+    resolution: {integrity: sha512-9g58zuVz9FAQfMZwZGqNvBdeWDoboPPZvTYD6ILQkjRbqOyQ+PxnVABt67l4SpbJZhyhz/BM94H7QU4K9V8Dyw==}
+    peerDependencies:
+      react: '*'
+    peerDependenciesMeta:
+      react:
+        optional: true
+    dependencies:
+      react: 18.2.0
     dev: false
 
   /@hiogawa/tiny-rpc@0.2.3-pre.10:
