@@ -3,7 +3,7 @@ import { Transition } from "@hiogawa/tiny-transition/dist/react";
 import { Link } from "@remix-run/react";
 import type { VideoTable } from "../db/models";
 import { $R, Z_PAGINATION_QUERY } from "../misc/routes";
-import { useTypedUrlQuery } from "../utils/loader-utils";
+import { useUrlQuerySchema } from "../utils/loader-utils";
 import { cls } from "../utils/misc";
 import type { PaginationMetadata } from "../utils/pagination";
 import { parseVssId, toThumbnail } from "../utils/youtube";
@@ -129,8 +129,8 @@ export function PaginationComponent({
 }: {
   pagination: PaginationMetadata;
 }) {
-  const [, , toParams] = useTypedUrlQuery(Z_PAGINATION_QUERY);
-  const { page, totalPage, total } = pagination;
+  const [{ page }, , mergeParams] = useUrlQuerySchema(Z_PAGINATION_QUERY);
+  const { totalPage, total } = pagination;
   return (
     <div
       data-test="pagination"
@@ -139,14 +139,14 @@ export function PaginationComponent({
       <Link
         className="antd-btn antd-btn-ghost flex items-center aria-disabled:pointer-events-none aria-disabled:opacity-50"
         aria-disabled={page <= 1}
-        to={"?" + toParams({ page: undefined })}
+        to={"?" + mergeParams({ page: undefined })}
       >
         <span className="i-ri-rewind-mini-fill w-5 h-5"></span>
       </Link>
       <Link
         className="antd-btn antd-btn-ghost flex items-center aria-disabled:pointer-events-none aria-disabled:opacity-50"
         aria-disabled={page <= 1}
-        to={"?" + toParams({ page: page - 1 })}
+        to={"?" + mergeParams({ page: page - 1 })}
       >
         <span className="i-ri-play-mini-fill w-4 h-4 rotate-[180deg]"></span>
       </Link>
@@ -156,14 +156,14 @@ export function PaginationComponent({
       <Link
         className="antd-btn antd-btn-ghost flex items-center aria-disabled:pointer-events-none aria-disabled:opacity-50"
         aria-disabled={page >= totalPage}
-        to={"?" + toParams({ page: page + 1 })}
+        to={"?" + mergeParams({ page: page + 1 })}
       >
         <span className="i-ri-play-mini-fill w-4 h-4"></span>
       </Link>
       <Link
         className="antd-btn antd-btn-ghost flex items-center aria-disabled:pointer-events-none aria-disabled:opacity-50"
         aria-disabled={page >= totalPage}
-        to={"?" + toParams({ page: totalPage })}
+        to={"?" + mergeParams({ page: totalPage })}
       >
         <span className="i-ri-rewind-mini-fill w-5 h-5 rotate-[180deg]"></span>
       </Link>

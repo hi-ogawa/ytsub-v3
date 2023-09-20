@@ -12,7 +12,7 @@ import { rpcClientQuery } from "../../trpc/client";
 import { useClickOutside } from "../../utils/hooks-client-utils";
 import {
   disableUrlQueryRevalidation,
-  useTypedUrlQuery,
+  useUrlQuerySchema,
 } from "../../utils/loader-utils";
 import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
@@ -41,13 +41,9 @@ export const handle: PageHandle = {
 //
 
 export default function PageComponent() {
-  const [urlQuery, setUrlQuery] = useTypedUrlQuery(
+  const [params, setUrlQuery] = useUrlQuerySchema(
     ROUTE_DEF["/bookmarks/history-chart"].query
   );
-  const params = urlQuery ?? {
-    rangeType: "week",
-    page: 0,
-  };
 
   const historyChartQuery = useQuery({
     ...rpcClientQuery.bookmarks_historyChart.queryOptions(params),

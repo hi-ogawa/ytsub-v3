@@ -15,7 +15,7 @@ import {
   disableUrlQueryRevalidation,
   useLeafLoaderData,
   useLoaderDataExtra,
-  useTypedUrlQuery,
+  useUrlQuerySchema,
 } from "../../../utils/loader-utils";
 import { cls } from "../../../utils/misc";
 import type { PageHandle } from "../../../utils/page-handle";
@@ -44,14 +44,9 @@ export default function DefaultComponent() {
     instance?.dispatchAction({ type: "hideTip" });
   });
 
-  const [urlQuery, setUrlQuery] = useTypedUrlQuery(
+  const [params, setUrlQuery] = useUrlQuerySchema(
     ROUTE_DEF["/decks/$id/history-graph"].query
   );
-  const params = urlQuery ?? {
-    rangeType: "week",
-    graphType: "action",
-    page: 0,
-  };
 
   const historyChartQuery = useQuery({
     ...rpcClientQuery.decks_practiceHistoryChart.queryOptions({

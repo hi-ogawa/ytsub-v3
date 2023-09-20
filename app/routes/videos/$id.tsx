@@ -28,7 +28,7 @@ import {
   disableUrlQueryRevalidation,
   useLeafLoaderData,
   useLoaderDataExtra,
-  useTypedUrlQuery,
+  useUrlQuerySchema,
 } from "../../utils/loader-utils";
 import { cls, none } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
@@ -252,8 +252,8 @@ function PageComponent({
   // effects
   //
 
-  const [urlQuery] = useTypedUrlQuery(ROUTE_DEF["/videos/$id"].query);
-  const focusedIndex = urlQuery?.index;
+  const [urlQuery] = useUrlQuerySchema(ROUTE_DEF["/videos/$id"].query);
+  const focusedIndex = urlQuery.index;
 
   React.useEffect(() => {
     if (!isNil(focusedIndex) && focusedIndex < captionEntries.length) {

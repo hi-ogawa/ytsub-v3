@@ -14,7 +14,7 @@ import {
   disableUrlQueryRevalidation,
   useLeafLoaderData,
   useLoaderDataExtra,
-  useTypedUrlQuery,
+  useUrlQuerySchema,
 } from "../../../utils/loader-utils";
 import { cls } from "../../../utils/misc";
 import type { PageHandle } from "../../../utils/page-handle";
@@ -34,15 +34,15 @@ export const handle: PageHandle = {
 export default function DefaultComponent() {
   const { deck } = useLoaderDataExtra() as LoaderData;
 
-  const [urlQuery, setUrlQuery] = useTypedUrlQuery(
+  const [urlQuery, setUrlQuery] = useUrlQuerySchema(
     ROUTE_DEF["/decks/$id/history"].query
   );
 
   const practiceActionsQuery = useInfiniteQuery({
     ...rpcClientQuery.decks_practiceActions.infiniteQueryOptions((context) => ({
       deckId: deck.id,
-      actionType: urlQuery?.actionType,
-      practiceEntryId: urlQuery?.practiceEntryId,
+      actionType: urlQuery.actionType,
+      practiceEntryId: urlQuery.practiceEntryId,
       cursor: context?.pageParam as any,
     })),
     getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,

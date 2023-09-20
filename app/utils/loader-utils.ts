@@ -28,50 +28,54 @@ export const disableUrlQueryRevalidation: ShouldRevalidateFunction = (args) => {
 
 // Record<string, unknown> based wrapper for useSearchParams
 function useUrlQuery() {
+  // TODO: framework agnostic?
   const [params, setParams] = useSearchParams();
 
-  const query = React.useMemo(
+  const value = React.useMemo(
     () => Object.fromEntries(params.entries()),
     [params]
   );
 
-  const toParams = (newQuery: Record<string, unknown>) => {
-    const prev = { ...query };
-    for (const [k, v] of Object.entries(newQuery)) {
-      if (typeof v === "undefined") {
-        delete prev[k];
+  function set(next: Record<string, unknown>): void {
+    setParams(merge(next));
+  }
+
+  function merge(next: Record<string, unknown>): URLSearchParams {
+    const res = new URLSearchParams(params);
+    for (const [k, v] of Object.entries(next)) {
+      if (v === null || typeof v === "undefined") {
+        res.delete(k);
       } else {
-        prev[k] = String(v);
+        res.set(k, String(v));
       }
     }
-    return new URLSearchParams(prev);
-  };
+    return res;
+  }
 
-  const setQuery = (newQuery: Record<string, unknown>) => {
-    setParams(toParams(newQuery));
-  };
-
-  return [query, setQuery, toParams] as const;
+  return [value, set, merge] as const;
 }
 
-export function useTypedUrlQuery<S extends z.AnyZodObject>(schema: S) {
-  const [query, setQuery, toParams] = useUrlQuery();
+// type-safe helper for simple object record with "string | number | undefined | null".
+// this assumes schema can parse {} and fill default
+export function useUrlQuerySchema<Schame extends z.AnyZodObject>(
+  schema: Schame
+) {
+  // TODO: validator-agnostic?
+  type I = z.input<Schame>;
+  type O = z.output<Schame>;
 
-  type In = z.input<S>;
-  type Out = z.output<S>;
+  const [query, setQuery, mergeParams] = useUrlQuery();
 
-  const parsed = React.useMemo(() => schema.safeParse(query), [query]);
-  const typedQuery: Out | undefined = parsed.success ? parsed.data : undefined;
+  const value: O = React.useMemo(() => {
+    const result = schema.safeParse(query);
+    return result.success ? result.data : schema.parse({});
+  }, [query]);
 
-  const setTypedQuery = (newTypedQuery: In) => {
-    setQuery(newTypedQuery);
-  };
+  const set = (next: I) => setQuery(next);
 
-  const toTypedParams = (newTypedQuery: In) => {
-    return toParams(newTypedQuery);
-  };
+  const merge = (next: I) => mergeParams(next);
 
-  return [typedQuery, setTypedQuery, toTypedParams] as const;
+  return [value, set, merge] as const;
 }
 
 export function prettierJson(data: unknown) {
