@@ -7,11 +7,11 @@
     "noUncheckedIndexedAccess": false,
     "checkJs": false,
     "noEmit": true,
-    "moduleResolution": "Bundler",
-    "module": "ESNext",
-    "target": "ESNext",
-    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "moduleResolution": "Node",
+    "module": "CommonJS",
+    "target": "ES2021",
+    "lib": ["ES2021", "DOM"],
     "types": [],
-    "jsx": "preserve"
+    "jsx": "react-jsx"
   }
 }
