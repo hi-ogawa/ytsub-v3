@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">95.06% </span>
+                <span class="strong">92.94% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>77/81</span>
+                <span class='fraction'>79/85</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">92.85% </span>
+                <span class="strong">92.3% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>13/14</span>
+                <span class='fraction'>12/13</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">85.71% </span>
+                <span class="strong">75% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>6/7</span>
+                <span class='fraction'>6/8</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">95.06% </span>
+                <span class="strong">92.94% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>77/81</span>
+                <span class='fraction'>79/85</span>
             </div>
         
             
@@ -144,7 +144,11 @@
 <a name='L79'></a><a href='#L79'>79</a>
 <a name='L80'></a><a href='#L80'>80</a>
 <a name='L81'></a><a href='#L81'>81</a>
-<a name='L82'></a><a href='#L82'>82</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L82'></a><a href='#L82'>82</a>
+<a name='L83'></a><a href='#L83'>83</a>
+<a name='L84'></a><a href='#L84'>84</a>
+<a name='L85'></a><a href='#L85'>85</a>
+<a name='L86'></a><a href='#L86'>86</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -180,6 +184,11 @@
 <span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-yes">56x</span>
@@ -195,10 +204,8 @@
 <span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-yes">18x</span>
-<span class="cline-any cline-yes">18x</span>
-<span class="cline-any cline-yes">18x</span>
-<span class="cline-any cline-yes">18x</span>
-<span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">18x</span>
@@ -214,7 +221,8 @@
 <span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-yes">18x</span>
-<span class="cline-any cline-yes">56x</span>
+<span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-yes">18x</span>
@@ -255,50 +263,54 @@ export const disableUrlQueryRevalidation: ShouldRevalidateFunction = <span class
 &nbsp;
 // Record&lt;string, unknown&gt; based wrapper for useSearchParams
 function useUrlQuery() {
+  // TODO: framework agnostic?
   const [params, setParams] = useSearchParams();
 &nbsp;
-  const query = React.useMemo(
+  const value = React.useMemo(
     () =&gt; Object.fromEntries(params.entries()),
     [params]
   );
 &nbsp;
-  const toParams = (newQuery: Record&lt;string, unknown&gt;) =&gt; {
-    const prev = { ...query };
-    for (const [k, v] of Object.entries(newQuery)) {
-      if (typeof v === "undefined") {
-        delete prev[k];
+<span class="fstat-no" title="function not covered" >  function set(next: Record&lt;string, unknown&gt;): void {</span>
+<span class="cstat-no" title="statement not covered" >    setParams(merge(next));</span>
+<span class="cstat-no" title="statement not covered" >  }</span>
+&nbsp;
+  function merge(next: Record&lt;string, unknown&gt;): URLSearchParams {
+    const res = new URLSearchParams(params);
+    for (const [k, v] of Object.entries(next)) {
+      if (v === null || typeof v === "undefined") {
+        res.delete(k);
       } else {
-        prev[k] = String(v);
+        res.set(k, String(v));
       }
     }
-    return new URLSearchParams(prev);
-  };
+    return res;
+  }
 &nbsp;
-  const setQuery = (newQuery: Record&lt;string, unknown&gt;) =&gt; {
-    setParams(toParams(newQuery));
-  };
-&nbsp;
-  return [query, setQuery, toParams] as const;
+  return [value, set, merge] as const;
 }
 &nbsp;
-export function useTypedUrlQuery&lt;S extends z.AnyZodObject&gt;(schema: S) {
-  const [query, setQuery, toParams] = useUrlQuery();
+// type-safe helper for simple object record with "string | number | undefined | null".
+// this assumes schema can parse {} and fill default
+export function useUrlQuerySchema&lt;Schame extends z.AnyZodObject&gt;(
+  schema: Schame
+) {
+  // TODO: validator-agnostic?
+  type I = z.input&lt;Schame&gt;;
+  type O = z.output&lt;Schame&gt;;
 &nbsp;
-  type In = z.input&lt;S&gt;;
-  type Out = z.output&lt;S&gt;;
+  const [query, setQuery, mergeParams] = useUrlQuery();
 &nbsp;
-  const parsed = React.useMemo(() =&gt; schema.safeParse(query), [query]);
-  const typedQuery: Out | undefined = parsed.success ? parsed.data : undefined;
+  const value: O = React.useMemo(() =&gt; {
+    const result = schema.safeParse(query);
+    return result.success ? result.<span class="branch-0 cbranch-no" title="branch not covered" >data : schema.parse({});</span>
+  }, [query]);
 &nbsp;
-  const setTypedQuery = (newTypedQuery: In) =&gt; {
-    setQuery(newTypedQuery);
-  };
+  const set = (next: I) =&gt; setQuery(next);
 &nbsp;
-  const toTypedParams = (newTypedQuery: In) =&gt; {
-    return toParams(newTypedQuery);
-  };
+  const merge = (next: I) =&gt; mergeParams(next);
 &nbsp;
-<span class="branch-0 cbranch-no" title="branch not covered" >  return [</span>typedQuery, setTypedQuery, toTypedParams] as const;
+  return [value, set, merge] as const;
 }
 &nbsp;
 export function prettierJson(data: unknown) {
@@ -313,7 +325,7 @@ export function prettierJson(data: unknown) {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-09-19T13:36:32.263Z
+                at 2023-09-21T03:53:56.029Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

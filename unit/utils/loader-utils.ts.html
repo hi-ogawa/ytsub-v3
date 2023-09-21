@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">27.16% </span>
+                <span class="strong">28.23% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>22/81</span>
+                <span class='fraction'>24/85</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">27.16% </span>
+                <span class="strong">28.23% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>22/81</span>
+                <span class='fraction'>24/85</span>
             </div>
         
             
@@ -144,7 +144,11 @@
 <a name='L79'></a><a href='#L79'>79</a>
 <a name='L80'></a><a href='#L80'>80</a>
 <a name='L81'></a><a href='#L81'>81</a>
-<a name='L82'></a><a href='#L82'>82</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L82'></a><a href='#L82'>82</a>
+<a name='L83'></a><a href='#L83'>83</a>
+<a name='L84'></a><a href='#L84'>84</a>
+<a name='L85'></a><a href='#L85'>85</a>
+<a name='L86'></a><a href='#L86'>86</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -199,8 +203,12 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -255,50 +263,54 @@ export const disableUrlQueryRevalidation: ShouldRevalidateFunction = <span class
 &nbsp;
 // Record&lt;string, unknown&gt; based wrapper for useSearchParams
 <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >function useUrlQuery() {</span></span>
+<span class="cstat-no" title="statement not covered" >  // TODO: framework agnostic?</span>
 <span class="cstat-no" title="statement not covered" >  const [params, setParams] = useSearchParams();</span>
 <span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >  const query = React.useMemo(</span>
+<span class="cstat-no" title="statement not covered" >  const value = React.useMemo(</span>
 <span class="cstat-no" title="statement not covered" >    () =&gt; Object.fromEntries(params.entries()),</span>
 <span class="cstat-no" title="statement not covered" >    [params]</span>
 <span class="cstat-no" title="statement not covered" >  );</span>
 <span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >  const toParams = (newQuery: Record&lt;string, unknown&gt;) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >    const prev = { ...query };</span>
-<span class="cstat-no" title="statement not covered" >    for (const [k, v] of Object.entries(newQuery)) {</span>
-<span class="cstat-no" title="statement not covered" >      if (typeof v === "undefined") {</span>
-<span class="cstat-no" title="statement not covered" >        delete prev[k];</span>
+<span class="cstat-no" title="statement not covered" >  function set(next: Record&lt;string, unknown&gt;): void {</span>
+<span class="cstat-no" title="statement not covered" >    setParams(merge(next));</span>
+<span class="cstat-no" title="statement not covered" >  }</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >  function merge(next: Record&lt;string, unknown&gt;): URLSearchParams {</span>
+<span class="cstat-no" title="statement not covered" >    const res = new URLSearchParams(params);</span>
+<span class="cstat-no" title="statement not covered" >    for (const [k, v] of Object.entries(next)) {</span>
+<span class="cstat-no" title="statement not covered" >      if (v === null || typeof v === "undefined") {</span>
+<span class="cstat-no" title="statement not covered" >        res.delete(k);</span>
 <span class="cstat-no" title="statement not covered" >      } else {</span>
-<span class="cstat-no" title="statement not covered" >        prev[k] = String(v);</span>
+<span class="cstat-no" title="statement not covered" >        res.set(k, String(v));</span>
 <span class="cstat-no" title="statement not covered" >      }</span>
 <span class="cstat-no" title="statement not covered" >    }</span>
-<span class="cstat-no" title="statement not covered" >    return new URLSearchParams(prev);</span>
-<span class="cstat-no" title="statement not covered" >  };</span>
+<span class="cstat-no" title="statement not covered" >    return res;</span>
+<span class="cstat-no" title="statement not covered" >  }</span>
 <span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >  const setQuery = (newQuery: Record&lt;string, unknown&gt;) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >    setParams(toParams(newQuery));</span>
-<span class="cstat-no" title="statement not covered" >  };</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >  return [query, setQuery, toParams] as const;</span>
+<span class="cstat-no" title="statement not covered" >  return [value, set, merge] as const;</span>
 <span class="cstat-no" title="statement not covered" >}</span>
 &nbsp;
-export <span class="fstat-no" title="function not covered" >function useTypedUrlQuery&lt;S extends z.AnyZodObject&gt;(schema: S) {</span>
-<span class="cstat-no" title="statement not covered" >  const [query, setQuery, toParams] = useUrlQuery();</span>
+// type-safe helper for simple object record with "string | number | undefined | null".
+// this assumes schema can parse {} and fill default
+export <span class="fstat-no" title="function not covered" >function useUrlQuerySchema&lt;Schame extends z.AnyZodObject&gt;(</span>
+<span class="cstat-no" title="statement not covered" >  schema: Schame</span>
+<span class="cstat-no" title="statement not covered" >) {</span>
+<span class="cstat-no" title="statement not covered" >  // TODO: validator-agnostic?</span>
+<span class="cstat-no" title="statement not covered" >  type I = z.input&lt;Schame&gt;;</span>
+<span class="cstat-no" title="statement not covered" >  type O = z.output&lt;Schame&gt;;</span>
 <span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >  type In = z.input&lt;S&gt;;</span>
-<span class="cstat-no" title="statement not covered" >  type Out = z.output&lt;S&gt;;</span>
+<span class="cstat-no" title="statement not covered" >  const [query, setQuery, mergeParams] = useUrlQuery();</span>
 <span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >  const parsed = React.useMemo(() =&gt; schema.safeParse(query), [query]);</span>
-<span class="cstat-no" title="statement not covered" >  const typedQuery: Out | undefined = parsed.success ? parsed.data : undefined;</span>
+<span class="cstat-no" title="statement not covered" >  const value: O = React.useMemo(() =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >    const result = schema.safeParse(query);</span>
+<span class="cstat-no" title="statement not covered" >    return result.success ? result.data : schema.parse({});</span>
+<span class="cstat-no" title="statement not covered" >  }, [query]);</span>
 <span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >  const setTypedQuery = (newTypedQuery: In) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >    setQuery(newTypedQuery);</span>
-<span class="cstat-no" title="statement not covered" >  };</span>
+<span class="cstat-no" title="statement not covered" >  const set = (next: I) =&gt; setQuery(next);</span>
 <span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >  const toTypedParams = (newTypedQuery: In) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >    return toParams(newTypedQuery);</span>
-<span class="cstat-no" title="statement not covered" >  };</span>
+<span class="cstat-no" title="statement not covered" >  const merge = (next: I) =&gt; mergeParams(next);</span>
 <span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >  return [typedQuery, setTypedQuery, toTypedParams] as const;</span>
+<span class="cstat-no" title="statement not covered" >  return [value, set, merge] as const;</span>
 <span class="cstat-no" title="statement not covered" >}</span>
 &nbsp;
 export <span class="fstat-no" title="function not covered" >function prettierJson(data: unknown) {</span>
@@ -313,7 +325,7 @@ export <span class="fstat-no" title="function not covered" >function prettierJso
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-09-19T13:34:21.025Z
+                at 2023-09-21T03:52:23.799Z
             </div>
         <script src="../prettify.js"></script>
         <script>
