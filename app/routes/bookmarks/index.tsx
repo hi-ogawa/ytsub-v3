@@ -18,7 +18,7 @@ import { $R, ROUTE_DEF } from "../../misc/routes";
 import { rpcClientQuery } from "../../trpc/client";
 import {
   disableUrlQueryRevalidation,
-  useTypedUrlQuery,
+  useUrlQuerySchema,
 } from "../../utils/loader-utils";
 import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
@@ -36,14 +36,14 @@ export const handle: PageHandle = {
 };
 
 export default function DefaultComponent() {
-  const [urlQuery, setUrlQuery] = useTypedUrlQuery(
+  const [urlQuery, setUrlQuery] = useUrlQuerySchema(
     ROUTE_DEF["/bookmarks"].query
   );
-  const form = useTinyForm({ q: urlQuery?.q ?? "" });
+  const form = useTinyForm({ q: urlQuery.q ?? "" });
 
   const bookmarkEntriesQuery = useInfiniteQuery({
     ...rpcClientQuery.bookmarks_index.infiniteQueryOptions((context) => ({
-      q: urlQuery?.q,
+      q: urlQuery.q,
       cursor: context?.pageParam as any,
     })),
     getNextPageParam: (lastPage) => lastPage.nextCursor,
