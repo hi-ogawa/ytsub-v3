@@ -1,18 +1,15 @@
-import {
-  ReactToastContainer,
-  ReactToastManager,
-} from "@hiogawa/tiny-toast/dist/react";
+import { PreactToastManager } from "@hiogawa/tiny-toast/dist/preact";
 import React from "react";
 
-export function ToastWrapper(props: React.PropsWithChildren) {
-  return (
-    <>
-      <ReactToastContainer toast={toast} />
-      {props.children}
-    </>
-  );
-}
+export const toast = new PreactToastManager();
+toast.defaultOptions.class = "!antd-floating";
 
-export const toast = new ReactToastManager({
-  className: "!antd-floating",
-});
+export function ToastWrapper(props: React.PropsWithChildren) {
+  React.useEffect(() => {
+    return toast.render(
+      document.body.appendChild(document.createElement("div"))
+    );
+  }, []);
+
+  return <>{props.children}</>;
+}
