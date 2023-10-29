@@ -40,7 +40,7 @@ export function Drawer(props: {
           leaveTo="opacity-0"
         />
         {/* content */}
-        <FloatingOverlay lockScroll>
+        <FloatingOverlay className="!overflow-hidden" lockScroll>
           <Transition
             appear
             show={props.open}

@@ -48,7 +48,7 @@ function Modal(props: {
         />
         {/* content */}
         <FloatingOverlay
-          className="flex justify-center items-center"
+          className="flex justify-center items-center !overflow-hidden"
           lockScroll
         >
           <Transition
