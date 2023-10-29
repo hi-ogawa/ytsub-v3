@@ -190,7 +190,7 @@ function Navbar({
         </div>
       )}
       <Drawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-        <ul className="flex flex-col gap-3 p-4 w-[280px] h-full">
+        <ul className="flex flex-col gap-3 p-4 w-[280px]">
           <li>
             <SearchComponent closeDrawer={() => setDrawerOpen(false)} />
           </li>
