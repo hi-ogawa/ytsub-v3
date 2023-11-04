@@ -49,7 +49,7 @@ function Modal(props: {
             show={props.open}
             className={cls(
               props.className,
-              "transition duration-300 transform w-[90%] max-w-xl antd-floating"
+              "transition duration-300 transform w-[90%] max-w-xl antd-floating max-h-[90%] overflow-y-auto"
             )}
             enterFrom="opacity-0 scale-95"
             enterTo="opacity-100 scale-100"

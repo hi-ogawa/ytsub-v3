@@ -40,7 +40,7 @@ export function Drawer(props: {
           <Transition
             appear
             show={props.open}
-            className="transition duration-300 transform inline-block h-full bg-colorBgContainer shadow-lg"
+            className="transition duration-300 transform inline-block h-full overflow-y-auto bg-colorBgContainer shadow-lg"
             enterFrom="translate-x-[-100%]"
             enterTo="translate-x-[0]"
             leaveFrom="translate-x-[0]"
@@ -49,7 +49,7 @@ export function Drawer(props: {
             <div
               {...getFloatingProps({
                 ref: refs.setFloating,
-                className: "inline-block h-full",
+                className: "inline-block",
               })}
             >
               {props.children}
