@@ -36,6 +36,7 @@
     "knex-production": "pnpm dotenv-production pnpm knex",
     "dotenv-staging": "bash scripts/dotenv.sh .env.staging",
     "dotenv-production": "bash scripts/dotenv.sh .env.production",
+    "tunnel": "cloudflared tunnel --url http://localhost:3000",
     "qrcode": "qrcode-terminal http://$(ip -o -4 address list wlan0 | awk '{print $4}' | cut -d / -f 1):3000"
   },
   "dependencies": {
