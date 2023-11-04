@@ -107,7 +107,7 @@ export function VideoComponent({
       </div>
       <Transition
         show={Boolean(isLoading)}
-        className="duration-500 antd-body antd-spin-overlay-16"
+        className="duration-500 antd-spin-overlay-16"
         {...transitionProps("opacity-0", "opacity-60")}
       />
     </div>

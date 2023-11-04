@@ -241,7 +241,7 @@ export function TestSpinner() {
             <div>Hello World</div>
             <Transition
               show={form.data.overlay}
-              className="duration-500 antd-body antd-spin-overlay-12"
+              className="duration-500 antd-spin-overlay-12"
               {...transitionProps("opacity-0", "opacity-100")}
             />
           </div>
@@ -319,7 +319,7 @@ export function TestYoutubePlayer() {
           </div>
           <Transition
             show={isLoading}
-            className="duration-500 antd-body antd-spin-overlay-30"
+            className="duration-500 antd-spin-overlay-30"
             {...transitionProps("opacity-0", "opacity-100")}
           />
         </div>

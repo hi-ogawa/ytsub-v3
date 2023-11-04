@@ -324,7 +324,7 @@ function PageComponent({
               captionEntriesQuery.isLoading ||
               bookmarkEntriesQuery.isInitialLoading
             }
-            className="duration-500 antd-body antd-spin-overlay-10"
+            className="duration-500 antd-spin-overlay-10"
             {...transitionProps("opacity-0", "opacity-50")}
           />
         </>
@@ -430,7 +430,7 @@ function PlayerComponent({
         </div>
         <Transition
           show={isLoading}
-          className="duration-500 antd-body antd-spin-overlay-30"
+          className="duration-500 antd-spin-overlay-30"
           {...transitionProps("opacity-0", "opacity-100")}
         />
       </div>

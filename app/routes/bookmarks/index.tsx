@@ -377,7 +377,7 @@ export function MiniPlayer({
         </div>
         <Transition
           show={playerLoader.isLoading}
-          className="duration-500 antd-body antd-spin-overlay-20"
+          className="duration-500 antd-spin-overlay-20"
           {...transitionProps("opacity-0", "opacity-100")}
         />
       </div>

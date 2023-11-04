@@ -89,7 +89,7 @@ export function QueueStatisticsComponent({
         <div className="flex-1" />
         <Transition
           show={practiceStatisticsQuery.isFetching}
-          className="duration-500 antd-body antd-spin-overlay-6"
+          className="duration-500 antd-spin-overlay-6"
           {...transitionProps("opacity-0", "opacity-50")}
         />
       </div>

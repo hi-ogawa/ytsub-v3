@@ -142,7 +142,7 @@ function ActionStatisticsComponent({
       </div>
       <Transition
         show={practiceStatisticsQuery.isFetching}
-        className="duration-500 antd-body antd-spin-overlay-6"
+        className="duration-500 antd-spin-overlay-6"
         {...transitionProps("opacity-0", "opacity-50")}
       />
     </div>
