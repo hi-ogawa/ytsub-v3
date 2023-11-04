@@ -36,8 +36,7 @@
     "knex-production": "pnpm dotenv-production pnpm knex",
     "dotenv-staging": "bash scripts/dotenv.sh .env.staging",
     "dotenv-production": "bash scripts/dotenv.sh .env.production",
-    "tunnel": "cloudflared tunnel --url http://localhost:3000",
-    "qrcode": "qrcode-terminal http://$(ip -o -4 address list wlan0 | awk '{print $4}' | cut -d / -f 1):3000"
+    "tunnel": "node scripts/tunnel.mjs http://localhost:3000"
   },
   "dependencies": {
     "@floating-ui/react": "^0.24.8",
@@ -82,6 +81,7 @@
   "devDependencies": {
     "@hiogawa/icheck-ts": "0.0.1-pre.15",
     "@hiogawa/isort-ts": "1.1.2-pre.0",
+    "@hiogawa/qrcode-rust-wasm-bindgen": "^0.0.1",
     "@hiogawa/tiny-cli": "0.0.4-pre.1",
     "@hiogawa/tiny-form": "0.0.1-pre.10",
     "@hiogawa/unocss-preset-antd": "2.2.1-pre.7",
