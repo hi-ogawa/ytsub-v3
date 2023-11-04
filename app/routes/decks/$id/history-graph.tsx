@@ -76,7 +76,7 @@ export default function DefaultComponent() {
           )}
           <Transition
             show={historyChartQuery.isFetching}
-            className="duration-500 antd-body antd-spin-overlay-20"
+            className="duration-500 antd-spin-overlay-20"
             {...transitionProps("opacity-0", "opacity-50")}
           />
         </div>

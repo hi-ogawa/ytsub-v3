@@ -186,7 +186,7 @@ export function CaptionEditor(props: {
             <div className="absolute top-0 w-full h-full" ref={ref} />
             <Transition
               show={isLoading}
-              className="duration-500 antd-body antd-spin-overlay-30"
+              className="duration-500 antd-spin-overlay-30"
               {...transitionProps("opacity-0", "opacity-100")}
             />
           </div>

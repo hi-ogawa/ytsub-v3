@@ -324,7 +324,7 @@ function PageComponent({
               captionEntriesQuery.isLoading ||
               bookmarkEntriesQuery.isInitialLoading
             }
-            className="duration-500 antd-body antd-spin-overlay-10"
+            className="duration-500 antd-spin-overlay-10"
             {...transitionProps("opacity-0", "opacity-50")}
           />
         </>
@@ -341,7 +341,7 @@ function PageComponent({
             leaveTo="scale-30 opacity-0"
           >
             {/* workaround transparent antd-btn-text by opaque wrapping */}
-            <div className="w-12 h-12 rounded-full antd-body">
+            <div className="w-12 h-12 rounded-full bg-colorBgContainer">
               <button
                 className="antd-btn antd-btn-text antd-floating light:bg-colorBgContainerDisabled dark:bg-colorBgSpotlight w-12 h-12 rounded-full flex justify-center items-center"
                 onClick={onCancelBookmark}
@@ -430,7 +430,7 @@ function PlayerComponent({
         </div>
         <Transition
           show={isLoading}
-          className="duration-500 antd-body antd-spin-overlay-30"
+          className="duration-500 antd-spin-overlay-30"
           {...transitionProps("opacity-0", "opacity-100")}
         />
       </div>

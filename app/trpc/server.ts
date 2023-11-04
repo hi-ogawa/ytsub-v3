@@ -1,9 +1,5 @@
 import { RequestHandler } from "@hattip/compose";
-import {
-  TinyRpcRoutes,
-  exposeTinyRpc,
-  httpServerAdapter,
-} from "@hiogawa/tiny-rpc";
+import { exposeTinyRpc, httpServerAdapter } from "@hiogawa/tiny-rpc";
 import { SpanStatusCode, trace } from "@opentelemetry/api";
 import { JSON_EXTRA } from "../utils/json-extra";
 import { RPC_ENDPOINT, RPC_GET_PATHS } from "./common";
@@ -17,8 +13,7 @@ export const rpcRoutes = {
   ...rpcRoutesBookmarks,
   ...rpcRoutesVideos,
   ...rpcRoutesUsers,
-  // ts-prune-ignore-next (satisfies unsupported)
-} satisfies TinyRpcRoutes;
+};
 
 export function rpcHandler(): RequestHandler {
   return exposeTinyRpc({

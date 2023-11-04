@@ -112,7 +112,6 @@ export const ROUTE_DEF = {
   "/decks/$id/export": {
     params: Z_ID_PARAMS,
   },
-  // ts-prune-ignore-next something buggy in ts-prune
 } satisfies Record<string, { params?: z.ZodType; query?: z.ZodType }>;
 
 //
