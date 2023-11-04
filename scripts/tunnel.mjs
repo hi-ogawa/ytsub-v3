@@ -3,8 +3,12 @@ import process from "node:process";
 import readline from "node:readline";
 
 /*
-usage
-node scripts/tunnel.mjs http://localhost:3000
+Usage:
+  node scripts/tunnel.mjs http://localhost:3000
+
+Note:
+  it seems that free version of tunnel is not so stable and there are some intermittent errors.
+    https://github.com/cloudflare/cloudflared/issues/972
 */
 
 const $$ = $.new({
