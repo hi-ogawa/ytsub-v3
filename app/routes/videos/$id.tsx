@@ -341,7 +341,7 @@ function PageComponent({
             leaveTo="scale-30 opacity-0"
           >
             {/* workaround transparent antd-btn-text by opaque wrapping */}
-            <div className="w-12 h-12 rounded-full antd-body">
+            <div className="w-12 h-12 rounded-full bg-colorBgContainer">
               <button
                 className="antd-btn antd-btn-text antd-floating light:bg-colorBgContainerDisabled dark:bg-colorBgSpotlight w-12 h-12 rounded-full flex justify-center items-center"
                 onClick={onCancelBookmark}
