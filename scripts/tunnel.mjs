@@ -8,6 +8,7 @@ Usage:
 
 Note:
   it seems that free version of tunnel is not so stable and there are some intermittent errors.
+    https://github.com/cloudflare/cloudflared/issues/487
     https://github.com/cloudflare/cloudflared/issues/972
 */
 
