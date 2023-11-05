@@ -1,0 +1,10 @@
+{
+  "version": "v1",
+  "packages": {
+    "@hiogawa/tiny-store": {
+      "signature": "d34fb2a6c1e2518dbb148b14685dce45",
+      "file": true,
+      "replaced": "0.0.1-pre.3"
+    }
+  }
+}
