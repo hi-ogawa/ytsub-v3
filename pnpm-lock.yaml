@@ -50,8 +50,8 @@ dependencies:
     specifier: 0.2.3-pre.11
     version: 0.2.3-pre.11
   '@hiogawa/tiny-store':
-    specifier: file:.yalc/@hiogawa/tiny-store
-    version: file:.yalc/@hiogawa/tiny-store(react@18.2.0)
+    specifier: 0.0.1-pre.4
+    version: 0.0.1-pre.4(react@18.2.0)
   '@hiogawa/tiny-toast':
     specifier: 0.1.1-pre.10
     version: 0.1.1-pre.10(react@18.2.0)
@@ -2361,6 +2361,17 @@ packages:
 
   /@hiogawa/tiny-rpc@0.2.3-pre.11:
     resolution: {integrity: sha512-YYFssKJ+abyHMfYSK1IyuL9NccPWWcziG5xf4HVXHmXuT+nLK402WMheSl5A0qlpCBdaO0obtUZfKPAPQj3GfQ==}
+    dev: false
+
+  /@hiogawa/tiny-store@0.0.1-pre.4(react@18.2.0):
+    resolution: {integrity: sha512-7zqOlu+3o/lcBABV59Q0MRdufHSTQKphjxNRtDTlGKqbc56UraB3k9Sh4Gq7nLqGKkL9JzexUjHk3xx8+xrx/A==}
+    peerDependencies:
+      react: ^18.0.0
+    peerDependenciesMeta:
+      react:
+        optional: true
+    dependencies:
+      react: 18.2.0
     dev: false
 
   /@hiogawa/tiny-toast@0.1.1-pre.10(react@18.2.0):
@@ -10060,17 +10071,3 @@ packages:
 
   /zwitch@2.0.4:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
-
-  file:.yalc/@hiogawa/tiny-store(react@18.2.0):
-    resolution: {directory: .yalc/@hiogawa/tiny-store, type: directory}
-    id: file:.yalc/@hiogawa/tiny-store
-    name: '@hiogawa/tiny-store'
-    version: 0.0.1-pre.3
-    peerDependencies:
-      react: ^18.0.0
-    peerDependenciesMeta:
-      react:
-        optional: true
-    dependencies:
-      react: 18.2.0
-    dev: false
