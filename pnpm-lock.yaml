@@ -50,8 +50,8 @@ dependencies:
     specifier: 0.2.3-pre.11
     version: 0.2.3-pre.11
   '@hiogawa/tiny-store':
-    specifier: 0.0.1-pre.3
-    version: 0.0.1-pre.3(react@18.2.0)
+    specifier: 0.0.1-pre.4
+    version: 0.0.1-pre.4(react@18.2.0)
   '@hiogawa/tiny-toast':
     specifier: 0.1.1-pre.10
     version: 0.1.1-pre.10(react@18.2.0)
@@ -2363,8 +2363,8 @@ packages:
     resolution: {integrity: sha512-YYFssKJ+abyHMfYSK1IyuL9NccPWWcziG5xf4HVXHmXuT+nLK402WMheSl5A0qlpCBdaO0obtUZfKPAPQj3GfQ==}
     dev: false
 
-  /@hiogawa/tiny-store@0.0.1-pre.3(react@18.2.0):
-    resolution: {integrity: sha512-G6U1bPNbtR4kYxOIb8ZFJJPKlzALjI4+Sl5o9EDb2odVQ9rXT2DMKWBmI98ppZ+SUh49q2J7Bvab7t/HsfZO9Q==}
+  /@hiogawa/tiny-store@0.0.1-pre.4(react@18.2.0):
+    resolution: {integrity: sha512-7zqOlu+3o/lcBABV59Q0MRdufHSTQKphjxNRtDTlGKqbc56UraB3k9Sh4Gq7nLqGKkL9JzexUjHk3xx8+xrx/A==}
     peerDependencies:
       react: ^18.0.0
     peerDependenciesMeta:
