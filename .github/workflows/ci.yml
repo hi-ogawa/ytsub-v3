@@ -62,7 +62,9 @@ jobs:
       - if: steps.cache-playwright.outputs.cache-hit != 'true'
         run: npx playwright install --with-deps
       - run: make docker/up db/reset/test db/seed-download
-      - run: pnpm test-e2e-coverage --retries=3
+      # TODO: fix coverage
+      # - run: pnpm test-e2e-coverage --retries=3
+      - run: pnpm test-e2e --retries=3
       - run: rm -rf coverage/e2e-client/tmp coverage/e2e-server/tmp
       - uses: actions/upload-artifact@v3
         with:
