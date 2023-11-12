@@ -3,7 +3,7 @@ import { fileURLToPath } from "node:url";
 import type { Knex } from "knex";
 import { initializeConfigServer, serverConfig } from "../utils/config";
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default function knexfile() {
   initializeConfigServer();
@@ -21,8 +21,8 @@ export default function knexfile() {
       timezone: "+00:00", // planetscale and development mysql image have UTC localtime
     },
     migrations: {
-      directory: path.join(__dirname, "migrations"),
-      stub: path.join(__dirname, "__migration-stub.ts"),
+      directory: path.join(dirname, "migrations"),
+      stub: path.join(dirname, "__migration-stub.ts"),
     },
   } satisfies Knex.Config;
 }
