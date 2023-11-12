@@ -4,7 +4,7 @@ import { renderToString } from "react-dom/server";
 import { renderToDocument } from "./server/document";
 import { wrapTraceAsyncSimple } from "./utils/opentelemetry-utils";
 
-const handleDocumentRequest: HandleDocumentRequestFunction = (
+const handleDocumentRequest: HandleDocumentRequestFunction = async (
   request,
   responseStatusCode,
   responseHeaders,
@@ -14,7 +14,7 @@ const handleDocumentRequest: HandleDocumentRequestFunction = (
   const ssrHtml = renderToString(
     <RemixServer context={remixContext} url={request.url} />
   );
-  const documentHtml = renderToDocument(ssrHtml);
+  const documentHtml = await renderToDocument(ssrHtml);
   responseHeaders.set("content-type", "text/html");
   return new Response(documentHtml, {
     status: responseStatusCode,
