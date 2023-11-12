@@ -9,7 +9,7 @@ patchedDependencies:
     hash: opznjwpbsym5sugb4owpkabxrq
     path: patches/@opentelemetry__sdk-node@0.39.1.patch
   '@remix-run/dev@0.0.0-nightly-bf2feb9-20231111':
-    hash: atxaral2ohmomrcvz2mcbc433m
+    hash: u3we46khw2a2bzuz56c5dl3wjm
     path: patches/@remix-run__dev@0.0.0-nightly-bf2feb9-20231111.patch
 
 dependencies:
@@ -155,7 +155,7 @@ devDependencies:
     version: 1.39.0
   '@remix-run/dev':
     specifier: 0.0.0-nightly-bf2feb9-20231111
-    version: 0.0.0-nightly-bf2feb9-20231111(patch_hash=atxaral2ohmomrcvz2mcbc433m)(@types/node@18.18.9)(typescript@5.2.2)(vite@4.5.0)
+    version: 0.0.0-nightly-bf2feb9-20231111(patch_hash=u3we46khw2a2bzuz56c5dl3wjm)(@types/node@18.18.9)(typescript@5.2.2)(vite@4.5.0)
   '@tsconfig/strictest':
     specifier: ^2.0.2
     version: 2.0.2
@@ -2031,7 +2031,7 @@ packages:
     resolution: {integrity: sha512-Vvn3zZrhQZkkBE8LSuW3em98c0FwgO4nxzv6OdSxPKJIEKY2bGbHn+mhGIPerzI4twdxaP8/0+06HBpwf345Lw==}
     dev: false
 
-  /@remix-run/dev@0.0.0-nightly-bf2feb9-20231111(patch_hash=atxaral2ohmomrcvz2mcbc433m)(@types/node@18.18.9)(typescript@5.2.2)(vite@4.5.0):
+  /@remix-run/dev@0.0.0-nightly-bf2feb9-20231111(patch_hash=u3we46khw2a2bzuz56c5dl3wjm)(@types/node@18.18.9)(typescript@5.2.2)(vite@4.5.0):
     resolution: {integrity: sha512-gweHjZur8cMVfGMl2Ek51lkll/NGVJlWcDHkTg20rQ9PDzSqQQJYsUsVAcVu23xW2YkTN0BeGVILWbmPPC7/DQ==}
     engines: {node: '>=18.0.0'}
     hasBin: true
@@ -2185,7 +2185,7 @@ packages:
     peerDependencies:
       '@remix-run/dev': ^1.15.0 || ^2.0.0
     dependencies:
-      '@remix-run/dev': 0.0.0-nightly-bf2feb9-20231111(patch_hash=atxaral2ohmomrcvz2mcbc433m)(@types/node@18.18.9)(typescript@5.2.2)(vite@4.5.0)
+      '@remix-run/dev': 0.0.0-nightly-bf2feb9-20231111(patch_hash=u3we46khw2a2bzuz56c5dl3wjm)(@types/node@18.18.9)(typescript@5.2.2)(vite@4.5.0)
       minimatch: 7.4.6
     dev: false
 

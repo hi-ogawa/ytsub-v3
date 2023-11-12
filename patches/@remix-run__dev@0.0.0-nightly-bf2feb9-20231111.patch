@@ -1,5 +1,5 @@
 diff --git a/dist/vite/plugin.js b/dist/vite/plugin.js
-index 4d7d30ef9079e2acf0b9317a9b8245467f232149..577b1df11f5a1496c618d85fb25b7dc8579bae12 100644
+index 4d7d30ef9079e2acf0b9317a9b8245467f232149..78f11127fb72dc1ef0bd6fd5453ab4b934228cac 100644
 --- a/dist/vite/plugin.js
 +++ b/dist/vite/plugin.js
 @@ -23,7 +23,7 @@ var pick = require('lodash/pick');
@@ -11,3 +11,12 @@ index 4d7d30ef9079e2acf0b9317a9b8245467f232149..577b1df11f5a1496c618d85fb25b7dc8
  var styles = require('./styles.js');
  var vmod = require('./vmod.js');
  var removeExports = require('./remove-exports.js');
+@@ -704,7 +704,7 @@ const remixVitePlugin = (options = {}) => {
+ };
+ function addRefreshWrapper(pluginConfig, code, id) {
+   let isRoute = getRoute(pluginConfig, id);
+-  let acceptExports = isRoute ? ["meta", "links", "shouldRevalidate"] : [];
++  let acceptExports = isRoute ? ["meta", "links", "shouldRevalidate", "handle"] : [];
+   return REACT_REFRESH_HEADER.replace("__SOURCE__", JSON.stringify(id)) + code + REACT_REFRESH_FOOTER.replace("__SOURCE__", JSON.stringify(id)).replace("__ACCEPT_EXPORTS__", JSON.stringify(acceptExports));
+ }
+ const REACT_REFRESH_HEADER = `
