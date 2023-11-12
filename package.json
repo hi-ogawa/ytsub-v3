@@ -1,4 +1,6 @@
 {
+  "name": "@hiogawa/ytsub",
+  "private": true,
   "scripts": {
     "dev": "run-p dev:*",
     "dev:remix": "vite dev",

@@ -3,10 +3,12 @@ import { fileURLToPath } from "node:url";
 import type { Knex } from "knex";
 import { initializeConfigServer, serverConfig } from "../utils/config";
 
-const dirname = path.dirname(fileURLToPath(import.meta.url));
-
 export default function knexfile() {
   initializeConfigServer();
+
+  // this is used only locally
+  // so having import.meta.url is okay even if we deploy cjs app on vercel
+  const dirname = path.dirname(fileURLToPath(import.meta.url));
 
   return {
     client: "mysql2",
