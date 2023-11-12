@@ -14,7 +14,7 @@ export default defineConfig({
       serveClientAssetsInDev: true,
       handlerEntry: "./app/misc/entry-express.ts",
     }),
-    remix({
+    !process.env.VITEST && remix({
       routes: (defineRoutes) =>
         createRoutesFromFolders(defineRoutes, {
           ignoredFilePatterns: ["**/*.test.*"],
