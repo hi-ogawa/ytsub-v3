@@ -7,8 +7,10 @@ import { injectPublicConfigScript, publicConfig } from "../utils/config-public";
 // we can render static document html only on server, which is probably common ssr practice.
 
 export async function renderToDocument(ssrHtml: string) {
-  // inject CSS to prevent FOUC during dev
-  // since vite/unocss will inject css on client via javascript
+  // inject CSS to quickly workaround FOUC during dev
+  // since vite/unocss will inject css on client via javascript later.
+  // this would essentially create a duplicate style,
+  // but that's not usually a problem for utility-class based styling.
   let style = "";
   if (import.meta.env.DEV) {
     tinyassert(viteDevServer);
