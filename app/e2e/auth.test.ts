@@ -3,7 +3,7 @@ import { Page, expect } from "@playwright/test";
 import { E, T, db } from "../db/drizzle-client.server";
 import type { Email } from "../utils/email-utils";
 import { test } from "./coverage";
-import { useUserE2E } from "./helper";
+import { useUserE2E, waitForHydration } from "./helper";
 
 test("/users/register success", async ({ page }) => {
   await page.goto("/");
@@ -15,6 +15,7 @@ test("/users/register success", async ({ page }) => {
   // navigate to register
   await page.locator("data-test=signin-form >> text=Register").click();
   await expect(page).toHaveURL("/users/register");
+  await waitForHydration(page);
 
   // submit form
   // prettier-ignore
@@ -33,6 +34,8 @@ test("/users/register success", async ({ page }) => {
 
 test("/users/register error", async ({ page }) => {
   await page.goto("/users/register");
+  await waitForHydration(page);
+
   await page.getByLabel("Username").fill("hello");
   await page.getByLabel("Password", { exact: true }).fill("hi");
   await page.getByLabel("Password confirmation").fill("hi");
@@ -57,6 +60,7 @@ test.describe("/users/signin", () => {
     // navigate to signin
     await page.locator("header >> data-test=login-icon").click();
     await expect(page).toHaveURL("/users/signin");
+    await waitForHydration(page);
 
     // submit form
     await page.locator('input[name="username"]').fill(user.data.username);
@@ -79,6 +83,8 @@ test.describe("/users/signin", () => {
 
   test("invalid credentials", async ({ page }) => {
     await page.goto("/users/signin");
+    await waitForHydration(page);
+
     await page.getByLabel("Username").fill(user.data.username);
     await page.getByLabel("Password").fill("asdfjkl;asdf-wrong");
     await page.getByRole("button", { name: "Sign in" }).click();
@@ -94,6 +100,7 @@ test.describe("/users/me", () => {
   test("with-session", async ({ page }) => {
     await user.signin(page);
     await page.goto("/users/me");
+    await waitForHydration(page);
 
     // check user data is loaded
     await expect(page.locator("data-test=me-username")).toHaveValue(
@@ -143,6 +150,7 @@ test.describe("/users/signout", () => {
   test("basic", async ({ page }) => {
     await signin(page);
     await page.goto("/");
+    await waitForHydration(page);
 
     // Signout from top menu
     await page.locator('[data-test="user-menu"]').click();
@@ -159,6 +167,7 @@ test.describe("change email", () => {
   test("basic", async ({ page }) => {
     await user.signin(page);
     await page.goto("/users/me");
+    await waitForHydration(page);
 
     const newEmail = "change-email@dummy.local";
     await page.getByRole("button", { name: "Change email" }).click();
@@ -226,6 +235,8 @@ test.describe("reset password", () => {
     // trigger reset password from account
     await user.signin(page);
     await page.goto("/users/me");
+    await waitForHydration(page);
+
     await page.getByRole("button", { name: "Reset password" }).click();
     await page
       .getByText("Please check your email to reset your password")
@@ -237,6 +248,8 @@ test.describe("reset password", () => {
     // submit new password
     const newPassword = "asdfjkl;";
     await page.goto(url);
+    await waitForHydration(page);
+
     await page.getByLabel("Password", { exact: true }).fill(newPassword);
     await page.getByLabel("Password confirmation").fill(newPassword);
     await page.getByRole("button", { name: "Submit" }).click();
@@ -244,6 +257,8 @@ test.describe("reset password", () => {
 
     // cannot use a same link
     await page.goto(url);
+    await waitForHydration(page);
+
     await page.getByLabel("Password", { exact: true }).fill(newPassword);
     await page.getByLabel("Password confirmation").fill(newPassword);
     await page.getByRole("button", { name: "Submit" }).click();
@@ -253,6 +268,7 @@ test.describe("reset password", () => {
   test("forgot password", async ({ page }) => {
     // submit email from "forgot password" page
     await page.goto("/users/signin");
+    await waitForHydration(page);
     await page.getByRole("link", { name: "Forgot your password?" }).click();
     await page.getByLabel("Email").fill(userEmail);
     await page.getByRole("button", { name: "Submit" }).click();
@@ -266,6 +282,7 @@ test.describe("reset password", () => {
     // submit new password
     const newPassword = "12345678";
     await page.goto(url);
+    await waitForHydration(page);
     await page.getByLabel("Password", { exact: true }).fill(newPassword);
     await page.getByLabel("Password confirmation").fill(newPassword);
     await page.getByRole("button", { name: "Submit" }).click();
@@ -273,6 +290,7 @@ test.describe("reset password", () => {
 
     // login with new password
     await page.locator('[data-test="login-icon"]').click();
+    await waitForHydration(page);
     await page.getByLabel("Username").fill(user.data.username);
     await page.getByLabel("Password").fill(newPassword);
     await page.getByRole("button", { name: "Sign in" }).click();
