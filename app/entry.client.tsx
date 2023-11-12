@@ -1,3 +1,4 @@
+import "virtual:uno.css";
 import { tinyassert } from "@hiogawa/utils";
 import { RemixBrowser } from "@remix-run/react";
 import { hydrateRoot } from "react-dom/client";

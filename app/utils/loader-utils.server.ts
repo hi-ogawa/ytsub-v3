@@ -1,4 +1,4 @@
-import { LoaderArgs, json, redirect } from "@remix-run/server-runtime";
+import { LoaderFunctionArgs, json, redirect } from "@remix-run/server-runtime";
 import { $R } from "../misc/routes";
 import { ctx_currentUser } from "../server/request-context/session";
 import { ctx_get } from "../server/request-context/storage";
@@ -9,7 +9,7 @@ import { JSON_EXTRA } from "./json-extra";
 // - custom json serializer by default
 export function wrapLoader(loader: () => unknown) {
   // make it partial for slight convenience of unit test
-  return async (args?: Partial<LoaderArgs>) => {
+  return async (args?: Partial<LoaderFunctionArgs>) => {
     ctx_get().params = args?.params ?? {};
     const res = await loader();
     return res instanceof Response ? res : json(JSON_EXTRA.serialize(res));

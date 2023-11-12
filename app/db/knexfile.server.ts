@@ -1,6 +1,9 @@
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import type { Knex } from "knex";
 import { initializeConfigServer, serverConfig } from "../utils/config";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default function knexfile() {
   initializeConfigServer();

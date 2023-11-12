@@ -19,7 +19,6 @@ export function renderToDocument(ssrHtml: string) {
       content="width=device-width, height=device-height, initial-scale=1.0"
     />
     <link rel="manifest" href="/manifest.json" />
-    <link rel="stylesheet" href=${require("../../build/css/index.css")} />
     <link
         rel="icon"
         type="image/svg+xml"
