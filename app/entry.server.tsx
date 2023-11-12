@@ -1,10 +1,10 @@
+import { tinyassert } from "@hiogawa/utils";
+import { viteDevServer } from "@hiogawa/vite-import-dev-server/runtime";
 import { RemixServer } from "@remix-run/react";
 import type { HandleDocumentRequestFunction } from "@remix-run/server-runtime";
 import { renderToString } from "react-dom/server";
 import { renderToDocument } from "./server/document";
 import { wrapTraceAsyncSimple } from "./utils/opentelemetry-utils";
-import { tinyassert } from "@hiogawa/utils";
-import { viteDevServer } from "@hiogawa/vite-import-dev-server/runtime";
 
 const handleDocumentRequest: HandleDocumentRequestFunction = async (
   request,
@@ -17,7 +17,7 @@ const handleDocumentRequest: HandleDocumentRequestFunction = async (
     <RemixServer context={remixContext} url={request.url} />
   );
 
-  let style: string
+  let style: string;
   if (import.meta.env.DEV) {
     // inject CSS to quickly workaround FOUC during dev
     // since vite/unocss will inject css on client via javascript later.
