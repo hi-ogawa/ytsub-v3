@@ -55,5 +55,5 @@ export default defineConfig((env) => ({
   },
   // we manually copy it like before
   // (also remix's default public directory treatment might be a bit off?)
-  publicDir: env.command === "build" ? false : undefined
+  publicDir: env.command === "build" ? false : undefined,
 }));
