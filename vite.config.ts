@@ -22,4 +22,7 @@ export default defineConfig({
     }),
   ],
   clearScreen: false,
+  server: {
+    port: Number(process.env.PORT ?? "3000"),
+  },
 });
