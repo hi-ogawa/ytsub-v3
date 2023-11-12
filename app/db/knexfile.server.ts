@@ -6,9 +6,12 @@ import { initializeConfigServer, serverConfig } from "../utils/config";
 export default function knexfile() {
   initializeConfigServer();
 
-  // this is used only locally
+  // "migrations" is only for local cli
   // so having import.meta.url is okay even if we deploy cjs app on vercel
-  const dirname = path.dirname(fileURLToPath(import.meta.url));
+  // TODO: refactor later
+  const dirname = import.meta.url
+    ? path.dirname(fileURLToPath(import.meta.url))
+    : "";
 
   return {
     client: "mysql2",
