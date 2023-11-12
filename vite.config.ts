@@ -6,6 +6,7 @@ import unocss from "unocss/vite";
 import { defineConfig } from "vite";
 
 export default defineConfig({
+  clearScreen: false,
   plugins: [
     unocss(),
     importDevServerPlugin(),
@@ -15,13 +16,14 @@ export default defineConfig({
       handlerEntry: "./app/misc/entry-express.ts",
     }),
     !process.env.VITEST && remix({
+      serverBuildPath: `dist/server/index.js`,
+      assetsBuildDirectory: `dist/client`,
       routes: (defineRoutes) =>
         createRoutesFromFolders(defineRoutes, {
           ignoredFilePatterns: ["**/*.test.*"],
         }) as any,
     }),
   ],
-  clearScreen: false,
   server: {
     port: Number(process.env.PORT ?? "3000"),
   },

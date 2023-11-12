@@ -10,3 +10,4 @@
 /.env.production.sh
 /coverage
 /test-results
+dist
