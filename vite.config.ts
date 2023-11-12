@@ -26,7 +26,7 @@ export default defineConfig((env) => ({
     !process.env.VITEST &&
       remix({
         serverBuildPath: `dist/server/index.js`,
-        assetsBuildDirectory: `dist/client`,
+        assetsBuildDirectory: `dist/client/build`,
         routes: (defineRoutes) =>
           createRoutesFromFolders(defineRoutes, {
             ignoredFilePatterns: ["**/*.test.*"],
@@ -53,4 +53,7 @@ export default defineConfig((env) => ({
   server: {
     port: Number(process.env.PORT ?? "3000"),
   },
+  // we manually copy it like before
+  // (also remix's default public directory treatment might be a bit off?)
+  publicDir: env.command === "build" ? false : undefined
 }));

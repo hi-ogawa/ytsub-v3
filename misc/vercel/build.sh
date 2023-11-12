@@ -38,8 +38,8 @@ npx esbuild dist/server/index.js \
 cp "$this_dir/config.json" .vercel/output/config.json
 
 # static
-mkdir -p .vercel/output/static
-cp -r dist/client/assets .vercel/output/static/assets
+cp -r dist/client .vercel/output/static
+cp ./public/* .vercel/output/static
 
 # output server size
 echo "* Serverless files"
