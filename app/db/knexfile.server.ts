@@ -1,17 +1,8 @@
-import path from "node:path";
-import { fileURLToPath } from "node:url";
 import type { Knex } from "knex";
 import { initializeConfigServer, serverConfig } from "../utils/config";
 
 export default function knexfile() {
   initializeConfigServer();
-
-  // "migrations" is only for local cli
-  // so having import.meta.url is okay even if we deploy cjs app on vercel
-  // TODO: refactor later
-  const dirname = import.meta.url
-    ? path.dirname(fileURLToPath(import.meta.url))
-    : "";
 
   return {
     client: "mysql2",
@@ -26,8 +17,8 @@ export default function knexfile() {
       timezone: "+00:00", // planetscale and development mysql image have UTC localtime
     },
     migrations: {
-      directory: path.join(dirname, "migrations"),
-      stub: path.join(dirname, "__migration-stub.ts"),
+      directory: "migrations",
+      stub: "__migration-stub.ts",
     },
   } satisfies Knex.Config;
 }
