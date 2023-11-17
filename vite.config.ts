@@ -53,7 +53,8 @@ export default defineConfig((env) => ({
   server: {
     port: Number(process.env.PORT ?? "3000"),
   },
-  // we manually copy it like before
-  // (also remix's default public directory treatment might be a bit off?)
-  publicDir: env.command === "build" ? false : undefined,
+  // to be fixed by https://github.com/remix-run/remix/pull/8039
+  build: {
+    copyPublicDir: false,
+  }
 }));
