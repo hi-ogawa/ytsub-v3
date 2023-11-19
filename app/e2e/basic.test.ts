@@ -1,5 +1,6 @@
 import { expect } from "@playwright/test";
 import { test } from "./coverage";
+import { waitForHydration } from "./helper";
 
 test("title", async ({ page }) => {
   await page.goto("/");
@@ -8,6 +9,7 @@ test("title", async ({ page }) => {
 
 test("theme", async ({ page }) => {
   await page.goto("/");
+  await waitForHydration(page);
   await page.getByTestId("Navbar-drawer-button").click();
 
   await page

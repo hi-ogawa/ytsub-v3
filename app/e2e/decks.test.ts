@@ -1,7 +1,7 @@
 import { expect } from "@playwright/test";
 import { DEFAULT_SEED_FILE, importSeed } from "../misc/seed-utils";
 import { test } from "./coverage";
-import { useUserE2E } from "./helper";
+import { useUserE2E, waitForHydration } from "./helper";
 
 test.describe("decks-empty", () => {
   const user = useUserE2E(test, { seed: __filename });
@@ -9,6 +9,7 @@ test.describe("decks-empty", () => {
   test("decks => new-deck => edit-deck => delete-deck", async ({ page }) => {
     await user.signin(page);
     await page.goto("/decks");
+    await waitForHydration(page);
 
     // navigate to new deck page
     await page.locator('[data-test="new-deck-link"]').click();
@@ -60,6 +61,7 @@ test.describe("decks-seed", () => {
     await user.signin(page);
 
     await page.goto("/videos");
+    await waitForHydration(page);
 
     // show add to deck modal
     await page
@@ -79,6 +81,7 @@ test.describe("decks-seed", () => {
   test("show-deck => pagination => deck-history", async ({ page }) => {
     await user.signin(page);
     await page.goto("/decks");
+    await waitForHydration(page);
 
     // nagivate to "/decks/$id"
     await page.locator('[data-test="deck-menu-popover-reference"]').click();
@@ -152,6 +155,7 @@ test.describe("decks-seed", () => {
   test("practice", async ({ page }) => {
     await user.signin(page);
     await page.goto("/decks");
+    await waitForHydration(page);
     await page.getByRole("link", { name: "Korean" }).click();
     await page.getByText("Progress").click();
     await page.getByText("0 | 139").click();
@@ -165,6 +169,7 @@ test.describe("decks-import-export", () => {
   test("basic", async ({ page }) => {
     await user.signin(page);
     await page.goto("/decks");
+    await waitForHydration(page);
 
     // import
     await page.locator(".i-ri-file-upload-line").click();
