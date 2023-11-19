@@ -42,7 +42,7 @@ test.describe("videos-signed-in", () => {
     });
 
     // create bookmark
-    await page.locator('[data-test="new-bookmark-button"]').click();
+    await page.locator('[data-test="new-bookmark-button"]').click(); // TODO: covered by new devtools?
     await page.getByText("Bookmark success").click();
 
     // highlight bookmarks

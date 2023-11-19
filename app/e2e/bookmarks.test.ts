@@ -28,7 +28,7 @@ test.describe("bookmarks", () => {
   test("MiniPlayer", async ({ page }) => {
     await user.signin(page);
     await page.goto("/bookmarks");
-    await page.getByText("케플러 대박 기원").click();
+    await page.getByText("케플러 대박 기원").click(); // TODO
     await page.locator(".i-ri-upload-line").click();
     await page.getByText("감사합니당~").click();
   });
