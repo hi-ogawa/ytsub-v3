@@ -9,11 +9,7 @@ export default defineConfig((env) => ({
   clearScreen: false,
   plugins: [
     unocss(),
-
-    // need to workaround remix's double plugin loading issue
-    // https://github.com/remix-run/remix/pull/7911
-    // https://github.com/hi-ogawa/vite-plugins/issues/112
-    env.command === "serve" && importDevServerPlugin(),
+    importDevServerPlugin(),
 
     // run our own middleware via vavite before remix
     vaviteConnect({
