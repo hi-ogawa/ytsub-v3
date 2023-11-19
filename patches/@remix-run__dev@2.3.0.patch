@@ -1,0 +1,14 @@
+diff --git a/dist/vite/node/adapter.js b/dist/vite/node/adapter.js
+index c6f7097c1257ff59652836db54426030120881de..d49d41b9e185275692be312dc26390a2cf4ec9f6 100644
+--- a/dist/vite/node/adapter.js
++++ b/dist/vite/node/adapter.js
+@@ -25,7 +25,8 @@ function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'defau
+ var multipart__default = /*#__PURE__*/_interopDefaultLegacy(multipart);
+ 
+ // @ts-nocheck
+-node.installGlobals();
++// imcompatibility with hattip on nodejs?
++// node.installGlobals();
+ function nodeToWeb(nodeStream) {
+   let destroyed = false;
+   let listeners = {};

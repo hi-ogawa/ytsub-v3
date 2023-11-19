@@ -53,8 +53,4 @@ export default defineConfig((env) => ({
   server: {
     port: Number(process.env.PORT ?? "3000"),
   },
-  // to be fixed by https://github.com/remix-run/remix/pull/8039
-  build: {
-    copyPublicDir: false,
-  }
 }));
