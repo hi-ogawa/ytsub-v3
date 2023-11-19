@@ -153,9 +153,9 @@ export default function DefaultComponent() {
               type="submit"
               className={cls(
                 "antd-btn antd-btn-primary p-1 flex justify-center items-center",
-                updateMutation.isLoading && "antd-btn-loading"
+                updateMutation.isPending && "antd-btn-loading"
               )}
-              disabled={updateMutation.isLoading || !form.isDirty}
+              disabled={updateMutation.isPending || !form.isDirty}
             >
               Save
             </button>
@@ -174,10 +174,10 @@ export default function DefaultComponent() {
           <button
             className={cls(
               "antd-btn antd-btn-default p-0.5 flex justify-center",
-              resetPasswordMutation.isLoading && "antd-btn-loading"
+              resetPasswordMutation.isPending && "antd-btn-loading"
             )}
             disabled={
-              !turnstile.query.isSuccess || resetPasswordMutation.isLoading
+              !turnstile.query.isSuccess || resetPasswordMutation.isPending
             }
             onClick={() =>
               currentUser.email &&
@@ -224,9 +224,9 @@ function UpdateEmailForm(props: { onSuccess: () => void }) {
       <button
         className={cls(
           "antd-btn antd-btn-primary p-1",
-          mutation.isLoading && "antd-btn-loading"
+          mutation.isPending && "antd-btn-loading"
         )}
-        disabled={mutation.isLoading}
+        disabled={mutation.isPending}
       >
         Send Verification Email
       </button>
