@@ -114,10 +114,11 @@ jobs:
         with:
           name: coverage-unit
           path: coverage/unit
-      - uses: actions/download-artifact@v3
-        with:
-          name: coverage-e2e-server
-          path: coverage/e2e-server
+      # TODO
+      # - uses: actions/download-artifact@v3
+      #   with:
+      #     name: coverage-e2e-server
+      #     path: coverage/e2e-server
       - name: publish report
         run: |
           # run gh-pages
