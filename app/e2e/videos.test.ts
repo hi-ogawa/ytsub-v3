@@ -11,7 +11,7 @@ test.describe("videos-signed-in", () => {
   });
 
   // prettier-ignore
-  test.only("create-bookmarks", async ({ page }) => {
+  test("create-bookmarks", async ({ page }) => {
     await user.signin(page);
 
     //
