@@ -11,7 +11,7 @@ test.describe("videos-signed-in", () => {
   });
 
   // prettier-ignore
-  test("create-bookmarks", async ({ page }) => {
+  test.only("create-bookmarks", async ({ page }) => {
     await user.signin(page);
 
     //
@@ -42,7 +42,7 @@ test.describe("videos-signed-in", () => {
     });
 
     // create bookmark
-    await page.locator('[data-test="new-bookmark-button"]').click(); // TODO: covered by new devtools?
+    await page.locator('[data-test="new-bookmark-button"]').click();
     await page.getByText("Bookmark success").click();
 
     // highlight bookmarks
