@@ -141,7 +141,7 @@ test.describe("decks-seed", () => {
 
     // filter actionType
     await page.getByRole("combobox", { name: 'Filter' }).selectOption({ label: "GOOD" });
-    await page.getByText("네 맞아요").click(); // TODO
+    await page.getByText("네 맞아요").click();
     await page
       .getByTestId("main-scroll")
       .evaluate((el) => el.scroll({ top: el.scrollHeight }));

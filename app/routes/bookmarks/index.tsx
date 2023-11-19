@@ -50,7 +50,7 @@ export default function DefaultComponent() {
       q: urlQuery.q,
       cursor: context?.pageParam as any,
     })),
-    initialPageParam: 1,
+    initialPageParam: 0,
     getNextPageParam: (lastPage) => lastPage.nextCursor,
     placeholderData: keepPreviousData,
   });

@@ -49,7 +49,7 @@ export default function DefaultComponent() {
       practiceEntryId: urlQuery.practiceEntryId,
       cursor: context?.pageParam as any,
     })),
-    initialPageParam: 1,
+    initialPageParam: 0,
     getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
     placeholderData: keepPreviousData,
   });
