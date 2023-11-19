@@ -7,6 +7,7 @@ import { useUserE2E, waitForHydration } from "./helper";
 
 test("/users/register success", async ({ page }) => {
   await page.goto("/");
+  await waitForHydration(page);
 
   // navigate to signin
   await page.locator("header >> data-test=login-icon").click();
