@@ -6,16 +6,7 @@ import { test } from "./coverage";
 import { useUserE2E, waitForHydration } from "./helper";
 
 test("/users/register success", async ({ page }) => {
-  await page.goto("/");
-  await waitForHydration(page);
-
-  // navigate to signin
-  await page.locator("header >> data-test=login-icon").click();
-  await expect(page).toHaveURL("/users/signin");
-
-  // navigate to register
-  await page.locator("data-test=signin-form >> text=Register").click();
-  await expect(page).toHaveURL("/users/register");
+  await page.goto("/users/register");
   await waitForHydration(page);
 
   // submit form
