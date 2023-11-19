@@ -15,7 +15,7 @@ export function useCurrentUser() {
     queryKey,
     queryFn: () => none<TT["users"]>() ?? null, // tanstack query rejects `undefined`
     staleTime: Infinity,
-    cacheTime: Infinity,
+    gcTime: Infinity,
   });
   return query.data;
 }

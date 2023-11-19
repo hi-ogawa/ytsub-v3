@@ -57,7 +57,7 @@ function createQueryClient() {
     rpcClientQuery.videos_getCaptionEntries.queryKey,
     {
       staleTime: Infinity,
-      cacheTime: Infinity,
+      gcTime: Infinity,
     }
   );
 

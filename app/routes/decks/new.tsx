@@ -74,9 +74,9 @@ export default function DefaultComponent() {
           type="submit"
           className={cls(
             "antd-btn antd-btn-primary p-1",
-            newDeckMutation.isLoading && "antd-btn-loading"
+            newDeckMutation.isPending && "antd-btn-loading"
           )}
-          disabled={newDeckMutation.isLoading || newDeckMutation.isSuccess}
+          disabled={newDeckMutation.isPending || newDeckMutation.isSuccess}
         >
           Create
         </button>

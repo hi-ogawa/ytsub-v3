@@ -49,4 +49,18 @@ export default defineConfig((env) => ({
   server: {
     port: Number(process.env.PORT ?? "3000"),
   },
+  build: {
+    rollupOptions: {
+      // silence warning by "use client" in react-query https://github.com/TanStack/query/pull/5161#issuecomment-1506683450
+      onwarn(warning, defaultHandler) {
+        if (
+          warning.code === "MODULE_LEVEL_DIRECTIVE" &&
+          warning.message.includes(`"use client"`)
+        ) {
+          return;
+        }
+        defaultHandler(warning);
+      },
+    },
+  },
 }));

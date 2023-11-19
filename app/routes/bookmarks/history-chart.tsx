@@ -1,5 +1,5 @@
 import { Transition } from "@hiogawa/tiny-transition/dist/react";
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import React from "react";
 import { SelectWrapper, transitionProps } from "../../components/misc";
 import { PopoverSimple } from "../../components/popover";
@@ -47,7 +47,7 @@ export default function PageComponent() {
 
   const historyChartQuery = useQuery({
     ...rpcClientQuery.bookmarks_historyChart.queryOptions(params),
-    keepPreviousData: true,
+    placeholderData: keepPreviousData,
   });
 
   const [instance, setInstance] = React.useState<echarts.ECharts>();
