@@ -3,11 +3,7 @@ import { Transition } from "@hiogawa/tiny-transition/dist/react";
 import { typedBoolean } from "@hiogawa/utils";
 import { toArraySetState, useRafLoop } from "@hiogawa/utils-react";
 import { NavLink } from "@remix-run/react";
-import {
-  keepPreviousData,
-  useInfiniteQuery,
-  useQuery,
-} from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import React from "react";
 import { CollapseTransition } from "../../components/collapse";
 import { SelectWrapper, transitionProps } from "../../components/misc";
@@ -50,9 +46,8 @@ export default function DefaultComponent() {
       q: urlQuery.q,
       cursor: context?.pageParam as any,
     })),
-    initialPageParam: 1,
     getNextPageParam: (lastPage) => lastPage.nextCursor,
-    placeholderData: keepPreviousData,
+    keepPreviousData: true,
   });
   const rows = bookmarkEntriesQuery.data?.pages.flatMap((page) => page.rows);
 
@@ -100,8 +95,8 @@ export default function DefaultComponent() {
             )}
             <Transition
               show={
-                bookmarkEntriesQuery.isLoading ||
-                bookmarkEntriesQuery.isPlaceholderData
+                bookmarkEntriesQuery.isInitialLoading ||
+                bookmarkEntriesQuery.isPreviousData
               }
               className="absolute inset-0 duration-500 antd-body"
               {...transitionProps("opacity-0", "opacity-50")}

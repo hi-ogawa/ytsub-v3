@@ -1,10 +1,5 @@
 import { Transition } from "@hiogawa/tiny-transition/dist/react";
-import {
-  keepPreviousData,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import React from "react";
 import { transitionProps } from "../../../components/misc";
 import type {
@@ -40,18 +35,18 @@ export default function DefaultComponent() {
     ...rpcClientQuery.decks_nextPracticeEntry.queryOptions({
       deckId: deck.id,
     }),
-    placeholderData: keepPreviousData,
+    keepPreviousData: true,
   });
 
   const queryClient = useQueryClient();
 
   function refetch() {
-    queryClient.invalidateQueries({
-      queryKey: rpcClientQuery.decks_nextPracticeEntry.queryKey,
-    });
-    queryClient.invalidateQueries({
-      queryKey: rpcClientQuery.decks_practiceStatistics.queryKey,
-    });
+    queryClient.invalidateQueries(
+      rpcClientQuery.decks_nextPracticeEntry.queryKey
+    );
+    queryClient.invalidateQueries(
+      rpcClientQuery.decks_practiceStatistics.queryKey
+    );
   }
 
   return (
@@ -122,7 +117,7 @@ function PracticeComponent({
   const [lastActionType, setLastActionType] =
     React.useState<PracticeActionType>();
 
-  const isLoading = isLoadingNext || newPracticeActionMutation.isPending;
+  const isLoading = isLoadingNext || newPracticeActionMutation.isLoading;
 
   return (
     <>

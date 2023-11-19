@@ -1,5 +1,5 @@
 import { Transition } from "@hiogawa/tiny-transition/dist/react";
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import type { ECharts } from "echarts";
 import React from "react";
 import { DeckNavBarMenuComponent } from ".";
@@ -54,7 +54,7 @@ export default function DefaultComponent() {
       rangeType: params.rangeType,
       page: params.page,
     }),
-    placeholderData: keepPreviousData,
+    keepPreviousData: true,
   });
 
   return (

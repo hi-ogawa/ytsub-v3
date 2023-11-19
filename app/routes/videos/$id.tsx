@@ -333,7 +333,7 @@ function PageComponent({
         currentUser &&
         currentUser.id === video.userId && (
           <Transition
-            show={!!bookmarkState || newBookmarkMutation.isPending}
+            show={!!bookmarkState || newBookmarkMutation.isLoading}
             className="absolute bottom-0 right-0 flex gap-2 p-1.5 transition duration-300"
             enterFrom="scale-30 opacity-0"
             enterTo="scale-100 opacity-100"
@@ -356,7 +356,7 @@ function PageComponent({
             >
               <span
                 className={cls(
-                  !newBookmarkMutation.isPending
+                  !newBookmarkMutation.isLoading
                     ? "i-ri-bookmark-line"
                     : "antd-spin",
                   "w-6 h-6"
@@ -888,7 +888,7 @@ function DetailsComponent({
         <button
           className={cls(
             "antd-btn antd-btn-default px-2 py-0.5",
-            lastBookmarkQuery.isPending && "antd-btn-loading"
+            lastBookmarkQuery.isLoading && "antd-btn-loading"
           )}
           onClick={() => {
             lastBookmarkQuery.mutate({ videoId: video.id });

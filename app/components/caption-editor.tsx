@@ -476,9 +476,9 @@ function ImportModalForm(props: {
       <button
         className={cls(
           "antd-btn antd-btn-primary p-1",
-          importEntriesMutation.isPending && "antd-btn-loading"
+          importEntriesMutation.isLoading && "antd-btn-loading"
         )}
-        disabled={importEntriesMutation.isPending}
+        disabled={importEntriesMutation.isLoading}
       >
         Import
       </button>

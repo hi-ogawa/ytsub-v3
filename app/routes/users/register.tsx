@@ -92,11 +92,11 @@ export default function DefaultComponent() {
             type="submit"
             className={cls(
               "antd-btn antd-btn-primary p-1",
-              registerMutation.isPending && "antd-btn-loading"
+              registerMutation.isLoading && "antd-btn-loading"
             )}
             disabled={
               !turnstile.query.isSuccess ||
-              registerMutation.isPending ||
+              registerMutation.isLoading ||
               registerMutation.isSuccess
             }
           >

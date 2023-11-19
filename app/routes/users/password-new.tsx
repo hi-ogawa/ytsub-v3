@@ -66,9 +66,9 @@ export default function Page() {
               type="submit"
               className={cls(
                 "antd-btn antd-btn-primary p-1 flex justify-center items-center",
-                mutation.isPending && "antd-btn-loading"
+                mutation.isLoading && "antd-btn-loading"
               )}
-              disabled={mutation.isPending || mutation.isSuccess}
+              disabled={mutation.isLoading || mutation.isSuccess}
             >
               Submit
             </button>

@@ -324,12 +324,12 @@ function SignoutComponent() {
     <button
       className="w-full antd-menu-item flex items-center gap-2 p-2"
       onClick={() => signoutMutation.mutate()}
-      disabled={signoutMutation.isPending}
+      disabled={signoutMutation.isLoading}
     >
       <span
         className={cls(
           "w-6 h-6",
-          signoutMutation.isPending ? "antd-spin" : "i-ri-logout-box-line"
+          signoutMutation.isLoading ? "antd-spin" : "i-ri-logout-box-line"
         )}
       ></span>
       Sign out

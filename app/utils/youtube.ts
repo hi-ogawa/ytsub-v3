@@ -458,13 +458,15 @@ export function usePlayerLoader(
     }
   });
 
-  const mutation = useMutation({
-    mutationFn: (el: HTMLElement) => loadYoutubePlayer(el, playerOptions),
-    onSuccess: onReady,
-    onError: () => {
-      toast.error("Failed to initialize youtube player");
-    },
-  });
+  const mutation = useMutation(
+    (el: HTMLElement) => loadYoutubePlayer(el, playerOptions),
+    {
+      onSuccess: onReady,
+      onError: () => {
+        toast.error("Failed to initialize youtube player");
+      },
+    }
+  );
 
   React.useEffect(() => {
     return () => mutation.data?.destroy();

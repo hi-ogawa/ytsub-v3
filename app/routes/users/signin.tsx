@@ -78,9 +78,9 @@ export default function DefaultComponent() {
             type="submit"
             className={cls(
               "antd-btn antd-btn-primary p-1",
-              signinMutation.isPending && "antd-btn-loading"
+              signinMutation.isLoading && "antd-btn-loading"
             )}
-            disabled={signinMutation.isPending || signinMutation.isSuccess}
+            disabled={signinMutation.isLoading || signinMutation.isSuccess}
           >
             Sign in
           </button>
