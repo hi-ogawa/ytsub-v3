@@ -1,4 +1,7 @@
 {
+  "name": "@hiogawa/ytsub",
+  "private": true,
+  "type": "module",
   "scripts": {
     "dev": "pnpm dev-pre && run-p dev:*",
     "dev-pre": "pnpm build:css",

@@ -1,8 +1,10 @@
+import { createRoutesFromFolders } from "@remix-run/v1-route-convention";
+
 const env = process.env.NODE_ENV ?? "development";
 
 /** @type {import('@remix-run/dev').AppConfig} */
 // prettier-ignore
-module.exports = {
+export default {
   serverBuildPath: `build/remix/${env}/server/index.js`,
   assetsBuildDirectory: `build/remix/${env}/public/build`,
   server: "./app/misc/entry-express.ts",
@@ -16,7 +18,7 @@ module.exports = {
     v2_routeConvention: true,
   },
   routes: (defineRoutes) =>
-    require("@remix-run/v1-route-convention").createRoutesFromFolders(
+    createRoutesFromFolders(
       defineRoutes,
       { ignoredFilePatterns: ["**/*.test.*"] }
     ),
