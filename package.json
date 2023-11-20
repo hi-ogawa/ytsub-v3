@@ -96,8 +96,6 @@
     "@types/react": "^18.2.37",
     "@types/react-dom": "^18.2.15",
     "@types/showdown": "^2.0.4",
-    "@unocss/cli": "^0.52.7",
-    "@unocss/reset": "^0.52.7",
     "@vavite/connect": "^3.0.0",
     "@vitejs/plugin-react": "^4.1.1",
     "@vitest/coverage-v8": "^0.34.6",
@@ -114,7 +112,7 @@
     "qrcode-terminal": "^0.12.0",
     "showdown": "^2.1.0",
     "typescript": "^5.2.2",
-    "unocss": "^0.52.7",
+    "unocss": "^0.57.6",
     "vite": "^5.0.0",
     "vitest": "^0.34.6"
   },
