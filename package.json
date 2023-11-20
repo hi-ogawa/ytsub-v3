@@ -31,7 +31,7 @@
     "console-staging": "pnpm dotenv-staging npm run console",
     "console-production": "pnpm dotenv-production npm run console",
     "skeema": "cd app/db/skeema && skeema",
-    "knex": "NODE_OPTIONS='-r esbuild-register' knex --knexfile app/db/knexfile.server.ts",
+    "knex": "NODE_OPTIONS='-r esbuild-register' knex --knexfile app/db/knexfile.ts",
     "knex-staging": "pnpm dotenv-staging pnpm knex",
     "knex-production": "pnpm dotenv-production pnpm knex",
     "dotenv-staging": "bash scripts/dotenv.sh .env.staging",
