@@ -6,6 +6,7 @@
     "dev:remix": "vite dev",
     "dev-e2e": "NODE_ENV=test PORT=3001 pnpm dev:remix",
     "dev-coverage:remix": "c8 -o coverage/e2e-server -r text -r html --exclude build --exclude-after-remap node_modules/.bin/remix dev",
+    "dev-ui": "vite --config vite.config.ui.ts",
     "tsc": "tsc -b",
     "dev:tsc": "pnpm tsc --watch --preserveWatchOutput",
     "lint": "run-s lint:*",
