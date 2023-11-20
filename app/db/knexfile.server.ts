@@ -1,4 +1,3 @@
-import path from "node:path";
 import type { Knex } from "knex";
 import { initializeConfigServer, serverConfig } from "../utils/config";
 
@@ -17,9 +16,10 @@ export default function knexfile() {
       multipleStatements: true,
       timezone: "+00:00", // planetscale and development mysql image have UTC localtime
     },
+    // TODO: refactor out knexfile logic to local only
     migrations: {
-      directory: path.join(__dirname, "migrations"),
-      stub: path.join(__dirname, "__migration-stub.ts"),
+      directory: "migrations",
+      stub: "__migration-stub.ts",
     },
   } satisfies Knex.Config;
 }
