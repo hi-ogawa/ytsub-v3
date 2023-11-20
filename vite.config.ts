@@ -5,7 +5,7 @@ import { vaviteConnect } from "@vavite/connect";
 import unocss from "unocss/vite";
 import { defineConfig } from "vite";
 
-export default defineConfig((env) => ({
+export default defineConfig({
   clearScreen: false,
   plugins: [
     unocss(),
@@ -63,4 +63,4 @@ export default defineConfig((env) => ({
       },
     },
   },
-}));
+});
