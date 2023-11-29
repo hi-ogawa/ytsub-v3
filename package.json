@@ -62,8 +62,8 @@
     "@opentelemetry/api": "^1.7.0",
     "@opentelemetry/sdk-node": "^0.39.1",
     "@opentelemetry/semantic-conventions": "^1.18.1",
-    "@remix-run/react": "2.3.0",
-    "@remix-run/server-runtime": "2.3.0",
+    "@remix-run/react": "0.0.0-nightly-bf6c0a4-20231129",
+    "@remix-run/server-runtime": "0.0.0-nightly-bf6c0a4-20231129",
     "@remix-run/v1-route-convention": "^0.1.4",
     "@tanstack/react-query": "^4.36.1",
     "@tanstack/react-query-devtools": "^4.36.1",
@@ -89,7 +89,7 @@
     "@hiogawa/vite-import-dev-server": "^0.0.1",
     "@iconify-json/ri": "^1.1.12",
     "@playwright/test": "^1.39.0",
-    "@remix-run/dev": "2.3.0",
+    "@remix-run/dev": "0.0.0-nightly-bf6c0a4-20231129",
     "@tsconfig/strictest": "^2.0.2",
     "@types/cookie": "^0.5.4",
     "@types/express": "^4.17.21",
@@ -122,8 +122,7 @@
   },
   "pnpm": {
     "patchedDependencies": {
-      "@opentelemetry/sdk-node@0.39.1": "patches/@opentelemetry__sdk-node@0.39.1.patch",
-      "@remix-run/dev@2.3.0": "patches/@remix-run__dev@2.3.0.patch"
+      "@opentelemetry/sdk-node@0.39.1": "patches/@opentelemetry__sdk-node@0.39.1.patch"
     }
   }
 }
