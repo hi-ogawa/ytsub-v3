@@ -7,6 +7,9 @@ import { defineConfig } from "vite";
 
 export default defineConfig({
   clearScreen: false,
+  server: {
+    port: Number(process.env.PORT ?? "3000"),
+  },
   plugins: [
     unocss(),
     importDevServerPlugin(),
@@ -44,9 +47,6 @@ export default defineConfig({
       },
     },
   ],
-  server: {
-    port: Number(process.env.PORT ?? "3000"),
-  },
   build: {
     rollupOptions: {
       // silence warning by "use client" in react-query https://github.com/TanStack/query/pull/5161#issuecomment-1506683450
