@@ -21,8 +21,6 @@ export default defineConfig({
     // skip remix on vitest
     !process.env.VITEST &&
       remix({
-        serverBuildPath: `dist/server/index.js`,
-        assetsBuildDirectory: `dist/client/build`,
         routes: (defineRoutes) =>
           createRoutesFromFolders(defineRoutes, {
             ignoredFilePatterns: ["**/*.test.*"],

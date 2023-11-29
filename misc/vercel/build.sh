@@ -28,9 +28,10 @@ mkdir -p .vercel/output/functions/index.func
 # serverless
 mkdir -p .vercel/output/functions/index.func
 cp "$this_dir/.vc-config.json" .vercel/output/functions/index.func/.vc-config.json
-npx esbuild dist/server/index.js \
+npx esbuild build/server/index.js \
   --outfile=.vercel/output/functions/index.func/index.js \
-  --metafile=dist/server/esbuild-metafile.json \
+  --metafile=build/server/esbuild-metafile.json \
+  --define:process.env.NODE_ENV='"production"' \
   --bundle --minify --format=cjs --platform=node \
   --external:node:async_hooks
 
@@ -38,8 +39,8 @@ npx esbuild dist/server/index.js \
 cp "$this_dir/config.json" .vercel/output/config.json
 
 # static
-cp -r dist/client .vercel/output/static
-cp ./public/* .vercel/output/static
+cp -r build/client .vercel/output/static
+rm -rf .vercel/output/static/.vite
 
 # output server size
 echo "* Serverless files"
