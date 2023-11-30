@@ -5,7 +5,9 @@ import { useTinyProgress } from "@hiogawa/tiny-progress/dist/react";
 import { Compose } from "@hiogawa/utils-react";
 import {
   Link,
+  Links,
   LiveReload,
+  Meta,
   NavLink,
   Outlet,
   Scripts,
@@ -36,7 +38,12 @@ import { QueryClientWrapper } from "./utils/react-query-utils";
 import { ToastWrapper, toast } from "./utils/toast-utils";
 
 export { loader } from "./root.server";
+import { generateThemeScript } from "@hiogawa/theme-script";
 import { LoaderData } from "./root.server";
+import {
+  generatePublicConfigScript,
+  publicConfig,
+} from "./utils/config-public";
 
 // use root loader only for initial `currentUser` hydration (cf. app/utils/current-user.ts)
 export const shouldRevalidate: ShouldRevalidateFunction = () => false;
@@ -63,22 +70,62 @@ function RootWrapper(props: React.PropsWithChildren) {
   });
 
   return (
-    <div className="h-full">
-      <button
-        className="hidden"
-        data-testid="toast-remove"
-        onClick={() => {
-          toast.removeAll();
-        }}
-      />
-      <Compose
-        elements={[<FloatingTree />, <ToastWrapper />, <QueryClientWrapper />]}
-      >
-        {props.children}
-      </Compose>
-      <Scripts />
-      <LiveReload />
-    </div>
+    <html lang="en" className="h-full" suppressHydrationWarning>
+      <head>
+        <meta charSet="UTF-8" />
+        <title>
+          {publicConfig.VERCEL_ENV === "preview" ? "[PREVIEW] Ytsub" : "Ytsub"}
+        </title>
+        <meta
+          name="viewport"
+          content="width=device-width, height=device-height, initial-scale=1.0"
+        />
+        <link rel="manifest" href="/manifest.json" />
+        <link
+          rel="icon"
+          type="image/svg+xml"
+          href="https://iconify-dark-hiro18181.vercel.app/icon/ri/translate-2"
+        />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: import.meta.env.SSR ? generatePublicConfigScript() : "",
+          }}
+          suppressHydrationWarning
+        />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: import.meta.env.SSR
+              ? generateThemeScript({ noScriptTag: true })
+              : "",
+          }}
+          suppressHydrationWarning
+        />
+        <Meta />
+        <Links />
+      </head>
+      <body className="h-full">
+        <div className="h-full">
+          <button
+            className="hidden"
+            data-testid="toast-remove"
+            onClick={() => {
+              toast.removeAll();
+            }}
+          />
+          <Compose
+            elements={[
+              <FloatingTree />,
+              <ToastWrapper />,
+              <QueryClientWrapper />,
+            ]}
+          >
+            {props.children}
+          </Compose>
+          <Scripts />
+          <LiveReload />
+        </div>
+      </body>
+    </html>
   );
 }
 
