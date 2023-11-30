@@ -1,9 +1,11 @@
 import { tinyassert } from "@hiogawa/utils";
 import { useStableRef } from "@hiogawa/utils-react";
 import { Temporal } from "@js-temporal/polyfill";
-import * as echarts from "echarts";
+import { useQuery } from "@tanstack/react-query";
+import type * as echarts from "echarts";
 import React from "react";
 import { PRACTICE_ACTION_TYPES, PRACTICE_QUEUE_TYPES } from "../db/types";
+import { usePromiseQueryOpitons } from "../utils/misc";
 
 export const PRACTICE_HISTORY_DATASET_KEYS = [
   "total",
@@ -192,15 +194,16 @@ export function EchartsComponent(props: {
   optionDeps?: unknown; // convenience for simpler render/option invalidation
   className?: string;
   setInstance?: (instance?: echarts.ECharts) => void;
+  echarts: typeof echarts;
 }) {
   const instanceRef = React.useRef<echarts.ECharts>();
   const setInstanceRef = useStableRef(props.setInstance);
 
   const elRef: React.RefCallback<HTMLElement> = (el) => {
     instanceRef.current?.dispose();
-    // use svg for css variable based color
+    // need svg for css variable based color
     instanceRef.current = el
-      ? echarts.init(el, undefined, { renderer: "svg" })
+      ? props.echarts.init(el, undefined, { renderer: "svg" })
       : undefined;
     setInstanceRef.current?.(instanceRef.current);
   };
@@ -211,4 +214,13 @@ export function EchartsComponent(props: {
   }, [props.optionDeps ?? props.option]);
 
   return <div className={props.className} ref={React.useCallback(elRef, [])} />;
+}
+
+// quick-and-dirty tree-shaking code-spliting for echarts
+export function useEcharts() {
+  return useQuery({
+    ...usePromiseQueryOpitons(() =>
+      !import.meta.env.SSR ? import("echarts") : undefined!
+    ),
+  });
 }

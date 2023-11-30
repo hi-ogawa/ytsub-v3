@@ -25,6 +25,8 @@ export function usePromiseQueryOpitons<T>(queryFn: () => Promise<T>) {
   return {
     queryKey: ["usePromise", String(queryFn)],
     queryFn,
+    staleTime: Infinity,
+    cacheTime: Infinity,
   };
 }
 
