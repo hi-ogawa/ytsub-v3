@@ -15,10 +15,8 @@ export function initializePublicConfigClient() {
   publicConfig = (window as any)[PUBLIC_CONFIG_VAR];
 }
 
-export function injectPublicConfigScript() {
+export function generatePublicConfigScript() {
   return `\
-<script>
-  window.${PUBLIC_CONFIG_VAR} = ${JSON.stringify(publicConfig)};
-</script>
+window.${PUBLIC_CONFIG_VAR} = ${JSON.stringify(publicConfig)};
 `;
 }
