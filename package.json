@@ -124,7 +124,8 @@
   },
   "pnpm": {
     "patchedDependencies": {
-      "@opentelemetry/sdk-node@0.45.1": "patches/@opentelemetry__sdk-node@0.45.1.patch"
+      "@opentelemetry/sdk-node@0.45.1": "patches/@opentelemetry__sdk-node@0.45.1.patch",
+      "echarts@5.4.3": "patches/echarts@5.4.3.patch"
     }
   }
 }
