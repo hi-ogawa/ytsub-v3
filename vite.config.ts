@@ -26,6 +26,7 @@ export default defineConfig({
       remix({
         routes: (defineRoutes) =>
           createRoutesFromFolders(defineRoutes, {
+            // TODO: why "**/*.serer.*" breaks?
             ignoredFilePatterns: ["**/*.test.*"],
           }) as any,
       }),
