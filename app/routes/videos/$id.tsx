@@ -4,7 +4,7 @@ import {
 } from "@hiogawa/tiny-store";
 import { useTinyStore } from "@hiogawa/tiny-store/dist/react";
 import { Transition } from "@hiogawa/tiny-transition/dist/react";
-import { groupBy, isNil, sortBy, uniq, zip } from "@hiogawa/utils";
+import { groupBy, isNil } from "@hiogawa/utils";
 import { toArraySetState, useRafLoop } from "@hiogawa/utils-react";
 import { Link, useNavigate } from "@remix-run/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -42,6 +42,7 @@ import {
   usePlayerLoader,
 } from "../../utils/youtube";
 import type { LoaderData } from "./$id.server";
+import { partitionRanges } from "./$id.utils";
 export { loader } from "./$id.server";
 
 export const shouldRevalidate = disableUrlQueryRevalidation;
@@ -644,18 +645,6 @@ function HighlightText({
       ))}
     </>
   );
-}
-
-// export for testing
-export function partitionRanges(
-  total: number,
-  ranges: [number, number][]
-): [boolean, [number, number]][] {
-  const boundaries = uniq(sortBy(ranges.flat().concat([0, total]), (x) => x));
-  return zip(boundaries, boundaries.slice(1)).map((a) => [
-    ranges.some((b) => b[0] <= a[0] && a[1] <= b[1]),
-    a,
-  ]);
 }
 
 const BOOKMARK_DATA_ATTR = z.enum([

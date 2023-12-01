@@ -1,7 +1,7 @@
 /*
 Usage
 
-npx jscodeshift --parser tsx --extensions ts,tsx --transform ./misc/codemod/route-exports.ts $(find app/routes -type f ! -name '*.server.*' ! -name '*.test.*')
+npx jscodeshift --parser tsx --extensions ts,tsx --transform ./misc/codemod/route-exports.ts $(find app/routes -type f ! -name '*.server.*' ! -name '*.test.*' ! -name '*.utils.*')
 
 */
 
