@@ -24,7 +24,7 @@ import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 import type { CaptionEntry } from "../../utils/types";
 import { YoutubePlayer, usePlayerLoader } from "../../utils/youtube";
-import { CaptionEntryComponent, findCurrentEntry } from "../videos/$id";
+import { CaptionEntryComponent, findCurrentEntry } from "../videos/$id.utils";
 
 export { loader } from "./index.server";
 
