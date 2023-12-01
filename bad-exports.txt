@@ -11,19 +11,18 @@ Sending 3 files to free worker...
 Sending 3 files to free worker...
 Sending 3 files to free worker...
 Sending 1 files to free worker...
-[error:bad-export] app/routes/videos/index.tsx:38 VideoListComponent
 [error:bad-export] app/routes/decks/$id/index.tsx:67 QueueStatisticsComponent
 [error:bad-export] app/routes/decks/$id/index.tsx:127 PRACTICE_ACTION_TYPE_TO_COLOR
 [error:bad-export] app/routes/decks/$id/index.tsx:217 QueueTypeIcon
+[error:bad-export] app/routes/videos/$id.tsx:60 findCurrentEntry
+[error:bad-export] app/routes/videos/$id.tsx:510 CaptionEntryComponent
 [error:bad-export] app/routes/bookmarks/index.tsx:113 BookmarkEntryComponent
 [error:bad-export] app/routes/bookmarks/index.tsx:185 MiniPlayer
 [error:bad-export] app/routes/bookmarks/index.tsx:430 BookmarksMenuItems
-[error:bad-export] app/routes/videos/$id.tsx:60 findCurrentEntry
-[error:bad-export] app/routes/videos/$id.tsx:510 CaptionEntryComponent
 All done. 
 Results: 
 0 errors
 0 unmodified
 31 skipped
 0 ok
-Time elapsed: 1.008seconds 
+Time elapsed: 0.992seconds 
