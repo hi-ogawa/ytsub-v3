@@ -27,6 +27,7 @@ export default defineConfig({
         routes: (defineRoutes) =>
           createRoutesFromFolders(defineRoutes, {
             // TODO: why "**/*.serer.*" breaks?
+            // TODO: also ignore "*.utils.*"
             ignoredFilePatterns: ["**/*.test.*"],
           }) as any,
       }),

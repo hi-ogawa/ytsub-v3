@@ -1,3 +1,6 @@
+// Not really codemod since it just logs bad exports,
+// which can be also easily done by es-module-lexer
+
 /*
 Usage
 
