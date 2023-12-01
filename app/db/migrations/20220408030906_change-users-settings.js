@@ -2,7 +2,7 @@
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }
  */
-exports.up = async function (knex) {
+export const up = async function (knex) {
   if (process.env.MIGRATION_UNIT_TEST) await testUp.before(knex);
 
   await knex.raw(`
@@ -21,7 +21,7 @@ exports.up = async function (knex) {
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }
  */
-exports.down = async function (knex) {
+export const down = async function (knex) {
   if (process.env.MIGRATION_UNIT_TEST) await testDown.before(knex);
 
   await knex.raw(`
