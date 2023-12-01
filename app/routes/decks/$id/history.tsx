@@ -1,7 +1,6 @@
 import { Transition } from "@hiogawa/tiny-transition/dist/react";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import React from "react";
-import { PRACTICE_ACTION_TYPE_TO_COLOR, QueueTypeIcon } from ".";
 import { CollapseTransition } from "../../../components/collapse";
 import { SelectWrapper, transitionProps } from "../../../components/misc";
 import type { TT } from "../../../db/drizzle-client.server";
@@ -20,7 +19,12 @@ import { cls } from "../../../utils/misc";
 import type { PageHandle } from "../../../utils/page-handle";
 import { MiniPlayer } from "../../bookmarks";
 import type { LoaderData } from "./_utils.server";
-import { DeckNavBarMenuComponent } from "./index.utils";
+import {
+  DeckNavBarMenuComponent,
+  PRACTICE_ACTION_TYPE_TO_COLOR,
+  QueueTypeIcon,
+} from "./index.utils";
+
 export { loader } from "./_utils.server";
 
 export const shouldRevalidate = disableUrlQueryRevalidation;

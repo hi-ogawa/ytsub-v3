@@ -1,17 +1,13 @@
-import { Transition } from "@hiogawa/tiny-transition/dist/react";
 import { Link } from "@remix-run/react";
-import { useQuery } from "@tanstack/react-query";
 import React from "react";
-import { PaginationComponent, transitionProps } from "../../../components/misc";
+import { PaginationComponent } from "../../../components/misc";
 import type {
   BookmarkEntryTable,
   CaptionEntryTable,
   DeckTable,
   VideoTable,
 } from "../../../db/models";
-import type { PracticeActionType, PracticeQueueType } from "../../../db/types";
 import { $R } from "../../../misc/routes";
-import { rpcClientQuery } from "../../../trpc/client";
 import { intl, intlWrapper } from "../../../utils/intl";
 import {
   useLeafLoaderData,
@@ -22,7 +18,11 @@ import type { PageHandle } from "../../../utils/page-handle";
 import { MiniPlayer } from "../../bookmarks";
 
 import type { LoaderData, PracticeEntryTableExtra } from "./index.server";
-import { DeckNavBarMenuComponent } from "./index.utils";
+import {
+  DeckNavBarMenuComponent,
+  QueueStatisticsComponent,
+  QueueTypeIcon,
+} from "./index.utils";
 export { loader } from "./index.server";
 
 export const handle: PageHandle = {
@@ -63,73 +63,6 @@ export default function DefaultComponent() {
     </>
   );
 }
-
-export function QueueStatisticsComponent({
-  deckId,
-  currentQueueType,
-}: {
-  deckId: number;
-  currentQueueType?: PracticeQueueType;
-}) {
-  const practiceStatisticsQuery = useQuery(
-    rpcClientQuery.decks_practiceStatistics.queryOptions({ deckId })
-  );
-
-  return (
-    <div className="w-full flex items-center p-2 px-4">
-      {/* TODO: help to explain what these numbers mean */}
-      <div className="text-sm uppercase">Progress</div>
-      <div className="flex-1 flex px-4 relative">
-        <div className="flex-1" />
-        {renderItem("NEW")}
-        <div className="flex-1 text-center text-colorTextSecondary">-</div>
-        {renderItem("LEARN")}
-        <div className="flex-1 text-center text-colorTextSecondary">-</div>
-        {renderItem("REVIEW")}
-        <div className="flex-1" />
-        <Transition
-          show={practiceStatisticsQuery.isFetching}
-          className="duration-500 antd-spin-overlay-6"
-          {...transitionProps("opacity-0", "opacity-50")}
-        />
-      </div>
-    </div>
-  );
-
-  function renderItem(type: PracticeQueueType) {
-    const data = practiceStatisticsQuery.data;
-    return (
-      <div
-        className={cls(
-          "border-b border-transparent",
-          PRACTICE_QUEUE_TYPE_TO_COLOR[type],
-          type === currentQueueType && "!border-current"
-        )}
-      >
-        {data?.daily.byQueueType[type]} | {data?.total.byQueueType[type]}
-      </div>
-    );
-  }
-}
-
-const PRACTICE_QUEUE_TYPE_TO_COLOR = {
-  NEW: "text-colorWarningText",
-  LEARN: "text-colorSuccessText",
-  REVIEW: "text-colorInfoText",
-} satisfies Record<PracticeQueueType, string>;
-
-const PRACTICE_QUEUE_TYPE_TO_ICON = {
-  NEW: "i-ri-checkbox-blank-circle-line",
-  LEARN: "i-ri-focus-line",
-  REVIEW: "i-ri-checkbox-circle-line",
-} satisfies Record<PracticeQueueType, string>;
-
-export const PRACTICE_ACTION_TYPE_TO_COLOR = {
-  AGAIN: "text-colorErrorText",
-  HARD: "text-colorWarningText",
-  GOOD: "text-colorSuccessText",
-  EASY: "text-colorInfoText",
-} satisfies Record<PracticeActionType, string>;
 
 function PracticeBookmarkEntryComponent({
   video,
@@ -211,19 +144,6 @@ function PracticeBookmarkEntryComponent({
         />
       )}
     </div>
-  );
-}
-
-export function QueueTypeIcon({ queueType }: { queueType: PracticeQueueType }) {
-  return (
-    <span
-      // prettier-ignore
-      className={cls(
-        "w-5 h-5",
-        PRACTICE_QUEUE_TYPE_TO_COLOR[queueType],
-        PRACTICE_QUEUE_TYPE_TO_ICON[queueType]
-      )}
-    />
   );
 }
 
