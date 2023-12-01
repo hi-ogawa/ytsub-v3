@@ -1,9 +1,8 @@
 import { Transition } from "@hiogawa/tiny-transition/dist/react";
-import { Link, NavLink } from "@remix-run/react";
+import { Link } from "@remix-run/react";
 import { useQuery } from "@tanstack/react-query";
 import React from "react";
 import { PaginationComponent, transitionProps } from "../../../components/misc";
-import { PopoverSimple } from "../../../components/popover";
 import type {
   BookmarkEntryTable,
   CaptionEntryTable,
@@ -23,6 +22,7 @@ import type { PageHandle } from "../../../utils/page-handle";
 import { MiniPlayer } from "../../bookmarks";
 
 import type { LoaderData, PracticeEntryTableExtra } from "./index.server";
+import { DeckNavBarMenuComponent } from "./index.utils";
 export { loader } from "./index.server";
 
 export const handle: PageHandle = {
@@ -234,97 +234,4 @@ export function QueueTypeIcon({ queueType }: { queueType: PracticeQueueType }) {
 function NavBarTitleComponent() {
   const { deck } = useLeafLoaderData() as LoaderData;
   return <>{deck.name}</>;
-}
-
-//
-// NavBarMenuComponent
-//
-
-export function DeckNavBarMenuComponent() {
-  const { deck } = useLeafLoaderData() as LoaderData;
-  return <DeckMenuComponent deck={deck} />;
-}
-
-export function DeckMenuComponent({ deck }: { deck: DeckTable }) {
-  const items = [
-    {
-      to: $R["/decks/$id/practice"](deck),
-      children: (
-        <>
-          <span className="i-ri-play-line w-6 h-6"></span>
-          Practice
-        </>
-      ),
-    },
-    {
-      to: $R["/decks/$id/history"](deck),
-      children: (
-        <>
-          <span className="i-ri-history-line w-6 h-6"></span>
-          History
-        </>
-      ),
-    },
-    {
-      to: $R["/decks/$id/history-graph"](deck),
-      children: (
-        <>
-          <span className="i-ri-bar-chart-line w-6 h-6"></span>
-          Chart
-        </>
-      ),
-    },
-    {
-      to: $R["/decks/$id"](deck),
-      children: (
-        <>
-          <span className="i-ri-book-line w-6 h-6"></span>
-          Deck
-        </>
-      ),
-    },
-    {
-      to: $R["/decks/$id/edit"](deck),
-      children: (
-        <>
-          <span className="i-ri-edit-line w-6 h-6"></span>
-          Edit
-        </>
-      ),
-    },
-  ];
-
-  return (
-    <PopoverSimple
-      placement="bottom-end"
-      reference={
-        <button
-          className="antd-btn antd-btn-ghost i-ri-more-2-line w-6 h-6"
-          data-test="deck-menu-popover-reference"
-        />
-      }
-      floating={(context) => (
-        <ul
-          className="flex flex-col gap-2 p-2 w-[180px] text-sm"
-          data-test="deck-menu-popover-floating"
-        >
-          {items.map((item) => (
-            <li key={item.to}>
-              <NavLink
-                className={({ isActive }) =>
-                  cls(
-                    "w-full antd-menu-item flex items-center gap-2 p-2",
-                    isActive && "antd-menu-item-active"
-                  )
-                }
-                end
-                onClick={() => context.onOpenChange(false)}
-                {...item}
-              />
-            </li>
-          ))}
-        </ul>
-      )}
-    />
-  );
 }
