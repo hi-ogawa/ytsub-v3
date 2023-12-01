@@ -20,7 +20,6 @@ import { cls } from "../../../utils/misc";
 import type { PageHandle } from "../../../utils/page-handle";
 import { formatDateRange } from "../../../utils/temporal-utils";
 import type { LoaderData } from "./_utils.server";
-
 import { DeckNavBarMenuComponent } from "./index.utils";
 export { loader } from "./_utils.server";
 
@@ -28,7 +27,7 @@ export const shouldRevalidate = disableUrlQueryRevalidation;
 
 export const handle: PageHandle = {
   navBarTitle: () => <NavBarTitleComponent />,
-  navBarMenu: () => <DeckHistoryNavBarMenuComponent />,
+  navBarMenu: () => <DeckNavBarMenuComponent />,
 };
 
 //
@@ -136,12 +135,4 @@ function NavBarTitleComponent() {
       <span className="text-colorTextSecondary text-sm">(chart)</span>
     </span>
   );
-}
-
-//
-// NavBarMenuComponent
-//
-
-export function DeckHistoryNavBarMenuComponent() {
-  return <DeckNavBarMenuComponent />;
 }

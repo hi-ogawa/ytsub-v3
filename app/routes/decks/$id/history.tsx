@@ -20,15 +20,14 @@ import { cls } from "../../../utils/misc";
 import type { PageHandle } from "../../../utils/page-handle";
 import { MiniPlayer } from "../../bookmarks";
 import type { LoaderData } from "./_utils.server";
-
-import { DeckHistoryNavBarMenuComponent } from "./history-graph";
+import { DeckNavBarMenuComponent } from "./index.utils";
 export { loader } from "./_utils.server";
 
 export const shouldRevalidate = disableUrlQueryRevalidation;
 
 export const handle: PageHandle = {
   navBarTitle: () => <NavBarTitleComponent />,
-  navBarMenu: () => <DeckHistoryNavBarMenuComponent />,
+  navBarMenu: () => <DeckNavBarMenuComponent />,
 };
 
 export default function DefaultComponent() {
