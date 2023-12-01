@@ -17,7 +17,7 @@ import {
 } from "../../../utils/loader-utils";
 import { cls } from "../../../utils/misc";
 import type { PageHandle } from "../../../utils/page-handle";
-import { BookmarkEntryComponent } from "../../bookmarks";
+import { BookmarkEntryComponent } from "../../bookmarks/index.utils";
 import type { LoaderData } from "./_utils.server";
 import {
   DeckNavBarMenuComponent,

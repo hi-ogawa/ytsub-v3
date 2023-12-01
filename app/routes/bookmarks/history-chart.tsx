@@ -17,7 +17,7 @@ import {
 import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 import { formatDateRange } from "../../utils/temporal-utils";
-import { BookmarksMenuItems } from "./index";
+import { BookmarksMenuItems } from "./index.utils";
 
 export { loader } from "./history-chart.server";
 
