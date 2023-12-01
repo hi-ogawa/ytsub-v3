@@ -148,13 +148,13 @@ export function QueueStatisticsComponent({
   }
 }
 
-export const PRACTICE_QUEUE_TYPE_TO_COLOR = {
+const PRACTICE_QUEUE_TYPE_TO_COLOR = {
   NEW: "text-colorWarningText",
   LEARN: "text-colorSuccessText",
   REVIEW: "text-colorInfoText",
 } satisfies Record<PracticeQueueType, string>;
 
-export const PRACTICE_QUEUE_TYPE_TO_ICON = {
+const PRACTICE_QUEUE_TYPE_TO_ICON = {
   NEW: "i-ri-checkbox-blank-circle-line",
   LEARN: "i-ri-focus-line",
   REVIEW: "i-ri-checkbox-circle-line",
