@@ -1,7 +1,8 @@
+import { objectPick } from "@hiogawa/utils";
 import { importDevServerPlugin } from "@hiogawa/vite-import-dev-server";
+import { vitePluginSsrMiddleware } from "@hiogawa/vite-plugin-ssr-middleware";
 import { unstable_vitePlugin as remix } from "@remix-run/dev";
 import { createRoutesFromFolders } from "@remix-run/v1-route-convention";
-import { vaviteConnect } from "@vavite/connect";
 import unocss from "unocss/vite";
 import { defineConfig } from "vite";
 
@@ -14,11 +15,9 @@ export default defineConfig({
     unocss(),
     importDevServerPlugin(),
 
-    // run our own middleware via vavite before remix
-    vaviteConnect({
-      standalone: false,
-      serveClientAssetsInDev: true,
-      handlerEntry: "./app/misc/entry-express.ts",
+    // intercept all the requests before remix
+    vitePluginSsrMiddleware({
+      entry: "./app/misc/entry-express.ts",
     }),
 
     // skip remix on vitest
@@ -31,8 +30,8 @@ export default defineConfig({
           }) as any,
       }),
 
-    // since remix overwrites ssr build output of vavite,
-    // we overwrite it back with extra plugin.
+    // since remix overwrites ssr build output of vitePluginSsrMiddleware,
+    // we need to overwrite it back with extra plugin.
     {
       name: "overwrite-remix-server-entry",
       config(config, env) {

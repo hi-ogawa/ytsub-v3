@@ -144,6 +144,9 @@ devDependencies:
   '@hiogawa/vite-import-dev-server':
     specifier: ^0.0.1
     version: 0.0.1(vite@5.0.0)
+  '@hiogawa/vite-plugin-ssr-middleware':
+    specifier: ^0.0.0
+    version: 0.0.0(vite@5.0.0)
   '@iconify-json/ri':
     specifier: ^1.1.12
     version: 1.1.12
@@ -174,9 +177,6 @@ devDependencies:
   '@types/showdown':
     specifier: ^2.0.4
     version: 2.0.4
-  '@vavite/connect':
-    specifier: ^3.0.0
-    version: 3.0.0(vite@5.0.0)
   '@vitejs/plugin-react':
     specifier: ^4.1.1
     version: 4.1.1(vite@5.0.0)
@@ -1618,6 +1618,14 @@ packages:
       vite: 5.0.0(@types/node@18.18.9)
     dev: true
 
+  /@hiogawa/vite-plugin-ssr-middleware@0.0.0(vite@5.0.0):
+    resolution: {integrity: sha512-o2rTmqdfOpbrqQEWD0OwqypnoDa+0FD9Sdm0gf4rx+6u7+fSTmKEuT+tgwyVhPU7zwWJU8ODAkk3k3O9+noHTg==}
+    peerDependencies:
+      vite: '*'
+    dependencies:
+      vite: 5.0.0(@types/node@18.18.9)
+    dev: true
+
   /@iconify-json/ri@1.1.12:
     resolution: {integrity: sha512-s5VsyMWYuUuTB5bATJRoDQKGqo6W0dsxvOBrJI/P2H9QI7IAaAWl8zHxseSjoUGG6AwZwWwDMW9YPULPt+vA6w==}
     dependencies:
@@ -2746,12 +2754,6 @@ packages:
     dependencies:
       undici-types: 5.26.5
 
-  /@types/node@20.9.0:
-    resolution: {integrity: sha512-nekiGu2NDb1BcVofVcEKMIwzlx4NjHlcjhoxxKBNLtz15Y1z7MYf549DFvkHSId02Ax6kGwWntIBPC3l/JZcmw==}
-    dependencies:
-      undici-types: 5.26.5
-    dev: true
-
   /@types/prop-types@15.7.10:
     resolution: {integrity: sha512-mxSnDQxPqsZxmeShFH+uwQ4kO4gcJcGahjjMFeLbKE95IAZiiZyiEepGZjtXJ7hN/yfu0bu9xN2ajcU0JcxX6A==}
     dev: true
@@ -3068,15 +3070,6 @@ packages:
 
   /@vanilla-extract/private@1.0.3:
     resolution: {integrity: sha512-17kVyLq3ePTKOkveHxXuIJZtGYs+cSoev7BlP+Lf4916qfDhk/HBjvlYDe8egrea7LNPHKwSZJK/bzZC+Q6AwQ==}
-
-  /@vavite/connect@3.0.0(vite@5.0.0):
-    resolution: {integrity: sha512-qTbxzuXlHiCHdeIa5PUaq3Xcj6mDAONZBzRCHY4NlHh0+9etG0Lb5yU2dwLdUvumqQaGKNljWMl5WCJ0pkOGEw==}
-    peerDependencies:
-      vite: ^2.8.1 || 3 || 4
-    dependencies:
-      '@types/node': 20.9.0
-      vite: 5.0.0(@types/node@18.18.9)
-    dev: true
 
   /@vitejs/plugin-react@4.1.1(vite@5.0.0):
     resolution: {integrity: sha512-Jie2HERK+uh27e+ORXXwEP5h0Y2lS9T2PRGbfebiHGlwzDO0dEnd2aNtOR/qjBlPb1YgxwAONeblL1xqLikLag==}
