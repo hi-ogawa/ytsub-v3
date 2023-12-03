@@ -7,7 +7,7 @@ import { useUserE2E, waitForHydration } from "./helper";
 
 test.describe("videos-signed-in", () => {
   const user = useUserE2E(test, {
-    seed: __filename + "/users/me",
+    seed: "videos-signed-in",
   });
 
   // prettier-ignore
@@ -274,7 +274,7 @@ test("invalid videoId input", async ({ page }) => {
 
 test.describe("video playback rate", () => {
   const userHook = useUserE2E(test, {
-    seed: __filename + "video playback rate",
+    seed: "video playback rate",
   });
 
   test.beforeAll(async () => {
@@ -297,7 +297,7 @@ test.describe("video playback rate", () => {
 });
 
 test.describe("videos deletion", () => {
-  const userHook = useUserE2E(test, { seed: __filename + "videos deletion" });
+  const userHook = useUserE2E(test, { seed: "videos deletion" });
 
   test.beforeAll(async () => {
     await userHook.isReady;

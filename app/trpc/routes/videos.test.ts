@@ -6,7 +6,7 @@ import { rpcRoutes } from "../server";
 
 describe(rpcRoutes.videos_destroy, () => {
   const hook = useUserVideo({
-    seed: __filename + "videos_destroy",
+    seed: "videos_destroy",
   });
 
   function getVideos() {

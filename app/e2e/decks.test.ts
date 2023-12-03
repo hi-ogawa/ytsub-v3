@@ -4,7 +4,7 @@ import { test } from "./coverage";
 import { useUserE2E, waitForHydration } from "./helper";
 
 test.describe("decks-empty", () => {
-  const user = useUserE2E(test, { seed: __filename });
+  const user = useUserE2E(test, { seed: "decks-empty" });
 
   test("decks => new-deck => edit-deck => delete-deck", async ({ page }) => {
     await user.signin(page);
@@ -49,7 +49,7 @@ test.describe("decks-empty", () => {
 });
 
 test.describe("decks-seed", () => {
-  const user = useUserE2E(test, { seed: __filename });
+  const user = useUserE2E(test, { seed: "decks-seed" });
   let deckId: number;
 
   test.beforeAll(async () => {
@@ -164,7 +164,7 @@ test.describe("decks-seed", () => {
 });
 
 test.describe("decks-import-export", () => {
-  const user = useUserE2E(test, { seed: __filename });
+  const user = useUserE2E(test, { seed: "decks-import-export" });
 
   test("basic", async ({ page }) => {
     await user.signin(page);
