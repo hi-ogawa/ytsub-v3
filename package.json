@@ -33,7 +33,7 @@
     "console-staging": "pnpm -s dotenv-staging pnpm -s console",
     "console-production": "pnpm -s dotenv-production pnpm -s console",
     "skeema": "cd app/db/skeema && skeema",
-    "knex": "NODE_OPTIONS='--loader tsx/esm' knex --knexfile app/db/knexfile.mts",
+    "knex": "tsx node_modules/knex/bin/cli.js --knexfile app/db/knexfile.mts",
     "knex-staging": "pnpm -s dotenv-staging pnpm -s knex",
     "knex-production": "pnpm -s dotenv-production pnpm -s knex",
     "dotenv-staging": "bash scripts/dotenv.sh .env.staging",
