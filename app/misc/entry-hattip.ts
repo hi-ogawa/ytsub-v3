@@ -3,13 +3,16 @@ import { once } from "@hiogawa/utils";
 import { createLoggerHandler } from "@hiogawa/utils-hattip";
 import { SpanKind } from "@opentelemetry/api";
 import { SemanticAttributes } from "@opentelemetry/semantic-conventions";
-import * as build from "@remix-run/dev/server-build";
 import { createRequestHandler } from "@remix-run/server-runtime";
 import { requestContextHandler } from "../server/request-context";
 import { rpcHandler } from "../trpc/server";
 import { pathToRegExp } from "../utils/misc";
 import { traceAsync } from "../utils/opentelemetry-utils";
 import { initializeServer } from "./initialize-server";
+
+// @ts-ignore isort-ignore
+import * as remixViteBuild from "virtual:server-entry";
+const build = remixViteBuild as typeof import("@remix-run/dev/server-build");
 
 // based on https://github.com/hi-ogawa/vite-fullstack-example/blob/92649f99b041820ec86650c99cfcd49a72e79f71/src/server/hattip.ts#L16-L28
 
@@ -29,8 +32,7 @@ export function createHattipEntry() {
 //
 
 function createRemixHandler(): RequestHandler {
-  const mode =
-    process.env.NODE_ENV === "production" ? "production" : "development";
+  const mode = import.meta.env.DEV ? "development" : "production";
   const remixHandler = createRequestHandler(build, mode);
   return (ctx) => remixHandler(ctx.request);
 }

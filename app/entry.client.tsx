@@ -10,6 +10,7 @@ function main() {
   const el = document.getElementById("root");
   tinyassert(el);
   hydrateRoot(el, <RemixBrowser />);
+  el.classList.add("hydrated");
 }
 
 main();

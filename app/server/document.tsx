@@ -4,10 +4,7 @@ import { injectPublicConfigScript, publicConfig } from "../utils/config-public";
 // since we don't currently use remix's <Meta /> or <Links /> convention,
 // we can render static document html only on server, which is probably common ssr practice.
 
-export async function renderToDocument(ssrHtml: string) {
-  // @ts-ignore
-  const { default: cssHref } = await import("../../build/css/index.css");
-
+export async function renderToDocument(ssrHtml: string, style: string) {
   // syntax highlight by https://github.com/mjbvz/vscode-comment-tagged-templates/
   return /* html */ `
 <!DOCTYPE html>
@@ -22,7 +19,6 @@ export async function renderToDocument(ssrHtml: string) {
       content="width=device-width, height=device-height, initial-scale=1.0"
     />
     <link rel="manifest" href="/manifest.json" />
-    <link rel="stylesheet" href="${cssHref}" />
     <link
         rel="icon"
         type="image/svg+xml"
@@ -35,6 +31,7 @@ export async function renderToDocument(ssrHtml: string) {
         height: 100%;
       }
     </style>
+    ${style}
     ${generateThemeScript({ storageKey: "ytsub:theme" })}
     ${injectPublicConfigScript()}
   </head>
