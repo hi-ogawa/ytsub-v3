@@ -26,12 +26,14 @@ mkdir -p .vercel/output
 mkdir -p .vercel/output/functions/index.func
 
 # serverless
+# - esm banner trick from https://github.com/evanw/esbuild/pull/2067#issuecomment-1324171716
 mkdir -p .vercel/output/functions/index.func
 cp "$this_dir/.vc-config.json" .vercel/output/functions/index.func/.vc-config.json
 npx esbuild build/server/index.js \
   --outfile=.vercel/output/functions/index.func/index.mjs \
   --metafile=build/server/esbuild-metafile.json \
   --define:process.env.NODE_ENV='"production"' \
+  --banner:js="import { createRequire } from 'module'; const require = createRequire(import.meta.url);" \
   --bundle --minify --format=esm --platform=node \
   --external:node:async_hooks
 
