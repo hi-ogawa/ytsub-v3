@@ -1,4 +1,4 @@
-import { createMiddleware } from "@hattip/adapter-node";
+import { createMiddleware } from "@hattip/adapter-node/native-fetch";
 import { createHattipEntry } from "./entry-hattip";
 
 export default createMiddleware(createHattipEntry(), {
