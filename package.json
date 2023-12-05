@@ -81,7 +81,7 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
-    "@hiogawa/icheck-ts": "0.0.1-pre.17",
+    "@hiogawa/icheck-ts": "0.0.1-pre.19",
     "@hiogawa/isort-ts": "1.1.2-pre.0",
     "@hiogawa/tiny-cli": "0.0.4-pre.1",
     "@hiogawa/tiny-form": "0.0.1-pre.10",
@@ -117,7 +117,7 @@
     "vitest": "^0.34.6"
   },
   "volta": {
-    "node": "18.16.0"
+    "node": "18.19.0"
   },
   "pnpm": {
     "patchedDependencies": {
