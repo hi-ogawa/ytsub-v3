@@ -22,11 +22,12 @@ export default defineConfig({
     // skip remix on vitest
     !process.env.VITEST &&
       remix({
-        routes: (defineRoutes) =>
-          createRoutesFromFolders(defineRoutes, {
-            // TODO: why "**/*.serer.*" breaks?
-            ignoredFilePatterns: ["**/*.test.*"],
-          }) as any,
+        ignoredRouteFiles: ["**/*"],
+        routes: (defineRoutes) => {
+          return createRoutesFromFolders(defineRoutes, {
+            ignoredFilePatterns: ["**/*.test.*", "**/*.server.*"],
+          }) as any;
+        },
       }),
 
     // since remix overwrites ssr build output of vitePluginSsrMiddleware,
