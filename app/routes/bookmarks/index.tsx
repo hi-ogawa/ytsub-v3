@@ -11,7 +11,7 @@ import {
 } from "../../utils/loader-utils";
 import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
-import { BookmarkEntryComponent, BookmarksMenuItems } from "./index.utils";
+import { BookmarkEntryComponent, BookmarksMenuItems } from "./_ui";
 
 export { loader } from "./index.server";
 

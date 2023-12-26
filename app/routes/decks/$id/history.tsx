@@ -17,7 +17,7 @@ import {
 } from "../../../utils/loader-utils";
 import { cls } from "../../../utils/misc";
 import type { PageHandle } from "../../../utils/page-handle";
-import { MiniPlayer } from "../../bookmarks/index.utils";
+import { MiniPlayer } from "../../bookmarks/_ui";
 import { DeckNavBarMenuComponent, QueueTypeIcon } from "./_ui";
 import { PRACTICE_ACTION_TYPE_TO_COLOR } from "./_utils";
 import type { LoaderData } from "./_utils.server";

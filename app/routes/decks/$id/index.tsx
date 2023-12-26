@@ -15,7 +15,7 @@ import {
 } from "../../../utils/loader-utils";
 import { cls } from "../../../utils/misc";
 import type { PageHandle } from "../../../utils/page-handle";
-import { MiniPlayer } from "../../bookmarks/index.utils";
+import { MiniPlayer } from "../../bookmarks/_ui";
 
 import {
   DeckNavBarMenuComponent,
