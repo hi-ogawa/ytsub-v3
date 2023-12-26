@@ -30,8 +30,6 @@ export default defineConfig({
               "**/*.server.*",
               "**/_utils.*",
               "**/_ui.*",
-              "**/*.utils.*",
-              "**/*.ui.*",
             ],
           }) as any;
         },
