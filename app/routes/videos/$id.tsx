@@ -384,9 +384,9 @@ function LayoutComponent(props: {
   //         grow        1/3 width
   //
   return (
-    <div className="h-full w-full flex flex-col md:flex-row md:gap-2 md:p-2">
-      <div className="flex-none md:grow">{props.player}</div>
-      <div className="flex flex-col flex-[1_0_0] md:flex-none md:w-1/3 border-t md:border relative">
+    <div className="h-full w-full flex flex-col lg:(flex-row gap-2 p-2)">
+      <div className="flex-none lg:grow">{props.player}</div>
+      <div className="flex flex-col flex-[1_0_0] border-t lg:(flex-none w-1/3 border) relative">
         <div
           className="flex-[1_0_0] h-full overflow-y-auto"
           ref={props.scrollElementRef}
@@ -412,7 +412,7 @@ function PlayerComponent({
 
   return (
     <div className="flex justify-center">
-      <div className="relative w-full max-w-md md:max-w-none">
+      <div className="relative w-full max-w-lg lg:max-w-none">
         <div className="relative pt-[56.2%]">
           <div className="absolute top-0 w-full h-full" ref={ref} />
         </div>
