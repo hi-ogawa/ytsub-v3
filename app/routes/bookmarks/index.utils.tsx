@@ -17,7 +17,8 @@ import { rpcClientQuery } from "../../trpc/client";
 import { cls } from "../../utils/misc";
 import type { CaptionEntry } from "../../utils/types";
 import { YoutubePlayer, usePlayerLoader } from "../../utils/youtube";
-import { CaptionEntryComponent, findCurrentEntry } from "../videos/$id.utils";
+import { CaptionEntryComponent } from "../videos/_ui";
+import { findCurrentEntry } from "../videos/_utils";
 
 export function BookmarkEntryComponent({
   video,

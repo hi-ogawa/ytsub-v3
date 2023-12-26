@@ -39,11 +39,8 @@ import {
   usePlayerLoader,
 } from "../../utils/youtube";
 import type { LoaderData } from "./$id.server";
-import {
-  CaptionEntryComponent,
-  extractBookmarkSelection,
-  findCurrentEntry,
-} from "./$id.utils";
+import { CaptionEntryComponent } from "./_ui";
+import { extractBookmarkSelection, findCurrentEntry } from "./_utils";
 
 export { loader } from "./$id.server";
 
