@@ -17,10 +17,10 @@ import {
 } from "../../../utils/loader-utils";
 import { cls } from "../../../utils/misc";
 import type { PageHandle } from "../../../utils/page-handle";
-import { BookmarkEntryComponent } from "../../bookmarks";
-
+import { BookmarkEntryComponent } from "../../bookmarks/_ui";
+import { DeckNavBarMenuComponent, QueueStatisticsComponent } from "./_ui";
 import type { LoaderData } from "./_utils.server";
-import { DeckNavBarMenuComponent, QueueStatisticsComponent } from "./index";
+
 export { loader } from "./_utils.server";
 
 export const handle: PageHandle = {

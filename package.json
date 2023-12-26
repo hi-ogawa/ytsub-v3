@@ -62,8 +62,8 @@
     "@opentelemetry/api": "^1.7.0",
     "@opentelemetry/sdk-node": "^0.45.1",
     "@opentelemetry/semantic-conventions": "^1.18.1",
-    "@remix-run/react": "0.0.0-nightly-bf6c0a4-20231129",
-    "@remix-run/server-runtime": "0.0.0-nightly-bf6c0a4-20231129",
+    "@remix-run/react": "2.4.1",
+    "@remix-run/server-runtime": "2.4.1",
     "@remix-run/v1-route-convention": "^0.1.4",
     "@tanstack/react-query": "^4.36.1",
     "@tanstack/react-query-devtools": "^4.36.1",
@@ -90,9 +90,10 @@
     "@hiogawa/vite-plugin-ssr-middleware": "^0.0.0",
     "@iconify-json/ri": "^1.1.12",
     "@playwright/test": "^1.39.0",
-    "@remix-run/dev": "0.0.0-nightly-bf6c0a4-20231129",
+    "@remix-run/dev": "2.4.1",
     "@tsconfig/strictest": "^2.0.2",
     "@types/cookie": "^0.5.4",
+    "@types/jscodeshift": "^0.11.11",
     "@types/node": "^18.18.9",
     "@types/react": "^18.2.37",
     "@types/react-dom": "^18.2.15",
@@ -105,11 +106,13 @@
     "esbuild-register": "^3.5.0",
     "gh-pages": "^6.0.0",
     "happy-dom": "^9.20.3",
+    "jscodeshift": "^0.15.1",
     "node-mailjet": "^6.0.4",
     "npm-check-updates": "^16.14.6",
     "npm-run-all": "^4.1.5",
     "prettier": "^2.8.8",
     "qrcode-terminal": "^0.12.0",
+    "recast": "^0.23.4",
     "showdown": "^2.1.0",
     "typescript": "^5.2.2",
     "unocss": "^0.57.6",
@@ -122,9 +125,6 @@
   "pnpm": {
     "patchedDependencies": {
       "@opentelemetry/sdk-node@0.45.1": "patches/@opentelemetry__sdk-node@0.45.1.patch"
-    },
-    "overrides": {
-      "@remix-run/dev": "0.0.0-nightly-bf6c0a4-20231129"
     }
   }
 }

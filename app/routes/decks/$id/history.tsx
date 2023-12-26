@@ -1,7 +1,6 @@
 import { Transition } from "@hiogawa/tiny-transition/dist/react";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import React from "react";
-import { PRACTICE_ACTION_TYPE_TO_COLOR, QueueTypeIcon } from ".";
 import { CollapseTransition } from "../../../components/collapse";
 import { SelectWrapper, transitionProps } from "../../../components/misc";
 import type { TT } from "../../../db/drizzle-client.server";
@@ -18,17 +17,18 @@ import {
 } from "../../../utils/loader-utils";
 import { cls } from "../../../utils/misc";
 import type { PageHandle } from "../../../utils/page-handle";
-import { MiniPlayer } from "../../bookmarks";
+import { MiniPlayer } from "../../bookmarks/_ui";
+import { DeckNavBarMenuComponent, QueueTypeIcon } from "./_ui";
+import { PRACTICE_ACTION_TYPE_TO_COLOR } from "./_utils";
 import type { LoaderData } from "./_utils.server";
 
-import { DeckHistoryNavBarMenuComponent } from "./history-graph";
 export { loader } from "./_utils.server";
 
 export const shouldRevalidate = disableUrlQueryRevalidation;
 
 export const handle: PageHandle = {
   navBarTitle: () => <NavBarTitleComponent />,
-  navBarMenu: () => <DeckHistoryNavBarMenuComponent />,
+  navBarMenu: () => <DeckNavBarMenuComponent />,
 };
 
 export default function DefaultComponent() {
