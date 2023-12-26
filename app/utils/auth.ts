@@ -1,11 +1,7 @@
 import { tinyassert } from "@hiogawa/utils";
 import { E, T, db, selectOne } from "../db/drizzle-client.server";
 import type { UserTable } from "../db/models";
-import {
-  toPasswordHash,
-  verifyPassword,
-  verifyPasswordNoop,
-} from "./password-utils";
+import { toPasswordHash, verifyPassword } from "./password-utils";
 
 const DEFAULT_TIMEZONE = "+00:00";
 
@@ -55,7 +51,6 @@ export async function verifySignin(data: {
     E.eq(T.users.username, data.username)
   );
   if (!user) {
-    await verifyPasswordNoop();
     return false;
   }
   return await verifyPassword(data.password, user.passwordHash);
