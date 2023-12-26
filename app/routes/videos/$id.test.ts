@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { partitionRanges } from "./$id";
+import { partitionRanges } from "./_utils";
 
 describe(partitionRanges, () => {
   it("basic", async () => {
