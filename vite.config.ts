@@ -25,7 +25,11 @@ export default defineConfig({
         ignoredRouteFiles: ["**/*"],
         routes: (defineRoutes) => {
           return createRoutesFromFolders(defineRoutes, {
-            ignoredFilePatterns: ["**/*.test.*", "**/*.server.*", "**/*.utils.*"],
+            ignoredFilePatterns: [
+              "**/*.test.*",
+              "**/*.server.*",
+              "**/*.utils.*",
+            ],
           }) as any;
         },
       }),
