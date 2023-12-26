@@ -1,6 +1,6 @@
 import { importSeed } from "../misc/seed-utils";
 import { test } from "./coverage";
-import { useUserE2E } from "./helper";
+import { useUserE2E, waitForHydration } from "./helper";
 
 test.describe("bookmarks", () => {
   const user = useUserE2E(test, { seed: __filename });
@@ -13,6 +13,7 @@ test.describe("bookmarks", () => {
   test("load-more", async ({ page }) => {
     await user.signin(page);
     await page.goto("/bookmarks");
+    await waitForHydration(page);
     await page.getByRole("button", { name: "Load more" }).click();
     await page.getByText("오늘 재밌게 촬영한 것 같습니다").click();
   });
@@ -20,6 +21,7 @@ test.describe("bookmarks", () => {
   test("search", async ({ page }) => {
     await user.signin(page);
     await page.goto("/bookmarks");
+    await waitForHydration(page);
     await page.getByPlaceholder("Search text...").fill("진짜");
     await page.getByPlaceholder("Search text...").press("Enter");
     await page.getByText("진짜 힘든데").click();
@@ -28,6 +30,7 @@ test.describe("bookmarks", () => {
   test("MiniPlayer", async ({ page }) => {
     await user.signin(page);
     await page.goto("/bookmarks");
+    await waitForHydration(page);
     await page.getByText("케플러 대박 기원").click();
     await page.locator(".i-ri-upload-line").click();
     await page.getByText("감사합니당~").click();
@@ -36,6 +39,7 @@ test.describe("bookmarks", () => {
   test("goToLastBookmark", async ({ page }) => {
     await user.signin(page);
     await page.goto("/videos");
+    await waitForHydration(page);
     await page
       .getByRole("link", {
         name: "(ENG) 떡잎부터 남다른 케플러 갓기시절👼🏻 짱플러의 육아난이도는?! [이게될까? - 멜론 스테이션 EP44]",
@@ -53,6 +57,7 @@ test.describe("/bookmarks/history-chart", () => {
 
   test("requires login", async ({ page }) => {
     await page.goto("/bookmarks/history-chart");
+    await waitForHydration(page);
     await page.getByText("Signin required").click();
     await page.waitForURL("/users/signin");
   });
@@ -61,6 +66,7 @@ test.describe("/bookmarks/history-chart", () => {
   test("basic", async ({ page }) => {
     await userHook.signin(page);
     await page.goto("/bookmarks/history-chart");
+    await waitForHydration(page);
     await page.getByText("this week").click();
     await page.getByRole('button').nth(3).click();
     await page.waitForURL(`/bookmarks/history-chart?page=1`);
