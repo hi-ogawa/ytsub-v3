@@ -81,7 +81,7 @@ function DraftList() {
               <button
                 className="antd-btn antd-btn-ghost i-ri-close-line w-5 h-5"
                 onClick={() => {
-                  if (window.confirm("Are you sure to delete 'xxx'?")) {
+                  if (window.confirm(`Are you sure to delete '${e.videoId}'?`)) {
                     setDraftList(
                       draftList.filter((e2) => e2.videoId !== e.videoId)
                     );
