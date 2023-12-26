@@ -4,11 +4,15 @@ import { useQuery } from "@tanstack/react-query";
 import { transitionProps } from "../../../components/misc";
 import { PopoverSimple } from "../../../components/popover";
 import { DeckTable } from "../../../db/models";
-import { PracticeActionType, PracticeQueueType } from "../../../db/types";
+import { PracticeQueueType } from "../../../db/types";
 import { $R } from "../../../misc/routes";
 import { rpcClientQuery } from "../../../trpc/client";
 import { useLeafLoaderData } from "../../../utils/loader-utils";
 import { cls } from "../../../utils/misc";
+import {
+  PRACTICE_QUEUE_TYPE_TO_COLOR,
+  PRACTICE_QUEUE_TYPE_TO_ICON,
+} from "./_utils";
 import { LoaderData } from "./index.server";
 
 export function DeckNavBarMenuComponent() {
@@ -147,25 +151,6 @@ export function QueueStatisticsComponent({
     );
   }
 }
-
-const PRACTICE_QUEUE_TYPE_TO_COLOR = {
-  NEW: "text-colorWarningText",
-  LEARN: "text-colorSuccessText",
-  REVIEW: "text-colorInfoText",
-} satisfies Record<PracticeQueueType, string>;
-
-const PRACTICE_QUEUE_TYPE_TO_ICON = {
-  NEW: "i-ri-checkbox-blank-circle-line",
-  LEARN: "i-ri-focus-line",
-  REVIEW: "i-ri-checkbox-circle-line",
-} satisfies Record<PracticeQueueType, string>;
-
-export const PRACTICE_ACTION_TYPE_TO_COLOR = {
-  AGAIN: "text-colorErrorText",
-  HARD: "text-colorWarningText",
-  GOOD: "text-colorSuccessText",
-  EASY: "text-colorInfoText",
-} satisfies Record<PracticeActionType, string>;
 
 export function QueueTypeIcon({ queueType }: { queueType: PracticeQueueType }) {
   return (

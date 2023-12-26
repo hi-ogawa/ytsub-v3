@@ -28,7 +28,10 @@ export default defineConfig({
             ignoredFilePatterns: [
               "**/*.test.*",
               "**/*.server.*",
+              "**/_utils.*",
+              "**/_ui.*",
               "**/*.utils.*",
+              "**/*.ui.*",
             ],
           }) as any;
         },

@@ -19,8 +19,8 @@ import {
 import { cls } from "../../../utils/misc";
 import type { PageHandle } from "../../../utils/page-handle";
 import { formatDateRange } from "../../../utils/temporal-utils";
+import { DeckNavBarMenuComponent } from "./_ui";
 import type { LoaderData } from "./_utils.server";
-import { DeckNavBarMenuComponent } from "./index.utils";
 export { loader } from "./_utils.server";
 
 export const shouldRevalidate = disableUrlQueryRevalidation;
