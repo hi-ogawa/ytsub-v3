@@ -33,7 +33,7 @@ npx esbuild build/server/index.js \
   --outfile=.vercel/output/functions/index.func/index.mjs \
   --metafile=build/server/esbuild-metafile.json \
   --define:process.env.NODE_ENV='"production"' \
-  --banner:js="import { createRequire } from 'module'; const require = createRequire(import.meta.url);" \
+  --banner:js="const require = (await import('node:module')).createRequire(import.meta.url);" \
   --bundle --minify --format=esm --platform=node \
   --external:node:async_hooks
 
