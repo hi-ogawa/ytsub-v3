@@ -1,10 +1,9 @@
-import { objectPick } from "@hiogawa/utils";
 import { importDevServerPlugin } from "@hiogawa/vite-import-dev-server";
 import { vitePluginSsrMiddleware } from "@hiogawa/vite-plugin-ssr-middleware";
 import { unstable_vitePlugin as remix } from "@remix-run/dev";
 import { createRoutesFromFolders } from "@remix-run/v1-route-convention";
 import unocss from "unocss/vite";
-import { defineConfig } from "vite";
+import { defineConfig } from "vitest/config";
 
 export default defineConfig({
   clearScreen: false,
@@ -23,11 +22,12 @@ export default defineConfig({
     // skip remix on vitest
     !process.env.VITEST &&
       remix({
-        routes: (defineRoutes) =>
-          createRoutesFromFolders(defineRoutes, {
-            // TODO: why "**/*.serer.*" breaks?
-            ignoredFilePatterns: ["**/*.test.*"],
-          }) as any,
+        ignoredRouteFiles: ["**/*"],
+        routes: (defineRoutes) => {
+          return createRoutesFromFolders(defineRoutes, {
+            ignoredFilePatterns: ["**/*.test.*", "**/*.server.*"],
+          }) as any;
+        },
       }),
 
     // since remix overwrites ssr build output of vitePluginSsrMiddleware,
@@ -59,6 +59,19 @@ export default defineConfig({
         }
         defaultHandler(warning);
       },
+    },
+  },
+  test: {
+    dir: "./app",
+    include: ["**/*.test.{ts,tsx}"],
+    exclude: ["**/e2e/**"],
+    environment: "happy-dom",
+    globalSetup: ["./app/misc/test-setup-global.ts"],
+    setupFiles: ["./app/misc/test-setup.ts"],
+    coverage: {
+      provider: "v8",
+      reporter: ["text", "html"],
+      reportsDirectory: "coverage/unit",
     },
   },
 });

@@ -17,22 +17,23 @@ const handleDocumentRequest: HandleDocumentRequestFunction = async (
     <RemixServer context={remixContext} url={request.url} />
   );
 
-  let style: string;
+  let styleHrefs: string[] = [];
   if (import.meta.env.DEV) {
-    // inject CSS to quickly workaround FOUC during dev
-    // since vite/unocss will inject css on client via javascript later.
-    // this would essentially create a duplicate style,
-    // but that's not usually a problem for utility-class based styling.
+    // cf. https://github.com/hi-ogawa/vite-plugins/blob/009cd6d2bc50312ec541753ac8e65a8b8be24b8f/packages/demo/vite-plugin-ssr-css.ts#L18-L25
     tinyassert(viteDevServer);
-    const unocss = await viteDevServer.ssrLoadModule("virtual:uno.css");
-    style = `<style>${unocss["default"]}</style>`;
+    const [, resolvedId] = await viteDevServer.moduleGraph.resolveUrl(
+      "virtual:uno.css"
+    );
+    styleHrefs = [`${resolvedId}?direct`];
   } else {
-    // since we don't use <Links />, we have to inject unocss output manually.
+    // since we don't use <Links />, we inject unocss output manually.
     const root = remixContext.manifest.routes["root"];
-    tinyassert(root && root.css && root.css[0]);
-    style = `<link rel="stylesheet" href="${root.css[0]}">`;
+    styleHrefs = root.css ?? [];
   }
 
+  const style = styleHrefs
+    .map((href) => `<link rel="stylesheet" href="${href}">`)
+    .join("\n");
   const documentHtml = await renderToDocument(ssrHtml, style);
   responseHeaders.set("content-type", "text/html");
   return new Response(documentHtml, {
