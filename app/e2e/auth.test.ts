@@ -48,11 +48,11 @@ test.describe("/users/signin", () => {
 
   test("basic", async ({ page }) => {
     await page.goto("/");
+    await waitForHydration(page);
 
     // navigate to signin
     await page.locator("header >> data-test=login-icon").click();
     await expect(page).toHaveURL("/users/signin");
-    await waitForHydration(page);
 
     // submit form
     await page.locator('input[name="username"]').fill(user.data.username);

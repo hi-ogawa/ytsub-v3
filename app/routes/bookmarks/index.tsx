@@ -1,6 +1,6 @@
 import { useTinyForm } from "@hiogawa/tiny-form/dist/react";
 import { Transition } from "@hiogawa/tiny-transition/dist/react";
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { keepPreviousData, useInfiniteQuery } from "@tanstack/react-query";
 import { transitionProps } from "../../components/misc";
 import { PopoverSimple } from "../../components/popover";
 import { ROUTE_DEF } from "../../misc/routes";
@@ -33,8 +33,9 @@ export default function DefaultComponent() {
       q: urlQuery.q,
       cursor: context?.pageParam as any,
     })),
+    initialPageParam: 0,
     getNextPageParam: (lastPage) => lastPage.nextCursor,
-    keepPreviousData: true,
+    placeholderData: keepPreviousData,
   });
   const rows = bookmarkEntriesQuery.data?.pages.flatMap((page) => page.rows);
 
@@ -82,8 +83,8 @@ export default function DefaultComponent() {
             )}
             <Transition
               show={
-                bookmarkEntriesQuery.isInitialLoading ||
-                bookmarkEntriesQuery.isPreviousData
+                bookmarkEntriesQuery.isLoading ||
+                bookmarkEntriesQuery.isPlaceholderData
               }
               className="absolute inset-0 duration-500 antd-body"
               {...transitionProps("opacity-0", "opacity-50")}

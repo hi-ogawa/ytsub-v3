@@ -1,0 +1,302 @@
+diff --git a/index.js b/index.js
+index d60705bc14a143db2aaa58169630f14ea0f67460..fafdf84303d24f8d8dbfad90ae69ecce818f58cd 100644
+--- a/index.js
++++ b/index.js
+@@ -59,7 +59,7 @@ import { UniversalTransition, LabelLayout } from './lib/export/features.js'; //
+ // Render via Canvas.
+ // echarts.init(dom, null, { renderer: 'canvas' })
+ 
+-use([CanvasRenderer]); // Render via SVG.
++// use([CanvasRenderer]); // Render via SVG.
+ // echarts.init(dom, null, { renderer: 'svg' })
+ 
+ use([SVGRenderer]); // ----------------
+@@ -72,7 +72,8 @@ use([SVGRenderer]); // ----------------
+ //     }]
+ // });
+ 
+-use([LineChart, BarChart, PieChart, ScatterChart, RadarChart, MapChart, TreeChart, TreemapChart, GraphChart, GaugeChart, FunnelChart, ParallelChart, SankeyChart, BoxplotChart, CandlestickChart, EffectScatterChart, LinesChart, HeatmapChart, PictorialBarChart, ThemeRiverChart, SunburstChart, CustomChart]); // -------------------
++use([LineChart, BarChart]); // -------------------
++// use([LineChart, BarChart, PieChart, ScatterChart, RadarChart, MapChart, TreeChart, TreemapChart, GraphChart, GaugeChart, FunnelChart, ParallelChart, SankeyChart, BoxplotChart, CandlestickChart, EffectScatterChart, LinesChart, HeatmapChart, PictorialBarChart, ThemeRiverChart, SunburstChart, CustomChart]); // -------------------
+ // Coordinate systems
+ // -------------------
+ // All of the axis modules have been included in the
+@@ -95,57 +96,57 @@ use(GridComponent); // `polar` coordinate system, for example:
+ //     series: [{
+ //         coordinateSystem: 'polar'
+ //     }]
+-// });
+-
+-use(PolarComponent); // `geo` coordinate system, for example:
+-// chart.setOption({
+-//     geo: {...},
+-//     series: [{
+-//         coordinateSystem: 'geo'
+-//     }]
+-// });
+-
+-use(GeoComponent); // `singleAxis` coordinate system (notice, it is a coordinate system
+-// with only one axis, work for chart like theme river), for example:
+-// chart.setOption({
+-//     singleAxis: {...}
+-//     series: [{type: 'themeRiver', ...}]
+-// });
+-
+-use(SingleAxisComponent); // `parallel` coordinate system, only work for parallel series, for example:
+-// chart.setOption({
+-//     parallel: {...},
+-//     parallelAxis: [{...}, ...],
+-//     series: [{
+-//         type: 'parallel'
+-//     }]
+-// });
+-
+-use(ParallelComponent); // `calendar` coordinate system. for example,
+-// chart.setOption({
+-//     calendar: {...},
+-//     series: [{
+-//         coordinateSystem: 'calendar'
+-//     }]
+-// );
+-
+-use(CalendarComponent); // ------------------
+-// Other components
+-// ------------------
+-// `graphic` component, for example:
+-// chart.setOption({
+-//     graphic: {...}
+-// });
+-
+-use(GraphicComponent); // `toolbox` component, for example:
+-// chart.setOption({
+-//     toolbox: {...}
+-// });
+-
+-use(ToolboxComponent); // `tooltip` component, for example:
+-// chart.setOption({
+-//     tooltip: {...}
+-// });
++// // });
++
++// use(PolarComponent); // `geo` coordinate system, for example:
++// // chart.setOption({
++// //     geo: {...},
++// //     series: [{
++// //         coordinateSystem: 'geo'
++// //     }]
++// // });
++
++// use(GeoComponent); // `singleAxis` coordinate system (notice, it is a coordinate system
++// // with only one axis, work for chart like theme river), for example:
++// // chart.setOption({
++// //     singleAxis: {...}
++// //     series: [{type: 'themeRiver', ...}]
++// // });
++
++// use(SingleAxisComponent); // `parallel` coordinate system, only work for parallel series, for example:
++// // chart.setOption({
++// //     parallel: {...},
++// //     parallelAxis: [{...}, ...],
++// //     series: [{
++// //         type: 'parallel'
++// //     }]
++// // });
++
++// use(ParallelComponent); // `calendar` coordinate system. for example,
++// // chart.setOption({
++// //     calendar: {...},
++// //     series: [{
++// //         coordinateSystem: 'calendar'
++// //     }]
++// // );
++
++// use(CalendarComponent); // ------------------
++// // Other components
++// // ------------------
++// // `graphic` component, for example:
++// // chart.setOption({
++// //     graphic: {...}
++// // });
++
++// use(GraphicComponent); // `toolbox` component, for example:
++// // chart.setOption({
++// //     toolbox: {...}
++// // });
++
++// use(ToolboxComponent); // `tooltip` component, for example:
++// // chart.setOption({
++// //     tooltip: {...}
++// // });
+ 
+ use(TooltipComponent); // `axisPointer` component, for example:
+ // chart.setOption({
+@@ -165,86 +166,86 @@ use(AxisPointerComponent); // `brush` component, for example:
+ //     tooltip: {feature: {brush: {...}}
+ // })
+ 
+-use(BrushComponent); // `title` component, for example:
+-// chart.setOption({
+-//     title: {...}
+-// });
+-
+-use(TitleComponent); // `timeline` component, for example:
+-// chart.setOption({
+-//     timeline: {...}
+-// });
+-
+-use(TimelineComponent); // `markPoint` component, for example:
+-// chart.setOption({
+-//     series: [{markPoint: {...}}]
+-// });
+-
+-use(MarkPointComponent); // `markLine` component, for example:
+-// chart.setOption({
+-//     series: [{markLine: {...}}]
+-// });
+-
+-use(MarkLineComponent); // `markArea` component, for example:
+-// chart.setOption({
+-//     series: [{markArea: {...}}]
+-// });
+-
+-use(MarkAreaComponent); // `legend` component not scrollable. for example:
+-// chart.setOption({
+-//     legend: {...}
+-// });
+-
+-use(LegendComponent); // `dataZoom` component including both `dataZoomInside` and `dataZoomSlider`.
+-
+-use(DataZoomComponent); // `dataZoom` component providing drag, pinch, wheel behaviors
+-// inside coordinate system, for example:
+-// chart.setOption({
+-//     dataZoom: {type: 'inside'}
+-// });
+-
+-use(DataZoomInsideComponent); // `dataZoom` component providing a slider bar, for example:
+-// chart.setOption({
+-//     dataZoom: {type: 'slider'}
+-// });
+-
+-use(DataZoomSliderComponent); // `visualMap` component including both `visualMapContinuous` and `visualMapPiecewise`.
+-
+-use(VisualMapComponent); // `visualMap` component providing continuous bar, for example:
+-// chart.setOption({
+-//     visualMap: {type: 'continuous'}
+-// });
+-
+-use(VisualMapContinuousComponent); // `visualMap` component providing pieces bar, for example:
+-// chart.setOption({
+-//     visualMap: {type: 'piecewise'}
+-// });
+-
+-use(VisualMapPiecewiseComponent); // `aria` component providing aria, for example:
+-// chart.setOption({
+-//     aria: {...}
+-// });
+-
+-use(AriaComponent); // dataset transform
+-// chart.setOption({
+-//     dataset: {
+-//          transform: []
+-//     }
+-// });
+-
+-use(TransformComponent);
++// use(BrushComponent); // `title` component, for example:
++// // chart.setOption({
++// //     title: {...}
++// // });
++
++// use(TitleComponent); // `timeline` component, for example:
++// // chart.setOption({
++// //     timeline: {...}
++// // });
++
++// use(TimelineComponent); // `markPoint` component, for example:
++// // chart.setOption({
++// //     series: [{markPoint: {...}}]
++// // });
++
++// use(MarkPointComponent); // `markLine` component, for example:
++// // chart.setOption({
++// //     series: [{markLine: {...}}]
++// // });
++
++// use(MarkLineComponent); // `markArea` component, for example:
++// // chart.setOption({
++// //     series: [{markArea: {...}}]
++// // });
++
++// use(MarkAreaComponent); // `legend` component not scrollable. for example:
++// // chart.setOption({
++// //     legend: {...}
++// // });
++
++// use(LegendComponent); // `dataZoom` component including both `dataZoomInside` and `dataZoomSlider`.
++
++// use(DataZoomComponent); // `dataZoom` component providing drag, pinch, wheel behaviors
++// // inside coordinate system, for example:
++// // chart.setOption({
++// //     dataZoom: {type: 'inside'}
++// // });
++
++// use(DataZoomInsideComponent); // `dataZoom` component providing a slider bar, for example:
++// // chart.setOption({
++// //     dataZoom: {type: 'slider'}
++// // });
++
++// use(DataZoomSliderComponent); // `visualMap` component including both `visualMapContinuous` and `visualMapPiecewise`.
++
++// use(VisualMapComponent); // `visualMap` component providing continuous bar, for example:
++// // chart.setOption({
++// //     visualMap: {type: 'continuous'}
++// // });
++
++// use(VisualMapContinuousComponent); // `visualMap` component providing pieces bar, for example:
++// // chart.setOption({
++// //     visualMap: {type: 'piecewise'}
++// // });
++
++// use(VisualMapPiecewiseComponent); // `aria` component providing aria, for example:
++// // chart.setOption({
++// //     aria: {...}
++// // });
++
++// use(AriaComponent); // dataset transform
++// // chart.setOption({
++// //     dataset: {
++// //          transform: []
++// //     }
++// // });
++
++// use(TransformComponent);
+ use(DatasetComponent); // universal transition
+-// chart.setOption({
+-//     series: {
+-//         universalTransition: { enabled: true }
+-//     }
+-// })
+-
+-use(UniversalTransition); // label layout
+-// chart.setOption({
+-//     series: {
+-//         labelLayout: { hideOverlap: true }
+-//     }
+-// })
+-
+-use(LabelLayout);
+\ No newline at end of file
++// // chart.setOption({
++// //     series: {
++// //         universalTransition: { enabled: true }
++// //     }
++// // })
++
++// use(UniversalTransition); // label layout
++// // chart.setOption({
++// //     series: {
++// //         labelLayout: { hideOverlap: true }
++// //     }
++// // })
++
++// use(LabelLayout);

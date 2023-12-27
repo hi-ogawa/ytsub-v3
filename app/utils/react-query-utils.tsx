@@ -24,7 +24,9 @@ export function QueryClientWrapper({ children }: React.PropsWithChildren) {
   return (
     <QueryClientProvider client={queryClient}>
       {children}
-      {import.meta.env.DEV && showDevtools && <ReactQueryDevtools />}
+      {import.meta.env.DEV && showDevtools && (
+        <ReactQueryDevtools buttonPosition="bottom-left" />
+      )}
     </QueryClientProvider>
   );
 }
@@ -57,7 +59,7 @@ function createQueryClient() {
     rpcClientQuery.videos_getCaptionEntries.queryKey,
     {
       staleTime: Infinity,
-      cacheTime: Infinity,
+      gcTime: Infinity,
     }
   );
 

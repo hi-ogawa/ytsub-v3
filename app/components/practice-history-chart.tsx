@@ -1,9 +1,10 @@
 import { tinyassert } from "@hiogawa/utils";
 import { useStableRef } from "@hiogawa/utils-react";
 import { Temporal } from "@js-temporal/polyfill";
-import * as echarts from "echarts";
+import type * as echarts from "echarts";
 import React from "react";
 import { PRACTICE_ACTION_TYPES, PRACTICE_QUEUE_TYPES } from "../db/types";
+import { echartsInit } from "./echarts.client";
 
 export const PRACTICE_HISTORY_DATASET_KEYS = [
   "total",
@@ -198,9 +199,9 @@ export function EchartsComponent(props: {
 
   const elRef: React.RefCallback<HTMLElement> = (el) => {
     instanceRef.current?.dispose();
-    // use svg for css variable based color
+    // need svg for css variable based color
     instanceRef.current = el
-      ? echarts.init(el, undefined, { renderer: "svg" })
+      ? echartsInit(el, undefined, { renderer: "svg" })
       : undefined;
     setInstanceRef.current?.(instanceRef.current);
   };

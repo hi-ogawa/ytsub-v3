@@ -228,7 +228,7 @@ function VideoComponentExtra({
       key={video.id}
       video={video}
       bookmarkEntriesCount={video.bookmarkEntriesCount}
-      isLoading={deleteVideoMutation.isLoading}
+      isLoading={deleteVideoMutation.isPending}
       actions={
         currentUser &&
         currentUser.id === video.userId &&
@@ -313,7 +313,7 @@ function AddToDeckComponent({
     newPracticeEntryMutation.mutate({ videoId, deckId: deck.id });
   }
 
-  const isLoading = decksQuery.isLoading || newPracticeEntryMutation.isLoading;
+  const isLoading = decksQuery.isLoading || newPracticeEntryMutation.isPending;
 
   return (
     <div

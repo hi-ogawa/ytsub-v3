@@ -66,8 +66,8 @@
     "@remix-run/react": "2.4.1",
     "@remix-run/server-runtime": "2.4.1",
     "@remix-run/v1-route-convention": "^0.1.4",
-    "@tanstack/react-query": "^4.36.1",
-    "@tanstack/react-query-devtools": "^4.36.1",
+    "@tanstack/react-query": "^5.8.4",
+    "@tanstack/react-query-devtools": "^5.8.4",
     "@tanstack/react-virtual": "3.0.0-beta.54",
     "cookie": "^0.5.0",
     "drizzle-orm": "^0.26.5",
@@ -120,12 +120,14 @@
     "vite": "^5.0.0",
     "vitest": "^0.34.6"
   },
+  "packageManager": "pnpm@8.13.1+sha256.9e5f62ce5f2b7d4ceb3c2848f41cf0b33032c24d683c7088b53f62b1885fb246",
   "volta": {
     "node": "18.19.0"
   },
   "pnpm": {
     "patchedDependencies": {
-      "@opentelemetry/sdk-node@0.45.1": "patches/@opentelemetry__sdk-node@0.45.1.patch"
+      "@opentelemetry/sdk-node@0.45.1": "patches/@opentelemetry__sdk-node@0.45.1.patch",
+      "echarts@5.4.3": "patches/echarts@5.4.3.patch"
     }
   }
 }

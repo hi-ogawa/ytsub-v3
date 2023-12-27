@@ -144,10 +144,10 @@ function DefaultComponentInner() {
                   type="submit"
                   className={cls(
                     "antd-btn antd-btn-primary p-1",
-                    createMutation.isLoading && "antd-btn-loading"
+                    createMutation.isPending && "antd-btn-loading"
                   )}
                   disabled={
-                    createMutation.isLoading || createMutation.isSuccess
+                    createMutation.isPending || createMutation.isSuccess
                   }
                 >
                   Save and Play
@@ -253,9 +253,9 @@ function AdvancedModeForm({ videoId }: { videoId: string }) {
         type="submit"
         className={cls(
           "antd-btn antd-btn-primary p-1",
-          createMutation.isLoading && "antd-btn-loading"
+          createMutation.isPending && "antd-btn-loading"
         )}
-        disabled={createMutation.isLoading || createMutation.isSuccess}
+        disabled={createMutation.isPending || createMutation.isSuccess}
       >
         Save and Play
       </button>
