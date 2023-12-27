@@ -12,7 +12,7 @@ test("/users/register success", async ({ page }) => {
   // submit form
   // prettier-ignore
   {
-    const username = "user-" + hashString(__filename + "/users/register").slice(0, 8);
+    const username = "user-" + hashString("/users/register").slice(0, 8);
     await page.locator('data-test=register-form >> input[name=username]').fill(username);
     await page.locator('data-test=register-form >> input[name=password]').fill('password');
     await page.locator('data-test=register-form >> input[name=passwordConfirmation]').fill('password');
@@ -43,7 +43,7 @@ test.describe("/users/signin", () => {
   const password = "password";
   const user = useUserE2E(test, {
     password,
-    seed: __filename + "/users/signin",
+    seed: "/users/signin",
   });
 
   test("basic", async ({ page }) => {
@@ -86,7 +86,7 @@ test.describe("/users/signin", () => {
 
 test.describe("/users/me", () => {
   const user = useUserE2E(test, {
-    seed: __filename + "/users/me",
+    seed: "/users/me",
   });
 
   test("with-session", async ({ page }) => {
@@ -137,7 +137,7 @@ test.describe("/users/me", () => {
 });
 
 test.describe("/users/signout", () => {
-  const { signin } = useUserE2E(test, { seed: __filename + "signout" });
+  const { signin } = useUserE2E(test, { seed: "signout" });
 
   test("basic", async ({ page }) => {
     await signin(page);
@@ -153,7 +153,7 @@ test.describe("/users/signout", () => {
 
 test.describe("change email", () => {
   const user = useUserE2E(test, {
-    seed: __filename + "change email",
+    seed: "change email",
   });
 
   test("basic", async ({ page }) => {
@@ -193,7 +193,7 @@ test.describe("change email", () => {
 
 test.describe("reset password", () => {
   const user = useUserE2E(test, {
-    seed: __filename + "reset password",
+    seed: "reset password",
   });
 
   const userEmail = "reset-password@dummy.local";

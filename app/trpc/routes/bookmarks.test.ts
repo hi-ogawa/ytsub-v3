@@ -8,7 +8,7 @@ import { rpcRoutes } from "../server";
 
 describe(rpcRoutes.bookmarks_create, () => {
   const hook = useUserVideo({
-    seed: __filename + "bookmarks_create",
+    seed: "bookmarks_create",
   });
 
   it("basic", async () => {
@@ -77,7 +77,7 @@ describe(rpcRoutes.bookmarks_create, () => {
 
 describe(rpcRoutes.bookmarks_historyChart, () => {
   const user = useUser({
-    seed: __filename,
+    seed: "bookmarks_historyChart",
   });
 
   beforeAll(async () => {

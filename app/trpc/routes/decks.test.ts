@@ -6,7 +6,7 @@ import { rpcRoutes } from "../server";
 
 describe(rpcRoutes.decks_practiceHistoryChart, () => {
   const user = useUser({
-    seed: __filename,
+    seed: "decks_practiceHistoryChart",
   });
   let deckId: number;
 

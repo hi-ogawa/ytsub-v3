@@ -412,7 +412,7 @@ function PlayerComponent({
 
   return (
     <div className="flex justify-center">
-      <div className="relative w-full max-w-lg lg:max-w-none">
+      <div className="relative w-full max-w-xl lg:max-w-none">
         <div className="relative pt-[56.2%]">
           <div className="absolute top-0 w-full h-full" ref={ref} />
         </div>

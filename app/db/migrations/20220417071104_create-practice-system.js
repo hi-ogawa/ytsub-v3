@@ -2,7 +2,7 @@
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }
  */
-exports.up = async function (knex) {
+export const up = async function (knex) {
   await knex.raw(`
     CREATE TABLE decks (
       id                    BIGINT AUTO_INCREMENT,
@@ -51,7 +51,7 @@ exports.up = async function (knex) {
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }
  */
-exports.down = async function (knex) {
+export const down = async function (knex) {
   await knex.raw(`DROP TABLE practiceActions`);
   await knex.raw(`DROP TABLE practiceEntries`);
   await knex.raw(`DROP TABLE decks`);
