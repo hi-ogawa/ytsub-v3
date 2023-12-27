@@ -11,7 +11,7 @@
     "noUncheckedIndexedAccess": false,
     "checkJs": false,
     "noEmit": true,
-    "moduleResolution": "Node",
+    "moduleResolution": "Bundler",
     "module": "ESNext",
     "target": "ESNext",
     "lib": ["ESNext", "DOM"],
