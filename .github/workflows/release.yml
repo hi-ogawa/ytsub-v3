@@ -21,7 +21,7 @@ jobs:
     environment:
       name: release
       url: ${{ steps.release_log.outputs.RELEASE_URL }}
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     env:
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
       VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
