@@ -4,7 +4,7 @@ import type { LoaderFunction } from "@remix-run/server-runtime";
 // gracefully shutdown itself for scripts/test-e2e-coverage.sh
 
 export const loader: LoaderFunction = async () => {
-  if (process.env.NODE_ENV === "production") {
+  if (!import.meta.env.DEV) {
     return { success: false };
   }
   console.log("🔥 process.kill 🔥");
