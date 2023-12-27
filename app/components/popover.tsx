@@ -39,7 +39,7 @@ function Popover(props: {
     onOpenChange: setOpen,
     placement: props.placement,
     middleware: [
-      offset(16),
+      offset(10),
       flip(),
       shift(),
       arrow({ element: arrowRef, padding: 10 }),
