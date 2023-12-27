@@ -33,7 +33,9 @@ export default defineConfig({
             ],
           }) as any;
         },
-      }),
+        // false-positive during optimizeDeps discovery
+        // https://github.com/remix-run/remix/pull/8267
+      }).filter((plugin) => plugin.name !== "remix-dot-server"),
 
     // since remix overwrites ssr build output of vitePluginSsrMiddleware,
     // we need to overwrite it back with extra plugin.
@@ -65,6 +67,10 @@ export default defineConfig({
         defaultHandler(warning);
       },
     },
+  },
+  optimizeDeps: {
+    // DEBUG=vite:deps pnpm dev:remix --force
+    entries: ["./app/entry-client.tsx", "./app/root.tsx", "./app/routes/**/*"],
   },
   test: {
     dir: "./app",
