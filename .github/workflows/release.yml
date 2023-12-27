@@ -27,13 +27,10 @@ jobs:
       VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
     steps:
       - uses: actions/checkout@v3
-      - uses: pnpm/action-setup@v2
-        with:
-          version: 8
       - uses: actions/setup-node@v3
         with:
           node-version: 18
-          cache: pnpm
+      - run: corepack enable
       - run: pnpm i
       - run: pnpm build
       - run: npm i -g vercel@25.2.3
