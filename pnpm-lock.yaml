@@ -8,6 +8,9 @@ patchedDependencies:
   '@opentelemetry/sdk-node@0.45.1':
     hash: opznjwpbsym5sugb4owpkabxrq
     path: patches/@opentelemetry__sdk-node@0.45.1.patch
+  echarts@5.4.3:
+    hash: xdzuvd6spidmdsrxzfdl27h2be
+    path: patches/echarts@5.4.3.patch
 
 dependencies:
   '@floating-ui/react':
@@ -99,7 +102,7 @@ dependencies:
     version: 0.26.5(@opentelemetry/api@1.7.0)(knex@2.5.1)(mysql2@3.6.3)
   echarts:
     specifier: ^5.4.3
-    version: 5.4.3
+    version: 5.4.3(patch_hash=xdzuvd6spidmdsrxzfdl27h2be)
   fast-xml-parser:
     specifier: ^4.3.2
     version: 4.3.2
@@ -4370,12 +4373,13 @@ packages:
   /eastasianwidth@0.2.0:
     resolution: {integrity: sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==}
 
-  /echarts@5.4.3:
+  /echarts@5.4.3(patch_hash=xdzuvd6spidmdsrxzfdl27h2be):
     resolution: {integrity: sha512-mYKxLxhzy6zyTi/FaEbJMOZU1ULGEQHaeIeuMR5L+JnJTpz+YR03mnnpBhbR4+UYJAgiXgpyTVLffPAjOTLkZA==}
     dependencies:
       tslib: 2.3.0
       zrender: 5.4.4
     dev: false
+    patched: true
 
   /ee-first@1.1.1:
     resolution: {integrity: sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==}
