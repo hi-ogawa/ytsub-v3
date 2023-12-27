@@ -69,6 +69,7 @@ export default defineConfig({
     },
   },
   optimizeDeps: {
+    // debug this by
     // DEBUG=vite:deps pnpm dev:remix --force
     entries: ["./app/entry-client.tsx", "./app/root.tsx", "./app/routes/**/*"],
   },
