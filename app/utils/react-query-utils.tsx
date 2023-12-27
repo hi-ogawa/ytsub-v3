@@ -24,7 +24,9 @@ export function QueryClientWrapper({ children }: React.PropsWithChildren) {
   return (
     <QueryClientProvider client={queryClient}>
       {children}
-      {showDevtools && <ReactQueryDevtools buttonPosition="bottom-left" />}
+      {import.meta.env.DEV && showDevtools && (
+        <ReactQueryDevtools buttonPosition="bottom-left" />
+      )}
     </QueryClientProvider>
   );
 }

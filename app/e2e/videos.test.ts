@@ -3,7 +3,7 @@ import { expect } from "@playwright/test";
 import { E, T, db } from "../db/drizzle-client.server";
 import { importSeed } from "../misc/seed-utils";
 import { test } from "./coverage";
-import { useUserE2E } from "./helper";
+import { useUserE2E, waitForHydration } from "./helper";
 
 test.describe("videos-signed-in", () => {
   const user = useUserE2E(test, {
@@ -18,6 +18,7 @@ test.describe("videos-signed-in", () => {
     // input video url in "/"
     //
     await page.goto("/");
+    await waitForHydration(page);
     await page.getByTestId("Navbar-drawer-button").click();
     await page.getByPlaceholder("Enter Video ID or URL").fill("https://www.youtube.com/watch?v=4gXmClk8rKI");
     await page.getByPlaceholder("Enter Video ID or URL").press("Enter");
@@ -110,6 +111,7 @@ test.describe("videos-signed-in", () => {
 
 test("anonymouse: / => /videos/new => /videos/id", async ({ page }) => {
   await page.goto("/");
+  await waitForHydration(page);
 
   // input videoId
   await page.getByTestId("Navbar-drawer-button").click();
@@ -141,6 +143,7 @@ test("anonymouse: / => /videos/new => /videos/id", async ({ page }) => {
 
 test("captions-editor-basic", async ({ page }) => {
   await page.goto("/");
+  await waitForHydration(page);
 
   // input videoId
   await page.getByTestId("Navbar-drawer-button").click();
@@ -207,6 +210,7 @@ test("captions-editor-basic", async ({ page }) => {
 test("captions-editor-auto-save", async ({ page }) => {
   // PAXXWORD (NMIXX) https://www.youtube.com/watch?v=lH_n29wkT_4
   await page.goto("/caption-editor/watch?v=lH_n29wkT_4");
+  await waitForHydration(page);
 
   // import with manual + download
   await page.getByRole("button", { name: "Import" }).click();
@@ -258,6 +262,7 @@ test("captions-editor-auto-save", async ({ page }) => {
 
 test("invalid videoId input", async ({ page }) => {
   await page.goto("/");
+  await waitForHydration(page);
   await page.getByTestId("Navbar-drawer-button").click();
   await page.getByPlaceholder("Enter Video ID or URL").click();
   await page
@@ -280,6 +285,7 @@ test.describe("video playback rate", () => {
   test("basic", async ({ page }) => {
     await userHook.signin(page);
     await page.goto("/videos");
+    await waitForHydration(page);
     await page
       .getByRole("link", { name: "fromis_9 (프로미스나인) 'DM' Official MV" })
       .click();
@@ -301,6 +307,7 @@ test.describe("videos deletion", () => {
   test("error", async ({ page }) => {
     await userHook.signin(page);
     await page.goto("/videos");
+    await waitForHydration(page);
     await page
       .locator('[data-test="video-component-popover-button"]')
       .nth(0)
@@ -318,6 +325,7 @@ test.describe("videos deletion", () => {
 test.describe("videos new form", () => {
   test("reset form state", async ({ page }) => {
     await page.goto("/");
+    await waitForHydration(page);
 
     // 1st navigation
     await page.getByTestId("Navbar-drawer-button").click();

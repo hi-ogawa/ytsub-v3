@@ -47,3 +47,7 @@ export function useUserE2E(
     },
   };
 }
+
+export async function waitForHydration(page: Page) {
+  await page.locator("#root.hydrated").waitFor({ state: "attached" });
+}

@@ -3,8 +3,7 @@ import type { DeckTable } from "../../db/models";
 import { $R } from "../../misc/routes";
 import { useLoaderDataExtra } from "../../utils/loader-utils";
 import type { PageHandle } from "../../utils/page-handle";
-import { DeckMenuComponent } from "./$id";
-
+import { DeckMenuComponent } from "./$id/_ui";
 import type { DecksLoaderData } from "./index.server";
 export { loader } from "./index.server";
 

@@ -1,3 +1,4 @@
+import "virtual:uno.css";
 import { FloatingTree } from "@floating-ui/react";
 import { useTinyForm } from "@hiogawa/tiny-form/dist/react";
 import { useTinyProgress } from "@hiogawa/tiny-progress/dist/react";
