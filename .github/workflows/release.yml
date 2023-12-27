@@ -37,9 +37,9 @@ jobs:
       - run: bash misc/vercel/auth-ci.sh
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-      - run: pnpm release | tee release.log
+      - run: pnpm release --debug | tee release.log
         if: inputs.environment == 'staging'
-      - run: pnpm release-production | tee release.log
+      - run: pnpm release-production --debug | tee release.log
         if: inputs.environment == 'production'
       # https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#setting-an-output-parameter
       - run: echo "RELEASE_URL=$(tail -n 1 release.log)" >> "$GITHUB_OUTPUT"
