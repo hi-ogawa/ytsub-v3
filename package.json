@@ -14,7 +14,7 @@
     "lint-check": "run-s lint-check:*",
     "lint:isort": "pnpm lint-check:isort --fix",
     "lint-check:isort": "isort-ts --git --cache",
-    "lint-check:icheck": "tsx --experimental-import-meta-resolve ./node_modules/@hiogawa/icheck-ts/bin/cli.js $(find app -name '*.ts' -o -name '*.tsx') --ignore 'ErrorBoundary|default|loader|handle|shouldRevalidate|up|down' --ignoreUnresolved '^virtual:'",
+    "lint-check:icheck": "NODE_OPTIONS='--import tsx/esm --experimental-import-meta-resolve' icheck-ts --useImportMetaResolve $(find app -name '*.ts' -o -name '*.tsx') --ignore 'ErrorBoundary|default|loader|handle|shouldRevalidate|up|down' --ignoreUnresolved '^virtual:'",
     "lint:prettier": "prettier -w --cache .",
     "lint-check:prettier": "prettier -c --cache .",
     "test": "NODE_ENV=test vitest",
@@ -81,7 +81,7 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
-    "@hiogawa/icheck-ts": "0.0.1-pre.19",
+    "@hiogawa/icheck-ts": "0.0.1-pre.21",
     "@hiogawa/isort-ts": "1.1.2-pre.0",
     "@hiogawa/tiny-cli": "0.0.4-pre.1",
     "@hiogawa/tiny-form": "0.0.1-pre.10",
@@ -113,7 +113,7 @@
     "qrcode-terminal": "^0.12.0",
     "recast": "^0.23.4",
     "showdown": "^2.1.0",
-    "tsx": "^4.6.1",
+    "tsx": "^4.7.0",
     "typescript": "^5.2.2",
     "unocss": "^0.58.0",
     "vite": "^5.0.10",
