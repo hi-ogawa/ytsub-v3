@@ -223,8 +223,8 @@ devDependencies:
     specifier: ^2.1.0
     version: 2.1.0
   tsx:
-    specifier: ^4.6.1
-    version: 4.6.1
+    specifier: ^4.7.0
+    version: 4.7.0
   typescript:
     specifier: ^5.2.2
     version: 5.2.2
@@ -8496,12 +8496,12 @@ packages:
   /tslib@2.6.2:
     resolution: {integrity: sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==}
 
-  /tsx@4.6.1:
-    resolution: {integrity: sha512-OQ4TAPHXAPUo/NZAmmIybl0o8LFOTlycQxFepLBAp6EV87U88fOKYGCQI2viGAEOVU9UW/cgQcxcOMnfEKVY3Q==}
+  /tsx@4.7.0:
+    resolution: {integrity: sha512-I+t79RYPlEYlHn9a+KzwrvEwhJg35h/1zHsLC2JXvhC2mdynMv6Zxzvhv5EMV6VF5qJlLlkSnMVvdZV3PSIGcg==}
     engines: {node: '>=18.0.0'}
     hasBin: true
     dependencies:
-      esbuild: 0.18.20
+      esbuild: 0.19.10
       get-tsconfig: 4.7.2
     optionalDependencies:
       fsevents: 2.3.3
