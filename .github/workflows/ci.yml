@@ -10,13 +10,10 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
-      - uses: pnpm/action-setup@v2
-        with:
-          version: 8
       - uses: actions/setup-node@v3
         with:
           node-version: 18
-          cache: pnpm
+      - run: corepack enable
       - run: make lint
       - run: pnpm i
       - run: pnpm lint-check
@@ -27,13 +24,10 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
-      - uses: pnpm/action-setup@v2
-        with:
-          version: 8
       - uses: actions/setup-node@v3
         with:
           node-version: 18
-          cache: pnpm
+      - run: corepack enable
       - run: pnpm i
       - run: make docker/up db/reset/test db/seed-download
       - run: pnpm test-coverage
@@ -46,13 +40,10 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
-      - uses: pnpm/action-setup@v2
-        with:
-          version: 8
       - uses: actions/setup-node@v3
         with:
           node-version: 18
-          cache: pnpm
+      - run: corepack enable
       - run: pnpm i
       - uses: actions/cache@v3
         id: cache-playwright
@@ -80,13 +71,10 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
-      - uses: pnpm/action-setup@v2
-        with:
-          version: 8
       - uses: actions/setup-node@v3
         with:
           node-version: 18
-          cache: pnpm
+      - run: corepack enable
       - run: pnpm i
       - run: make docker/up db/recreate
       - run: pnpm knex migrate:status # initialize knex migration management tables
