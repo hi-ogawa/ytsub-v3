@@ -155,16 +155,16 @@ describe(rpcRoutes.users_register, () => {
           username: "$invalid@format#",
         })
       ).toThrowErrorMatchingInlineSnapshot(`
-        "[
+        [Error: [
           {
-            \\"validation\\": \\"regex\\",
-            \\"code\\": \\"invalid_string\\",
-            \\"message\\": \\"Invalid\\",
-            \\"path\\": [
-              \\"username\\"
+            "validation": "regex",
+            "code": "invalid_string",
+            "message": "Invalid",
+            "path": [
+              "username"
             ]
           }
-        ]"
+        ]]
       `);
     });
   });
@@ -177,15 +177,15 @@ describe(rpcRoutes.users_register, () => {
           passwordConfirmation: "wrong",
         })
       ).toThrowErrorMatchingInlineSnapshot(`
-        "[
+        [Error: [
           {
-            \\"code\\": \\"custom\\",
-            \\"message\\": \\"Invalid\\",
-            \\"path\\": [
-              \\"passwordConfirmation\\"
+            "code": "custom",
+            "message": "Invalid",
+            "path": [
+              "passwordConfirmation"
             ]
           }
-        ]"
+        ]]
       `);
     });
   });
@@ -199,19 +199,19 @@ describe(rpcRoutes.users_register, () => {
           passwordConfirmation: "x",
         })
       ).toThrowErrorMatchingInlineSnapshot(`
-        "[
+        [Error: [
           {
-            \\"code\\": \\"too_small\\",
-            \\"minimum\\": 3,
-            \\"type\\": \\"string\\",
-            \\"inclusive\\": true,
-            \\"exact\\": false,
-            \\"message\\": \\"String must contain at least 3 character(s)\\",
-            \\"path\\": [
-              \\"password\\"
+            "code": "too_small",
+            "minimum": 3,
+            "type": "string",
+            "inclusive": true,
+            "exact": false,
+            "message": "String must contain at least 3 character(s)",
+            "path": [
+              "password"
             ]
           }
-        ]"
+        ]]
       `);
     });
   });
@@ -225,19 +225,19 @@ describe(rpcRoutes.users_register, () => {
           passwordConfirmation: "x".repeat(200),
         })
       ).toThrowErrorMatchingInlineSnapshot(`
-        "[
+        [Error: [
           {
-            \\"code\\": \\"too_big\\",
-            \\"maximum\\": 128,
-            \\"type\\": \\"string\\",
-            \\"inclusive\\": true,
-            \\"exact\\": false,
-            \\"message\\": \\"String must contain at most 128 character(s)\\",
-            \\"path\\": [
-              \\"password\\"
+            "code": "too_big",
+            "maximum": 128,
+            "type": "string",
+            "inclusive": true,
+            "exact": false,
+            "message": "String must contain at most 128 character(s)",
+            "path": [
+              "password"
             ]
           }
-        ]"
+        ]]
       `);
     });
   });
