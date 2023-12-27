@@ -2,6 +2,9 @@
   "name": "@hiogawa/ytsub",
   "private": true,
   "type": "module",
+  "imports": {
+    "#*": "./app/*"
+  },
   "scripts": {
     "dev": "run-p dev:*",
     "dev:remix": "vite dev",

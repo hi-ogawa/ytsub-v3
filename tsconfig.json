@@ -2,6 +2,10 @@
   "extends": "@tsconfig/strictest/tsconfig.json",
   "include": ["app"],
   "compilerOptions": {
+    "paths": {
+      // not needed after https://github.com/microsoft/TypeScript/pull/55015
+      "#*": ["./app/*"]
+    },
     "noPropertyAccessFromIndexSignature": false,
     "exactOptionalPropertyTypes": false,
     "noUncheckedIndexedAccess": false,
