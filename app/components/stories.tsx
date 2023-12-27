@@ -16,7 +16,6 @@ import { PopoverSimple } from "./popover";
 import {
   EchartsComponent,
   practiceHistoryChartDataToEchartsOption,
-  useEcharts,
 } from "./practice-history-chart";
 
 export function TestMenu() {
@@ -282,21 +281,13 @@ export function TestPracticeHistoryChart() {
     { date: "2022-05-14", total: 18, "queue-NEW": 5, "queue-LEARN": 8, "queue-REVIEW": 5 },
   ];
 
-  const echartsQuery = useEcharts();
-
   return (
     <div className="w-full flex justify-center">
       <div className="w-full max-w-lg">
-        {echartsQuery.isSuccess && (
-          <EchartsComponent
-            echarts={echartsQuery.data}
-            className="h-[300px] w-full"
-            option={practiceHistoryChartDataToEchartsOption(
-              data as any,
-              "queue"
-            )}
-          />
-        )}
+        <EchartsComponent
+          className="h-[300px] w-full"
+          option={practiceHistoryChartDataToEchartsOption(data as any, "queue")}
+        />
       </div>
     </div>
   );

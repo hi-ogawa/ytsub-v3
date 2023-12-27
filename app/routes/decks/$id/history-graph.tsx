@@ -6,7 +6,6 @@ import { SelectWrapper, transitionProps } from "../../../components/misc";
 import {
   EchartsComponent,
   practiceHistoryChartDataToEchartsOption,
-  useEcharts,
 } from "../../../components/practice-history-chart";
 import { ROUTE_DEF } from "../../../misc/routes";
 import { rpcClientQuery } from "../../../trpc/client";
@@ -57,13 +56,11 @@ export default function DefaultComponent() {
     keepPreviousData: true,
   });
 
-  const echartsQuery = useEcharts();
-
   return (
     <div className="w-full flex justify-center">
       <div className="w-full max-w-lg flex flex-col gap-3 mt-2">
         <div className="relative w-full h-[300px]" ref={clickOutsideRef}>
-          {historyChartQuery.isSuccess && echartsQuery.isSuccess && (
+          {historyChartQuery.isSuccess && (
             <EchartsComponent
               className="w-full h-full"
               setInstance={setInstance}
@@ -72,13 +69,12 @@ export default function DefaultComponent() {
                 params.graphType
               )}
               optionDeps={historyChartQuery.data}
-              echarts={echartsQuery.data}
               // workaround tooltip bugs when switching series
               key={params.graphType}
             />
           )}
           <Transition
-            show={historyChartQuery.isFetching && !echartsQuery.isSuccess}
+            show={historyChartQuery.isFetching}
             className="duration-500 antd-spin-overlay-20"
             {...transitionProps("opacity-0", "opacity-50")}
           />
