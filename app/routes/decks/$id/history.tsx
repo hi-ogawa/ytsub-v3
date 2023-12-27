@@ -1,5 +1,9 @@
 import { Transition } from "@hiogawa/tiny-transition/dist/react";
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import {
+  keepPreviousData,
+  useInfiniteQuery,
+  useQuery,
+} from "@tanstack/react-query";
 import React from "react";
 import { CollapseTransition } from "../../../components/collapse";
 import { SelectWrapper, transitionProps } from "../../../components/misc";
@@ -45,8 +49,9 @@ export default function DefaultComponent() {
       practiceEntryId: urlQuery.practiceEntryId,
       cursor: context?.pageParam as any,
     })),
+    initialPageParam: 0,
     getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
-    keepPreviousData: true,
+    placeholderData: keepPreviousData,
   });
   const rows = practiceActionsQuery.data?.pages.flatMap((res) => res.rows);
 

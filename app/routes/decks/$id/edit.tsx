@@ -108,9 +108,9 @@ function DefaultComponentInner() {
           type="submit"
           className={cls(
             "antd-btn antd-btn-primary p-1",
-            updateDeckMutation.isLoading && "antd-btn-loading"
+            updateDeckMutation.isPending && "antd-btn-loading"
           )}
-          disabled={!form.isDirty || updateDeckMutation.isLoading}
+          disabled={!form.isDirty || updateDeckMutation.isPending}
         >
           Save
         </button>
@@ -131,9 +131,9 @@ function DefaultComponentInner() {
         <button
           className={cls(
             "w-full antd-btn antd-btn-default p-1",
-            deckDestroyMutation.isLoading && "antd-btn-loading"
+            deckDestroyMutation.isPending && "antd-btn-loading"
           )}
-          disabled={deckDestroyMutation.isLoading}
+          disabled={deckDestroyMutation.isPending}
           onClick={() => {
             const message = `Are you sure? Please type '${deck.name}' to delete this deck.`;
             const response = window.prompt(message);

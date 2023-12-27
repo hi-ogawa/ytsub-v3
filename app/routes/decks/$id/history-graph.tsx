@@ -1,5 +1,5 @@
 import { Transition } from "@hiogawa/tiny-transition/dist/react";
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import type { ECharts } from "echarts";
 import React from "react";
 import { SelectWrapper, transitionProps } from "../../../components/misc";
@@ -53,7 +53,7 @@ export default function DefaultComponent() {
       rangeType: params.rangeType,
       page: params.page,
     }),
-    keepPreviousData: true,
+    placeholderData: keepPreviousData,
   });
 
   return (
