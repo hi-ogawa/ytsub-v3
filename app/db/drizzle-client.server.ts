@@ -17,7 +17,7 @@ import type { Connection } from "mysql2";
 import { createConnection } from "mysql2/promise";
 import { uninitialized } from "../utils/misc";
 import type { PaginationMetadata, PaginationParams } from "../utils/pagination";
-import knexfile from "./knexfile.server";
+import { dbConfig } from "./config";
 import type { DeckCache, PracticeActionType, PracticeQueueType } from "./types";
 
 //
@@ -353,8 +353,7 @@ export async function initializeDrizzleClient() {
   db = globalThis.__drizzleClient ??= await inner();
 
   async function inner() {
-    const config = knexfile();
-    const connection = await createConnection(config.connection);
+    const connection = await createConnection(dbConfig());
     return drizzle(connection, {
       logger: process.env["DEBUG"]?.includes("drizzle"), // enable query logging by DEBUG=drizzle
     });

@@ -17,7 +17,7 @@ const NOW = new Date("2023-04-10T00:00:00Z");
 
 describe("PracticeSystem", () => {
   const hook = useUserVideo({
-    seed: __filename,
+    seed: "PracticeSystem",
   });
 
   async function getStatistics(deckId: number) {
@@ -27,7 +27,7 @@ describe("PracticeSystem", () => {
   it("basic", async () => {
     // TODO: move to `use...` helpers
     const [{ insertId: deckId }] = await db.insert(T.decks).values({
-      name: __filename,
+      name: "test",
       userId: hook.user.id,
       cache: DEFAULT_DECK_CACHE,
       randomMode: false,
@@ -160,7 +160,7 @@ describe("PracticeSystem", () => {
   // TODO: setup data
   it("randomMode", async () => {
     const [{ insertId: deckId }] = await db.insert(T.decks).values({
-      name: __filename,
+      name: "test",
       userId: hook.user.id,
       cache: DEFAULT_DECK_CACHE,
       randomMode: true,
@@ -177,7 +177,7 @@ describe("PracticeSystem", () => {
 
 describe("cache.nextEntriesRandomMode", () => {
   const userHook = useUser({
-    seed: __filename + "randomMode",
+    seed: "randomMode",
   });
   let deckId: number;
 
@@ -231,7 +231,7 @@ describe("cache.nextEntriesRandomMode", () => {
 
 describe("queryNextPracticeEntryRandomModeBatch", () => {
   const userHook = useUser({
-    seed: __filename + "randomMode",
+    seed: "queryNextPracticeEntryRandomModeBatch",
   });
   let deckId: number;
 
@@ -276,7 +276,7 @@ describe("queryNextPracticeEntryRandomModeBatch", () => {
 
 describe("DeckCache", () => {
   const userHook = useUser({
-    seed: __filename + "randomMode",
+    seed: "DeckCache",
   });
   let deckId: number;
 

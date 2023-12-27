@@ -2,7 +2,7 @@
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }
  */
-exports.up = async function (knex) {
+export const up = async function (knex) {
   for (const table of TABLES) {
     await knex.raw(`
       ALTER TABLE ${table} MODIFY createdAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP;
@@ -15,7 +15,7 @@ exports.up = async function (knex) {
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }
  */
-exports.down = async function (knex) {
+export const down = async function (knex) {
   for (const table of TABLES) {
     await knex.raw(`
       ALTER TABLE ${table} MODIFY updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;

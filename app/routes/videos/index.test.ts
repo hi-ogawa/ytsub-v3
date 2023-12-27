@@ -9,7 +9,7 @@ import { loader } from "./index";
 
 describe("videos/index.loader", () => {
   const hook = useUserVideo({
-    seed: __filename,
+    seed: "videos/index.loader",
   });
 
   it("basic", async () => {

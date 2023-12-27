@@ -14,7 +14,7 @@ set -eu -o pipefail
 #     functions/
 #       index.func/
 #         .vc-config.json
-#         index.js           = (remix-outdir)/server/index.js
+#         index.mjs          = (remix-outdir)/server/index.js
 #
 
 this_dir="$(dirname "${BASH_SOURCE[0]}")"
@@ -26,13 +26,15 @@ mkdir -p .vercel/output
 mkdir -p .vercel/output/functions/index.func
 
 # serverless
+# - esm banner trick from https://github.com/evanw/esbuild/pull/2067#issuecomment-1324171716
 mkdir -p .vercel/output/functions/index.func
 cp "$this_dir/.vc-config.json" .vercel/output/functions/index.func/.vc-config.json
 npx esbuild build/server/index.js \
-  --outfile=.vercel/output/functions/index.func/index.js \
+  --outfile=.vercel/output/functions/index.func/index.mjs \
   --metafile=build/server/esbuild-metafile.json \
   --define:process.env.NODE_ENV='"production"' \
-  --bundle --minify --format=cjs --platform=node \
+  --banner:js="const require = (await import('node:module')).createRequire(import.meta.url);" \
+  --bundle --minify --format=esm --platform=node \
   --external:node:async_hooks
 
 # config.json

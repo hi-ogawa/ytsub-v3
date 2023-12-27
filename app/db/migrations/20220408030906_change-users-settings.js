@@ -1,8 +1,10 @@
+import * as assert from "assert/strict";
+
 /**
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }
  */
-exports.up = async function (knex) {
+export const up = async function (knex) {
   if (process.env.MIGRATION_UNIT_TEST) await testUp.before(knex);
 
   await knex.raw(`
@@ -21,7 +23,7 @@ exports.up = async function (knex) {
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }
  */
-exports.down = async function (knex) {
+export const down = async function (knex) {
   if (process.env.MIGRATION_UNIT_TEST) await testDown.before(knex);
 
   await knex.raw(`
@@ -48,7 +50,7 @@ const testUp = {
     const [rows] = await knex.raw(
       `SELECT language1, language2 FROM users ORDER BY username`
     );
-    require("assert").deepStrictEqual(rows, [
+    assert.deepEqual(rows, [
       { language1: null, language2: null },
       { language1: "fr", language2: null },
       { language1: "fr", language2: "en" },
@@ -70,7 +72,7 @@ const testDown = {
     const [rows] = await knex.raw(
       `SELECT settings FROM users ORDER BY username`
     );
-    require("assert").deepStrictEqual(rows, [
+    assert.deepEqual(rows, [
       { settings: { language1: null, language2: null } },
       { settings: { language1: "fr", language2: null } },
       { settings: { language1: "fr", language2: "en" } },

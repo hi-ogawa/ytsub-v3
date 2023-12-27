@@ -127,8 +127,8 @@ dependencies:
 
 devDependencies:
   '@hiogawa/icheck-ts':
-    specifier: 0.0.1-pre.15
-    version: 0.0.1-pre.15(typescript@5.2.2)
+    specifier: 0.0.1-pre.19
+    version: 0.0.1-pre.19(typescript@5.2.2)
   '@hiogawa/isort-ts':
     specifier: 1.1.2-pre.0
     version: 1.1.2-pre.0(prettier@2.8.8)(typescript@5.2.2)
@@ -195,9 +195,6 @@ devDependencies:
   esbuild:
     specifier: ^0.17.19
     version: 0.17.19
-  esbuild-register:
-    specifier: ^3.5.0
-    version: 3.5.0(esbuild@0.17.19)
   gh-pages:
     specifier: ^6.0.0
     version: 6.0.0
@@ -228,6 +225,9 @@ devDependencies:
   showdown:
     specifier: ^2.1.0
     version: 2.1.0
+  tsx:
+    specifier: ^4.6.1
+    version: 4.6.1
   typescript:
     specifier: ^5.2.2
     version: 5.2.2
@@ -1785,8 +1785,8 @@ packages:
     resolution: {integrity: sha512-zcUOvlral68ua/27HbjGWZsAwCVt9q7ShDv5bPDngARhbhOhtCrp48EhphkOkjGo2VHC3rgD2O9tHvq5qxUmmw==}
     dev: false
 
-  /@hiogawa/icheck-ts@0.0.1-pre.15(typescript@5.2.2):
-    resolution: {integrity: sha512-3nZH2DfX6qrpDrPqgpYC20qH1n/zHI4J6U7ZB/RQbgvgUncfbmLzguw1tnQ2RllVC5WmS2Jb6W2us1ZcWSSD4g==}
+  /@hiogawa/icheck-ts@0.0.1-pre.19(typescript@5.2.2):
+    resolution: {integrity: sha512-P589v2yUJZCic0Wj2DRsV6ka0SVTIw6n9AKO3xjzG/fuEkEzkoXO2UFcGqB6TFYRcxmSFfg+w1Vw+Tmyw2wn9A==}
     hasBin: true
     peerDependencies:
       typescript: '*'
@@ -4510,17 +4510,6 @@ packages:
       local-pkg: 0.4.3
       resolve.exports: 2.0.2
 
-  /esbuild-register@3.5.0(esbuild@0.17.19):
-    resolution: {integrity: sha512-+4G/XmakeBAsvJuDugJvtyF1x+XJT4FMocynNpxrvEBViirpfUn2PgNpCHedfWhF4WokNsO/OvMKrmJOIJsI5A==}
-    peerDependencies:
-      esbuild: '>=0.12 <1'
-    dependencies:
-      debug: 4.3.4
-      esbuild: 0.17.19
-    transitivePeerDependencies:
-      - supports-color
-    dev: true
-
   /esbuild@0.17.19:
     resolution: {integrity: sha512-XQ0jAPFkK/u3LcVRcvVHQcTIqD6E2H1fvZMA5dQPSOWb3suUbWbfbRf94pjc0bNzRYLfIrDRQXr7X+LHIm5oHw==}
     engines: {node: '>=12'}
@@ -5107,6 +5096,12 @@ packages:
     dependencies:
       call-bind: 1.0.5
       get-intrinsic: 1.2.2
+    dev: true
+
+  /get-tsconfig@4.7.2:
+    resolution: {integrity: sha512-wuMsz4leaj5hbGgg4IvDU0bqJagpftG5l5cXIAvo8uZrqn0NJqwtfupTN00VnkQJPcIRrxYrm1Ue24btpCha2A==}
+    dependencies:
+      resolve-pkg-maps: 1.0.0
     dev: true
 
   /getopts@2.3.0:
@@ -7928,6 +7923,10 @@ packages:
     engines: {node: '>=8'}
     dev: false
 
+  /resolve-pkg-maps@1.0.0:
+    resolution: {integrity: sha512-seS2Tj26TBVOC2NIc2rOe2y2ZO7efxITtLZcGSOnHHNOQ7CkiUBfw0Iw2ck6xkIhPwLhKNLS8BO+hEpngQlqzw==}
+    dev: true
+
   /resolve.exports@2.0.2:
     resolution: {integrity: sha512-X2UW6Nw3n/aMgDVy+0rSqgHlv39WZAlZrXCdnbyEiKm17DSqHX4MmQMaST3FbeWR5FTuRcUwYAziZajji0Y7mg==}
     engines: {node: '>=10'}
@@ -8611,6 +8610,17 @@ packages:
 
   /tslib@2.6.2:
     resolution: {integrity: sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==}
+
+  /tsx@4.6.1:
+    resolution: {integrity: sha512-OQ4TAPHXAPUo/NZAmmIybl0o8LFOTlycQxFepLBAp6EV87U88fOKYGCQI2viGAEOVU9UW/cgQcxcOMnfEKVY3Q==}
+    engines: {node: '>=18.0.0'}
+    hasBin: true
+    dependencies:
+      esbuild: 0.18.20
+      get-tsconfig: 4.7.2
+    optionalDependencies:
+      fsevents: 2.3.3
+    dev: true
 
   /tuf-js@1.1.7:
     resolution: {integrity: sha512-i3P9Kgw3ytjELUfpuKVDNBJvk4u5bXL6gskv572mcevPbSKCV3zt3djhmlEQ65yERjIbOSncy7U4cQJaB1CBCg==}

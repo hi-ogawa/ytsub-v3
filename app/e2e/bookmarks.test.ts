@@ -3,7 +3,7 @@ import { test } from "./coverage";
 import { useUserE2E, waitForHydration } from "./helper";
 
 test.describe("bookmarks", () => {
-  const user = useUserE2E(test, { seed: __filename });
+  const user = useUserE2E(test, { seed: "bookmarks" });
 
   test.beforeAll(async () => {
     await user.isReady;
@@ -53,7 +53,7 @@ test.describe("bookmarks", () => {
 });
 
 test.describe("/bookmarks/history-chart", () => {
-  const userHook = useUserE2E(test, { seed: __filename });
+  const userHook = useUserE2E(test, { seed: "/bookmarks/history-chart" });
 
   test("requires login", async ({ page }) => {
     await page.goto("/bookmarks/history-chart");
