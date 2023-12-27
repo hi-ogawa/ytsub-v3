@@ -26,20 +26,18 @@ function FormComponent() {
   const form = useTinyForm({ file: none<File>() });
   const navigate = useNavigate();
 
-  const mutation = useMutation(
-    async () => {
+  const mutation = useMutation({
+    mutationFn: async () => {
       const file = form.data.file;
       tinyassert(file);
       const data = await file.text();
       await rpcClient.decks_import({ data });
     },
-    {
-      onSuccess: () => {
-        toast.success("Deck imported successfully!");
-        navigate(R["/decks"]);
-      },
-    }
-  );
+    onSuccess: () => {
+      toast.success("Deck imported successfully!");
+      navigate(R["/decks"]);
+    },
+  });
 
   return (
     <form
@@ -61,9 +59,9 @@ function FormComponent() {
       <button
         className={cls(
           "antd-btn antd-btn-primary p-1 flex justify-center items-center",
-          mutation.isLoading && "antd-btn-loading"
+          mutation.isPending && "antd-btn-loading"
         )}
-        disabled={mutation.isLoading || mutation.isSuccess}
+        disabled={mutation.isPending || mutation.isSuccess}
       >
         Import
       </button>
