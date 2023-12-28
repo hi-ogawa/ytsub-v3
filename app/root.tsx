@@ -22,6 +22,7 @@ import { Drawer } from "./components/drawer";
 import { PopoverSimple } from "./components/popover";
 import { ThemeSelect } from "./components/theme-select";
 import { $R, R } from "./misc/routes";
+import { LoaderData } from "./root.server";
 import { rpcClientQuery } from "./trpc/client";
 import {
   useCurrentUser,
@@ -36,7 +37,6 @@ import { QueryClientWrapper } from "./utils/react-query-utils";
 import { ToastWrapper, toast } from "./utils/toast-utils";
 
 export { loader } from "./root.server";
-import { LoaderData } from "./root.server";
 
 // use root loader only for initial `currentUser` hydration (cf. app/utils/current-user.ts)
 export const shouldRevalidate: ShouldRevalidateFunction = () => false;
