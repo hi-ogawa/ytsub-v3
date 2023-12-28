@@ -3,8 +3,8 @@ import { viteDevServer } from "@hiogawa/vite-import-dev-server/runtime";
 import { RemixServer } from "@remix-run/react";
 import type { HandleDocumentRequestFunction } from "@remix-run/server-runtime";
 import { renderToString } from "react-dom/server";
-import { renderToDocument } from "./server/document";
-import { wrapTraceAsyncSimple } from "./utils/opentelemetry-utils";
+import { renderToDocument } from "#server/document";
+import { wrapTraceAsyncSimple } from "#utils/opentelemetry-utils";
 
 const handleDocumentRequest: HandleDocumentRequestFunction = async (
   request,

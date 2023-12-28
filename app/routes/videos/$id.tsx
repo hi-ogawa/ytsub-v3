@@ -14,33 +14,36 @@ import {
   useVirtualizer,
 } from "@tanstack/react-virtual";
 import React from "react";
-import { SelectWrapper, transitionProps } from "../../components/misc";
-import { useModal } from "../../components/modal";
-import { PopoverSimple } from "../../components/popover";
-import type { TT } from "../../db/drizzle-client.server";
-import type { UserTable } from "../../db/models";
-import { $R, ROUTE_DEF } from "../../misc/routes";
-import { rpcClientQuery } from "../../trpc/client";
-import { useDocumentEvent } from "../../utils/hooks-client-utils";
-import { intl } from "../../utils/intl";
+import { SelectWrapper, transitionProps } from "#components/misc";
+import { useModal } from "#components/modal";
+import { PopoverSimple } from "#components/popover";
+import type { TT } from "#db/drizzle-client.server";
+import type { UserTable } from "#db/models";
+import { $R, ROUTE_DEF } from "#misc/routes";
+import type { LoaderData } from "#routes/videos/$id.server";
+import { CaptionEntryComponent } from "#routes/videos/_ui";
+import {
+  extractBookmarkSelection,
+  findCurrentEntry,
+} from "#routes/videos/_utils";
+import { rpcClientQuery } from "#trpc/client";
+import { useDocumentEvent } from "#utils/hooks-client-utils";
+import { intl } from "#utils/intl";
 import {
   disableUrlQueryRevalidation,
   useLeafLoaderData,
   useLoaderDataExtra,
   useUrlQuerySchema,
-} from "../../utils/loader-utils";
-import { cls, none } from "../../utils/misc";
-import type { PageHandle } from "../../utils/page-handle";
-import { toast } from "../../utils/toast-utils";
-import type { CaptionEntry } from "../../utils/types";
+} from "#utils/loader-utils";
+import { cls, none } from "#utils/misc";
+import type { PageHandle } from "#utils/page-handle";
+import { toast } from "#utils/toast-utils";
+import type { CaptionEntry } from "#utils/types";
 import {
   YoutubePlayer,
   YoutubePlayerOptions,
   usePlayerLoader,
-} from "../../utils/youtube";
-import type { LoaderData } from "./$id.server";
-import { CaptionEntryComponent } from "./_ui";
-import { extractBookmarkSelection, findCurrentEntry } from "./_utils";
+} from "#utils/youtube";
 
 export { loader } from "./$id.server";
 

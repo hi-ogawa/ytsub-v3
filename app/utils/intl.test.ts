@@ -1,6 +1,6 @@
 import { beforeAll, describe, expect, it } from "vitest";
-import { formatRelativeDate, mockTimezone } from "./intl";
-import { fromTemporal, toInstant } from "./temporal-utils";
+import { formatRelativeDate, mockTimezone } from "#utils/intl";
+import { fromTemporal, toInstant } from "#utils/temporal-utils";
 
 beforeAll(() => {
   mockTimezone("Asia/Tokyo");

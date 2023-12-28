@@ -1,7 +1,7 @@
-import { useLoaderDataExtra } from "../utils/loader-utils";
-import type { PageHandle } from "../utils/page-handle";
-import type { LoaderData } from "./index.server";
-import { VideoListComponent } from "./videos/_ui";
+import type { LoaderData } from "#routes/index.server";
+import { VideoListComponent } from "#routes/videos/_ui";
+import { useLoaderDataExtra } from "#utils/loader-utils";
+import type { PageHandle } from "#utils/page-handle";
 
 export { loader } from "./index.server";
 

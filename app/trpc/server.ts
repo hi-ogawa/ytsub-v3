@@ -1,12 +1,12 @@
 import { RequestHandler } from "@hattip/compose";
 import { exposeTinyRpc, httpServerAdapter } from "@hiogawa/tiny-rpc";
 import { SpanStatusCode, trace } from "@opentelemetry/api";
-import { JSON_EXTRA } from "../utils/json-extra";
-import { RPC_ENDPOINT, RPC_GET_PATHS } from "./common";
-import { rpcRoutesBookmarks } from "./routes/bookmarks";
-import { rpcRoutesDecks } from "./routes/decks";
-import { rpcRoutesUsers } from "./routes/users";
-import { rpcRoutesVideos } from "./routes/videos";
+import { RPC_ENDPOINT, RPC_GET_PATHS } from "#trpc/common";
+import { rpcRoutesBookmarks } from "#trpc/routes/bookmarks";
+import { rpcRoutesDecks } from "#trpc/routes/decks";
+import { rpcRoutesUsers } from "#trpc/routes/users";
+import { rpcRoutesVideos } from "#trpc/routes/videos";
+import { JSON_EXTRA } from "#utils/json-extra";
 
 export const rpcRoutes = {
   ...rpcRoutesDecks,

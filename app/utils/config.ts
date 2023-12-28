@@ -1,10 +1,10 @@
 import process from "process";
-import { setPublicConfig } from "./config-public";
+import { setPublicConfig } from "#utils/config-public";
 import {
   ServerConfig,
   Z_PUBLIC_CONFIG,
   Z_SERVER_CONFIG,
-} from "./config-schema";
+} from "#utils/config-schema";
 
 export let serverConfig: ServerConfig;
 

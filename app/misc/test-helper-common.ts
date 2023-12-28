@@ -1,7 +1,7 @@
 import { hashString } from "@hiogawa/utils";
-import { E, T, db } from "../db/drizzle-client.server";
-import type { UserTable } from "../db/models";
-import { register } from "../utils/auth";
+import { E, T, db } from "#db/drizzle-client.server";
+import type { UserTable } from "#db/models";
+import { register } from "#utils/auth";
 
 export function useUserImpl({
   username = "root",

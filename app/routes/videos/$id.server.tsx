@@ -1,13 +1,13 @@
-import { E, T, TT, selectOne } from "../../db/drizzle-client.server";
-import type { VideoTable } from "../../db/models";
-import { ROUTE_DEF } from "../../misc/routes";
-import { ctx_currentUser } from "../../server/request-context/session";
-import { ctx_get } from "../../server/request-context/storage";
+import { E, T, TT, selectOne } from "#db/drizzle-client.server";
+import type { VideoTable } from "#db/models";
+import { ROUTE_DEF } from "#misc/routes";
+import { ctx_currentUser } from "#server/request-context/session";
+import { ctx_get } from "#server/request-context/storage";
 import {
   assertOrRespond,
   unwrapZodResultOrRespond,
   wrapLoader,
-} from "../../utils/loader-utils.server";
+} from "#utils/loader-utils.server";
 
 export type LoaderData = {
   currentUser?: TT["users"];

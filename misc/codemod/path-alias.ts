@@ -31,11 +31,7 @@ const transform: Transform = (file, api) => {
         );
         node.source.value = "#" + newSource;
         if (process.env.DEBUG?.includes("2")) {
-          console.log("[debug]", location, [
-            file.path,
-            source,
-            newSource,
-          ]);
+          console.log("[debug]", location, [file.path, source, newSource]);
         }
       }
     }

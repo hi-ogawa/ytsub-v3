@@ -1,6 +1,6 @@
-import { ROUTE_DEF } from "../../misc/routes";
-import { ctx_get } from "../../server/request-context/storage";
-import { wrapLoader } from "../../utils/loader-utils.server";
+import { ROUTE_DEF } from "#misc/routes";
+import { ctx_get } from "#server/request-context/storage";
+import { wrapLoader } from "#utils/loader-utils.server";
 
 export type LoaderData = { code: string };
 

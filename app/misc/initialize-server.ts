@@ -2,13 +2,13 @@ import "@hiogawa/tiny-jwt/dist/polyfill-node";
 import {
   finalizeDrizzleClient,
   initializeDrizzleClient,
-} from "../db/drizzle-client.server";
-import { initializeConfigServer } from "../utils/config";
+} from "#db/drizzle-client.server";
+import { initializeConfigServer } from "#utils/config";
 import {
   finalizeOpentelemetry,
   initializeOpentelemetry,
-} from "../utils/opentelemetry-utils";
-import { finalizeArgon2, initializeArgon2 } from "../utils/password-utils";
+} from "#utils/opentelemetry-utils";
+import { finalizeArgon2, initializeArgon2 } from "#utils/password-utils";
 
 export async function initializeServer() {
   initializeOpentelemetry();

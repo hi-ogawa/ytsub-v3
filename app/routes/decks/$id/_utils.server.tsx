@@ -1,12 +1,12 @@
-import { E, T, db, limitOne } from "../../../db/drizzle-client.server";
-import type { DeckTable } from "../../../db/models";
-import { ROUTE_DEF } from "../../../misc/routes";
-import { ctx_get } from "../../../server/request-context/storage";
+import { E, T, db, limitOne } from "#db/drizzle-client.server";
+import type { DeckTable } from "#db/models";
+import { ROUTE_DEF } from "#misc/routes";
+import { ctx_get } from "#server/request-context/storage";
 import {
   assertOrRespond,
   ctx_requireUserOrRedirect,
   wrapLoader,
-} from "../../../utils/loader-utils.server";
+} from "#utils/loader-utils.server";
 
 export interface LoaderData {
   deck: DeckTable;

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { $R } from "./routes";
+import { $R } from "#misc/routes";
 
 describe("RouteFormatter", () => {
   // prettier-ignore

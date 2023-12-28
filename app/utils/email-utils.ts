@@ -1,8 +1,8 @@
 import { tinyassert } from "@hiogawa/utils";
 import type { SendEmailV3_1 } from "node-mailjet";
 import { z } from "zod";
-import { serverConfig } from "./config";
-import { wrapTraceAsyncSimple } from "./opentelemetry-utils";
+import { serverConfig } from "#utils/config";
+import { wrapTraceAsyncSimple } from "#utils/opentelemetry-utils";
 
 // we only borrow their typing and fetch it by ourselves
 // https://dev.mailjet.com/email/guides/send-api-v31

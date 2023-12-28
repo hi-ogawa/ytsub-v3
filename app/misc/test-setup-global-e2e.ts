@@ -1,6 +1,6 @@
-import { finalizeDrizzleClient } from "../db/drizzle-client.server";
-import { truncateAll } from "../db/helper";
-import { testSetupCommon } from "./test-setup-common";
+import { finalizeDrizzleClient } from "#db/drizzle-client.server";
+import { truncateAll } from "#db/helper";
+import { testSetupCommon } from "#misc/test-setup-common";
 
 export default async () => {
   await testSetupCommon();

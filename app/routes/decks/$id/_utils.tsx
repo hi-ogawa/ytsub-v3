@@ -1,4 +1,4 @@
-import { PracticeActionType, PracticeQueueType } from "../../../db/types";
+import { PracticeActionType, PracticeQueueType } from "#db/types";
 
 export const PRACTICE_QUEUE_TYPE_TO_COLOR = {
   NEW: "text-colorWarningText",

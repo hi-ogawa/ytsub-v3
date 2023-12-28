@@ -1,16 +1,10 @@
-import {
-  E,
-  T,
-  TT,
-  db,
-  toPaginationResult,
-} from "../../../db/drizzle-client.server";
-import type { DeckTable, PracticeEntryTable } from "../../../db/models";
-import { ROUTE_DEF } from "../../../misc/routes";
-import { ctx_get } from "../../../server/request-context/storage";
-import { wrapLoader } from "../../../utils/loader-utils.server";
-import type { PaginationMetadata } from "../../../utils/pagination";
-import { ctx_requireUserAndDeck } from "./_utils.server";
+import { E, T, TT, db, toPaginationResult } from "#db/drizzle-client.server";
+import type { DeckTable, PracticeEntryTable } from "#db/models";
+import { ROUTE_DEF } from "#misc/routes";
+import { ctx_requireUserAndDeck } from "#routes/decks/$id/_utils.server";
+import { ctx_get } from "#server/request-context/storage";
+import { wrapLoader } from "#utils/loader-utils.server";
+import type { PaginationMetadata } from "#utils/pagination";
 
 export type PracticeEntryTableExtra = PracticeEntryTable & {
   practiceActionsCount: number;

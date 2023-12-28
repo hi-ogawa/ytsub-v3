@@ -1,7 +1,10 @@
-import { ctx_get } from "../server/request-context/storage";
-import { wrapLoader } from "../utils/loader-utils.server";
-import { PAGINATION_PARAMS_SCHEMA } from "../utils/pagination";
-import { VideosLoaderData, getVideosLoaderData } from "./videos/index.server";
+import {
+  VideosLoaderData,
+  getVideosLoaderData,
+} from "#routes/videos/index.server";
+import { ctx_get } from "#server/request-context/storage";
+import { wrapLoader } from "#utils/loader-utils.server";
+import { PAGINATION_PARAMS_SCHEMA } from "#utils/pagination";
 
 export type LoaderData = VideosLoaderData;
 

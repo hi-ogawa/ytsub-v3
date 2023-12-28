@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { scrapeColorCodedLyrics } from "./caption-editor-utils";
+import { scrapeColorCodedLyrics } from "#utils/caption-editor-utils";
 
 // it's not used currently so skip it for now since it might timeout
 describe.skip(scrapeColorCodedLyrics, () => {

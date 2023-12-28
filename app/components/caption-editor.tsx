@@ -5,31 +5,31 @@ import { toArraySetState, useRafLoop } from "@hiogawa/utils-react";
 import { useMutation } from "@tanstack/react-query";
 import React from "react";
 import { z } from "zod";
-import { rpcClient } from "../trpc/client";
-import { useDocumentEvent } from "../utils/hooks-client-utils";
-import { cls, isEqualArrayShallow, zipMax } from "../utils/misc";
-import { toast } from "../utils/toast-utils";
+import {
+  CaptionEditorEntry,
+  CaptionEditorEntrySimple,
+  mergePartialTtmlEntries,
+  parseManualInput,
+} from "#components/caption-editor-utils";
+import { SelectWrapper, transitionProps } from "#components/misc";
+import { useModal } from "#components/modal";
+import { PopoverSimple } from "#components/popover";
+import { rpcClient } from "#trpc/client";
+import { useDocumentEvent } from "#utils/hooks-client-utils";
+import { cls, isEqualArrayShallow, zipMax } from "#utils/misc";
+import { toast } from "#utils/toast-utils";
 import type {
   CaptionConfigOption,
   CaptionEntry,
   VideoMetadata,
-} from "../utils/types";
+} from "#utils/types";
 import {
   YoutubePlayer,
   mergeTtmlEntries,
   stringifyTimestamp,
   toCaptionConfigOptions,
   usePlayerLoader,
-} from "../utils/youtube";
-import {
-  CaptionEditorEntry,
-  CaptionEditorEntrySimple,
-  mergePartialTtmlEntries,
-  parseManualInput,
-} from "./caption-editor-utils";
-import { SelectWrapper, transitionProps } from "./misc";
-import { useModal } from "./modal";
-import { PopoverSimple } from "./popover";
+} from "#utils/youtube";
 
 // TODO: virtualize list? (no perf problem when used for short 3 min song)
 // TODO: auto-translate from one side to the other?

@@ -1,7 +1,7 @@
 import { getTheme, setTheme } from "@hiogawa/theme-script";
 import { capitalize } from "@hiogawa/utils";
 import React from "react";
-import { SelectWrapper } from "./misc";
+import { SelectWrapper } from "#components/misc";
 
 const THEME_OPTIONS = ["system", "dark", "light"];
 

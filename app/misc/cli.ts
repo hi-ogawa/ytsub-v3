@@ -12,30 +12,30 @@ import {
   dbGetMigrationStatus,
   dbGetSchema,
   selectOne,
-} from "../db/drizzle-client.server";
+} from "#db/drizzle-client.server";
 import {
   deleteOrphans,
   filterNewVideo,
   insertVideoAndCaptionEntries,
-} from "../db/helper";
-import { writeCookieSession } from "../server/request-context/session";
-import { findByUsername, register } from "../utils/auth";
-import { exec, streamToString } from "../utils/node.server";
-import { toPasswordHash } from "../utils/password-utils";
+} from "#db/helper";
+import { finalizeServer, initializeServer } from "#misc/initialize-server";
+import { exportDeckJson, importDeckJson } from "#misc/seed-utils";
+import { writeCookieSession } from "#server/request-context/session";
+import { findByUsername, register } from "#utils/auth";
+import { exec, streamToString } from "#utils/node.server";
+import { toPasswordHash } from "#utils/password-utils";
 import {
   queryNextPracticeEntryRandomModeBatch,
   resetDeckCache,
-} from "../utils/practice-system";
-import { Z_VIDEO_METADATA } from "../utils/types";
+} from "#utils/practice-system";
+import { Z_VIDEO_METADATA } from "#utils/types";
 import {
   NewVideo,
   captionConfigToUrl,
   fetchCaptionEntries,
   fetchVideoMetadataRaw,
   toCaptionConfigOptions,
-} from "../utils/youtube";
-import { finalizeServer, initializeServer } from "./initialize-server";
-import { exportDeckJson, importDeckJson } from "./seed-utils";
+} from "#utils/youtube";
 
 const cli = new TinyCli({
   program: "(cli)",

@@ -15,10 +15,14 @@ import {
 import { MySql2Database, drizzle } from "drizzle-orm/mysql2";
 import type { Connection } from "mysql2";
 import { createConnection } from "mysql2/promise";
-import { uninitialized } from "../utils/misc";
-import type { PaginationMetadata, PaginationParams } from "../utils/pagination";
-import { dbConfig } from "./config";
-import type { DeckCache, PracticeActionType, PracticeQueueType } from "./types";
+import { dbConfig } from "#db/config";
+import type {
+  DeckCache,
+  PracticeActionType,
+  PracticeQueueType,
+} from "#db/types";
+import { uninitialized } from "#utils/misc";
+import type { PaginationMetadata, PaginationParams } from "#utils/pagination";
 
 //
 // schema utils
@@ -201,7 +205,7 @@ export type TT = { [K in keyof typeof T]: InferModel<(typeof T)[K]> };
 // utils (TODO: move to db/helper.ts?)
 //
 
-import * as E from "./drizzle-expressions";
+import * as E from "#db/drizzle-expressions";
 export { E };
 
 export async function limitOne<

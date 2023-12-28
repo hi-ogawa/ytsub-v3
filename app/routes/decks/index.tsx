@@ -1,10 +1,10 @@
 import { Link } from "@remix-run/react";
-import type { DeckTable } from "../../db/models";
-import { $R } from "../../misc/routes";
-import { useLoaderDataExtra } from "../../utils/loader-utils";
-import type { PageHandle } from "../../utils/page-handle";
-import { DeckMenuComponent } from "./$id/_ui";
-import type { DecksLoaderData } from "./index.server";
+import type { DeckTable } from "#db/models";
+import { $R } from "#misc/routes";
+import { DeckMenuComponent } from "#routes/decks/$id/_ui";
+import type { DecksLoaderData } from "#routes/decks/index.server";
+import { useLoaderDataExtra } from "#utils/loader-utils";
+import type { PageHandle } from "#utils/page-handle";
 
 export { loader } from "./index.server";
 

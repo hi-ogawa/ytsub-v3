@@ -1,5 +1,5 @@
 import { type ConnectionOptions } from "mysql2";
-import { serverConfig } from "../utils/config";
+import { serverConfig } from "#utils/config";
 
 export function dbConfig() {
   return {

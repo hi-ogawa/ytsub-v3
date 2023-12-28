@@ -1,6 +1,6 @@
-import { importSeed } from "../misc/seed-utils";
-import { test } from "./coverage";
-import { useUserE2E, waitForHydration } from "./helper";
+import { test } from "#e2e/coverage";
+import { useUserE2E, waitForHydration } from "#e2e/helper";
+import { importSeed } from "#misc/seed-utils";
 
 test.describe("bookmarks", () => {
   const user = useUserE2E(test, { seed: "bookmarks" });

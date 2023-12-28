@@ -1,12 +1,12 @@
-import { ROUTE_DEF } from "../../misc/routes";
-import { ctx_get } from "../../server/request-context/storage";
+import { ROUTE_DEF } from "#misc/routes";
+import { ctx_get } from "#server/request-context/storage";
 import {
   assertOrRespond,
   unwrapZodResultOrRespond,
   wrapLoader,
-} from "../../utils/loader-utils.server";
-import { VideoMetadata } from "../../utils/types";
-import { fetchVideoMetadata, parseVideoId } from "../../utils/youtube";
+} from "#utils/loader-utils.server";
+import { VideoMetadata } from "#utils/types";
+import { fetchVideoMetadata, parseVideoId } from "#utils/youtube";
 
 export type LoaderData = {
   videoId: string;

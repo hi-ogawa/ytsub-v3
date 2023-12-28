@@ -11,21 +11,21 @@ import { useMutation } from "@tanstack/react-query";
 import { XMLParser } from "fast-xml-parser";
 import React from "react";
 import { z } from "zod";
-import { loadScript } from "./dom-utils";
+import { loadScript } from "#utils/dom-utils";
 import {
   FILTERED_LANGUAGE_CODES,
   LanguageCode,
   languageCodeToName,
-} from "./language";
-import { uninitialized } from "./misc";
-import { toast } from "./toast-utils";
+} from "#utils/language";
+import { uninitialized } from "#utils/misc";
+import { toast } from "#utils/toast-utils";
 import {
   CaptionConfig,
   CaptionConfigOptions,
   CaptionEntry,
   VideoMetadata,
   Z_VIDEO_METADATA,
-} from "./types";
+} from "#utils/types";
 
 //
 // youtube video detail scraping (based on https://github.com/hi-ogawa/youtube-dl-web-v2/blob/ca7c08ca6b144c235bdc4c7e307a0468052aa6fa/packages/app/src/utils/youtube-utils.ts#L46-L53)

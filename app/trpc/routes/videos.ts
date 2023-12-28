@@ -1,20 +1,20 @@
 import { validateFn } from "@hiogawa/tiny-rpc";
 import { tinyassert } from "@hiogawa/utils";
 import { z } from "zod";
-import { E, T, db, limitOne, selectOne } from "../../db/drizzle-client.server";
-import { filterNewVideo, insertVideoAndCaptionEntries } from "../../db/helper";
-import { ctx_cacheResponse } from "../../server/request-context/response-headers";
+import { E, T, db, limitOne, selectOne } from "#db/drizzle-client.server";
+import { filterNewVideo, insertVideoAndCaptionEntries } from "#db/helper";
+import { ctx_cacheResponse } from "#server/request-context/response-headers";
 import {
   ctx_currentUser,
   ctx_requireUser,
-} from "../../server/request-context/session";
-import { Z_CAPTION_ENTRY } from "../../utils/types";
+} from "#server/request-context/session";
+import { Z_CAPTION_ENTRY } from "#utils/types";
 import {
   Z_NEW_VIDEO,
   fetchCaptionEntries,
   fetchTtmlEntries,
   fetchVideoMetadata,
-} from "../../utils/youtube";
+} from "#utils/youtube";
 
 export const rpcRoutesVideos = {
   videos_create: validateFn(Z_NEW_VIDEO)(async (input) => {

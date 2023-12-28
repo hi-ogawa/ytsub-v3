@@ -2,14 +2,10 @@ import { validateFn } from "@hiogawa/tiny-rpc";
 import { mapOption, tinyassert } from "@hiogawa/utils";
 import { sql } from "drizzle-orm";
 import { z } from "zod";
-import { E, T, db, limitOne, selectOne } from "../../db/drizzle-client.server";
-import { Z_DATE_RANGE_TYPE } from "../../misc/routes";
-import { ctx_requireUser } from "../../server/request-context/session";
-import {
-  fromTemporal,
-  getZonedDateRange,
-  toZdt,
-} from "../../utils/temporal-utils";
+import { E, T, db, limitOne, selectOne } from "#db/drizzle-client.server";
+import { Z_DATE_RANGE_TYPE } from "#misc/routes";
+import { ctx_requireUser } from "#server/request-context/session";
+import { fromTemporal, getZonedDateRange, toZdt } from "#utils/temporal-utils";
 
 export const rpcRoutesBookmarks = {
   bookmarks_create: validateFn(

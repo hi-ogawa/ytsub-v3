@@ -4,25 +4,25 @@ import { useTinyStore } from "@hiogawa/tiny-store/dist/react";
 import { tinyassert } from "@hiogawa/utils";
 import { useNavigate } from "@remix-run/react";
 import { useMutation } from "@tanstack/react-query";
-import { SelectWrapper } from "../../components/misc";
-import { PopoverSimple } from "../../components/popover";
-import { $R } from "../../misc/routes";
-import { rpcClient, rpcClientQuery } from "../../trpc/client";
+import { SelectWrapper } from "#components/misc";
+import { PopoverSimple } from "#components/popover";
+import { $R } from "#misc/routes";
+import type { LoaderData } from "#routes/videos/new.server";
+import { rpcClient, rpcClientQuery } from "#trpc/client";
 import {
   FILTERED_LANGUAGE_CODES,
   LanguageCode,
   languageCodeToName,
-} from "../../utils/language";
-import { useLoaderDataExtra } from "../../utils/loader-utils";
-import { cls } from "../../utils/misc";
-import type { PageHandle } from "../../utils/page-handle";
-import { toast } from "../../utils/toast-utils";
-import type { CaptionConfig, VideoMetadata } from "../../utils/types";
+} from "#utils/language";
+import { useLoaderDataExtra } from "#utils/loader-utils";
+import { cls } from "#utils/misc";
+import type { PageHandle } from "#utils/page-handle";
+import { toast } from "#utils/toast-utils";
+import type { CaptionConfig, VideoMetadata } from "#utils/types";
 import {
   encodeAdvancedModeLanguageCode,
   toCaptionConfigOptions,
-} from "../../utils/youtube";
-import type { LoaderData } from "./new.server";
+} from "#utils/youtube";
 
 export { loader } from "./new.server";
 

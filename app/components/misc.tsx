@@ -1,13 +1,13 @@
 import type { FloatingContext } from "@floating-ui/react";
 import { Transition } from "@hiogawa/tiny-transition/dist/react";
 import { Link } from "@remix-run/react";
-import type { VideoTable } from "../db/models";
-import { $R, Z_PAGINATION_QUERY } from "../misc/routes";
-import { useUrlQuerySchema } from "../utils/loader-utils";
-import { cls } from "../utils/misc";
-import type { PaginationMetadata } from "../utils/pagination";
-import { parseVssId, toThumbnail } from "../utils/youtube";
-import { PopoverSimple } from "./popover";
+import { PopoverSimple } from "#components/popover";
+import type { VideoTable } from "#db/models";
+import { $R, Z_PAGINATION_QUERY } from "#misc/routes";
+import { useUrlQuerySchema } from "#utils/loader-utils";
+import { cls } from "#utils/misc";
+import type { PaginationMetadata } from "#utils/pagination";
+import { parseVssId, toThumbnail } from "#utils/youtube";
 
 export function VideoComponent({
   video,

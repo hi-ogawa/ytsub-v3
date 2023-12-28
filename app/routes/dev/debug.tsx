@@ -1,5 +1,5 @@
 import type { LoaderFunction } from "@remix-run/server-runtime";
-import { prettierJson } from "../../utils/loader-utils";
+import { prettierJson } from "#utils/loader-utils";
 
 export const loader: LoaderFunction = async ({ request }) => {
   return prettierJson({

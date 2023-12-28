@@ -1,10 +1,10 @@
 import { objectPick } from "@hiogawa/utils";
 import { beforeAll, describe, expect, it } from "vitest";
-import { E, T, db } from "../../db/drizzle-client.server";
-import { importSeed } from "../../misc/seed-utils";
-import { useUser, useUserVideo } from "../../misc/test-helper";
-import { mockRequestContext } from "../../server/request-context/mock";
-import { rpcRoutes } from "../server";
+import { E, T, db } from "#db/drizzle-client.server";
+import { importSeed } from "#misc/seed-utils";
+import { useUser, useUserVideo } from "#misc/test-helper";
+import { mockRequestContext } from "#server/request-context/mock";
+import { rpcRoutes } from "#trpc/server";
 
 describe(rpcRoutes.bookmarks_create, () => {
   const hook = useUserVideo({

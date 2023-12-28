@@ -6,7 +6,7 @@ import {
 } from "@remix-run/react";
 import React from "react";
 import type { z } from "zod";
-import { JSON_EXTRA } from "./json-extra";
+import { JSON_EXTRA } from "#utils/json-extra";
 
 export function useLeafLoaderData(): unknown {
   const [{ data }] = useMatches().slice(-1);

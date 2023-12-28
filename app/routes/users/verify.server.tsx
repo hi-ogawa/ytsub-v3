@@ -1,13 +1,13 @@
 import { json, redirect } from "@remix-run/server-runtime";
-import { R, ROUTE_DEF } from "../../misc/routes";
-import { ctx_currentUser } from "../../server/request-context/session";
-import { ctx_get } from "../../server/request-context/storage";
-import { updateEmailByCode } from "../../trpc/routes/users";
-import { ctx_setFlashMessage } from "../../utils/flash-message.server";
+import { R, ROUTE_DEF } from "#misc/routes";
+import { ctx_currentUser } from "#server/request-context/session";
+import { ctx_get } from "#server/request-context/storage";
+import { updateEmailByCode } from "#trpc/routes/users";
+import { ctx_setFlashMessage } from "#utils/flash-message.server";
 import {
   unwrapZodResultOrRespond,
   wrapLoader,
-} from "../../utils/loader-utils.server";
+} from "#utils/loader-utils.server";
 
 export const loader = wrapLoader(async () => {
   const { code } = unwrapZodResultOrRespond(

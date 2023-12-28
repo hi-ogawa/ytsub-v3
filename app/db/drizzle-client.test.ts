@@ -12,8 +12,8 @@ import {
   toCountSql,
   toDeleteSql,
   toDeleteSqlInner,
-} from "./drizzle-client.server";
-import { deleteOrphans } from "./helper";
+} from "#db/drizzle-client.server";
+import { deleteOrphans } from "#db/helper";
 
 describe(toDeleteSql, () => {
   it("basic", async () => {

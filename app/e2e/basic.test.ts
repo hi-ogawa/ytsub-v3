@@ -1,6 +1,6 @@
 import { expect } from "@playwright/test";
-import { test } from "./coverage";
-import { waitForHydration } from "./helper";
+import { test } from "#e2e/coverage";
+import { waitForHydration } from "#e2e/helper";
 
 test("title", async ({ page }) => {
   await page.goto("/");

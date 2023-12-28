@@ -1,6 +1,6 @@
 import { assertUnreachable, tinyassert, wrapError } from "@hiogawa/utils";
 import { Temporal, toTemporalInstant } from "@js-temporal/polyfill";
-import type { DateRangeType } from "../misc/routes";
+import type { DateRangeType } from "#misc/routes";
 
 export function getSystemTimezone() {
   const id = Temporal.Now.zonedDateTimeISO().timeZoneId;

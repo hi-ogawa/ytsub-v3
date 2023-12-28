@@ -2,25 +2,25 @@ import { Transition } from "@hiogawa/tiny-transition/dist/react";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import type { ECharts } from "echarts";
 import React from "react";
-import { SelectWrapper, transitionProps } from "../../../components/misc";
+import { SelectWrapper, transitionProps } from "#components/misc";
 import {
   EchartsComponent,
   practiceHistoryChartDataToEchartsOption,
-} from "../../../components/practice-history-chart";
-import { ROUTE_DEF } from "../../../misc/routes";
-import { rpcClientQuery } from "../../../trpc/client";
-import { useClickOutside } from "../../../utils/hooks-client-utils";
+} from "#components/practice-history-chart";
+import { ROUTE_DEF } from "#misc/routes";
+import { DeckNavBarMenuComponent } from "#routes/decks/$id/_ui";
+import type { LoaderData } from "#routes/decks/$id/_utils.server";
+import { rpcClientQuery } from "#trpc/client";
+import { useClickOutside } from "#utils/hooks-client-utils";
 import {
   disableUrlQueryRevalidation,
   useLeafLoaderData,
   useLoaderDataExtra,
   useUrlQuerySchema,
-} from "../../../utils/loader-utils";
-import { cls } from "../../../utils/misc";
-import type { PageHandle } from "../../../utils/page-handle";
-import { formatDateRange } from "../../../utils/temporal-utils";
-import { DeckNavBarMenuComponent } from "./_ui";
-import type { LoaderData } from "./_utils.server";
+} from "#utils/loader-utils";
+import { cls } from "#utils/misc";
+import type { PageHandle } from "#utils/page-handle";
+import { formatDateRange } from "#utils/temporal-utils";
 
 export { loader } from "./_utils.server";
 

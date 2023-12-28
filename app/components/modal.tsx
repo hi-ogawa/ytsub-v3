@@ -9,8 +9,8 @@ import { useTinyStore } from "@hiogawa/tiny-store/dist/react";
 import { Transition } from "@hiogawa/tiny-transition/dist/react";
 import { tinyassert } from "@hiogawa/utils";
 import React from "react";
-import { cls } from "../utils/misc";
-import { FloatingWrapper } from "./floating-utils";
+import { FloatingWrapper } from "#components/floating-utils";
+import { cls } from "#utils/misc";
 
 // based on https://github.com/hi-ogawa/unocss-preset-antd/blob/02adfc9dfcb7cebbc31cd4651395e1ecc67d813e/packages/app/src/components/modal.tsx
 

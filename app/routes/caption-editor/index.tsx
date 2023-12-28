@@ -4,10 +4,10 @@ import {
   STORAGE_KEYS,
   Z_CAPTION_EDITOR_DRAFT_LIST,
   useLocalStorage,
-} from "../../components/caption-editor-utils";
-import { $R } from "../../misc/routes";
-import { ClientOnly } from "../../utils/misc-react";
-import type { PageHandle } from "../../utils/page-handle";
+} from "#components/caption-editor-utils";
+import { $R } from "#misc/routes";
+import { ClientOnly } from "#utils/misc-react";
+import type { PageHandle } from "#utils/page-handle";
 
 export const handle: PageHandle = {
   navBarTitle: () => "Caption Editor",

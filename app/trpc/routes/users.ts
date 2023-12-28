@@ -3,21 +3,21 @@ import { validateFn } from "@hiogawa/tiny-rpc";
 import { tinyassert } from "@hiogawa/utils";
 import showdown from "showdown";
 import { z } from "zod";
-import { E, T, db, selectOne } from "../../db/drizzle-client.server";
-import { $R } from "../../misc/routes";
+import { E, T, db, selectOne } from "#db/drizzle-client.server";
+import { $R } from "#misc/routes";
 import {
   ctx_commitSession,
   ctx_requireSignout,
   ctx_requireUser,
-} from "../../server/request-context/session";
-import { ctx_get } from "../../server/request-context/storage";
-import { findByUsername, register, verifySignin } from "../../utils/auth";
-import { Z_PASSWORD, Z_USERNAME } from "../../utils/auth-common";
-import { serverConfig } from "../../utils/config";
-import { sendEmail } from "../../utils/email-utils";
-import { toPasswordHash } from "../../utils/password-utils";
-import { isValidTimezone } from "../../utils/temporal-utils";
-import { verifyTurnstile } from "../../utils/turnstile-utils.server";
+} from "#server/request-context/session";
+import { ctx_get } from "#server/request-context/storage";
+import { findByUsername, register, verifySignin } from "#utils/auth";
+import { Z_PASSWORD, Z_USERNAME } from "#utils/auth-common";
+import { serverConfig } from "#utils/config";
+import { sendEmail } from "#utils/email-utils";
+import { toPasswordHash } from "#utils/password-utils";
+import { isValidTimezone } from "#utils/temporal-utils";
+import { verifyTurnstile } from "#utils/turnstile-utils.server";
 
 export const rpcRoutesUsers = {
   users_register: validateFn(

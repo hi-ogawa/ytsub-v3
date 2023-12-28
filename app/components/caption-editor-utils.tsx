@@ -1,8 +1,8 @@
 import { wrapError } from "@hiogawa/utils";
 import React from "react";
 import { z } from "zod";
-import { zipMax } from "../utils/misc";
-import { TtmlEntry } from "../utils/youtube";
+import { zipMax } from "#utils/misc";
+import { TtmlEntry } from "#utils/youtube";
 
 const Z_CAPTION_EDITOR_ENTRY = z.object({
   begin: z.number(),

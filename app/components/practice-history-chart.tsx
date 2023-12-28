@@ -3,8 +3,8 @@ import { useStableRef } from "@hiogawa/utils-react";
 import { Temporal } from "@js-temporal/polyfill";
 import type * as echarts from "echarts";
 import React from "react";
-import { PRACTICE_ACTION_TYPES, PRACTICE_QUEUE_TYPES } from "../db/types";
-import { echartsInit } from "./echarts.client";
+import { echartsInit } from "#components/echarts.client";
+import { PRACTICE_ACTION_TYPES, PRACTICE_QUEUE_TYPES } from "#db/types";
 
 export const PRACTICE_HISTORY_DATASET_KEYS = [
   "total",

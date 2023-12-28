@@ -8,9 +8,9 @@ import {
 import { tinyassert, wrapErrorAsync } from "@hiogawa/utils";
 import * as cookieLib from "cookie";
 import { z } from "zod";
-import { findUserById } from "../../utils/auth";
-import { serverConfig } from "../../utils/config";
-import { ctx_get } from "./storage";
+import { ctx_get } from "#server/request-context/storage";
+import { findUserById } from "#utils/auth";
+import { serverConfig } from "#utils/config";
 
 // based on https://github.com/hi-ogawa/vite-plugins/blob/e3ddf3766bcf3fbd5325623acad1d46d8a71ea23/packages/demo/src/server/session.ts
 

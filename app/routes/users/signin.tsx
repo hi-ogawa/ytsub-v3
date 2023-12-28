@@ -1,12 +1,12 @@
 import { useTinyForm } from "@hiogawa/tiny-form/dist/react";
 import { Link, useNavigate } from "@remix-run/react";
 import { useMutation } from "@tanstack/react-query";
-import { $R } from "../../misc/routes";
-import { rpcClientQuery } from "../../trpc/client";
-import { useSetCurrentUser } from "../../utils/current-user";
-import { cls } from "../../utils/misc";
-import type { PageHandle } from "../../utils/page-handle";
-import { toast } from "../../utils/toast-utils";
+import { $R } from "#misc/routes";
+import { rpcClientQuery } from "#trpc/client";
+import { useSetCurrentUser } from "#utils/current-user";
+import { cls } from "#utils/misc";
+import type { PageHandle } from "#utils/page-handle";
+import { toast } from "#utils/toast-utils";
 
 // reuse /users/register loader
 export { loader } from "./register";
