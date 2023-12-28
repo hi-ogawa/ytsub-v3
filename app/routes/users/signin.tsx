@@ -8,12 +8,12 @@ import { cls } from "../../utils/misc";
 import type { PageHandle } from "../../utils/page-handle";
 import { toast } from "../../utils/toast-utils";
 
+// reuse /users/register loader
+export { loader } from "./register";
+
 export const handle: PageHandle = {
   navBarTitle: () => "Sign in",
 };
-
-// completely reuse /users/register loader
-export { loader } from "./register";
 
 //
 // component
