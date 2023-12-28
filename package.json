@@ -22,7 +22,7 @@
     "lint-check:prettier": "prettier -c --cache .",
     "test": "NODE_ENV=test vitest",
     "test-coverage": "NODE_ENV=test vitest --run --coverage",
-    "test-e2e": "NODE_ENV=test playwright test",
+    "test-e2e": "NODE_OPTIONS='--import tsx/esm' PW_DISABLE_TS_ESM=1 NODE_ENV=test playwright test",
     "test-e2e-coverage": "bash scripts/test-e2e-coverage.sh",
     "build": "pnpm run --seq /^build:/",
     "build:vite": "vite build && vite build --ssr",
