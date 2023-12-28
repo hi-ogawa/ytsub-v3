@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/729</span>
+                <span class='fraction'>0/726</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/729</span>
+                <span class='fraction'>0/726</span>
             </div>
         
             
@@ -789,13 +789,7 @@
 <a name='L724'></a><a href='#L724'>724</a>
 <a name='L725'></a><a href='#L725'>725</a>
 <a name='L726'></a><a href='#L726'>726</a>
-<a name='L727'></a><a href='#L727'>727</a>
-<a name='L728'></a><a href='#L728'>728</a>
-<a name='L729'></a><a href='#L729'>729</a>
-<a name='L730'></a><a href='#L730'>730</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<a name='L727'></a><a href='#L727'>727</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -1537,36 +1531,33 @@
 <span class="cstat-no" title="statement not covered" >  useVirtualizer,</span>
 <span class="cstat-no" title="statement not covered" >} from "@tanstack/react-virtual";</span>
 <span class="cstat-no" title="statement not covered" >import React from "react";</span>
-<span class="cstat-no" title="statement not covered" >import { SelectWrapper, transitionProps } from "#components/misc";</span>
-<span class="cstat-no" title="statement not covered" >import { useModal } from "#components/modal";</span>
-<span class="cstat-no" title="statement not covered" >import { PopoverSimple } from "#components/popover";</span>
-<span class="cstat-no" title="statement not covered" >import type { TT } from "#db/drizzle-client.server";</span>
-<span class="cstat-no" title="statement not covered" >import type { UserTable } from "#db/models";</span>
-<span class="cstat-no" title="statement not covered" >import { $R, ROUTE_DEF } from "#misc/routes";</span>
-<span class="cstat-no" title="statement not covered" >import type { LoaderData } from "#routes/videos/$id.server";</span>
-<span class="cstat-no" title="statement not covered" >import { CaptionEntryComponent } from "#routes/videos/_ui";</span>
-<span class="cstat-no" title="statement not covered" >import {</span>
-<span class="cstat-no" title="statement not covered" >  extractBookmarkSelection,</span>
-<span class="cstat-no" title="statement not covered" >  findCurrentEntry,</span>
-<span class="cstat-no" title="statement not covered" >} from "#routes/videos/_utils";</span>
-<span class="cstat-no" title="statement not covered" >import { rpcClientQuery } from "#trpc/client";</span>
-<span class="cstat-no" title="statement not covered" >import { useDocumentEvent } from "#utils/hooks-client-utils";</span>
-<span class="cstat-no" title="statement not covered" >import { intl } from "#utils/intl";</span>
+<span class="cstat-no" title="statement not covered" >import { SelectWrapper, transitionProps } from "../../components/misc";</span>
+<span class="cstat-no" title="statement not covered" >import { useModal } from "../../components/modal";</span>
+<span class="cstat-no" title="statement not covered" >import { PopoverSimple } from "../../components/popover";</span>
+<span class="cstat-no" title="statement not covered" >import type { TT } from "../../db/drizzle-client.server";</span>
+<span class="cstat-no" title="statement not covered" >import type { UserTable } from "../../db/models";</span>
+<span class="cstat-no" title="statement not covered" >import { $R, ROUTE_DEF } from "../../misc/routes";</span>
+<span class="cstat-no" title="statement not covered" >import { rpcClientQuery } from "../../trpc/client";</span>
+<span class="cstat-no" title="statement not covered" >import { useDocumentEvent } from "../../utils/hooks-client-utils";</span>
+<span class="cstat-no" title="statement not covered" >import { intl } from "../../utils/intl";</span>
 <span class="cstat-no" title="statement not covered" >import {</span>
 <span class="cstat-no" title="statement not covered" >  disableUrlQueryRevalidation,</span>
 <span class="cstat-no" title="statement not covered" >  useLeafLoaderData,</span>
 <span class="cstat-no" title="statement not covered" >  useLoaderDataExtra,</span>
 <span class="cstat-no" title="statement not covered" >  useUrlQuerySchema,</span>
-<span class="cstat-no" title="statement not covered" >} from "#utils/loader-utils";</span>
-<span class="cstat-no" title="statement not covered" >import { cls, none } from "#utils/misc";</span>
-<span class="cstat-no" title="statement not covered" >import type { PageHandle } from "#utils/page-handle";</span>
-<span class="cstat-no" title="statement not covered" >import { toast } from "#utils/toast-utils";</span>
-<span class="cstat-no" title="statement not covered" >import type { CaptionEntry } from "#utils/types";</span>
+<span class="cstat-no" title="statement not covered" >} from "../../utils/loader-utils";</span>
+<span class="cstat-no" title="statement not covered" >import { cls, none } from "../../utils/misc";</span>
+<span class="cstat-no" title="statement not covered" >import type { PageHandle } from "../../utils/page-handle";</span>
+<span class="cstat-no" title="statement not covered" >import { toast } from "../../utils/toast-utils";</span>
+<span class="cstat-no" title="statement not covered" >import type { CaptionEntry } from "../../utils/types";</span>
 <span class="cstat-no" title="statement not covered" >import {</span>
 <span class="cstat-no" title="statement not covered" >  YoutubePlayer,</span>
 <span class="cstat-no" title="statement not covered" >  YoutubePlayerOptions,</span>
 <span class="cstat-no" title="statement not covered" >  usePlayerLoader,</span>
-<span class="cstat-no" title="statement not covered" >} from "#utils/youtube";</span>
+<span class="cstat-no" title="statement not covered" >} from "../../utils/youtube";</span>
+<span class="cstat-no" title="statement not covered" >import type { LoaderData } from "./$id.server";</span>
+<span class="cstat-no" title="statement not covered" >import { CaptionEntryComponent } from "./_ui";</span>
+<span class="cstat-no" title="statement not covered" >import { extractBookmarkSelection, findCurrentEntry } from "./_utils";</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >export { loader } from "./$id.server";</span>
 <span class="cstat-no" title="statement not covered" ></span>
@@ -2257,7 +2248,7 @@
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-12-28T05:09:47.704Z
+                at 2023-12-28T05:18:37.669Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>
