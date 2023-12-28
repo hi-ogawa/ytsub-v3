@@ -31,7 +31,6 @@ const transform: Transform = (file, api) => {
     const node = path.value;
 
     let name: string | undefined;
-    ROUTE_EXPORTS.has;
 
     if (j.VariableDeclaration.check(node.declaration)) {
       if (node.declaration.declarations.length === 1) {
