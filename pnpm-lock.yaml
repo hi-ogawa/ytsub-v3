@@ -130,8 +130,8 @@ devDependencies:
     specifier: 0.0.1-pre.21
     version: 0.0.1-pre.21(typescript@5.2.2)
   '@hiogawa/isort-ts':
-    specifier: 1.1.2-pre.0
-    version: 1.1.2-pre.0(prettier@2.8.8)(typescript@5.2.2)
+    specifier: 1.1.2-pre.2
+    version: 1.1.2-pre.2(prettier@2.8.8)(typescript@5.2.2)
   '@hiogawa/tiny-cli':
     specifier: 0.0.4-pre.1
     version: 0.0.4-pre.1
@@ -1639,8 +1639,8 @@ packages:
       typescript: 5.2.2
     dev: true
 
-  /@hiogawa/isort-ts@1.1.2-pre.0(prettier@2.8.8)(typescript@5.2.2):
-    resolution: {integrity: sha512-cqbrBLxpkFEORhBsLfE2MKMxyp1r/MTEeCgFG1rzjfZKwQDvekaEgZ96PGxcJqi7amhmJmlAuZJHFH8d1G7jXQ==}
+  /@hiogawa/isort-ts@1.1.2-pre.2(prettier@2.8.8)(typescript@5.2.2):
+    resolution: {integrity: sha512-1+AGjS2YcnJMvlQn6l2i+5FkdUwKWlbuZ6f48SwVqmtjYHnFClFIOKYCS8Cr2xulKFpUwJATiqOXbL9Pz4eNDg==}
     hasBin: true
     peerDependencies:
       prettier: '*'
