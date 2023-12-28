@@ -74,13 +74,13 @@ export default function DefaultComponent() {
             />
           )}
           <Transition
-            show={historyChartQuery.isFetching}
+            show={historyChartQuery.isLoading}
             className="duration-500 antd-spin-overlay-20"
             {...transitionProps("opacity-0", "opacity-50")}
           />
         </div>
         <div className="w-full flex flex-col items-center gap-2">
-          <div className="flex items-center gap-2 px-2 py-1">
+          <div className="flex items-center gap-2 px-2 py-1 relative">
             <button
               className="antd-btn antd-btn-ghost i-ri-play-mini-fill w-4 h-4 rotate-[180deg]"
               onClick={() => setUrlQuery({ page: params.page + 1 })}
@@ -96,6 +96,9 @@ export default function DefaultComponent() {
               )}
               onClick={() => setUrlQuery({ page: params.page - 1 })}
             />
+            {historyChartQuery.isRefetching && (
+              <span className="absolute -right-5 antd-spin w-4 h-4" />
+            )}
           </div>
           <div className="flex justify-center items-center gap-2">
             <SelectWrapper
