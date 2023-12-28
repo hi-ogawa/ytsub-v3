@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for ytsub-v3/app/utils/hooks-client-utils.ts</title>
+    <title>Code coverage report for ytsub-v3/misc/codemod/path-alias.ts</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../../../prettify.css" />
     <link rel="stylesheet" href="../../../base.css" />
@@ -19,13 +19,13 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../../../index.html">All files</a> / <a href="index.html">ytsub-v3/app/utils</a> hooks-client-utils.ts</h1>
+        <h1><a href="../../../index.html">All files</a> / <a href="index.html">ytsub-v3/misc/codemod</a> path-alias.ts</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/47</span>
+                <span class='fraction'>0/43</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/47</span>
+                <span class='fraction'>0/43</span>
             </div>
         
             
@@ -106,11 +106,7 @@
 <a name='L41'></a><a href='#L41'>41</a>
 <a name='L42'></a><a href='#L42'>42</a>
 <a name='L43'></a><a href='#L43'>43</a>
-<a name='L44'></a><a href='#L44'>44</a>
-<a name='L45'></a><a href='#L45'>45</a>
-<a name='L46'></a><a href='#L46'>46</a>
-<a name='L47'></a><a href='#L47'>47</a>
-<a name='L48'></a><a href='#L48'>48</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<a name='L44'></a><a href='#L44'>44</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -153,57 +149,49 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" ><span class="branch-0 cbranch-no" title="branch not covered" >import { useRefCallbackEffect, useStableCallback } from "@hiogawa/utils-react";</span></span></span>
-<span class="cstat-no" title="statement not covered" >import React from "react";</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" ><span class="branch-0 cbranch-no" title="branch not covered" >import path from "node:path";</span></span></span>
+<span class="cstat-no" title="statement not covered" >import type { Transform } from "jscodeshift";</span>
+<span class="cstat-no" title="statement not covered" >import * as recast from "recast";</span>
 <span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >function documentEventEffect&lt;K extends keyof DocumentEventMap&gt;(</span>
-<span class="cstat-no" title="statement not covered" >  type: K,</span>
-<span class="cstat-no" title="statement not covered" >  handler: (e: DocumentEventMap[K]) =&gt; void</span>
-<span class="cstat-no" title="statement not covered" >) {</span>
-<span class="cstat-no" title="statement not covered" >  document.addEventListener(type, handler);</span>
-<span class="cstat-no" title="statement not covered" >  return () =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >    document.removeEventListener(type, handler);</span>
-<span class="cstat-no" title="statement not covered" >  };</span>
-<span class="cstat-no" title="statement not covered" >}</span>
+<span class="cstat-no" title="statement not covered" >/*</span>
+<span class="cstat-no" title="statement not covered" >usage</span>
+<span class="cstat-no" title="statement not covered" >  npx jscodeshift --parser tsx --extensions ts,tsx --transform ./misc/codemod/path-alias.ts $(git grep -l . 'app/*.ts' 'app/*.tsx')</span>
+<span class="cstat-no" title="statement not covered" >*/</span>
 <span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >export function useDocumentEvent&lt;K extends keyof DocumentEventMap&gt;(</span>
-<span class="cstat-no" title="statement not covered" >  type: K,</span>
-<span class="cstat-no" title="statement not covered" >  handler: (e: DocumentEventMap[K]) =&gt; void</span>
-<span class="cstat-no" title="statement not covered" >) {</span>
-<span class="cstat-no" title="statement not covered" >  const stableHanlder = useStableCallback(handler);</span>
+<span class="cstat-no" title="statement not covered" >const transform: Transform = (file, api) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >  const j = api.jscodeshift;</span>
+<span class="cstat-no" title="statement not covered" >  const $j = j(file.source);</span>
 <span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >  React.useEffect(() =&gt; documentEventEffect(type, stableHanlder), []);</span>
-<span class="cstat-no" title="statement not covered" >}</span>
+<span class="cstat-no" title="statement not covered" >  for (const jPath of $j.find(j.ImportDeclaration).paths()) {</span>
+<span class="cstat-no" title="statement not covered" >    const node = jPath.value;</span>
+<span class="cstat-no" title="statement not covered" >    const code = recast.print(node).code.trim();</span>
+<span class="cstat-no" title="statement not covered" >    const location = `${file.path}:${node.loc?.start.line}`;</span>
+<span class="cstat-no" title="statement not covered" >    if (process.env.DEBUG?.includes("1")) {</span>
+<span class="cstat-no" title="statement not covered" >      console.error("[debug]", location, "-", node.source.value, code);</span>
+<span class="cstat-no" title="statement not covered" >    }</span>
 <span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >export function useClickOutside(callback: (e: PointerEvent) =&gt; void) {</span>
-<span class="cstat-no" title="statement not covered" >  const stableCallback = useStableCallback(callback);</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >  return useRefCallbackEffect&lt;Element&gt;((el) =&gt;</span>
-<span class="cstat-no" title="statement not covered" >    documentEventEffect("pointerdown", (e) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >      if (e.target instanceof Node &amp;&amp; el.contains(e.target)) {</span>
-<span class="cstat-no" title="statement not covered" >        stableCallback(e);</span>
+<span class="cstat-no" title="statement not covered" >    if (j.StringLiteral.check(node.source)) {</span>
+<span class="cstat-no" title="statement not covered" >      const source = node.source.value;</span>
+<span class="cstat-no" title="statement not covered" >      if (source.startsWith(".")) {</span>
+<span class="cstat-no" title="statement not covered" >        // [example]</span>
+<span class="cstat-no" title="statement not covered" >        // path.relative("app", path.join("app/misc/initialize-server.ts", "..", "../utils/config"));</span>
+<span class="cstat-no" title="statement not covered" >        // =&gt; "utils/config"</span>
+<span class="cstat-no" title="statement not covered" >        const newSource = path.relative(</span>
+<span class="cstat-no" title="statement not covered" >          "app",</span>
+<span class="cstat-no" title="statement not covered" >          path.join(file.path, "..", source)</span>
+<span class="cstat-no" title="statement not covered" >        );</span>
+<span class="cstat-no" title="statement not covered" >        node.source.value = "#" + newSource;</span>
+<span class="cstat-no" title="statement not covered" >        if (process.env.DEBUG?.includes("2")) {</span>
+<span class="cstat-no" title="statement not covered" >          console.log("[debug]", location, [file.path, source, newSource]);</span>
+<span class="cstat-no" title="statement not covered" >        }</span>
 <span class="cstat-no" title="statement not covered" >      }</span>
-<span class="cstat-no" title="statement not covered" >    })</span>
-<span class="cstat-no" title="statement not covered" >  );</span>
-<span class="cstat-no" title="statement not covered" >}</span>
+<span class="cstat-no" title="statement not covered" >    }</span>
+<span class="cstat-no" title="statement not covered" >  }</span>
 <span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >export function useIntersectionObserver(</span>
-<span class="cstat-no" title="statement not covered" >  callback: IntersectionObserverCallback</span>
-<span class="cstat-no" title="statement not covered" >) {</span>
-<span class="cstat-no" title="statement not covered" >  const stableCallback = useStableCallback(callback);</span>
+<span class="cstat-no" title="statement not covered" >  return $j.toSource();</span>
+<span class="cstat-no" title="statement not covered" >};</span>
 <span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >  return useRefCallbackEffect&lt;Element&gt;((el) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >    const observer = new IntersectionObserver(stableCallback);</span>
-<span class="cstat-no" title="statement not covered" >    observer.observe(el);</span>
-<span class="cstat-no" title="statement not covered" >    return () =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >      observer.disconnect();</span>
-<span class="cstat-no" title="statement not covered" >    };</span>
-<span class="cstat-no" title="statement not covered" >  });</span>
-<span class="cstat-no" title="statement not covered" >}</span>
+<span class="cstat-no" title="statement not covered" >export default transform;</span>
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
