@@ -16,13 +16,13 @@ import {
 import { cls } from "../../../utils/misc";
 import type { PageHandle } from "../../../utils/page-handle";
 import { MiniPlayer } from "../../bookmarks/_ui";
-
 import {
   DeckNavBarMenuComponent,
   QueueStatisticsComponent,
   QueueTypeIcon,
 } from "./_ui";
 import type { LoaderData, PracticeEntryTableExtra } from "./index.server";
+
 export { loader } from "./index.server";
 
 export const handle: PageHandle = {
