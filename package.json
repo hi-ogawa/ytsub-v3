@@ -3,15 +3,15 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "run-p dev:*",
+    "dev": "pnpm run --stream /^dev:/",
     "dev:remix": "vite dev",
     "dev-e2e": "NODE_ENV=test PORT=3001 pnpm dev:remix",
     "dev-coverage:remix": "c8 -o coverage/e2e-server -r text -r html --exclude build --exclude-after-remap node_modules/.bin/remix dev",
     "dev-ui": "vite --config vite.config.ui.ts",
     "tsc": "tsc -b",
     "dev:tsc": "pnpm tsc --watch --preserveWatchOutput",
-    "lint": "run-s lint:*",
-    "lint-check": "run-s lint-check:*",
+    "lint": "pnpm run --sequential /^lint:/",
+    "lint-check": "pnpm run --sequential /^lint-check:/",
     "lint:isort": "pnpm lint-check:isort --fix",
     "lint-check:isort": "isort-ts --git --cache",
     "lint-check:icheck": "NODE_OPTIONS='--import tsx/esm --experimental-import-meta-resolve' icheck-ts --useImportMetaResolve $(find app -name '*.ts' -o -name '*.tsx') --ignore 'ErrorBoundary|default|loader|handle|shouldRevalidate|up|down' --ignoreUnresolved '^virtual:'",
@@ -38,8 +38,7 @@
     "knex-production": "pnpm -s dotenv-production pnpm -s knex",
     "dotenv-staging": "bash scripts/dotenv.sh .env.staging",
     "dotenv-production": "bash scripts/dotenv.sh .env.production",
-    "tunnel": "cloudflared tunnel --url http://localhost:3000",
-    "qrcode": "qrcode-terminal http://$(ip -o -4 address list wlan0 | awk '{print $4}' | cut -d / -f 1):3000"
+    "tunnel": "cloudflared tunnel --url http://localhost:3000"
   },
   "dependencies": {
     "@floating-ui/react": "^0.24.8",
@@ -108,7 +107,6 @@
     "jscodeshift": "^0.15.1",
     "node-mailjet": "^6.0.4",
     "npm-check-updates": "^16.14.6",
-    "npm-run-all": "^4.1.5",
     "prettier": "^2.8.8",
     "qrcode-terminal": "^0.12.0",
     "recast": "^0.23.4",
