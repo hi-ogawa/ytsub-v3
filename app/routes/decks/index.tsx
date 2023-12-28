@@ -5,6 +5,7 @@ import { useLoaderDataExtra } from "../../utils/loader-utils";
 import type { PageHandle } from "../../utils/page-handle";
 import { DeckMenuComponent } from "./$id/_ui";
 import type { DecksLoaderData } from "./index.server";
+
 export { loader } from "./index.server";
 
 export const handle: PageHandle = {
