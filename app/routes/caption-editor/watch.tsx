@@ -9,8 +9,8 @@ import {
 import { useLoaderDataExtra } from "../../utils/loader-utils";
 import { ClientOnly } from "../../utils/misc-react";
 import type { PageHandle } from "../../utils/page-handle";
-
 import type { LoaderData } from "./watch.server";
+
 export { loader } from "./watch.server";
 
 export const handle: PageHandle = {

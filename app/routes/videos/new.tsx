@@ -23,6 +23,7 @@ import {
   toCaptionConfigOptions,
 } from "../../utils/youtube";
 import type { LoaderData } from "./new.server";
+
 export { loader } from "./new.server";
 
 export const handle: PageHandle = {
