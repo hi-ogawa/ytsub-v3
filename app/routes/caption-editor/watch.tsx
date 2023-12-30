@@ -46,7 +46,9 @@ function PageInner() {
         defaultValue={draftData}
         onChange={(data) => {
           setDraftData(data);
-          setDraftList(uniqBy([...draftList, { videoId }], (e) => e.videoId));
+          setDraftList(
+            uniqBy([...draftList, videoMetadata.videoDetails], (e) => e.videoId)
+          );
         }}
       />
     </div>

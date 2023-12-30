@@ -76,7 +76,7 @@ function DraftList() {
                   v: e.videoId,
                 })}
               >
-                {e.videoId}
+                <span className="line-clamp-1">{e.title || e.videoId}</span>
               </Link>
               <button
                 className="antd-btn antd-btn-ghost i-ri-close-line w-5 h-5"

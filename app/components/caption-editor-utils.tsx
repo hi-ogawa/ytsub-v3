@@ -42,6 +42,10 @@ export function parseManualInput(input: string): string[] {
 
 const Z_CAPTION_EDITOR_DRAFT_ITEM = z.object({
   videoId: z.string(),
+  // since only videoId was saved initially, old local storage data might not have the rest of the fields.
+  title: z.string().optional(),
+  author: z.string().optional(),
+  channelId: z.string().optional(),
 });
 
 export const Z_CAPTION_EDITOR_DRAFT_LIST = Z_CAPTION_EDITOR_DRAFT_ITEM.array();
