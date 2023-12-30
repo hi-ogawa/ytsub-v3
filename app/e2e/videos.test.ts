@@ -256,7 +256,9 @@ test("captions-editor-auto-save", async ({ page }) => {
   await page.getByTestId("Navbar-drawer-button").click();
   await page.getByRole("link", { name: "Caption Editor" }).click();
   await page.waitForURL("/caption-editor");
-  await page.getByRole("link", { name: "lH_n29wkT_4" }).click();
+  await page
+    .getByRole("link", { name: "NMIXX - PAXXWORD | SPECIAL VIDEO" })
+    .click();
   await page.waitForURL("/caption-editor/watch?v=lH_n29wkT_4");
 });
 
