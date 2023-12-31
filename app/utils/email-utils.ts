@@ -16,7 +16,7 @@ export const debugEmails: Email[] = ((globalThis as any).__debugEmails ??= []);
 //
 
 export async function sendEmail(email: Email) {
-  if (process.env.NODE_ENV !== "production") {
+  if (import.meta.env.DEV) {
     debugEmails.unshift(email);
   }
   await sendMailjet(email);
