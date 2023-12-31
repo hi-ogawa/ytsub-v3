@@ -2,8 +2,8 @@ import { wrapError } from "@hiogawa/utils";
 import { useNavigation } from "@remix-run/react";
 import * as cookieLib from "cookie";
 import { z } from "zod";
-import { useEffectNoStrict } from "./misc-react";
-import { toast } from "./toast-utils";
+import { useEffectNoStrict } from "#utils/misc-react";
+import { toast } from "#utils/toast-utils";
 
 //
 // js cookie based flash message

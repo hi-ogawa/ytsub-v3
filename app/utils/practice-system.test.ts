@@ -1,16 +1,16 @@
 import { mapGroupBy, tinyassert } from "@hiogawa/utils";
 import { beforeAll, describe, expect, it } from "vitest";
-import { E, T, db, selectOne } from "../db/drizzle-client.server";
-import { DEFAULT_DECK_CACHE } from "../db/types";
-import { importSeed } from "../misc/seed-utils";
-import { useUser, useUserVideo } from "../misc/test-helper";
-import { getUserDeckPracticeStatistics } from "../trpc/routes/decks";
+import { E, T, db, selectOne } from "#db/drizzle-client.server";
+import { DEFAULT_DECK_CACHE } from "#db/types";
+import { importSeed } from "#misc/seed-utils";
+import { useUser, useUserVideo } from "#misc/test-helper";
+import { getUserDeckPracticeStatistics } from "#trpc/routes/decks";
 import {
   PracticeSystem,
   queryNextPracticeEntryRandomModeBatch,
   resetDeckCache,
   updateDeckCache,
-} from "./practice-system";
+} from "#utils/practice-system";
 
 // it doesn't matter yet but make NOW deterministic
 const NOW = new Date("2023-04-10T00:00:00Z");

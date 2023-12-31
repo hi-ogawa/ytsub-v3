@@ -1,17 +1,20 @@
 import { useTinyForm } from "@hiogawa/tiny-form/dist/react";
 import { Transition } from "@hiogawa/tiny-transition/dist/react";
 import { keepPreviousData, useInfiniteQuery } from "@tanstack/react-query";
-import { transitionProps } from "../../components/misc";
-import { PopoverSimple } from "../../components/popover";
-import { ROUTE_DEF } from "../../misc/routes";
-import { rpcClientQuery } from "../../trpc/client";
+import { transitionProps } from "#components/misc";
+import { PopoverSimple } from "#components/popover";
+import { ROUTE_DEF } from "#misc/routes";
+import {
+  BookmarkEntryComponent,
+  BookmarksMenuItems,
+} from "#routes/bookmarks/_ui";
+import { rpcClientQuery } from "#trpc/client";
 import {
   disableUrlQueryRevalidation,
   useUrlQuerySchema,
-} from "../../utils/loader-utils";
-import { cls } from "../../utils/misc";
-import type { PageHandle } from "../../utils/page-handle";
-import { BookmarkEntryComponent, BookmarksMenuItems } from "./_ui";
+} from "#utils/loader-utils";
+import { cls } from "#utils/misc";
+import type { PageHandle } from "#utils/page-handle";
 
 export { loader } from "./index.server";
 

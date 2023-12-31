@@ -1,16 +1,16 @@
 import { useTinyForm } from "@hiogawa/tiny-form/dist/react";
 import { useNavigate } from "@remix-run/react";
 import { useMutation } from "@tanstack/react-query";
-import { $R, R } from "../../../misc/routes";
-import { rpcClientQuery } from "../../../trpc/client";
-import { asNumberInput } from "../../../utils/form-utils";
-import { intl } from "../../../utils/intl";
-import { useLoaderDataExtra } from "../../../utils/loader-utils";
-import { cls } from "../../../utils/misc";
-import type { PageHandle } from "../../../utils/page-handle";
-import { toast } from "../../../utils/toast-utils";
-import { DeckNavBarMenuComponent } from "./_ui";
-import type { LoaderData } from "./_utils.server";
+import { $R, R } from "#misc/routes";
+import { DeckNavBarMenuComponent } from "#routes/decks/$id/_ui";
+import type { LoaderData } from "#routes/decks/$id/_utils.server";
+import { rpcClientQuery } from "#trpc/client";
+import { asNumberInput } from "#utils/form-utils";
+import { intl } from "#utils/intl";
+import { useLoaderDataExtra } from "#utils/loader-utils";
+import { cls } from "#utils/misc";
+import type { PageHandle } from "#utils/page-handle";
+import { toast } from "#utils/toast-utils";
 
 export { loader } from "./_utils.server";
 

@@ -1,20 +1,17 @@
 import { useTinyForm } from "@hiogawa/tiny-form/dist/react";
 import { useNavigate } from "@remix-run/react";
 import { useMutation } from "@tanstack/react-query";
-import { useModal } from "../../components/modal";
-import { PopoverSimple } from "../../components/popover";
-import type { UserTable } from "../../db/models";
-import { rpcClient, rpcClientQuery } from "../../trpc/client";
-import { intl } from "../../utils/intl";
-import {
-  FILTERED_LANGUAGE_CODES,
-  languageCodeToName,
-} from "../../utils/language";
-import { useLeafLoaderData } from "../../utils/loader-utils";
-import { cls } from "../../utils/misc";
-import type { PageHandle } from "../../utils/page-handle";
-import { toast } from "../../utils/toast-utils";
-import { useTurnstile } from "../../utils/turnstile-utils";
+import { useModal } from "#components/modal";
+import { PopoverSimple } from "#components/popover";
+import type { UserTable } from "#db/models";
+import { rpcClient, rpcClientQuery } from "#trpc/client";
+import { intl } from "#utils/intl";
+import { FILTERED_LANGUAGE_CODES, languageCodeToName } from "#utils/language";
+import { useLeafLoaderData } from "#utils/loader-utils";
+import { cls } from "#utils/misc";
+import type { PageHandle } from "#utils/page-handle";
+import { toast } from "#utils/toast-utils";
+import { useTurnstile } from "#utils/turnstile-utils";
 
 export { loader } from "./me.server";
 

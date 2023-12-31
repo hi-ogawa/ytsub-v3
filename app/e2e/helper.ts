@@ -1,9 +1,9 @@
 import { newPromiseWithResolvers } from "@hiogawa/utils";
 import { Page, test } from "@playwright/test";
-import type { UserTable } from "../db/models";
-import { useUserImpl } from "../misc/test-helper-common";
-import { testSetupCommon } from "../misc/test-setup-common";
-import { writeCookieSession } from "../server/request-context/session";
+import type { UserTable } from "#db/models";
+import { useUserImpl } from "#misc/test-helper-common";
+import { testSetupCommon } from "#misc/test-setup-common";
+import { writeCookieSession } from "#server/request-context/session";
 
 type Test = typeof test;
 

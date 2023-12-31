@@ -1,11 +1,11 @@
 import { tinyassert } from "@hiogawa/utils";
 import { describe, expect, it } from "vitest";
 import { z } from "zod";
-import { useUserVideo } from "../../misc/test-helper";
-import { zSnapshotType } from "../../misc/test-helper-snapshot";
-import { mockRequestContext } from "../../server/request-context/mock";
-import { JSON_EXTRA } from "../../utils/json-extra";
-import { loader } from "./index";
+import { useUserVideo } from "#misc/test-helper";
+import { zSnapshotType } from "#misc/test-helper-snapshot";
+import { loader } from "#routes/videos/index";
+import { mockRequestContext } from "#server/request-context/mock";
+import { JSON_EXTRA } from "#utils/json-extra";
 
 describe("videos/index.loader", () => {
   const hook = useUserVideo({

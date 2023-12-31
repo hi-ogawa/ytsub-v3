@@ -1,27 +1,27 @@
 import { Link } from "@remix-run/react";
 import React from "react";
-import { PaginationComponent } from "../../../components/misc";
+import { PaginationComponent } from "#components/misc";
 import type {
   BookmarkEntryTable,
   CaptionEntryTable,
   DeckTable,
   VideoTable,
-} from "../../../db/models";
-import { $R } from "../../../misc/routes";
-import { intl, intlWrapper } from "../../../utils/intl";
-import {
-  useLeafLoaderData,
-  useLoaderDataExtra,
-} from "../../../utils/loader-utils";
-import { cls } from "../../../utils/misc";
-import type { PageHandle } from "../../../utils/page-handle";
-import { MiniPlayer } from "../../bookmarks/_ui";
+} from "#db/models";
+import { $R } from "#misc/routes";
+import { MiniPlayer } from "#routes/bookmarks/_ui";
 import {
   DeckNavBarMenuComponent,
   QueueStatisticsComponent,
   QueueTypeIcon,
-} from "./_ui";
-import type { LoaderData, PracticeEntryTableExtra } from "./index.server";
+} from "#routes/decks/$id/_ui";
+import type {
+  LoaderData,
+  PracticeEntryTableExtra,
+} from "#routes/decks/$id/index.server";
+import { intl, intlWrapper } from "#utils/intl";
+import { useLeafLoaderData, useLoaderDataExtra } from "#utils/loader-utils";
+import { cls } from "#utils/misc";
+import type { PageHandle } from "#utils/page-handle";
 
 export { loader } from "./index.server";
 

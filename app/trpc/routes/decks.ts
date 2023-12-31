@@ -5,29 +5,18 @@ import { z } from "zod";
 import {
   PRACTICE_HISTORY_DATASET_KEYS,
   PracticeHistoryChartDataEntry,
-} from "../../components/practice-history-chart";
-import {
-  E,
-  T,
-  TT,
-  db,
-  limitOne,
-  selectOne,
-} from "../../db/drizzle-client.server";
-import { DEFAULT_DECK_CACHE, Z_PRACTICE_ACTION_TYPES } from "../../db/types";
-import { Z_DATE_RANGE_TYPE } from "../../misc/routes";
-import { importDeckJson } from "../../misc/seed-utils";
-import { ctx_requireUser } from "../../server/request-context/session";
+} from "#components/practice-history-chart";
+import { E, T, TT, db, limitOne, selectOne } from "#db/drizzle-client.server";
+import { DEFAULT_DECK_CACHE, Z_PRACTICE_ACTION_TYPES } from "#db/types";
+import { Z_DATE_RANGE_TYPE } from "#misc/routes";
+import { importDeckJson } from "#misc/seed-utils";
+import { ctx_requireUser } from "#server/request-context/session";
 import {
   PracticeSystem,
   getDailyPracticeStatistics,
   updateDeckCache,
-} from "../../utils/practice-system";
-import {
-  fromTemporal,
-  getZonedDateRange,
-  toZdt,
-} from "../../utils/temporal-utils";
+} from "#utils/practice-system";
+import { fromTemporal, getZonedDateRange, toZdt } from "#utils/temporal-utils";
 
 export const rpcRoutesDecks = {
   decks_practiceEntriesCreate: validateFn(

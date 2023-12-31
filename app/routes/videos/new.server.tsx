@@ -1,22 +1,22 @@
 import { wrapErrorAsync } from "@hiogawa/utils";
 import { redirect } from "@remix-run/server-runtime";
-import type { UserTable } from "../../db/models";
-import { R, ROUTE_DEF } from "../../misc/routes";
-import { ctx_currentUser } from "../../server/request-context/session";
-import { ctx_get } from "../../server/request-context/storage";
-import { ctx_setFlashMessage } from "../../utils/flash-message.server";
-import { isLanguageCode } from "../../utils/language";
+import type { UserTable } from "#db/models";
+import { R, ROUTE_DEF } from "#misc/routes";
+import { ctx_currentUser } from "#server/request-context/session";
+import { ctx_get } from "#server/request-context/storage";
+import { ctx_setFlashMessage } from "#utils/flash-message.server";
+import { isLanguageCode } from "#utils/language";
 import {
   assertOrRespond,
   unwrapZodResultOrRespond,
   wrapLoader,
-} from "../../utils/loader-utils.server";
-import type { CaptionConfig, VideoMetadata } from "../../utils/types";
+} from "#utils/loader-utils.server";
+import type { CaptionConfig, VideoMetadata } from "#utils/types";
 import {
   fetchVideoMetadata,
   findCaptionConfigPair,
   parseVideoId,
-} from "../../utils/youtube";
+} from "#utils/youtube";
 
 export type LoaderData = {
   videoMetadata: VideoMetadata;

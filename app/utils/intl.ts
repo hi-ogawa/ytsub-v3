@@ -1,6 +1,6 @@
 import { createIntl } from "@formatjs/intl";
 import { tinyassert } from "@hiogawa/utils";
-import { getSystemTimezone, toInstant, toZdt } from "./temporal-utils";
+import { getSystemTimezone, toInstant, toZdt } from "#utils/temporal-utils";
 
 export let intl = createIntl({ locale: "en", timeZone: getSystemTimezone() });
 

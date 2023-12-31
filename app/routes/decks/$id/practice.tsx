@@ -6,25 +6,25 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import React from "react";
-import { transitionProps } from "../../../components/misc";
+import { transitionProps } from "#components/misc";
 import type {
   BookmarkEntryTable,
   CaptionEntryTable,
   DeckTable,
   PracticeEntryTable,
   VideoTable,
-} from "../../../db/models";
-import { PRACTICE_ACTION_TYPES, PracticeActionType } from "../../../db/types";
-import { rpcClientQuery } from "../../../trpc/client";
+} from "#db/models";
+import { PRACTICE_ACTION_TYPES, PracticeActionType } from "#db/types";
+import { BookmarkEntryComponent } from "#routes/bookmarks/_ui";
 import {
-  useLeafLoaderData,
-  useLoaderDataExtra,
-} from "../../../utils/loader-utils";
-import { cls } from "../../../utils/misc";
-import type { PageHandle } from "../../../utils/page-handle";
-import { BookmarkEntryComponent } from "../../bookmarks/_ui";
-import { DeckNavBarMenuComponent, QueueStatisticsComponent } from "./_ui";
-import type { LoaderData } from "./_utils.server";
+  DeckNavBarMenuComponent,
+  QueueStatisticsComponent,
+} from "#routes/decks/$id/_ui";
+import type { LoaderData } from "#routes/decks/$id/_utils.server";
+import { rpcClientQuery } from "#trpc/client";
+import { useLeafLoaderData, useLoaderDataExtra } from "#utils/loader-utils";
+import { cls } from "#utils/misc";
+import type { PageHandle } from "#utils/page-handle";
 
 export { loader } from "./_utils.server";
 

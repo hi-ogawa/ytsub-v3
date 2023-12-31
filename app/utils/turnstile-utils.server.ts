@@ -1,7 +1,7 @@
 import { tinyassert } from "@hiogawa/utils";
 import { z } from "zod";
-import { serverConfig } from "./config";
-import { wrapTraceAsyncSimple } from "./opentelemetry-utils";
+import { serverConfig } from "#utils/config";
+import { wrapTraceAsyncSimple } from "#utils/opentelemetry-utils";
 
 // https://developers.cloudflare.com/turnstile/get-started/server-side-validation/
 

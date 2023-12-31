@@ -1,15 +1,15 @@
 import fs from "node:fs";
 import { newPromiseWithResolvers, tinyassert } from "@hiogawa/utils";
 import { afterAll, beforeAll } from "vitest";
-import { E, T, db } from "../db/drizzle-client.server";
+import { E, T, db } from "#db/drizzle-client.server";
 import {
   getVideoAndCaptionEntries,
   insertVideoAndCaptionEntries,
-} from "../db/helper";
-import type { CaptionEntryTable, UserTable, VideoTable } from "../db/models";
-import { writeCookieSession } from "../server/request-context/session";
-import type { NewVideo, fetchCaptionEntries } from "../utils/youtube";
-import { useUserImpl } from "./test-helper-common";
+} from "#db/helper";
+import type { CaptionEntryTable, UserTable, VideoTable } from "#db/models";
+import { useUserImpl } from "#misc/test-helper-common";
+import { writeCookieSession } from "#server/request-context/session";
+import type { NewVideo, fetchCaptionEntries } from "#utils/youtube";
 
 export function useUser(...args: Parameters<typeof useUserImpl>) {
   const { before, after } = useUserImpl(...args);

@@ -6,10 +6,10 @@ import {
   tinyassert,
   uniq,
 } from "@hiogawa/utils";
-import { E, T, db, selectOne } from "../db/drizzle-client.server";
-import { DEFAULT_DECK_CACHE } from "../db/types";
-import { JSON_EXTRA } from "../utils/json-extra";
-import { resetDeckCache } from "../utils/practice-system";
+import { E, T, db, selectOne } from "#db/drizzle-client.server";
+import { DEFAULT_DECK_CACHE } from "#db/types";
+import { JSON_EXTRA } from "#utils/json-extra";
+import { resetDeckCache } from "#utils/practice-system";
 
 //
 // export/import all data associated to single deck

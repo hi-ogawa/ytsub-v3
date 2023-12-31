@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { defaultObject } from "../utils/misc";
+import { defaultObject } from "#utils/misc";
 
 // cf. Anki's practice system
 // - https://docs.ankiweb.net/studying.html

@@ -4,11 +4,11 @@ import { createLoggerHandler } from "@hiogawa/utils-hattip";
 import { SpanKind } from "@opentelemetry/api";
 import { SemanticAttributes } from "@opentelemetry/semantic-conventions";
 import { createRequestHandler } from "@remix-run/server-runtime";
-import { requestContextHandler } from "../server/request-context";
-import { rpcHandler } from "../trpc/server";
-import { pathToRegExp } from "../utils/misc";
-import { traceAsync } from "../utils/opentelemetry-utils";
-import { initializeServer } from "./initialize-server";
+import { initializeServer } from "#misc/initialize-server";
+import { requestContextHandler } from "#server/request-context";
+import { rpcHandler } from "#trpc/server";
+import { pathToRegExp } from "#utils/misc";
+import { traceAsync } from "#utils/opentelemetry-utils";
 
 // @ts-ignore isort-ignore
 import * as remixViteBuild from "virtual:remix/server-build";

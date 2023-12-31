@@ -1,4 +1,4 @@
-import { PublicConfig } from "./config-schema";
+import { PublicConfig } from "#utils/config-schema";
 
 // both client and server code can use it.
 // server will hand-off to client via global script.

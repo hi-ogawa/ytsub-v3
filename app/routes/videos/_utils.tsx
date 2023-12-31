@@ -1,6 +1,6 @@
 import { sortBy, uniq, zip } from "@hiogawa/utils";
 import { z } from "zod";
-import { CaptionEntry } from "../../utils/types";
+import { CaptionEntry } from "#utils/types";
 
 export function partitionRanges(
   total: number,

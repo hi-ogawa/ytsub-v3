@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { E, T, selectMany } from "../../db/drizzle-client.server";
-import { useUserVideo } from "../../misc/test-helper";
-import { mockRequestContext } from "../../server/request-context/mock";
-import { rpcRoutes } from "../server";
+import { E, T, selectMany } from "#db/drizzle-client.server";
+import { useUserVideo } from "#misc/test-helper";
+import { mockRequestContext } from "#server/request-context/mock";
+import { rpcRoutes } from "#trpc/server";
 
 describe(rpcRoutes.videos_destroy, () => {
   const hook = useUserVideo({

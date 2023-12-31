@@ -1,7 +1,7 @@
 import { tinyassert } from "@hiogawa/utils";
-import { E, T, db, selectOne } from "../db/drizzle-client.server";
-import type { UserTable } from "../db/models";
-import { toPasswordHash, verifyPassword } from "./password-utils";
+import { E, T, db, selectOne } from "#db/drizzle-client.server";
+import type { UserTable } from "#db/models";
+import { toPasswordHash, verifyPassword } from "#utils/password-utils";
 
 const DEFAULT_TIMEZONE = "+00:00";
 

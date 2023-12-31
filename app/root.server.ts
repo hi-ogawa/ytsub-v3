@@ -1,6 +1,6 @@
-import { TT } from "./db/drizzle-client.server";
-import { ctx_currentUser } from "./server/request-context/session";
-import { wrapLoader } from "./utils/loader-utils.server";
+import { TT } from "#db/drizzle-client.server";
+import { ctx_currentUser } from "#server/request-context/session";
+import { wrapLoader } from "#utils/loader-utils.server";
 
 export type LoaderData = {
   currentUser?: TT["users"];

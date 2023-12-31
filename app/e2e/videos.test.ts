@@ -1,9 +1,9 @@
 import { regExpRaw } from "@hiogawa/utils";
 import { expect } from "@playwright/test";
-import { E, T, db } from "../db/drizzle-client.server";
-import { importSeed } from "../misc/seed-utils";
-import { test } from "./coverage";
-import { useUserE2E, waitForHydration } from "./helper";
+import { E, T, db } from "#db/drizzle-client.server";
+import { test } from "#e2e/coverage";
+import { useUserE2E, waitForHydration } from "#e2e/helper";
+import { importSeed } from "#misc/seed-utils";
 
 test.describe("videos-signed-in", () => {
   const user = useUserE2E(test, {

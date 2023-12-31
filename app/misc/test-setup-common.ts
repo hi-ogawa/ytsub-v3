@@ -1,4 +1,4 @@
-import { initializeServer } from "./initialize-server";
+import { initializeServer } from "#misc/initialize-server";
 
 export async function testSetupCommon() {
   await initializeServer();

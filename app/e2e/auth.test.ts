@@ -1,9 +1,9 @@
 import { hashString, tinyassert } from "@hiogawa/utils";
 import { Page, expect } from "@playwright/test";
-import { E, T, db } from "../db/drizzle-client.server";
-import type { Email } from "../utils/email-utils";
-import { test } from "./coverage";
-import { useUserE2E, waitForHydration } from "./helper";
+import { E, T, db } from "#db/drizzle-client.server";
+import { test } from "#e2e/coverage";
+import { useUserE2E, waitForHydration } from "#e2e/helper";
+import type { Email } from "#utils/email-utils";
 
 test("/users/register success", async ({ page }) => {
   await page.goto("/users/register");

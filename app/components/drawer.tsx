@@ -7,7 +7,7 @@ import {
 import { Transition } from "@hiogawa/tiny-transition/dist/react";
 import { tinyassert } from "@hiogawa/utils";
 import type React from "react";
-import { FloatingWrapper } from "./floating-utils";
+import { FloatingWrapper } from "#components/floating-utils";
 
 export function Drawer(props: {
   open: boolean;

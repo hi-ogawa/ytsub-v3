@@ -1,9 +1,9 @@
 import { newPromiseWithResolvers, once, tinyassert } from "@hiogawa/utils";
 import { useQuery } from "@tanstack/react-query";
 import React from "react";
-import { publicConfig } from "./config-public";
-import { loadScript } from "./dom-utils";
-import { usePromiseQueryOpitons } from "./misc";
+import { publicConfig } from "#utils/config-public";
+import { loadScript } from "#utils/dom-utils";
+import { usePromiseQueryOpitons } from "#utils/misc";
 
 // https://developers.cloudflare.com/turnstile/get-started/client-side-rendering/
 

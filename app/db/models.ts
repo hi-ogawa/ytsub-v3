@@ -1,4 +1,4 @@
-import type { TT } from "./drizzle-client.server";
+import type { TT } from "#db/drizzle-client.server";
 
 // TODO
 // for legacy reason, types are still re-exported in models.ts.

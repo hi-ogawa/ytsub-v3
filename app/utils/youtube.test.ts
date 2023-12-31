@@ -5,7 +5,7 @@ import {
   fetchVideoMetadata,
   mergeTtmlEntries,
   ttmlToEntries,
-} from "./youtube";
+} from "#utils/youtube";
 
 describe("fetchVideoMetadata", () => {
   it("basic", async () => {

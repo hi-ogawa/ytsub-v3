@@ -1,19 +1,19 @@
 import { Transition } from "@hiogawa/tiny-transition/dist/react";
 import { NavLink } from "@remix-run/react";
 import { useQuery } from "@tanstack/react-query";
-import { transitionProps } from "../../../components/misc";
-import { PopoverSimple } from "../../../components/popover";
-import { DeckTable } from "../../../db/models";
-import { PracticeQueueType } from "../../../db/types";
-import { $R } from "../../../misc/routes";
-import { rpcClientQuery } from "../../../trpc/client";
-import { useLeafLoaderData } from "../../../utils/loader-utils";
-import { cls } from "../../../utils/misc";
+import { transitionProps } from "#components/misc";
+import { PopoverSimple } from "#components/popover";
+import { DeckTable } from "#db/models";
+import { PracticeQueueType } from "#db/types";
+import { $R } from "#misc/routes";
 import {
   PRACTICE_QUEUE_TYPE_TO_COLOR,
   PRACTICE_QUEUE_TYPE_TO_ICON,
-} from "./_utils";
-import { LoaderData } from "./index.server";
+} from "#routes/decks/$id/_utils";
+import { LoaderData } from "#routes/decks/$id/index.server";
+import { rpcClientQuery } from "#trpc/client";
+import { useLeafLoaderData } from "#utils/loader-utils";
+import { cls } from "#utils/misc";
 
 export function DeckNavBarMenuComponent() {
   const { deck } = useLeafLoaderData() as LoaderData;

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { pathToRegExp } from "./misc";
+import { pathToRegExp } from "#utils/misc";
 
 describe(pathToRegExp, () => {
   it("basic", () => {

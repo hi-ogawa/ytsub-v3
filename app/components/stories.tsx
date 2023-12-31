@@ -2,21 +2,25 @@ import { useTinyForm } from "@hiogawa/tiny-form/dist/react";
 import { Transition } from "@hiogawa/tiny-transition/dist/react";
 import { useRafLoop } from "@hiogawa/utils-react";
 import React from "react";
-import { cls } from "../utils/misc";
-import { DUMMY_VIDEO_METADATA } from "../utils/types";
-import { YoutubePlayer, usePlayerLoader } from "../utils/youtube";
-import { CaptionEditor } from "./caption-editor";
+import { CaptionEditor } from "#components/caption-editor";
 import {
   STORAGE_KEYS,
   Z_CAPTION_EDITOR_ENTRY_LIST,
   useLocalStorage,
-} from "./caption-editor-utils";
-import { SelectWrapper, VideoComponent, transitionProps } from "./misc";
-import { PopoverSimple } from "./popover";
+} from "#components/caption-editor-utils";
+import {
+  SelectWrapper,
+  VideoComponent,
+  transitionProps,
+} from "#components/misc";
+import { PopoverSimple } from "#components/popover";
 import {
   EchartsComponent,
   practiceHistoryChartDataToEchartsOption,
-} from "./practice-history-chart";
+} from "#components/practice-history-chart";
+import { cls } from "#utils/misc";
+import { DUMMY_VIDEO_METADATA } from "#utils/types";
+import { YoutubePlayer, usePlayerLoader } from "#utils/youtube";
 
 export function TestMenu() {
   const [state, setState] = React.useState(true);

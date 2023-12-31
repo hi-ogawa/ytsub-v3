@@ -1,13 +1,13 @@
 import { tinyassert } from "@hiogawa/utils";
 import { beforeEach, describe, expect, it } from "vitest";
 import { z } from "zod";
-import { E, T, db } from "../../db/drizzle-client.server";
-import { useUser } from "../../misc/test-helper";
-import { zSnapshotType } from "../../misc/test-helper-snapshot";
-import { mockRequestContext } from "../../server/request-context/mock";
-import { ctx_get } from "../../server/request-context/storage";
-import { findByUsername } from "../../utils/auth";
-import { rpcRoutes } from "../server";
+import { E, T, db } from "#db/drizzle-client.server";
+import { useUser } from "#misc/test-helper";
+import { zSnapshotType } from "#misc/test-helper-snapshot";
+import { mockRequestContext } from "#server/request-context/mock";
+import { ctx_get } from "#server/request-context/storage";
+import { rpcRoutes } from "#trpc/server";
+import { findByUsername } from "#utils/auth";
 
 describe(rpcRoutes.users_signin, () => {
   const credentials = { username: "test-trpc-signin-v2", password: "correct" };

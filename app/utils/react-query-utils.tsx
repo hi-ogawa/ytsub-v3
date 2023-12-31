@@ -5,9 +5,9 @@ import {
 } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import React from "react";
-import { rpcClientQuery } from "../trpc/client";
-import { useDocumentEvent } from "./hooks-client-utils";
-import { toast } from "./toast-utils";
+import { rpcClientQuery } from "#trpc/client";
+import { useDocumentEvent } from "#utils/hooks-client-utils";
+import { toast } from "#utils/toast-utils";
 
 export function QueryClientWrapper({ children }: React.PropsWithChildren) {
   const [queryClient] = React.useState(() => createQueryClient());

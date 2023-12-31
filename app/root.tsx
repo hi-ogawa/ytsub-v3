@@ -18,23 +18,23 @@ import {
 } from "@remix-run/react";
 import { useMutation } from "@tanstack/react-query";
 import React from "react";
-import { Drawer } from "./components/drawer";
-import { PopoverSimple } from "./components/popover";
-import { ThemeSelect } from "./components/theme-select";
-import { $R, R } from "./misc/routes";
-import { LoaderData } from "./root.server";
-import { rpcClientQuery } from "./trpc/client";
+import { Drawer } from "#components/drawer";
+import { PopoverSimple } from "#components/popover";
+import { ThemeSelect } from "#components/theme-select";
+import { $R, R } from "#misc/routes";
+import { LoaderData } from "#root.server";
+import { rpcClientQuery } from "#trpc/client";
 import {
   useCurrentUser,
   useHydrateCurrentUser,
   useSetCurrentUser,
-} from "./utils/current-user";
-import { useFlashMessageHandler } from "./utils/flash-message";
-import { useLoaderDataExtra } from "./utils/loader-utils";
-import { cls } from "./utils/misc";
-import type { PageHandle } from "./utils/page-handle";
-import { QueryClientWrapper } from "./utils/react-query-utils";
-import { ToastWrapper, toast } from "./utils/toast-utils";
+} from "#utils/current-user";
+import { useFlashMessageHandler } from "#utils/flash-message";
+import { useLoaderDataExtra } from "#utils/loader-utils";
+import { cls } from "#utils/misc";
+import type { PageHandle } from "#utils/page-handle";
+import { QueryClientWrapper } from "#utils/react-query-utils";
+import { ToastWrapper, toast } from "#utils/toast-utils";
 
 export { loader } from "./root.server";
 

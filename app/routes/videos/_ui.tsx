@@ -7,22 +7,22 @@ import {
   PaginationComponent,
   VideoComponent,
   transitionProps,
-} from "../../components/misc";
-import { useModal } from "../../components/modal";
+} from "#components/misc";
+import { useModal } from "#components/modal";
 import {
   BookmarkEntryTable,
   type DeckTable,
   type UserTable,
   type VideoTable,
-} from "../../db/models";
-import { $R, R } from "../../misc/routes";
-import { rpcClientQuery } from "../../trpc/client";
-import { cls } from "../../utils/misc";
-import { toast } from "../../utils/toast-utils";
-import { CaptionEntry } from "../../utils/types";
-import { stringifyTimestamp } from "../../utils/youtube";
-import { BOOKMARK_DATA_ATTR, partitionRanges } from "./_utils";
-import { VideosLoaderData } from "./index.server";
+} from "#db/models";
+import { $R, R } from "#misc/routes";
+import { BOOKMARK_DATA_ATTR, partitionRanges } from "#routes/videos/_utils";
+import { VideosLoaderData } from "#routes/videos/index.server";
+import { rpcClientQuery } from "#trpc/client";
+import { cls } from "#utils/misc";
+import { toast } from "#utils/toast-utils";
+import { CaptionEntry } from "#utils/types";
+import { stringifyTimestamp } from "#utils/youtube";
 
 export function CaptionEntryComponent({
   entry,

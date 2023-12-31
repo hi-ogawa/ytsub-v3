@@ -5,26 +5,26 @@ import {
   useQuery,
 } from "@tanstack/react-query";
 import React from "react";
-import { CollapseTransition } from "../../../components/collapse";
-import { SelectWrapper, transitionProps } from "../../../components/misc";
-import type { TT } from "../../../db/drizzle-client.server";
-import { PRACTICE_ACTION_TYPES, PracticeActionType } from "../../../db/types";
-import { ROUTE_DEF } from "../../../misc/routes";
-import { rpcClientQuery } from "../../../trpc/client";
-import { useIntersectionObserver } from "../../../utils/hooks-client-utils";
-import { formatRelativeDate } from "../../../utils/intl";
+import { CollapseTransition } from "#components/collapse";
+import { SelectWrapper, transitionProps } from "#components/misc";
+import type { TT } from "#db/drizzle-client.server";
+import { PRACTICE_ACTION_TYPES, PracticeActionType } from "#db/types";
+import { ROUTE_DEF } from "#misc/routes";
+import { MiniPlayer } from "#routes/bookmarks/_ui";
+import { DeckNavBarMenuComponent, QueueTypeIcon } from "#routes/decks/$id/_ui";
+import { PRACTICE_ACTION_TYPE_TO_COLOR } from "#routes/decks/$id/_utils";
+import type { LoaderData } from "#routes/decks/$id/_utils.server";
+import { rpcClientQuery } from "#trpc/client";
+import { useIntersectionObserver } from "#utils/hooks-client-utils";
+import { formatRelativeDate } from "#utils/intl";
 import {
   disableUrlQueryRevalidation,
   useLeafLoaderData,
   useLoaderDataExtra,
   useUrlQuerySchema,
-} from "../../../utils/loader-utils";
-import { cls } from "../../../utils/misc";
-import type { PageHandle } from "../../../utils/page-handle";
-import { MiniPlayer } from "../../bookmarks/_ui";
-import { DeckNavBarMenuComponent, QueueTypeIcon } from "./_ui";
-import { PRACTICE_ACTION_TYPE_TO_COLOR } from "./_utils";
-import type { LoaderData } from "./_utils.server";
+} from "#utils/loader-utils";
+import { cls } from "#utils/misc";
+import type { PageHandle } from "#utils/page-handle";
 
 export { loader } from "./_utils.server";
 

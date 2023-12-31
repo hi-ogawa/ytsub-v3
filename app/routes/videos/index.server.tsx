@@ -1,20 +1,14 @@
-import {
-  E,
-  T,
-  TT,
-  db,
-  toPaginationResult,
-} from "../../db/drizzle-client.server";
-import { ctx_get } from "../../server/request-context/storage";
+import { E, T, TT, db, toPaginationResult } from "#db/drizzle-client.server";
+import { ctx_get } from "#server/request-context/storage";
 import {
   ctx_requireUserOrRedirect,
   wrapLoader,
-} from "../../utils/loader-utils.server";
+} from "#utils/loader-utils.server";
 import {
   PAGINATION_PARAMS_SCHEMA,
   PaginationMetadata,
   PaginationParams,
-} from "../../utils/pagination";
+} from "#utils/pagination";
 
 export interface VideosLoaderData {
   videos: TT["videos"][];

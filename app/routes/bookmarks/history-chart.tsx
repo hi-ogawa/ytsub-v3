@@ -1,23 +1,23 @@
 import { Transition } from "@hiogawa/tiny-transition/dist/react";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import React from "react";
-import { SelectWrapper, transitionProps } from "../../components/misc";
-import { PopoverSimple } from "../../components/popover";
+import { SelectWrapper, transitionProps } from "#components/misc";
+import { PopoverSimple } from "#components/popover";
 import {
   EchartsComponent,
   createBookmarkHistoryChartOption,
-} from "../../components/practice-history-chart";
-import { ROUTE_DEF } from "../../misc/routes";
-import { rpcClientQuery } from "../../trpc/client";
-import { useClickOutside } from "../../utils/hooks-client-utils";
+} from "#components/practice-history-chart";
+import { ROUTE_DEF } from "#misc/routes";
+import { BookmarksMenuItems } from "#routes/bookmarks/_ui";
+import { rpcClientQuery } from "#trpc/client";
+import { useClickOutside } from "#utils/hooks-client-utils";
 import {
   disableUrlQueryRevalidation,
   useUrlQuerySchema,
-} from "../../utils/loader-utils";
-import { cls } from "../../utils/misc";
-import type { PageHandle } from "../../utils/page-handle";
-import { formatDateRange } from "../../utils/temporal-utils";
-import { BookmarksMenuItems } from "./_ui";
+} from "#utils/loader-utils";
+import { cls } from "#utils/misc";
+import type { PageHandle } from "#utils/page-handle";
+import { formatDateRange } from "#utils/temporal-utils";
 
 export { loader } from "./history-chart.server";
 

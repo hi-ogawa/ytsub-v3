@@ -1,7 +1,7 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import React from "react";
-import { TT } from "../db/drizzle-client.server";
-import { none } from "./misc";
+import { TT } from "#db/drizzle-client.server";
+import { none } from "#utils/misc";
 
 // globally manage "currentUser" by
 // - initially hydrate query from root loader data

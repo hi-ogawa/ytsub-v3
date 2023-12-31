@@ -4,21 +4,21 @@ import { toArraySetState, useRafLoop } from "@hiogawa/utils-react";
 import { NavLink } from "@remix-run/react";
 import { useQuery } from "@tanstack/react-query";
 import React from "react";
-import { CollapseTransition } from "../../components/collapse";
-import { SelectWrapper, transitionProps } from "../../components/misc";
-import type { TT } from "../../db/drizzle-client.server";
+import { CollapseTransition } from "#components/collapse";
+import { SelectWrapper, transitionProps } from "#components/misc";
+import type { TT } from "#db/drizzle-client.server";
 import type {
   BookmarkEntryTable,
   CaptionEntryTable,
   VideoTable,
-} from "../../db/models";
-import { $R } from "../../misc/routes";
-import { rpcClientQuery } from "../../trpc/client";
-import { cls } from "../../utils/misc";
-import type { CaptionEntry } from "../../utils/types";
-import { YoutubePlayer, usePlayerLoader } from "../../utils/youtube";
-import { CaptionEntryComponent } from "../videos/_ui";
-import { findCurrentEntry } from "../videos/_utils";
+} from "#db/models";
+import { $R } from "#misc/routes";
+import { CaptionEntryComponent } from "#routes/videos/_ui";
+import { findCurrentEntry } from "#routes/videos/_utils";
+import { rpcClientQuery } from "#trpc/client";
+import { cls } from "#utils/misc";
+import type { CaptionEntry } from "#utils/types";
+import { YoutubePlayer, usePlayerLoader } from "#utils/youtube";
 
 export function BookmarkEntryComponent({
   video,

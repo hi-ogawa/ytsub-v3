@@ -1,6 +1,6 @@
 import { sql } from "drizzle-orm";
-import { E, T, db, dbRaw } from "../db/drizzle-client.server";
-import { initializeServer } from "./initialize-server";
+import { E, T, db, dbRaw } from "#db/drizzle-client.server";
+import { initializeServer } from "#misc/initialize-server";
 
 /*
 

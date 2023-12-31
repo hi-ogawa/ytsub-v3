@@ -1,8 +1,8 @@
 import { beforeAll, describe, expect, it } from "vitest";
-import { importSeed } from "../../misc/seed-utils";
-import { useUser } from "../../misc/test-helper";
-import { mockRequestContext } from "../../server/request-context/mock";
-import { rpcRoutes } from "../server";
+import { importSeed } from "#misc/seed-utils";
+import { useUser } from "#misc/test-helper";
+import { mockRequestContext } from "#server/request-context/mock";
+import { rpcRoutes } from "#trpc/server";
 
 describe(rpcRoutes.decks_practiceHistoryChart, () => {
   const user = useUser({

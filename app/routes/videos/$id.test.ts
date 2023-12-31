@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { partitionRanges } from "./_utils";
+import { partitionRanges } from "#routes/videos/_utils";
 
 describe(partitionRanges, () => {
   it("basic", async () => {

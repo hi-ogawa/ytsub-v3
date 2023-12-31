@@ -1,9 +1,9 @@
-import { E, T, db } from "../../db/drizzle-client.server";
-import type { DeckTable } from "../../db/models";
+import { E, T, db } from "#db/drizzle-client.server";
+import type { DeckTable } from "#db/models";
 import {
   ctx_requireUserOrRedirect,
   wrapLoader,
-} from "../../utils/loader-utils.server";
+} from "#utils/loader-utils.server";
 
 export interface DecksLoaderData {
   decks: DeckTable[];

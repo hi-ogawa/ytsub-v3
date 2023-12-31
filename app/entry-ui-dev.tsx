@@ -10,11 +10,11 @@ import {
   createBrowserRouter,
   redirect,
 } from "react-router-dom";
-import * as stories from "./components/stories";
-import { ThemeSelect } from "./components/theme-select";
-import { cls } from "./utils/misc";
-import { QueryClientWrapper } from "./utils/react-query-utils";
-import { ToastWrapper } from "./utils/toast-utils";
+import * as stories from "#components/stories";
+import { ThemeSelect } from "#components/theme-select";
+import { cls } from "#utils/misc";
+import { QueryClientWrapper } from "#utils/react-query-utils";
+import { ToastWrapper } from "#utils/toast-utils";
 
 // based on https://github.com/hi-ogawa/unocss-preset-antd/blob/e2b9f18764cfb466ff9c91871cd1b65a9d006877/packages/app/src/app.tsx
 

@@ -1,6 +1,13 @@
-import type { CaptionEntry, VideoMetadata } from "../utils/types";
-import type { NewVideo } from "../utils/youtube";
-import { E, T, TT, db, selectOne, toDeleteSql } from "./drizzle-client.server";
+import {
+  E,
+  T,
+  TT,
+  db,
+  selectOne,
+  toDeleteSql,
+} from "#db/drizzle-client.server";
+import type { CaptionEntry, VideoMetadata } from "#utils/types";
+import type { NewVideo } from "#utils/youtube";
 
 export async function truncateAll(): Promise<void> {
   for (const table of Object.values(T)) {

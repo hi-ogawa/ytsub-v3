@@ -1,15 +1,15 @@
 import { uniqBy } from "@hiogawa/utils";
-import { CaptionEditor } from "../../components/caption-editor";
+import { CaptionEditor } from "#components/caption-editor";
 import {
   STORAGE_KEYS,
   Z_CAPTION_EDITOR_DRAFT_LIST,
   Z_CAPTION_EDITOR_ENTRY_LIST,
   useLocalStorage,
-} from "../../components/caption-editor-utils";
-import { useLoaderDataExtra } from "../../utils/loader-utils";
-import { ClientOnly } from "../../utils/misc-react";
-import type { PageHandle } from "../../utils/page-handle";
-import type { LoaderData } from "./watch.server";
+} from "#components/caption-editor-utils";
+import type { LoaderData } from "#routes/caption-editor/watch.server";
+import { useLoaderDataExtra } from "#utils/loader-utils";
+import { ClientOnly } from "#utils/misc-react";
+import type { PageHandle } from "#utils/page-handle";
 
 export { loader } from "./watch.server";
 

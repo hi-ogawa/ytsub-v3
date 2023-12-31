@@ -1,5 +1,5 @@
 import { generateThemeScript } from "@hiogawa/theme-script";
-import { injectPublicConfigScript, publicConfig } from "../utils/config-public";
+import { injectPublicConfigScript, publicConfig } from "#utils/config-public";
 
 // since we don't currently use remix's <Meta /> or <Links /> convention,
 // we can render static document html only on server, which is probably common ssr practice.
