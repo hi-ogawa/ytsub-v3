@@ -86,7 +86,6 @@
     "@hiogawa/tiny-form": "0.0.1-pre.10",
     "@hiogawa/unocss-preset-antd": "2.2.1-pre.7",
     "@hiogawa/utils-node": "0.0.1-pre.5",
-    "@hiogawa/vite-import-dev-server": "^0.0.1",
     "@hiogawa/vite-plugin-ssr-middleware": "^0.0.0",
     "@iconify-json/ri": "^1.1.12",
     "@playwright/test": "^1.39.0",

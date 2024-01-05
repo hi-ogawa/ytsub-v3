@@ -144,9 +144,6 @@ devDependencies:
   '@hiogawa/utils-node':
     specifier: 0.0.1-pre.5
     version: 0.0.1-pre.5
-  '@hiogawa/vite-import-dev-server':
-    specifier: ^0.0.1
-    version: 0.0.1(vite@5.0.10)
   '@hiogawa/vite-plugin-ssr-middleware':
     specifier: ^0.0.0
     version: 0.0.0(vite@5.0.10)
@@ -1766,14 +1763,6 @@ packages:
   /@hiogawa/utils@1.6.1-pre.9:
     resolution: {integrity: sha512-9RnMKYYp0BAK4xsRl9V9gxH6J4wQWL9hzFLfREAWiiB6let0csGruGvmXAFu8RKfhG7/0h6xkpg/TrCO1+RsYg==}
     dev: false
-
-  /@hiogawa/vite-import-dev-server@0.0.1(vite@5.0.10):
-    resolution: {integrity: sha512-E/OyLULlz+iNideyhbaKwg/n498WdWD7/tIT1VJAj3moVWNXBfoJMpKRc8BwmcQ8fFOWd7/DnLbS2KvxsNxeeg==}
-    peerDependencies:
-      vite: '*'
-    dependencies:
-      vite: 5.0.10(@types/node@18.18.9)
-    dev: true
 
   /@hiogawa/vite-plugin-ssr-middleware@0.0.0(vite@5.0.10):
     resolution: {integrity: sha512-o2rTmqdfOpbrqQEWD0OwqypnoDa+0FD9Sdm0gf4rx+6u7+fSTmKEuT+tgwyVhPU7zwWJU8ODAkk3k3O9+noHTg==}
