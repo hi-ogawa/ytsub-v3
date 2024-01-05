@@ -70,7 +70,7 @@ function RootWrapper(props: React.PropsWithChildren) {
   });
 
   return (
-    <html lang="en" className="h-full" suppressHydrationWarning>
+    <html id="root" lang="en" className="h-full" suppressHydrationWarning>
       <head>
         <meta charSet="UTF-8" />
         <title>
