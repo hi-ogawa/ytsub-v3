@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/90</span>
+                <span class='fraction'>0/77</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/90</span>
+                <span class='fraction'>0/77</span>
             </div>
         
             
@@ -140,33 +140,7 @@
 <a name='L75'></a><a href='#L75'>75</a>
 <a name='L76'></a><a href='#L76'>76</a>
 <a name='L77'></a><a href='#L77'>77</a>
-<a name='L78'></a><a href='#L78'>78</a>
-<a name='L79'></a><a href='#L79'>79</a>
-<a name='L80'></a><a href='#L80'>80</a>
-<a name='L81'></a><a href='#L81'>81</a>
-<a name='L82'></a><a href='#L82'>82</a>
-<a name='L83'></a><a href='#L83'>83</a>
-<a name='L84'></a><a href='#L84'>84</a>
-<a name='L85'></a><a href='#L85'>85</a>
-<a name='L86'></a><a href='#L86'>86</a>
-<a name='L87'></a><a href='#L87'>87</a>
-<a name='L88'></a><a href='#L88'>88</a>
-<a name='L89'></a><a href='#L89'>89</a>
-<a name='L90'></a><a href='#L90'>90</a>
-<a name='L91'></a><a href='#L91'>91</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<a name='L78'></a><a href='#L78'>78</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -244,7 +218,7 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" ><span class="branch-0 cbranch-no" title="branch not covered" >import { useTinyForm } from "@hiogawa/tiny-form/dist/react";</span></span></span>
-<span class="cstat-no" title="statement not covered" >import { useEffect } from "react";</span>
+<span class="cstat-no" title="statement not covered" >import { zip } from "@hiogawa/utils";</span>
 <span class="cstat-no" title="statement not covered" >import { z } from "zod";</span>
 <span class="cstat-no" title="statement not covered" >import { useUrlQuerySchema } from "../../utils/loader-utils";</span>
 <span class="cstat-no" title="statement not covered" >import { cls } from "../../utils/misc";</span>
@@ -254,30 +228,16 @@
 <span class="cstat-no" title="statement not covered" >  navBarTitle: () =&gt; "Typing Practice",</span>
 <span class="cstat-no" title="statement not covered" >};</span>
 <span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >// TODO:</span>
-<span class="cstat-no" title="statement not covered" >// - compute diff with keeping original position information</span>
-<span class="cstat-no" title="statement not covered" >// - highlight textarea? (wyswyg style something? styleover)</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >// function computeDiff(x: string, y: string) {</span>
-<span class="cstat-no" title="statement not covered" >//   // compare by tokens</span>
-<span class="cstat-no" title="statement not covered" >//   const xs = x.trim().split(/\s+/);</span>
-<span class="cstat-no" title="statement not covered" >//   const ys = y.trim().split(/\s+/);</span>
-<span class="cstat-no" title="statement not covered" >// }</span>
-<span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >export default function Page() {</span>
-<span class="cstat-no" title="statement not covered" >  // http://localhost:3000/typing?input=%EB%A1%9C%EB%A7%A8%ED%8B%B1%ED%95%9C%20psycho%20%EB%82%A0%20%ED%83%90%ED%95%98%EB%A9%B4%20%EB%AA%A8%EB%93%A0%20%EA%B1%B8%20%EA%B2%AC%EB%8E%8C%EC%95%BC%EC%A7%80</span>
 <span class="cstat-no" title="statement not covered" >  const [query] = useUrlQuerySchema(</span>
-<span class="cstat-no" title="statement not covered" >    z.object({ input: z.string().default("") })</span>
+<span class="cstat-no" title="statement not covered" >    z.object({</span>
+<span class="cstat-no" title="statement not covered" >      input: z</span>
+<span class="cstat-no" title="statement not covered" >        .string()</span>
+<span class="cstat-no" title="statement not covered" >        .default("")</span>
+<span class="cstat-no" title="statement not covered" >        .transform((s) =&gt; s.trim().split(/\s+/).join(" ")),</span>
+<span class="cstat-no" title="statement not covered" >    })</span>
 <span class="cstat-no" title="statement not covered" >  );</span>
-<span class="cstat-no" title="statement not covered" >  const form = useTinyForm({ editing: false, test: query.input, answer: "" });</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >  // TODO:</span>
-<span class="cstat-no" title="statement not covered" >  useEffect(() =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >    // word by</span>
-<span class="cstat-no" title="statement not covered" >    console.log([form.data.answer]);</span>
-<span class="cstat-no" title="statement not covered" >    // form.fields.test;</span>
-<span class="cstat-no" title="statement not covered" >    // form.fields.answer;</span>
-<span class="cstat-no" title="statement not covered" >  }, [form.data]);</span>
+<span class="cstat-no" title="statement not covered" >  const form = useTinyForm({ test: query.input, answer: "" });</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  return (</span>
 <span class="cstat-no" title="statement not covered" >    &lt;div className="w-full flex justify-center"&gt;</span>
@@ -288,27 +248,28 @@
 <span class="cstat-no" title="statement not covered" >            onSubmit={form.handleSubmit(() =&gt; {})}</span>
 <span class="cstat-no" title="statement not covered" >          &gt;</span>
 <span class="cstat-no" title="statement not covered" >            &lt;div className="flex flex-col gap-2"&gt;</span>
-<span class="cstat-no" title="statement not covered" >              &lt;div className="flex items-center gap-2"&gt;</span>
-<span class="cstat-no" title="statement not covered" >                &lt;span&gt;Test&lt;/span&gt;</span>
-<span class="cstat-no" title="statement not covered" >                &lt;button</span>
-<span class="cstat-no" title="statement not covered" >                  className={cls(</span>
-<span class="cstat-no" title="statement not covered" >                    "antd-btn antd-btn-default text-sm px-1",</span>
-<span class="cstat-no" title="statement not covered" >                    form.data.editing &amp;&amp; "text-colorPrimary border-colorPrimary"</span>
-<span class="cstat-no" title="statement not covered" >                  )}</span>
-<span class="cstat-no" title="statement not covered" >                  onClick={() =&gt; form.fields.editing.onChange((prev) =&gt; !prev)}</span>
-<span class="cstat-no" title="statement not covered" >                &gt;</span>
-<span class="cstat-no" title="statement not covered" >                  Edit</span>
-<span class="cstat-no" title="statement not covered" >                &lt;/button&gt;</span>
-<span class="cstat-no" title="statement not covered" >              &lt;/div&gt;</span>
-<span class="cstat-no" title="statement not covered" >              {/* TODO: keep textarea but style over it somehow? */}</span>
-<span class="cstat-no" title="statement not covered" >              {form.data.editing ? (</span>
+<span class="cstat-no" title="statement not covered" >              &lt;div className="flex items-center gap-2"&gt;Test&lt;/div&gt;</span>
+<span class="cstat-no" title="statement not covered" >              &lt;div className="flex flex-col relative"&gt;</span>
 <span class="cstat-no" title="statement not covered" >                &lt;textarea</span>
 <span class="cstat-no" title="statement not covered" >                  className="antd-input p-1"</span>
 <span class="cstat-no" title="statement not covered" >                  {...form.fields.test.props()}</span>
 <span class="cstat-no" title="statement not covered" >                /&gt;</span>
-<span class="cstat-no" title="statement not covered" >              ) : (</span>
-<span class="cstat-no" title="statement not covered" >                &lt;div className="border p-1"&gt;{form.data.test}&lt;/div&gt;</span>
-<span class="cstat-no" title="statement not covered" >              )}</span>
+<span class="cstat-no" title="statement not covered" >                {/* use "div" and "span" with same geometry to highlight mismatch over textarea */}</span>
+<span class="cstat-no" title="statement not covered" >                &lt;div className="absolute pointer-events-none absolute p-1 border border-transparent text-transparent"&gt;</span>
+<span class="cstat-no" title="statement not covered" >                  {zip([...form.data.test], [...form.data.answer]).map(</span>
+<span class="cstat-no" title="statement not covered" >                    ([x, y], i) =&gt; (</span>
+<span class="cstat-no" title="statement not covered" >                      &lt;span</span>
+<span class="cstat-no" title="statement not covered" >                        key={i}</span>
+<span class="cstat-no" title="statement not covered" >                        className={cls(</span>
+<span class="cstat-no" title="statement not covered" >                          x !== y &amp;&amp; "border-b-3 border-colorErrorText"</span>
+<span class="cstat-no" title="statement not covered" >                        )}</span>
+<span class="cstat-no" title="statement not covered" >                      &gt;</span>
+<span class="cstat-no" title="statement not covered" >                        {x}</span>
+<span class="cstat-no" title="statement not covered" >                      &lt;/span&gt;</span>
+<span class="cstat-no" title="statement not covered" >                    )</span>
+<span class="cstat-no" title="statement not covered" >                  )}</span>
+<span class="cstat-no" title="statement not covered" >                &lt;/div&gt;</span>
+<span class="cstat-no" title="statement not covered" >              &lt;/div&gt;</span>
 <span class="cstat-no" title="statement not covered" >            &lt;/div&gt;</span>
 <span class="cstat-no" title="statement not covered" >            &lt;div className="flex flex-col gap-2"&gt;</span>
 <span class="cstat-no" title="statement not covered" >              &lt;div className="flex items-center gap-2"&gt;</span>
@@ -340,7 +301,7 @@
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2024-01-06T03:40:12.556Z
+                at 2024-01-06T04:52:18.320Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>
