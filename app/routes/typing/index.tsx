@@ -1,5 +1,5 @@
 import { useTinyForm } from "@hiogawa/tiny-form/dist/react";
-import { useEffect } from "react";
+import { zip } from "@hiogawa/utils";
 import { z } from "zod";
 import { useUrlQuerySchema } from "../../utils/loader-utils";
 import { cls } from "../../utils/misc";
@@ -9,30 +9,16 @@ export const handle: PageHandle = {
   navBarTitle: () => "Typing Practice",
 };
 
-// TODO:
-// - compute diff with keeping original position information
-// - highlight textarea? (wyswyg style something? styleover)
-
-// function computeDiff(x: string, y: string) {
-//   // compare by tokens
-//   const xs = x.trim().split(/\s+/);
-//   const ys = y.trim().split(/\s+/);
-// }
-
 export default function Page() {
-  // http://localhost:3000/typing?input=%EB%A1%9C%EB%A7%A8%ED%8B%B1%ED%95%9C%20psycho%20%EB%82%A0%20%ED%83%90%ED%95%98%EB%A9%B4%20%EB%AA%A8%EB%93%A0%20%EA%B1%B8%20%EA%B2%AC%EB%8E%8C%EC%95%BC%EC%A7%80
   const [query] = useUrlQuerySchema(
-    z.object({ input: z.string().default("") })
+    z.object({
+      input: z
+        .string()
+        .default("")
+        .transform((s) => s.trim().split(/\s+/).join(" ")),
+    })
   );
-  const form = useTinyForm({ editing: false, test: query.input, answer: "" });
-
-  // TODO:
-  useEffect(() => {
-    // word by
-    console.log([form.data.answer]);
-    // form.fields.test;
-    // form.fields.answer;
-  }, [form.data]);
+  const form = useTinyForm({ editing: true, test: query.input, answer: "" });
 
   return (
     <div className="w-full flex justify-center">
@@ -55,15 +41,27 @@ export default function Page() {
                   Edit
                 </button>
               </div>
-              {/* TODO: keep textarea but style over it somehow? */}
-              {form.data.editing ? (
+              <div className="flex flex-col relative">
                 <textarea
                   className="antd-input p-1"
                   {...form.fields.test.props()}
                 />
-              ) : (
-                <div className="border p-1">{form.data.test}</div>
-              )}
+                {/* use "div" and "span" with same geometry to highlight over textarea */}
+                <div className="absolute pointer-events-none absolute p-1 border border-transparent text-transparent">
+                  {zip([...form.data.test], [...form.data.answer]).map(
+                    ([x, y], i) => (
+                      <span
+                        key={i}
+                        className={cls(
+                          x !== y && "border-b-3 border-colorErrorText"
+                        )}
+                      >
+                        {x}
+                      </span>
+                    )
+                  )}
+                </div>
+              </div>
             </div>
             <div className="flex flex-col gap-2">
               <div className="flex items-center gap-2">
