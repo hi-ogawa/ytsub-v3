@@ -94,6 +94,7 @@ export function CaptionEntryComponent({
           // use "media-mouse" as keyboard detection heuristics https://github.com/w3c/csswg-drafts/issues/3871
           className="antd-btn antd-btn-ghost i-ri-keyboard-line w-4 h-4 hidden media-mouse:inline"
           target="_blank"
+          data-testid="typing-link"
         />
         <button
           className={cls(
