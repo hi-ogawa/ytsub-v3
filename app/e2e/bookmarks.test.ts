@@ -52,7 +52,7 @@ test.describe("bookmarks", () => {
     await page.getByText("케플러 대박 기원").click();
   });
 
-  test.only("typing", async ({ page }) => {
+  test("typing", async ({ page }) => {
     await user.signin(page);
     await page.goto("/bookmarks");
     await waitForHydration(page);
