@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for ytsub-v3/app/routes/decks/index.tsx</title>
+    <title>Code coverage report for ytsub-v3/app/routes/typing/index.tsx</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../../../../prettify.css" />
     <link rel="stylesheet" href="../../../../base.css" />
@@ -19,13 +19,13 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../../../../index.html">All files</a> / <a href="index.html">ytsub-v3/app/routes/decks</a> index.tsx</h1>
+        <h1><a href="../../../../index.html">All files</a> / <a href="index.html">ytsub-v3/app/routes/typing</a> index.tsx</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/62</span>
+                <span class='fraction'>0/47</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/62</span>
+                <span class='fraction'>0/47</span>
             </div>
         
             
@@ -110,22 +110,7 @@
 <a name='L45'></a><a href='#L45'>45</a>
 <a name='L46'></a><a href='#L46'>46</a>
 <a name='L47'></a><a href='#L47'>47</a>
-<a name='L48'></a><a href='#L48'>48</a>
-<a name='L49'></a><a href='#L49'>49</a>
-<a name='L50'></a><a href='#L50'>50</a>
-<a name='L51'></a><a href='#L51'>51</a>
-<a name='L52'></a><a href='#L52'>52</a>
-<a name='L53'></a><a href='#L53'>53</a>
-<a name='L54'></a><a href='#L54'>54</a>
-<a name='L55'></a><a href='#L55'>55</a>
-<a name='L56'></a><a href='#L56'>56</a>
-<a name='L57'></a><a href='#L57'>57</a>
-<a name='L58'></a><a href='#L58'>58</a>
-<a name='L59'></a><a href='#L59'>59</a>
-<a name='L60'></a><a href='#L60'>60</a>
-<a name='L61'></a><a href='#L61'>61</a>
-<a name='L62'></a><a href='#L62'>62</a>
-<a name='L63'></a><a href='#L63'>63</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<a name='L48'></a><a href='#L48'>48</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -172,81 +157,51 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" ><span class="branch-0 cbranch-no" title="branch not covered" >import { Link } from "@remix-run/react";</span></span></span>
-<span class="cstat-no" title="statement not covered" >import type { DeckTable } from "../../db/models";</span>
-<span class="cstat-no" title="statement not covered" >import { $R } from "../../misc/routes";</span>
-<span class="cstat-no" title="statement not covered" >import { useLoaderDataExtra } from "../../utils/loader-utils";</span>
-<span class="cstat-no" title="statement not covered" >import type { PageHandle } from "../../utils/page-handle";</span>
-<span class="cstat-no" title="statement not covered" >import { DeckMenuComponent } from "./$id/_ui";</span>
-<span class="cstat-no" title="statement not covered" >import type { DecksLoaderData } from "./index.server";</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >export { loader } from "./index.server";</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" ><span class="branch-0 cbranch-no" title="branch not covered" >import { useTinyForm } from "@hiogawa/tiny-form/dist/react";</span></span></span>
+<span class="cstat-no" title="statement not covered" >import { z } from "zod";</span>
+<span class="cstat-no" title="statement not covered" >import { useUrlQuerySchema } from "../../utils/loader-utils";</span>
+<span class="cstat-no" title="statement not covered" >import { PageHandle } from "../../utils/page-handle";</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >export const handle: PageHandle = {</span>
-<span class="cstat-no" title="statement not covered" >  navBarTitle: () =&gt; "Practice Decks",</span>
-<span class="cstat-no" title="statement not covered" >  navBarMenu: () =&gt; &lt;NavBarMenuComponent /&gt;,</span>
+<span class="cstat-no" title="statement not covered" >  navBarTitle: () =&gt; "Typing Practice",</span>
 <span class="cstat-no" title="statement not covered" >};</span>
 <span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >export default function DefaultComponent() {</span>
-<span class="cstat-no" title="statement not covered" >  const data = useLoaderDataExtra() as DecksLoaderData;</span>
-<span class="cstat-no" title="statement not covered" >  const { decks } = data;</span>
+<span class="cstat-no" title="statement not covered" >// TODO: highlight diff to spot wrong input (cannot use textare)</span>
+<span class="cstat-no" title="statement not covered" >// TODO: settings to filter out by language?</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >export default function Page() {</span>
+<span class="cstat-no" title="statement not covered" >  // http://localhost:3000/typing?input=%EB%A1%9C%EB%A7%A8%ED%8B%B1%ED%95%9C%20psycho%20%EB%82%A0%20%ED%83%90%ED%95%98%EB%A9%B4%20%EB%AA%A8%EB%93%A0%20%EA%B1%B8%20%EA%B2%AC%EB%8E%8C%EC%95%BC%EC%A7%80</span>
+<span class="cstat-no" title="statement not covered" >  const [query] = useUrlQuerySchema(</span>
+<span class="cstat-no" title="statement not covered" >    z.object({ input: z.string().default("") })</span>
+<span class="cstat-no" title="statement not covered" >  );</span>
+<span class="cstat-no" title="statement not covered" >  const form = useTinyForm({ test: query.input, answer: "" });</span>
+<span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  return (</span>
 <span class="cstat-no" title="statement not covered" >    &lt;div className="w-full flex justify-center"&gt;</span>
-<span class="cstat-no" title="statement not covered" >      &lt;div className="h-full w-full max-w-lg"&gt;</span>
-<span class="cstat-no" title="statement not covered" >        &lt;div className="h-full flex flex-col p-2 gap-2"&gt;</span>
-<span class="cstat-no" title="statement not covered" >          {decks.length === 0 &amp;&amp; &lt;div&gt;Empty&lt;/div&gt;}</span>
-<span class="cstat-no" title="statement not covered" >          {decks.map((deck) =&gt; (</span>
-<span class="cstat-no" title="statement not covered" >            &lt;DeckComponent key={deck.id} deck={deck} /&gt;</span>
-<span class="cstat-no" title="statement not covered" >          ))}</span>
+<span class="cstat-no" title="statement not covered" >      &lt;div className="w-full max-w-2xl flex flex-col"&gt;</span>
+<span class="cstat-no" title="statement not covered" >        &lt;div className="p-6 flex flex-col gap-3"&gt;</span>
+<span class="cstat-no" title="statement not covered" >          &lt;form</span>
+<span class="cstat-no" title="statement not covered" >            className="w-full flex flex-col gap-4"</span>
+<span class="cstat-no" title="statement not covered" >            onSubmit={form.handleSubmit(() =&gt; {})}</span>
+<span class="cstat-no" title="statement not covered" >          &gt;</span>
+<span class="cstat-no" title="statement not covered" >            &lt;label className="flex flex-col gap-1"&gt;</span>
+<span class="cstat-no" title="statement not covered" >              &lt;span className="text-colorTextLabel"&gt;Test&lt;/span&gt;</span>
+<span class="cstat-no" title="statement not covered" >              &lt;textarea</span>
+<span class="cstat-no" title="statement not covered" >                className="antd-input p-1"</span>
+<span class="cstat-no" title="statement not covered" >                {...form.fields.test.props()}</span>
+<span class="cstat-no" title="statement not covered" >              /&gt;</span>
+<span class="cstat-no" title="statement not covered" >            &lt;/label&gt;</span>
+<span class="cstat-no" title="statement not covered" >            &lt;label className="flex flex-col gap-1"&gt;</span>
+<span class="cstat-no" title="statement not covered" >              &lt;span className="text-colorTextLabel"&gt;Answer&lt;/span&gt;</span>
+<span class="cstat-no" title="statement not covered" >              &lt;textarea</span>
+<span class="cstat-no" title="statement not covered" >                className="antd-input p-1"</span>
+<span class="cstat-no" title="statement not covered" >                {...form.fields.answer.props()}</span>
+<span class="cstat-no" title="statement not covered" >              /&gt;</span>
+<span class="cstat-no" title="statement not covered" >            &lt;/label&gt;</span>
+<span class="cstat-no" title="statement not covered" >          &lt;/form&gt;</span>
 <span class="cstat-no" title="statement not covered" >        &lt;/div&gt;</span>
 <span class="cstat-no" title="statement not covered" >      &lt;/div&gt;</span>
 <span class="cstat-no" title="statement not covered" >    &lt;/div&gt;</span>
-<span class="cstat-no" title="statement not covered" >  );</span>
-<span class="cstat-no" title="statement not covered" >}</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >function DeckComponent({ deck }: { deck: DeckTable }) {</span>
-<span class="cstat-no" title="statement not covered" >  return (</span>
-<span class="cstat-no" title="statement not covered" >    &lt;div className="relative border flex items-center p-2 gap-3"&gt;</span>
-<span class="cstat-no" title="statement not covered" >      &lt;Link to={$R["/decks/$id/practice"](deck)} className="flex-1 pl-2"&gt;</span>
-<span class="cstat-no" title="statement not covered" >        {deck.name}</span>
-<span class="cstat-no" title="statement not covered" >      &lt;/Link&gt;</span>
-<span class="cstat-no" title="statement not covered" >      &lt;DeckMenuComponent deck={deck} /&gt;</span>
-<span class="cstat-no" title="statement not covered" >    &lt;/div&gt;</span>
-<span class="cstat-no" title="statement not covered" >  );</span>
-<span class="cstat-no" title="statement not covered" >}</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >//</span>
-<span class="cstat-no" title="statement not covered" >// NavBarMenuComponent</span>
-<span class="cstat-no" title="statement not covered" >//</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >function NavBarMenuComponent() {</span>
-<span class="cstat-no" title="statement not covered" >  return (</span>
-<span class="cstat-no" title="statement not covered" >    &lt;&gt;</span>
-<span class="cstat-no" title="statement not covered" >      &lt;Link</span>
-<span class="cstat-no" title="statement not covered" >        to={$R["/decks/new"]()}</span>
-<span class="cstat-no" title="statement not covered" >        className="antd-btn antd-btn-ghost i-ri-add-box-line w-6 h-6"</span>
-<span class="cstat-no" title="statement not covered" >        data-test="new-deck-link"</span>
-<span class="cstat-no" title="statement not covered" >      /&gt;</span>
-<span class="cstat-no" title="statement not covered" >      &lt;Link</span>
-<span class="cstat-no" title="statement not covered" >        to={$R["/decks/import"]()}</span>
-<span class="cstat-no" title="statement not covered" >        className="antd-btn antd-btn-ghost i-ri-file-upload-line w-6 h-6"</span>
-<span class="cstat-no" title="statement not covered" >      /&gt;</span>
-<span class="cstat-no" title="statement not covered" >    &lt;/&gt;</span>
 <span class="cstat-no" title="statement not covered" >  );</span>
 <span class="cstat-no" title="statement not covered" >}</span>
 &nbsp;</pre></td></tr></table></pre>
