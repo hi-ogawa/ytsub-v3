@@ -10,7 +10,7 @@ export const handle: PageHandle = {
 };
 
 export default function Page() {
-  const [query] = useUrlQuerySchema(
+  const [query, setQuery] = useUrlQuerySchema(
     z.object({
       input: z
         .string()
@@ -33,7 +33,12 @@ export default function Page() {
               <div className="flex flex-col relative">
                 <textarea
                   className="antd-input p-1"
-                  {...form.fields.test.props()}
+                  value={form.fields.test.value}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    form.fields.test.onChange(value);
+                    setQuery({ input: value }, { replace: true });
+                  }}
                 />
                 {/* use "div" and "span" with same geometry to highlight mismatch over textarea */}
                 <div className="absolute pointer-events-none absolute p-1 border border-transparent text-transparent">

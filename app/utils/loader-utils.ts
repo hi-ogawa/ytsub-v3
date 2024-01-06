@@ -36,8 +36,11 @@ function useUrlQuery() {
     [params]
   );
 
-  function set(next: Record<string, unknown>): void {
-    setParams(merge(next));
+  function set(
+    next: Record<string, unknown>,
+    opts?: { replace?: boolean }
+  ): void {
+    setParams(merge(next), opts);
   }
 
   function merge(next: Record<string, unknown>): URLSearchParams {
@@ -71,7 +74,7 @@ export function useUrlQuerySchema<Schame extends z.AnyZodObject>(
     return result.success ? result.data : schema.parse({});
   }, [query]);
 
-  const set = (next: I) => setQuery(next);
+  const set = (next: I, opts?: { replace?: boolean }) => setQuery(next, opts);
 
   const merge = (next: I) => mergeParams(next);
 
