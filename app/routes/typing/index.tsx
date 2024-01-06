@@ -41,6 +41,7 @@ export default function Page() {
                   }}
                 />
                 {/* use "div" and "span" with same geometry to highlight mismatch over textarea */}
+                {/* TODO: how to hande new line? (or filter out new line from test input?) */}
                 <div className="absolute pointer-events-none absolute p-1 border border-transparent text-transparent">
                   {zip([...form.data.test], [...form.data.answer]).map(
                     ([x, y], i) => (
