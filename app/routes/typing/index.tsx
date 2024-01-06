@@ -29,7 +29,7 @@ export default function Page() {
             onSubmit={form.handleSubmit(() => {})}
           >
             <div className="flex flex-col gap-2">
-              <div className="flex items-center gap-2">Test</div>
+              <div className="flex items-center gap-2">Reference</div>
               <div className="flex flex-col relative">
                 <textarea
                   className="antd-input p-1"
@@ -58,17 +58,7 @@ export default function Page() {
               </div>
             </div>
             <div className="flex flex-col gap-2">
-              <div className="flex items-center gap-2">
-                <span>Answer</span>
-                <button
-                  className="antd-btn antd-btn-default text-sm px-1"
-                  onClick={() => {
-                    form.fields.answer.onChange("");
-                  }}
-                >
-                  Reset
-                </button>
-              </div>
+              <div className="flex items-center gap-2">Practice Input</div>
               <textarea
                 className="antd-input p-1"
                 {...form.fields.answer.props()}
