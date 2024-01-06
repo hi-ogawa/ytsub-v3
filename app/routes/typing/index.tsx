@@ -12,13 +12,13 @@ export const handle: PageHandle = {
 export default function Page() {
   const [query, setQuery] = useUrlQuerySchema(
     z.object({
-      input: z
+      test: z
         .string()
         .default("")
         .transform((s) => s.trim().split(/\s+/).join(" ")),
     })
   );
-  const form = useTinyForm({ test: query.input, answer: "" });
+  const form = useTinyForm({ test: query.test, answer: "" });
 
   return (
     <div className="w-full flex justify-center">
@@ -37,7 +37,7 @@ export default function Page() {
                   onChange={(e) => {
                     const value = e.target.value;
                     form.fields.test.onChange(value);
-                    setQuery({ input: value }, { replace: true });
+                    setQuery({ test: value }, { replace: true });
                   }}
                 />
                 {/* use "div" and "span" with same geometry to highlight mismatch over textarea */}
