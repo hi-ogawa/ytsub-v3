@@ -18,7 +18,7 @@ export default function Page() {
         .transform((s) => s.trim().split(/\s+/).join(" ")),
     })
   );
-  const form = useTinyForm({ editing: true, test: query.input, answer: "" });
+  const form = useTinyForm({ test: query.input, answer: "" });
 
   return (
     <div className="w-full flex justify-center">
@@ -29,24 +29,13 @@ export default function Page() {
             onSubmit={form.handleSubmit(() => {})}
           >
             <div className="flex flex-col gap-2">
-              <div className="flex items-center gap-2">
-                <span>Test</span>
-                <button
-                  className={cls(
-                    "antd-btn antd-btn-default text-sm px-1",
-                    form.data.editing && "text-colorPrimary border-colorPrimary"
-                  )}
-                  onClick={() => form.fields.editing.onChange((prev) => !prev)}
-                >
-                  Edit
-                </button>
-              </div>
+              <div className="flex items-center gap-2">Test</div>
               <div className="flex flex-col relative">
                 <textarea
                   className="antd-input p-1"
                   {...form.fields.test.props()}
                 />
-                {/* use "div" and "span" with same geometry to highlight over textarea */}
+                {/* use "div" and "span" with same geometry to highlight mismatch over textarea */}
                 <div className="absolute pointer-events-none absolute p-1 border border-transparent text-transparent">
                   {zip([...form.data.test], [...form.data.answer]).map(
                     ([x, y], i) => (
