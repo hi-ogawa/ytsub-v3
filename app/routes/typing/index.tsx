@@ -20,6 +20,15 @@ export default function Page() {
   );
   const form = useTinyForm({ test: query.test, answer: "" });
 
+  const matches = zip([...form.data.test], [...form.data.answer]).map(
+    ([x, y]) => ({
+      ok: x === y,
+      x,
+      y,
+    })
+  );
+  const ok = matches.every((m) => m.ok);
+
   return (
     <div className="w-full flex justify-center">
       <div className="w-full max-w-2xl flex flex-col">
@@ -32,7 +41,10 @@ export default function Page() {
               <div className="flex items-center gap-2">Reference</div>
               <div className="flex flex-col relative">
                 <textarea
-                  className="antd-input p-1"
+                  className={cls(
+                    "antd-input p-1",
+                    !ok && "border-colorErrorBorderHover"
+                  )}
                   value={form.fields.test.value}
                   onChange={(e) => {
                     const value = e.target.value;
@@ -46,18 +58,16 @@ export default function Page() {
                   className="absolute pointer-events-none absolute p-1 border border-transparent text-transparent"
                   data-testid="typing-mismatch-overlay"
                 >
-                  {zip([...form.data.test], [...form.data.answer]).map(
-                    ([x, y], i) => (
-                      <span
-                        key={i}
-                        className={cls(
-                          x !== y && "border-b-3 border-colorErrorText"
-                        )}
-                      >
-                        {x}
-                      </span>
-                    )
-                  )}
+                  {matches.map((m, i) => (
+                    <span
+                      key={i}
+                      className={cls(
+                        !m.ok && "border-b-2 border-colorErrorText opacity-80"
+                      )}
+                    >
+                      {m.x}
+                    </span>
+                  ))}
                 </div>
               </div>
             </div>
