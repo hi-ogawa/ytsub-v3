@@ -7,10 +7,9 @@ import { initializePublicConfigClient } from "./utils/config-public";
 function main() {
   registerServiceWorker();
   initializePublicConfigClient();
-  const el = document.getElementById("root");
-  tinyassert(el);
-  hydrateRoot(el, <RemixBrowser />);
-  el.classList.add("hydrated");
+  hydrateRoot(document, <RemixBrowser />);
+  tinyassert(document.firstElementChild);
+  document.firstElementChild.classList.add("hydrated");
 }
 
 main();
