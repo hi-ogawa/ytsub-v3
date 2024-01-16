@@ -1,3 +1,4 @@
+import * as build from "virtual:remix/server-build";
 import { type RequestHandler, compose } from "@hattip/compose";
 import { once } from "@hiogawa/utils";
 import { createLoggerHandler } from "@hiogawa/utils-hattip";
@@ -9,10 +10,6 @@ import { rpcHandler } from "../trpc/server";
 import { pathToRegExp } from "../utils/misc";
 import { traceAsync } from "../utils/opentelemetry-utils";
 import { initializeServer } from "./initialize-server";
-
-// @ts-ignore isort-ignore
-import * as remixViteBuild from "virtual:remix/server-build";
-const build = remixViteBuild as typeof import("@remix-run/dev/server-build");
 
 // based on https://github.com/hi-ogawa/vite-fullstack-example/blob/92649f99b041820ec86650c99cfcd49a72e79f71/src/server/hattip.ts#L16-L28
 
