@@ -123,6 +123,10 @@
     "patchedDependencies": {
       "@opentelemetry/sdk-node@0.45.1": "patches/@opentelemetry__sdk-node@0.45.1.patch",
       "echarts@5.4.3": "patches/echarts@5.4.3.patch"
+    },
+    "overrides": {
+      "react": "18.3.0-canary-60a927d04-20240113",
+      "react-dom": "18.3.0-canary-60a927d04-20240113"
     }
   }
 }
