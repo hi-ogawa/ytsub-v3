@@ -44,6 +44,11 @@ export const ROUTE_DEF = {
       v: z.string(),
     }),
   },
+  "/typing": {
+    query: z.object({
+      test: z.string(),
+    }),
+  },
   "/videos/$id": {
     params: Z_ID_PARAMS,
     query: z.object({

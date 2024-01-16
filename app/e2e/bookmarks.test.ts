@@ -1,3 +1,4 @@
+import { expect } from "@playwright/test";
 import { importSeed } from "../misc/seed-utils";
 import { test } from "./coverage";
 import { useUserE2E, waitForHydration } from "./helper";
@@ -49,6 +50,37 @@ test.describe("bookmarks", () => {
     await page.getByRole("button", { name: "Details" }).click();
     await page.getByRole("button", { name: "Go to Last Bookmark" }).click();
     await page.getByText("케플러 대박 기원").click();
+  });
+
+  test("typing", async ({ page }) => {
+    await user.signin(page);
+    await page.goto("/bookmarks");
+    await waitForHydration(page);
+
+    // open bookmark
+    await page.getByText("케플러 대박 기원").click();
+
+    // click typing pratcie link
+    const page2Promise = page.waitForEvent("popup");
+    await page.getByTestId("typing-link").click();
+    const page2 = await page2Promise;
+    await waitForHydration(page2);
+
+    // wrong input 플 != 푸 and check highlight
+    await page2.locator('textarea[name="answer"]').fill("케푸러");
+    const result = await page2
+      .getByTestId("typing-mismatch-overlay")
+      .evaluate((node) => {
+        return Array.from(node.childNodes).map((c) => {
+          const el = c as HTMLElement;
+          return [el.textContent, Boolean(el.className)];
+        });
+      });
+    expect(result).toEqual([
+      ["케", false],
+      ["플", true],
+      ["러", false],
+    ]);
   });
 });
 
