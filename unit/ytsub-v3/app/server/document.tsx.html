@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for ytsub-v3/app/utils/hooks-client-utils.ts</title>
+    <title>Code coverage report for ytsub-v3/app/server/document.tsx</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../../../prettify.css" />
     <link rel="stylesheet" href="../../../base.css" />
@@ -19,13 +19,13 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../../../index.html">All files</a> / <a href="index.html">ytsub-v3/app/utils</a> hooks-client-utils.ts</h1>
+        <h1><a href="../../../index.html">All files</a> / <a href="index.html">ytsub-v3/app/server</a> document.tsx</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/47</span>
+                <span class='fraction'>0/43</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/47</span>
+                <span class='fraction'>0/43</span>
             </div>
         
             
@@ -106,11 +106,7 @@
 <a name='L41'></a><a href='#L41'>41</a>
 <a name='L42'></a><a href='#L42'>42</a>
 <a name='L43'></a><a href='#L43'>43</a>
-<a name='L44'></a><a href='#L44'>44</a>
-<a name='L45'></a><a href='#L45'>45</a>
-<a name='L46'></a><a href='#L46'>46</a>
-<a name='L47'></a><a href='#L47'>47</a>
-<a name='L48'></a><a href='#L48'>48</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<a name='L44'></a><a href='#L44'>44</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -153,56 +149,48 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" ><span class="branch-0 cbranch-no" title="branch not covered" >import { useRefCallbackEffect, useStableCallback } from "@hiogawa/utils-react";</span></span></span>
-<span class="cstat-no" title="statement not covered" >import React from "react";</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" ><span class="branch-0 cbranch-no" title="branch not covered" >import { generateThemeScript } from "@hiogawa/theme-script";</span></span></span>
+<span class="cstat-no" title="statement not covered" >import { injectPublicConfigScript, publicConfig } from "../utils/config-public";</span>
 <span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >function documentEventEffect&lt;K extends keyof DocumentEventMap&gt;(</span>
-<span class="cstat-no" title="statement not covered" >  type: K,</span>
-<span class="cstat-no" title="statement not covered" >  handler: (e: DocumentEventMap[K]) =&gt; void</span>
-<span class="cstat-no" title="statement not covered" >) {</span>
-<span class="cstat-no" title="statement not covered" >  document.addEventListener(type, handler);</span>
-<span class="cstat-no" title="statement not covered" >  return () =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >    document.removeEventListener(type, handler);</span>
-<span class="cstat-no" title="statement not covered" >  };</span>
-<span class="cstat-no" title="statement not covered" >}</span>
+<span class="cstat-no" title="statement not covered" >// since we don't currently use remix's &lt;Meta /&gt; or &lt;Links /&gt; convention,</span>
+<span class="cstat-no" title="statement not covered" >// we can render static document html only on server, which is probably common ssr practice.</span>
 <span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >export function useDocumentEvent&lt;K extends keyof DocumentEventMap&gt;(</span>
-<span class="cstat-no" title="statement not covered" >  type: K,</span>
-<span class="cstat-no" title="statement not covered" >  handler: (e: DocumentEventMap[K]) =&gt; void</span>
-<span class="cstat-no" title="statement not covered" >) {</span>
-<span class="cstat-no" title="statement not covered" >  const stableHanlder = useStableCallback(handler);</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >  React.useEffect(() =&gt; documentEventEffect(type, stableHanlder), []);</span>
-<span class="cstat-no" title="statement not covered" >}</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >export function useClickOutside(callback: (e: PointerEvent) =&gt; void) {</span>
-<span class="cstat-no" title="statement not covered" >  const stableCallback = useStableCallback(callback);</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >  return useRefCallbackEffect&lt;Element&gt;((el) =&gt;</span>
-<span class="cstat-no" title="statement not covered" >    documentEventEffect("pointerdown", (e) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >      if (e.target instanceof Node &amp;&amp; el.contains(e.target)) {</span>
-<span class="cstat-no" title="statement not covered" >        stableCallback(e);</span>
+<span class="cstat-no" title="statement not covered" >export async function renderToDocument(ssrHtml: string, style: string) {</span>
+<span class="cstat-no" title="statement not covered" >  // syntax highlight by https://github.com/mjbvz/vscode-comment-tagged-templates/</span>
+<span class="cstat-no" title="statement not covered" >  return /* html */ `</span>
+<span class="cstat-no" title="statement not covered" >&lt;!DOCTYPE html&gt;</span>
+<span class="cstat-no" title="statement not covered" >&lt;html&gt;</span>
+<span class="cstat-no" title="statement not covered" >  &lt;head&gt;</span>
+<span class="cstat-no" title="statement not covered" >    &lt;meta charset="UTF-8" /&gt;</span>
+<span class="cstat-no" title="statement not covered" >    &lt;title&gt;${</span>
+<span class="cstat-no" title="statement not covered" >      publicConfig.VERCEL_ENV === "preview" ? "[PREVIEW] Ytsub" : "Ytsub"</span>
+<span class="cstat-no" title="statement not covered" >    }&lt;/title&gt;</span>
+<span class="cstat-no" title="statement not covered" >    &lt;meta</span>
+<span class="cstat-no" title="statement not covered" >      name="viewport"</span>
+<span class="cstat-no" title="statement not covered" >      content="width=device-width, height=device-height, initial-scale=1.0"</span>
+<span class="cstat-no" title="statement not covered" >    /&gt;</span>
+<span class="cstat-no" title="statement not covered" >    &lt;link rel="manifest" href="/manifest.json" /&gt;</span>
+<span class="cstat-no" title="statement not covered" >    &lt;link</span>
+<span class="cstat-no" title="statement not covered" >        rel="icon"</span>
+<span class="cstat-no" title="statement not covered" >        type="image/svg+xml"</span>
+<span class="cstat-no" title="statement not covered" >        href="https://iconify-dark-hiro18181.vercel.app/icon/ri/translate-2"</span>
+<span class="cstat-no" title="statement not covered" >    /&gt;</span>
+<span class="cstat-no" title="statement not covered" >    &lt;style&gt;</span>
+<span class="cstat-no" title="statement not covered" >      html,</span>
+<span class="cstat-no" title="statement not covered" >      body,</span>
+<span class="cstat-no" title="statement not covered" >      #root {</span>
+<span class="cstat-no" title="statement not covered" >        height: 100%;</span>
 <span class="cstat-no" title="statement not covered" >      }</span>
-<span class="cstat-no" title="statement not covered" >    })</span>
-<span class="cstat-no" title="statement not covered" >  );</span>
-<span class="cstat-no" title="statement not covered" >}</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >export function useIntersectionObserver(</span>
-<span class="cstat-no" title="statement not covered" >  callback: IntersectionObserverCallback</span>
-<span class="cstat-no" title="statement not covered" >) {</span>
-<span class="cstat-no" title="statement not covered" >  const stableCallback = useStableCallback(callback);</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >  return useRefCallbackEffect&lt;Element&gt;((el) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >    const observer = new IntersectionObserver(stableCallback);</span>
-<span class="cstat-no" title="statement not covered" >    observer.observe(el);</span>
-<span class="cstat-no" title="statement not covered" >    return () =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >      observer.disconnect();</span>
-<span class="cstat-no" title="statement not covered" >    };</span>
-<span class="cstat-no" title="statement not covered" >  });</span>
+<span class="cstat-no" title="statement not covered" >    &lt;/style&gt;</span>
+<span class="cstat-no" title="statement not covered" >    ${style}</span>
+<span class="cstat-no" title="statement not covered" >    ${generateThemeScript({ storageKey: "ytsub:theme" })}</span>
+<span class="cstat-no" title="statement not covered" >    ${injectPublicConfigScript()}</span>
+<span class="cstat-no" title="statement not covered" >  &lt;/head&gt;</span>
+<span class="cstat-no" title="statement not covered" >  &lt;body&gt;</span>
+<span class="cstat-no" title="statement not covered" >    &lt;div id="root"&gt;${ssrHtml}&lt;/div&gt;</span>
+<span class="cstat-no" title="statement not covered" >  &lt;/body&gt;</span>
+<span class="cstat-no" title="statement not covered" >&lt;/html&gt;</span>
+<span class="cstat-no" title="statement not covered" >`;</span>
 <span class="cstat-no" title="statement not covered" >}</span>
 &nbsp;</pre></td></tr></table></pre>
 
