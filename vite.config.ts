@@ -1,6 +1,6 @@
 import { importDevServerPlugin } from "@hiogawa/vite-import-dev-server";
 import { vitePluginSsrMiddleware } from "@hiogawa/vite-plugin-ssr-middleware";
-import { unstable_vitePlugin as remix } from "@remix-run/dev";
+import { vitePlugin as remix } from "@remix-run/dev";
 import { createRoutesFromFolders } from "@remix-run/v1-route-convention";
 import unocss from "unocss/vite";
 import { defineConfig } from "vitest/config";
