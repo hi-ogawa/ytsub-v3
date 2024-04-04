@@ -33,7 +33,7 @@ jobs:
       - run: corepack enable
       - run: pnpm i
       - run: pnpm build
-      - run: npm i -g vercel@33.0.1
+      - run: npm i -g vercel@latest
       - run: bash misc/vercel/auth-ci.sh
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
