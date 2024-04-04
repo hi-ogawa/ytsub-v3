@@ -2,6 +2,11 @@
   "version": 3,
   "routes": [
     {
+      "src": "^/(.*)$",
+      "status": 307,
+      "headers": { "location": "https://github.com/hi-ogawa/ytsub-v3" }
+    },
+    {
       "src": "^/assets/(.*)$",
       "headers": {
         "cache-control": "public, immutable, max-age=31536000"
