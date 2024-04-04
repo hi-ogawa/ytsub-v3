@@ -1,5 +1,10 @@
 # ytsub-v3
 
+> [!note]
+> Currently the application is shutdown as Planetscale closed a hobby plan.
+
+https://ytsub-v3-hiro18181.vercel.app
+
 ```sh
 # development
 pnpm i
