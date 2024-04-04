@@ -4,7 +4,7 @@
     {
       "src": "^/(.*)$",
       "status": 307,
-      "headers": { "Location": "https://github.com/hi-ogawa/ytsub-v3/pull/562" }
+      "headers": { "location": "https://github.com/hi-ogawa/ytsub-v3" }
     },
     {
       "src": "^/assets/(.*)$",
