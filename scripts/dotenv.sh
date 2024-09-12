@@ -5,8 +5,5 @@
 # usage:
 #   bash scripts/dotenv.sh [dotenv-file] [command...]
 
-dotenv_file="$1"
-shift
-
 # shellcheck disable=SC2046
-env $(grep -v '^#' "$dotenv_file") "${@}"
+env $(grep -v '^#' "$1") "${@:2}"

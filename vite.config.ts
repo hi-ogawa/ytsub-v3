@@ -6,6 +6,7 @@ import unocss from "unocss/vite";
 import { defineConfig } from "vitest/config";
 
 export default defineConfig({
+  envDir: "__disable",
   clearScreen: false,
   server: {
     port: Number(process.env.PORT ?? "3000"),
