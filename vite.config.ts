@@ -9,6 +9,13 @@ export default defineConfig({
   clearScreen: false,
   server: {
     port: Number(process.env.PORT ?? "3000"),
+    warmup: {
+      clientFiles: [
+        "./app/entry-client.tsx",
+        "./app/root.tsx",
+        "./app/routes/**/*",
+      ],
+    },
   },
   plugins: [
     unocss(),
@@ -33,9 +40,7 @@ export default defineConfig({
             ],
           }) as any;
         },
-        // false-positive during optimizeDeps discovery
-        // https://github.com/remix-run/remix/pull/8267
-      }).filter((plugin) => plugin.name !== "remix-dot-server"),
+      }),
 
     // since remix overwrites ssr build output of vitePluginSsrMiddleware,
     // we need to overwrite it back with extra plugin.
@@ -67,11 +72,6 @@ export default defineConfig({
         defaultHandler(warning);
       },
     },
-  },
-  optimizeDeps: {
-    // debug this by
-    // DEBUG=vite:deps pnpm dev:remix --force
-    entries: ["./app/entry-client.tsx", "./app/root.tsx", "./app/routes/**/*"],
   },
   test: {
     dir: "./app",
