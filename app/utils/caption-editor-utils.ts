@@ -15,7 +15,9 @@ export async function scrapeColorCodedLyrics(url: string) {
       disableJavaScriptFileLoading: true,
     },
   });
-  Object.assign(window.document.defaultView, { console: createNoopProxy() }); // silence loading error log
+  Object.assign(window.document.defaultView as any, {
+    console: createNoopProxy(),
+  }); // silence loading error log
   window.document.body.innerHTML = resText;
 
   function parseColumn(n: number) {
